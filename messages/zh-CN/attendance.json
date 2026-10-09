@@ -32,6 +32,7 @@
   "cancelLeave": "申请撤假",
   "cancelReason": "取消原因",
   "cancelShift": "取消班次",
+  "cancelShiftIrreversible": "此班次目前不符合排班规则，取消后无法恢复：{reason}",
   "caseReference": {
     "label": "事件编号",
     "helper": "同一事件请沿用"
@@ -138,6 +139,7 @@
     "birthDateRequired": "请先在员工资料填写生日，系统才能判断童工与保险年龄限制。",
     "calendarLeaveInterval": "产假事件期间须为法定天数的完整日历日（起讫 00:00，结束日不含）。",
     "calendarLeavePayRequired": "产假事件须由 owner 设置核定每日全薪，给薪比例由工龄自动计算。",
+    "cancelIrreversible": "此班次目前不符合排班规则，取消后无法恢复。",
     "cancelReasonRequired": "已开始的班次须填写取消原因。",
     "cannotReviewOwnDraft": "不能复核自己创建的工资单，请由另一位管理者处理。",
     "cannotReviewSelf": "不能审核自己的申请，请由另一位主管处理。",
@@ -663,6 +665,7 @@
       "approveSelectedExtraWork": "核准所选排班外时数（{count}）",
       "rejectSelectedExtraWork": "不核准所选排班外时数（{count}）"
     },
+    "incompleteAttendance": "未完成打卡",
     "label": "班表管理",
     "unreviewedOvertime": "待审排班外时数"
   },

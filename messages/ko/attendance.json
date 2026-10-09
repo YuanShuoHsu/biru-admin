@@ -32,6 +32,7 @@
   "cancelLeave": "휴가 취소 신청",
   "cancelReason": "취소 사유",
   "cancelShift": "근무 취소",
+  "cancelShiftIrreversible": "이 근무는 현재 근무 편성 규칙을 충족하지 않아 취소하면 복원할 수 없습니다: {reason}",
   "caseReference": {
     "label": "사유 번호",
     "helper": "같은 사유에 동일 번호 사용"
@@ -138,6 +139,7 @@
     "birthDateRequired": "연소자 및 보험 연령 제한을 판단하려면 직원 생년월일을 입력하세요.",
     "calendarLeaveInterval": "법정 일수의 전체 날짜를 입력하세요(자정부터 자정, 종료일 제외).",
     "calendarLeavePayRequired": "출산 휴가 사유는 owner가 확인된 일일 전액 임금을 설정해야 합니다. 지급 비율은 근속 기간으로 자동 계산됩니다.",
+    "cancelIrreversible": "이 근무는 현재 근무 편성 규칙을 충족하지 않아 취소하면 복원할 수 없습니다.",
     "cancelReasonRequired": "이미 시작된 근무를 취소하려면 사유가 필요합니다.",
     "cannotReviewOwnDraft": "직접 작성한 급여명세서는 검토할 수 없습니다. 다른 관리자가 검토해야 합니다.",
     "cannotReviewSelf": "본인 신청은 다른 관리자가 검토해야 합니다.",
@@ -663,6 +665,7 @@
       "approveSelectedExtraWork": "선택한 근무표 밖 시간 승인({count})",
       "rejectSelectedExtraWork": "선택한 근무표 밖 시간 거절({count})"
     },
+    "incompleteAttendance": "출퇴근 미완료",
     "label": "근무 일정",
     "unreviewedOvertime": "검토 대기 중인 근무표 밖 시간"
   },

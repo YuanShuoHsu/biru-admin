@@ -42,6 +42,7 @@ interface ShiftsPageProps {
     quickFilterValue?: string;
     sortBy?: string;
     sortDirection?: string;
+    incompleteAttendance?: string;
     unreviewedOvertime?: string;
   }>;
 }
@@ -120,8 +121,12 @@ const ShiftsPage = async ({ params, searchParams }: ShiftsPageProps) => {
     attendanceRequest: ["update"],
   });
 
-  const unreviewedOvertime =
-    canReviewExtraWork && rawSearchParams.unreviewedOvertime === "true";
+  const shiftFilter =
+    canReviewExtraWork && rawSearchParams.unreviewedOvertime === "true"
+      ? "unreviewedOvertime"
+      : rawSearchParams.incompleteAttendance === "true"
+        ? "incompleteAttendance"
+        : undefined;
 
   const [
     { shifts: rows, total: rowCount },
@@ -144,7 +149,7 @@ const ShiftsPage = async ({ params, searchParams }: ShiftsPageProps) => {
         sortDirection,
       },
       fetchOptions,
-      unreviewedOvertime,
+      shiftFilter,
     ),
     getAttendanceEmployees(
       organization.slug,
@@ -179,7 +184,7 @@ const ShiftsPage = async ({ params, searchParams }: ShiftsPageProps) => {
         sortBy={sortBy}
         sortDirection={sortDirection}
         teams={teams}
-        unreviewedOvertime={unreviewedOvertime}
+        shiftFilter={shiftFilter}
       />
     </AttendanceTabsLayout>
   );

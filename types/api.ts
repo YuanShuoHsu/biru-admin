@@ -3053,6 +3053,7 @@ export interface components {
       | "belowStatutoryPaidPercent"
       | "calendarLeaveInterval"
       | "calendarLeavePayRequired"
+      | "cancelIrreversible"
       | "cancelReasonRequired"
       | "cannotReviewOwnDraft"
       | "cannotReviewSelf"
@@ -3170,6 +3171,8 @@ export interface components {
       | "workPermitRequired";
     AttendanceErrorResponseDto: {
       message: components["schemas"]["AttendanceErrorCode"];
+      /** @description cancelIrreversible 時，班次無法通過的排班規則 */
+      reason?: components["schemas"]["AttendanceErrorCode"];
       /** @example Conflict */
       error: string;
       statusCode: number;
@@ -3731,6 +3734,8 @@ export interface components {
       endsAt: string;
     };
     CancelAttendanceShiftDto: {
+      /** @description 確認班次已不符排班規則、取消後無法復原；未帶時遇到此情況回 cancelIrreversible */
+      irreversible?: boolean;
       /** @description 班次已開始後取消時必填，寫入稽核紀錄 */
       reason?: string;
     };
@@ -8548,6 +8553,8 @@ export interface operations {
         sortBy?: components["schemas"]["AttendanceShiftSortField"];
         /** @description 只列出有排班外打卡時數尚未審核的班次 */
         unreviewedOvertime?: "true";
+        /** @description 只列出缺勤或未打下班卡、會擋住薪資結算的班次 */
+        incompleteAttendance?: "true";
         limit?: number;
         offset?: number;
         filterValue?: string;
@@ -8613,6 +8620,8 @@ export interface operations {
         sortBy?: components["schemas"]["AttendanceShiftSortField"];
         /** @description 只列出有排班外打卡時數尚未審核的班次 */
         unreviewedOvertime?: "true";
+        /** @description 只列出缺勤或未打下班卡、會擋住薪資結算的班次 */
+        incompleteAttendance?: "true";
         limit?: number;
         offset?: number;
         filterValue?: string;
@@ -15309,8 +15318,14 @@ type ReadonlyArray<T> = [Exclude<T, undefined>] extends [unknown[]]
 export const pathsApiOrganizationsOrganizationSlugAttendanceMeShiftsGetParametersQueryUnreviewedOvertimeValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/organizations/{organizationSlug}/attendance/me/shifts"]["get"]["parameters"]["query"]["unreviewedOvertime"]
 > = ["true"];
+export const pathsApiOrganizationsOrganizationSlugAttendanceMeShiftsGetParametersQueryIncompleteAttendanceValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/organizations/{organizationSlug}/attendance/me/shifts"]["get"]["parameters"]["query"]["incompleteAttendance"]
+> = ["true"];
 export const pathsApiOrganizationsOrganizationSlugAttendanceShiftsGetParametersQueryUnreviewedOvertimeValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/organizations/{organizationSlug}/attendance/shifts"]["get"]["parameters"]["query"]["unreviewedOvertime"]
+> = ["true"];
+export const pathsApiOrganizationsOrganizationSlugAttendanceShiftsGetParametersQueryIncompleteAttendanceValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/organizations/{organizationSlug}/attendance/shifts"]["get"]["parameters"]["query"]["incompleteAttendance"]
 > = ["true"];
 export const pathsApiCouponsGetParametersQueryLangValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/coupons"]["get"]["parameters"]["query"]["lang"]
@@ -15343,6 +15358,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "belowStatutoryPaidPercent",
   "calendarLeaveInterval",
   "calendarLeavePayRequired",
+  "cancelIrreversible",
   "cancelReasonRequired",
   "cannotReviewOwnDraft",
   "cannotReviewSelf",

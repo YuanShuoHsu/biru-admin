@@ -32,6 +32,7 @@
   "cancelLeave": "Request leave cancellation",
   "cancelReason": "Cancellation reason",
   "cancelShift": "Cancel shift",
+  "cancelShiftIrreversible": "This shift no longer passes scheduling rules, so it cannot be restored once cancelled: {reason}",
   "caseReference": {
     "label": "Event reference",
     "helper": "Reuse for the same event"
@@ -138,6 +139,7 @@
     "birthDateRequired": "Enter the employee's birth date so child labor and insurance age limits can be checked.",
     "calendarLeaveInterval": "Use the statutory number of full calendar days, from midnight to midnight (exclusive end).",
     "calendarLeavePayRequired": "An owner must provide the verified full daily wage for maternity leave. The paid percentage is calculated from seniority.",
+    "cancelIrreversible": "This shift no longer passes scheduling rules and cannot be restored once cancelled.",
     "cancelReasonRequired": "A reason is required to cancel a shift that has already started.",
     "cannotReviewOwnDraft": "You cannot review a payslip you drafted. Another manager must review it.",
     "cannotReviewSelf": "Another manager must review your request.",
@@ -663,6 +665,7 @@
       "approveSelectedExtraWork": "Approve selected time outside schedule ({count})",
       "rejectSelectedExtraWork": "Reject selected time outside schedule ({count})"
     },
+    "incompleteAttendance": "Incomplete attendance",
     "label": "Schedules",
     "unreviewedOvertime": "Time outside schedule to review"
   },

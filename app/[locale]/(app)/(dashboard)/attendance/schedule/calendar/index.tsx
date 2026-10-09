@@ -11,12 +11,12 @@ import useSWR from "swr";
 import CopyWeekDialog from "./CopyWeekDialog";
 import DayKindDialog from "./DayKindDialog";
 
-import CancelShiftDialog from "../../CancelShiftDialog";
 import EventsDialogContent from "../../EventsDialogContent";
 import ShiftDialog, { type ShiftChange } from "../../ShiftDialog";
 
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
+import { useCancelShift } from "@/hooks/useCancelShift";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { Add, ContentCopy } from "@mui/icons-material";
@@ -619,85 +619,7 @@ const Calendar = ({
     [saveShift, tAttendance],
   );
 
-  const handleShiftCancelled = useCallback(
-    (shift: AttendanceShift) => {
-      const shiftPath = `${attendancePath(organizationSlug, "org", "shifts")}/${shift.id}`;
-
-      mutate();
-
-      enqueueSnackbar(
-        tAttendance("schedule.shiftCancelled", { name: shift.employeeName }),
-        {
-          action: (key) => (
-            <Button
-              color="inherit"
-              onClick={async () => {
-                closeSnackbar(key);
-
-                try {
-                  await fetcher(`${shiftPath}/restore`, { method: "PATCH" });
-
-                  enqueueSnackbar(
-                    tAttendance("schedule.shiftRestored", {
-                      name: shift.employeeName,
-                    }),
-                    { variant: "success" },
-                  );
-                } catch (error) {
-                  enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
-                    variant: "error",
-                  });
-                }
-
-                mutate();
-              }}
-              size="small"
-            >
-              {tAttendance("schedule.undo")}
-            </Button>
-          ),
-          variant: "success",
-        },
-      );
-    },
-    [mutate, organizationSlug, tAttendance],
-  );
-
-  const cancelShift = useCallback(
-    async (shift: AttendanceShift) => {
-      if (!dayjs(shift.startsAt).isAfter(dayjs())) {
-        setDialog({
-          confirmText: tAttendance("cancelShift"),
-          content: (
-            <CancelShiftDialog
-              onCancelled={() => handleShiftCancelled(shift)}
-              organizationSlug={organizationSlug}
-              shift={shift}
-            />
-          ),
-          formId: "attendance-cancel-shift-form",
-          open: true,
-          title: tAttendance("cancelShift"),
-        });
-
-        return;
-      }
-
-      try {
-        await fetcher(
-          `${attendancePath(organizationSlug, "org", "shifts")}/${shift.id}/cancel`,
-          { method: "PATCH" },
-        );
-
-        handleShiftCancelled(shift);
-      } catch (error) {
-        enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
-          variant: "error",
-        });
-      }
-    },
-    [handleShiftCancelled, organizationSlug, setDialog, tAttendance],
-  );
+  const cancelShift = useCancelShift(organizationSlug, mutate);
 
   const handleOpenShift = useCallback(
     (shift: AttendanceShift) => {

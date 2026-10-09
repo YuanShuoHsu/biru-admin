@@ -32,6 +32,7 @@
   "cancelLeave": "休暇取消を申請",
   "cancelReason": "取消理由",
   "cancelShift": "シフト取消",
+  "cancelShiftIrreversible": "このシフトは現在のシフト規則を満たしていないため、取り消すと元に戻せません：{reason}",
   "caseReference": {
     "label": "事由番号",
     "helper": "同じ事由には同じ番号"
@@ -138,6 +139,7 @@
     "birthDateRequired": "年少者と保険の年齢制限を判断するため、従業員の生年月日を入力してください。",
     "calendarLeaveInterval": "法定日数を暦日で指定してください（午前0時から午前0時、終了日を含まない）。",
     "calendarLeavePayRequired": "産休の事由は owner が確認済みの日額賃金を設定してください。支給率は勤続期間から自動計算されます。",
+    "cancelIrreversible": "このシフトは現在のシフト規則を満たしていないため、取り消すと元に戻せません。",
     "cancelReasonRequired": "開始済みのシフトを取り消すには理由が必要です。",
     "cannotReviewOwnDraft": "自分が作成した給与明細は確認できません。別の管理者が確認してください。",
     "cannotReviewSelf": "自分の申請は別の管理者が審査する必要があります。",
@@ -663,6 +665,7 @@
       "approveSelectedExtraWork": "選択したシフト外の時間を承認（{count}）",
       "rejectSelectedExtraWork": "選択したシフト外の時間を却下（{count}）"
     },
+    "incompleteAttendance": "打刻未完了",
     "label": "シフト管理",
     "unreviewedOvertime": "未審査のシフト外時間"
   },

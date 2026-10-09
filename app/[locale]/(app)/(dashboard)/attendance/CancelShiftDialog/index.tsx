@@ -1,7 +1,6 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm } from "react-hook-form";
 
@@ -17,25 +16,15 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { AttendanceShift } from "@/types/attendance";
 
-import {
-  attendanceErrorKey,
-  attendancePath,
-  formatScheduledShift,
-} from "@/utils/attendance";
-import { fetcher } from "@/utils/fetcher";
+import { formatScheduledShift } from "@/utils/attendance";
 
 interface CancelShiftDialogProps {
-  onCancelled: () => void;
-  organizationSlug: string;
+  onConfirm: (reason: string) => Promise<void>;
   shift: AttendanceShift;
 }
 
-const CancelShiftDialog = ({
-  onCancelled,
-  organizationSlug,
-  shift,
-}: CancelShiftDialogProps) => {
-  const { closeDialog, setDialog } = useDialogStore((state) => state);
+const CancelShiftDialog = ({ onConfirm, shift }: CancelShiftDialogProps) => {
+  const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();
 
@@ -52,29 +41,12 @@ const CancelShiftDialog = ({
     resolver: zodResolver(cancelShiftFormSchema),
   });
 
-  const onSubmitHandler = async (values: CancelShiftForm) => {
-    try {
-      setDialog({ confirmLoading: true });
+  const onSubmitHandler = async ({ reason }: CancelShiftForm) => {
+    setDialog({ confirmLoading: true });
 
-      await fetcher(
-        `${attendancePath(organizationSlug, "org", "shifts")}/${shift.id}/cancel`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(values),
-        },
-      );
+    await onConfirm(reason);
 
-      closeDialog();
-
-      onCancelled();
-    } catch (error) {
-      enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
-        variant: "error",
-      });
-
-      setDialog({ confirmLoading: false });
-    }
+    setDialog({ confirmLoading: false });
   };
 
   const onSubmit = (event: BaseSyntheticEvent) =>

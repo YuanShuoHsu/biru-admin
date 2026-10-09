@@ -1,16 +1,13 @@
 "use client";
 
-import dayjs from "dayjs";
 import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
-import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR, { mutate as mutateCache } from "swr";
 
 import ShiftDialog from "../../ShiftDialog";
 
 import BatchReviewDialog from "../../BatchReviewDialog";
-import CancelShiftDialog from "../../CancelShiftDialog";
 import EventsDialogContent from "../../EventsDialogContent";
 import ReviewDialog from "../reviews/ReviewDialog";
 
@@ -28,6 +25,7 @@ import {
   useEnumFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
+import { useCancelShift } from "@/hooks/useCancelShift";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 import { attendanceReviewCountsKey } from "@/hooks/useAttendanceReviewCounts";
 
@@ -59,7 +57,7 @@ import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 
 import {
-  attendanceErrorKey,
+  type AttendanceShiftFilter,
   attendancePath,
   formatClockedShift,
   formatScheduledShift,
@@ -119,7 +117,7 @@ interface ShiftsProps {
   sortBy?: AttendanceShiftSortField;
   sortDirection?: SortDirection;
   teams: AttendanceTeam[];
-  unreviewedOvertime: boolean;
+  shiftFilter?: AttendanceShiftFilter;
 }
 
 const Shifts = ({
@@ -140,7 +138,7 @@ const Shifts = ({
   sortBy,
   sortDirection,
   teams,
-  unreviewedOvertime: initialUnreviewedOvertime,
+  shiftFilter: initialShiftFilter,
 }: ShiftsProps) => {
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
@@ -171,9 +169,7 @@ const Shifts = ({
     quickFilterValues: initialQuickFilterValue ? [initialQuickFilterValue] : [],
   });
 
-  const [unreviewedOvertime, setUnreviewedOvertime] = useState(
-    initialUnreviewedOvertime,
-  );
+  const [shiftFilter, setShiftFilter] = useState(initialShiftFilter);
 
   const [rowSelectionModel, setRowSelectionModel] =
     useState<GridRowSelectionModel>({ ids: new Set(), type: "include" });
@@ -207,7 +203,7 @@ const Shifts = ({
     isValidating: loading,
     mutate,
   } = useSWR(
-    [base, paginationModel, filterModel, sortModel, unreviewedOvertime],
+    [base, paginationModel, filterModel, sortModel, shiftFilter],
     () => {
       const params = getDataGridSearchParams(
         paginationModel,
@@ -216,7 +212,7 @@ const Shifts = ({
         enumOptions,
       );
 
-      if (unreviewedOvertime) params.set("unreviewedOvertime", "true");
+      if (shiftFilter) params.set(shiftFilter, "true");
 
       return fetcher<AttendanceShiftPage>(`${base}?${params}`);
     },
@@ -279,15 +275,21 @@ const Shifts = ({
     [updateQuery],
   );
 
-  const handleToggleUnreviewedOvertime = useCallback(() => {
-    setUnreviewedOvertime(!unreviewedOvertime);
-    setPaginationModel((previous) => ({ ...previous, page: 0 }));
+  const handleToggleShiftFilter = useCallback(
+    (filter: AttendanceShiftFilter) => {
+      const next = shiftFilter === filter ? undefined : filter;
 
-    updateQuery({
-      page: "1",
-      unreviewedOvertime: unreviewedOvertime ? "" : "true",
-    });
-  }, [unreviewedOvertime, updateQuery]);
+      setShiftFilter(next);
+      setPaginationModel((previous) => ({ ...previous, page: 0 }));
+
+      updateQuery({
+        incompleteAttendance: next === "incompleteAttendance" ? "true" : "",
+        page: "1",
+        unreviewedOvertime: next === "unreviewedOvertime" ? "true" : "",
+      });
+    },
+    [shiftFilter, updateQuery],
+  );
 
   const handleCreateShift = useCallback(
     () =>
@@ -330,59 +332,7 @@ const Shifts = ({
     [setDialog, tAttendance],
   );
 
-  const handleCancelShift = useCallback(
-    (shift: AttendanceShift) => {
-      const { employeeName, id } = shift;
-
-      if (!dayjs(shift.startsAt).isAfter(dayjs())) {
-        setDialog({
-          confirmText: tAttendance("cancelShift"),
-          content: (
-            <CancelShiftDialog
-              onCancelled={() => {
-                enqueueSnackbar(
-                  tAttendance("schedule.shiftCancelled", {
-                    name: employeeName,
-                  }),
-                  { variant: "success" },
-                );
-                mutate();
-              }}
-              organizationSlug={organizationSlug}
-              shift={shift}
-            />
-          ),
-          formId: "attendance-cancel-shift-form",
-          open: true,
-          title: tAttendance("cancelShift"),
-        });
-
-        return;
-      }
-
-      setDialog({
-        contentText: tAttendance("confirm"),
-        onConfirm: async () => {
-          try {
-            await fetcher(`${base}/${id}/cancel`, { method: "PATCH" });
-
-            enqueueSnackbar(
-              tAttendance("schedule.shiftCancelled", { name: employeeName }),
-              { variant: "success" },
-            );
-            mutate();
-          } catch (error) {
-            enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
-              variant: "error",
-            });
-          }
-        },
-        open: true,
-        title: tAttendance("cancelShift"),
-      });
-    },
-    [base, mutate, organizationSlug, setDialog, tAttendance],
-  );
+  const handleCancelShift = useCancelShift(organizationSlug, mutate);
 
   const handleReviewExtraWork = useCallback(
     (shift: AttendanceShift, status: "approved" | "rejected") =>
@@ -628,51 +578,59 @@ const Shifts = ({
 
   return (
     <>
-      {(canCreate || canReviewExtraWork) && (
-        <ToolbarStack direction="row">
-          {canReviewExtraWork && (
-            <Chip
-              color={unreviewedOvertime ? "primary" : "default"}
-              label={tAttendance("shifts.unreviewedOvertime")}
-              onClick={handleToggleUnreviewedOvertime}
-              variant={unreviewedOvertime ? "filled" : "outlined"}
-            />
-          )}
-          {canReviewExtraWork && hasExtraWork && (
-            <>
-              <Button
-                color="error"
-                disabled={!selectedRows.length}
-                onClick={() => handleBatchReviewExtraWork("rejected")}
-                size="small"
-              >
-                {tAttendance("shifts.actions.rejectSelectedExtraWork", {
-                  count: selectedRows.length,
-                })}
-              </Button>
-              <Button
-                disabled={!selectedRows.length}
-                onClick={() => handleBatchReviewExtraWork("approved")}
-                size="small"
-              >
-                {tAttendance("shifts.actions.approveSelectedExtraWork", {
-                  count: selectedRows.length,
-                })}
-              </Button>
-            </>
-          )}
-          {canCreate && (
+      <ToolbarStack direction="row">
+        <Chip
+          color={shiftFilter === "incompleteAttendance" ? "primary" : "default"}
+          label={tAttendance("shifts.incompleteAttendance")}
+          onClick={() => handleToggleShiftFilter("incompleteAttendance")}
+          variant={
+            shiftFilter === "incompleteAttendance" ? "filled" : "outlined"
+          }
+        />
+        {canReviewExtraWork && (
+          <Chip
+            color={shiftFilter === "unreviewedOvertime" ? "primary" : "default"}
+            label={tAttendance("shifts.unreviewedOvertime")}
+            onClick={() => handleToggleShiftFilter("unreviewedOvertime")}
+            variant={
+              shiftFilter === "unreviewedOvertime" ? "filled" : "outlined"
+            }
+          />
+        )}
+        {canReviewExtraWork && hasExtraWork && (
+          <>
             <Button
-              onClick={handleCreateShift}
+              color="error"
+              disabled={!selectedRows.length}
+              onClick={() => handleBatchReviewExtraWork("rejected")}
               size="small"
-              startIcon={<Add />}
-              variant="contained"
             >
-              {tAttendance("shifts.actions.create")}
+              {tAttendance("shifts.actions.rejectSelectedExtraWork", {
+                count: selectedRows.length,
+              })}
             </Button>
-          )}
-        </ToolbarStack>
-      )}
+            <Button
+              disabled={!selectedRows.length}
+              onClick={() => handleBatchReviewExtraWork("approved")}
+              size="small"
+            >
+              {tAttendance("shifts.actions.approveSelectedExtraWork", {
+                count: selectedRows.length,
+              })}
+            </Button>
+          </>
+        )}
+        {canCreate && (
+          <Button
+            onClick={handleCreateShift}
+            size="small"
+            startIcon={<Add />}
+            variant="contained"
+          >
+            {tAttendance("shifts.actions.create")}
+          </Button>
+        )}
+      </ToolbarStack>
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}

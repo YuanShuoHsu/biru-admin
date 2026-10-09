@@ -284,13 +284,17 @@ export const getAttendanceEmployees = cache(
   },
 );
 
+export type AttendanceShiftFilter =
+  | "incompleteAttendance"
+  | "unreviewedOvertime";
+
 export const getAttendanceShifts = cache(
   async (
     organizationSlug: string,
     scope: AttendanceScope,
     query: GridQuery<AttendanceShiftFilterField, AttendanceShiftSortField> = {},
     init?: RequestInit,
-    unreviewedOvertime = false,
+    shiftFilter?: AttendanceShiftFilter,
   ) => {
     const { data: shifts, total } = await getGrid<
       AttendanceShift,
@@ -300,7 +304,7 @@ export const getAttendanceShifts = cache(
       attendancePath(organizationSlug, scope, "shifts"),
       query,
       init,
-      unreviewedOvertime ? { unreviewedOvertime: "true" } : undefined,
+      shiftFilter ? { [shiftFilter]: "true" } : undefined,
     );
 
     return { shifts, total };
