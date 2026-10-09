@@ -18,6 +18,9 @@
   "birthDate": {
     "required": "Select the birth date."
   },
+  "cancelReason": {
+    "required": "Cancellation reason is required."
+  },
   "carrierNum": {
     "certificate": {
       "invalid": "Certificate is not valid."

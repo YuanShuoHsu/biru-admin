@@ -11,6 +11,7 @@ import useSWR from "swr";
 import CopyWeekDialog from "./CopyWeekDialog";
 import DayKindDialog from "./DayKindDialog";
 
+import CancelShiftDialog from "../../CancelShiftDialog";
 import EventsDialogContent from "../../EventsDialogContent";
 import ShiftDialog, { type ShiftChange } from "../../ShiftDialog";
 
@@ -190,36 +191,54 @@ const Calendar = ({
     { fallbackData: initialLeaves },
   );
 
-  const resources = useMemo<SchedulerResource[]>(() => {
+  const employeeLabels = useMemo(() => {
     const duplicateNames = new Set(
       employees
         .map(({ name }) => name)
         .filter((name, index, names) => names.indexOf(name) !== index),
     );
 
-    return employees.map(({ email, id, name }, index) => {
-      const hours = shifts
-        .filter(({ employeeId }) => employeeId === id)
-        .reduce(
-          (total, shift) =>
-            total +
-            scheduledHours(shift, range.from.valueOf(), range.to.valueOf()),
-          0,
-        );
-
-      return {
-        eventColor: EMPLOYEE_COLORS[index % EMPLOYEE_COLORS.length],
+    return new Map(
+      employees.map(({ email, id, name }) => [
         id,
-        title: `${
-          duplicateNames.has(name)
-            ? tAttendance("schedule.employeeWithEmail", { email, name })
-            : name
-        } · ${tAttendance("schedule.scheduledHours", {
-          hours: format.number(hours, { maximumFractionDigits: 2 }),
-        })}`,
-      };
-    });
-  }, [employees, format, range, shifts, tAttendance]);
+        duplicateNames.has(name)
+          ? tAttendance("schedule.employeeWithEmail", { email, name })
+          : name,
+      ]),
+    );
+  }, [employees, tAttendance]);
+
+  const employeeLabel = useCallback(
+    (employeeId: string, name: string) =>
+      employeeLabels.get(employeeId) ?? name,
+    [employeeLabels],
+  );
+
+  const resources = useMemo<SchedulerResource[]>(
+    () =>
+      employees.map(({ id, name }, index) => {
+        const hours = shifts
+          .filter(({ employeeId }) => employeeId === id)
+          .reduce(
+            (total, shift) =>
+              total +
+              scheduledHours(shift, range.from.valueOf(), range.to.valueOf()),
+            0,
+          );
+
+        return {
+          eventColor: EMPLOYEE_COLORS[index % EMPLOYEE_COLORS.length],
+          id,
+          title: `${employeeLabel(id, name)} · ${tAttendance(
+            "schedule.scheduledHours",
+            {
+              hours: format.number(hours, { maximumFractionDigits: 2 }),
+            },
+          )}`,
+        };
+      }),
+    [employeeLabel, employees, format, range, shifts, tAttendance],
+  );
 
   const breaks = useMemo(() => {
     const patterns = new Map<string, [number, number][]>();
@@ -277,7 +296,7 @@ const Calendar = ({
             readOnly: true,
             resource: employeeId,
             start: day,
-            title: `${employeeName} · ${holidayName ?? tAttendance(`dayKind.options.${dayKind}`)}`,
+            title: `${employeeLabel(employeeId, employeeName)} · ${holidayName ?? tAttendance(`dayKind.options.${dayKind}`)}`,
           };
         },
       ),
@@ -295,7 +314,7 @@ const Calendar = ({
             start: day,
             title: tAttendance("schedule.pendingSubstitute", {
               holiday: holidayName,
-              name: employeeName,
+              name: employeeLabel(employeeId, employeeName),
             }),
           };
         },
@@ -311,10 +330,13 @@ const Calendar = ({
         readOnly: true,
         resource: leave.employeeId,
         start: leave.startsAt,
-        title: `${leave.employeeName} · ${getStatutoryLeaveName(tAttendance, {
-          name: leave.leaveTypeName ?? "",
-          statutoryKind: leave.leaveTypeStatutoryKind ?? "custom",
-        })}`,
+        title: `${employeeLabel(leave.employeeId, leave.employeeName)} · ${getStatutoryLeaveName(
+          tAttendance,
+          {
+            name: leave.leaveTypeName ?? "",
+            statutoryKind: leave.leaveTypeStatutoryKind ?? "custom",
+          },
+        )}`,
       })),
       ...shifts
         .filter(({ status }) => status !== "cancelled")
@@ -327,14 +349,15 @@ const Calendar = ({
           resource: shift.employeeId,
           start: shift.startsAt,
           title: shift.teamName
-            ? `${shift.employeeName} · ${shift.teamName}`
-            : shift.employeeName,
+            ? `${employeeLabel(shift.employeeId, shift.employeeName)} · ${shift.teamName}`
+            : employeeLabel(shift.employeeId, shift.employeeName),
         })),
     ],
     [
       breaks,
       canUpdate,
       dayKinds,
+      employeeLabel,
       holidays,
       leaves,
       pendingSubstitutes,
@@ -478,6 +501,7 @@ const Calendar = ({
         confirmText: tAttendance("copyWeek.confirm"),
         content: (
           <CopyWeekDialog
+            employeeLabel={employeeLabel}
             from={range.from.format("YYYY-MM-DD")}
             onCopied={handleCopied}
             organizationSlug={organizationSlug}
@@ -487,7 +511,14 @@ const Calendar = ({
         open: true,
         title: tAttendance("schedule.copyWeek"),
       }),
-    [handleCopied, organizationSlug, range, setDialog, tAttendance],
+    [
+      employeeLabel,
+      handleCopied,
+      organizationSlug,
+      range,
+      setDialog,
+      tAttendance,
+    ],
   );
 
   const saveShift = useCallback(
@@ -588,56 +619,84 @@ const Calendar = ({
     [saveShift, tAttendance],
   );
 
-  const cancelShift = useCallback(
-    async (shift: AttendanceShift) => {
+  const handleShiftCancelled = useCallback(
+    (shift: AttendanceShift) => {
       const shiftPath = `${attendancePath(organizationSlug, "org", "shifts")}/${shift.id}`;
 
+      mutate();
+
+      enqueueSnackbar(
+        tAttendance("schedule.shiftCancelled", { name: shift.employeeName }),
+        {
+          action: (key) => (
+            <Button
+              color="inherit"
+              onClick={async () => {
+                closeSnackbar(key);
+
+                try {
+                  await fetcher(`${shiftPath}/restore`, { method: "PATCH" });
+
+                  enqueueSnackbar(
+                    tAttendance("schedule.shiftRestored", {
+                      name: shift.employeeName,
+                    }),
+                    { variant: "success" },
+                  );
+                } catch (error) {
+                  enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+                    variant: "error",
+                  });
+                }
+
+                mutate();
+              }}
+              size="small"
+            >
+              {tAttendance("schedule.undo")}
+            </Button>
+          ),
+          variant: "success",
+        },
+      );
+    },
+    [mutate, organizationSlug, tAttendance],
+  );
+
+  const cancelShift = useCallback(
+    async (shift: AttendanceShift) => {
+      if (!dayjs(shift.startsAt).isAfter(dayjs())) {
+        setDialog({
+          confirmText: tAttendance("cancelShift"),
+          content: (
+            <CancelShiftDialog
+              onCancelled={() => handleShiftCancelled(shift)}
+              organizationSlug={organizationSlug}
+              shift={shift}
+            />
+          ),
+          formId: "attendance-cancel-shift-form",
+          open: true,
+          title: tAttendance("cancelShift"),
+        });
+
+        return;
+      }
+
       try {
-        await fetcher(`${shiftPath}/cancel`, { method: "PATCH" });
-
-        mutate();
-
-        enqueueSnackbar(
-          tAttendance("schedule.shiftCancelled", { name: shift.employeeName }),
-          {
-            action: (key) => (
-              <Button
-                color="inherit"
-                onClick={async () => {
-                  closeSnackbar(key);
-
-                  try {
-                    await fetcher(`${shiftPath}/restore`, { method: "PATCH" });
-
-                    enqueueSnackbar(
-                      tAttendance("schedule.shiftRestored", {
-                        name: shift.employeeName,
-                      }),
-                      { variant: "success" },
-                    );
-                  } catch (error) {
-                    enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
-                      variant: "error",
-                    });
-                  }
-
-                  mutate();
-                }}
-                size="small"
-              >
-                {tAttendance("schedule.undo")}
-              </Button>
-            ),
-            variant: "success",
-          },
+        await fetcher(
+          `${attendancePath(organizationSlug, "org", "shifts")}/${shift.id}/cancel`,
+          { method: "PATCH" },
         );
+
+        handleShiftCancelled(shift);
       } catch (error) {
         enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
           variant: "error",
         });
       }
     },
-    [mutate, organizationSlug, tAttendance],
+    [handleShiftCancelled, organizationSlug, setDialog, tAttendance],
   );
 
   const handleOpenShift = useCallback(

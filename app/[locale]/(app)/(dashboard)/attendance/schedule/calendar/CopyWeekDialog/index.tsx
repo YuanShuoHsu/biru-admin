@@ -46,12 +46,14 @@ interface CopyWeekForm {
 }
 
 interface CopyWeekDialogProps {
+  employeeLabel: (employeeId: string, name: string) => string;
   from: string;
   onCopied: (result: AttendanceCopyWeekResult) => void;
   organizationSlug: string;
 }
 
 const CopyWeekDialog = ({
+  employeeLabel,
   from,
   onCopied,
   organizationSlug,
@@ -166,10 +168,17 @@ const CopyWeekDialog = ({
           </Typography>
           <SkippedList dense disablePadding>
             {preview.skipped.map(
-              ({ employeeName, endsAt, reason, sourceShiftId, startsAt }) => (
+              ({
+                employeeId,
+                employeeName,
+                endsAt,
+                reason,
+                sourceShiftId,
+                startsAt,
+              }) => (
                 <ListItem disableGutters key={`${sourceShiftId}-${startsAt}`}>
                   <ListItemText
-                    primary={`${employeeName} · ${format.dateTime(
+                    primary={`${employeeLabel(employeeId, employeeName)} · ${format.dateTime(
                       new Date(startsAt),
                       "shift",
                       { timeZone: STORE_TIMEZONE },

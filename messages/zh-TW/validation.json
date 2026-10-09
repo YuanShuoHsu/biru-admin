@@ -18,6 +18,9 @@
   "birthDate": {
     "required": "請選擇生日。"
   },
+  "cancelReason": {
+    "required": "取消原因為必填。"
+  },
   "carrierNum": {
     "certificate": {
       "invalid": "自然人憑證格式無效。"

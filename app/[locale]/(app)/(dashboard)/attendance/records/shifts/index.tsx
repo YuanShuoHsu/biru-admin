@@ -1,5 +1,6 @@
 "use client";
 
+import dayjs from "dayjs";
 import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
@@ -9,6 +10,7 @@ import useSWR, { mutate as mutateCache } from "swr";
 import ShiftDialog from "../../ShiftDialog";
 
 import BatchReviewDialog from "../../BatchReviewDialog";
+import CancelShiftDialog from "../../CancelShiftDialog";
 import EventsDialogContent from "../../EventsDialogContent";
 import ReviewDialog from "../reviews/ReviewDialog";
 
@@ -329,7 +331,35 @@ const Shifts = ({
   );
 
   const handleCancelShift = useCallback(
-    ({ employeeName, id }: AttendanceShift) =>
+    (shift: AttendanceShift) => {
+      const { employeeName, id } = shift;
+
+      if (!dayjs(shift.startsAt).isAfter(dayjs())) {
+        setDialog({
+          confirmText: tAttendance("cancelShift"),
+          content: (
+            <CancelShiftDialog
+              onCancelled={() => {
+                enqueueSnackbar(
+                  tAttendance("schedule.shiftCancelled", {
+                    name: employeeName,
+                  }),
+                  { variant: "success" },
+                );
+                mutate();
+              }}
+              organizationSlug={organizationSlug}
+              shift={shift}
+            />
+          ),
+          formId: "attendance-cancel-shift-form",
+          open: true,
+          title: tAttendance("cancelShift"),
+        });
+
+        return;
+      }
+
       setDialog({
         contentText: tAttendance("confirm"),
         onConfirm: async () => {
@@ -349,8 +379,9 @@ const Shifts = ({
         },
         open: true,
         title: tAttendance("cancelShift"),
-      }),
-    [base, mutate, setDialog, tAttendance],
+      });
+    },
+    [base, mutate, organizationSlug, setDialog, tAttendance],
   );
 
   const handleReviewExtraWork = useCallback(

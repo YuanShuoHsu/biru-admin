@@ -3053,6 +3053,7 @@ export interface components {
       | "belowStatutoryPaidPercent"
       | "calendarLeaveInterval"
       | "calendarLeavePayRequired"
+      | "cancelReasonRequired"
       | "cannotReviewOwnDraft"
       | "cannotReviewSelf"
       | "childLaborHoursExceeded"
@@ -3728,6 +3729,10 @@ export interface components {
       dryRun?: boolean;
       startsAt: string;
       endsAt: string;
+    };
+    CancelAttendanceShiftDto: {
+      /** @description 班次已開始後取消時必填，寫入稽核紀錄 */
+      reason?: string;
     };
     CreateAttendancePunchDto: {
       action: components["schemas"]["AttendanceEventAction"];
@@ -8821,7 +8826,11 @@ export interface operations {
       };
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CancelAttendanceShiftDto"];
+      };
+    };
     responses: {
       200: {
         headers: {
@@ -15334,6 +15343,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "belowStatutoryPaidPercent",
   "calendarLeaveInterval",
   "calendarLeavePayRequired",
+  "cancelReasonRequired",
   "cannotReviewOwnDraft",
   "cannotReviewSelf",
   "childLaborHoursExceeded",

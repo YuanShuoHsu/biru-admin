@@ -30,6 +30,7 @@
   "birthDate": "生日",
   "breaks": "休息（分鐘）",
   "cancelLeave": "申請撤假",
+  "cancelReason": "取消原因",
   "cancelShift": "取消班次",
   "caseReference": {
     "label": "事件編號",
@@ -137,6 +138,7 @@
     "birthDateRequired": "請先在員工資料填寫生日，系統才能判斷童工與保險年齡限制。",
     "calendarLeaveInterval": "產假事件期間須為法定天數的完整曆日（起訖 00:00，結束日不含）。",
     "calendarLeavePayRequired": "產假事件須由 owner 設定核定每日全薪，給薪比例由年資自動計算。",
+    "cancelReasonRequired": "已開始的班次須填寫取消原因。",
     "cannotReviewOwnDraft": "不能覆核自己建立的薪資單，請由另一位管理者處理。",
     "cannotReviewSelf": "不能審核自己的申請，請由另一位主管處理。",
     "childLaborHoursExceeded": "未滿 16 歲的員工每日工作不得超過 8 小時、每週不得超過 40 小時。",

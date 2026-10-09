@@ -30,6 +30,7 @@
   "birthDate": "생년월일",
   "breaks": "휴식 시간(분)",
   "cancelLeave": "휴가 취소 신청",
+  "cancelReason": "취소 사유",
   "cancelShift": "근무 취소",
   "caseReference": {
     "label": "사유 번호",
@@ -137,6 +138,7 @@
     "birthDateRequired": "연소자 및 보험 연령 제한을 판단하려면 직원 생년월일을 입력하세요.",
     "calendarLeaveInterval": "법정 일수의 전체 날짜를 입력하세요(자정부터 자정, 종료일 제외).",
     "calendarLeavePayRequired": "출산 휴가 사유는 owner가 확인된 일일 전액 임금을 설정해야 합니다. 지급 비율은 근속 기간으로 자동 계산됩니다.",
+    "cancelReasonRequired": "이미 시작된 근무를 취소하려면 사유가 필요합니다.",
     "cannotReviewOwnDraft": "직접 작성한 급여명세서는 검토할 수 없습니다. 다른 관리자가 검토해야 합니다.",
     "cannotReviewSelf": "본인 신청은 다른 관리자가 검토해야 합니다.",
     "childLaborHoursExceeded": "16세 미만 직원은 하루 8시간, 주 40시간을 초과하여 근무할 수 없습니다.",

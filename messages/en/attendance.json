@@ -30,6 +30,7 @@
   "birthDate": "Birth date",
   "breaks": "Break minutes",
   "cancelLeave": "Request leave cancellation",
+  "cancelReason": "Cancellation reason",
   "cancelShift": "Cancel shift",
   "caseReference": {
     "label": "Event reference",
@@ -137,6 +138,7 @@
     "birthDateRequired": "Enter the employee's birth date so child labor and insurance age limits can be checked.",
     "calendarLeaveInterval": "Use the statutory number of full calendar days, from midnight to midnight (exclusive end).",
     "calendarLeavePayRequired": "An owner must provide the verified full daily wage for maternity leave. The paid percentage is calculated from seniority.",
+    "cancelReasonRequired": "A reason is required to cancel a shift that has already started.",
     "cannotReviewOwnDraft": "You cannot review a payslip you drafted. Another manager must review it.",
     "cannotReviewSelf": "Another manager must review your request.",
     "childLaborHoursExceeded": "Employees under 16 may work at most 8 hours a day and 40 hours a week.",

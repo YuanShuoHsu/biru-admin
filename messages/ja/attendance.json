@@ -30,6 +30,7 @@
   "birthDate": "生年月日",
   "breaks": "休憩（分）",
   "cancelLeave": "休暇取消を申請",
+  "cancelReason": "取消理由",
   "cancelShift": "シフト取消",
   "caseReference": {
     "label": "事由番号",
@@ -137,6 +138,7 @@
     "birthDateRequired": "年少者と保険の年齢制限を判断するため、従業員の生年月日を入力してください。",
     "calendarLeaveInterval": "法定日数を暦日で指定してください（午前0時から午前0時、終了日を含まない）。",
     "calendarLeavePayRequired": "産休の事由は owner が確認済みの日額賃金を設定してください。支給率は勤続期間から自動計算されます。",
+    "cancelReasonRequired": "開始済みのシフトを取り消すには理由が必要です。",
     "cannotReviewOwnDraft": "自分が作成した給与明細は確認できません。別の管理者が確認してください。",
     "cannotReviewSelf": "自分の申請は別の管理者が審査する必要があります。",
     "childLaborHoursExceeded": "16 歳未満の従業員は 1 日 8 時間、1 週 40 時間を超えて働けません。",

@@ -18,6 +18,9 @@
   "birthDate": {
     "required": "生年月日を選択してください。"
   },
+  "cancelReason": {
+    "required": "取消理由は必須です。"
+  },
   "carrierNum": {
     "certificate": {
       "invalid": "自然人証明書が無効です。"

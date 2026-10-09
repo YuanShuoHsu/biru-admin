@@ -18,6 +18,9 @@
   "birthDate": {
     "required": "생년월일을 선택하세요."
   },
+  "cancelReason": {
+    "required": "취소 사유는 필수입니다."
+  },
   "carrierNum": {
     "certificate": {
       "invalid": "자연인 인증서가 유효하지 않습니다."
