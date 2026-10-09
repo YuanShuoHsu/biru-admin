@@ -48,6 +48,13 @@ export const useAuditLogObjectLabels = () => {
           tMenus(`items.offers.inventoryLevel.${key}.label`),
         ]),
       ),
+      items: {
+        amount: tAudit("field.amount"),
+        menuItemName: tAudit("field.menuItem"),
+        orderItemId: tAudit("refundItem.orderItemId"),
+        quantity: tAudit("refundItem.quantity"),
+        unitPrice: tAudit("refundItem.unitPrice"),
+      },
       nutrition: Object.fromEntries(
         NUTRITION_KEYS.map((key) => [key, tAudit(`nutrition.${key}`)]),
       ),

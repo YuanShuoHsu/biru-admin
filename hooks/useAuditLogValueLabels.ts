@@ -5,8 +5,13 @@ import {
   createMenuItemDtoSuitableForDietValues,
   itemAvailabilityValues,
   orderModeValues,
+  orderRefundDtoScopeValues,
   orderResponseDtoPaymentMethodValues,
   orderStatusValues,
+  refundChannelValues,
+  refundInvoiceActionValues,
+  refundReasonCodeValues,
+  refundStatusValues,
   servingTemperatureLevelValues,
   servingTemperatureValues,
   sweetnessLevelValues,
@@ -38,6 +43,12 @@ export const useAuditLogValueLabels = () => {
       availableModes: Object.fromEntries(
         orderModeValues.map((value) => [value, tOrder(`mode.${value}.label`)]),
       ),
+      channel: Object.fromEntries(
+        refundChannelValues.map((value) => [
+          value,
+          tOrders(`detail.refunds.channel.${value}`),
+        ]),
+      ),
       eligibleQuantityUnitCode: Object.fromEntries(
         unitCodeValues.map((value) => [value, tInventory(`units.${value}`)]),
       ),
@@ -45,6 +56,12 @@ export const useAuditLogValueLabels = () => {
         sweetnessLevelValues.map((value) => [
           value,
           tOrder(`menuItem.sweetnessLevels.${value}`),
+        ]),
+      ),
+      invoiceAction: Object.fromEntries(
+        refundInvoiceActionValues.map((value) => [
+          value,
+          tOrders(`detail.refunds.invoiceAction.${value}`),
         ]),
       ),
       locale: Object.fromEntries(
@@ -68,6 +85,12 @@ export const useAuditLogValueLabels = () => {
           tCoupons(`source.${value}`),
         ]),
       ),
+      reasonCode: Object.fromEntries(
+        refundReasonCodeValues.map((value) => [
+          value,
+          tOrders(`detail.refunds.reasonCode.${value}`),
+        ]),
+      ),
       recommendedServingTemperatureLevel: Object.fromEntries(
         servingTemperatureLevelValues.map((value) => [
           value,
@@ -80,18 +103,28 @@ export const useAuditLogValueLabels = () => {
           tOrder(`menuItem.sweetnessLevels.${value}`),
         ]),
       ),
+      scope: Object.fromEntries(
+        orderRefundDtoScopeValues.map((value) => [
+          value,
+          tOrders(`detail.refunds.scope.${value}`),
+        ]),
+      ),
       servingTemperatures: Object.fromEntries(
         servingTemperatureValues.map((value) => [
           value,
           tMenus(`items.servingTemperatures.options.${value}`),
         ]),
       ),
-      status: Object.fromEntries(
-        waitlistTicketStatusValues.map((value) => [
+      status: Object.fromEntries([
+        ...waitlistTicketStatusValues.map((value) => [
           value,
           tWaitlist(`status.${value}`),
         ]),
-      ),
+        ...refundStatusValues.map((value) => [
+          value,
+          tOrders(`detail.refunds.status.${value}`),
+        ]),
+      ]),
       suitableForDiet: Object.fromEntries(
         createMenuItemDtoSuitableForDietValues.map((value) => [
           value,

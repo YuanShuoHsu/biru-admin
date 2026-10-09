@@ -187,6 +187,15 @@ const FIELD_LABEL_KEYS = {
   paymentDate: "field.paymentDate",
   subtotal: "field.subtotal",
   total: "field.total",
+  amount: "field.amount",
+  scope: "field.scope",
+  channel: "field.channel",
+  items: "field.items",
+  reasonCode: "field.reasonCode",
+  reason: "field.reason",
+  invoiceAction: "field.invoiceAction",
+  invoiceError: "field.invoiceError",
+  allowanceNo: "field.allowanceNo",
   amountPerPoint: "field.amountPerPoint",
   pointsValidityYears: "field.pointsValidityYears",
   deliveryLeadTimeMinutes: "field.deliveryLeadTimeMinutes",
@@ -258,6 +267,7 @@ const TIMESTAMP_FIELDS = new Set([
 ]);
 
 const NUMERIC_FIELDS = new Set([
+  "amount",
   "discount",
   "eligibleQuantity",
   "inventoryLevel",
@@ -267,6 +277,7 @@ const NUMERIC_FIELDS = new Set([
   "requiredQuantity",
   "subtotal",
   "total",
+  "unitPrice",
 ]);
 
 const isTranslatableField = (
