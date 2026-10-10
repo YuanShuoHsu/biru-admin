@@ -4356,7 +4356,10 @@ export interface components {
       | "ingredient"
       | "recipe"
       | "organization"
-      | "waitlistTicket";
+      | "waitlistTicket"
+      | "member"
+      | "invitation"
+      | "user";
     /** @enum {string} */
     AuditAction: "create" | "update" | "delete";
     AuditLogResponseDto: {
@@ -15831,6 +15834,9 @@ export const auditResourceValues: ReadonlyArray<
   "recipe",
   "organization",
   "waitlistTicket",
+  "member",
+  "invitation",
+  "user",
 ];
 export const auditActionValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AuditAction"]

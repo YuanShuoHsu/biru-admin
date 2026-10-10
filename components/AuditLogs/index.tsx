@@ -234,6 +234,17 @@ const FIELD_LABEL_KEYS = {
   holdMinutes: "field.holdMinutes",
   graceMinutes: "field.graceMinutes",
   cutoffMinutes: "field.cutoffMinutes",
+  memberRole: "field.memberRole",
+  inviterId: "field.inviter",
+  invitationStatus: "field.invitationStatus",
+  expiresAt: "field.expiresAt",
+  role: "field.role",
+  emailVerified: "field.emailVerified",
+  banned: "field.banned",
+  banReason: "field.banReason",
+  banExpires: "field.banExpires",
+  impersonatedBy: "field.impersonatedBy",
+  passwordReset: "field.passwordReset",
 } as const;
 
 const FIELD_RANK = new Map(
@@ -258,9 +269,11 @@ const isUrlValue = (value: unknown): value is string =>
 const STOCK_FIELDS = new Set(["inventoryLevel", "lowStockThreshold"]);
 
 const TIMESTAMP_FIELDS = new Set([
+  "banExpires",
   "calledAt",
   "confirmedAt",
   "endedAt",
+  "expiresAt",
   "paymentDate",
   "pointsEnabledAt",
   "usedAt",

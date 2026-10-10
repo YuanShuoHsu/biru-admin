@@ -8,8 +8,12 @@ import {
   StyledCardHeader,
 } from "@/components/FormCard";
 
+import { query } from "@/constants/query";
+
 import { Button, Card, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
+
+import { getHref } from "@/utils/href";
 
 const StyledTypography = styled(Typography)({
   fontWeight: "bold",
@@ -17,10 +21,15 @@ const StyledTypography = styled(Typography)({
 
 interface AuthNoAccessProps {
   email: string;
+  redirectTo?: string;
 }
 
-const AuthNoAccess = ({ email }: AuthNoAccessProps) => {
+const AuthNoAccess = ({ email, redirectTo }: AuthNoAccessProps) => {
   const tAuth = useTranslations("auth");
+
+  const signInHref = getHref("/auth/sign-in", {
+    [query.redirectTo]: redirectTo,
+  });
 
   return (
     <Card>
@@ -35,7 +44,7 @@ const AuthNoAccess = ({ email }: AuthNoAccessProps) => {
         <Typography>{tAuth("noAccess.description", { email })}</Typography>
       </StyledCardContent>
       <StyledCardActions disableSpacing>
-        <Button fullWidth href="/auth/sign-in" size="large" variant="contained">
+        <Button fullWidth href={signInHref} size="large" variant="contained">
           {tAuth("addAccount.label")}
         </Button>
         <Button

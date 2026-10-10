@@ -165,7 +165,11 @@ const AuthSignIn = ({ locale, redirectTo, rememberMe }: AuthSignInProps) => {
             !!(await authClient.organization.list()).data?.length;
 
           if (!canAccessAdmin) {
-            router.replace(NO_ADMIN_ACCESS_ROUTE);
+            router.replace(
+              getHref(NO_ADMIN_ACCESS_ROUTE, {
+                [query.redirectTo]: redirectTo,
+              }),
+            );
 
             return;
           }

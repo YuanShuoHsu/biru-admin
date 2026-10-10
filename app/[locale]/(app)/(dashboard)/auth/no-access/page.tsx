@@ -10,6 +10,7 @@ import { getSession } from "@/utils/session";
 
 interface AuthNoAccessPageProps {
   params: Promise<{ locale: Locale }>;
+  searchParams: Promise<{ redirectTo?: string }>;
 }
 
 export const generateMetadata = async ({
@@ -21,16 +22,29 @@ export const generateMetadata = async ({
   return { title: tAuth("noAccess.label") };
 };
 
-const AuthNoAccessPage = async ({ params }: AuthNoAccessPageProps) => {
-  const { locale } = await params;
+const AuthNoAccessPage = async ({
+  params,
+  searchParams,
+}: AuthNoAccessPageProps) => {
+  const [{ locale }, { redirectTo }] = await Promise.all([
+    params,
+    searchParams,
+  ]);
 
   setRequestLocale(locale);
+
+  const safeRedirectTo =
+    typeof redirectTo === "string" && redirectTo.startsWith("/")
+      ? redirectTo
+      : undefined;
 
   const session = await getSession();
 
   if (!session) return redirect({ href: "/auth/sign-in", locale });
 
-  return <AuthNoAccess email={session.user.email} />;
+  return (
+    <AuthNoAccess email={session.user.email} redirectTo={safeRedirectTo} />
+  );
 };
 
 export default AuthNoAccessPage;

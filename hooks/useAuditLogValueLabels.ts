@@ -8,6 +8,7 @@ import {
   orderRefundDtoScopeValues,
   orderResponseDtoPaymentMethodValues,
   orderStatusValues,
+  organizationMemberResponseDtoRoleValues,
   refundChannelValues,
   refundInvoiceActionValues,
   refundReasonCodeValues,
@@ -18,18 +19,29 @@ import {
   sweetnessValues,
   unitCodeValues,
   userCouponSourceValues,
+  userRoleValues,
   waitlistTicketStatusValues,
 } from "@/types/api";
 
 import { routing } from "@/i18n/routing";
 
+const INVITATION_STATUSES = [
+  "pending",
+  "accepted",
+  "rejected",
+  "canceled",
+] as const;
+
 export const useAuditLogValueLabels = () => {
+  const tAdmins = useTranslations("admins");
+  const tAudit = useTranslations("audit");
   const tCommon = useTranslations("common");
   const tCoupons = useTranslations("coupons");
   const tInventory = useTranslations("inventory");
   const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
   const tOrders = useTranslations("orders");
+  const tOrganizations = useTranslations("organizations");
   const tWaitlist = useTranslations("waitlist");
 
   return useMemo<Record<string, Record<string, string>>>(
@@ -58,6 +70,12 @@ export const useAuditLogValueLabels = () => {
           tOrder(`menuItem.sweetnessLevels.${value}`),
         ]),
       ),
+      invitationStatus: Object.fromEntries(
+        INVITATION_STATUSES.map((value) => [
+          value,
+          tAudit(`invitationStatus.${value}`),
+        ]),
+      ),
       invoiceAction: Object.fromEntries(
         refundInvoiceActionValues.map((value) => [
           value,
@@ -66,6 +84,12 @@ export const useAuditLogValueLabels = () => {
       ),
       locale: Object.fromEntries(
         routing.locales.map((value) => [value, tCommon(`locales.${value}`)]),
+      ),
+      memberRole: Object.fromEntries(
+        organizationMemberResponseDtoRoleValues.map((value) => [
+          value,
+          tOrganizations(`members.role.${value}`),
+        ]),
       ),
       mode: Object.fromEntries(
         orderModeValues.map((value) => [value, tOrder(`mode.${value}.label`)]),
@@ -102,6 +126,9 @@ export const useAuditLogValueLabels = () => {
           value,
           tOrder(`menuItem.sweetnessLevels.${value}`),
         ]),
+      ),
+      role: Object.fromEntries(
+        userRoleValues.map((value) => [value, tAdmins(`role.${value}`)]),
       ),
       scope: Object.fromEntries(
         orderRefundDtoScopeValues.map((value) => [
@@ -141,6 +168,17 @@ export const useAuditLogValueLabels = () => {
         unitCodeValues.map((value) => [value, tInventory(`units.${value}`)]),
       ),
     }),
-    [tCommon, tCoupons, tInventory, tMenus, tOrder, tOrders, tWaitlist],
+    [
+      tAdmins,
+      tAudit,
+      tCommon,
+      tCoupons,
+      tInventory,
+      tMenus,
+      tOrder,
+      tOrders,
+      tOrganizations,
+      tWaitlist,
+    ],
   );
 };
