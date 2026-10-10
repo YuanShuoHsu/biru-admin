@@ -20,7 +20,10 @@ import FormCard, {
 import GoogleButton from "@/components/GoogleButton";
 
 import { query } from "@/constants/query";
-import { DEFAULT_AUTHENTICATED_ROUTE } from "@/constants/route";
+import {
+  DEFAULT_AUTHENTICATED_ROUTE,
+  NO_ADMIN_ACCESS_ROUTE,
+} from "@/constants/route";
 import { REMEMBER_ME } from "@/constants/sign-in";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -154,36 +157,24 @@ const AuthSignIn = ({ locale, redirectTo, rememberMe }: AuthSignInProps) => {
           });
         },
         onSuccess: async () => {
-          await authClient.organization.getActiveMemberRole({
-            fetchOptions: {
-              onError: async ({ error: { code } }) => {
-                const { data: session } = await authClient.getSession();
+          const { data: session } = await authClient.getSession();
+          setSession(session);
 
-                if (session) {
-                  await authClient.multiSession.revoke({
-                    sessionToken: session.session.token,
-                  });
-                }
+          const canAccessAdmin =
+            session?.user.role === "admin" ||
+            !!(await authClient.organization.list()).data?.length;
 
-                enqueueSnackbar(getErrorMessage(code, locale), {
-                  variant: "error",
-                });
-              },
-              onSuccess: async () => {
-                const { data: session } = await authClient.getSession();
-                setSession(session);
+          if (!canAccessAdmin) {
+            router.replace(NO_ADMIN_ACCESS_ROUTE);
 
-                enqueueSnackbar(
-                  tAuth("signIn.success", { email: data.email }),
-                  {
-                    variant: "success",
-                  },
-                );
+            return;
+          }
 
-                router.replace(redirectTo || DEFAULT_AUTHENTICATED_ROUTE);
-              },
-            },
+          enqueueSnackbar(tAuth("signIn.success", { email: data.email }), {
+            variant: "success",
           });
+
+          router.replace(redirectTo || DEFAULT_AUTHENTICATED_ROUTE);
         },
       },
     );

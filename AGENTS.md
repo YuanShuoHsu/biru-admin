@@ -38,13 +38,13 @@ The `(dashboard)` layout uses three **parallel route slots** colocated with each
 
 The middleware at `proxy.ts` handles:
 
-- Auth check via `better-auth` session + org membership (`isOrganizationMember`)
+- Auth check via `better-auth` session + platform admin (`user.role === "admin"`) or org membership (`isOrganizationMember`); otherwise redirect to `/auth/no-access` without touching the session (it is shared with the biru storefront). Member account pages (`/auth/{settings,orders,coupons,points}`) only require a session
 - Redirecting authenticated users at `/` to `DEFAULT_AUTHENTICATED_ROUTE` (`/dashboard`, see `constants/route.ts`)
 - Redirecting unauthenticated users to `/auth/sign-in?redirectTo=...`
 - Global maintenance mode (`NEXT_PUBLIC_MAINTENANCE` env flag)
 - Public pages: `/auth/*` (except `/auth/settings`) and `/company/*`
 
-Next.js rewrites (`next.config.ts`) proxy `/api/:path*` → `NEXT_PUBLIC_NEST_URL/api/:path*` for client-side calls. Local API routes under `app/api/` (user) are NOT proxied.
+Next.js rewrites (`next.config.ts`) proxy `/api/:path*` → `NEXT_PUBLIC_NEST_URL/api/:path*` for client-side calls.
 
 ### State Management
 
@@ -70,7 +70,7 @@ MUI v9 with a custom theme (`theme.ts`) supporting light/dark via CSS variables 
 
 ### Auth
 
-`better-auth` client in `lib/auth-client.ts` with `adminClient` and `organizationClient` plugins. Auth flow: sign in → verify org membership → redirect to `DEFAULT_AUTHENTICATED_ROUTE` (`/dashboard`).
+`better-auth` client in `lib/auth-client.ts` with `adminClient` and `organizationClient` plugins. Auth flow: sign in → verify platform admin or org membership (else `/auth/no-access`) → redirect to `DEFAULT_AUTHENTICATED_ROUTE` (`/dashboard`).
 
 ### WebSocket
 

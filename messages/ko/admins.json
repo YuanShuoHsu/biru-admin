@@ -139,7 +139,7 @@
   "label": "사용자",
   "name": "이름",
   "role": {
-    "admin": "관리자",
+    "admin": "플랫폼 관리자",
     "label": "역할",
     "placeholder": "귀하의 역할을 선택해 주세요",
     "user": "일반 사용자"

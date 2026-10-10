@@ -9,8 +9,10 @@ import createMiddleware from "next-intl/middleware";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-import { query } from "./constants/query";
-import { DEFAULT_AUTHENTICATED_ROUTE } from "./constants/route";
+import {
+  DEFAULT_AUTHENTICATED_ROUTE,
+  NO_ADMIN_ACCESS_ROUTE,
+} from "./constants/route";
 
 import { routing } from "./i18n/routing";
 
@@ -30,12 +32,12 @@ const isOrganizationMember = async (request: NextRequest) => {
   const baseURL = process.env.NEXT_PUBLIC_NEST_URL;
 
   try {
-    const member = await fetchWithCookies(
-      `${baseURL}/api/auth/organization/get-active-member-role`,
+    const organizations = await fetchWithCookies(
+      `${baseURL}/api/auth/organization/list`,
       request,
     ).then((res) => (res.ok ? res.json() : null));
 
-    return !!member?.role;
+    return Array.isArray(organizations) && organizations.length > 0;
   } catch {
     return false;
   }
@@ -69,14 +71,14 @@ export const proxy = async (request: NextRequest) => {
 
   const isRootPage = pathname === `/${locale}`;
   const isAuthPage = pathname.startsWith(`/${locale}/auth/`);
-  const isProtectedAuthPage = [
+  const isAccountPage = [
     `/${locale}/auth/coupons`,
     `/${locale}/auth/orders`,
     `/${locale}/auth/points`,
     `/${locale}/auth/settings`,
   ].some((prefix) => pathname.startsWith(prefix));
   const isCompanyPage = pathname.startsWith(`/${locale}/company`);
-  const isPublicPage = (isAuthPage && !isProtectedAuthPage) || isCompanyPage;
+  const isPublicPage = (isAuthPage && !isAccountPage) || isCompanyPage;
 
   const redirectToSignIn = () => {
     const redirectTo =
@@ -100,22 +102,14 @@ export const proxy = async (request: NextRequest) => {
     );
   }
 
-  if (session && !isPublicPage) {
-    const isAuthorized = await isOrganizationMember(request);
+  if (session && !isPublicPage && !isAccountPage) {
+    const canAccessAdmin =
+      session.user.role === "admin" || (await isOrganizationMember(request));
 
-    if (!isAuthorized) {
-      const oauthProvider = request.nextUrl.searchParams.get(query.oauth);
-      const signInUrl = redirectToSignIn();
-      if (oauthProvider)
-        signInUrl.searchParams.set("error", "NO_ACTIVE_ORGANIZATION");
-
-      const redirectRes = NextResponse.redirect(signInUrl);
-      redirectRes.cookies.delete("better-auth.session_token");
-      redirectRes.cookies.delete(
-        `better-auth.session_token_multi-${session.session.token.toLowerCase()}`,
+    if (!canAccessAdmin) {
+      return NextResponse.redirect(
+        new URL(`/${locale}${NO_ADMIN_ACCESS_ROUTE}`, request.url),
       );
-
-      return redirectRes;
     }
   }
 

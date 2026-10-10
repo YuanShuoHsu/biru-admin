@@ -139,7 +139,7 @@
   "label": "Users",
   "name": "Name",
   "role": {
-    "admin": "Admin",
+    "admin": "Platform Admin",
     "label": "Role",
     "placeholder": "Please select your role",
     "user": "User"

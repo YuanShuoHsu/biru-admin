@@ -33,12 +33,13 @@ const useNavItems = (): NavItem[][] => {
   const navItem = useRoutes();
 
   const isAdmin = session?.user?.role === "admin";
+  const canAccessAdmin = isAdmin || !!defaultOrganizationSlug;
 
   const inventoryChildren = navChildren["/inventory"];
   const attendanceChildren = navChildren["/attendance"];
 
   return [
-    [navItem("/dashboard")],
+    ...(canAccessAdmin ? [[navItem("/dashboard")]] : []),
     ...(defaultOrganizationSlug
       ? [
           [
@@ -60,13 +61,17 @@ const useNavItems = (): NavItem[][] => {
           ],
         ]
       : []),
-    [
-      ...(isAdmin || defaultOrganizationSlug ? [navItem("/coupons")] : []),
-      navItem("/organizations"),
-      ...(isAdmin || hasRolePermission(memberRole, { auditLog: ["read"] })
-        ? [navItem("/audit-logs")]
-        : []),
-    ],
+    ...(canAccessAdmin
+      ? [
+          [
+            navItem("/coupons"),
+            navItem("/organizations"),
+            ...(isAdmin || hasRolePermission(memberRole, { auditLog: ["read"] })
+              ? [navItem("/audit-logs")]
+              : []),
+          ],
+        ]
+      : []),
     ...(isAdmin ? [[navItem("/banners"), navItem("/admins")]] : []),
     [
       { ...navItem("/auth"), children: navChildren["/auth"] },

@@ -465,7 +465,15 @@ const Admins = ({
                   `${pathname}?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`,
                 );
 
-                router.replace(DEFAULT_AUTHENTICATED_ROUTE);
+                const canAccessAdmin =
+                  data?.user.role === "admin" ||
+                  !!(await authClient.organization.list()).data?.length;
+
+                router.replace(
+                  canAccessAdmin
+                    ? DEFAULT_AUTHENTICATED_ROUTE
+                    : "/auth/settings/account",
+                );
               },
             },
           );
