@@ -31,6 +31,7 @@ import {
   AssignmentReturn,
   Badge,
   BeachAccess,
+  Block,
   Business,
   CalendarMonth,
   Category,
@@ -706,6 +707,12 @@ const routes: Route[] = [
         icon: HelpOutlined,
         label: "auth.forgotPassword.label",
         segment: "forgot-password",
+      },
+      {
+        icon: Block,
+        label: "auth.noAccess.label",
+        query: ["redirectTo"],
+        segment: "no-access",
       },
       {
         icon: ReceiptLong,
