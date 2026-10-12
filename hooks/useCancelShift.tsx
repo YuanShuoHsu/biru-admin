@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { closeSnackbar, enqueueSnackbar } from "notistack";
 import { useCallback } from "react";
 
-import { Button } from "@mui/material";
+import { Button, DialogContentText } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -99,10 +99,15 @@ export const useCancelShift = (
     (shift: AttendanceShift, rule: AttendanceErrorCode, reason?: string) =>
       setDialog({
         confirmText: tAttendance("cancelShift"),
-        content: null,
-        contentText: tAttendance("cancelShiftIrreversible", {
-          reason: tAttendance(`errors.${rule}`),
-        }),
+        content: (
+          <DialogContentText>
+            {tAttendance.rich("cancelShiftIrreversible", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name: shift.employeeName,
+              reason: tAttendance(`errors.${rule}`),
+            })}
+          </DialogContentText>
+        ),
         formId: undefined,
         onConfirm: async () => {
           try {

@@ -190,7 +190,7 @@ const AdminWaitlist = ({
         <DialogContentText>
           {tWaitlist.rich(`actions.${label}Confirm`, {
             bold: (chunks) => <strong>{chunks}</strong>,
-            name: ticket.name,
+            name: ticket.name ?? "",
             ticketNumber: ticket.ticketNumber,
           })}
         </DialogContentText>

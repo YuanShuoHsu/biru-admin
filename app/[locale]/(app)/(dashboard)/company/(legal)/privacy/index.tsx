@@ -68,7 +68,7 @@ interface PrivacyContent {
 const privacyByLocale: Record<Locale, PrivacyContent> = {
   [LocaleEnum.ZhTW]: {
     title: "Biru Coffee 隱私權政策",
-    lastUpdated: "最近更新：2024/09/01",
+    lastUpdated: "最近更新：2026/10/11",
     intro:
       "我們重視您的個人資料保護。本政策說明我們如何蒐集、使用、保護及分享您的資料，適用於您使用 Biru Coffee 的線上服務與相關功能。",
     tocTitle: "本頁目錄",
@@ -82,6 +82,7 @@ const privacyByLocale: Record<Locale, PrivacyContent> = {
           "交易資訊：訂單內容、取餐資訊、退款/取消紀錄等；付款相關敏感資訊由可信的第三方金流處理。",
           "裝置與使用紀錄：例如瀏覽行為、IP 位址、裝置識別資訊、錯誤/效能紀錄。",
           "偏好與互動：行銷偏好、客服對話或回饋內容（若您主動提供）。",
+          "候位資訊：現場或線上候位時提供的姓名、電話與 Email。",
         ],
       },
       {
@@ -116,6 +117,13 @@ const privacyByLocale: Record<Locale, PrivacyContent> = {
         paragraphs: [
           "我們採取合理的技術與組織措施保護資料（例如存取控制、加密、稽核與監控）。",
           "我們會在達成目的所需期間或法定保存期間內保存資料，期滿後刪除或匿名化。請您也妥善保管登入資訊與裝置安全。",
+        ],
+        bullets: [
+          "自行刪除帳號：帳號與個人資料會立即刪除，無法還原。",
+          "由我們移除的帳號或其他資料：保留 30 天以便誤刪時復原，期滿後永久刪除。",
+          "候位資料：候位結束 30 天後刪除姓名、電話與 Email，僅保留不含個人資料的統計。",
+          "交易紀錄：訂單、發票等依法須保存的紀錄，會依法定期間保存，帳號刪除後亦同。",
+          "備份：系統備份最長保存 30 天，期滿後自動清除；已刪除的資料最遲會在刪除後 30 天內從備份中消失。",
         ],
       },
       {
@@ -157,7 +165,7 @@ const privacyByLocale: Record<Locale, PrivacyContent> = {
   },
   [LocaleEnum.ZhCN]: {
     title: "Biru Coffee 隐私权政策",
-    lastUpdated: "最近更新：2024/09/01",
+    lastUpdated: "最近更新：2026/10/11",
     intro:
       "我们重视您的个人信息保护。本政策说明我们如何收集、使用、保护和分享您的信息，适用于您使用 Biru Coffee 的在线服务与相关功能。",
     tocTitle: "本页目录",
@@ -171,6 +179,7 @@ const privacyByLocale: Record<Locale, PrivacyContent> = {
           "交易信息：订单内容、取餐信息、退款/取消记录等；支付敏感信息由可信第三方支付处理。",
           "设备与使用记录：例如浏览行为、IP 地址、设备标识、错误/性能记录。",
           "偏好与互动：营销偏好、客服对话或反馈内容（如您主动提供）。",
+          "候位信息：现场或线上候位时提供的姓名、电话与邮箱。",
         ],
       },
       {
@@ -205,6 +214,13 @@ const privacyByLocale: Record<Locale, PrivacyContent> = {
         paragraphs: [
           "我们采取合理的技术与组织措施保护信息（例如访问控制、加密、审计与监控）。",
           "我们将在实现目的所需期间或法定保存期内保存信息，期满后删除或匿名化。也请妥善保管您的登录信息与设备安全。",
+        ],
+        bullets: [
+          "自行删除账号：账号与个人信息会立即删除，无法恢复。",
+          "由我们移除的账号或其他数据：保留 30 天以便误删时恢复，期满后永久删除。",
+          "候位数据：候位结束 30 天后删除姓名、电话与邮箱，仅保留不含个人信息的统计。",
+          "交易记录：订单、发票等依法须保存的记录，会按法定期限保存，账号删除后亦同。",
+          "备份：系统备份最长保存 30 天，期满后自动清除；已删除的数据最迟会在删除后 30 天内从备份中消失。",
         ],
       },
       {
@@ -246,7 +262,7 @@ const privacyByLocale: Record<Locale, PrivacyContent> = {
   },
   [LocaleEnum.En]: {
     title: "Biru Coffee Privacy Policy",
-    lastUpdated: "Last updated: 2024/09/01",
+    lastUpdated: "Last updated: 2026/10/11",
     intro:
       "We value your privacy. This policy explains how we collect, use, protect, and share your information when you use Biru Coffee’s online services and related features.",
     tocTitle: "On this page",
@@ -260,6 +276,7 @@ const privacyByLocale: Record<Locale, PrivacyContent> = {
           "Transaction data: order details, pickup info, and cancellation/refund records. Sensitive payment data is handled by trusted third-party payment providers.",
           "Device and usage data: browsing activity, IP address, device identifiers, and error/performance logs.",
           "Preferences and interactions: marketing preferences and customer support conversations you share with us.",
+          "Waitlist information: the name, phone number, and email you provide when joining a waitlist in store or online.",
         ],
       },
       {
@@ -294,6 +311,13 @@ const privacyByLocale: Record<Locale, PrivacyContent> = {
         paragraphs: [
           "We apply reasonable technical and organizational measures to protect information (such as access controls, encryption, and monitoring).",
           "We retain information for as long as needed for the purposes described above or as required by law, then delete or anonymize it. Please also safeguard your credentials and devices.",
+        ],
+        bullets: [
+          "Deleting your own account: your account and personal data are deleted immediately and can't be restored.",
+          "Accounts or other data removed by us: kept for 30 days so mistakes can be undone, then permanently deleted.",
+          "Waitlist data: names, phone numbers, and emails are deleted 30 days after the waitlist ends; only statistics without personal data are kept.",
+          "Transaction records: orders, invoices, and other records we're required by law to keep are retained for the statutory period, even after an account is deleted.",
+          "Backups: system backups are kept for at most 30 days and then removed automatically, so deleted data disappears from backups within 30 days of deletion.",
         ],
       },
       {
@@ -335,7 +359,7 @@ const privacyByLocale: Record<Locale, PrivacyContent> = {
   },
   [LocaleEnum.Ja]: {
     title: "Biru Coffee プライバシーポリシー",
-    lastUpdated: "最終更新日：2024/09/01",
+    lastUpdated: "最終更新日：2026/10/11",
     intro:
       "当社はお客様のプライバシーを重視しています。本ポリシーは、Biru Coffee のオンラインサービス利用時における情報の収集、利用、保護、共有について説明します。",
     tocTitle: "目次",
@@ -349,6 +373,7 @@ const privacyByLocale: Record<Locale, PrivacyContent> = {
           "取引情報：注文内容、受け取り情報、キャンセル/返金履歴。決済の機微情報は第三者決済事業者が処理します。",
           "端末・利用情報：閲覧履歴、IP、端末識別子、エラー/性能ログ等。",
           "設定・やり取り：マーケティング設定、サポートへのお問い合わせ内容（提供された場合）。",
+          "順番待ち情報：店頭またはオンラインで順番待ちをする際にご提供いただく氏名、電話番号、メールアドレス。",
         ],
       },
       {
@@ -383,6 +408,13 @@ const privacyByLocale: Record<Locale, PrivacyContent> = {
         paragraphs: [
           "アクセス制御、暗号化、監視など合理的な対策により情報を保護します。",
           "目的達成または法定保存期間満了後に削除または匿名化します。ログイン情報はご自身でも適切に管理してください。",
+        ],
+        bullets: [
+          "ご自身でアカウントを削除した場合：アカウントと個人データは直ちに削除され、復元できません。",
+          "当社が削除したアカウントやその他のデータ：誤削除に備えて 30 日間保管し、その後完全に削除します。",
+          "順番待ちデータ：順番待ち終了から 30 日後に氏名、電話番号、メールアドレスを削除し、個人データを含まない統計のみを保持します。",
+          "取引記録：注文や請求書など法律で保存が義務付けられた記録は、アカウント削除後も法定期間保管します。",
+          "バックアップ：システムバックアップの保管期間は最長 30 日で、期限後に自動で削除されます。削除したデータは、遅くとも削除から 30 日以内にバックアップからも消去されます。",
         ],
       },
       {
@@ -424,7 +456,7 @@ const privacyByLocale: Record<Locale, PrivacyContent> = {
   },
   [LocaleEnum.Ko]: {
     title: "Biru Coffee 개인정보 처리방침",
-    lastUpdated: "최종 업데이트: 2024/09/01",
+    lastUpdated: "최종 업데이트: 2026/10/11",
     intro:
       "당사는 고객의 개인정보 보호를 중시합니다. 본 방침은 Biru Coffee 온라인 서비스를 이용할 때 정보의 수집, 이용, 보호, 공유 방법을 설명합니다.",
     tocTitle: "목차",
@@ -438,6 +470,7 @@ const privacyByLocale: Record<Locale, PrivacyContent> = {
           "거래 정보: 주문 내용, 픽업 정보, 취소/환불 기록. 결제 관련 민감 정보는 신뢰할 수 있는 결제 대행사가 처리합니다.",
           "기기 및 이용 기록: 브라우징 활동, IP, 기기 식별자, 오류/성능 로그 등.",
           "선호 및 상호작용: 마케팅 선호도, 고객지원 문의 내용(제공 시).",
+          "대기 정보: 매장 또는 온라인 대기 등록 시 제공하신 이름, 전화번호, 이메일.",
         ],
       },
       {
@@ -472,6 +505,13 @@ const privacyByLocale: Record<Locale, PrivacyContent> = {
         paragraphs: [
           "접근 통제, 암호화, 모니터링 등 합리적인 기술·조직적 조치를 통해 정보를 보호합니다.",
           "목적 달성 또는 법정 보관 기간 만료 시 삭제 또는 익명화합니다. 로그인 정보는 고객님께서도 안전하게 관리해 주세요.",
+        ],
+        bullets: [
+          "직접 계정을 삭제한 경우: 계정과 개인 데이터가 즉시 삭제되며 복원할 수 없습니다.",
+          "당사가 삭제한 계정 또는 기타 데이터: 실수로 삭제된 경우를 대비해 30일간 보관한 후 영구 삭제합니다.",
+          "대기 데이터: 대기 종료 30일 후 이름, 전화번호, 이메일을 삭제하고 개인 데이터가 없는 통계만 보관합니다.",
+          "거래 기록: 주문, 영수증 등 법적으로 보관해야 하는 기록은 계정 삭제 후에도 법정 기간 동안 보관합니다.",
+          "백업: 시스템 백업은 최대 30일간 보관된 후 자동으로 삭제되며, 삭제된 데이터는 늦어도 삭제 후 30일 이내에 백업에서도 사라집니다.",
         ],
       },
       {

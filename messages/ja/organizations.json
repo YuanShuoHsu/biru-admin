@@ -1,13 +1,19 @@
 {
   "actions": {
+    "closeOrganization": {
+      "title": "営業終了",
+      "confirm": "<bold>{name}</bold> の営業を終了しますか？店舗一覧から非表示になり、お客様は注文や順番待ちができなくなり、スタッフはデータの閲覧のみ可能になります。後からプラットフォーム管理者が営業を再開できます。",
+      "success": "{name} の営業を終了しました"
+    },
     "createOrganization": {
       "success": "{name} の作成に成功しました",
       "title": "組織を追加"
     },
     "deleteOrganization": {
-      "confirm": "<bold>{name}</bold> を削除しますか？全メンバーとデータが完全に削除されます。",
+      "confirm": "<bold>{name}</bold> を削除してもよろしいですか？メンバー、メニュー、在庫などのデータも削除されます。30 日以内であればプラットフォーム管理者が復元できます。",
       "success": "{name} の削除に成功しました",
-      "title": "組織を削除"
+      "title": "組織を削除",
+      "typeName": "確認のため店舗名「{name}」を入力してください"
     },
     "label": "操作",
     "leaveOrganization": {
@@ -17,6 +23,11 @@
     },
     "manageOrganization": {
       "title": "管理"
+    },
+    "reopenOrganization": {
+      "title": "営業再開",
+      "confirm": "<bold>{name}</bold> の営業を再開しますか？店舗一覧に再び表示され、注文、順番待ち、管理操作が再開されます。",
+      "success": "{name} の営業を再開しました"
     },
     "updateOrganization": {
       "success": "{name} の更新に成功しました",
@@ -216,6 +227,11 @@
   "slug": {
     "label": "スラッグ",
     "placeholder": "あなたのスラッグを入力してください"
+  },
+  "status": {
+    "label": "ステータス",
+    "open": "営業中",
+    "closed": "営業終了"
   },
   "teams": {
     "actions": {

@@ -20,7 +20,7 @@ import { useRouter } from "@/i18n/navigation";
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Logout } from "@mui/icons-material";
-import { Button, Divider, Typography } from "@mui/material";
+import { Button, DialogContentText, Divider, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
@@ -93,9 +93,14 @@ const Accounts = () => {
 
   const handleRevokeCurrentDialog = () =>
     setDialog({
-      contentText: tAuth("signOut.confirmContentText", {
-        email: session?.user.email || "",
-      }),
+      content: (
+        <DialogContentText>
+          {tAuth.rich("signOut.confirmContentText", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            email: session?.user.email || "",
+          })}
+        </DialogContentText>
+      ),
       onConfirm: handleRevokeCurrentConfirm,
       open: true,
       title: tAuth("signOut.label"),

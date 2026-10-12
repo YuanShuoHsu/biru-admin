@@ -18,6 +18,7 @@ import { renderEmptyableCell } from "@/components/EmptyCell";
 
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
+import { PAYROLL_STATUS_COLORS } from "@/constants/attendance";
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -35,7 +36,7 @@ import { useMonthFormat } from "@/hooks/useMonthFormat";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { Add, Check, ErrorOutlined, Publish } from "@mui/icons-material";
-import { Button, IconButton, Stack, Tooltip } from "@mui/material";
+import { Button, Chip, IconButton, Stack, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
@@ -506,6 +507,13 @@ const Payroll = ({
         field: "status",
         filterOperators: enumFilterOperators,
         headerName: tAttendance("status.label"),
+        renderCell: ({ row }: GridRenderCellParams<PayrollStatement>) => (
+          <Chip
+            color={PAYROLL_STATUS_COLORS[row.status]}
+            label={tAttendance(`payrollStatus.options.${row.status}`)}
+            size="small"
+          />
+        ),
         type: "singleSelect",
         valueOptions: enumOptions.status,
       },

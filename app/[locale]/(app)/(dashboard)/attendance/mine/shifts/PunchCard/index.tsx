@@ -5,6 +5,8 @@ import { enqueueSnackbar } from "notistack";
 import { type ReactNode, useRef, useState } from "react";
 import useSWR from "swr";
 
+import { SHIFT_STATE_COLORS } from "@/constants/attendance";
+
 import { Login, Logout, Pause, PlayArrow } from "@mui/icons-material";
 import {
   Button,
@@ -168,7 +170,7 @@ const PunchCard = ({
                     )}
                   </Typography>
                   <Chip
-                    color={shift.state === "working" ? "success" : "default"}
+                    color={SHIFT_STATE_COLORS[shift.state]}
                     label={tAttendance(`state.options.${shift.state}`)}
                     size="small"
                   />

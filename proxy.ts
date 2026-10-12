@@ -79,6 +79,7 @@ export const proxy = async (request: NextRequest) => {
   ].some((prefix) => pathname.startsWith(prefix));
   const isCompanyPage = pathname.startsWith(`/${locale}/company`);
   const isPublicPage = (isAuthPage && !isAccountPage) || isCompanyPage;
+  const isNoAccessPage = pathname === `/${locale}${NO_ADMIN_ACCESS_ROUTE}`;
 
   const needsAdminAccess = !isPublicPage && !isAccountPage;
 
@@ -93,7 +94,7 @@ export const proxy = async (request: NextRequest) => {
 
   const [{ data: session }, isMember] = await Promise.all([
     authClient.getSession({ fetchOptions: { headers: request.headers } }),
-    needsAdminAccess ? isOrganizationMember(request) : false,
+    needsAdminAccess || isNoAccessPage ? isOrganizationMember(request) : false,
   ]);
 
   if (!session && !isPublicPage) return redirectWithReturn("/auth/sign-in");
@@ -104,10 +105,18 @@ export const proxy = async (request: NextRequest) => {
     );
   }
 
-  if (session && needsAdminAccess) {
-    const canAccessAdmin = session.user.role === "admin" || isMember;
+  const canAccessAdmin = session?.user.role === "admin" || isMember;
 
-    if (!canAccessAdmin) return redirectWithReturn(NO_ADMIN_ACCESS_ROUTE);
+  if (session && needsAdminAccess && !canAccessAdmin)
+    return redirectWithReturn(NO_ADMIN_ACCESS_ROUTE);
+
+  if (session && isNoAccessPage && canAccessAdmin) {
+    const redirectTo = request.nextUrl.searchParams.get("redirectTo");
+    const route = redirectTo?.startsWith("/")
+      ? redirectTo
+      : DEFAULT_AUTHENTICATED_ROUTE;
+
+    return NextResponse.redirect(new URL(`/${locale}${route}`, request.url));
   }
 
   return response;

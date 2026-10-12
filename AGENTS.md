@@ -42,7 +42,7 @@ The middleware at `proxy.ts` handles:
 - Redirecting authenticated users at `/` to `DEFAULT_AUTHENTICATED_ROUTE` (`/dashboard`, see `constants/route.ts`)
 - Redirecting unauthenticated users to `/auth/sign-in?redirectTo=...`
 - Global maintenance mode (`NEXT_PUBLIC_MAINTENANCE` env flag)
-- Public pages: `/auth/*` (except `/auth/settings`) and `/company/*`
+- Public pages: `/auth/*` (except the member account pages) and `/company/*`
 
 Next.js rewrites (`next.config.ts`) proxy `/api/:path*` → `NEXT_PUBLIC_NEST_URL/api/:path*` for client-side calls.
 

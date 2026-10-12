@@ -45,6 +45,7 @@ const StyledAvatar = styled(Avatar, {
   const mainColor = theme.palette[color].main;
 
   return {
+    alignSelf: "center",
     width: theme.spacing(7),
     height: theme.spacing(7),
     backgroundColor: alpha(mainColor, 0.2),

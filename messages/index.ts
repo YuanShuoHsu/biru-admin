@@ -9,6 +9,7 @@ import company from "./en/company.json";
 import coupons from "./en/coupons.json";
 import dashboard from "./en/dashboard.json";
 import dataGrid from "./en/dataGrid.json";
+import deletedRecords from "./en/deletedRecords.json";
 import dialog from "./en/dialog.json";
 import inventory from "./en/inventory.json";
 import maintenance from "./en/maintenance.json";
@@ -33,6 +34,7 @@ const messages = {
   coupons,
   dashboard,
   dataGrid,
+  deletedRecords,
   dialog,
   inventory,
   maintenance,

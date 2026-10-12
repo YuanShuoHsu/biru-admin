@@ -27,7 +27,13 @@ import {
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { Add, ChildCare, Delete, Edit } from "@mui/icons-material";
-import { Button, IconButton, Stack, Tooltip } from "@mui/material";
+import {
+  Button,
+  DialogContentText,
+  IconButton,
+  Stack,
+  Tooltip,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
@@ -296,7 +302,18 @@ const LeaveCases = ({
       leaveTypeStatutoryKind,
     }: AttendanceLeaveCase) =>
       setDialog({
-        contentText: tAttendance("confirm"),
+        content: (
+          <DialogContentText>
+            {tAttendance.rich("leaveCases.deleteConfirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              leaveType: getStatutoryLeaveName(tAttendance, {
+                name: leaveTypeName,
+                statutoryKind: leaveTypeStatutoryKind,
+              }),
+              name: employeeName,
+            })}
+          </DialogContentText>
+        ),
         onConfirm: async () => {
           try {
             await fetcher(

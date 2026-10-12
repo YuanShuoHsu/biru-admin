@@ -13,6 +13,7 @@ import SubstituteDialog from "./SubstituteDialog";
 
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
+import { HOLIDAY_SUBSTITUTE_STATUS_COLORS } from "@/constants/attendance";
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { getPageSizeOptions } from "@/constants/pagination";
 import { STORE_TIMEZONE } from "@/constants/timezone";
@@ -24,7 +25,7 @@ import {
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { EventAvailable, EventBusy } from "@mui/icons-material";
-import { Chip, IconButton, Tooltip } from "@mui/material";
+import { Chip, DialogContentText, IconButton, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
@@ -254,7 +255,15 @@ const HolidaySubstitutes = ({
       substituteId,
     }: AttendanceHolidaySubstitute) =>
       setDialog({
-        contentText: tAttendance("confirm"),
+        content: (
+          <DialogContentText>
+            {tAttendance.rich("holidaySubstitutes.revokeConfirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              holiday: holidayName,
+              name: employeeName,
+            })}
+          </DialogContentText>
+        ),
         onConfirm: async () => {
           try {
             await fetcher(
@@ -369,13 +378,7 @@ const HolidaySubstitutes = ({
 
           return (
             <Chip
-              color={
-                status === "pending"
-                  ? "warning"
-                  : status === "notOwed"
-                    ? "error"
-                    : "default"
-              }
+              color={HOLIDAY_SUBSTITUTE_STATUS_COLORS[status]}
               label={tAttendance(`holidaySubstitutes.status.${status}`)}
               size="small"
             />

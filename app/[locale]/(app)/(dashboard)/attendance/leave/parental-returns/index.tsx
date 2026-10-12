@@ -10,6 +10,7 @@ import ReturnReviewDialog from "./ReturnReviewDialog";
 
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
+import { REQUEST_STATUS_COLORS } from "@/constants/attendance";
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -26,7 +27,13 @@ import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 import { attendanceReviewCountsKey } from "@/hooks/useAttendanceReviewCounts";
 
 import { Check, Close, Undo } from "@mui/icons-material";
-import { Chip, IconButton, Stack, Tooltip } from "@mui/material";
+import {
+  Chip,
+  DialogContentText,
+  IconButton,
+  Stack,
+  Tooltip,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
@@ -261,7 +268,14 @@ const ParentalReturns = ({
   const handleWithdraw = useCallback(
     ({ employeeName, id }: AttendanceParentalReturn) =>
       setDialog({
-        contentText: tAttendance("confirm"),
+        content: (
+          <DialogContentText>
+            {tAttendance.rich("parentalReturns.withdrawConfirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name: employeeName,
+            })}
+          </DialogContentText>
+        ),
         onConfirm: async () => {
           try {
             await fetcher(`${base}/${id}/withdraw`, { method: "PATCH" });
@@ -403,13 +417,7 @@ const ParentalReturns = ({
           row,
         }: GridRenderCellParams<AttendanceParentalReturn>) => (
           <Chip
-            color={
-              row.status === "approved"
-                ? "success"
-                : row.status === "rejected"
-                  ? "error"
-                  : "default"
-            }
+            color={REQUEST_STATUS_COLORS[row.status]}
             label={tAttendance(`status.options.${row.status}`)}
             size="small"
           />

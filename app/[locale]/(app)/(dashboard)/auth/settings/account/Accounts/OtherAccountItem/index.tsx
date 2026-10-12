@@ -14,7 +14,7 @@ import { swrKeys } from "@/constants/swr";
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { MoreHoriz } from "@mui/icons-material";
-import { IconButton, Menu, MenuItem } from "@mui/material";
+import { DialogContentText, IconButton, Menu, MenuItem } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
@@ -83,9 +83,14 @@ const OtherAccountItem = ({ token, user }: OtherAccountItemProps) => {
     handleClose();
 
     setDialog({
-      contentText: tAuth("settings.accounts.setActive.confirmContentText", {
-        email: user.email,
-      }),
+      content: (
+        <DialogContentText>
+          {tAuth.rich("settings.accounts.setActive.confirmContentText", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            email: user.email,
+          })}
+        </DialogContentText>
+      ),
       onConfirm: handleSetActiveConfirm,
       open: true,
       title: tAuth("settings.accounts.setActive.label"),
@@ -120,9 +125,14 @@ const OtherAccountItem = ({ token, user }: OtherAccountItemProps) => {
     handleClose();
 
     setDialog({
-      contentText: tAuth("settings.accounts.revoke.confirmContentText", {
-        email: user.email,
-      }),
+      content: (
+        <DialogContentText>
+          {tAuth.rich("settings.accounts.revoke.confirmContentText", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            email: user.email,
+          })}
+        </DialogContentText>
+      ),
       onConfirm: handleRevokeConfirm,
       open: true,
       title: tAuth("settings.accounts.revoke.label"),

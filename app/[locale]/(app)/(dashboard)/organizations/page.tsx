@@ -48,6 +48,7 @@ const OrganizationsPage = async ({ params }: OrganizationsPageProps) => {
 
   return (
     <Organizations
+      canCloseOrganization={session?.user.role === "admin"}
       canCreateOrganization={session?.user.role === "admin"}
       organizationPermissions={organizationPermissions}
       rows={organizations}

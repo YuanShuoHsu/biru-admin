@@ -25,14 +25,15 @@
     "deferralReason": "協定内容",
     "saved": "{name} の{year}年の{leaveType}残数を設定しました",
     "deferralRecorded": "{name} の繰越協定を記録しました",
-    "deferralRevoked": "{name} の繰越協定を取り消しました"
+    "deferralRevoked": "{name} の繰越協定を取り消しました",
+    "revokeDeferralConfirm": "<bold>{name}</bold> の繰越協定を取り消しますか？"
   },
   "birthDate": "生年月日",
   "breaks": "休憩（分）",
   "cancelLeave": "休暇取消を申請",
   "cancelReason": "取消理由",
   "cancelShift": "シフト取消",
-  "cancelShiftIrreversible": "このシフトは現在のシフト規則を満たしていないため、取り消すと元に戻せません：{reason}",
+  "cancelShiftIrreversible": "<bold>{name}</bold> のシフトは現在のシフト規則を満たしていないため、取り消すと元に戻せません：{reason}",
   "caseReference": {
     "label": "事由番号",
     "helper": "同じ事由には同じ番号"
@@ -49,7 +50,6 @@
   "childLabel": "子どもの呼称",
   "childReference": "確認済みの子ども識別番号",
   "clockedTime": "実際の打刻",
-  "confirm": "この操作を実行しますか？",
   "dayKind": {
     "label": "日区分",
     "options": {
@@ -371,6 +371,7 @@
     "created": "{name} の{leaveType}の休暇枠を追加しました",
     "updated": "{name} の{leaveType}の休暇枠を更新しました",
     "deleted": "{name} の{leaveType}の休暇枠を削除しました",
+    "deleteConfirm": "<bold>{name}</bold> の{leaveType}の休暇枠を削除しますか？",
     "childAssigned": "{name} の{leaveType}に子どもを関連付けました"
   },
   "leaveRequestHint": {
@@ -494,7 +495,8 @@
     "label": "復職申請",
     "approved": "{name} の早期復職申請を承認しました",
     "rejected": "{name} の早期復職申請を却下しました",
-    "withdrawn": "{name} の早期復職申請を取り下げました"
+    "withdrawn": "{name} の早期復職申請を取り下げました",
+    "withdrawConfirm": "<bold>{name}</bold> の早期復職申請を取り下げますか？"
   },
   "payroll": {
     "label": "給与",
@@ -832,7 +834,8 @@
       "notOwed": "不要・取消してください"
     },
     "substituteDesignated": "{name} の{holiday}の振替休日を指定しました",
-    "substituteRevoked": "{name} の{holiday}の振替休日を取り消しました"
+    "substituteRevoked": "{name} の{holiday}の振替休日を取り消しました",
+    "revokeConfirm": "<bold>{name}</bold> の{holiday}の振替休日を取り消しますか？"
   },
   "restWeekdays": {
     "regularLeaveWeekday": "固定の法定休日",

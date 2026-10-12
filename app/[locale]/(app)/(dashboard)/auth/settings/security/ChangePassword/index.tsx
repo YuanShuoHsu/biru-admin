@@ -29,6 +29,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   Button,
   CardActions,
+  DialogContentText,
   IconButton,
   InputAdornment,
   TextField,
@@ -141,9 +142,14 @@ const ChangePassword = () => {
 
   const onSubmit = handleSubmit((values: ChangePasswordForm) => {
     setDialog({
-      contentText: tAuth("settings.password.confirmContentText", {
-        email: session?.user.email || "",
-      }),
+      content: (
+        <DialogContentText>
+          {tAuth.rich("settings.password.confirmContentText", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            email: session?.user.email || "",
+          })}
+        </DialogContentText>
+      ),
       onConfirm: () => changePassword(values),
       open: true,
       title: tAuth("settings.password.changeLabel"),

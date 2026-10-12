@@ -25,14 +25,15 @@
     "deferralReason": "Agreement details",
     "saved": "Set {name}'s {leaveType} balance for {year}",
     "deferralRecorded": "Recorded {name}'s deferral agreement",
-    "deferralRevoked": "Revoked {name}'s deferral agreement"
+    "deferralRevoked": "Revoked {name}'s deferral agreement",
+    "revokeDeferralConfirm": "Revoke <bold>{name}</bold>'s deferral agreement?"
   },
   "birthDate": "Birth date",
   "breaks": "Break minutes",
   "cancelLeave": "Request leave cancellation",
   "cancelReason": "Cancellation reason",
   "cancelShift": "Cancel shift",
-  "cancelShiftIrreversible": "This shift no longer passes scheduling rules, so it cannot be restored once cancelled: {reason}",
+  "cancelShiftIrreversible": "<bold>{name}</bold>'s shift no longer passes scheduling rules, so it cannot be restored once cancelled: {reason}",
   "caseReference": {
     "label": "Event reference",
     "helper": "Reuse for the same event"
@@ -49,7 +50,6 @@
   "childLabel": "Child label",
   "childReference": "Verified child reference",
   "clockedTime": "Clocked",
-  "confirm": "Confirm this action?",
   "dayKind": {
     "label": "Day classification",
     "options": {
@@ -371,6 +371,7 @@
     "created": "Added {name}'s {leaveType} allowance",
     "updated": "Updated {name}'s {leaveType} allowance",
     "deleted": "Deleted {name}'s {leaveType} allowance",
+    "deleteConfirm": "Delete <bold>{name}</bold>'s {leaveType} allowance?",
     "childAssigned": "Assigned the child for {name}'s {leaveType}"
   },
   "leaveRequestHint": {
@@ -494,7 +495,8 @@
     "label": "Return requests",
     "approved": "Approved {name}'s early return request",
     "rejected": "Rejected {name}'s early return request",
-    "withdrawn": "Withdrew {name}'s early return request"
+    "withdrawn": "Withdrew {name}'s early return request",
+    "withdrawConfirm": "Withdraw <bold>{name}</bold>'s early return request?"
   },
   "payroll": {
     "label": "Payroll",
@@ -832,7 +834,8 @@
       "notOwed": "Not required, revoke"
     },
     "substituteDesignated": "Set {name}'s substitute day for {holiday}",
-    "substituteRevoked": "Revoked {name}'s substitute day for {holiday}"
+    "substituteRevoked": "Revoked {name}'s substitute day for {holiday}",
+    "revokeConfirm": "Revoke <bold>{name}</bold>'s substitute day for {holiday}?"
   },
   "restWeekdays": {
     "regularLeaveWeekday": "Fixed regular leave day",

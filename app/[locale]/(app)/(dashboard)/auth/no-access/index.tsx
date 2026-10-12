@@ -41,7 +41,12 @@ const AuthNoAccess = ({ email, redirectTo }: AuthNoAccessProps) => {
         }
       />
       <StyledCardContent>
-        <Typography>{tAuth("noAccess.description", { email })}</Typography>
+        <Typography>
+          {tAuth.rich("noAccess.description", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            email,
+          })}
+        </Typography>
       </StyledCardContent>
       <StyledCardActions disableSpacing>
         <Button fullWidth href={signInHref} size="large" variant="contained">

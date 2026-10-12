@@ -90,9 +90,12 @@ const SetUserPasswordDialogContent = ({
           },
           onRequest: () => setDialog({ confirmLoading: true }),
           onSuccess: () => {
-            enqueueSnackbar(tAdmins("actions.setUserPassword.success"), {
-              variant: "success",
-            });
+            enqueueSnackbar(
+              tAdmins("actions.setUserPassword.success", { email: user.email }),
+              {
+                variant: "success",
+              },
+            );
 
             closeDialog();
           },

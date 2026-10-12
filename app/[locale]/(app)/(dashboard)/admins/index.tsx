@@ -15,7 +15,7 @@ import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 
 import BanUserDialogContent from "./BanUserDialogContent";
 import CreateUserDialogContent from "./CreateUserDialogContent";
@@ -44,6 +44,8 @@ import {
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
+
+import { swrKeys } from "@/constants/swr";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -216,6 +218,8 @@ const Admins = ({
   const pathname = usePathname();
 
   const router = useRouter();
+
+  const { mutate } = useSWRConfig();
 
   const tAdmins = useTranslations("admins");
   const tCommon = useTranslations("common");
@@ -414,7 +418,7 @@ const Admins = ({
                 enqueueSnackbar(message, { variant: "error" });
               },
               onSuccess: () => {
-                const message = tAdmins("actions.unbanUser.success");
+                const message = tAdmins("actions.unbanUser.success", { email });
                 enqueueSnackbar(message, { variant: "success" });
 
                 mutateAdmins();
@@ -505,10 +509,13 @@ const Admins = ({
                 enqueueSnackbar(message, { variant: "error" });
               },
               onSuccess: () => {
-                const message = tAdmins("actions.removeUser.success");
+                const message = tAdmins("actions.removeUser.success", {
+                  email,
+                });
                 enqueueSnackbar(message, { variant: "success" });
 
                 mutateAdmins();
+                mutate(swrKeys.deviceSessions);
               },
             },
           );
@@ -517,7 +524,7 @@ const Admins = ({
         title: tAdmins("actions.removeUser.title"),
       });
     },
-    [locale, mutateAdmins, setDialog, tAdmins],
+    [locale, mutate, mutateAdmins, setDialog, tAdmins],
   );
 
   const columns = useMemo<GridColDef[]>(

@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { useSWRConfig } from "swr";
 
 import {
   BAN_EXPIRES_OPTIONS,
@@ -15,6 +16,8 @@ import {
 import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import { swrKeys } from "@/constants/swr";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -33,6 +36,8 @@ const BanUserDialogContent = ({
   mutateAdmins,
   user,
 }: BanUserDialogContentProps) => {
+  const { mutate } = useSWRConfig();
+
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
@@ -71,12 +76,15 @@ const BanUserDialogContent = ({
           },
           onRequest: () => setDialog({ confirmLoading: true }),
           onSuccess: () => {
-            const message = tAdmins("actions.banUser.success");
+            const message = tAdmins("actions.banUser.success", {
+              email: user.email,
+            });
             enqueueSnackbar(message, { variant: "success" });
 
             closeDialog();
 
             mutateAdmins();
+            mutate(swrKeys.deviceSessions);
           },
         },
       );

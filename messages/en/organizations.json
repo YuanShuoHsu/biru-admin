@@ -1,13 +1,19 @@
 {
   "actions": {
+    "closeOrganization": {
+      "title": "Close store",
+      "confirm": "Close <bold>{name}</bold>? It will be removed from the store list, customers won't be able to order or join the waitlist, and staff will only be able to view data. A platform admin can reopen it later.",
+      "success": "{name} closed"
+    },
     "createOrganization": {
       "success": "{name} created successfully",
       "title": "Add organization"
     },
     "deleteOrganization": {
-      "confirm": "Are you sure you want to delete <bold>{name}</bold>? All members and data will be permanently removed.",
+      "confirm": "Are you sure you want to delete <bold>{name}</bold>? Its members, menus, inventory, and other data will be deleted too. A platform admin can restore it within 30 days.",
       "success": "{name} deleted successfully",
-      "title": "Delete organization"
+      "title": "Delete organization",
+      "typeName": "Type \"{name}\" to confirm"
     },
     "label": "Actions",
     "leaveOrganization": {
@@ -17,6 +23,11 @@
     },
     "manageOrganization": {
       "title": "Manage"
+    },
+    "reopenOrganization": {
+      "title": "Reopen store",
+      "confirm": "Reopen <bold>{name}</bold>? It will be listed again, and ordering, waitlist, and admin actions will resume.",
+      "success": "{name} reopened"
     },
     "updateOrganization": {
       "success": "{name} updated successfully",
@@ -216,6 +227,11 @@
   "slug": {
     "label": "Slug",
     "placeholder": "Please enter your slug"
+  },
+  "status": {
+    "label": "Status",
+    "open": "Open",
+    "closed": "Closed"
   },
   "teams": {
     "actions": {

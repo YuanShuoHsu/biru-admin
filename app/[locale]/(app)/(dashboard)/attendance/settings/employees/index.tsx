@@ -12,6 +12,7 @@ import EmployeeDialog from "./EmployeeDialog";
 
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
+import { EMPLOYEE_STATUS_COLORS } from "@/constants/attendance";
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -49,7 +50,6 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type {
   AttendanceEmployeeFilterField,
   AttendanceEmployeeSortField,
-  AttendanceEmployeeStatus,
   AttendanceEmploymentType,
   AttendanceLegalStatus,
   AttendanceLegalStatusObligation,
@@ -79,16 +79,6 @@ const StyledIconButton = styled(IconButton, {
 })<{ visible: boolean }>(({ visible }) => ({
   visibility: visible ? "visible" : "hidden",
 }));
-
-const STATUS_COLORS: Record<
-  AttendanceEmployeeStatus,
-  "default" | "info" | "success" | "warning"
-> = {
-  unconfigured: "warning",
-  upcoming: "info",
-  active: "success",
-  terminated: "default",
-};
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -512,7 +502,7 @@ const Employees = ({
           row: { status },
         }: GridRenderCellParams<AttendanceMember>) => (
           <Chip
-            color={STATUS_COLORS[status]}
+            color={EMPLOYEE_STATUS_COLORS[status]}
             label={tAttendance(`employeeStatus.options.${status}`)}
             size="small"
             variant="outlined"

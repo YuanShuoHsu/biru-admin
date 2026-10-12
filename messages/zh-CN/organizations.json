@@ -1,13 +1,19 @@
 {
   "actions": {
+    "closeOrganization": {
+      "title": "停业",
+      "confirm": "确定要让 <bold>{name}</bold> 停业吗？门店会从前台列表下架，顾客无法点餐与候位，店员只能查看数据。之后可由平台管理员复业。",
+      "success": "{name} 已停业"
+    },
     "createOrganization": {
       "success": "成功新增组织 {name}",
       "title": "新增组织"
     },
     "deleteOrganization": {
-      "confirm": "确定要删除 <bold>{name}</bold> 吗？所有成员和数据将被永久删除，且无法撤销。",
+      "confirm": "确定要删除 <bold>{name}</bold> 吗？成员、菜单、库存等数据会一并删除，30 天内可由平台管理员还原。",
       "success": "成功删除组织 {name}",
-      "title": "删除组织"
+      "title": "删除组织",
+      "typeName": "请输入店名“{name}”以确认"
     },
     "label": "操作",
     "leaveOrganization": {
@@ -17,6 +23,11 @@
     },
     "manageOrganization": {
       "title": "管理"
+    },
+    "reopenOrganization": {
+      "title": "复业",
+      "confirm": "确定要让 <bold>{name}</bold> 复业吗？门店会重新上架，并恢复点餐、候位与后台操作。",
+      "success": "{name} 已复业"
     },
     "updateOrganization": {
       "success": "成功更新组织 {name}",
@@ -216,6 +227,11 @@
   "slug": {
     "label": "标识符",
     "placeholder": "请输入您的标识符"
+  },
+  "status": {
+    "label": "状态",
+    "open": "营业中",
+    "closed": "已停业"
   },
   "teams": {
     "actions": {

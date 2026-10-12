@@ -19,7 +19,7 @@
         "label": "封禁原因",
         "placeholder": "请输入您的封禁原因"
       },
-      "success": "已封禁用户",
+      "success": "已封禁 {email}",
       "title": "封禁用户"
     },
     "createUser": {
@@ -39,7 +39,7 @@
         "label": "密码",
         "placeholder": "请输入您的密码"
       },
-      "success": "用户已创建",
+      "success": "已创建用户 {email}",
       "title": "添加用户"
     },
     "impersonateUser": {
@@ -50,11 +50,11 @@
     "label": "操作",
     "removeUser": {
       "confirm": "确定要删除 <bold>{email}</bold> 吗？此操作无法撤销。",
-      "success": "已删除用户",
+      "success": "已删除用户 {email}",
       "title": "删除用户"
     },
     "setRole": {
-      "success": "角色已更新",
+      "success": "已更新 {email} 的角色",
       "title": "更改角色"
     },
     "setUserPassword": {
@@ -66,7 +66,7 @@
         "label": "新密码",
         "placeholder": "请输入您的新密码"
       },
-      "success": "密码已更新",
+      "success": "已更新 {email} 的密码",
       "title": "设置密码"
     },
     "stopImpersonating": {
@@ -77,7 +77,7 @@
     },
     "unbanUser": {
       "confirm": "确定要解除封禁 <bold>{email}</bold> 吗？解除后该用户将可重新登录。",
-      "success": "已解除封禁",
+      "success": "已解除封禁 {email}",
       "title": "解除封禁"
     },
     "updateUser": {
@@ -102,12 +102,12 @@
     "actions": {
       "label": "操作",
       "revokeUserSession": {
-        "success": "已撤销 session",
+        "success": "已撤销 {email} 的一个 session",
         "title": "撤销 Session"
       },
       "revokeUserSessions": {
         "confirm": "确定要撤销 <bold>{email}</bold> 的所有 session 吗？",
-        "success": "已撤销所有 session",
+        "success": "已撤销 {email} 的所有 session",
         "title": "撤销全部"
       }
     },

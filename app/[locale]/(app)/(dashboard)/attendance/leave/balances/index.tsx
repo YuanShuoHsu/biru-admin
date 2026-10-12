@@ -27,7 +27,7 @@ import {
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { Add, EventRepeat, EventBusy } from "@mui/icons-material";
-import { Button, IconButton, Tooltip } from "@mui/material";
+import { Button, DialogContentText, IconButton, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
@@ -277,7 +277,14 @@ const Balances = ({
   const handleRevokeDeferral = useCallback(
     ({ annualLeaveDeferralId, employeeName }: AttendanceLeaveBalance) =>
       setDialog({
-        contentText: tAttendance("confirm"),
+        content: (
+          <DialogContentText>
+            {tAttendance.rich("balances.revokeDeferralConfirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name: employeeName,
+            })}
+          </DialogContentText>
+        ),
         onConfirm: async () => {
           try {
             await fetcher(

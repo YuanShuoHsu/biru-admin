@@ -1,3 +1,4 @@
+import { DialogContentText } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import { useSWRConfig } from "swr";
@@ -57,9 +58,14 @@ export const useLogout = () => {
 
   const handleLogoutDialog = () =>
     setDialog({
-      contentText: tAuth("signOut.confirmContentText", {
-        email: session?.user.email || "",
-      }),
+      content: (
+        <DialogContentText>
+          {tAuth.rich("signOut.confirmContentText", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            email: session?.user.email || "",
+          })}
+        </DialogContentText>
+      ),
       onConfirm: handleLogout,
       open: true,
       title: tAuth("signOut.label"),

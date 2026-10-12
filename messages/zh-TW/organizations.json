@@ -1,13 +1,19 @@
 {
   "actions": {
+    "closeOrganization": {
+      "title": "停業",
+      "confirm": "確定要讓 <bold>{name}</bold> 停業嗎？門市會從前台列表下架，顧客無法點餐與候位，店員只能查看資料。之後可由平台管理員復業。",
+      "success": "{name} 已停業"
+    },
     "createOrganization": {
       "success": "成功新增組織 {name}",
       "title": "新增組織"
     },
     "deleteOrganization": {
-      "confirm": "確定要刪除 <bold>{name}</bold> 嗎？此操作將同時移除所有成員與資料，且無法復原。",
+      "confirm": "確定要刪除 <bold>{name}</bold> 嗎？成員、菜單、庫存等資料會一併刪除，30 天內可由平台管理員還原。",
       "success": "成功刪除組織 {name}",
-      "title": "刪除組織"
+      "title": "刪除組織",
+      "typeName": "請輸入店名「{name}」以確認"
     },
     "label": "操作",
     "leaveOrganization": {
@@ -17,6 +23,11 @@
     },
     "manageOrganization": {
       "title": "管理"
+    },
+    "reopenOrganization": {
+      "title": "復業",
+      "confirm": "確定要讓 <bold>{name}</bold> 復業嗎？門市會重新上架，並恢復點餐、候位與後台操作。",
+      "success": "{name} 已復業"
     },
     "updateOrganization": {
       "success": "成功更新組織 {name}",
@@ -216,6 +227,11 @@
   "slug": {
     "label": "識別碼",
     "placeholder": "請輸入您的識別碼"
+  },
+  "status": {
+    "label": "狀態",
+    "open": "營業中",
+    "closed": "已停業"
   },
   "teams": {
     "actions": {

@@ -15,6 +15,7 @@ import LeaveDialog from "../requests/LeaveDialog";
 
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
+import { SHIFT_STATE_COLORS } from "@/constants/attendance";
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -408,7 +409,7 @@ const Mine = ({
         renderCell: ({ row }: GridRenderCellParams<AttendanceShift>) => (
           <ChipsStack direction="row">
             <Chip
-              color={row.state === "working" ? "success" : "default"}
+              color={SHIFT_STATE_COLORS[row.state]}
               label={tAttendance(`state.options.${row.state}`)}
               size="small"
             />

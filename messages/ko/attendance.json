@@ -25,14 +25,15 @@
     "deferralReason": "합의 내용",
     "saved": "{name}의 {year}년 {leaveType} 잔여량을 설정했습니다",
     "deferralRecorded": "{name}의 이월 합의를 기록했습니다",
-    "deferralRevoked": "{name}의 이월 합의를 철회했습니다"
+    "deferralRevoked": "{name}의 이월 합의를 철회했습니다",
+    "revokeDeferralConfirm": "<bold>{name}</bold>의 이월 합의를 철회할까요?"
   },
   "birthDate": "생년월일",
   "breaks": "휴식 시간(분)",
   "cancelLeave": "휴가 취소 신청",
   "cancelReason": "취소 사유",
   "cancelShift": "근무 취소",
-  "cancelShiftIrreversible": "이 근무는 현재 근무 편성 규칙을 충족하지 않아 취소하면 복원할 수 없습니다: {reason}",
+  "cancelShiftIrreversible": "<bold>{name}</bold>의 근무는 현재 근무 편성 규칙을 충족하지 않아 취소하면 복원할 수 없습니다: {reason}",
   "caseReference": {
     "label": "사유 번호",
     "helper": "같은 사유에 동일 번호 사용"
@@ -49,7 +50,6 @@
   "childLabel": "자녀 표시 이름",
   "childReference": "확인된 자녀 식별 번호",
   "clockedTime": "실제 기록",
-  "confirm": "이 작업을 실행할까요?",
   "dayKind": {
     "label": "일자 유형",
     "options": {
@@ -371,6 +371,7 @@
     "created": "{name}의 {leaveType} 한도를 추가했습니다",
     "updated": "{name}의 {leaveType} 한도를 업데이트했습니다",
     "deleted": "{name}의 {leaveType} 한도를 삭제했습니다",
+    "deleteConfirm": "<bold>{name}</bold>의 {leaveType} 한도를 삭제할까요?",
     "childAssigned": "{name}의 {leaveType}에 자녀를 연결했습니다"
   },
   "leaveRequestHint": {
@@ -494,7 +495,8 @@
     "label": "복직 신청",
     "approved": "{name}의 조기 복직 신청을 승인했습니다",
     "rejected": "{name}의 조기 복직 신청을 반려했습니다",
-    "withdrawn": "{name}의 조기 복직 신청을 철회했습니다"
+    "withdrawn": "{name}의 조기 복직 신청을 철회했습니다",
+    "withdrawConfirm": "<bold>{name}</bold>의 조기 복직 신청을 철회할까요?"
   },
   "payroll": {
     "label": "급여",
@@ -832,7 +834,8 @@
       "notOwed": "필요 없음, 취소하세요"
     },
     "substituteDesignated": "{name}의 {holiday} 대체휴일을 지정했습니다",
-    "substituteRevoked": "{name}의 {holiday} 대체휴일을 취소했습니다"
+    "substituteRevoked": "{name}의 {holiday} 대체휴일을 취소했습니다",
+    "revokeConfirm": "<bold>{name}</bold>의 {holiday} 대체휴일을 취소할까요?"
   },
   "restWeekdays": {
     "regularLeaveWeekday": "고정 주휴일",

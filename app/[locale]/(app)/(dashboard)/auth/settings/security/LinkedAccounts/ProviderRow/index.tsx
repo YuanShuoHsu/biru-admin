@@ -13,7 +13,13 @@ import { StyledListItem, StyledListItemText } from "@/components/FormCard";
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Link as LinkIcon, LinkOff as LinkOffIcon } from "@mui/icons-material";
-import { Avatar, Button, ListItemIcon, styled } from "@mui/material";
+import {
+  Avatar,
+  Button,
+  DialogContentText,
+  ListItemIcon,
+  styled,
+} from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -52,9 +58,14 @@ const ProviderRow = ({ id, Icon, label }: Provider) => {
 
   const handleLinkDialog = () => {
     setDialog({
-      contentText: tAuth("settings.linkedAccounts.confirmLinkContentText", {
-        provider: label,
-      }),
+      content: (
+        <DialogContentText>
+          {tAuth.rich("settings.linkedAccounts.confirmLinkContentText", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            provider: label,
+          })}
+        </DialogContentText>
+      ),
       onConfirm: handleLinkConfirm,
       open: true,
       title: tAuth("settings.linkedAccounts.link"),
@@ -87,9 +98,14 @@ const ProviderRow = ({ id, Icon, label }: Provider) => {
 
   const handleUnlinkDialog = () => {
     setDialog({
-      contentText: tAuth("settings.linkedAccounts.confirmUnlinkContentText", {
-        provider: label,
-      }),
+      content: (
+        <DialogContentText>
+          {tAuth.rich("settings.linkedAccounts.confirmUnlinkContentText", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            provider: label,
+          })}
+        </DialogContentText>
+      ),
       onConfirm: handleUnlinkConfirm,
       open: true,
       title: tAuth("settings.linkedAccounts.unlink"),

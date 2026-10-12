@@ -13,7 +13,7 @@ import FormCard, {
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Button, Typography } from "@mui/material";
+import { Button, DialogContentText, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
@@ -60,9 +60,14 @@ const Danger = () => {
 
   const handleDeleteDialog = () =>
     setDialog({
-      contentText: tAuth("settings.danger.confirmContentText", {
-        email: session?.user.email || "",
-      }),
+      content: (
+        <DialogContentText>
+          {tAuth.rich("settings.danger.confirmContentText", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            email: session?.user.email || "",
+          })}
+        </DialogContentText>
+      ),
       onConfirm: handleDeleteConfirm,
       open: true,
       title: tAuth("settings.danger.title"),

@@ -79,6 +79,7 @@ export const getAuditLogHref = (
     case "member":
     case "invitation":
     case "user":
+    case "team":
       return null;
   }
 };

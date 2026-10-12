@@ -1,0 +1,46 @@
+{
+  "columns": {
+    "actions": "操作",
+    "deletedAt": "削除日時",
+    "deletedBy": "削除者",
+    "organization": "店舗",
+    "related": "関連データ",
+    "resource": "種類",
+    "target": "名前"
+  },
+  "label": "最近削除した項目",
+  "related": "{count, plural, =0 {—} other {ほか # 件}}",
+  "restore": {
+    "title": "復元",
+    "confirm": "<bold>{name}</bold> を復元しますか？{count, plural, =0 {} other {同時に削除された関連データ # 件も復元されます。}}",
+    "success": "{name} を復元しました"
+  },
+  "table": {
+    "attendance_annual_leave_deferral": "年次有給休暇の繰越協定",
+    "attendance_employee": "勤怠従業員",
+    "attendance_holiday_substitute": "祝日振替",
+    "attendance_leave_case": "事由別休暇枠",
+    "attendance_leave_type": "休暇種類",
+    "attendance_shift_type": "シフト区分",
+    "banner": "バナー",
+    "coupon": "クーポン",
+    "ingredient": "食材",
+    "invitation": "メンバー招待",
+    "member": "組織メンバー",
+    "menu_item": "品目",
+    "menu_item_add_on": "追加オプション",
+    "menu_item_modifier_group": "品目オプショングループ",
+    "menu_section": "セクション",
+    "modifier": "オプション",
+    "modifier_group": "オプショングループ",
+    "offer": "品目の価格",
+    "organization": "店舗",
+    "payroll_earning_type": "給与加算項目",
+    "recipe": "レシピ",
+    "recipe_ingredient": "レシピの食材",
+    "supplier": "仕入先",
+    "team": "チーム",
+    "team_member": "チームメンバー",
+    "user": "ユーザーアカウント"
+  }
+}

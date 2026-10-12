@@ -19,7 +19,7 @@
         "label": "停止理由",
         "placeholder": "あなたの停止理由を入力してください"
       },
-      "success": "ユーザーを停止しました",
+      "success": "{email} を利用停止にしました",
       "title": "ユーザーを停止"
     },
     "createUser": {
@@ -39,7 +39,7 @@
         "label": "パスワード",
         "placeholder": "あなたのパスワードを入力してください"
       },
-      "success": "ユーザーを作成しました",
+      "success": "ユーザー {email} を作成しました",
       "title": "ユーザーを追加"
     },
     "impersonateUser": {
@@ -50,11 +50,11 @@
     "label": "操作",
     "removeUser": {
       "confirm": "<bold>{email}</bold> を削除しますか？この操作は取り消せません。",
-      "success": "ユーザーを削除しました",
+      "success": "ユーザー {email} を削除しました",
       "title": "ユーザーを削除"
     },
     "setRole": {
-      "success": "役割を更新しました",
+      "success": "{email} のロールを更新しました",
       "title": "役割を変更"
     },
     "setUserPassword": {
@@ -66,7 +66,7 @@
         "label": "新しいパスワード",
         "placeholder": "あなたの新しいパスワードを入力してください"
       },
-      "success": "パスワードを更新しました",
+      "success": "{email} のパスワードを更新しました",
       "title": "パスワード設定"
     },
     "stopImpersonating": {
@@ -77,7 +77,7 @@
     },
     "unbanUser": {
       "confirm": "<bold>{email}</bold> の停止を解除しますか？解除後はサインインできるようになります。",
-      "success": "停止を解除しました",
+      "success": "{email} の利用停止を解除しました",
       "title": "停止解除"
     },
     "updateUser": {
@@ -102,12 +102,12 @@
     "actions": {
       "label": "操作",
       "revokeUserSession": {
-        "success": "セッションを無効化しました",
+        "success": "{email} のセッションを 1 件無効化しました",
         "title": "セッションを無効化"
       },
       "revokeUserSessions": {
         "confirm": "<bold>{email}</bold> のすべてのセッションを無効化しますか？",
-        "success": "すべてのセッションを無効化しました",
+        "success": "{email} のすべてのセッションを無効化しました",
         "title": "すべて無効化"
       }
     },

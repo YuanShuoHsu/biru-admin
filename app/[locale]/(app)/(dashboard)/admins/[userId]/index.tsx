@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
+import { useSWRConfig } from "swr";
 
 import RevokeUserSessionDialogContent from "./RevokeUserSessionDialogContent";
 
@@ -15,6 +16,8 @@ import { renderEmptyableCell } from "@/components/EmptyCell";
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
 import { useRouter } from "@/i18n/navigation";
+
+import { swrKeys } from "@/constants/swr";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -69,6 +72,8 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
   const { setDialog } = useDialogStore((state) => state);
 
   const router = useRouter();
+
+  const { mutate } = useSWRConfig();
 
   const isCurrentUser = user.id === currentSession?.user?.id;
 
@@ -128,9 +133,13 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
             },
             onSuccess: () => {
               enqueueSnackbar(
-                tUserSessions("actions.revokeUserSessions.success"),
+                tUserSessions("actions.revokeUserSessions.success", {
+                  email: user.email,
+                }),
                 { variant: "success" },
               );
+
+              mutate(swrKeys.deviceSessions);
 
               if (isCurrentUser) {
                 setSession(null);
@@ -162,9 +171,13 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
               },
               onSuccess: () => {
                 enqueueSnackbar(
-                  tUserSessions("actions.revokeUserSession.success"),
+                  tUserSessions("actions.revokeUserSession.success", {
+                    email: user.email,
+                  }),
                   { variant: "success" },
                 );
+
+                mutate(swrKeys.deviceSessions);
 
                 if (
                   isCurrentUser &&
@@ -186,12 +199,14 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
     [
       currentSession?.session.token,
       fetchListUserSessions,
+      mutate,
       isCurrentUser,
       locale,
       router,
       setDialog,
       setSession,
       tUserSessions,
+      user.email,
     ],
   );
 

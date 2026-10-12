@@ -157,7 +157,7 @@ const CreateUserDialogContent = ({
             },
             onRequest: () => setDialog({ confirmLoading: true }),
             onSuccess: () => {
-              const message = tAdmins("actions.createUser.success");
+              const message = tAdmins("actions.createUser.success", { email });
               enqueueSnackbar(message, { variant: "success" });
 
               closeDialog();

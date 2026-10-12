@@ -1,0 +1,46 @@
+{
+  "columns": {
+    "actions": "操作",
+    "deletedAt": "删除时间",
+    "deletedBy": "删除者",
+    "organization": "店家",
+    "related": "相关数据",
+    "resource": "类型",
+    "target": "名称"
+  },
+  "label": "最近删除",
+  "related": "{count, plural, =0 {—} other {另含 # 笔}}",
+  "restore": {
+    "title": "还原",
+    "confirm": "确定要还原 <bold>{name}</bold> 吗？{count, plural, =0 {} other {同一次删除的 # 笔相关数据也会一起还原。}}",
+    "success": "已还原 {name}"
+  },
+  "table": {
+    "attendance_annual_leave_deferral": "特休递延协议",
+    "attendance_employee": "考勤员工",
+    "attendance_holiday_substitute": "国定假日补假",
+    "attendance_leave_case": "事件假额度",
+    "attendance_leave_type": "假别",
+    "attendance_shift_type": "班别",
+    "banner": "轮播图",
+    "coupon": "优惠券",
+    "ingredient": "食材",
+    "invitation": "成员邀请",
+    "member": "组织成员",
+    "menu_item": "品项",
+    "menu_item_add_on": "加购",
+    "menu_item_modifier_group": "品项选项组",
+    "menu_section": "分类",
+    "modifier": "选项",
+    "modifier_group": "选项组",
+    "offer": "品项价格",
+    "organization": "店家",
+    "payroll_earning_type": "薪资加项",
+    "recipe": "食谱",
+    "recipe_ingredient": "食谱食材",
+    "supplier": "供应商",
+    "team": "团队",
+    "team_member": "团队成员",
+    "user": "用户账号"
+  }
+}

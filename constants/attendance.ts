@@ -1,4 +1,12 @@
-import type { PayrollBlocker } from "@/types/attendance";
+import type { ChipProps } from "@mui/material";
+
+import type {
+  AttendanceEmployeeStatus,
+  AttendanceRequest,
+  AttendanceShift,
+  PayrollBlocker,
+  PayrollStatement,
+} from "@/types/attendance";
 
 import type { hasRolePermission } from "@/utils/organizations";
 
@@ -212,4 +220,54 @@ export const PAYROLL_BLOCKER_TARGETS: Record<
   weeklyScheduleRequiresReview: SHIFTS,
   withholdingTableOutdated: null,
   workPermitRequired: EMPLOYEES,
+};
+
+export const EMPLOYEE_STATUS_COLORS: Record<
+  AttendanceEmployeeStatus,
+  ChipProps["color"]
+> = {
+  active: "success",
+  terminated: "default",
+  unconfigured: "warning",
+  upcoming: "info",
+};
+
+export const HOLIDAY_SUBSTITUTE_STATUS_COLORS: Record<
+  "designated" | "notOwed" | "pending",
+  ChipProps["color"]
+> = {
+  designated: "default",
+  notOwed: "error",
+  pending: "warning",
+};
+
+export const PAYROLL_STATUS_COLORS: Record<
+  PayrollStatement["status"],
+  ChipProps["color"]
+> = {
+  draft: "default",
+  published: "success",
+  reviewed: "info",
+};
+
+export const REQUEST_STATUS_COLORS: Record<
+  AttendanceRequest["status"],
+  ChipProps["color"]
+> = {
+  approved: "success",
+  cancellationPending: "default",
+  cancelled: "default",
+  pending: "default",
+  rejected: "error",
+  withdrawn: "default",
+};
+
+export const SHIFT_STATE_COLORS: Record<
+  AttendanceShift["state"],
+  ChipProps["color"]
+> = {
+  completed: "default",
+  resting: "default",
+  scheduled: "default",
+  working: "success",
 };

@@ -1,0 +1,46 @@
+{
+  "columns": {
+    "actions": "작업",
+    "deletedAt": "삭제 시간",
+    "deletedBy": "삭제한 사람",
+    "organization": "매장",
+    "related": "관련 데이터",
+    "resource": "유형",
+    "target": "이름"
+  },
+  "label": "최근 삭제됨",
+  "related": "{count, plural, =0 {—} other {외 #건}}",
+  "restore": {
+    "title": "복원",
+    "confirm": "<bold>{name}</bold>을(를) 복원하시겠습니까? {count, plural, =0 {} other {함께 삭제된 관련 데이터 #건도 복원됩니다.}}",
+    "success": "{name}을(를) 복원했습니다"
+  },
+  "table": {
+    "attendance_annual_leave_deferral": "연차 이월 합의",
+    "attendance_employee": "근태 직원",
+    "attendance_holiday_substitute": "공휴일 대체휴일",
+    "attendance_leave_case": "사유별 휴가 한도",
+    "attendance_leave_type": "휴가 유형",
+    "attendance_shift_type": "근무 유형",
+    "banner": "배너",
+    "coupon": "쿠폰",
+    "ingredient": "식자재",
+    "invitation": "멤버 초대",
+    "member": "조직 멤버",
+    "menu_item": "항목",
+    "menu_item_add_on": "추가 옵션",
+    "menu_item_modifier_group": "항목 옵션 그룹",
+    "menu_section": "섹션",
+    "modifier": "옵션",
+    "modifier_group": "옵션 그룹",
+    "offer": "항목 가격",
+    "organization": "매장",
+    "payroll_earning_type": "급여 가산 항목",
+    "recipe": "레시피",
+    "recipe_ingredient": "레시피 식자재",
+    "supplier": "공급업체",
+    "team": "팀",
+    "team_member": "팀 멤버",
+    "user": "사용자 계정"
+  }
+}

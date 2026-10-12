@@ -77,6 +77,7 @@ import {
   PunchClock,
   ReceiptLong,
   RequestQuote,
+  RestoreFromTrash,
   Scale,
   Schedule,
   Settings,
@@ -649,6 +650,12 @@ const routes: Route[] = [
     label: "admins.label",
     query: ["page", "pageSize"],
     segment: "admins",
+  },
+  {
+    icon: RestoreFromTrash,
+    label: "deletedRecords.label",
+    query: ["page", "pageSize"],
+    segment: "deleted-records",
   },
   {
     icon: ViewInAr,

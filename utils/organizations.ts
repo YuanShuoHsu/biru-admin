@@ -4,7 +4,10 @@ import { fetcher } from "./fetcher";
 
 import { authClient } from "@/lib/auth-client";
 
-import type { OrganizationResponse } from "@/types/organizations";
+import type {
+  OrganizationDeletability,
+  OrganizationResponse,
+} from "@/types/organizations";
 
 export const getOrganization = cache(
   async (slug: OrganizationResponse["slug"]) => {
@@ -65,18 +68,36 @@ export async function getOrganizationPermissions(
     ),
   );
 
+  const canDelete = await Promise.all(
+    organizations.map(async ({ id }, index) => {
+      if (
+        !hasRolePermission(memberRoles[index].data?.role, {
+          organization: ["delete"],
+        })
+      )
+        return false;
+
+      try {
+        const { deletable } = await fetcher<OrganizationDeletability>(
+          `/api/organizations/${id}/deletability`,
+          fetchOptions,
+        );
+
+        return deletable;
+      } catch {
+        return false;
+      }
+    }),
+  );
+
   const permissions: OrganizationPermissions = {};
 
   organizations.forEach(({ id }, index) => {
-    const role = memberRoles[index].data?.role;
-
     permissions[id] = {
-      canUpdateOrganization: hasRolePermission(role, {
+      canUpdateOrganization: hasRolePermission(memberRoles[index].data?.role, {
         organization: ["update"],
       }),
-      canDeleteOrganization: hasRolePermission(role, {
-        organization: ["delete"],
-      }),
+      canDeleteOrganization: canDelete[index],
     };
   });
 

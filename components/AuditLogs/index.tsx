@@ -245,6 +245,9 @@ const FIELD_LABEL_KEYS = {
   banExpires: "field.banExpires",
   impersonatedBy: "field.impersonatedBy",
   passwordReset: "field.passwordReset",
+  revokedSessions: "field.revokedSessions",
+  member: "field.member",
+  closedAt: "field.closedAt",
 } as const;
 
 const FIELD_RANK = new Map(
@@ -271,6 +274,7 @@ const STOCK_FIELDS = new Set(["inventoryLevel", "lowStockThreshold"]);
 const TIMESTAMP_FIELDS = new Set([
   "banExpires",
   "calledAt",
+  "closedAt",
   "confirmedAt",
   "endedAt",
   "expiresAt",

@@ -500,10 +500,10 @@ const OrderDetailDialog = ({
                   </ChipStack>
                 }
               />
-              {!!refund.operatorName && (
+              {(!!refund.operatorName || refund.operatorDeleted) && (
                 <InfoRow
                   label={tOrders("detail.refunds.operator")}
-                  value={refund.operatorName}
+                  value={refund.operatorName ?? tCommon("deletedAccount")}
                 />
               )}
               {!!refund.reasonCode && (

@@ -85,6 +85,7 @@ export const authClient = createAuthClient({
 
             amountPerPoint: { type: "number", required: false },
             pointsEnabledAt: { type: "date", required: false },
+            closedAt: { type: "date", required: false, input: false },
             pointsValidityYears: { type: "number", required: false },
 
             pickupLeadMinutes: { type: "number", required: false },
@@ -164,6 +165,24 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "이미 존재하는 조직입니다",
     [LocaleEnum.ZhCN]: "此组织已存在",
   },
+  ORGANIZATION_CLOSED: {
+    [LocaleEnum.ZhTW]: "此門市已停業，資料僅供查看",
+    [LocaleEnum.En]: "This store is closed. Its data is read-only.",
+    [LocaleEnum.Ja]:
+      "この店舗は営業を終了しているため、データは閲覧のみ可能です",
+    [LocaleEnum.Ko]: "이 매장은 영업을 종료하여 데이터는 조회만 가능합니다",
+    [LocaleEnum.ZhCN]: "此门店已停业，数据仅供查看",
+  },
+  ORGANIZATION_HAS_BUSINESS_RECORDS: {
+    [LocaleEnum.ZhTW]: "此店家已有訂單、出勤或薪資紀錄，依法須保存，無法刪除",
+    [LocaleEnum.En]:
+      "This store has orders, attendance, or payroll records that must be retained by law, so it can't be deleted.",
+    [LocaleEnum.Ja]:
+      "この店舗には法律で保存が義務付けられた注文・勤怠・給与の記録があるため、削除できません",
+    [LocaleEnum.Ko]:
+      "이 매장에는 법적으로 보관해야 하는 주문, 근태 또는 급여 기록이 있어 삭제할 수 없습니다",
+    [LocaleEnum.ZhCN]: "此店家已有订单、考勤或薪资记录，依法须保存，无法删除",
+  },
   ORGANIZATION_SLUG_ALREADY_TAKEN: {
     [LocaleEnum.ZhTW]: "此識別碼已被使用，請換一個",
     [LocaleEnum.En]: "This slug is already taken. Please choose another.",
@@ -199,6 +218,28 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ja]: "先にログインしてください",
     [LocaleEnum.Ko]: "먼저 로그인해 주세요",
     [LocaleEnum.ZhCN]: "请先登录",
+  },
+  USER_HAS_EMPLOYMENT_RECORDS: {
+    [LocaleEnum.ZhTW]: "此帳號有出勤或薪資紀錄，依法須保存，無法刪除",
+    [LocaleEnum.En]:
+      "This account has attendance or payroll records that must be retained by law, so it can't be deleted.",
+    [LocaleEnum.Ja]:
+      "このアカウントには法律で保存が義務付けられた勤怠・給与の記録があるため、削除できません",
+    [LocaleEnum.Ko]:
+      "이 계정에는 법적으로 보관해야 하는 근태 또는 급여 기록이 있어 삭제할 수 없습니다",
+    [LocaleEnum.ZhCN]: "此账号有考勤或薪资记录，依法须保存，无法删除",
+  },
+  USER_IS_SOLE_ORGANIZATION_OWNER: {
+    [LocaleEnum.ZhTW]:
+      "此帳號是店家唯一的擁有者，請先將擁有者身分移轉給其他成員再刪除",
+    [LocaleEnum.En]:
+      "This account is the only owner of a store. Transfer ownership to another member before deleting it.",
+    [LocaleEnum.Ja]:
+      "このアカウントは店舗の唯一のオーナーです。削除する前にオーナー権限を他のメンバーに移してください",
+    [LocaleEnum.Ko]:
+      "이 계정은 매장의 유일한 소유자입니다. 삭제하기 전에 다른 멤버에게 소유권을 이전하세요",
+    [LocaleEnum.ZhCN]:
+      "此账号是店家唯一的拥有者，请先将拥有者身份转移给其他成员再删除",
   },
   USER_IS_ALREADY_A_MEMBER_OF_THIS_ORGANIZATION: {
     [LocaleEnum.ZhTW]: "此用戶已是該組織的成員",

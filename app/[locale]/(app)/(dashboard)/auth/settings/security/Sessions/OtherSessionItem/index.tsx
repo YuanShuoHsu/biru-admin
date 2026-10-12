@@ -10,7 +10,7 @@ import { swrKeys } from "@/constants/swr";
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Close } from "@mui/icons-material";
-import { Button } from "@mui/material";
+import { Button, DialogContentText } from "@mui/material";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -64,9 +64,14 @@ const OtherSessionItem = ({ session }: OtherSessionItemProps) => {
 
   const handleRevokeDialog = () =>
     setDialog({
-      contentText: tAuth("settings.sessions.revoke.confirmContentText", {
-        email: authSession?.user.email || "",
-      }),
+      content: (
+        <DialogContentText>
+          {tAuth.rich("settings.sessions.revoke.confirmContentText", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            email: authSession?.user.email || "",
+          })}
+        </DialogContentText>
+      ),
       onConfirm: handleRevokeConfirm,
       open: true,
       title: tAuth("settings.sessions.revoke.label"),

@@ -11,6 +11,7 @@ import ReviewDialog from "./ReviewDialog";
 
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 
+import { REQUEST_STATUS_COLORS } from "@/constants/attendance";
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -490,13 +491,7 @@ const Reviews = ({
         headerName: tAttendance("status.label"),
         renderCell: ({ row }: GridRenderCellParams<AttendanceRequest>) => (
           <Chip
-            color={
-              row.status === "approved"
-                ? "success"
-                : row.status === "rejected"
-                  ? "error"
-                  : "default"
-            }
+            color={REQUEST_STATUS_COLORS[row.status]}
             label={tAttendance(`status.options.${row.status}`)}
             size="small"
           />

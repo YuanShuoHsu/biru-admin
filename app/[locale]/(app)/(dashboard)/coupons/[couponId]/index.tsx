@@ -111,6 +111,7 @@ const CouponRecipients = ({
 
   const format = useFormatter();
 
+  const tCommon = useTranslations("common");
   const tCoupons = useTranslations("coupons");
 
   const stringFilterOperators = useStringFilterOperators();
@@ -241,11 +242,13 @@ const CouponRecipients = ({
         renderCell: renderEmptyableCell,
         valueGetter: (
           _value: unknown,
-          { grantedByEmail, source }: CouponRecipient,
+          { grantedByDeleted, grantedByEmail, source }: CouponRecipient,
         ) =>
-          source === "granted"
-            ? grantedByEmail || tCoupons("recipients.unknownGranter")
-            : "",
+          source !== "granted"
+            ? ""
+            : grantedByDeleted
+              ? tCommon("deletedAccount")
+              : grantedByEmail || tCoupons("recipients.unknownGranter"),
       },
       {
         field: "createdAt",
@@ -280,6 +283,7 @@ const CouponRecipients = ({
       enumOptions,
       format,
       stringFilterOperators,
+      tCommon,
       tCoupons,
     ],
   );

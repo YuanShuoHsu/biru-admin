@@ -25,6 +25,7 @@ import { authClient, getErrorMessage } from "@/lib/auth-client";
 import { AccountCircle } from "@mui/icons-material";
 import {
   Avatar,
+  DialogContentText,
   Divider,
   IconButton,
   ListItemIcon,
@@ -198,7 +199,14 @@ const AccountMenu = () => {
 
   const handleSetActiveDialog = (sessionToken: string, email: string) =>
     setDialog({
-      contentText: tAuth("switchSession.confirmContentText", { email }),
+      content: (
+        <DialogContentText>
+          {tAuth.rich("switchSession.confirmContentText", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            email,
+          })}
+        </DialogContentText>
+      ),
       onConfirm: () => handleSetActiveConfirm(sessionToken, email),
       open: true,
       title: tAuth("switchSession.label"),

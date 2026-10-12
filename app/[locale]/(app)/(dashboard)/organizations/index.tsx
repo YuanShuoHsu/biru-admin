@@ -12,6 +12,7 @@ import { useCallback, useMemo } from "react";
 import useSWR from "swr";
 
 import CreateOrganizationDialog from "./CreateOrganizationDialog";
+import DeleteOrganizationConfirm from "./DeleteOrganizationConfirm";
 import UpdateOrganizationDialog from "./UpdateOrganizationDialog";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
@@ -20,10 +21,18 @@ import { useRouter } from "@/i18n/navigation";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { AddBusiness, Delete, Edit, ManageAccounts } from "@mui/icons-material";
+import {
+  AddBusiness,
+  Delete,
+  DoNotDisturbOn,
+  Edit,
+  ManageAccounts,
+  Storefront,
+} from "@mui/icons-material";
 import {
   Avatar,
   Button,
+  Chip,
   DialogContentText,
   IconButton,
   Stack,
@@ -38,6 +47,8 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { Organization } from "@/types/organizations";
 
 import { stringAvatar } from "@/utils/avatar";
+import { getErrorMessage as getFetchErrorMessage } from "@/utils/errors";
+import { fetcher } from "@/utils/fetcher";
 
 import {
   getOrganizationPermissions,
@@ -80,12 +91,14 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface OrganizationsProps {
+  canCloseOrganization: boolean;
   canCreateOrganization: boolean;
   organizationPermissions: OrganizationPermissions;
   rows: Organization[];
 }
 
 const Organizations = ({
+  canCloseOrganization,
   canCreateOrganization,
   organizationPermissions: initialOrganizationPermissions,
   rows: initialRows,
@@ -168,14 +181,8 @@ const Organizations = ({
   const handleDeleteOrganization = useCallback(
     ({ id, name }: Organization) => {
       setDialog({
-        content: (
-          <DialogContentText>
-            {tOrganizations.rich("actions.deleteOrganization.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              name,
-            })}
-          </DialogContentText>
-        ),
+        confirmDisabled: true,
+        content: <DeleteOrganizationConfirm name={name} />,
         onConfirm: async () => {
           await authClient.organization.delete(
             { organizationId: id },
@@ -201,6 +208,45 @@ const Organizations = ({
       });
     },
     [locale, mutate, setDialog, tOrganizations],
+  );
+
+  const handleToggleClosed = useCallback(
+    ({ closedAt, id, name }: Organization) => {
+      const action = closedAt ? "reopenOrganization" : "closeOrganization";
+
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tOrganizations.rich(`actions.${action}.confirm`, {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name,
+            })}
+          </DialogContentText>
+        ),
+        onConfirm: async () => {
+          try {
+            await fetcher(
+              `/api/organizations/${id}/${closedAt ? "reopen" : "close"}`,
+              { method: "POST" },
+            );
+
+            enqueueSnackbar(
+              tOrganizations(`actions.${action}.success`, { name }),
+              {
+                variant: "success",
+              },
+            );
+
+            mutate();
+          } catch (error) {
+            enqueueSnackbar(getFetchErrorMessage(error), { variant: "error" });
+          }
+        },
+        open: true,
+        title: tOrganizations(`actions.${action}.title`),
+      });
+    },
+    [mutate, setDialog, tOrganizations],
   );
 
   const { canUpdateOrganizations, canDeleteOrganizations } = useMemo(() => {
@@ -283,11 +329,46 @@ const Organizations = ({
                   </StyledIconButton>
                 </Tooltip>
               )}
+              {canCloseOrganization && (
+                <Tooltip
+                  title={tOrganizations(
+                    row.closedAt
+                      ? "actions.reopenOrganization.title"
+                      : "actions.closeOrganization.title",
+                  )}
+                >
+                  <IconButton
+                    onClick={(event) => {
+                      event.stopPropagation();
+
+                      handleToggleClosed(row);
+                    }}
+                    size="small"
+                  >
+                    {row.closedAt ? (
+                      <Storefront fontSize="small" />
+                    ) : (
+                      <DoNotDisturbOn fontSize="small" />
+                    )}
+                  </IconButton>
+                </Tooltip>
+              )}
             </ActionsStack>
           );
         },
         resizable: false,
         sortable: false,
+      },
+      {
+        field: "closedAt",
+        headerName: tOrganizations("status.label"),
+        renderCell: ({ value }: GridRenderCellParams<Organization>) => (
+          <Chip
+            color={value ? "default" : "success"}
+            label={tOrganizations(value ? "status.closed" : "status.open")}
+            size="small"
+          />
+        ),
       },
       {
         field: "logo",
@@ -322,10 +403,12 @@ const Organizations = ({
       },
     ],
     [
+      canCloseOrganization,
       canDeleteOrganizations,
       canUpdateOrganizations,
       format,
       handleDeleteOrganization,
+      handleToggleClosed,
       handleUpdateOrganization,
       organizationPermissions,
       router,

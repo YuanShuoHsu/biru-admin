@@ -25,14 +25,15 @@
     "deferralReason": "協議內容",
     "saved": "已設定 {name} {year} 年的{leaveType}額度",
     "deferralRecorded": "已記錄 {name} 的遞延協議",
-    "deferralRevoked": "已撤銷 {name} 的遞延協議"
+    "deferralRevoked": "已撤銷 {name} 的遞延協議",
+    "revokeDeferralConfirm": "確定要撤銷 <bold>{name}</bold> 的遞延協議嗎？"
   },
   "birthDate": "生日",
   "breaks": "休息（分鐘）",
   "cancelLeave": "申請撤假",
   "cancelReason": "取消原因",
   "cancelShift": "取消班次",
-  "cancelShiftIrreversible": "此班次目前不符合排班規則，取消後無法復原：{reason}",
+  "cancelShiftIrreversible": "<bold>{name}</bold> 的班次目前不符合排班規則，取消後無法復原：{reason}",
   "caseReference": {
     "label": "事件編號",
     "helper": "同一事件請沿用"
@@ -49,7 +50,6 @@
   "childLabel": "子女稱呼",
   "childReference": "子女識別依據編號",
   "clockedTime": "實際打卡",
-  "confirm": "確認執行此操作？",
   "dayKind": {
     "label": "日期類型",
     "options": {
@@ -371,6 +371,7 @@
     "created": "已新增 {name} 的{leaveType}額度",
     "updated": "已更新 {name} 的{leaveType}額度",
     "deleted": "已刪除 {name} 的{leaveType}額度",
+    "deleteConfirm": "確定要刪除 <bold>{name}</bold> 的{leaveType}額度嗎？",
     "childAssigned": "已確認 {name} 的{leaveType}子女歸戶"
   },
   "leaveRequestHint": {
@@ -494,7 +495,8 @@
     "label": "復職申請",
     "approved": "已核准 {name} 的提前復職申請",
     "rejected": "已駁回 {name} 的提前復職申請",
-    "withdrawn": "已撤回 {name} 的提前復職申請"
+    "withdrawn": "已撤回 {name} 的提前復職申請",
+    "withdrawConfirm": "確定要撤回 <bold>{name}</bold> 的提前復職申請嗎？"
   },
   "payroll": {
     "label": "薪資",
@@ -832,7 +834,8 @@
       "notOwed": "無須補假，請撤銷"
     },
     "substituteDesignated": "已指定 {name} 的{holiday}補假日",
-    "substituteRevoked": "已撤銷 {name} 的{holiday}補假日"
+    "substituteRevoked": "已撤銷 {name} 的{holiday}補假日",
+    "revokeConfirm": "確定要撤銷 <bold>{name}</bold> 的{holiday}補假日嗎？"
   },
   "restWeekdays": {
     "regularLeaveWeekday": "固定例假日",

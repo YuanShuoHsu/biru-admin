@@ -67,7 +67,9 @@ const SetRoleDialogContent = ({
           },
           onRequest: () => setDialog({ confirmLoading: true }),
           onSuccess: () => {
-            const message = tAdmins("actions.setRole.success");
+            const message = tAdmins("actions.setRole.success", {
+              email: user.email,
+            });
             enqueueSnackbar(message, { variant: "success" });
 
             closeDialog();

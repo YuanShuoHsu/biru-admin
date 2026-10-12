@@ -1,0 +1,46 @@
+{
+  "columns": {
+    "actions": "操作",
+    "deletedAt": "刪除時間",
+    "deletedBy": "刪除者",
+    "organization": "店家",
+    "related": "相關資料",
+    "resource": "類型",
+    "target": "名稱"
+  },
+  "label": "最近刪除",
+  "related": "{count, plural, =0 {—} other {另含 # 筆}}",
+  "restore": {
+    "title": "還原",
+    "confirm": "確定要還原 <bold>{name}</bold> 嗎？{count, plural, =0 {} other {同一次刪除的 # 筆相關資料也會一起還原。}}",
+    "success": "已還原 {name}"
+  },
+  "table": {
+    "attendance_annual_leave_deferral": "特休遞延協議",
+    "attendance_employee": "出勤員工",
+    "attendance_holiday_substitute": "國定假日補假",
+    "attendance_leave_case": "事件假額度",
+    "attendance_leave_type": "假別",
+    "attendance_shift_type": "班別",
+    "banner": "輪播圖",
+    "coupon": "優惠券",
+    "ingredient": "食材",
+    "invitation": "成員邀請",
+    "member": "組織成員",
+    "menu_item": "品項",
+    "menu_item_add_on": "加購",
+    "menu_item_modifier_group": "品項選項群組",
+    "menu_section": "分類",
+    "modifier": "選項",
+    "modifier_group": "選項群組",
+    "offer": "品項價格",
+    "organization": "店家",
+    "payroll_earning_type": "薪資加項",
+    "recipe": "食譜",
+    "recipe_ingredient": "食譜食材",
+    "supplier": "供應商",
+    "team": "團隊",
+    "team_member": "團隊成員",
+    "user": "使用者帳號"
+  }
+}

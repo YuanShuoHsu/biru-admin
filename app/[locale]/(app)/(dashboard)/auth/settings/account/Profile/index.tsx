@@ -28,6 +28,7 @@ import { authClient, getErrorMessage } from "@/lib/auth-client";
 import {
   Button,
   CardActions,
+  DialogContentText,
   Grid,
   Stack,
   TextField,
@@ -174,7 +175,14 @@ const Profile = () => {
   const onSubmit = (event: BaseSyntheticEvent) =>
     handleSubmit((data: ProfileForm) => {
       setDialog({
-        contentText: tAuth("settings.profile.confirmContentText"),
+        content: (
+          <DialogContentText>
+            {tAuth.rich("settings.profile.confirmContentText", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              email: session?.user.email || "",
+            })}
+          </DialogContentText>
+        ),
         onConfirm: () => updateProfile(data),
         open: true,
         title: tAuth("settings.profile.label"),

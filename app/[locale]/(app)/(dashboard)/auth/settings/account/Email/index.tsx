@@ -16,7 +16,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Button, CardActions, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  CardActions,
+  DialogContentText,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
@@ -83,9 +89,14 @@ const Email = () => {
 
   const onSubmit = handleSubmit(async ({ email }: EmailForm) => {
     setDialog({
-      contentText: tAuth("settings.email.confirmContentText", {
-        email,
-      }),
+      content: (
+        <DialogContentText>
+          {tAuth.rich("settings.email.confirmContentText", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            email,
+          })}
+        </DialogContentText>
+      ),
       onConfirm: () => changeEmail(email),
       open: true,
       title: tAuth("settings.email.changeLabel"),

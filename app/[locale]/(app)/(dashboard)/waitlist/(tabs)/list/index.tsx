@@ -356,11 +356,13 @@ const WaitlistTickets = ({
         field: "name",
         filterOperators: stringFilterOperators,
         headerName: tWaitlist("list.name"),
+        renderCell: renderEmptyableCell,
       },
       {
         field: "phoneNumber",
         filterOperators: stringFilterOperators,
         headerName: tWaitlist("list.phoneNumber"),
+        renderCell: renderEmptyableCell,
       },
       {
         field: "email",

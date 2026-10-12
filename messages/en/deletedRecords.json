@@ -1,0 +1,46 @@
+{
+  "columns": {
+    "actions": "Actions",
+    "deletedAt": "Deleted at",
+    "deletedBy": "Deleted by",
+    "organization": "Store",
+    "related": "Related data",
+    "resource": "Type",
+    "target": "Name"
+  },
+  "label": "Recently deleted",
+  "related": "{count, plural, =0 {—} one {# more} other {# more}}",
+  "restore": {
+    "title": "Restore",
+    "confirm": "Restore <bold>{name}</bold>?{count, plural, =0 {} one { # related record deleted with it will be restored too.} other { # related records deleted with it will be restored too.}}",
+    "success": "{name} restored"
+  },
+  "table": {
+    "attendance_annual_leave_deferral": "Annual leave deferral agreement",
+    "attendance_employee": "Attendance employee",
+    "attendance_holiday_substitute": "Holiday substitutes",
+    "attendance_leave_case": "Event leave allowances",
+    "attendance_leave_type": "Leave type",
+    "attendance_shift_type": "Shift types",
+    "banner": "Banner",
+    "coupon": "Coupon",
+    "ingredient": "Ingredient",
+    "invitation": "Member invitation",
+    "member": "Organization member",
+    "menu_item": "Item",
+    "menu_item_add_on": "Add-on",
+    "menu_item_modifier_group": "Item modifier group",
+    "menu_section": "Section",
+    "modifier": "Modifier",
+    "modifier_group": "Modifier group",
+    "offer": "Item price",
+    "organization": "Store",
+    "payroll_earning_type": "Pay items",
+    "recipe": "Recipe",
+    "recipe_ingredient": "Recipe ingredient",
+    "supplier": "Supplier",
+    "team": "Teams",
+    "team_member": "Team member",
+    "user": "User account"
+  }
+}
