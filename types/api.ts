@@ -921,7 +921,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 查詢異動紀錄；帶 resource + resourceId 可取單一資源的歷史 */
+    /** 查詢異動紀錄；帶 resource + resourceId 可取單一資源的歷史。出勤與薪資紀錄只列出具備該資料讀取權限者 */
     get: operations["AuditController_findAll"];
     put?: never;
     post?: never;
@@ -4496,15 +4496,45 @@ export interface components {
       | "member"
       | "invitation"
       | "user"
-      | "team";
+      | "team"
+      | "employee"
+      | "attendanceSetting"
+      | "leaveCase"
+      | "leaveType"
+      | "leaveBalance"
+      | "leaveDeferral"
+      | "holidaySubstitute"
+      | "attendanceRequest"
+      | "shift"
+      | "shiftType"
+      | "parentalChild"
+      | "parentalReturn"
+      | "payrollTerm"
+      | "payslip"
+      | "earningType"
+      | "withholdingUnit"
+      | "taxIdentity"
+      | "withholdingCertificate";
     /** @enum {string} */
-    AuditAction: "create" | "update" | "delete";
+    AuditAction:
+      | "create"
+      | "update"
+      | "delete"
+      | "restore"
+      | "consume"
+      | "refund"
+      | "review"
+      | "withdraw"
+      | "cancel"
+      | "publish"
+      | "request";
     AuditLogResponseDto: {
       id: string;
       /** @description 操作者帳號被刪除後為 null，actorName / actorEmail 仍保留 */
       actorId?: string | null;
-      actorName: string;
-      actorEmail: string;
+      /** @description 出勤與薪資紀錄取自目前帳號，帳號刪除後為 null */
+      actorName?: string | null;
+      actorEmail?: string | null;
       /** @description 異動所屬店家；平台層異動（優惠券定義、輪播圖）為 null */
       organizationId?: string | null;
       resource: components["schemas"]["AuditResource"];
@@ -4521,7 +4551,7 @@ export interface components {
       /** @description 由根到父的 id，供前端拼出巢狀路由；頂層資源為空陣列 */
       ancestorIds?: string[] | null;
       action: components["schemas"]["AuditAction"];
-      /** @description 欄位名 → 變更前後值；建立的 before 與刪除的 after 為 null */
+      /** @description 欄位名 → 變更前後值；建立的 before 與刪除的 after 為 null。出勤與薪資紀錄只記當下的值時省略另一側 */
       changes: {
         [key: string]: {
           after?: unknown;
@@ -10378,7 +10408,7 @@ export interface operations {
       };
       header?: never;
       path: {
-        organizationSlug: string;
+        organizationSlug: unknown;
       };
       cookie?: never;
     };
@@ -11323,7 +11353,9 @@ export interface operations {
         offset?: number;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: unknown;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -11347,7 +11379,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: unknown;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -11375,6 +11409,7 @@ export interface operations {
       header?: never;
       path: {
         batchId: number;
+        organizationSlug: unknown;
       };
       cookie?: never;
     };
@@ -16280,10 +16315,40 @@ export const auditResourceValues: ReadonlyArray<
   "invitation",
   "user",
   "team",
+  "employee",
+  "attendanceSetting",
+  "leaveCase",
+  "leaveType",
+  "leaveBalance",
+  "leaveDeferral",
+  "holidaySubstitute",
+  "attendanceRequest",
+  "shift",
+  "shiftType",
+  "parentalChild",
+  "parentalReturn",
+  "payrollTerm",
+  "payslip",
+  "earningType",
+  "withholdingUnit",
+  "taxIdentity",
+  "withholdingCertificate",
 ];
 export const auditActionValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AuditAction"]
-> = ["create", "update", "delete"];
+> = [
+  "create",
+  "update",
+  "delete",
+  "restore",
+  "consume",
+  "refund",
+  "review",
+  "withdraw",
+  "cancel",
+  "publish",
+  "request",
+];
 export const auditLogFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AuditLogFilterField"]
 > = [

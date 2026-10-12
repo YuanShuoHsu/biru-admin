@@ -80,6 +80,24 @@ export const getAuditLogHref = (
     case "invitation":
     case "user":
     case "team":
+    case "employee":
+    case "attendanceSetting":
+    case "leaveCase":
+    case "leaveType":
+    case "leaveBalance":
+    case "leaveDeferral":
+    case "holidaySubstitute":
+    case "attendanceRequest":
+    case "shift":
+    case "shiftType":
+    case "parentalChild":
+    case "parentalReturn":
+    case "payrollTerm":
+    case "payslip":
+    case "earningType":
+    case "withholdingUnit":
+    case "taxIdentity":
+    case "withholdingCertificate":
       return null;
   }
 };

@@ -22,7 +22,15 @@ const NUTRITION_KEYS = [
   "unsaturatedFatContent",
 ] as const;
 
+const DATE_PERIOD_FIELDS = [
+  "nursingPeriods",
+  "pregnancyPeriods",
+  "studentVacations",
+  "workPermits",
+] as const;
+
 export const useAuditLogObjectLabels = () => {
+  const tAttendance = useTranslations("attendance");
   const tAudit = useTranslations("audit");
   const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
@@ -30,6 +38,19 @@ export const useAuditLogObjectLabels = () => {
 
   return useMemo<Record<string, Record<string, string>>>(
     () => ({
+      ...Object.fromEntries(
+        DATE_PERIOD_FIELDS.map((field) => [
+          field,
+          {
+            from: tAttendance(`${field}.from`),
+            to: tAttendance(`${field}.to`),
+          },
+        ]),
+      ),
+      breaks: {
+        endsAt: tAttendance("endsAt"),
+        startsAt: tAttendance("startsAt"),
+      },
       customer: Object.fromEntries(
         CUSTOMER_KEYS.map((key) => [
           key,
@@ -65,7 +86,11 @@ export const useAuditLogObjectLabels = () => {
           "items.offers.priceSpecification.validThrough.label",
         ),
       },
+      weeklyMinutesHistory: {
+        from: tAudit("field.effectiveDate"),
+        minutes: tAudit("field.weeklyMinutes"),
+      },
     }),
-    [tAudit, tMenus, tOrder, tOrganizations],
+    [tAttendance, tAudit, tMenus, tOrder, tOrganizations],
   );
 };

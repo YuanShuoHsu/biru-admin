@@ -2,6 +2,12 @@ import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 
 import {
+  attendanceDayKindValues,
+  attendanceLegalStatusValues,
+  attendanceParentalReturnStatusValues,
+  attendanceRequestKindValues,
+  attendanceRequestStatusValues,
+  attendanceTerminationReasonValues,
   createMenuItemDtoSuitableForDietValues,
   itemAvailabilityValues,
   orderModeValues,
@@ -9,6 +15,8 @@ import {
   orderResponseDtoPaymentMethodValues,
   orderStatusValues,
   organizationMemberResponseDtoRoleValues,
+  payrollEarningCategoryValues,
+  payrollStatementStatusValues,
   refundChannelValues,
   refundInvoiceActionValues,
   refundReasonCodeValues,
@@ -16,6 +24,7 @@ import {
   servingTemperatureLevelValues,
   servingTemperatureValues,
   sweetnessLevelValues,
+  statutoryLeaveKindValues,
   sweetnessValues,
   unitCodeValues,
   userCouponSourceValues,
@@ -34,6 +43,7 @@ const INVITATION_STATUSES = [
 
 export const useAuditLogValueLabels = () => {
   const tAdmins = useTranslations("admins");
+  const tAttendance = useTranslations("attendance");
   const tAudit = useTranslations("audit");
   const tCommon = useTranslations("common");
   const tCoupons = useTranslations("coupons");
@@ -46,6 +56,24 @@ export const useAuditLogValueLabels = () => {
 
   return useMemo<Record<string, Record<string, string>>>(
     () => ({
+      "attendanceRequest.status": Object.fromEntries(
+        attendanceRequestStatusValues.map((value) => [
+          value,
+          tAttendance(`status.options.${value}`),
+        ]),
+      ),
+      "parentalReturn.status": Object.fromEntries(
+        attendanceParentalReturnStatusValues.map((value) => [
+          value,
+          tAttendance(`status.options.${value}`),
+        ]),
+      ),
+      "payslip.status": Object.fromEntries(
+        payrollStatementStatusValues.map((value) => [
+          value,
+          tAttendance(`payrollStatus.options.${value}`),
+        ]),
+      ),
       availability: Object.fromEntries(
         itemAvailabilityValues.map((value) => [
           value,
@@ -55,10 +83,22 @@ export const useAuditLogValueLabels = () => {
       availableModes: Object.fromEntries(
         orderModeValues.map((value) => [value, tOrder(`mode.${value}.label`)]),
       ),
+      category: Object.fromEntries(
+        payrollEarningCategoryValues.map((value) => [
+          value,
+          tAttendance(`earningCategory.options.${value}`),
+        ]),
+      ),
       channel: Object.fromEntries(
         refundChannelValues.map((value) => [
           value,
           tOrders(`detail.refunds.channel.${value}`),
+        ]),
+      ),
+      dayKind: Object.fromEntries(
+        attendanceDayKindValues.map((value) => [
+          value,
+          tAttendance(`dayKind.options.${value}`),
         ]),
       ),
       eligibleQuantityUnitCode: Object.fromEntries(
@@ -80,6 +120,18 @@ export const useAuditLogValueLabels = () => {
         refundInvoiceActionValues.map((value) => [
           value,
           tOrders(`detail.refunds.invoiceAction.${value}`),
+        ]),
+      ),
+      kind: Object.fromEntries(
+        attendanceRequestKindValues.map((value) => [
+          value,
+          tAttendance(`kind.options.${value}`),
+        ]),
+      ),
+      legalStatus: Object.fromEntries(
+        attendanceLegalStatusValues.map((value) => [
+          value,
+          tAttendance(`legalStatus.options.${value}`),
         ]),
       ),
       locale: Object.fromEntries(
@@ -152,6 +204,12 @@ export const useAuditLogValueLabels = () => {
           tOrders(`detail.refunds.status.${value}`),
         ]),
       ]),
+      statutoryKind: Object.fromEntries(
+        statutoryLeaveKindValues.map((value) => [
+          value,
+          tAttendance(`statutoryKind.options.${value}`),
+        ]),
+      ),
       suitableForDiet: Object.fromEntries(
         createMenuItemDtoSuitableForDietValues.map((value) => [
           value,
@@ -164,12 +222,19 @@ export const useAuditLogValueLabels = () => {
           tMenus(`items.sweetness.options.${value}`),
         ]),
       ),
+      terminationReason: Object.fromEntries(
+        attendanceTerminationReasonValues.map((value) => [
+          value,
+          tAttendance(`terminationReason.options.${value}`),
+        ]),
+      ),
       unitCode: Object.fromEntries(
         unitCodeValues.map((value) => [value, tInventory(`units.${value}`)]),
       ),
     }),
     [
       tAdmins,
+      tAttendance,
       tAudit,
       tCommon,
       tCoupons,

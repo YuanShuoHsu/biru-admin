@@ -40,12 +40,12 @@ export const STATUS_COLORS: Record<OrderStatus, ChipProps["color"]> = {
   OrderPickupAvailable: "success",
   OrderProcessing: "warning",
   OrderProblem: "error",
-  OrderReturned: "secondary",
+  OrderReturned: "info",
 };
 
 export const STATUS_TEXT_COLORS: Record<
   OrderStatus,
-  "error" | "primary" | "secondary" | "success" | "text" | "warning"
+  "error" | "info" | "primary" | "success" | "text" | "warning"
 > = {
   OrderCancelled: "text",
   OrderDelivered: "primary",
@@ -53,5 +53,5 @@ export const STATUS_TEXT_COLORS: Record<
   OrderPickupAvailable: "success",
   OrderProcessing: "warning",
   OrderProblem: "error",
-  OrderReturned: "secondary",
+  OrderReturned: "info",
 };

@@ -64,6 +64,7 @@ import { getAuditLogHref, getAuditLogsPath } from "@/utils/audit";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAuditLogEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
+import { formatLeaveDuration, weekdayDate } from "@/utils/attendance";
 import { getHref } from "@/utils/href";
 import { formatStock } from "@/utils/ingredients";
 import { localize } from "@/utils/locale";
@@ -124,9 +125,17 @@ const ChangeRowStack = styled(Stack)(({ theme }) => ({
 }));
 
 const ACTION_COLORS: Record<AuditAction, "error" | "info" | "success"> = {
+  cancel: "error",
+  consume: "info",
   create: "success",
   delete: "error",
+  publish: "info",
+  refund: "success",
+  request: "info",
+  restore: "success",
+  review: "info",
   update: "info",
+  withdraw: "info",
 };
 
 const FIELD_LABEL_KEYS = {
@@ -248,10 +257,86 @@ const FIELD_LABEL_KEYS = {
   revokedSessions: "field.revokedSessions",
   member: "field.member",
   closedAt: "field.closedAt",
+  startTime: "field.startTime",
+  endTime: "field.endTime",
+  breaks: "field.breaks",
+  paidBreak: "field.paidBreak",
+  minutes: "field.minutes",
+  weeklyMinutes: "field.weeklyMinutes",
+  weeklyMinutesHistory: "field.weeklyMinutesHistory",
+  periodStart: "field.periodStart",
+  originalEndsAt: "field.originalEndsAt",
+  irreversible: "field.irreversible",
+} as const;
+
+const ATTENDANCE_FIELD_LABEL_KEYS = {
+  employeeId: "employee",
+  "parentalChild.reference": "childReference",
+  reference: "caseReference.label",
+  leaveTypeId: "leaveType.label",
+  childId: "parentalChild",
+  kind: "kind.label",
+  statutoryKind: "statutoryKind.label",
+  teamId: "team",
+  dayKind: "dayKind.label",
+  startsAt: "startsAt",
+  endsAt: "endsAt",
+  eventDate: "eventDate",
+  holidayDate: "holidaySubstitutes.holidayDate",
+  returnsAt: "returnsAt",
+  grantedMinutes: "grantedMinutes",
+  paidPercent: "paidPercent",
+  requiresBalance: "requiresBalance",
+  medicalCertified: "medicalCertified",
+  category: "earningCategory.label",
+  year: "year",
+  month: "month",
+  effectiveFrom: "effectiveFrom",
+  hiredAt: "hiredAt",
+  terminatedAt: "terminatedAt",
+  terminationNoticedAt: "terminationNoticedAt",
+  terminationReason: "terminationReason.label",
+  birthDate: "birthDate",
+  legalStatus: "legalStatus.label",
+  taiwanStaySince: "taiwanStaySince",
+  regularLeaveWeekday: "restWeekdays.regularLeaveWeekday",
+  restDayWeekday: "restWeekdays.restDayWeekday",
+  workPermits: "workPermits.label",
+  studentVacations: "studentVacations.label",
+  pregnancyPeriods: "pregnancyPeriods.label",
+  nursingPeriods: "nursingPeriods.label",
+  indigenousHolidays: "indigenousHolidays.label",
+  allowedIps: "allowedIps.label",
+  latitude: "latitude.label",
+  longitude: "longitude.label",
+  radiusMeters: "radiusMeters.label",
+  graceMinutes: "graceMinutes.label",
+  payday: "payday.label",
+  paydayNextMonth: "paydayNextMonth",
+  overtimeAgreedFrom: "overtimeAgreedFrom.label",
+  overtimeExtensionPeriods: "overtimeExtensionPeriods.label",
+  laborInsuranceUnitCode: "laborInsuranceUnitCode.label",
+  voluntaryLaborInsuranceFrom: "voluntaryLaborInsuranceFrom.label",
+  occupationalIndustryCode: "occupationalIndustryCode.label",
+  occupationalExperienceRateMicros: "occupationalExperienceRateMicros.label",
+  taxId: "withholding.taxId",
+  businessNumber: "withholding.unit.fields.businessNumber",
+  taxOfficeCode: "withholding.unit.fields.taxOfficeCode",
+  taxRegistrationNumber: "withholding.unit.fields.taxRegistrationNumber",
+  "withholdingUnit.name": "withholding.unit.fields.name",
+  "withholdingUnit.address": "withholding.unit.fields.address",
+  agentName: "withholding.unit.fields.agentName",
+  representativeName: "withholding.unit.fields.representativeName",
+  contactName: "withholding.unit.fields.contactName",
+  contactPhone: "withholding.unit.fields.contactPhone",
+  contactEmail: "withholding.unit.fields.contactEmail",
 } as const;
 
 const FIELD_RANK = new Map(
-  Object.keys(FIELD_LABEL_KEYS).map((field, index) => [field, index]),
+  [
+    ...Object.keys(ATTENDANCE_FIELD_LABEL_KEYS),
+    ...Object.keys(FIELD_LABEL_KEYS),
+  ].map((field, index) => [field, index]),
 );
 
 const LOCALES = new Set<string>(routing.locales);
@@ -277,11 +362,33 @@ const TIMESTAMP_FIELDS = new Set([
   "closedAt",
   "confirmedAt",
   "endedAt",
+  "endsAt",
   "expiresAt",
   "paymentDate",
   "pointsEnabledAt",
+  "returnsAt",
+  "startsAt",
   "usedAt",
 ]);
+
+const DATE_FIELDS = new Set([
+  "birthDate",
+  "eventDate",
+  "from",
+  "hiredAt",
+  "holidayDate",
+  "indigenousHolidays",
+  "originalEndsAt",
+  "periodStart",
+  "taiwanStaySince",
+  "terminatedAt",
+  "terminationNoticedAt",
+  "to",
+]);
+
+const MINUTE_FIELDS = new Set(["grantedMinutes", "minutes", "weeklyMinutes"]);
+
+const WEEKDAY_FIELDS = new Set(["regularLeaveWeekday", "restDayWeekday"]);
 
 const NUMERIC_FIELDS = new Set([
   "amount",
@@ -300,6 +407,11 @@ const NUMERIC_FIELDS = new Set([
 const isTranslatableField = (
   field: string,
 ): field is keyof typeof FIELD_LABEL_KEYS => field in FIELD_LABEL_KEYS;
+
+const isAttendanceField = (
+  field: string,
+): field is keyof typeof ATTENDANCE_FIELD_LABEL_KEYS =>
+  field in ATTENDANCE_FIELD_LABEL_KEYS;
 
 const getTargetLabel = (
   label: AuditLogResponse["resourceLabel"],
@@ -388,6 +500,7 @@ const AuditLogs = ({
 
   const searchParams = useSearchParams();
 
+  const tAttendance = useTranslations("attendance");
   const tAudit = useTranslations("audit");
   const tCommon = useTranslations("common");
   const tInventory = useTranslations("inventory");
@@ -503,7 +616,7 @@ const AuditLogs = ({
     const toText = (
       field: string,
       value: unknown,
-      changeLabels: AuditLogResponse["changeLabels"],
+      row: AuditLogResponse,
     ): string => {
       if (value === null || value === undefined || value === "")
         return tAudit("value.empty");
@@ -512,11 +625,14 @@ const AuditLogs = ({
         return tAudit(value ? "value.true" : "value.false");
 
       if (typeof value === "string") {
-        const snapshot = changeLabels?.[field]?.[value];
+        const snapshot = row.changeLabels?.[field]?.[value];
         if (snapshot) return getTargetLabel(snapshot, locale);
 
         if (TIMESTAMP_FIELDS.has(field))
           return format.dateTime(new Date(value), "short");
+
+        if (DATE_FIELDS.has(field))
+          return format.dateTime(new Date(value), "date");
 
         if (ingredient && STOCK_FIELDS.has(field))
           return formatStock(Number(value), ingredient, {
@@ -527,18 +643,29 @@ const AuditLogs = ({
 
         return NUMERIC_FIELDS.has(field)
           ? format.number(Number(value))
-          : (valueLabels[field]?.[value] ?? value);
+          : (valueLabels[`${row.resource}.${field}`]?.[value] ??
+              valueLabels[field]?.[value] ??
+              value);
       }
+
+      if (typeof value === "number" && MINUTE_FIELDS.has(field))
+        return formatLeaveDuration(tAttendance, value, false);
+
+      if (typeof value === "number" && WEEKDAY_FIELDS.has(field))
+        return format.dateTime(weekdayDate(value), "weekdayLong");
+
+      if (
+        typeof value === "number" &&
+        field === "occupationalExperienceRateMicros"
+      )
+        return format.number(value / 1000000, {
+          maximumFractionDigits: 6,
+          style: "percent",
+        });
 
       if (Array.isArray(value))
         return value.length
-          ? format.list(
-              value.map((item) =>
-                typeof item === "string"
-                  ? (valueLabels[field]?.[item] ?? item)
-                  : toText(field, item, changeLabels),
-              ),
-            )
+          ? format.list(value.map((item) => toText(field, item, row)))
           : tAudit("value.empty");
 
       if (typeof value === "object") {
@@ -551,7 +678,7 @@ const AuditLogs = ({
           )
           .map(
             ([key, item]) =>
-              `${labels?.[key] ?? key}: ${toText(key, item, changeLabels)}`,
+              `${labels?.[key] ?? key}: ${toText(key, item, row)}`,
           );
 
         return entries.length
@@ -568,6 +695,7 @@ const AuditLogs = ({
     ingredient,
     locale,
     objectLabels,
+    tAttendance,
     tAudit,
     tCommon,
     tInventory,
@@ -670,9 +798,14 @@ const AuditLogs = ({
                   (FIELD_RANK.get(b) ?? FIELD_RANK.size),
               )
               .map(([field, change]) => {
-                const label = isTranslatableField(field)
-                  ? tAudit(FIELD_LABEL_KEYS[field])
-                  : field;
+                const scopedField = `${row.resource}.${field}`;
+                const label = isAttendanceField(scopedField)
+                  ? tAttendance(ATTENDANCE_FIELD_LABEL_KEYS[scopedField])
+                  : isTranslatableField(field)
+                    ? tAudit(FIELD_LABEL_KEYS[field])
+                    : isAttendanceField(field)
+                      ? tAttendance(ATTENDANCE_FIELD_LABEL_KEYS[field])
+                      : field;
 
                 const renderValue = (
                   value: unknown,
@@ -701,7 +834,7 @@ const AuditLogs = ({
                       removed={state === "removed"}
                       variant="caption"
                     >
-                      {getValueText(field, value, row.changeLabels)}
+                      {getValueText(field, value, row)}
                     </StyledTypography>
                   );
 
@@ -710,10 +843,10 @@ const AuditLogs = ({
                     <Typography color="textSecondary" variant="caption">
                       {label}
                     </Typography>
-                    {row.action === "create" ? (
-                      renderValue(change.after)
-                    ) : row.action === "delete" ? (
+                    {row.action === "delete" ? (
                       renderValue(change.before, "removed")
+                    ) : row.action !== "update" || !("before" in change) ? (
+                      renderValue(change.after)
                     ) : (
                       <>
                         {renderValue(change.before, "previous")}
@@ -749,6 +882,7 @@ const AuditLogs = ({
       resource,
       searchParams,
       stringFilterOperators,
+      tAttendance,
       tAudit,
     ],
   );
