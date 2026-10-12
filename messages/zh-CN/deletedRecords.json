@@ -11,9 +11,10 @@
   "label": "最近删除",
   "related": "{count, plural, =0 {—} other {另含 # 笔}}",
   "restore": {
-    "title": "还原",
+    "closed": "门店停业中，无法还原这类数据",
     "confirm": "确定要还原 <bold>{name}</bold> 吗？{count, plural, =0 {} other {同一次删除的 # 笔相关数据也会一起还原。}}",
-    "success": "已还原 {name}"
+    "success": "已还原 {name}",
+    "title": "还原"
   },
   "table": {
     "attendance_annual_leave_deferral": "特休递延协议",

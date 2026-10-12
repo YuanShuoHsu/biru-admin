@@ -35,6 +35,7 @@ import type {
 import { attendanceErrorKey } from "@/utils/attendance";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
+import { getDeletedRecordsPath } from "@/utils/deletedRecords";
 import { localize } from "@/utils/locale";
 
 const DataGrid = dynamic(
@@ -54,6 +55,7 @@ const getLabel = (
   typeof label === "string" ? label : localize(label ?? undefined, locale);
 
 interface DeletedRecordsProps {
+  organizationSlug?: string;
   page: number;
   pageSize: number;
   rowCount: number;
@@ -61,6 +63,7 @@ interface DeletedRecordsProps {
 }
 
 const DeletedRecords = ({
+  organizationSlug,
   page,
   pageSize,
   rowCount: initialRowCount,
@@ -92,10 +95,14 @@ const DeletedRecords = ({
     mutate,
     isValidating: loading,
   } = useSWR(
-    ["/api/deleted-records", paginationModel.page, paginationModel.pageSize],
+    [
+      getDeletedRecordsPath(organizationSlug),
+      paginationModel.page,
+      paginationModel.pageSize,
+    ],
     () =>
       fetcher<{ data: DeletedRecordBatch[]; total: number }>(
-        `/api/deleted-records?${new URLSearchParams({
+        `${getDeletedRecordsPath(organizationSlug)}?${new URLSearchParams({
           limit: String(paginationModel.pageSize),
           offset: String(paginationModel.page * paginationModel.pageSize),
         }).toString()}`,
@@ -139,9 +146,12 @@ const DeletedRecords = ({
         ),
         onConfirm: async () => {
           try {
-            await fetcher(`/api/deleted-records/${batchId}/restore`, {
-              method: "POST",
-            });
+            await fetcher(
+              `${getDeletedRecordsPath(organizationSlug)}/${batchId}/restore`,
+              {
+                method: "POST",
+              },
+            );
 
             enqueueSnackbar(tDeletedRecords("restore.success", { name }), {
               variant: "success",
@@ -163,7 +173,7 @@ const DeletedRecords = ({
         title: tDeletedRecords("restore.title"),
       });
     },
-    [locale, mutate, setDialog, tAttendance, tDeletedRecords],
+    [locale, mutate, organizationSlug, setDialog, tAttendance, tDeletedRecords],
   );
 
   const columns = useMemo<GridColDef[]>(
@@ -174,10 +184,20 @@ const DeletedRecords = ({
         headerName: tDeletedRecords("columns.actions"),
         renderCell: ({ row }: GridRenderCellParams<DeletedRecordBatch>) => (
           <ActionsStack direction="row">
-            <Tooltip title={tDeletedRecords("restore.title")}>
-              <IconButton onClick={() => handleRestore(row)} size="small">
-                <RestoreFromTrash fontSize="small" />
-              </IconButton>
+            <Tooltip
+              title={tDeletedRecords(
+                row.canRestore ? "restore.title" : "restore.closed",
+              )}
+            >
+              <span>
+                <IconButton
+                  disabled={!row.canRestore}
+                  onClick={() => handleRestore(row)}
+                  size="small"
+                >
+                  <RestoreFromTrash fontSize="small" />
+                </IconButton>
+              </span>
             </Tooltip>
           </ActionsStack>
         ),
@@ -205,12 +225,16 @@ const DeletedRecords = ({
         valueFormatter: (value: DeletedRecordBatch["label"]) =>
           getLabel(value, locale),
       },
-      {
-        field: "organizationName",
-        headerName: tDeletedRecords("columns.organization"),
-        renderCell: renderEmptyableCell,
-        sortable: false,
-      },
+      ...(organizationSlug
+        ? []
+        : [
+            {
+              field: "organizationName",
+              headerName: tDeletedRecords("columns.organization"),
+              renderCell: renderEmptyableCell,
+              sortable: false,
+            },
+          ]),
       {
         field: "relatedCount",
         headerName: tDeletedRecords("columns.related"),
@@ -227,7 +251,7 @@ const DeletedRecords = ({
         sortable: false,
       },
     ],
-    [format, handleRestore, locale, tDeletedRecords],
+    [format, handleRestore, locale, organizationSlug, tDeletedRecords],
   );
 
   return (

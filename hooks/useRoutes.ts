@@ -654,7 +654,7 @@ const routes: Route[] = [
   {
     icon: RestoreFromTrash,
     label: "deletedRecords.label",
-    query: ["page", "pageSize"],
+    query: ["organization", "page", "pageSize"],
     segment: "deleted-records",
   },
   {

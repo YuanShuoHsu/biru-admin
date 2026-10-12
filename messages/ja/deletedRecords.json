@@ -11,9 +11,10 @@
   "label": "最近削除した項目",
   "related": "{count, plural, =0 {—} other {ほか # 件}}",
   "restore": {
-    "title": "復元",
+    "closed": "店舗が閉店中のため、このデータは復元できません",
     "confirm": "<bold>{name}</bold> を復元しますか？{count, plural, =0 {} other {同時に削除された関連データ # 件も復元されます。}}",
-    "success": "{name} を復元しました"
+    "success": "{name} を復元しました",
+    "title": "復元"
   },
   "table": {
     "attendance_annual_leave_deferral": "年次有給休暇の繰越協定",

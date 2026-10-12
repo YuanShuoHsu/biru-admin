@@ -11,9 +11,10 @@
   "label": "最近刪除",
   "related": "{count, plural, =0 {—} other {另含 # 筆}}",
   "restore": {
-    "title": "還原",
+    "closed": "門市停業中，無法還原這類資料",
     "confirm": "確定要還原 <bold>{name}</bold> 嗎？{count, plural, =0 {} other {同一次刪除的 # 筆相關資料也會一起還原。}}",
-    "success": "已還原 {name}"
+    "success": "已還原 {name}",
+    "title": "還原"
   },
   "table": {
     "attendance_annual_leave_deferral": "特休遞延協議",

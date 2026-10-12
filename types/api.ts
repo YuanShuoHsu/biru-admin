@@ -1329,6 +1329,57 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/deleted-records": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢本店最近 30 天內刪除的資料 */
+    get: operations["OrganizationDeletedRecordsController_findAll"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/deleted-records/permission": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 目前成員是否能還原本店的刪除資料 */
+    get: operations["OrganizationDeletedRecordsController_permission"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/deleted-records/{batchId}/restore": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 還原本店同一次刪除的資料，須具備各資料的建立權限 */
+    post: operations["OrganizationDeletedRecordsController_restore"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/payroll/rule-sets": {
     parameters: {
       query?: never;
@@ -5100,6 +5151,12 @@ export interface components {
       relatedCount: number;
       /** @description 由稽核紀錄比對出的刪除者；查不到時為 null */
       deletedBy?: string | null;
+      /** @description 目前操作者可否還原（店內須具備各資料的建立權限） */
+      canRestore: boolean;
+    };
+    DeletedRecordPermissionDto: {
+      /** @description 目前成員是否能還原本店任何一種資料 */
+      canRestore: boolean;
     };
     WithholdingBracketResponseDto: {
       upTo?: number | null;
@@ -11234,6 +11291,85 @@ export interface operations {
     };
   };
   DeletedRecordsController_restore: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        batchId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrganizationDeletedRecordsController_findAll: {
+    parameters: {
+      query?: {
+        limit?: number;
+        offset?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrganizationDeletedRecordsController_permission: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DeletedRecordPermissionDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrganizationDeletedRecordsController_restore: {
     parameters: {
       query?: never;
       header?: never;

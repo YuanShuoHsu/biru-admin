@@ -10,6 +10,7 @@ import SelectedListItem from "./SelectedListItem";
 
 import {
   useActiveMemberRole,
+  useCanRestoreDeletedRecords,
   useDefaultOrganization,
 } from "@/hooks/organizations";
 import { useNavChildren } from "@/hooks/useNavChildren";
@@ -28,6 +29,7 @@ const useNavItems = (): NavItem[][] => {
 
   const defaultOrganizationSlug = useDefaultOrganization();
   const memberRole = useActiveMemberRole();
+  const canRestoreDeletedRecords = useCanRestoreDeletedRecords();
 
   const navChildren = useNavChildren();
   const navItem = useRoutes();
@@ -68,6 +70,9 @@ const useNavItems = (): NavItem[][] => {
             navItem("/organizations"),
             ...(isAdmin || hasRolePermission(memberRole, { auditLog: ["read"] })
               ? [navItem("/audit-logs")]
+              : []),
+            ...(!isAdmin && canRestoreDeletedRecords
+              ? [navItem("/deleted-records")]
               : []),
           ],
         ]

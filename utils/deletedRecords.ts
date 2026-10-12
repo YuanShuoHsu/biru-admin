@@ -2,10 +2,23 @@ import { cache } from "react";
 
 import { fetcher } from "./fetcher";
 
-import type { DeletedRecordBatch } from "@/types/deletedRecords";
+import type {
+  DeletedRecordBatch,
+  DeletedRecordPermission,
+} from "@/types/deletedRecords";
+
+export const getDeletedRecordsPath = (organizationSlug?: string) =>
+  organizationSlug
+    ? `/api/organizations/${organizationSlug}/deleted-records`
+    : "/api/deleted-records";
 
 export const getDeletedRecords = cache(
-  async (page: number, pageSize: number, init?: RequestInit) => {
+  async (
+    organizationSlug: string | undefined,
+    page: number,
+    pageSize: number,
+    init?: RequestInit,
+  ) => {
     try {
       const params = new URLSearchParams({
         limit: String(pageSize),
@@ -15,7 +28,10 @@ export const getDeletedRecords = cache(
       const result = await fetcher<{
         data: DeletedRecordBatch[];
         total: number;
-      }>(`/api/deleted-records?${params.toString()}`, init);
+      }>(
+        `${getDeletedRecordsPath(organizationSlug)}?${params.toString()}`,
+        init,
+      );
 
       return {
         deletedRecords: Array.isArray(result.data) ? result.data : [],
@@ -26,3 +42,19 @@ export const getDeletedRecords = cache(
     }
   },
 );
+
+export const canRestoreDeletedRecords = async (
+  organizationSlug: string,
+  init?: RequestInit,
+) => {
+  try {
+    const { canRestore } = await fetcher<DeletedRecordPermission>(
+      `/api/organizations/${organizationSlug}/deleted-records/permission`,
+      init,
+    );
+
+    return canRestore;
+  } catch {
+    return false;
+  }
+};

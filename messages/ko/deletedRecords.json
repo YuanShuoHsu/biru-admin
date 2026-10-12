@@ -11,9 +11,10 @@
   "label": "최근 삭제됨",
   "related": "{count, plural, =0 {—} other {외 #건}}",
   "restore": {
-    "title": "복원",
+    "closed": "매장이 폐점 중이라 이 데이터는 복원할 수 없습니다",
     "confirm": "<bold>{name}</bold>을(를) 복원하시겠습니까? {count, plural, =0 {} other {함께 삭제된 관련 데이터 #건도 복원됩니다.}}",
-    "success": "{name}을(를) 복원했습니다"
+    "success": "{name}을(를) 복원했습니다",
+    "title": "복원"
   },
   "table": {
     "attendance_annual_leave_deferral": "연차 이월 합의",

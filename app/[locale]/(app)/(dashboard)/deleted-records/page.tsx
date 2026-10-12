@@ -8,13 +8,21 @@ import DeletedRecords from ".";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-import { getDeletedRecords } from "@/utils/deletedRecords";
+import {
+  canRestoreDeletedRecords,
+  getDeletedRecords,
+} from "@/utils/deletedRecords";
 import { resolveGridSearchParams } from "@/utils/dataGrid";
+import { getResolvedAdminOrganization } from "@/utils/menus";
 import { getSession } from "@/utils/session";
 
 interface DeletedRecordsPageProps {
   params: Promise<{ locale: Locale }>;
-  searchParams: Promise<{ page?: string; pageSize?: string }>;
+  searchParams: Promise<{
+    organization?: string;
+    page?: string;
+    pageSize?: string;
+  }>;
 }
 
 export const generateMetadata = async ({
@@ -37,28 +45,43 @@ const DeletedRecordsPage = async ({
     [cookies(), params, searchParams, getSession()],
   );
 
-  if (session?.user?.role !== "admin") notFound();
-
   setRequestLocale(locale);
+
+  const cookie = cookieStore.toString();
+  const init = { headers: { cookie } };
+
+  const isPlatformAdmin = session?.user?.role === "admin";
+  const organization = isPlatformAdmin
+    ? undefined
+    : await getResolvedAdminOrganization(rawSearchParams.organization, cookie);
+  if (
+    !isPlatformAdmin &&
+    (!organization ||
+      !(await canRestoreDeletedRecords(organization.slug, init)))
+  )
+    notFound();
 
   const { page, pageSize, redirectParams } = resolveGridSearchParams({
     searchParams: rawSearchParams,
     sortFields: [],
     filterFields: [],
     filterOperators: [],
+    organizationSlug: organization?.slug,
   });
 
   if (redirectParams)
     redirect({ href: `/deleted-records?${redirectParams.toString()}`, locale });
 
   const { deletedRecords: rows, total: rowCount } = await getDeletedRecords(
+    organization?.slug,
     page,
     pageSize,
-    { headers: { cookie: cookieStore.toString() } },
+    init,
   );
 
   return (
     <DeletedRecords
+      organizationSlug={organization?.slug}
       page={page}
       pageSize={pageSize}
       rowCount={rowCount}

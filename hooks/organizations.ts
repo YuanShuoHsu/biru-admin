@@ -6,6 +6,7 @@ import { swrKeys } from "@/constants/swr";
 
 import { authClient } from "@/lib/auth-client";
 
+import { canRestoreDeletedRecords } from "@/utils/deletedRecords";
 import { resolveDefaultOrganizationSlug } from "@/utils/organizations";
 
 export const useDefaultOrganization = () => {
@@ -42,6 +43,19 @@ export const useActiveMemberRole = () => {
   );
 
   return role ?? undefined;
+};
+
+export const useCanRestoreDeletedRecords = () => {
+  const organizationSlug = useDefaultOrganization();
+
+  const { data: canRestore = false } = useSWR(
+    organizationSlug
+      ? [swrKeys.deletedRecordPermission, organizationSlug]
+      : null,
+    ([, slug]: [string, string]) => canRestoreDeletedRecords(slug),
+  );
+
+  return canRestore;
 };
 
 export const useOrganization = (organizationSlug?: string | null) => {
