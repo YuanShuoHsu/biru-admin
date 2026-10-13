@@ -5,8 +5,6 @@ import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { useSWRConfig } from "swr";
 
-import { swrKeys } from "@/constants/swr";
-
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import { Close } from "@mui/icons-material";
@@ -15,7 +13,7 @@ import { Button, DialogContentText } from "@mui/material";
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { UserSession } from "..";
+import { sessionsKey, type UserSession } from "..";
 import SessionItem from "../SessionItem";
 
 interface OtherSessionItemProps {
@@ -47,7 +45,7 @@ const OtherSessionItem = ({ session }: OtherSessionItemProps) => {
         },
         onRequest: () => setLoading(true),
         onSuccess: async () => {
-          await mutate(swrKeys.sessions);
+          await mutate(sessionsKey);
 
           setLoading(false);
 

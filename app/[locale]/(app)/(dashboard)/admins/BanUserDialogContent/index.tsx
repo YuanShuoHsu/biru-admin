@@ -17,7 +17,7 @@ import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { swrKeys } from "@/constants/swr";
+import { deviceSessionsKey } from "@/hooks/useDeviceSessions";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -84,7 +84,7 @@ const BanUserDialogContent = ({
             closeDialog();
 
             mutateAdmins();
-            mutate(swrKeys.deviceSessions);
+            mutate(deviceSessionsKey);
           },
         },
       );

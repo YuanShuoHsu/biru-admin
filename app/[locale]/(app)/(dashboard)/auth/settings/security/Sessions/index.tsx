@@ -13,8 +13,6 @@ import FormCard, {
   StyledCardHeader,
 } from "@/components/FormCard";
 
-import { swrKeys } from "@/constants/swr";
-
 import { useRouter } from "@/i18n/navigation";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
@@ -41,6 +39,8 @@ const StyledStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
+export const sessionsKey = "sessions";
+
 export type UserSession = NonNullable<
   Awaited<ReturnType<typeof authClient.listSessions>>["data"]
 >[number];
@@ -58,7 +58,7 @@ const Sessions = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const { data: sessions = [], mutate } = useSWR<UserSession[]>(
-    session ? swrKeys.sessions : null,
+    session ? sessionsKey : null,
     async () => {
       const { data } = await authClient.listSessions();
 

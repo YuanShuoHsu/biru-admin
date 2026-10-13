@@ -41,6 +41,8 @@ import type {
   Member,
 } from "@/types/organizations";
 
+import { sortByCreatedAtDesc } from "@/utils/organizations";
+
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
   { ssr: false },
@@ -152,7 +154,7 @@ const OrganizationsSlugMembers = ({
       if (error) throw error;
 
       return {
-        rows: data.members.toReversed(),
+        rows: sortByCreatedAtDesc(data.members),
         teams: data.teams,
         pendingInvitationCount: data.invitations.filter(
           ({ status }: Invitation) => status === "pending",

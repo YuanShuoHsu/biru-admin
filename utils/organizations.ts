@@ -32,6 +32,12 @@ export const getOrganizations = cache(
   },
 );
 
+export const sortByCreatedAtDesc = <T extends { createdAt: Date }>(
+  items: T[],
+) => items.toSorted((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+export const defaultOrganizationSlugKey = "default-organization-slug";
+
 export const resolveDefaultOrganizationSlug = (
   activeOrganizationId: string | null | undefined,
   organizations: { id: string; slug: string }[] | null | undefined,

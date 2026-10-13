@@ -11,7 +11,7 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
-import { hasRolePermission } from "@/utils/organizations";
+import { hasRolePermission, sortByCreatedAtDesc } from "@/utils/organizations";
 import { getSession } from "@/utils/session";
 
 interface OrganizationsSlugMembersPageProps {
@@ -68,7 +68,7 @@ const OrganizationsSlugMembersPage = async ({
     member: ["update"],
   });
 
-  const members = data.members.toReversed();
+  const members = sortByCreatedAtDesc(data.members);
   const ownerCount = members.filter(({ role }) => role === "owner").length;
 
   const canUpdateMemberRoles =

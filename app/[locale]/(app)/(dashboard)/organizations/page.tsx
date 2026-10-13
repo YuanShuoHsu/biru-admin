@@ -8,7 +8,10 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
-import { getOrganizationPermissions } from "@/utils/organizations";
+import {
+  getOrganizationPermissions,
+  sortByCreatedAtDesc,
+} from "@/utils/organizations";
 import { getSession } from "@/utils/session";
 
 interface OrganizationsPageProps {
@@ -39,7 +42,7 @@ const OrganizationsPage = async ({ params }: OrganizationsPageProps) => {
     getSession(),
   ]);
 
-  const organizations = (data || []).toReversed();
+  const organizations = sortByCreatedAtDesc(data || []);
 
   const organizationPermissions = await getOrganizationPermissions(
     organizations,

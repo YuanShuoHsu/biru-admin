@@ -17,7 +17,7 @@ import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
 import { useRouter } from "@/i18n/navigation";
 
-import { swrKeys } from "@/constants/swr";
+import { deviceSessionsKey } from "@/hooks/useDeviceSessions";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -139,7 +139,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
                 { variant: "success" },
               );
 
-              mutate(swrKeys.deviceSessions);
+              mutate(deviceSessionsKey);
 
               if (isCurrentUser) {
                 setSession(null);
@@ -177,7 +177,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
                   { variant: "success" },
                 );
 
-                mutate(swrKeys.deviceSessions);
+                mutate(deviceSessionsKey);
 
                 if (
                   isCurrentUser &&

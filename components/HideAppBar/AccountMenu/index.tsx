@@ -9,11 +9,9 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useSnackbar } from "notistack";
 import { useState, type MouseEvent } from "react";
-import useSWR, { useSWRConfig } from "swr";
+import { useSWRConfig } from "swr";
 
 import BadgeAvatars from "@/components/BadgeAvatars";
-
-import { swrKeys } from "@/constants/swr";
 
 import { useAuthNavItems, useLogoutNavItem } from "@/hooks/useAuth";
 import { useRoutes } from "@/hooks/useRoutes";
@@ -37,6 +35,8 @@ import {
   Tooltip,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+
+import useDeviceSessions from "@/hooks/useDeviceSessions";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -120,10 +120,6 @@ const renderMenuItems = (pathname: string, items: NavItem[]) =>
     );
   });
 
-type DeviceSession = NonNullable<
-  Awaited<ReturnType<typeof authClient.multiSession.listDeviceSessions>>["data"]
->[number];
-
 const AccountMenu = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -140,14 +136,7 @@ const AccountMenu = () => {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const { data: deviceSessions = [] } = useSWR<DeviceSession[]>(
-    session ? swrKeys.deviceSessions : null,
-    async () => {
-      const { data } = await authClient.multiSession.listDeviceSessions();
-
-      return data || [];
-    },
-  );
+  const { data: deviceSessions = [] } = useDeviceSessions();
 
   const otherSessions = deviceSessions.filter(
     ({ session: { token } }) => token !== session?.session.token,

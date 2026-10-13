@@ -9,7 +9,7 @@ import { useSWRConfig } from "swr";
 
 import AccountItem from "../AccountItem";
 
-import { swrKeys } from "@/constants/swr";
+import { deviceSessionsKey } from "@/hooks/useDeviceSessions";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -66,7 +66,7 @@ const OtherAccountItem = ({ token, user }: OtherAccountItemProps) => {
           const { data } = await authClient.getSession();
           setSession(data);
 
-          await mutate(swrKeys.deviceSessions);
+          await mutate(deviceSessionsKey);
 
           setIsLoading(false);
 
@@ -108,7 +108,7 @@ const OtherAccountItem = ({ token, user }: OtherAccountItemProps) => {
         },
         onRequest: () => setIsLoading(true),
         onSuccess: async () => {
-          await mutate(swrKeys.deviceSessions);
+          await mutate(deviceSessionsKey);
 
           setIsLoading(false);
 

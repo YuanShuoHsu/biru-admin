@@ -45,7 +45,7 @@ import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
-import { swrKeys } from "@/constants/swr";
+import { deviceSessionsKey } from "@/hooks/useDeviceSessions";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -515,7 +515,7 @@ const Admins = ({
                 enqueueSnackbar(message, { variant: "success" });
 
                 mutateAdmins();
-                mutate(swrKeys.deviceSessions);
+                mutate(deviceSessionsKey);
               },
             },
           );

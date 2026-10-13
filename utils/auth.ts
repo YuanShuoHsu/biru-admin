@@ -6,6 +6,8 @@ import type { Locale } from "@/i18n/routing";
 
 import type { Session } from "@/types/auth";
 
+export const listAccountsKey = "list-accounts";
+
 export const formatUserAgent = (userAgent?: string | null): string => {
   if (!userAgent) return "";
 

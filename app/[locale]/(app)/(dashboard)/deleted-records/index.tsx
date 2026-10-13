@@ -15,7 +15,7 @@ import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import type { Locale } from "@/i18n/routing";
 
-import { RestoreFromTrash } from "@mui/icons-material";
+import { Undo } from "@mui/icons-material";
 import { DialogContentText, IconButton, Stack, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
@@ -195,7 +195,7 @@ const DeletedRecords = ({
                   onClick={() => handleRestore(row)}
                   size="small"
                 >
-                  <RestoreFromTrash fontSize="small" />
+                  <Undo fontSize="small" />
                 </IconButton>
               </span>
             </Tooltip>

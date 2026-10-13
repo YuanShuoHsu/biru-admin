@@ -9,7 +9,7 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
-import { hasRolePermission } from "@/utils/organizations";
+import { hasRolePermission, sortByCreatedAtDesc } from "@/utils/organizations";
 import { getSession } from "@/utils/session";
 
 interface OrganizationsSlugInvitationsPageProps {
@@ -62,9 +62,9 @@ const OrganizationsSlugInvitationsPage = async ({
     <OrganizationsSlugInvitations
       activeOrganization={{
         ...data,
-        invitations: data.invitations
-          .toReversed()
-          .filter(({ status }) => status === "pending"),
+        invitations: sortByCreatedAtDesc(
+          data.invitations.filter(({ status }) => status === "pending"),
+        ),
       }}
       canCancelInvitation={canCancelInvitation}
     />

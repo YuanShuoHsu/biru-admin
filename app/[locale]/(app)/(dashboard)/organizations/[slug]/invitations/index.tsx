@@ -24,6 +24,8 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { ActiveOrganization, Invitation } from "@/types/organizations";
 
+import { sortByCreatedAtDesc } from "@/utils/organizations";
+
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
   { ssr: false },
@@ -77,9 +79,11 @@ const OrganizationsSlugInvitations = ({
       );
       if (error) throw error;
 
-      const pendingInvitations = data.invitations
-        .toReversed()
-        .filter(({ status }: Invitation) => status === "pending");
+      const pendingInvitations = sortByCreatedAtDesc(
+        data.invitations.filter(
+          ({ status }: Invitation) => status === "pending",
+        ),
+      );
 
       return {
         rows: pendingInvitations,

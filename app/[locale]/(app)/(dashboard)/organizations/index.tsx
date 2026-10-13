@@ -42,6 +42,8 @@ import {
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
+import { useOrganizations } from "@/hooks/organizations";
+
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Organization } from "@/types/organizations";
@@ -106,40 +108,30 @@ const Organizations = ({
   const apiRef = useGridApiRef();
 
   const {
-    data: { rows, organizationPermissions } = {
-      rows: initialRows,
-      organizationPermissions: initialOrganizationPermissions,
-    },
+    data: rows = initialRows,
     mutate,
-    isValidating: loading,
+    isValidating: loadingOrganizations,
+  } = useOrganizations({
+    fallbackData: initialRows,
+    onError: (error) => {
+      enqueueSnackbar(getErrorMessage(error.code, locale), {
+        variant: "error",
+      });
+    },
+    onSuccess: () => {
+      setTimeout(() => {
+        apiRef.current?.autosizeColumns(autosizeOptions);
+      }, 0);
+    },
+  });
+
+  const {
+    data: organizationPermissions = initialOrganizationPermissions,
+    isValidating: loadingPermissions,
   } = useSWR(
-    "organizations",
-    async () => {
-      const { data, error } = await authClient.organization.list();
-      if (error) throw error;
-
-      const organizations = data.toReversed();
-      const organizationPermissions =
-        await getOrganizationPermissions(organizations);
-
-      return { rows: organizations, organizationPermissions };
-    },
-    {
-      fallbackData: {
-        rows: initialRows,
-        organizationPermissions: initialOrganizationPermissions,
-      },
-      onError: (error) => {
-        enqueueSnackbar(getErrorMessage(error.code, locale), {
-          variant: "error",
-        });
-      },
-      onSuccess: () => {
-        setTimeout(() => {
-          apiRef.current?.autosizeColumns(autosizeOptions);
-        }, 0);
-      },
-    },
+    ["organization-permissions", ...rows.map(({ id }) => id)],
+    () => getOrganizationPermissions(rows),
+    { fallbackData: initialOrganizationPermissions },
   );
 
   const { setDialog } = useDialogStore((state) => state);
@@ -275,8 +267,10 @@ const Organizations = ({
         filterable: false,
         headerName: tOrganizations("actions.label"),
         renderCell: ({ row }: GridRenderCellParams<Organization>) => {
-          const { canDeleteOrganization, canUpdateOrganization } =
-            organizationPermissions[row.id];
+          const {
+            canDeleteOrganization = false,
+            canUpdateOrganization = false,
+          } = organizationPermissions[row.id] ?? {};
 
           return (
             <ActionsStack direction="row">
@@ -434,7 +428,7 @@ const Organizations = ({
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
         columns={columns}
-        loading={loading}
+        loading={loadingOrganizations || loadingPermissions}
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }

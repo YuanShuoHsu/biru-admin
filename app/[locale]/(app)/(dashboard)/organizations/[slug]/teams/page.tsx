@@ -9,7 +9,7 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
-import { hasRolePermission } from "@/utils/organizations";
+import { hasRolePermission, sortByCreatedAtDesc } from "@/utils/organizations";
 import { getSession } from "@/utils/session";
 
 interface OrganizationsSlugTeamsPageProps {
@@ -66,7 +66,7 @@ const OrganizationsSlugTeamsPage = async ({
 
   return (
     <OrganizationsSlugTeams
-      activeOrganization={{ ...data, teams: data.teams.toReversed() }}
+      activeOrganization={{ ...data, teams: sortByCreatedAtDesc(data.teams) }}
       canCreateTeam={canCreateTeam}
       canDeleteTeam={canDeleteTeam}
       canUpdateTeam={canUpdateTeam}

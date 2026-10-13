@@ -3,11 +3,12 @@ import { cookies } from "next/headers";
 
 import AppClientProviders from "./AppClientProviders";
 
-import { swrKeys } from "@/constants/swr";
-
 import { authClient } from "@/lib/auth-client";
 
-import { resolveDefaultOrganizationSlug } from "@/utils/organizations";
+import {
+  defaultOrganizationSlugKey,
+  resolveDefaultOrganizationSlug,
+} from "@/utils/organizations";
 import { getSession } from "@/utils/session";
 
 interface AppProvidersProps {
@@ -24,7 +25,7 @@ const AppProviders = async ({ children }: AppProvidersProps) => {
   ]);
 
   const fallback = {
-    [swrKeys.defaultOrganizationSlug]: resolveDefaultOrganizationSlug(
+    [defaultOrganizationSlugKey]: resolveDefaultOrganizationSlug(
       initialSession?.session?.activeOrganizationId,
       organizations,
     ),

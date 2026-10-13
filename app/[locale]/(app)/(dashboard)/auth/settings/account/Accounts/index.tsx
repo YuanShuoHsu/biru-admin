@@ -3,7 +3,6 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import { Fragment, useState } from "react";
-import useSWR from "swr";
 
 import AccountItem from "./AccountItem";
 import OtherAccountItem from "./OtherAccountItem";
@@ -13,8 +12,6 @@ import FormCard, {
   StyledCardHeader,
 } from "@/components/FormCard";
 
-import { swrKeys } from "@/constants/swr";
-
 import { useRouter } from "@/i18n/navigation";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
@@ -23,16 +20,14 @@ import { Logout } from "@mui/icons-material";
 import { Button, DialogContentText, Divider, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
+import useDeviceSessions from "@/hooks/useDeviceSessions";
+
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 const StyledTypography = styled(Typography)({
   fontWeight: "bold",
 });
-
-type DeviceSession = NonNullable<
-  Awaited<ReturnType<typeof authClient.multiSession.listDeviceSessions>>["data"]
->[number];
 
 const Accounts = () => {
   const [loading, setLoading] = useState(false);
@@ -46,14 +41,7 @@ const Accounts = () => {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const { data: accounts = [], mutate } = useSWR<DeviceSession[]>(
-    session ? swrKeys.deviceSessions : null,
-    async () => {
-      const { data } = await authClient.multiSession.listDeviceSessions();
-
-      return data || [];
-    },
-  );
+  const { data: accounts = [], mutate } = useDeviceSessions();
   const otherAccounts = accounts.filter(
     ({ session: { token } }) => token !== session?.session.token,
   );

@@ -31,6 +31,8 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { ActiveOrganization, Team } from "@/types/organizations";
 
+import { sortByCreatedAtDesc } from "@/utils/organizations";
+
 const ActionsStack = styled(Stack)(({ theme }) => ({
   height: "100%",
   alignItems: "center",
@@ -89,7 +91,7 @@ const OrganizationsSlugTeams = ({
       );
       if (error) throw error;
 
-      return { rows: data.teams.toReversed() };
+      return { rows: sortByCreatedAtDesc(data.teams) };
     },
     {
       fallbackData: { rows: initialTeams },
