@@ -1,5 +1,19 @@
 {
   "actions": {
+    "batchDeleteCoupon": {
+      "cancel": {
+        "confirm": "Are you sure you want to cancel batch delete <bold>coupons</bold>? Your selection will be cleared.",
+        "label": "Cancel Batch Delete Coupons"
+      },
+      "confirm": "Are you sure you want to batch delete <bold>coupons</bold>?",
+      "submit": {
+        "confirm": "Are you sure you want to delete the <bold>{count} selected coupons</bold>?",
+        "error": "Failed to batch delete coupons",
+        "label": "Delete Selected Coupons ({count})",
+        "success": "Deleted {count} coupons"
+      },
+      "title": "Batch Delete Coupons"
+    },
     "createCoupon": {
       "error": "Failed to create coupon",
       "success": "Coupon {code} created",

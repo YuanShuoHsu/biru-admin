@@ -286,6 +286,28 @@ export const getSelectedRows = <Row extends { id: string }>(
   { ids, type }: GridRowSelectionModel,
 ) => rows.filter(({ id }) => ids.has(id) === (type === "include"));
 
+export class SequentialRunError extends Error {
+  constructor(
+    readonly done: number,
+    readonly reason: unknown,
+  ) {
+    super();
+  }
+}
+
+export const runSequentially = async <Row>(
+  rows: Row[],
+  run: (row: Row) => Promise<void>,
+) => {
+  for (const [index, row] of rows.entries()) {
+    try {
+      await run(row);
+    } catch (error) {
+      throw new SequentialRunError(index, error);
+    }
+  }
+};
+
 export const toExportDate = (value?: dayjs.ConfigType) =>
   typeof value === "string" && /^\d{4}-\d{2}$/.test(value)
     ? value

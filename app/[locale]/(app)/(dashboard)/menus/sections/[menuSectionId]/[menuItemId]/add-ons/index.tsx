@@ -12,7 +12,6 @@ import UpdateAddOnDialog from "./UpdateAddOnDialog";
 import AuditLogButton from "@/components/AuditLogButton";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 import { DragHandle, Sortable } from "@/components/Sortable";
-
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -24,8 +23,8 @@ import {
   useDateFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
+import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
-
 import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
 import { isSortableOperation } from "@dnd-kit/react/sortable";
@@ -50,7 +49,11 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  FilterOperator,
+  SortDirection,
+  ToolbarMode,
+} from "@/types/dataGrid";
 import type {
   AddOnFilterField,
   AddOnSortField,
@@ -115,7 +118,9 @@ const MenuItemAddOns = ({
   sortBy,
   sortDirection,
 }: MenuItemAddOnsProps) => {
-  const [isReorderMode, setIsReorderMode] = useState(false);
+  const [toolbarMode, setToolbarMode] = useState<ToolbarMode>(null);
+  const isReorderMode = toolbarMode === "reorder";
+  const isSelectMode = toolbarMode === "select";
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -194,6 +199,13 @@ const MenuItemAddOns = ({
       },
     },
   );
+
+  const {
+    clearRowSelection,
+    hasSelectableRows,
+    rowSelectionProps,
+    selectedRows,
+  } = useRowSelection({ enabled: isSelectMode, rows });
 
   const isReorderDisabled =
     rowCount < 2 || isFilteredOrSorted(filterModel, sortModel);
@@ -330,6 +342,101 @@ const MenuItemAddOns = ({
     [locale, menuItemId, mutate, setDialog, tMenus],
   );
 
+  const handleEnterBatchDeleteMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tMenus.rich("items.addOns.actions.batchDeleteAddOn.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setToolbarMode("select");
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tMenus("items.addOns.actions.batchDeleteAddOn.title"),
+    });
+  }, [apiRef, setDialog, tMenus]);
+
+  const handleSubmitBatchDelete = useCallback(() => {
+    const count = selectedRows.length;
+
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tMenus.rich("items.addOns.actions.batchDeleteAddOn.submit.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            count,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          await fetcher(`/api/menu-items/${menuItemId}/add-ons`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
+          });
+
+          setToolbarMode(null);
+          clearRowSelection();
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tMenus("items.addOns.actions.batchDeleteAddOn.submit.success", {
+              count,
+            }),
+            {
+              variant: "success",
+            },
+          );
+        } catch {
+          enqueueSnackbar(
+            tMenus("items.addOns.actions.batchDeleteAddOn.submit.error"),
+            { variant: "error" },
+          );
+        }
+
+        mutate();
+      },
+      open: true,
+      title: tMenus("items.addOns.actions.batchDeleteAddOn.submit.label", {
+        count,
+      }),
+    });
+  }, [
+    apiRef,
+    clearRowSelection,
+    menuItemId,
+    mutate,
+    selectedRows,
+    setDialog,
+    tMenus,
+  ]);
+
+  const handleCancelBatchDelete = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tMenus.rich("items.addOns.actions.batchDeleteAddOn.cancel.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setToolbarMode(null);
+        clearRowSelection();
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tMenus("items.addOns.actions.batchDeleteAddOn.cancel.label"),
+    });
+  }, [apiRef, clearRowSelection, setDialog, tMenus]);
+
   const handleEnterReorderMode = useCallback(() => {
     setDialog({
       content: (
@@ -340,7 +447,7 @@ const MenuItemAddOns = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
-        setIsReorderMode(true);
+        setToolbarMode("reorder");
         setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
@@ -368,7 +475,7 @@ const MenuItemAddOns = ({
             }),
           });
 
-          setIsReorderMode(false);
+          setToolbarMode(null);
           setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
 
           enqueueSnackbar(
@@ -412,7 +519,7 @@ const MenuItemAddOns = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
-        setIsReorderMode(false);
+        setToolbarMode(null);
         mutate();
       },
       open: true,
@@ -449,7 +556,7 @@ const MenuItemAddOns = ({
             },
           ]
         : []),
-      ...((canWrite || canViewAuditLog) && !isReorderMode
+      ...((canWrite || canViewAuditLog) && !toolbarMode
         ? [
             {
               disableColumnMenu: true,
@@ -543,35 +650,50 @@ const MenuItemAddOns = ({
       stringFilterOperators,
       tCommon,
       tMenus,
+      toolbarMode,
     ],
   );
 
   return (
     <>
       <ToolbarStack direction="row">
-        {!isReorderMode ? (
-          canWrite && (
-            <>
+        {!toolbarMode && (
+          <>
+            {canWrite && (
+              <>
+                <Button
+                  onClick={handleCreateAddOn}
+                  size="small"
+                  startIcon={<Add />}
+                  variant="contained"
+                >
+                  {tMenus("items.addOns.actions.createAddOn.title")}
+                </Button>
+                <Button
+                  disabled={isReorderDisabled}
+                  onClick={handleEnterReorderMode}
+                  size="small"
+                  startIcon={<Sort />}
+                  variant="outlined"
+                >
+                  {tMenus("items.addOns.actions.reorderAddOn.title")}
+                </Button>
+              </>
+            )}
+            {canWrite && (
               <Button
-                onClick={handleCreateAddOn}
+                disabled={!hasSelectableRows}
+                onClick={handleEnterBatchDeleteMode}
                 size="small"
-                startIcon={<Add />}
-                variant="contained"
-              >
-                {tMenus("items.addOns.actions.createAddOn.title")}
-              </Button>
-              <Button
-                disabled={isReorderDisabled}
-                onClick={handleEnterReorderMode}
-                size="small"
-                startIcon={<Sort />}
+                startIcon={<Delete />}
                 variant="outlined"
               >
-                {tMenus("items.addOns.actions.reorderAddOn.title")}
+                {tMenus("items.addOns.actions.batchDeleteAddOn.title")}
               </Button>
-            </>
-          )
-        ) : (
+            )}
+          </>
+        )}
+        {isReorderMode && (
           <>
             <Button
               onClick={handleCancelReorder}
@@ -591,10 +713,35 @@ const MenuItemAddOns = ({
             </Button>
           </>
         )}
+        {isSelectMode && (
+          <>
+            <Button
+              onClick={handleCancelBatchDelete}
+              size="small"
+              startIcon={<Cancel />}
+              variant="outlined"
+            >
+              {tMenus("items.addOns.actions.batchDeleteAddOn.cancel.label")}
+            </Button>
+            <Button
+              color="error"
+              disabled={!selectedRows.length}
+              onClick={handleSubmitBatchDelete}
+              size="small"
+              startIcon={<Delete />}
+              variant="contained"
+            >
+              {tMenus("items.addOns.actions.batchDeleteAddOn.submit.label", {
+                count: selectedRows.length,
+              })}
+            </Button>
+          </>
+        )}
       </ToolbarStack>
       <DragDropProvider onDragEnd={handleDragEnd}>
         <DataGrid
           {...DATA_GRID_PROPS}
+          {...rowSelectionProps}
           apiRef={apiRef}
           columns={columns}
           filterMode="server"

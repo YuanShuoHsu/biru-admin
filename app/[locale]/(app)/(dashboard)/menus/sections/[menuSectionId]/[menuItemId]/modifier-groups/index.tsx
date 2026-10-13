@@ -11,7 +11,6 @@ import AttachModifierGroupDialog from "./AttachModifierGroupDialog";
 import AuditLogButton from "@/components/AuditLogButton";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 import { DragHandle, Sortable } from "@/components/Sortable";
-
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -24,13 +23,13 @@ import {
   useNumberFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
+import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
-
 import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
 import { isSortableOperation } from "@dnd-kit/react/sortable";
 
-import { Add, Cancel, Delete, Save, Sort } from "@mui/icons-material";
+import { Add, Cancel, Delete, LinkOff, Save, Sort } from "@mui/icons-material";
 import {
   Button,
   DialogContentText,
@@ -50,7 +49,11 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  FilterOperator,
+  SortDirection,
+  ToolbarMode,
+} from "@/types/dataGrid";
 import type {
   MenuItemModifierGroup,
   ModifierGroupFilterField,
@@ -115,7 +118,9 @@ const MenuItemModifierGroups = ({
   sortBy,
   sortDirection,
 }: MenuItemModifierGroupsProps) => {
-  const [isReorderMode, setIsReorderMode] = useState(false);
+  const [toolbarMode, setToolbarMode] = useState<ToolbarMode>(null);
+  const isReorderMode = toolbarMode === "reorder";
+  const isSelectMode = toolbarMode === "select";
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -188,6 +193,13 @@ const MenuItemModifierGroups = ({
       },
     },
   );
+
+  const {
+    clearRowSelection,
+    hasSelectableRows,
+    rowSelectionProps,
+    selectedRows,
+  } = useRowSelection({ enabled: isSelectMode, rows });
 
   const isReorderDisabled =
     rowCount < 2 || isFilteredOrSorted(filterModel, sortModel);
@@ -299,6 +311,107 @@ const MenuItemModifierGroups = ({
     [locale, menuItemId, mutate, setDialog, tMenus],
   );
 
+  const handleEnterBatchDetachMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tMenus.rich("items.modifierGroups.actions.batchDetach.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setToolbarMode("select");
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tMenus("items.modifierGroups.actions.batchDetach.title"),
+    });
+  }, [apiRef, setDialog, tMenus]);
+
+  const handleSubmitBatchDetach = useCallback(() => {
+    const count = selectedRows.length;
+
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tMenus.rich(
+            "items.modifierGroups.actions.batchDetach.submit.confirm",
+            {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              count,
+            },
+          )}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          await fetcher(`/api/menu-items/${menuItemId}/modifier-groups`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
+          });
+
+          setToolbarMode(null);
+          clearRowSelection();
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tMenus("items.modifierGroups.actions.batchDetach.submit.success", {
+              count,
+            }),
+            {
+              variant: "success",
+            },
+          );
+        } catch {
+          enqueueSnackbar(
+            tMenus("items.modifierGroups.actions.batchDetach.submit.error"),
+            { variant: "error" },
+          );
+        }
+
+        mutate();
+      },
+      open: true,
+      title: tMenus("items.modifierGroups.actions.batchDetach.submit.label", {
+        count,
+      }),
+    });
+  }, [
+    apiRef,
+    clearRowSelection,
+    menuItemId,
+    mutate,
+    selectedRows,
+    setDialog,
+    tMenus,
+  ]);
+
+  const handleCancelBatchDetach = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tMenus.rich(
+            "items.modifierGroups.actions.batchDetach.cancel.confirm",
+            {
+              bold: (chunks) => <strong>{chunks}</strong>,
+            },
+          )}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setToolbarMode(null);
+        clearRowSelection();
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tMenus("items.modifierGroups.actions.batchDetach.cancel.label"),
+    });
+  }, [apiRef, clearRowSelection, setDialog, tMenus]);
+
   const handleEnterReorderMode = useCallback(() => {
     setDialog({
       content: (
@@ -309,7 +422,7 @@ const MenuItemModifierGroups = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
-        setIsReorderMode(true);
+        setToolbarMode("reorder");
         setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
@@ -340,7 +453,7 @@ const MenuItemModifierGroups = ({
             },
           );
 
-          setIsReorderMode(false);
+          setToolbarMode(null);
           setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
 
           enqueueSnackbar(
@@ -380,7 +493,7 @@ const MenuItemModifierGroups = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
-        setIsReorderMode(false);
+        setToolbarMode(null);
         mutate();
       },
       open: true,
@@ -417,7 +530,7 @@ const MenuItemModifierGroups = ({
             },
           ]
         : []),
-      ...((canWrite || canViewAuditLog) && !isReorderMode
+      ...((canWrite || canViewAuditLog) && !toolbarMode
         ? [
             {
               disableColumnMenu: true,
@@ -512,35 +625,50 @@ const MenuItemModifierGroups = ({
       numberFilterOperators,
       stringFilterOperators,
       tMenus,
+      toolbarMode,
     ],
   );
 
   return (
     <>
       <ToolbarStack direction="row">
-        {!isReorderMode ? (
-          canWrite && (
-            <>
+        {!toolbarMode && (
+          <>
+            {canWrite && (
+              <>
+                <Button
+                  onClick={handleAttach}
+                  size="small"
+                  startIcon={<Add />}
+                  variant="contained"
+                >
+                  {tMenus("items.modifierGroups.actions.attach.title")}
+                </Button>
+                <Button
+                  disabled={isReorderDisabled}
+                  onClick={handleEnterReorderMode}
+                  size="small"
+                  startIcon={<Sort />}
+                  variant="outlined"
+                >
+                  {tMenus("items.modifierGroups.actions.reorder.title")}
+                </Button>
+              </>
+            )}
+            {canWrite && (
               <Button
-                onClick={handleAttach}
+                disabled={!hasSelectableRows}
+                onClick={handleEnterBatchDetachMode}
                 size="small"
-                startIcon={<Add />}
-                variant="contained"
-              >
-                {tMenus("items.modifierGroups.actions.attach.title")}
-              </Button>
-              <Button
-                disabled={isReorderDisabled}
-                onClick={handleEnterReorderMode}
-                size="small"
-                startIcon={<Sort />}
+                startIcon={<LinkOff />}
                 variant="outlined"
               >
-                {tMenus("items.modifierGroups.actions.reorder.title")}
+                {tMenus("items.modifierGroups.actions.batchDetach.title")}
               </Button>
-            </>
-          )
-        ) : (
+            )}
+          </>
+        )}
+        {isReorderMode && (
           <>
             <Button
               onClick={handleCancelReorder}
@@ -560,10 +688,35 @@ const MenuItemModifierGroups = ({
             </Button>
           </>
         )}
+        {isSelectMode && (
+          <>
+            <Button
+              onClick={handleCancelBatchDetach}
+              size="small"
+              startIcon={<Cancel />}
+              variant="outlined"
+            >
+              {tMenus("items.modifierGroups.actions.batchDetach.cancel.label")}
+            </Button>
+            <Button
+              color="error"
+              disabled={!selectedRows.length}
+              onClick={handleSubmitBatchDetach}
+              size="small"
+              startIcon={<LinkOff />}
+              variant="contained"
+            >
+              {tMenus("items.modifierGroups.actions.batchDetach.submit.label", {
+                count: selectedRows.length,
+              })}
+            </Button>
+          </>
+        )}
       </ToolbarStack>
       <DragDropProvider onDragEnd={handleDragEnd}>
         <DataGrid
           {...DATA_GRID_PROPS}
+          {...rowSelectionProps}
           apiRef={apiRef}
           columns={columns}
           filterMode="server"

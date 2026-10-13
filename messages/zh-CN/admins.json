@@ -22,6 +22,21 @@
       "success": "已封禁 {email}",
       "title": "封禁用户"
     },
+    "batchRemoveUser": {
+      "cancel": {
+        "confirm": "确定要取消<bold>用户</bold>批量删除吗？已勾选的项目将会清除。",
+        "label": "取消批量删除用户"
+      },
+      "confirm": "确定要进行<bold>用户</bold>批量删除吗？",
+      "submit": {
+        "confirm": "确定要删除所选的 <bold>{count} 位用户</bold>吗？",
+        "label": "删除所选用户（{count}）",
+        "partial": "已删除 {done} 位用户，之后的未删除：{message}",
+        "stale": "所选的用户已有变动，请重新选取",
+        "success": "已删除 {count} 位用户"
+      },
+      "title": "批量删除用户"
+    },
     "createUser": {
       "confirmPassword": {
         "label": "确认密码",
@@ -100,15 +115,24 @@
   "userSessions": {
     "label": "用户 Sessions",
     "actions": {
+      "batchRevokeUserSession": {
+        "cancel": {
+          "confirm": "确定要取消<bold>Session</bold>批量撤销吗？已勾选的项目将会清除。",
+          "label": "取消批量撤销Session"
+        },
+        "confirm": "确定要进行<bold>Session</bold>批量撤销吗？",
+        "submit": {
+          "confirm": "确定要撤销所选的 <bold>{count} 个 Session</bold>吗？",
+          "label": "撤销所选Session（{count}）",
+          "partial": "已撤销 {done} 个 Session，之后的未撤销：{message}",
+          "success": "已撤销 {count} 个 Session"
+        },
+        "title": "批量撤销Session"
+      },
       "label": "操作",
       "revokeUserSession": {
         "success": "已撤销 {email} 的一个 session",
         "title": "撤销 Session"
-      },
-      "revokeUserSessions": {
-        "confirm": "确定要撤销 <bold>{email}</bold> 的所有 session 吗？",
-        "success": "已撤销 {email} 的所有 session",
-        "title": "撤销全部"
       }
     },
     "createdAt": "登录时间",

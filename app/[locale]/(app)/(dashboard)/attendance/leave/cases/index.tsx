@@ -10,7 +10,6 @@ import AssignChildDialog from "./AssignChildDialog";
 import LeaveCaseDialog from "./LeaveCaseDialog";
 
 import { renderEmptyableCell } from "@/components/EmptyCell";
-
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -24,9 +23,9 @@ import {
   useNumberFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
+import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
-
-import { Add, ChildCare, Delete, Edit } from "@mui/icons-material";
+import { Add, Cancel, ChildCare, Delete, Edit } from "@mui/icons-material";
 import {
   Button,
   DialogContentText,
@@ -78,9 +77,11 @@ const StyledIconButton = styled(IconButton, {
   visibility: visible ? "visible" : "hidden",
 }));
 
-const StyledButton = styled(Button)({
-  alignSelf: "flex-start",
-});
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -134,6 +135,7 @@ const LeaveCases = ({
   sortBy,
   sortDirection,
 }: LeaveCasesProps) => {
+  const [isSelectMode, setIsSelectMode] = useState(false);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -394,6 +396,119 @@ const LeaveCases = ({
     ],
   );
 
+  const isLeaveCaseSelectable = useCallback(
+    (row: AttendanceLeaveCase) => getRowActions(row).delete,
+    [getRowActions],
+  );
+
+  const {
+    clearRowSelection,
+    hasSelectableRows,
+    rowSelectionProps,
+    selectedRows,
+  } = useRowSelection({
+    enabled: isSelectMode,
+    isRowSelectable: isLeaveCaseSelectable,
+    rows,
+  });
+
+  const handleEnterLeaveCaseBatchDeleteMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAttendance.rich("leaveCases.actions.batchDelete.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(true);
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tAttendance("leaveCases.actions.batchDelete.title"),
+    });
+  }, [apiRef, setDialog, tAttendance]);
+
+  const handleSubmitLeaveCaseBatchDelete = useCallback(() => {
+    const count = selectedRows.length;
+
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAttendance.rich("leaveCases.actions.batchDelete.submit.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            count,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          await fetcher(
+            attendancePath(organizationSlug, "org", "leave-cases"),
+            {
+              method: "DELETE",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
+            },
+          );
+
+          setIsSelectMode(false);
+          clearRowSelection();
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tAttendance("leaveCases.actions.batchDelete.submit.success", {
+              count,
+            }),
+            {
+              variant: "success",
+            },
+          );
+        } catch (error) {
+          enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+            variant: "error",
+          });
+        }
+
+        mutate();
+      },
+      open: true,
+      title: tAttendance("leaveCases.actions.batchDelete.submit.label", {
+        count,
+      }),
+    });
+  }, [
+    apiRef,
+    clearRowSelection,
+    mutate,
+    organizationSlug,
+    selectedRows,
+    setDialog,
+    tAttendance,
+  ]);
+
+  const handleCancelLeaveCaseBatchDelete = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAttendance.rich("leaveCases.actions.batchDelete.cancel.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(false);
+        clearRowSelection();
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tAttendance("leaveCases.actions.batchDelete.cancel.label"),
+    });
+  }, [apiRef, clearRowSelection, setDialog, tAttendance]);
+
   const availableActions = useMemo(() => {
     const rowActions = rows.map(getRowActions);
 
@@ -415,9 +530,10 @@ const LeaveCases = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...(availableActions.assignChild ||
-      availableActions.update ||
-      availableActions.delete
+      ...((availableActions.assignChild ||
+        availableActions.update ||
+        availableActions.delete) &&
+      !isSelectMode
         ? [
             {
               disableColumnMenu: true,
@@ -574,6 +690,7 @@ const LeaveCases = ({
       handleDeleteLeaveCase,
       handleLeaveCaseDialog,
       isParentalLeave,
+      isSelectMode,
       leaveTypeOptions,
       numberFilterOperators,
       parentalChildren,
@@ -584,18 +701,62 @@ const LeaveCases = ({
 
   return (
     <>
-      {canWrite && (
-        <StyledButton
-          onClick={() => handleLeaveCaseDialog()}
-          size="small"
-          startIcon={<Add />}
-          variant="contained"
-        >
-          {tAttendance("leaveCases.actions.create")}
-        </StyledButton>
+      {(canWrite || canDelete) && (
+        <ToolbarStack direction="row">
+          {!isSelectMode && (
+            <>
+              {canWrite && (
+                <Button
+                  onClick={() => handleLeaveCaseDialog()}
+                  size="small"
+                  startIcon={<Add />}
+                  variant="contained"
+                >
+                  {tAttendance("leaveCases.actions.create")}
+                </Button>
+              )}
+              {canDelete && (
+                <Button
+                  disabled={!hasSelectableRows}
+                  onClick={handleEnterLeaveCaseBatchDeleteMode}
+                  size="small"
+                  startIcon={<Delete />}
+                  variant="outlined"
+                >
+                  {tAttendance("leaveCases.actions.batchDelete.title")}
+                </Button>
+              )}
+            </>
+          )}
+          {isSelectMode && (
+            <>
+              <Button
+                onClick={handleCancelLeaveCaseBatchDelete}
+                size="small"
+                startIcon={<Cancel />}
+                variant="outlined"
+              >
+                {tAttendance("leaveCases.actions.batchDelete.cancel.label")}
+              </Button>
+              <Button
+                color="error"
+                disabled={!selectedRows.length}
+                onClick={handleSubmitLeaveCaseBatchDelete}
+                size="small"
+                startIcon={<Delete />}
+                variant="contained"
+              >
+                {tAttendance("leaveCases.actions.batchDelete.submit.label", {
+                  count: selectedRows.length,
+                })}
+              </Button>
+            </>
+          )}
+        </ToolbarStack>
       )}
       <DataGrid
         {...DATA_GRID_PROPS}
+        {...rowSelectionProps}
         apiRef={apiRef}
         columns={columns}
         filterMode="server"

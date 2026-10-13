@@ -22,6 +22,21 @@
       "success": "{email} has been banned",
       "title": "Ban user"
     },
+    "batchRemoveUser": {
+      "cancel": {
+        "confirm": "Are you sure you want to cancel batch delete <bold>users</bold>? Your selection will be cleared.",
+        "label": "Cancel Batch Delete Users"
+      },
+      "confirm": "Are you sure you want to batch delete <bold>users</bold>?",
+      "submit": {
+        "confirm": "Are you sure you want to delete the <bold>{count} selected users</bold>?",
+        "label": "Delete Selected Users ({count})",
+        "partial": "Deleted {done} users; the rest were not deleted: {message}",
+        "stale": "The selected users have changed. Please select again.",
+        "success": "Deleted {count} users"
+      },
+      "title": "Batch Delete Users"
+    },
     "createUser": {
       "confirmPassword": {
         "label": "Confirm password",
@@ -100,15 +115,24 @@
   "userSessions": {
     "label": "User Sessions",
     "actions": {
+      "batchRevokeUserSession": {
+        "cancel": {
+          "confirm": "Are you sure you want to cancel batch revoke <bold>sessions</bold>? Your selection will be cleared.",
+          "label": "Cancel Batch Revoke Sessions"
+        },
+        "confirm": "Are you sure you want to batch revoke <bold>sessions</bold>?",
+        "submit": {
+          "confirm": "Are you sure you want to revoke the <bold>{count} selected sessions</bold>?",
+          "label": "Revoke Selected Sessions ({count})",
+          "partial": "Revoked {done} sessions; the rest were not revoked: {message}",
+          "success": "Revoked {count} sessions"
+        },
+        "title": "Batch Revoke Sessions"
+      },
       "label": "Actions",
       "revokeUserSession": {
         "success": "Revoked a session for {email}",
         "title": "Revoke session"
-      },
-      "revokeUserSessions": {
-        "confirm": "Are you sure you want to revoke all sessions for <bold>{email}</bold>?",
-        "success": "Revoked all sessions for {email}",
-        "title": "Revoke all"
       }
     },
     "createdAt": "Signed in",

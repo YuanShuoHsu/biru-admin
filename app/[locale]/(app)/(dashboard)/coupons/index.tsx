@@ -11,7 +11,6 @@ import GrantCouponDialog from "./GrantCouponDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
 import { renderEmptyableCell } from "@/components/EmptyCell";
-
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -30,12 +29,13 @@ import {
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 import { useFormatMoney } from "@/hooks/useFormatMoney";
+import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
-
 import { Link } from "@/i18n/navigation";
 
 import {
   Add,
+  Cancel,
   CardGiftcard,
   Delete,
   Edit,
@@ -147,6 +147,7 @@ const Coupons = ({
   sortBy,
   sortDirection,
 }: CouponsProps) => {
+  const [isSelectMode, setIsSelectMode] = useState(false);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -251,6 +252,13 @@ const Coupons = ({
       },
     },
   );
+
+  const {
+    clearRowSelection,
+    hasSelectableRows,
+    rowSelectionProps,
+    selectedRows,
+  } = useRowSelection({ enabled: isSelectMode, rows });
 
   const handlePaginationModelChange = useCallback(
     (newModel: GridPaginationModel) => {
@@ -384,9 +392,92 @@ const Coupons = ({
     [mutate, setDialog, tCoupons],
   );
 
+  const handleEnterCouponBatchDeleteMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tCoupons.rich("actions.batchDeleteCoupon.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(true);
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tCoupons("actions.batchDeleteCoupon.title"),
+    });
+  }, [apiRef, setDialog, tCoupons]);
+
+  const handleSubmitCouponBatchDelete = useCallback(() => {
+    const count = selectedRows.length;
+
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tCoupons.rich("actions.batchDeleteCoupon.submit.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            count,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          await fetcher("/api/coupons", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
+          });
+
+          setIsSelectMode(false);
+          clearRowSelection();
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tCoupons("actions.batchDeleteCoupon.submit.success", { count }),
+            {
+              variant: "success",
+            },
+          );
+        } catch {
+          enqueueSnackbar(tCoupons("actions.batchDeleteCoupon.submit.error"), {
+            variant: "error",
+          });
+        }
+
+        mutate();
+      },
+      open: true,
+      title: tCoupons("actions.batchDeleteCoupon.submit.label", { count }),
+    });
+  }, [apiRef, clearRowSelection, mutate, selectedRows, setDialog, tCoupons]);
+
+  const handleCancelCouponBatchDelete = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tCoupons.rich("actions.batchDeleteCoupon.cancel.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(false);
+        clearRowSelection();
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tCoupons("actions.batchDeleteCoupon.cancel.label"),
+    });
+  }, [apiRef, clearRowSelection, setDialog, tCoupons]);
+
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...(canManageCoupon || canGrantCoupon || canViewAuditLog
+      ...((canManageCoupon || canGrantCoupon || canViewAuditLog) &&
+      !isSelectMode
         ? [
             {
               disableColumnMenu: true,
@@ -682,6 +773,7 @@ const Coupons = ({
       handleDeleteCoupon,
       handleGrantCoupon,
       handleUpdateCoupon,
+      isSelectMode,
       numberFilterOperators,
       organization?.id,
       organizations,
@@ -695,18 +787,56 @@ const Coupons = ({
     <>
       {canManageCoupon && (
         <ToolbarStack direction="row">
-          <Button
-            onClick={handleCreateCoupon}
-            size="small"
-            startIcon={<Add />}
-            variant="contained"
-          >
-            {tCoupons("actions.createCoupon.title")}
-          </Button>
+          {!isSelectMode && (
+            <>
+              <Button
+                onClick={handleCreateCoupon}
+                size="small"
+                startIcon={<Add />}
+                variant="contained"
+              >
+                {tCoupons("actions.createCoupon.title")}
+              </Button>
+              <Button
+                disabled={!hasSelectableRows}
+                onClick={handleEnterCouponBatchDeleteMode}
+                size="small"
+                startIcon={<Delete />}
+                variant="outlined"
+              >
+                {tCoupons("actions.batchDeleteCoupon.title")}
+              </Button>
+            </>
+          )}
+          {isSelectMode && (
+            <>
+              <Button
+                onClick={handleCancelCouponBatchDelete}
+                size="small"
+                startIcon={<Cancel />}
+                variant="outlined"
+              >
+                {tCoupons("actions.batchDeleteCoupon.cancel.label")}
+              </Button>
+              <Button
+                color="error"
+                disabled={!selectedRows.length}
+                onClick={handleSubmitCouponBatchDelete}
+                size="small"
+                startIcon={<Delete />}
+                variant="contained"
+              >
+                {tCoupons("actions.batchDeleteCoupon.submit.label", {
+                  count: selectedRows.length,
+                })}
+              </Button>
+            </>
+          )}
         </ToolbarStack>
       )}
       <DataGrid
         {...DATA_GRID_PROPS}
+        {...rowSelectionProps}
         apiRef={apiRef}
         columns={columns}
         filterMode="server"

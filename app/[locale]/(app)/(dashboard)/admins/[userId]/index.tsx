@@ -12,16 +12,14 @@ import { useSWRConfig } from "swr";
 import RevokeUserSessionDialogContent from "./RevokeUserSessionDialogContent";
 
 import { renderEmptyableCell } from "@/components/EmptyCell";
-
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
-import { useRouter } from "@/i18n/navigation";
-
 import { deviceSessionsKey } from "@/hooks/useDeviceSessions";
+import { useRowSelection } from "@/hooks/useRowSelection";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { DeleteOutlined, LogoutOutlined } from "@mui/icons-material";
+import { Cancel, DeleteOutlined } from "@mui/icons-material";
 import {
   Button,
   Chip,
@@ -38,11 +36,19 @@ import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { formatUserAgent } from "@/utils/auth";
+import { runSequentially, SequentialRunError } from "@/utils/dataGrid";
+import { getErrorMessage as getFetchErrorMessage } from "@/utils/errors";
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
   height: "100%",
   alignItems: "center",
   gap: theme.spacing(1),
+}));
+
+const StyledIconButton = styled(IconButton, {
+  shouldForwardProp: (prop) => prop !== "visible",
+})<{ visible: boolean }>(({ visible }) => ({
+  visibility: visible ? "visible" : "hidden",
 }));
 
 const ToolbarStack = styled(Stack)(({ theme }) => ({
@@ -62,20 +68,31 @@ interface UserSessionsProps {
 }
 
 const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
+  const [isSelectMode, setIsSelectMode] = useState(false);
   const [rows, setRows] = useState(initialRows);
 
   const apiRef = useGridApiRef();
 
-  const { session: currentSession, setSession } = useAuthStore(
-    (state) => state,
+  const { session: currentSession } = useAuthStore((state) => state);
+
+  const isUserSessionSelectable = useCallback(
+    ({ token }: Session) => token !== currentSession?.session.token,
+    [currentSession?.session.token],
   );
+
+  const {
+    clearRowSelection,
+    hasSelectableRows,
+    rowSelectionProps,
+    selectedRows,
+  } = useRowSelection({
+    enabled: isSelectMode,
+    isRowSelectable: isUserSessionSelectable,
+    rows,
+  });
   const { setDialog } = useDialogStore((state) => state);
 
-  const router = useRouter();
-
   const { mutate } = useSWRConfig();
-
-  const isCurrentUser = user.id === currentSession?.user?.id;
 
   const format = useFormatter();
 
@@ -112,50 +129,6 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
     );
   }, [apiRef, locale, user.id]);
 
-  const handleRevokeUserSessions = () => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tUserSessions.rich("actions.revokeUserSessions.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-            email: user.email,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        await authClient.admin.revokeUserSessions(
-          { userId: user.id },
-          {
-            onError: ({ error: { code } }) => {
-              enqueueSnackbar(getErrorMessage(code, locale), {
-                variant: "error",
-              });
-            },
-            onSuccess: () => {
-              enqueueSnackbar(
-                tUserSessions("actions.revokeUserSessions.success", {
-                  email: user.email,
-                }),
-                { variant: "success" },
-              );
-
-              mutate(deviceSessionsKey);
-
-              if (isCurrentUser) {
-                setSession(null);
-                router.replace("/");
-              } else {
-                fetchListUserSessions();
-              }
-            },
-          },
-        );
-      },
-      open: true,
-      title: tUserSessions("actions.revokeUserSessions.title"),
-    });
-  };
-
   const handleRevokeUserSession = useCallback(
     (session: Pick<Session, "token" | "ipAddress" | "userAgent">) => {
       setDialog({
@@ -178,16 +151,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
                 );
 
                 mutate(deviceSessionsKey);
-
-                if (
-                  isCurrentUser &&
-                  session.token === currentSession?.session.token
-                ) {
-                  setSession(null);
-                  router.replace("/");
-                } else {
-                  fetchListUserSessions();
-                }
+                fetchListUserSessions();
               },
             },
           );
@@ -197,58 +161,174 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
       });
     },
     [
-      currentSession?.session.token,
       fetchListUserSessions,
       mutate,
-      isCurrentUser,
       locale,
-      router,
       setDialog,
-      setSession,
       tUserSessions,
       user.email,
     ],
   );
 
+  const handleEnterUserSessionBatchRevokeMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tUserSessions.rich("actions.batchRevokeUserSession.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(true);
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tUserSessions("actions.batchRevokeUserSession.title"),
+    });
+  }, [apiRef, setDialog, tUserSessions]);
+
+  const handleSubmitUserSessionBatchRevoke = useCallback(() => {
+    const count = selectedRows.length;
+
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tUserSessions.rich("actions.batchRevokeUserSession.submit.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            count,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          await runSequentially(
+            selectedRows,
+            async ({ token: sessionToken }) => {
+              const { error } = await authClient.admin.revokeUserSession({
+                sessionToken,
+              });
+              if (error)
+                throw new Error(
+                  getErrorMessage(error.code ?? "", locale) || error.message,
+                );
+            },
+          );
+
+          setIsSelectMode(false);
+          clearRowSelection();
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tUserSessions("actions.batchRevokeUserSession.submit.success", {
+              count,
+            }),
+            {
+              variant: "success",
+            },
+          );
+        } catch (error) {
+          const reason =
+            error instanceof SequentialRunError ? error.reason : error;
+          const message = getFetchErrorMessage(reason);
+
+          enqueueSnackbar(
+            error instanceof SequentialRunError && error.done
+              ? tUserSessions("actions.batchRevokeUserSession.submit.partial", {
+                  done: error.done,
+                  message,
+                })
+              : message,
+            { variant: "error" },
+          );
+        }
+
+        mutate(deviceSessionsKey);
+        fetchListUserSessions();
+      },
+      open: true,
+      title: tUserSessions("actions.batchRevokeUserSession.submit.label", {
+        count,
+      }),
+    });
+  }, [
+    apiRef,
+    clearRowSelection,
+    fetchListUserSessions,
+    locale,
+    mutate,
+    selectedRows,
+    setDialog,
+    tUserSessions,
+  ]);
+
+  const handleCancelUserSessionBatchRevoke = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tUserSessions.rich("actions.batchRevokeUserSession.cancel.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(false);
+        clearRowSelection();
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tUserSessions("actions.batchRevokeUserSession.cancel.label"),
+    });
+  }, [apiRef, clearRowSelection, setDialog, tUserSessions]);
+
   const columns = useMemo<GridColDef[]>(
     () => [
-      {
-        disableColumnMenu: true,
-        disableExport: true,
-        field: "actions",
-        filterable: false,
-        headerName: tUserSessions("actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<Session>) => {
-          const isCurrent = row.token === currentSession?.session.token;
+      ...(!isSelectMode
+        ? [
+            {
+              disableColumnMenu: true,
+              disableExport: true,
+              field: "actions",
+              filterable: false,
+              headerName: tUserSessions("actions.label"),
+              renderCell: ({ row }: GridRenderCellParams<Session>) => {
+                const isCurrent = row.token === currentSession?.session.token;
 
-          return (
-            <ActionsStack direction="row">
-              <Tooltip title={tUserSessions("actions.revokeUserSession.title")}>
-                <IconButton
-                  color="error"
-                  onClick={(event) => {
-                    event.stopPropagation();
+                return (
+                  <ActionsStack direction="row">
+                    <Tooltip
+                      title={tUserSessions("actions.revokeUserSession.title")}
+                    >
+                      <StyledIconButton
+                        color="error"
+                        onClick={(event) => {
+                          event.stopPropagation();
 
-                    handleRevokeUserSession(row);
-                  }}
-                  size="small"
-                >
-                  <DeleteOutlined fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              {isCurrent && (
-                <Chip
-                  label={tUserSessions("current")}
-                  size="small"
-                  variant="outlined"
-                />
-              )}
-            </ActionsStack>
-          );
-        },
-        resizable: false,
-        sortable: false,
-      },
+                          handleRevokeUserSession(row);
+                        }}
+                        size="small"
+                        visible={isUserSessionSelectable(row)}
+                      >
+                        <DeleteOutlined fontSize="small" />
+                      </StyledIconButton>
+                    </Tooltip>
+                    {isCurrent && (
+                      <Chip
+                        label={tUserSessions("current")}
+                        size="small"
+                        variant="outlined"
+                      />
+                    )}
+                  </ActionsStack>
+                );
+              },
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
         field: "userAgent",
         headerName: tUserSessions("userAgent.label"),
@@ -274,24 +354,58 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
           format.dateTime(new Date(value), "short"),
       },
     ],
-    [currentSession?.session, format, handleRevokeUserSession, tUserSessions],
+    [
+      currentSession?.session,
+      format,
+      handleRevokeUserSession,
+      isSelectMode,
+      isUserSessionSelectable,
+      tUserSessions,
+    ],
   );
 
   return (
     <>
       <ToolbarStack direction="row">
-        <Button
-          color="error"
-          onClick={handleRevokeUserSessions}
-          size="small"
-          startIcon={<LogoutOutlined />}
-          variant="contained"
-        >
-          {tUserSessions("actions.revokeUserSessions.title")}
-        </Button>
+        {!isSelectMode && (
+          <Button
+            disabled={!hasSelectableRows}
+            onClick={handleEnterUserSessionBatchRevokeMode}
+            size="small"
+            startIcon={<DeleteOutlined />}
+            variant="outlined"
+          >
+            {tUserSessions("actions.batchRevokeUserSession.title")}
+          </Button>
+        )}
+        {isSelectMode && (
+          <>
+            <Button
+              onClick={handleCancelUserSessionBatchRevoke}
+              size="small"
+              startIcon={<Cancel />}
+              variant="outlined"
+            >
+              {tUserSessions("actions.batchRevokeUserSession.cancel.label")}
+            </Button>
+            <Button
+              color="error"
+              disabled={!selectedRows.length}
+              onClick={handleSubmitUserSessionBatchRevoke}
+              size="small"
+              startIcon={<DeleteOutlined />}
+              variant="contained"
+            >
+              {tUserSessions("actions.batchRevokeUserSession.submit.label", {
+                count: selectedRows.length,
+              })}
+            </Button>
+          </>
+        )}
       </ToolbarStack>
       <DataGrid
         {...DATA_GRID_PROPS}
+        {...rowSelectionProps}
         apiRef={apiRef}
         columns={columns}
         loading={loading}

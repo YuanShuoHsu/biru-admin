@@ -116,7 +116,8 @@ export interface paths {
     /** 新增或更新員工 */
     put: operations["AttendanceEmployeesController_saveEmployee"];
     post?: never;
-    delete?: never;
+    /** 批次刪除沒有任何出勤或薪資紀錄的員工設定 */
+    delete: operations["AttendanceEmployeesController_deleteEmployees"];
     options?: never;
     head?: never;
     patch?: never;
@@ -169,7 +170,8 @@ export interface paths {
     put?: never;
     /** 新增班別 */
     post: operations["AttendanceShiftTypesController_createShiftType"];
-    delete?: never;
+    /** 批次刪除班別 */
+    delete: operations["AttendanceShiftTypesController_deleteShiftTypes"];
     options?: never;
     head?: never;
     patch?: never;
@@ -562,7 +564,8 @@ export interface paths {
     put?: never;
     /** 建立請假案件 */
     post: operations["AttendanceLeavesController_createLeaveCase"];
-    delete?: never;
+    /** 批次刪除尚未被使用的請假案件 */
+    delete: operations["AttendanceLeavesController_deleteLeaveCases"];
     options?: never;
     head?: never;
     patch?: never;
@@ -615,7 +618,8 @@ export interface paths {
     put?: never;
     /** 新增假別 */
     post: operations["AttendanceLeavesController_createLeaveType"];
-    delete?: never;
+    /** 批次刪除尚未被使用的自訂假別 */
+    delete: operations["AttendanceLeavesController_deleteLeaveTypes"];
     options?: never;
     head?: never;
     patch?: never;
@@ -685,7 +689,8 @@ export interface paths {
     put?: never;
     /** 記錄特休遞延協議 */
     post: operations["AttendanceLeavesController_createAnnualLeaveDeferral"];
-    delete?: never;
+    /** 批次撤銷特休遞延協議 */
+    delete: operations["AttendanceLeavesController_deleteAnnualLeaveDeferrals"];
     options?: never;
     head?: never;
     patch?: never;
@@ -720,7 +725,8 @@ export interface paths {
     put?: never;
     /** 指定補假日 */
     post: operations["AttendanceLeavesController_createHolidaySubstitute"];
-    delete?: never;
+    /** 批次撤銷補假日 */
+    delete: operations["AttendanceLeavesController_deleteHolidaySubstitutes"];
     options?: never;
     head?: never;
     patch?: never;
@@ -982,6 +988,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/users/deletability": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢使用者是否可刪除 */
+    get: operations["UsersController_deletability"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/users/{id}": {
     parameters: {
       query?: never;
@@ -1030,7 +1053,8 @@ export interface paths {
     put?: never;
     /** 建立輪播圖 */
     post: operations["AdminBannersController_create"];
-    delete?: never;
+    /** 批次刪除輪播圖 */
+    delete: operations["AdminBannersController_removeMany"];
     options?: never;
     head?: never;
     patch?: never;
@@ -1083,7 +1107,8 @@ export interface paths {
     put?: never;
     /** 建立優惠券 */
     post: operations["AdminCouponsController_create"];
-    delete?: never;
+    /** 批次刪除優惠券 */
+    delete: operations["AdminCouponsController_removeMany"];
     options?: never;
     head?: never;
     patch?: never;
@@ -1601,7 +1626,8 @@ export interface paths {
     put?: never;
     /** 新增薪資加項名目 */
     post: operations["PayrollEarningsController_createEarningType"];
-    delete?: never;
+    /** 批次刪除尚未使用的薪資加項名目 */
+    delete: operations["PayrollEarningsController_deleteEarningTypes"];
     options?: never;
     head?: never;
     patch?: never;
@@ -2008,7 +2034,8 @@ export interface paths {
     put?: never;
     /** 建立食材 */
     post: operations["OrganizationInventoryController_createIngredient"];
-    delete?: never;
+    /** 批次刪除食材 */
+    delete: operations["OrganizationInventoryController_removeIngredients"];
     options?: never;
     head?: never;
     patch?: never;
@@ -2043,7 +2070,8 @@ export interface paths {
     put?: never;
     /** 建立供應商 */
     post: operations["OrganizationInventoryController_createSupplier"];
-    delete?: never;
+    /** 批次刪除供應商 */
+    delete: operations["OrganizationInventoryController_removeSuppliers"];
     options?: never;
     head?: never;
     patch?: never;
@@ -2152,7 +2180,8 @@ export interface paths {
     put?: never;
     /** 新增食譜材料 */
     post: operations["RecipesController_createIngredient"];
-    delete?: never;
+    /** 批次刪除食譜材料 */
+    delete: operations["RecipesController_removeIngredients"];
     options?: never;
     head?: never;
     patch?: never;
@@ -2446,7 +2475,8 @@ export interface paths {
     put?: never;
     /** 建立菜單分類 */
     post: operations["MenusController_createMenuSection"];
-    delete?: never;
+    /** 批次刪除菜單分類 */
+    delete: operations["MenusController_deleteMenuSections"];
     options?: never;
     head?: never;
     patch?: never;
@@ -2500,7 +2530,8 @@ export interface paths {
     put?: never;
     /** 建立菜單品項 */
     post: operations["MenusController_createMenuItem"];
-    delete?: never;
+    /** 批次刪除品項 */
+    delete: operations["MenusController_deleteMenuItems"];
     options?: never;
     head?: never;
     patch?: never;
@@ -2607,7 +2638,8 @@ export interface paths {
     put?: never;
     /** 新增品項加購 */
     post: operations["MenusController_createMenuItemAddOn"];
-    delete?: never;
+    /** 批次刪除品項加購 */
+    delete: operations["MenusController_deleteMenuItemAddOns"];
     options?: never;
     head?: never;
     patch?: never;
@@ -2660,7 +2692,8 @@ export interface paths {
     put?: never;
     /** 建立選項群組 */
     post: operations["MenusController_createModifierGroup"];
-    delete?: never;
+    /** 批次刪除選項群組 */
+    delete: operations["MenusController_deleteModifierGroups"];
     options?: never;
     head?: never;
     patch?: never;
@@ -2714,7 +2747,8 @@ export interface paths {
     put?: never;
     /** 建立選項 */
     post: operations["MenusController_createModifier"];
-    delete?: never;
+    /** 批次刪除選項 */
+    delete: operations["MenusController_deleteModifiers"];
     options?: never;
     head?: never;
     patch?: never;
@@ -2784,7 +2818,8 @@ export interface paths {
     put?: never;
     /** 為品項掛上選項群組 */
     post: operations["MenusController_createMenuItemModifierGroup"];
-    delete?: never;
+    /** 批次解除品項的選項群組掛載 */
+    delete: operations["MenusController_deleteMenuItemModifierGroups"];
     options?: never;
     head?: never;
     patch?: never;
@@ -3528,6 +3563,9 @@ export interface components {
       hiredAt: string;
       terminatedAt?: string;
       terminationNoticedAt?: string;
+    };
+    IdsDto: {
+      ids: string[];
     };
     AttendanceIdResponseDto: {
       id: string;
@@ -4733,6 +4771,11 @@ export interface components {
       buckets: components["schemas"]["UserStatsBucketDto"][];
       /** @description 上期新增使用者數 */
       previous: number;
+    };
+    UserDeletabilityDto: {
+      id: string;
+      /** @description 有出勤或薪資紀錄、或是某組織唯一的擁有者時不可刪除 */
+      deletable: boolean;
     };
     UpdateUserDto: {
       /**
@@ -8574,6 +8617,34 @@ export interface operations {
       };
     };
   };
+  AttendanceEmployeesController_deleteEmployees: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["IdsDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   AttendanceEmployeesController_deleteEmployee: {
     parameters: {
       query?: never;
@@ -8715,6 +8786,34 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["AttendanceIdResponseDto"];
         };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceShiftTypesController_deleteShiftTypes: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["IdsDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {
@@ -9537,6 +9636,34 @@ export interface operations {
       };
     };
   };
+  AttendanceLeavesController_deleteLeaveCases: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["IdsDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   AttendanceLeavesController_myLeaveCases: {
     parameters: {
       query?: {
@@ -9691,6 +9818,34 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["AttendanceLeaveTypeResponseDto"];
         };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceLeavesController_deleteLeaveTypes: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["IdsDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {
@@ -9895,6 +10050,34 @@ export interface operations {
       };
     };
   };
+  AttendanceLeavesController_deleteAnnualLeaveDeferrals: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["IdsDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   AttendanceLeavesController_deleteAnnualLeaveDeferral: {
     parameters: {
       query?: never;
@@ -9981,6 +10164,34 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["AttendanceIdResponseDto"];
         };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceLeavesController_deleteHolidaySubstitutes: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["IdsDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {
@@ -10538,6 +10749,34 @@ export interface operations {
       };
     };
   };
+  UsersController_deletability: {
+    parameters: {
+      query: {
+        ids: string[];
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UserDeletabilityDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   UsersController_findOne: {
     parameters: {
       query?: never;
@@ -10717,6 +10956,34 @@ export interface operations {
       };
     };
   };
+  AdminBannersController_removeMany: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["IdsDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   AdminBannersController_reorder: {
     parameters: {
       query?: never;
@@ -10859,6 +11126,34 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["CouponResponseDto"];
         };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminCouponsController_removeMany: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["IdsDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {
@@ -11923,6 +12218,34 @@ export interface operations {
       };
     };
   };
+  PayrollEarningsController_deleteEarningTypes: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["IdsDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   PayrollEarningsController_deleteEarningType: {
     parameters: {
       query?: never;
@@ -12766,6 +13089,34 @@ export interface operations {
       };
     };
   };
+  OrganizationInventoryController_removeIngredients: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["IdsDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   OrganizationInventoryController_reorderIngredients: {
     parameters: {
       query?: never;
@@ -12855,6 +13206,34 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["SupplierResponseDto"];
         };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrganizationInventoryController_removeSuppliers: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["IdsDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {
@@ -13262,6 +13641,36 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["RecipeIngredientResponseDto"];
         };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  RecipesController_removeIngredients: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        recipeId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["IdsDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {
@@ -13954,6 +14363,36 @@ export interface operations {
       };
     };
   };
+  MenusController_deleteMenuSections: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        menuId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["IdsDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   MenusController_reorderMenuSections: {
     parameters: {
       query?: never;
@@ -14134,6 +14573,36 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["MenuItemResponseDto"];
         };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenusController_deleteMenuItems: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        sectionId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["IdsDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {
@@ -14481,6 +14950,36 @@ export interface operations {
       };
     };
   };
+  MenusController_deleteMenuItemAddOns: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        menuItemId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["IdsDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   MenusController_reorderMenuItemAddOns: {
     parameters: {
       query?: never;
@@ -14628,6 +15127,36 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["ModifierGroupResponseDto"];
         };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenusController_deleteModifierGroups: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        menuId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["IdsDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {
@@ -14825,6 +15354,36 @@ export interface operations {
       };
     };
   };
+  MenusController_deleteModifiers: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        groupId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["IdsDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   MenusController_reorderModifiers: {
     parameters: {
       query?: never;
@@ -15004,6 +15563,36 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["MenuItemModifierGroupResponseDto"];
         };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenusController_deleteMenuItemModifierGroups: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        menuItemId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["IdsDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {

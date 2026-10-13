@@ -10,7 +10,6 @@ import SupplierDialog from "./SupplierDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
-
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -22,9 +21,9 @@ import {
   useDateFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
+import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
-
-import { Add, Delete, Edit } from "@mui/icons-material";
+import { Add, Cancel, Delete, Edit } from "@mui/icons-material";
 import {
   Button,
   Chip,
@@ -115,6 +114,7 @@ const Suppliers = ({
   sortBy,
   sortDirection,
 }: SuppliersProps) => {
+  const [isSelectMode, setIsSelectMode] = useState(false);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -189,6 +189,13 @@ const Suppliers = ({
       },
     },
   );
+
+  const {
+    clearRowSelection,
+    hasSelectableRows,
+    rowSelectionProps,
+    selectedRows,
+  } = useRowSelection({ enabled: isSelectMode, rows });
 
   const handlePaginationModelChange = useCallback(
     (newModel: GridPaginationModel) => {
@@ -308,9 +315,110 @@ const Suppliers = ({
     [mutate, setDialog, tInventory],
   );
 
+  const handleEnterSupplierBatchDeleteMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tInventory.rich("suppliers.actions.batchDeleteSupplier.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(true);
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tInventory("suppliers.actions.batchDeleteSupplier.title"),
+    });
+  }, [apiRef, setDialog, tInventory]);
+
+  const handleSubmitSupplierBatchDelete = useCallback(() => {
+    const count = selectedRows.length;
+
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tInventory.rich(
+            "suppliers.actions.batchDeleteSupplier.submit.confirm",
+            {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              count,
+            },
+          )}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          await fetcher(`/api/organizations/${organizationSlug}/suppliers`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
+          });
+
+          setIsSelectMode(false);
+          clearRowSelection();
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tInventory("suppliers.actions.batchDeleteSupplier.submit.success", {
+              count,
+            }),
+            {
+              variant: "success",
+            },
+          );
+        } catch {
+          enqueueSnackbar(
+            tInventory("suppliers.actions.batchDeleteSupplier.submit.error"),
+            { variant: "error" },
+          );
+        }
+
+        mutate();
+      },
+      open: true,
+      title: tInventory("suppliers.actions.batchDeleteSupplier.submit.label", {
+        count,
+      }),
+    });
+  }, [
+    apiRef,
+    clearRowSelection,
+    mutate,
+    organizationSlug,
+    selectedRows,
+    setDialog,
+    tInventory,
+  ]);
+
+  const handleCancelSupplierBatchDelete = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tInventory.rich(
+            "suppliers.actions.batchDeleteSupplier.cancel.confirm",
+            {
+              bold: (chunks) => <strong>{chunks}</strong>,
+            },
+          )}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(false);
+        clearRowSelection();
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tInventory("suppliers.actions.batchDeleteSupplier.cancel.label"),
+    });
+  }, [apiRef, clearRowSelection, setDialog, tInventory]);
+
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...(canWrite
+      ...(canWrite && !isSelectMode
         ? [
             {
               disableColumnMenu: true,
@@ -422,6 +530,7 @@ const Suppliers = ({
       format,
       handleDeleteSupplier,
       handleUpdateSupplier,
+      isSelectMode,
       locale,
       stringFilterOperators,
       tCommon,
@@ -432,19 +541,60 @@ const Suppliers = ({
   return (
     <>
       <ToolbarStack direction="row">
-        {canWrite && (
-          <Button
-            onClick={handleCreateSupplier}
-            size="small"
-            startIcon={<Add />}
-            variant="contained"
-          >
-            {tInventory("suppliers.actions.createSupplier.title")}
-          </Button>
+        {!isSelectMode && (
+          <>
+            {canWrite && (
+              <Button
+                onClick={handleCreateSupplier}
+                size="small"
+                startIcon={<Add />}
+                variant="contained"
+              >
+                {tInventory("suppliers.actions.createSupplier.title")}
+              </Button>
+            )}
+            {canWrite && (
+              <Button
+                disabled={!hasSelectableRows}
+                onClick={handleEnterSupplierBatchDeleteMode}
+                size="small"
+                startIcon={<Delete />}
+                variant="outlined"
+              >
+                {tInventory("suppliers.actions.batchDeleteSupplier.title")}
+              </Button>
+            )}
+          </>
+        )}
+        {isSelectMode && (
+          <>
+            <Button
+              onClick={handleCancelSupplierBatchDelete}
+              size="small"
+              startIcon={<Cancel />}
+              variant="outlined"
+            >
+              {tInventory("suppliers.actions.batchDeleteSupplier.cancel.label")}
+            </Button>
+            <Button
+              color="error"
+              disabled={!selectedRows.length}
+              onClick={handleSubmitSupplierBatchDelete}
+              size="small"
+              startIcon={<Delete />}
+              variant="contained"
+            >
+              {tInventory(
+                "suppliers.actions.batchDeleteSupplier.submit.label",
+                { count: selectedRows.length },
+              )}
+            </Button>
+          </>
         )}
       </ToolbarStack>
       <DataGrid
         {...DATA_GRID_PROPS}
+        {...rowSelectionProps}
         apiRef={apiRef}
         columns={columns}
         filterMode="server"

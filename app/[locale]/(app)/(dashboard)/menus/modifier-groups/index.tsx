@@ -12,7 +12,6 @@ import UpdateModifierGroupDialog from "./UpdateModifierGroupDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
 import { DragHandle, Sortable } from "@/components/Sortable";
-
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -32,8 +31,8 @@ import {
   useNumberFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
+import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
-
 import { useRouter } from "@/i18n/navigation";
 
 import {
@@ -64,7 +63,11 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  FilterOperator,
+  SortDirection,
+  ToolbarMode,
+} from "@/types/dataGrid";
 import type {
   Menu,
   ModifierGroup,
@@ -128,7 +131,9 @@ const ModifierGroups = ({
   sortBy,
   sortDirection,
 }: ModifierGroupsProps) => {
-  const [isReorderMode, setIsReorderMode] = useState(false);
+  const [toolbarMode, setToolbarMode] = useState<ToolbarMode>(null);
+  const isReorderMode = toolbarMode === "reorder";
+  const isSelectMode = toolbarMode === "select";
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -210,6 +215,13 @@ const ModifierGroups = ({
     },
   );
 
+  const {
+    clearRowSelection,
+    hasSelectableRows,
+    rowSelectionProps,
+    selectedRows,
+  } = useRowSelection({ enabled: isSelectMode, rows });
+
   const isReorderDisabled =
     rowCount < 2 || isFilteredOrSorted(filterModel, sortModel);
 
@@ -271,7 +283,7 @@ const ModifierGroups = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
-        setIsReorderMode(true);
+        setToolbarMode("reorder");
         setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
@@ -299,7 +311,7 @@ const ModifierGroups = ({
             }),
           });
 
-          setIsReorderMode(false);
+          setToolbarMode(null);
 
           setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
 
@@ -340,7 +352,7 @@ const ModifierGroups = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
-        setIsReorderMode(false);
+        setToolbarMode(null);
 
         mutate();
       },
@@ -436,6 +448,107 @@ const ModifierGroups = ({
     [locale, mutate, setDialog, tMenus],
   );
 
+  const handleEnterModifierGroupBatchDeleteMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tMenus.rich("modifierGroups.actions.batchDeleteGroup.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setToolbarMode("select");
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tMenus("modifierGroups.actions.batchDeleteGroup.title"),
+    });
+  }, [apiRef, setDialog, tMenus]);
+
+  const handleSubmitModifierGroupBatchDelete = useCallback(() => {
+    const count = selectedRows.length;
+
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tMenus.rich(
+            "modifierGroups.actions.batchDeleteGroup.submit.confirm",
+            {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              count,
+            },
+          )}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          await fetcher(`/api/menus/${menu.id}/modifier-groups`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
+          });
+
+          setToolbarMode(null);
+          clearRowSelection();
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tMenus("modifierGroups.actions.batchDeleteGroup.submit.success", {
+              count,
+            }),
+            {
+              variant: "success",
+            },
+          );
+        } catch {
+          enqueueSnackbar(
+            tMenus("modifierGroups.actions.batchDeleteGroup.submit.error"),
+            { variant: "error" },
+          );
+        }
+
+        mutate();
+      },
+      open: true,
+      title: tMenus("modifierGroups.actions.batchDeleteGroup.submit.label", {
+        count,
+      }),
+    });
+  }, [
+    apiRef,
+    clearRowSelection,
+    menu.id,
+    mutate,
+    selectedRows,
+    setDialog,
+    tMenus,
+  ]);
+
+  const handleCancelModifierGroupBatchDelete = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tMenus.rich(
+            "modifierGroups.actions.batchDeleteGroup.cancel.confirm",
+            {
+              bold: (chunks) => <strong>{chunks}</strong>,
+            },
+          )}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setToolbarMode(null);
+        clearRowSelection();
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tMenus("modifierGroups.actions.batchDeleteGroup.cancel.label"),
+    });
+  }, [apiRef, clearRowSelection, setDialog, tMenus]);
+
   const columns = useMemo<GridColDef[]>(
     () => [
       ...(isReorderMode
@@ -451,7 +564,7 @@ const ModifierGroups = ({
             },
           ]
         : []),
-      ...(!isReorderMode
+      ...(!toolbarMode
         ? [
             {
               disableColumnMenu: true,
@@ -566,13 +679,14 @@ const ModifierGroups = ({
       numberFilterOperators,
       stringFilterOperators,
       tMenus,
+      toolbarMode,
     ],
   );
 
   return (
     <>
       <ToolbarStack direction="row">
-        {!isReorderMode ? (
+        {!toolbarMode && (
           <>
             {canWrite && (
               <Button
@@ -595,8 +709,20 @@ const ModifierGroups = ({
                 {tMenus("modifierGroups.actions.reorderGroup.title")}
               </Button>
             )}
+            {canWrite && (
+              <Button
+                disabled={!hasSelectableRows}
+                onClick={handleEnterModifierGroupBatchDeleteMode}
+                size="small"
+                startIcon={<Delete />}
+                variant="outlined"
+              >
+                {tMenus("modifierGroups.actions.batchDeleteGroup.title")}
+              </Button>
+            )}
           </>
-        ) : (
+        )}
+        {isReorderMode && (
           <>
             <Button
               onClick={handleCancelModifierGroupReorder}
@@ -616,10 +742,35 @@ const ModifierGroups = ({
             </Button>
           </>
         )}
+        {isSelectMode && (
+          <>
+            <Button
+              onClick={handleCancelModifierGroupBatchDelete}
+              size="small"
+              startIcon={<Cancel />}
+              variant="outlined"
+            >
+              {tMenus("modifierGroups.actions.batchDeleteGroup.cancel.label")}
+            </Button>
+            <Button
+              color="error"
+              disabled={!selectedRows.length}
+              onClick={handleSubmitModifierGroupBatchDelete}
+              size="small"
+              startIcon={<Delete />}
+              variant="contained"
+            >
+              {tMenus("modifierGroups.actions.batchDeleteGroup.submit.label", {
+                count: selectedRows.length,
+              })}
+            </Button>
+          </>
+        )}
       </ToolbarStack>
       <DragDropProvider onDragEnd={handleModifierGroupDragEnd}>
         <DataGrid
           {...DATA_GRID_PROPS}
+          {...rowSelectionProps}
           apiRef={apiRef}
           columns={columns}
           filterMode="server"

@@ -15,6 +15,19 @@
   "assignParentalChild": "確認子女歸戶",
   "balances": {
     "actions": {
+      "batchRevokeDeferral": {
+        "cancel": {
+          "confirm": "確定要取消<bold>遞延協議</bold>批次撤銷嗎？已勾選的項目將會清除。",
+          "label": "取消批次撤銷遞延協議"
+        },
+        "confirm": "確定要進行<bold>遞延協議</bold>批次撤銷嗎？",
+        "submit": {
+          "confirm": "確定要撤銷所選的 <bold>{count} 筆遞延協議</bold>嗎？",
+          "label": "撤銷所選遞延協議（{count}）",
+          "success": "已撤銷 {count} 筆遞延協議"
+        },
+        "title": "批次撤銷遞延協議"
+      },
       "create": "新增休假額度",
       "defer": "記錄遞延協議",
       "revokeDeferral": "撤銷遞延協議"
@@ -92,6 +105,19 @@
         "confirm": "確定要刪除 <bold>{name}</bold> 的員工設定嗎？此員工沒有任何出勤或薪資紀錄，刪除後回到「未設定」。",
         "success": "已刪除 {name} 的員工設定",
         "title": "刪除員工設定"
+      },
+      "batchDelete": {
+        "title": "批次刪除員工設定",
+        "confirm": "確定要進行<bold>員工設定</bold>批次刪除嗎？",
+        "cancel": {
+          "label": "取消批次刪除員工設定",
+          "confirm": "確定要取消<bold>員工設定</bold>批次刪除嗎？已勾選的項目將會清除。"
+        },
+        "submit": {
+          "label": "刪除所選員工設定（{count}）",
+          "confirm": "確定要刪除所選的 <bold>{count} 筆員工設定</bold>嗎？這些員工沒有任何出勤或薪資紀錄，刪除後回到「未設定」。",
+          "success": "已刪除 {count} 筆員工設定"
+        }
       }
     },
     "label": "員工管理",
@@ -363,6 +389,19 @@
   },
   "leaveCases": {
     "actions": {
+      "batchDelete": {
+        "cancel": {
+          "confirm": "確定要取消<bold>事件假額度</bold>批次刪除嗎？已勾選的項目將會清除。",
+          "label": "取消批次刪除事件假額度"
+        },
+        "confirm": "確定要進行<bold>事件假額度</bold>批次刪除嗎？",
+        "submit": {
+          "confirm": "確定要刪除所選的 <bold>{count} 筆事件假額度</bold>嗎？",
+          "label": "刪除所選事件假額度（{count}）",
+          "success": "已刪除 {count} 筆事件假額度"
+        },
+        "title": "批次刪除事件假額度"
+      },
       "create": "新增事件假額度",
       "delete": "刪除事件假額度",
       "update": "編輯事件假額度"
@@ -391,6 +430,19 @@
   },
   "leaveTypes": {
     "actions": {
+      "batchDelete": {
+        "cancel": {
+          "confirm": "確定要取消<bold>假別</bold>批次刪除嗎？已勾選的項目將會清除。",
+          "label": "取消批次刪除假別"
+        },
+        "confirm": "確定要進行<bold>假別</bold>批次刪除嗎？",
+        "submit": {
+          "confirm": "確定要刪除所選的 <bold>{count} 筆假別</bold>嗎？尚未使用的假別額度將一併刪除，且無法復原。",
+          "label": "刪除所選假別（{count}）",
+          "success": "已刪除 {count} 筆假別"
+        },
+        "title": "批次刪除假別"
+      },
       "create": {
         "success": "已新增假別 {name}",
         "title": "新增假別"
@@ -825,6 +877,19 @@
     "substituteShift": "補假的工作日班次",
     "noWorkdayShifts": "{date} 前沒有可指定的工作日班次，請先排班",
     "actions": {
+      "batchRevoke": {
+        "cancel": {
+          "confirm": "確定要取消<bold>補假日</bold>批次撤銷嗎？已勾選的項目將會清除。",
+          "label": "取消批次撤銷補假日"
+        },
+        "confirm": "確定要進行<bold>補假日</bold>批次撤銷嗎？",
+        "submit": {
+          "confirm": "確定要撤銷所選的 <bold>{count} 筆補假日</bold>嗎？",
+          "label": "撤銷所選補假日（{count}）",
+          "success": "已撤銷 {count} 筆補假日"
+        },
+        "title": "批次撤銷補假日"
+      },
       "designate": "指定補假日",
       "revoke": "撤銷補假日"
     },
@@ -908,6 +973,19 @@
         "title": "刪除加項名目",
         "confirm": "確定要刪除 <bold>{name}</bold> 嗎？",
         "success": "已刪除「{name}」"
+      },
+      "batchDelete": {
+        "title": "批次刪除加項名目",
+        "confirm": "確定要進行<bold>加項名目</bold>批次刪除嗎？",
+        "cancel": {
+          "label": "取消批次刪除加項名目",
+          "confirm": "確定要取消<bold>加項名目</bold>批次刪除嗎？已勾選的項目將會清除。"
+        },
+        "submit": {
+          "label": "刪除所選加項名目（{count}）",
+          "confirm": "確定要刪除所選的 <bold>{count} 筆加項名目</bold>嗎？",
+          "success": "已刪除 {count} 筆加項名目"
+        }
       }
     }
   },
@@ -1006,6 +1084,19 @@
         "title": "刪除班別",
         "confirm": "確定要刪除 <bold>{name}</bold> 嗎？",
         "success": "已刪除「{name}」"
+      },
+      "batchDelete": {
+        "title": "批次刪除班別",
+        "confirm": "確定要進行<bold>班別</bold>批次刪除嗎？",
+        "cancel": {
+          "label": "取消批次刪除班別",
+          "confirm": "確定要取消<bold>班別</bold>批次刪除嗎？已勾選的項目將會清除。"
+        },
+        "submit": {
+          "label": "刪除所選班別（{count}）",
+          "confirm": "確定要刪除所選的 <bold>{count} 筆班別</bold>嗎？",
+          "success": "已刪除 {count} 筆班別"
+        }
       }
     }
   },

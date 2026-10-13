@@ -12,7 +12,6 @@ import UpdateModifierDialog from "./UpdateModifierDialog";
 import AuditLogButton from "@/components/AuditLogButton";
 import EmptyCell from "@/components/EmptyCell";
 import { DragHandle, Sortable } from "@/components/Sortable";
-
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -34,8 +33,8 @@ import {
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 import { useFormatMoney } from "@/hooks/useFormatMoney";
+import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
-
 import { Add, Cancel, Delete, Edit, Save, Sort } from "@mui/icons-material";
 import {
   Button,
@@ -58,7 +57,11 @@ import { useGridApiRef } from "@mui/x-data-grid";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { orderModeValues } from "@/types/api";
-import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  FilterOperator,
+  SortDirection,
+  ToolbarMode,
+} from "@/types/dataGrid";
 import type {
   Modifier,
   ModifierFilterField,
@@ -131,7 +134,9 @@ const Modifiers = ({
   sortBy,
   sortDirection,
 }: ModifiersProps) => {
-  const [isReorderMode, setIsReorderMode] = useState(false);
+  const [toolbarMode, setToolbarMode] = useState<ToolbarMode>(null);
+  const isReorderMode = toolbarMode === "reorder";
+  const isSelectMode = toolbarMode === "select";
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -217,6 +222,13 @@ const Modifiers = ({
     },
   );
 
+  const {
+    clearRowSelection,
+    hasSelectableRows,
+    rowSelectionProps,
+    selectedRows,
+  } = useRowSelection({ enabled: isSelectMode, rows });
+
   const isReorderDisabled =
     rowCount < 2 || isFilteredOrSorted(filterModel, sortModel);
 
@@ -278,7 +290,7 @@ const Modifiers = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
-        setIsReorderMode(true);
+        setToolbarMode("reorder");
         setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
@@ -306,7 +318,7 @@ const Modifiers = ({
             }),
           });
 
-          setIsReorderMode(false);
+          setToolbarMode(null);
 
           setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
 
@@ -347,7 +359,7 @@ const Modifiers = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
-        setIsReorderMode(false);
+        setToolbarMode(null);
 
         mutate();
       },
@@ -440,6 +452,101 @@ const Modifiers = ({
     [locale, mutate, setDialog, tMenus],
   );
 
+  const handleEnterBatchDeleteMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tMenus.rich("modifiers.actions.batchDeleteModifier.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setToolbarMode("select");
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tMenus("modifiers.actions.batchDeleteModifier.title"),
+    });
+  }, [apiRef, setDialog, tMenus]);
+
+  const handleSubmitBatchDelete = useCallback(() => {
+    const count = selectedRows.length;
+
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tMenus.rich("modifiers.actions.batchDeleteModifier.submit.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            count,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          await fetcher(`/api/modifier-groups/${group.id}/modifiers`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
+          });
+
+          setToolbarMode(null);
+          clearRowSelection();
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tMenus("modifiers.actions.batchDeleteModifier.submit.success", {
+              count,
+            }),
+            {
+              variant: "success",
+            },
+          );
+        } catch {
+          enqueueSnackbar(
+            tMenus("modifiers.actions.batchDeleteModifier.submit.error"),
+            { variant: "error" },
+          );
+        }
+
+        mutate();
+      },
+      open: true,
+      title: tMenus("modifiers.actions.batchDeleteModifier.submit.label", {
+        count,
+      }),
+    });
+  }, [
+    apiRef,
+    clearRowSelection,
+    group.id,
+    mutate,
+    selectedRows,
+    setDialog,
+    tMenus,
+  ]);
+
+  const handleCancelBatchDelete = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tMenus.rich("modifiers.actions.batchDeleteModifier.cancel.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setToolbarMode(null);
+        clearRowSelection();
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tMenus("modifiers.actions.batchDeleteModifier.cancel.label"),
+    });
+  }, [apiRef, clearRowSelection, setDialog, tMenus]);
+
   const columns = useMemo<GridColDef[]>(
     () => [
       ...(isReorderMode
@@ -455,8 +562,7 @@ const Modifiers = ({
             },
           ]
         : []),
-      ...((canWrite || canUpdateAvailability || canViewAuditLog) &&
-      !isReorderMode
+      ...((canWrite || canUpdateAvailability || canViewAuditLog) && !toolbarMode
         ? [
             {
               disableColumnMenu: true,
@@ -594,8 +700,8 @@ const Modifiers = ({
       dateFilterOperators,
       enumFilterOperators,
       enumOptions,
-      formatMoney,
       format,
+      formatMoney,
       handleDeleteModifier,
       handleUpdateModifier,
       isReorderMode,
@@ -603,6 +709,7 @@ const Modifiers = ({
       numberFilterOperators,
       stringFilterOperators,
       tMenus,
+      toolbarMode,
       tOrder,
     ],
   );
@@ -610,7 +717,7 @@ const Modifiers = ({
   return (
     <>
       <ToolbarStack direction="row">
-        {!isReorderMode ? (
+        {!toolbarMode && (
           <>
             {canWrite && (
               <Button
@@ -633,8 +740,20 @@ const Modifiers = ({
                 {tMenus("modifiers.actions.reorderModifier.title")}
               </Button>
             )}
+            {canWrite && (
+              <Button
+                disabled={!hasSelectableRows}
+                onClick={handleEnterBatchDeleteMode}
+                size="small"
+                startIcon={<Delete />}
+                variant="outlined"
+              >
+                {tMenus("modifiers.actions.batchDeleteModifier.title")}
+              </Button>
+            )}
           </>
-        ) : (
+        )}
+        {isReorderMode && (
           <>
             <Button
               onClick={handleCancelReorder}
@@ -654,10 +773,35 @@ const Modifiers = ({
             </Button>
           </>
         )}
+        {isSelectMode && (
+          <>
+            <Button
+              onClick={handleCancelBatchDelete}
+              size="small"
+              startIcon={<Cancel />}
+              variant="outlined"
+            >
+              {tMenus("modifiers.actions.batchDeleteModifier.cancel.label")}
+            </Button>
+            <Button
+              color="error"
+              disabled={!selectedRows.length}
+              onClick={handleSubmitBatchDelete}
+              size="small"
+              startIcon={<Delete />}
+              variant="contained"
+            >
+              {tMenus("modifiers.actions.batchDeleteModifier.submit.label", {
+                count: selectedRows.length,
+              })}
+            </Button>
+          </>
+        )}
       </ToolbarStack>
       <DragDropProvider onDragEnd={handleDragEnd}>
         <DataGrid
           {...DATA_GRID_PROPS}
+          {...rowSelectionProps}
           apiRef={apiRef}
           columns={columns}
           filterMode="server"

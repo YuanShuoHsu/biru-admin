@@ -1,5 +1,19 @@
 {
   "actions": {
+    "batchDeleteBanner": {
+      "cancel": {
+        "confirm": "<bold>バナー</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。",
+        "label": "バナーの一括削除をキャンセル"
+      },
+      "confirm": "<bold>バナー</bold>を一括削除しますか？",
+      "submit": {
+        "confirm": "選択した <bold>{count} 件のバナー</bold>を削除しますか？",
+        "error": "バナーの一括削除に失敗しました",
+        "label": "選択したバナーを削除（{count}）",
+        "success": "バナー {count} 件を削除しました"
+      },
+      "title": "バナーを一括削除"
+    },
     "createBanner": {
       "error": "バナーの追加に失敗しました",
       "success": "バナーを追加しました",

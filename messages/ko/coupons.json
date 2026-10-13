@@ -1,5 +1,19 @@
 {
   "actions": {
+    "batchDeleteCoupon": {
+      "cancel": {
+        "confirm": "<bold>쿠폰</bold> 일괄 삭제를 취소하시겠습니까? 선택한 항목이 해제됩니다.",
+        "label": "쿠폰 일괄 삭제 취소"
+      },
+      "confirm": "<bold>쿠폰</bold>을(를) 일괄 삭제하시겠습니까?",
+      "submit": {
+        "confirm": "선택한 <bold>{count}개의 쿠폰</bold>을(를) 삭제하시겠습니까?",
+        "error": "쿠폰 일괄 삭제에 실패했습니다",
+        "label": "선택한 쿠폰 삭제 ({count})",
+        "success": "쿠폰 {count}개를 삭제했습니다"
+      },
+      "title": "쿠폰 일괄 삭제"
+    },
     "createCoupon": {
       "error": "쿠폰 추가에 실패했습니다",
       "success": "쿠폰 {code}을(를) 추가했습니다",

@@ -4,18 +4,27 @@ import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import EmptyCell from "@/components/EmptyCell";
-
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { countKeys, ROLE_RANK } from "@/constants/organizations";
 
+import { useRowSelection } from "@/hooks/useRowSelection";
+
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Delete } from "@mui/icons-material";
-import { Chip, DialogContentText, IconButton, Tooltip } from "@mui/material";
+import { Cancel, Delete } from "@mui/icons-material";
+import {
+  Button,
+  Chip,
+  DialogContentText,
+  IconButton,
+  Stack,
+  styled,
+  Tooltip,
+} from "@mui/material";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
@@ -25,11 +34,19 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { ActiveOrganization, Invitation } from "@/types/organizations";
 
 import { sortByCreatedAtDesc } from "@/utils/organizations";
+import { runSequentially, SequentialRunError } from "@/utils/dataGrid";
+import { getErrorMessage as getFetchErrorMessage } from "@/utils/errors";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
   { ssr: false },
 );
+
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
 
 const ROLE_COLOR_MAP: Record<string, "error" | "warning" | "default"> = {
   owner: "error",
@@ -46,6 +63,8 @@ const OrganizationsSlugInvitations = ({
   activeOrganization: { invitations: initialInvitations, teams: initialTeams },
   canCancelInvitation,
 }: OrganizationsSlugInvitationsProps) => {
+  const [isSelectMode, setIsSelectMode] = useState(false);
+
   const apiRef = useGridApiRef();
 
   const { setDialog } = useDialogStore((state) => state);
@@ -111,6 +130,13 @@ const OrganizationsSlugInvitations = ({
     },
   );
 
+  const {
+    clearRowSelection,
+    hasSelectableRows,
+    rowSelectionProps,
+    selectedRows,
+  } = useRowSelection({ enabled: isSelectMode, rows });
+
   const handleCancelInvitation = useCallback(
     ({ id: invitationId, email }: Invitation) => {
       setDialog({
@@ -149,9 +175,129 @@ const OrganizationsSlugInvitations = ({
     [locale, mutate, setDialog, tInvitations],
   );
 
+  const handleEnterInvitationBatchCancelMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tInvitations.rich("actions.batchCancelInvitation.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(true);
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tInvitations("actions.batchCancelInvitation.title"),
+    });
+  }, [apiRef, setDialog, tInvitations]);
+
+  const handleSubmitInvitationBatchCancel = useCallback(() => {
+    const count = selectedRows.length;
+
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tInvitations.rich("actions.batchCancelInvitation.submit.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            count,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          const invitationIds = new Set(
+            (await mutate())?.rows.map(({ id }) => id),
+          );
+          if (!selectedRows.every(({ id }) => invitationIds.has(id))) {
+            enqueueSnackbar(
+              tInvitations("actions.batchCancelInvitation.submit.stale"),
+              { variant: "error" },
+            );
+            mutate();
+            return;
+          }
+
+          await runSequentially(selectedRows, async ({ id: invitationId }) => {
+            const { error } = await authClient.organization.cancelInvitation({
+              invitationId,
+            });
+            if (error)
+              throw new Error(
+                getErrorMessage(error.code ?? "", locale) || error.message,
+              );
+          });
+
+          setIsSelectMode(false);
+          clearRowSelection();
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tInvitations("actions.batchCancelInvitation.submit.success", {
+              count,
+            }),
+            {
+              variant: "success",
+            },
+          );
+        } catch (error) {
+          const reason =
+            error instanceof SequentialRunError ? error.reason : error;
+          const message = getFetchErrorMessage(reason);
+
+          enqueueSnackbar(
+            error instanceof SequentialRunError && error.done
+              ? tInvitations("actions.batchCancelInvitation.submit.partial", {
+                  done: error.done,
+                  message,
+                })
+              : message,
+            { variant: "error" },
+          );
+        }
+
+        mutate();
+      },
+      open: true,
+      title: tInvitations("actions.batchCancelInvitation.submit.label", {
+        count,
+      }),
+    });
+  }, [
+    apiRef,
+    clearRowSelection,
+    locale,
+    mutate,
+    selectedRows,
+    setDialog,
+    tInvitations,
+  ]);
+
+  const handleCancelInvitationBatchCancel = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tInvitations.rich("actions.batchCancelInvitation.cancel.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(false);
+        clearRowSelection();
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tInvitations("actions.batchCancelInvitation.cancel.label"),
+    });
+  }, [apiRef, clearRowSelection, setDialog, tInvitations]);
+
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...(canCancelInvitation
+      ...(canCancelInvitation && !isSelectMode
         ? [
             {
               disableColumnMenu: true,
@@ -225,8 +371,9 @@ const OrganizationsSlugInvitations = ({
       canCancelInvitation,
       format,
       handleCancelInvitation,
-      teams,
+      isSelectMode,
       tCommon,
+      teams,
       tInvitations,
       tMembers,
       tTeams,
@@ -234,16 +381,58 @@ const OrganizationsSlugInvitations = ({
   );
 
   return (
-    <DataGrid
-      {...DATA_GRID_PROPS}
-      apiRef={apiRef}
-      columns={columns}
-      loading={loading}
-      onPaginationModelChange={() =>
-        apiRef.current?.autosizeColumns(autosizeOptions)
-      }
-      rows={rows}
-    />
+    <>
+      {canCancelInvitation && (
+        <ToolbarStack direction="row">
+          {!isSelectMode && (
+            <Button
+              disabled={!hasSelectableRows}
+              onClick={handleEnterInvitationBatchCancelMode}
+              size="small"
+              startIcon={<Delete />}
+              variant="outlined"
+            >
+              {tInvitations("actions.batchCancelInvitation.title")}
+            </Button>
+          )}
+          {isSelectMode && (
+            <>
+              <Button
+                onClick={handleCancelInvitationBatchCancel}
+                size="small"
+                startIcon={<Cancel />}
+                variant="outlined"
+              >
+                {tInvitations("actions.batchCancelInvitation.cancel.label")}
+              </Button>
+              <Button
+                color="error"
+                disabled={!selectedRows.length}
+                onClick={handleSubmitInvitationBatchCancel}
+                size="small"
+                startIcon={<Delete />}
+                variant="contained"
+              >
+                {tInvitations("actions.batchCancelInvitation.submit.label", {
+                  count: selectedRows.length,
+                })}
+              </Button>
+            </>
+          )}
+        </ToolbarStack>
+      )}
+      <DataGrid
+        {...DATA_GRID_PROPS}
+        {...rowSelectionProps}
+        apiRef={apiRef}
+        columns={columns}
+        loading={loading}
+        onPaginationModelChange={() =>
+          apiRef.current?.autosizeColumns(autosizeOptions)
+        }
+        rows={rows}
+      />
+    </>
   );
 };
 

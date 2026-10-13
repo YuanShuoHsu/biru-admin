@@ -15,6 +15,19 @@
   "assignParentalChild": "Assign child",
   "balances": {
     "actions": {
+      "batchRevokeDeferral": {
+        "cancel": {
+          "confirm": "Are you sure you want to cancel batch revoke <bold>deferral agreements</bold>? Your selection will be cleared.",
+          "label": "Cancel Batch Revoke Deferral Agreements"
+        },
+        "confirm": "Are you sure you want to batch revoke <bold>deferral agreements</bold>?",
+        "submit": {
+          "confirm": "Are you sure you want to revoke the <bold>{count} selected deferral agreements</bold>?",
+          "label": "Revoke Selected Deferral Agreements ({count})",
+          "success": "Revoked {count} deferral agreements"
+        },
+        "title": "Batch Revoke Deferral Agreements"
+      },
       "create": "Add leave balance",
       "defer": "Record deferral agreement",
       "revokeDeferral": "Revoke deferral agreement"
@@ -92,6 +105,19 @@
         "confirm": "Delete the employee setup for <bold>{name}</bold>? This employee has no attendance or payroll records and will return to “Not set up”.",
         "success": "Deleted the employee setup for {name}",
         "title": "Delete employee setup"
+      },
+      "batchDelete": {
+        "title": "Batch Delete Employee Setups",
+        "confirm": "Are you sure you want to batch delete <bold>employee setups</bold>?",
+        "cancel": {
+          "label": "Cancel Batch Delete Employee Setups",
+          "confirm": "Are you sure you want to cancel batch delete <bold>employee setups</bold>? Your selection will be cleared."
+        },
+        "submit": {
+          "label": "Delete Selected Employee Setups ({count})",
+          "confirm": "Are you sure you want to delete the <bold>{count} selected employee setups</bold>? These employees have no attendance or payroll records and will return to “Not set up”.",
+          "success": "Deleted {count} employee setups"
+        }
       }
     },
     "label": "Employees",
@@ -363,6 +389,19 @@
   },
   "leaveCases": {
     "actions": {
+      "batchDelete": {
+        "cancel": {
+          "confirm": "Are you sure you want to cancel batch delete <bold>event leave allowances</bold>? Your selection will be cleared.",
+          "label": "Cancel Batch Delete Event Leave Allowances"
+        },
+        "confirm": "Are you sure you want to batch delete <bold>event leave allowances</bold>?",
+        "submit": {
+          "confirm": "Are you sure you want to delete the <bold>{count} selected event leave allowances</bold>?",
+          "label": "Delete Selected Event Leave Allowances ({count})",
+          "success": "Deleted {count} event leave allowances"
+        },
+        "title": "Batch Delete Event Leave Allowances"
+      },
       "create": "Add event leave allowance",
       "delete": "Delete event leave allowance",
       "update": "Edit event leave allowance"
@@ -391,6 +430,19 @@
   },
   "leaveTypes": {
     "actions": {
+      "batchDelete": {
+        "cancel": {
+          "confirm": "Are you sure you want to cancel batch delete <bold>leave policies</bold>? Your selection will be cleared.",
+          "label": "Cancel Batch Delete Leave Policies"
+        },
+        "confirm": "Are you sure you want to batch delete <bold>leave policies</bold>?",
+        "submit": {
+          "confirm": "Are you sure you want to delete the <bold>{count} selected leave policies</bold>? Unused leave balances will also be deleted, and this action cannot be undone.",
+          "label": "Delete Selected Leave Policies ({count})",
+          "success": "Deleted {count} leave policies"
+        },
+        "title": "Batch Delete Leave Policies"
+      },
       "create": {
         "success": "Leave policy {name} created",
         "title": "Add leave policy"
@@ -825,6 +877,19 @@
     "substituteShift": "Workday shift to give off",
     "noWorkdayShifts": "No workday shifts to choose before {date}; schedule shifts first",
     "actions": {
+      "batchRevoke": {
+        "cancel": {
+          "confirm": "Are you sure you want to cancel batch revoke <bold>substitute days</bold>? Your selection will be cleared.",
+          "label": "Cancel Batch Revoke Substitute Days"
+        },
+        "confirm": "Are you sure you want to batch revoke <bold>substitute days</bold>?",
+        "submit": {
+          "confirm": "Are you sure you want to revoke the <bold>{count} selected substitute days</bold>?",
+          "label": "Revoke Selected Substitute Days ({count})",
+          "success": "Revoked {count} substitute days"
+        },
+        "title": "Batch Revoke Substitute Days"
+      },
       "designate": "Set substitute day",
       "revoke": "Revoke substitute day"
     },
@@ -908,6 +973,19 @@
         "title": "Delete pay item",
         "confirm": "Delete <bold>{name}</bold>?",
         "success": "Deleted \"{name}\""
+      },
+      "batchDelete": {
+        "title": "Batch Delete Pay Items",
+        "confirm": "Are you sure you want to batch delete <bold>pay items</bold>?",
+        "cancel": {
+          "label": "Cancel Batch Delete Pay Items",
+          "confirm": "Are you sure you want to cancel batch delete <bold>pay items</bold>? Your selection will be cleared."
+        },
+        "submit": {
+          "label": "Delete Selected Pay Items ({count})",
+          "confirm": "Are you sure you want to delete the <bold>{count} selected pay items</bold>?",
+          "success": "Deleted {count} pay items"
+        }
       }
     }
   },
@@ -1006,6 +1084,19 @@
         "title": "Delete shift type",
         "confirm": "Delete <bold>{name}</bold>?",
         "success": "Deleted \"{name}\""
+      },
+      "batchDelete": {
+        "title": "Batch Delete Shift Types",
+        "confirm": "Are you sure you want to batch delete <bold>shift types</bold>?",
+        "cancel": {
+          "label": "Cancel Batch Delete Shift Types",
+          "confirm": "Are you sure you want to cancel batch delete <bold>shift types</bold>? Your selection will be cleared."
+        },
+        "submit": {
+          "label": "Delete Selected Shift Types ({count})",
+          "confirm": "Are you sure you want to delete the <bold>{count} selected shift types</bold>?",
+          "success": "Deleted {count} shift types"
+        }
       }
     }
   },

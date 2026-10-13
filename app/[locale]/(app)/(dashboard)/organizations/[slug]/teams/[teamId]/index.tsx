@@ -3,7 +3,7 @@
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import AddTeamMemberDialog from "./AddTeamMemberDialog";
@@ -11,9 +11,11 @@ import AddTeamMemberDialog from "./AddTeamMemberDialog";
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { ROLE_RANK } from "@/constants/organizations";
 
+import { useRowSelection } from "@/hooks/useRowSelection";
+
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { PersonAdd, PersonRemove } from "@mui/icons-material";
+import { Cancel, PersonAdd, PersonRemove } from "@mui/icons-material";
 import {
   Avatar,
   Button,
@@ -32,6 +34,8 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { ActiveOrganization, Team } from "@/types/organizations";
 
 import { buildTeamMembers, type TeamMemberRow } from "@/utils/teams";
+import { runSequentially, SequentialRunError } from "@/utils/dataGrid";
+import { getErrorMessage as getFetchErrorMessage } from "@/utils/errors";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -85,6 +89,8 @@ const OrganizationsSlugTeamsTeamId = ({
   team,
   teamMembers: initialTeamMembers,
 }: OrganizationsSlugTeamsTeamIdProps) => {
+  const [isSelectMode, setIsSelectMode] = useState(false);
+
   const apiRef = useGridApiRef();
 
   const { setDialog } = useDialogStore((state) => state);
@@ -125,6 +131,13 @@ const OrganizationsSlugTeamsTeamId = ({
       },
     },
   );
+
+  const {
+    clearRowSelection,
+    hasSelectableRows,
+    rowSelectionProps,
+    selectedRows,
+  } = useRowSelection({ enabled: isSelectMode, rows });
 
   const handleAddTeamMember = () => {
     const teamMemberIds = new Set(rows.map(({ userId }) => userId));
@@ -196,9 +209,125 @@ const OrganizationsSlugTeamsTeamId = ({
     [locale, members, mutate, setDialog, team.id, team.name, tMembers],
   );
 
+  const handleEnterTeamMemberBatchRemoveMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tMembers.rich("actions.batchRemoveTeamMember.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(true);
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tMembers("actions.batchRemoveTeamMember.title"),
+    });
+  }, [apiRef, setDialog, tMembers]);
+
+  const handleSubmitTeamMemberBatchRemove = useCallback(() => {
+    const count = selectedRows.length;
+
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tMembers.rich("actions.batchRemoveTeamMember.submit.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            count,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          const memberIds = new Set((await mutate())?.map(({ id }) => id));
+          if (!selectedRows.every(({ id }) => memberIds.has(id))) {
+            enqueueSnackbar(
+              tMembers("actions.batchRemoveTeamMember.submit.stale"),
+              { variant: "error" },
+            );
+            mutate();
+            return;
+          }
+
+          await runSequentially(selectedRows, async ({ userId }) => {
+            const { error } = await authClient.organization.removeTeamMember({
+              teamId: team.id,
+              userId,
+            });
+            if (error)
+              throw new Error(
+                getErrorMessage(error.code ?? "", locale) || error.message,
+              );
+          });
+
+          setIsSelectMode(false);
+          clearRowSelection();
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tMembers("actions.batchRemoveTeamMember.submit.success", { count }),
+            {
+              variant: "success",
+            },
+          );
+        } catch (error) {
+          const reason =
+            error instanceof SequentialRunError ? error.reason : error;
+          const message = getFetchErrorMessage(reason);
+
+          enqueueSnackbar(
+            error instanceof SequentialRunError && error.done
+              ? tMembers("actions.batchRemoveTeamMember.submit.partial", {
+                  done: error.done,
+                  message,
+                })
+              : message,
+            { variant: "error" },
+          );
+        }
+
+        mutate();
+      },
+      open: true,
+      title: tMembers("actions.batchRemoveTeamMember.submit.label", { count }),
+    });
+  }, [
+    apiRef,
+    clearRowSelection,
+    locale,
+    mutate,
+    selectedRows,
+    setDialog,
+    team.id,
+    tMembers,
+  ]);
+
+  const handleCancelTeamMemberBatchRemove = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tMembers.rich("actions.batchRemoveTeamMember.cancel.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(false);
+        clearRowSelection();
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tMembers("actions.batchRemoveTeamMember.cancel.label"),
+    });
+  }, [apiRef, clearRowSelection, setDialog, tMembers]);
+
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...(canUpdateTeam
+      ...(canUpdateTeam && !isSelectMode
         ? [
             {
               disableColumnMenu: true,
@@ -268,25 +397,70 @@ const OrganizationsSlugTeamsTeamId = ({
           format.dateTime(new Date(value), "short"),
       },
     ],
-    [canUpdateTeam, format, handleRemoveTeamMember, tMembers, tTeams],
+    [
+      canUpdateTeam,
+      format,
+      handleRemoveTeamMember,
+      isSelectMode,
+      tMembers,
+      tTeams,
+    ],
   );
 
   return (
     <>
       {canUpdateTeam && (
         <ToolbarStack direction="row">
-          <Button
-            onClick={handleAddTeamMember}
-            size="small"
-            startIcon={<PersonAdd />}
-            variant="contained"
-          >
-            {tTeams("actions.addTeamMember.title")}
-          </Button>
+          {!isSelectMode && (
+            <>
+              <Button
+                onClick={handleAddTeamMember}
+                size="small"
+                startIcon={<PersonAdd />}
+                variant="contained"
+              >
+                {tTeams("actions.addTeamMember.title")}
+              </Button>
+              <Button
+                disabled={!hasSelectableRows}
+                onClick={handleEnterTeamMemberBatchRemoveMode}
+                size="small"
+                startIcon={<PersonRemove />}
+                variant="outlined"
+              >
+                {tMembers("actions.batchRemoveTeamMember.title")}
+              </Button>
+            </>
+          )}
+          {isSelectMode && (
+            <>
+              <Button
+                onClick={handleCancelTeamMemberBatchRemove}
+                size="small"
+                startIcon={<Cancel />}
+                variant="outlined"
+              >
+                {tMembers("actions.batchRemoveTeamMember.cancel.label")}
+              </Button>
+              <Button
+                color="error"
+                disabled={!selectedRows.length}
+                onClick={handleSubmitTeamMemberBatchRemove}
+                size="small"
+                startIcon={<PersonRemove />}
+                variant="contained"
+              >
+                {tMembers("actions.batchRemoveTeamMember.submit.label", {
+                  count: selectedRows.length,
+                })}
+              </Button>
+            </>
+          )}
         </ToolbarStack>
       )}
       <DataGrid
         {...DATA_GRID_PROPS}
+        {...rowSelectionProps}
         apiRef={apiRef}
         columns={columns}
         loading={loading}

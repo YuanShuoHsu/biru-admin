@@ -19,9 +19,9 @@ import {
   useEnumFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
+import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
-
-import { Add, Delete, Edit } from "@mui/icons-material";
+import { Add, Cancel, Delete, Edit } from "@mui/icons-material";
 import {
   Button,
   DialogContentText,
@@ -60,9 +60,11 @@ const ActionsStack = styled(Stack)({
   alignItems: "center",
 });
 
-const StyledButton = styled(Button)({
-  alignSelf: "flex-start",
-});
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -96,6 +98,7 @@ const EarningTypes = ({
   sortBy,
   sortDirection,
 }: EarningTypesProps) => {
+  const [isSelectMode, setIsSelectMode] = useState(false);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -165,6 +168,22 @@ const EarningTypes = ({
       },
     },
   );
+
+  const isEarningTypeSelectable = useCallback(
+    ({ inUse }: PayrollEarningType) => !inUse,
+    [],
+  );
+
+  const {
+    clearRowSelection,
+    hasSelectableRows,
+    rowSelectionProps,
+    selectedRows,
+  } = useRowSelection({
+    enabled: isSelectMode,
+    isRowSelectable: isEarningTypeSelectable,
+    rows,
+  });
 
   const handlePaginationModelChange = useCallback(
     (newModel: GridPaginationModel) => {
@@ -272,40 +291,144 @@ const EarningTypes = ({
     [mutate, organizationSlug, setDialog, tAttendance],
   );
 
+  const handleEnterEarningTypeBatchDeleteMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAttendance.rich("earningTypes.actions.batchDelete.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(true);
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tAttendance("earningTypes.actions.batchDelete.title"),
+    });
+  }, [apiRef, setDialog, tAttendance]);
+
+  const handleSubmitEarningTypeBatchDelete = useCallback(() => {
+    const count = selectedRows.length;
+
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAttendance.rich("earningTypes.actions.batchDelete.submit.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            count,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          await fetcher(base, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
+          });
+
+          setIsSelectMode(false);
+          clearRowSelection();
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tAttendance("earningTypes.actions.batchDelete.submit.success", {
+              count,
+            }),
+            {
+              variant: "success",
+            },
+          );
+        } catch (error) {
+          enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+            variant: "error",
+          });
+        }
+
+        mutate();
+      },
+      open: true,
+      title: tAttendance("earningTypes.actions.batchDelete.submit.label", {
+        count,
+      }),
+    });
+  }, [
+    apiRef,
+    base,
+    clearRowSelection,
+    mutate,
+    selectedRows,
+    setDialog,
+    tAttendance,
+  ]);
+
+  const handleCancelEarningTypeBatchDelete = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAttendance.rich("earningTypes.actions.batchDelete.cancel.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(false);
+        clearRowSelection();
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tAttendance("earningTypes.actions.batchDelete.cancel.label"),
+    });
+  }, [apiRef, clearRowSelection, setDialog, tAttendance]);
+
   const columns = useMemo<GridColDef[]>(
     () => [
-      {
-        disableColumnMenu: true,
-        disableExport: true,
-        field: "actions",
-        filterable: false,
-        headerName: tAttendance("actions"),
-        renderCell: ({ row }: GridRenderCellParams<PayrollEarningType>) => (
-          <ActionsStack direction="row">
-            <Tooltip title={tAttendance("earningTypes.actions.update.title")}>
-              <IconButton
-                onClick={() => handleEarningTypeDialog(row)}
-                size="small"
-              >
-                <Edit fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            {!row.inUse && (
-              <Tooltip title={tAttendance("earningTypes.actions.delete.title")}>
-                <IconButton
-                  color="error"
-                  onClick={() => handleDeleteEarningType(row)}
-                  size="small"
-                >
-                  <Delete fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-          </ActionsStack>
-        ),
-        resizable: false,
-        sortable: false,
-      },
+      ...(!isSelectMode
+        ? [
+            {
+              disableColumnMenu: true,
+              disableExport: true,
+              field: "actions",
+              filterable: false,
+              headerName: tAttendance("actions"),
+              renderCell: ({
+                row,
+              }: GridRenderCellParams<PayrollEarningType>) => (
+                <ActionsStack direction="row">
+                  <Tooltip
+                    title={tAttendance("earningTypes.actions.update.title")}
+                  >
+                    <IconButton
+                      onClick={() => handleEarningTypeDialog(row)}
+                      size="small"
+                    >
+                      <Edit fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  {isEarningTypeSelectable(row) && (
+                    <Tooltip
+                      title={tAttendance("earningTypes.actions.delete.title")}
+                    >
+                      <IconButton
+                        color="error"
+                        onClick={() => handleDeleteEarningType(row)}
+                        size="small"
+                      >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </ActionsStack>
+              ),
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
         field: "name",
         filterOperators: stringFilterOperators,
@@ -324,6 +447,8 @@ const EarningTypes = ({
       enumOptions.category,
       handleDeleteEarningType,
       handleEarningTypeDialog,
+      isEarningTypeSelectable,
+      isSelectMode,
       stringFilterOperators,
       tAttendance,
     ],
@@ -331,15 +456,56 @@ const EarningTypes = ({
 
   return (
     <>
-      <StyledButton
-        onClick={() => handleEarningTypeDialog()}
-        startIcon={<Add />}
-        variant="contained"
-      >
-        {tAttendance("earningTypes.actions.create.title")}
-      </StyledButton>
+      <ToolbarStack direction="row">
+        {!isSelectMode && (
+          <>
+            <Button
+              onClick={() => handleEarningTypeDialog()}
+              size="small"
+              startIcon={<Add />}
+              variant="contained"
+            >
+              {tAttendance("earningTypes.actions.create.title")}
+            </Button>
+            <Button
+              disabled={!hasSelectableRows}
+              onClick={handleEnterEarningTypeBatchDeleteMode}
+              size="small"
+              startIcon={<Delete />}
+              variant="outlined"
+            >
+              {tAttendance("earningTypes.actions.batchDelete.title")}
+            </Button>
+          </>
+        )}
+        {isSelectMode && (
+          <>
+            <Button
+              onClick={handleCancelEarningTypeBatchDelete}
+              size="small"
+              startIcon={<Cancel />}
+              variant="outlined"
+            >
+              {tAttendance("earningTypes.actions.batchDelete.cancel.label")}
+            </Button>
+            <Button
+              color="error"
+              disabled={!selectedRows.length}
+              onClick={handleSubmitEarningTypeBatchDelete}
+              size="small"
+              startIcon={<Delete />}
+              variant="contained"
+            >
+              {tAttendance("earningTypes.actions.batchDelete.submit.label", {
+                count: selectedRows.length,
+              })}
+            </Button>
+          </>
+        )}
+      </ToolbarStack>
       <DataGrid
         {...DATA_GRID_PROPS}
+        {...rowSelectionProps}
         apiRef={apiRef}
         columns={columns}
         filterMode="server"

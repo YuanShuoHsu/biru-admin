@@ -24,7 +24,6 @@ import SetUserPasswordDialogContent from "./SetUserPasswordDialogContent";
 import UpdateUserDialogContent from "./UpdateUserDialogContent";
 
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
-
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -46,12 +45,13 @@ import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 import { usePathname, useRouter } from "@/i18n/navigation";
 
 import { deviceSessionsKey } from "@/hooks/useDeviceSessions";
-
+import { useRowSelection } from "@/hooks/useRowSelection";
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import {
   AssignmentInd,
   Block,
+  Cancel,
   CheckCircle,
   Delete,
   Devices,
@@ -95,10 +95,20 @@ import type {
 } from "@/types/admins";
 import type { SortDirection } from "@/types/dataGrid";
 
-import { getUserSessions, type UserSessions } from "@/utils/admins";
-import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
+import {
+  getDeletableUserIds,
+  getUserSessions,
+  type UserSessions,
+} from "@/utils/admins";
+import {
+  getDataGridSearchParams,
+  getFilterItemParams,
+  runSequentially,
+  SequentialRunError,
+} from "@/utils/dataGrid";
 import { getAdminEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
+import { getErrorMessage as getFetchErrorMessage } from "@/utils/errors";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -179,6 +189,7 @@ const Admins = ({
   sortDirection,
   userSessions: initialUserSessions,
 }: AdminsProps) => {
+  const [isSelectMode, setIsSelectMode] = useState(false);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -282,7 +293,30 @@ const Admins = ({
     },
   );
 
+  const { data: deletableUserIds } = useSWR(
+    rows.length
+      ? ["/api/users/deletability", ...rows.map(({ id }) => id)]
+      : null,
+    () => getDeletableUserIds(rows),
+  );
+
   const currentUserId = session?.user?.id;
+
+  const isUserSelectable = useCallback(
+    ({ id }: User) => id !== currentUserId && !!deletableUserIds?.has(id),
+    [currentUserId, deletableUserIds],
+  );
+
+  const {
+    clearRowSelection,
+    hasSelectableRows,
+    rowSelectionProps,
+    selectedRows,
+  } = useRowSelection({
+    enabled: isSelectMode,
+    isRowSelectable: isUserSelectable,
+    rows,
+  });
   const hasImpersonableUser = rows.some(
     (row) => row.id !== currentUserId && row.role !== "admin",
   );
@@ -527,140 +561,258 @@ const Admins = ({
     [locale, mutate, mutateAdmins, setDialog, tAdmins],
   );
 
+  const handleEnterUserBatchRemoveMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAdmins.rich("actions.batchRemoveUser.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(true);
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tAdmins("actions.batchRemoveUser.title"),
+    });
+  }, [apiRef, setDialog, tAdmins]);
+
+  const handleSubmitUserBatchRemove = useCallback(() => {
+    const count = selectedRows.length;
+
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAdmins.rich("actions.batchRemoveUser.submit.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            count,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          const deletableIds = await getDeletableUserIds(selectedRows);
+          if (!selectedRows.every(({ id }) => deletableIds.has(id))) {
+            enqueueSnackbar(tAdmins("actions.batchRemoveUser.submit.stale"), {
+              variant: "error",
+            });
+            mutateAdmins();
+            mutate(deviceSessionsKey);
+            return;
+          }
+
+          await runSequentially(selectedRows, async ({ id: userId }) => {
+            const { error } = await authClient.admin.removeUser({ userId });
+            if (error)
+              throw new Error(
+                getErrorMessage(error.code ?? "", locale) || error.message,
+              );
+          });
+
+          setIsSelectMode(false);
+          clearRowSelection();
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tAdmins("actions.batchRemoveUser.submit.success", { count }),
+            {
+              variant: "success",
+            },
+          );
+        } catch (error) {
+          const reason =
+            error instanceof SequentialRunError ? error.reason : error;
+          const message = getFetchErrorMessage(reason);
+
+          enqueueSnackbar(
+            error instanceof SequentialRunError && error.done
+              ? tAdmins("actions.batchRemoveUser.submit.partial", {
+                  done: error.done,
+                  message,
+                })
+              : message,
+            { variant: "error" },
+          );
+        }
+
+        mutateAdmins();
+        mutate(deviceSessionsKey);
+      },
+      open: true,
+      title: tAdmins("actions.batchRemoveUser.submit.label", { count }),
+    });
+  }, [
+    apiRef,
+    clearRowSelection,
+    locale,
+    mutate,
+    mutateAdmins,
+    selectedRows,
+    setDialog,
+    tAdmins,
+  ]);
+
+  const handleCancelUserBatchRemove = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAdmins.rich("actions.batchRemoveUser.cancel.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(false);
+        clearRowSelection();
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tAdmins("actions.batchRemoveUser.cancel.label"),
+    });
+  }, [apiRef, clearRowSelection, setDialog, tAdmins]);
+
   const columns = useMemo<GridColDef[]>(
     () => [
-      {
-        disableColumnMenu: true,
-        disableExport: true,
-        field: "actions",
-        filterable: false,
-        headerName: tAdmins("actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<User>) => {
-          const isBanned =
-            row.banned &&
-            (!row.banExpires || new Date(row.banExpires) > new Date());
-          const isCurrentUser = row.id === currentUserId;
+      ...(!isSelectMode
+        ? [
+            {
+              disableColumnMenu: true,
+              disableExport: true,
+              field: "actions",
+              filterable: false,
+              headerName: tAdmins("actions.label"),
+              renderCell: ({ row }: GridRenderCellParams<User>) => {
+                const isBanned =
+                  row.banned &&
+                  (!row.banExpires || new Date(row.banExpires) > new Date());
+                const isCurrentUser = row.id === currentUserId;
 
-          const { hasUserSessions, userSession } = userSessions;
-          const hasUserSession = userSession[row.id];
+                const { hasUserSessions, userSession } = userSessions;
+                const hasUserSession = userSession[row.id];
 
-          return (
-            <ActionsStack direction="row">
-              <Tooltip title={tAdmins("actions.updateUser.title")}>
-                <IconButton
-                  onClick={(event) => {
-                    event.stopPropagation();
+                return (
+                  <ActionsStack direction="row">
+                    <Tooltip title={tAdmins("actions.updateUser.title")}>
+                      <IconButton
+                        onClick={(event) => {
+                          event.stopPropagation();
 
-                    handleUpdateUser(row);
-                  }}
-                  size="small"
-                >
-                  <ManageAccounts fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title={tAdmins("actions.setRole.title")}>
-                <IconButton
-                  onClick={(event) => {
-                    event.stopPropagation();
+                          handleUpdateUser(row);
+                        }}
+                        size="small"
+                      >
+                        <ManageAccounts fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title={tAdmins("actions.setRole.title")}>
+                      <IconButton
+                        onClick={(event) => {
+                          event.stopPropagation();
 
-                    handleSetRole(row);
-                  }}
-                  size="small"
-                >
-                  <AssignmentInd fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title={tAdmins("actions.setUserPassword.title")}>
-                <IconButton
-                  onClick={(event) => {
-                    event.stopPropagation();
+                          handleSetRole(row);
+                        }}
+                        size="small"
+                      >
+                        <AssignmentInd fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title={tAdmins("actions.setUserPassword.title")}>
+                      <IconButton
+                        onClick={(event) => {
+                          event.stopPropagation();
 
-                    handleSetUserPassword(row);
-                  }}
-                  size="small"
-                >
-                  <Password fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip
-                title={
-                  isBanned
-                    ? tAdmins("actions.unbanUser.title")
-                    : tAdmins("actions.banUser.title")
-                }
-              >
-                <StyledIconButton
-                  color={isBanned ? "success" : "warning"}
-                  onClick={(event) => {
-                    event.stopPropagation();
+                          handleSetUserPassword(row);
+                        }}
+                        size="small"
+                      >
+                        <Password fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip
+                      title={
+                        isBanned
+                          ? tAdmins("actions.unbanUser.title")
+                          : tAdmins("actions.banUser.title")
+                      }
+                    >
+                      <StyledIconButton
+                        color={isBanned ? "success" : "warning"}
+                        onClick={(event) => {
+                          event.stopPropagation();
 
-                    if (isBanned) {
-                      handleUnbanUser(row);
-                    } else {
-                      handleBanUser(row);
-                    }
-                  }}
-                  size="small"
-                  visible={!isCurrentUser}
-                >
-                  {isBanned ? (
-                    <LockOpen fontSize="small" />
-                  ) : (
-                    <Block fontSize="small" />
-                  )}
-                </StyledIconButton>
-              </Tooltip>
-              {hasUserSessions && (
-                <Tooltip title={tAdmins("userSessions.label")}>
-                  <StyledIconButton
-                    onClick={(event) => {
-                      event.stopPropagation();
+                          if (isBanned) {
+                            handleUnbanUser(row);
+                          } else {
+                            handleBanUser(row);
+                          }
+                        }}
+                        size="small"
+                        visible={!isCurrentUser}
+                      >
+                        {isBanned ? (
+                          <LockOpen fontSize="small" />
+                        ) : (
+                          <Block fontSize="small" />
+                        )}
+                      </StyledIconButton>
+                    </Tooltip>
+                    {hasUserSessions && (
+                      <Tooltip title={tAdmins("userSessions.label")}>
+                        <StyledIconButton
+                          onClick={(event) => {
+                            event.stopPropagation();
 
-                      router.push(`/admins/${row.id}`);
-                    }}
-                    size="small"
-                    visible={hasUserSession}
-                  >
-                    <Devices fontSize="small" />
-                  </StyledIconButton>
-                </Tooltip>
-              )}
-              {hasImpersonableUser && (
-                <Tooltip title={tAdmins("actions.impersonateUser.title")}>
-                  <StyledIconButton
-                    color="info"
-                    onClick={(event) => {
-                      event.stopPropagation();
+                            router.push(`/admins/${row.id}`);
+                          }}
+                          size="small"
+                          visible={hasUserSession}
+                        >
+                          <Devices fontSize="small" />
+                        </StyledIconButton>
+                      </Tooltip>
+                    )}
+                    {hasImpersonableUser && (
+                      <Tooltip title={tAdmins("actions.impersonateUser.title")}>
+                        <StyledIconButton
+                          color="info"
+                          onClick={(event) => {
+                            event.stopPropagation();
 
-                      handleImpersonateUser(row);
-                    }}
-                    size="small"
-                    visible={!isCurrentUser && row.role !== "admin"}
-                  >
-                    <SupervisorAccount fontSize="small" />
-                  </StyledIconButton>
-                </Tooltip>
-              )}
-              <Tooltip title={tAdmins("actions.removeUser.title")}>
-                <StyledIconButton
-                  color="error"
-                  onClick={(event) => {
-                    event.stopPropagation();
+                            handleImpersonateUser(row);
+                          }}
+                          size="small"
+                          visible={!isCurrentUser && row.role !== "admin"}
+                        >
+                          <SupervisorAccount fontSize="small" />
+                        </StyledIconButton>
+                      </Tooltip>
+                    )}
+                    <Tooltip title={tAdmins("actions.removeUser.title")}>
+                      <StyledIconButton
+                        color="error"
+                        onClick={(event) => {
+                          event.stopPropagation();
 
-                    handleRemoveUser(row);
-                  }}
-                  size="small"
-                  visible={!isCurrentUser}
-                >
-                  <Delete fontSize="small" />
-                </StyledIconButton>
-              </Tooltip>
-            </ActionsStack>
-          );
-        },
-        resizable: false,
-        sortable: false,
-      },
+                          handleRemoveUser(row);
+                        }}
+                        size="small"
+                        visible={isUserSelectable(row)}
+                      >
+                        <Delete fontSize="small" />
+                      </StyledIconButton>
+                    </Tooltip>
+                  </ActionsStack>
+                );
+              },
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
         field: "image",
         filterable: false,
@@ -813,6 +965,8 @@ const Admins = ({
       handleUnbanUser,
       handleUpdateUser,
       hasImpersonableUser,
+      isSelectMode,
+      isUserSelectable,
       router,
       tAdmins,
       tCommon,
@@ -824,17 +978,55 @@ const Admins = ({
   return (
     <>
       <ToolbarStack direction="row">
-        <Button
-          onClick={handleCreateUser}
-          size="small"
-          startIcon={<PersonAdd />}
-          variant="contained"
-        >
-          {tAdmins("actions.createUser.title")}
-        </Button>
+        {!isSelectMode && (
+          <>
+            <Button
+              onClick={handleCreateUser}
+              size="small"
+              startIcon={<PersonAdd />}
+              variant="contained"
+            >
+              {tAdmins("actions.createUser.title")}
+            </Button>
+            <Button
+              disabled={!hasSelectableRows}
+              onClick={handleEnterUserBatchRemoveMode}
+              size="small"
+              startIcon={<Delete />}
+              variant="outlined"
+            >
+              {tAdmins("actions.batchRemoveUser.title")}
+            </Button>
+          </>
+        )}
+        {isSelectMode && (
+          <>
+            <Button
+              onClick={handleCancelUserBatchRemove}
+              size="small"
+              startIcon={<Cancel />}
+              variant="outlined"
+            >
+              {tAdmins("actions.batchRemoveUser.cancel.label")}
+            </Button>
+            <Button
+              color="error"
+              disabled={!selectedRows.length}
+              onClick={handleSubmitUserBatchRemove}
+              size="small"
+              startIcon={<Delete />}
+              variant="contained"
+            >
+              {tAdmins("actions.batchRemoveUser.submit.label", {
+                count: selectedRows.length,
+              })}
+            </Button>
+          </>
+        )}
       </ToolbarStack>
       <DataGrid
         {...DATA_GRID_PROPS}
+        {...rowSelectionProps}
         apiRef={apiRef}
         columns={columns}
         filterMode="server"

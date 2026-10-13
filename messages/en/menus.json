@@ -53,6 +53,20 @@
   },
   "items": {
     "actions": {
+      "batchDeleteItem": {
+        "cancel": {
+          "confirm": "Are you sure you want to cancel batch delete <bold>items</bold>? Your selection will be cleared.",
+          "label": "Cancel Batch Delete Items"
+        },
+        "confirm": "Are you sure you want to batch delete <bold>items</bold>?",
+        "submit": {
+          "confirm": "Are you sure you want to delete the <bold>{count} selected items</bold>? All pricing settings will also be deleted.",
+          "error": "Failed to batch delete items",
+          "label": "Delete Selected Items ({count})",
+          "success": "Deleted {count} items"
+        },
+        "title": "Batch Delete Items"
+      },
       "createItem": {
         "error": "Failed to add item",
         "success": "Item {name} created",
@@ -90,6 +104,20 @@
     },
     "addOns": {
       "actions": {
+        "batchDeleteAddOn": {
+          "cancel": {
+            "confirm": "Are you sure you want to cancel batch delete <bold>add-ons</bold>? Your selection will be cleared.",
+            "label": "Cancel Batch Delete Add-ons"
+          },
+          "confirm": "Are you sure you want to batch delete <bold>add-ons</bold>?",
+          "submit": {
+            "confirm": "Are you sure you want to delete the <bold>{count} selected add-ons</bold>?",
+            "error": "Failed to batch delete add-ons",
+            "label": "Delete Selected Add-ons ({count})",
+            "success": "Deleted {count} add-ons"
+          },
+          "title": "Batch Delete Add-ons"
+        },
         "createAddOn": {
           "error": "Failed to add {name}",
           "success": "{name} added",
@@ -155,6 +183,20 @@
           "error": "Failed to attach modifier group",
           "success": "Modifier group {name} attached",
           "title": "Attach modifier group"
+        },
+        "batchDetach": {
+          "cancel": {
+            "confirm": "Are you sure you want to cancel batch detach <bold>modifier group attachments</bold>? Your selection will be cleared.",
+            "label": "Cancel Batch Detach Modifier Group Attachments"
+          },
+          "confirm": "Are you sure you want to batch detach <bold>modifier group attachments</bold>?",
+          "submit": {
+            "confirm": "Are you sure you want to detach the <bold>{count} selected modifier group attachments</bold>? This does not delete the groups themselves.",
+            "error": "Failed to batch detach modifier group attachments",
+            "label": "Detach Selected Modifier Group Attachments ({count})",
+            "success": "Detached {count} modifier group attachments"
+          },
+          "title": "Batch Detach Modifier Group Attachments"
         },
         "detach": {
           "confirm": "Are you sure you want to detach <bold>{name}</bold>? This does not delete the group itself.",
@@ -271,6 +313,20 @@
   "label": "Menus",
   "modifierGroups": {
     "actions": {
+      "batchDeleteGroup": {
+        "cancel": {
+          "confirm": "Are you sure you want to cancel batch delete <bold>modifier groups</bold>? Your selection will be cleared.",
+          "label": "Cancel Batch Delete Modifier Groups"
+        },
+        "confirm": "Are you sure you want to batch delete <bold>modifier groups</bold>?",
+        "submit": {
+          "confirm": "Are you sure you want to delete the <bold>{count} selected modifier groups</bold>? The modifiers in these groups will also be deleted.",
+          "error": "Failed to batch delete modifier groups",
+          "label": "Delete Selected Modifier Groups ({count})",
+          "success": "Deleted {count} modifier groups"
+        },
+        "title": "Batch Delete Modifier Groups"
+      },
       "createGroup": {
         "error": "Failed to create modifier group",
         "success": "Modifier group {name} created",
@@ -323,6 +379,20 @@
   },
   "modifiers": {
     "actions": {
+      "batchDeleteModifier": {
+        "cancel": {
+          "confirm": "Are you sure you want to cancel batch delete <bold>modifiers</bold>? Your selection will be cleared.",
+          "label": "Cancel Batch Delete Modifiers"
+        },
+        "confirm": "Are you sure you want to batch delete <bold>modifiers</bold>?",
+        "submit": {
+          "confirm": "Are you sure you want to delete the <bold>{count} selected modifiers</bold>?",
+          "error": "Failed to batch delete modifiers",
+          "label": "Delete Selected Modifiers ({count})",
+          "success": "Deleted {count} modifiers"
+        },
+        "title": "Batch Delete Modifiers"
+      },
       "createModifier": {
         "error": "Failed to create modifier",
         "success": "Modifier {name} created",
@@ -377,6 +447,20 @@
       },
       "backToSections": {
         "title": "Back to sections"
+      },
+      "batchDeleteSection": {
+        "cancel": {
+          "confirm": "Are you sure you want to cancel batch delete <bold>sections</bold>? Your selection will be cleared.",
+          "label": "Cancel Batch Delete Sections"
+        },
+        "confirm": "Are you sure you want to batch delete <bold>sections</bold>?",
+        "submit": {
+          "confirm": "Are you sure you want to delete the <bold>{count} selected sections</bold>? All subsections and items will also be deleted.",
+          "error": "Failed to batch delete sections",
+          "label": "Delete Selected Sections ({count})",
+          "success": "Deleted {count} sections"
+        },
+        "title": "Batch Delete Sections"
       },
       "createSection": {
         "error": "Failed to create section",

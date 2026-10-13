@@ -15,6 +15,19 @@
   "assignParentalChild": "子どもを関連付ける",
   "balances": {
     "actions": {
+      "batchRevokeDeferral": {
+        "cancel": {
+          "confirm": "<bold>繰越協定</bold>の一括取消をキャンセルしますか？選択した項目はクリアされます。",
+          "label": "繰越協定の一括取消をキャンセル"
+        },
+        "confirm": "<bold>繰越協定</bold>を一括取消しますか？",
+        "submit": {
+          "confirm": "選択した <bold>{count} 件の繰越協定</bold>を取消しますか？",
+          "label": "選択した繰越協定を取消（{count}）",
+          "success": "繰越協定 {count} 件を取消しました"
+        },
+        "title": "繰越協定を一括取消"
+      },
       "create": "休暇残数を追加",
       "defer": "繰越協定を記録",
       "revokeDeferral": "繰越協定を取り消す"
@@ -92,6 +105,19 @@
         "confirm": "<bold>{name}</bold> の従業員設定を削除しますか？勤怠・給与の記録はなく、削除後は「未設定」に戻ります。",
         "success": "{name} の従業員設定を削除しました",
         "title": "従業員設定を削除"
+      },
+      "batchDelete": {
+        "title": "従業員設定を一括削除",
+        "confirm": "<bold>従業員設定</bold>を一括削除しますか？",
+        "cancel": {
+          "label": "従業員設定の一括削除をキャンセル",
+          "confirm": "<bold>従業員設定</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。"
+        },
+        "submit": {
+          "label": "選択した従業員設定を削除（{count}）",
+          "confirm": "選択した <bold>{count} 件の従業員設定</bold>を削除しますか？勤怠・給与の記録はなく、削除後は「未設定」に戻ります。",
+          "success": "従業員設定 {count} 件を削除しました"
+        }
       }
     },
     "label": "従業員管理",
@@ -363,6 +389,19 @@
   },
   "leaveCases": {
     "actions": {
+      "batchDelete": {
+        "cancel": {
+          "confirm": "<bold>事由別休暇枠</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。",
+          "label": "事由別休暇枠の一括削除をキャンセル"
+        },
+        "confirm": "<bold>事由別休暇枠</bold>を一括削除しますか？",
+        "submit": {
+          "confirm": "選択した <bold>{count} 件の事由別休暇枠</bold>を削除しますか？",
+          "label": "選択した事由別休暇枠を削除（{count}）",
+          "success": "事由別休暇枠 {count} 件を削除しました"
+        },
+        "title": "事由別休暇枠を一括削除"
+      },
       "create": "事由別休暇枠を追加",
       "delete": "事由別休暇枠を削除",
       "update": "事由別休暇枠を編集"
@@ -391,6 +430,19 @@
   },
   "leaveTypes": {
     "actions": {
+      "batchDelete": {
+        "cancel": {
+          "confirm": "<bold>休暇区分</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。",
+          "label": "休暇区分の一括削除をキャンセル"
+        },
+        "confirm": "<bold>休暇区分</bold>を一括削除しますか？",
+        "submit": {
+          "confirm": "選択した <bold>{count} 件の休暇区分</bold>を削除しますか？未使用の休暇残高もすべて削除され、この操作は元に戻せません。",
+          "label": "選択した休暇区分を削除（{count}）",
+          "success": "休暇区分 {count} 件を削除しました"
+        },
+        "title": "休暇区分を一括削除"
+      },
       "create": {
         "success": "休暇区分 {name} を追加しました",
         "title": "休暇区分を追加"
@@ -825,6 +877,19 @@
     "substituteShift": "振替える勤務日のシフト",
     "noWorkdayShifts": "{date} までに指定できる勤務日のシフトがありません。先にシフトを作成してください",
     "actions": {
+      "batchRevoke": {
+        "cancel": {
+          "confirm": "<bold>振替休日</bold>の一括取消をキャンセルしますか？選択した項目はクリアされます。",
+          "label": "振替休日の一括取消をキャンセル"
+        },
+        "confirm": "<bold>振替休日</bold>を一括取消しますか？",
+        "submit": {
+          "confirm": "選択した <bold>{count} 件の振替休日</bold>を取消しますか？",
+          "label": "選択した振替休日を取消（{count}）",
+          "success": "振替休日 {count} 件を取消しました"
+        },
+        "title": "振替休日を一括取消"
+      },
       "designate": "振替休日を指定",
       "revoke": "振替休日を取り消す"
     },
@@ -908,6 +973,19 @@
         "title": "加算項目を削除",
         "confirm": "<bold>{name}</bold> を削除しますか？",
         "success": "「{name}」を削除しました"
+      },
+      "batchDelete": {
+        "title": "加算項目を一括削除",
+        "confirm": "<bold>加算項目</bold>を一括削除しますか？",
+        "cancel": {
+          "label": "加算項目の一括削除をキャンセル",
+          "confirm": "<bold>加算項目</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。"
+        },
+        "submit": {
+          "label": "選択した加算項目を削除（{count}）",
+          "confirm": "選択した <bold>{count} 件の加算項目</bold>を削除しますか？",
+          "success": "加算項目 {count} 件を削除しました"
+        }
       }
     }
   },
@@ -1006,6 +1084,19 @@
         "title": "シフト区分を削除",
         "confirm": "<bold>{name}</bold> を削除しますか？",
         "success": "「{name}」を削除しました"
+      },
+      "batchDelete": {
+        "title": "シフト区分を一括削除",
+        "confirm": "<bold>シフト区分</bold>を一括削除しますか？",
+        "cancel": {
+          "label": "シフト区分の一括削除をキャンセル",
+          "confirm": "<bold>シフト区分</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。"
+        },
+        "submit": {
+          "label": "選択したシフト区分を削除（{count}）",
+          "confirm": "選択した <bold>{count} 件のシフト区分</bold>を削除しますか？",
+          "success": "シフト区分 {count} 件を削除しました"
+        }
       }
     }
   },

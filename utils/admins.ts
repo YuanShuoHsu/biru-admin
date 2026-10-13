@@ -1,4 +1,8 @@
+import { fetcher } from "./fetcher";
+
 import { authClient } from "@/lib/auth-client";
+
+import type { UserDeletability } from "@/types/admins";
 
 export type UserSessions = {
   hasUserSessions: boolean;
@@ -31,3 +35,14 @@ export async function getUserSessions(
 
   return { hasUserSessions, userSession };
 }
+
+export const getDeletableUserIds = async (users: { id: string }[]) => {
+  const params = new URLSearchParams(users.map(({ id }) => ["ids", id]));
+  const deletability = await fetcher<UserDeletability[]>(
+    `/api/users/deletability?${params}`,
+  );
+
+  return new Set(
+    deletability.filter(({ deletable }) => deletable).map(({ id }) => id),
+  );
+};

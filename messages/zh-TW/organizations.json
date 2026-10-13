@@ -1,5 +1,21 @@
 {
   "actions": {
+    "batchDeleteOrganization": {
+      "cancel": {
+        "confirm": "確定要取消<bold>組織</bold>批次刪除嗎？已勾選的項目將會清除。",
+        "label": "取消批次刪除組織"
+      },
+      "confirm": "確定要進行<bold>組織</bold>批次刪除嗎？",
+      "submit": {
+        "confirm": "確定要刪除所選的 <bold>{count} 個組織</bold>嗎？成員、菜單、庫存等資料會一併刪除，30 天內可由平台管理員還原。",
+        "label": "刪除所選組織（{count}）",
+        "partial": "已刪除 {done} 個組織，之後的未刪除：{message}",
+        "stale": "所選的組織已有變動，請重新選取",
+        "success": "已刪除 {count} 個組織",
+        "typeCount": "請輸入要刪除的組織數量「{count}」以確認"
+      },
+      "title": "批次刪除組織"
+    },
     "closeOrganization": {
       "title": "停業",
       "confirm": "確定要讓 <bold>{name}</bold> 停業嗎？門市會從前台列表下架，顧客無法點餐與候位，店員只能查看資料。之後可由平台管理員復業。",
@@ -68,6 +84,21 @@
   },
   "invitations": {
     "actions": {
+      "batchCancelInvitation": {
+        "cancel": {
+          "confirm": "確定要取消<bold>邀請</bold>批次取消嗎？已勾選的項目將會清除。",
+          "label": "取消批次取消邀請"
+        },
+        "confirm": "確定要進行<bold>邀請</bold>批次取消嗎？",
+        "submit": {
+          "confirm": "確定要取消所選的 <bold>{count} 筆邀請</bold>嗎？",
+          "label": "取消所選邀請（{count}）",
+          "partial": "已取消 {done} 筆邀請，之後的未取消：{message}",
+          "stale": "所選的邀請已有變動，請重新選取",
+          "success": "已取消 {count} 筆邀請"
+        },
+        "title": "批次取消邀請"
+      },
       "cancelInvitation": {
         "confirm": "確定要取消對 <bold>{email}</bold> 的邀請嗎？",
         "success": "成功取消對 {email} 的邀請",
@@ -125,6 +156,36 @@
   "logo": "標誌",
   "members": {
     "actions": {
+      "batchRemoveMember": {
+        "cancel": {
+          "confirm": "確定要取消<bold>成員</bold>批次移除嗎？已勾選的項目將會清除。",
+          "label": "取消批次移除成員"
+        },
+        "confirm": "確定要進行<bold>成員</bold>批次移除嗎？",
+        "submit": {
+          "confirm": "確定要移除所選的 <bold>{count} 位成員</bold>嗎？",
+          "label": "移除所選成員（{count}）",
+          "partial": "已移除 {done} 位成員，之後的未移除：{message}",
+          "stale": "所選的成員已有變動，請重新選取",
+          "success": "已移除 {count} 位成員"
+        },
+        "title": "批次移除成員"
+      },
+      "batchRemoveTeamMember": {
+        "cancel": {
+          "confirm": "確定要取消<bold>團隊成員</bold>批次移除嗎？已勾選的項目將會清除。",
+          "label": "取消批次移除團隊成員"
+        },
+        "confirm": "確定要進行<bold>團隊成員</bold>批次移除嗎？",
+        "submit": {
+          "confirm": "確定要移除所選的 <bold>{count} 位團隊成員</bold>嗎？",
+          "label": "移除所選團隊成員（{count}）",
+          "partial": "已移除 {done} 位團隊成員，之後的未移除：{message}",
+          "stale": "所選的團隊成員已有變動，請重新選取",
+          "success": "已移除 {count} 位團隊成員"
+        },
+        "title": "批次移除團隊成員"
+      },
       "inviteMember": {
         "email": {
           "label": "電子郵件",
@@ -238,6 +299,21 @@
       "addTeamMember": {
         "success": "成功將 {email} 新增至 {team} 團隊",
         "title": "新增團隊成員"
+      },
+      "batchRemoveTeam": {
+        "cancel": {
+          "confirm": "確定要取消<bold>團隊</bold>批次刪除嗎？已勾選的項目將會清除。",
+          "label": "取消批次刪除團隊"
+        },
+        "confirm": "確定要進行<bold>團隊</bold>批次刪除嗎？",
+        "submit": {
+          "confirm": "確定要刪除所選的 <bold>{count} 個團隊</bold>嗎？",
+          "label": "刪除所選團隊（{count}）",
+          "partial": "已刪除 {done} 個團隊，之後的未刪除：{message}",
+          "stale": "所選的團隊已有變動，請重新選取",
+          "success": "已刪除 {count} 個團隊"
+        },
+        "title": "批次刪除團隊"
       },
       "createTeam": {
         "success": "成功新增團隊 {name}",

@@ -1,5 +1,21 @@
 {
   "actions": {
+    "batchDeleteOrganization": {
+      "cancel": {
+        "confirm": "Are you sure you want to cancel batch delete <bold>organizations</bold>? Your selection will be cleared.",
+        "label": "Cancel Batch Delete Organizations"
+      },
+      "confirm": "Are you sure you want to batch delete <bold>organizations</bold>?",
+      "submit": {
+        "confirm": "Are you sure you want to delete the <bold>{count} selected organizations</bold>? Their members, menus, inventory, and other data will be deleted too. A platform admin can restore them within 30 days.",
+        "label": "Delete Selected Organizations ({count})",
+        "partial": "Deleted {done} organizations; the rest were not deleted: {message}",
+        "stale": "The selected organizations have changed. Please select again.",
+        "success": "Deleted {count} organizations",
+        "typeCount": "Type \"{count}\" to confirm the number of organizations to delete"
+      },
+      "title": "Batch Delete Organizations"
+    },
     "closeOrganization": {
       "title": "Close store",
       "confirm": "Close <bold>{name}</bold>? It will be removed from the store list, customers won't be able to order or join the waitlist, and staff will only be able to view data. A platform admin can reopen it later.",
@@ -68,6 +84,21 @@
   },
   "invitations": {
     "actions": {
+      "batchCancelInvitation": {
+        "cancel": {
+          "confirm": "Are you sure you want to cancel batch cancel <bold>invitations</bold>? Your selection will be cleared.",
+          "label": "Cancel Batch Cancel Invitations"
+        },
+        "confirm": "Are you sure you want to batch cancel <bold>invitations</bold>?",
+        "submit": {
+          "confirm": "Are you sure you want to cancel the <bold>{count} selected invitations</bold>?",
+          "label": "Cancel Selected Invitations ({count})",
+          "partial": "Canceled {done} invitations; the rest were not canceled: {message}",
+          "stale": "The selected invitations have changed. Please select again.",
+          "success": "Canceled {count} invitations"
+        },
+        "title": "Batch Cancel Invitations"
+      },
       "cancelInvitation": {
         "confirm": "Are you sure you want to cancel the invitation for <bold>{email}</bold>?",
         "success": "Invitation to {email} canceled successfully",
@@ -125,6 +156,36 @@
   "logo": "Logo",
   "members": {
     "actions": {
+      "batchRemoveMember": {
+        "cancel": {
+          "confirm": "Are you sure you want to cancel batch remove <bold>members</bold>? Your selection will be cleared.",
+          "label": "Cancel Batch Remove Members"
+        },
+        "confirm": "Are you sure you want to batch remove <bold>members</bold>?",
+        "submit": {
+          "confirm": "Are you sure you want to remove the <bold>{count} selected members</bold>?",
+          "label": "Remove Selected Members ({count})",
+          "partial": "Removed {done} members; the rest were not removed: {message}",
+          "stale": "The selected members have changed. Please select again.",
+          "success": "Removed {count} members"
+        },
+        "title": "Batch Remove Members"
+      },
+      "batchRemoveTeamMember": {
+        "cancel": {
+          "confirm": "Are you sure you want to cancel batch remove <bold>team members</bold>? Your selection will be cleared.",
+          "label": "Cancel Batch Remove Team Members"
+        },
+        "confirm": "Are you sure you want to batch remove <bold>team members</bold>?",
+        "submit": {
+          "confirm": "Are you sure you want to remove the <bold>{count} selected team members</bold>?",
+          "label": "Remove Selected Team Members ({count})",
+          "partial": "Removed {done} team members; the rest were not removed: {message}",
+          "stale": "The selected team members have changed. Please select again.",
+          "success": "Removed {count} team members"
+        },
+        "title": "Batch Remove Team Members"
+      },
       "inviteMember": {
         "email": {
           "label": "Email",
@@ -238,6 +299,21 @@
       "addTeamMember": {
         "success": "{email} added to team {team} successfully",
         "title": "Add team member"
+      },
+      "batchRemoveTeam": {
+        "cancel": {
+          "confirm": "Are you sure you want to cancel batch delete <bold>teams</bold>? Your selection will be cleared.",
+          "label": "Cancel Batch Delete Teams"
+        },
+        "confirm": "Are you sure you want to batch delete <bold>teams</bold>?",
+        "submit": {
+          "confirm": "Are you sure you want to delete the <bold>{count} selected teams</bold>?",
+          "label": "Delete Selected Teams ({count})",
+          "partial": "Deleted {done} teams; the rest were not deleted: {message}",
+          "stale": "The selected teams have changed. Please select again.",
+          "success": "Deleted {count} teams"
+        },
+        "title": "Batch Delete Teams"
       },
       "createTeam": {
         "success": "{name} created successfully",

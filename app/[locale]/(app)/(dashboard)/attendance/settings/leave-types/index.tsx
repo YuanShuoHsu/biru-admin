@@ -21,9 +21,9 @@ import {
   useNumberFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
+import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
-
-import { Add, Delete, Edit } from "@mui/icons-material";
+import { Add, Cancel, Delete, Edit } from "@mui/icons-material";
 import {
   Button,
   Chip,
@@ -73,9 +73,11 @@ const PaidPercentStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(1),
 }));
 
-const StyledButton = styled(Button)({
-  alignSelf: "flex-start",
-});
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -109,6 +111,7 @@ const LeaveTypes = ({
   sortBy,
   sortDirection,
 }: LeaveTypesProps) => {
+  const [isSelectMode, setIsSelectMode] = useState(false);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -180,6 +183,22 @@ const LeaveTypes = ({
       },
     },
   );
+
+  const isLeaveTypeSelectable = useCallback(
+    ({ statutoryKind }: AttendanceLeaveType) => statutoryKind === "custom",
+    [],
+  );
+
+  const {
+    clearRowSelection,
+    hasSelectableRows,
+    rowSelectionProps,
+    selectedRows,
+  } = useRowSelection({
+    enabled: isSelectMode,
+    isRowSelectable: isLeaveTypeSelectable,
+    rows,
+  });
 
   const handlePaginationModelChange = useCallback(
     (newModel: GridPaginationModel) => {
@@ -287,40 +306,144 @@ const LeaveTypes = ({
     [mutate, organizationSlug, setDialog, tAttendance],
   );
 
+  const handleEnterLeaveTypeBatchDeleteMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAttendance.rich("leaveTypes.actions.batchDelete.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(true);
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tAttendance("leaveTypes.actions.batchDelete.title"),
+    });
+  }, [apiRef, setDialog, tAttendance]);
+
+  const handleSubmitLeaveTypeBatchDelete = useCallback(() => {
+    const count = selectedRows.length;
+
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAttendance.rich("leaveTypes.actions.batchDelete.submit.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            count,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          await fetcher(base, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
+          });
+
+          setIsSelectMode(false);
+          clearRowSelection();
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tAttendance("leaveTypes.actions.batchDelete.submit.success", {
+              count,
+            }),
+            {
+              variant: "success",
+            },
+          );
+        } catch (error) {
+          enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+            variant: "error",
+          });
+        }
+
+        mutate();
+      },
+      open: true,
+      title: tAttendance("leaveTypes.actions.batchDelete.submit.label", {
+        count,
+      }),
+    });
+  }, [
+    apiRef,
+    base,
+    clearRowSelection,
+    mutate,
+    selectedRows,
+    setDialog,
+    tAttendance,
+  ]);
+
+  const handleCancelLeaveTypeBatchDelete = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAttendance.rich("leaveTypes.actions.batchDelete.cancel.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(false);
+        clearRowSelection();
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tAttendance("leaveTypes.actions.batchDelete.cancel.label"),
+    });
+  }, [apiRef, clearRowSelection, setDialog, tAttendance]);
+
   const columns = useMemo<GridColDef[]>(
     () => [
-      {
-        disableColumnMenu: true,
-        disableExport: true,
-        field: "actions",
-        filterable: false,
-        headerName: tAttendance("actions"),
-        renderCell: ({ row }: GridRenderCellParams<AttendanceLeaveType>) => (
-          <ActionsStack direction="row">
-            <Tooltip title={tAttendance("leaveTypes.actions.update.title")}>
-              <IconButton
-                onClick={() => handleLeaveTypeDialog(row)}
-                size="small"
-              >
-                <Edit fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            {row.statutoryKind === "custom" && (
-              <Tooltip title={tAttendance("leaveTypes.actions.delete.title")}>
-                <IconButton
-                  color="error"
-                  onClick={() => handleDeleteLeaveType(row)}
-                  size="small"
-                >
-                  <Delete fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-          </ActionsStack>
-        ),
-        resizable: false,
-        sortable: false,
-      },
+      ...(!isSelectMode
+        ? [
+            {
+              disableColumnMenu: true,
+              disableExport: true,
+              field: "actions",
+              filterable: false,
+              headerName: tAttendance("actions"),
+              renderCell: ({
+                row,
+              }: GridRenderCellParams<AttendanceLeaveType>) => (
+                <ActionsStack direction="row">
+                  <Tooltip
+                    title={tAttendance("leaveTypes.actions.update.title")}
+                  >
+                    <IconButton
+                      onClick={() => handleLeaveTypeDialog(row)}
+                      size="small"
+                    >
+                      <Edit fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  {isLeaveTypeSelectable(row) && (
+                    <Tooltip
+                      title={tAttendance("leaveTypes.actions.delete.title")}
+                    >
+                      <IconButton
+                        color="error"
+                        onClick={() => handleDeleteLeaveType(row)}
+                        size="small"
+                      >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </ActionsStack>
+              ),
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
         field: "name",
         filterOperators: stringFilterOperators,
@@ -402,6 +525,8 @@ const LeaveTypes = ({
       enumOptions.statutoryKind,
       handleDeleteLeaveType,
       handleLeaveTypeDialog,
+      isLeaveTypeSelectable,
+      isSelectMode,
       numberFilterOperators,
       stringFilterOperators,
       tAttendance,
@@ -410,15 +535,56 @@ const LeaveTypes = ({
 
   return (
     <>
-      <StyledButton
-        onClick={() => handleLeaveTypeDialog()}
-        startIcon={<Add />}
-        variant="contained"
-      >
-        {tAttendance("leaveTypes.actions.create.title")}
-      </StyledButton>
+      <ToolbarStack direction="row">
+        {!isSelectMode && (
+          <>
+            <Button
+              onClick={() => handleLeaveTypeDialog()}
+              size="small"
+              startIcon={<Add />}
+              variant="contained"
+            >
+              {tAttendance("leaveTypes.actions.create.title")}
+            </Button>
+            <Button
+              disabled={!hasSelectableRows}
+              onClick={handleEnterLeaveTypeBatchDeleteMode}
+              size="small"
+              startIcon={<Delete />}
+              variant="outlined"
+            >
+              {tAttendance("leaveTypes.actions.batchDelete.title")}
+            </Button>
+          </>
+        )}
+        {isSelectMode && (
+          <>
+            <Button
+              onClick={handleCancelLeaveTypeBatchDelete}
+              size="small"
+              startIcon={<Cancel />}
+              variant="outlined"
+            >
+              {tAttendance("leaveTypes.actions.batchDelete.cancel.label")}
+            </Button>
+            <Button
+              color="error"
+              disabled={!selectedRows.length}
+              onClick={handleSubmitLeaveTypeBatchDelete}
+              size="small"
+              startIcon={<Delete />}
+              variant="contained"
+            >
+              {tAttendance("leaveTypes.actions.batchDelete.submit.label", {
+                count: selectedRows.length,
+              })}
+            </Button>
+          </>
+        )}
+      </ToolbarStack>
       <DataGrid
         {...DATA_GRID_PROPS}
+        {...rowSelectionProps}
         apiRef={apiRef}
         columns={columns}
         filterMode="server"

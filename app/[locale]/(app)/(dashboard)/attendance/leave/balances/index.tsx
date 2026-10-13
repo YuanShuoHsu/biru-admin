@@ -9,7 +9,6 @@ import BalanceDialog from "./BalanceDialog";
 import DeferralDialog from "./DeferralDialog";
 
 import { renderEmptyableCell } from "@/components/EmptyCell";
-
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -24,10 +23,16 @@ import {
   useNumberFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
+import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
-
-import { Add, EventRepeat, EventBusy } from "@mui/icons-material";
-import { Button, DialogContentText, IconButton, Tooltip } from "@mui/material";
+import { Add, Cancel, EventBusy, EventRepeat } from "@mui/icons-material";
+import {
+  Button,
+  DialogContentText,
+  IconButton,
+  Stack,
+  Tooltip,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
@@ -62,9 +67,11 @@ import {
 } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 
-const StyledButton = styled(Button)({
-  alignSelf: "flex-start",
-});
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -110,6 +117,7 @@ const Balances = ({
   sortBy,
   sortDirection,
 }: BalancesProps) => {
+  const [isSelectMode, setIsSelectMode] = useState(false);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -188,6 +196,26 @@ const Balances = ({
       },
     },
   );
+
+  const isDeferralSelectable = useCallback(
+    ({
+      annualLeaveDeferralId,
+      leaveTypeStatutoryKind,
+    }: AttendanceLeaveBalance) =>
+      leaveTypeStatutoryKind === "annual" && !!annualLeaveDeferralId,
+    [],
+  );
+
+  const {
+    clearRowSelection,
+    hasSelectableRows,
+    rowSelectionProps,
+    selectedRows,
+  } = useRowSelection({
+    enabled: isSelectMode,
+    isRowSelectable: isDeferralSelectable,
+    rows,
+  });
 
   const handlePaginationModelChange = useCallback(
     (newModel: GridPaginationModel) => {
@@ -313,6 +341,113 @@ const Balances = ({
     [mutate, organizationSlug, setDialog, tAttendance],
   );
 
+  const handleEnterDeferralBatchRevokeMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAttendance.rich("balances.actions.batchRevokeDeferral.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(true);
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tAttendance("balances.actions.batchRevokeDeferral.title"),
+    });
+  }, [apiRef, setDialog, tAttendance]);
+
+  const handleSubmitDeferralBatchRevoke = useCallback(() => {
+    const count = selectedRows.length;
+
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAttendance.rich(
+            "balances.actions.batchRevokeDeferral.submit.confirm",
+            {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              count,
+            },
+          )}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          await fetcher(
+            attendancePath(organizationSlug, "org", "annual-leave-deferrals"),
+            {
+              method: "DELETE",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                ids: selectedRows.flatMap(
+                  ({ annualLeaveDeferralId }) => annualLeaveDeferralId ?? [],
+                ),
+              }),
+            },
+          );
+
+          setIsSelectMode(false);
+          clearRowSelection();
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tAttendance("balances.actions.batchRevokeDeferral.submit.success", {
+              count,
+            }),
+            {
+              variant: "success",
+            },
+          );
+        } catch (error) {
+          enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+            variant: "error",
+          });
+        }
+
+        mutate();
+      },
+      open: true,
+      title: tAttendance("balances.actions.batchRevokeDeferral.submit.label", {
+        count,
+      }),
+    });
+  }, [
+    apiRef,
+    clearRowSelection,
+    mutate,
+    organizationSlug,
+    selectedRows,
+    setDialog,
+    tAttendance,
+  ]);
+
+  const handleCancelDeferralBatchRevoke = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAttendance.rich(
+            "balances.actions.batchRevokeDeferral.cancel.confirm",
+            {
+              bold: (chunks) => <strong>{chunks}</strong>,
+            },
+          )}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(false);
+        clearRowSelection();
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tAttendance("balances.actions.batchRevokeDeferral.cancel.label"),
+    });
+  }, [apiRef, clearRowSelection, setDialog, tAttendance]);
+
   const leaveTypeOptions = useMemo(
     () =>
       leaveTypes.map((leaveType) => ({
@@ -322,9 +457,11 @@ const Balances = ({
     [leaveTypes, tAttendance],
   );
 
+  const canBatchRevoke = canViewAll && canRevokeDeferral;
+
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...(canViewAll && (canDefer || canRevokeDeferral)
+      ...(canViewAll && (canDefer || canRevokeDeferral) && !isSelectMode
         ? [
             {
               disableColumnMenu: true,
@@ -434,12 +571,13 @@ const Balances = ({
       canDefer,
       canRevokeDeferral,
       canViewAll,
-      handleDefer,
-      handleRevokeDeferral,
       date,
       dateFilterOperators,
       durationFilterOperators,
       enumFilterOperators,
+      handleDefer,
+      handleRevokeDeferral,
+      isSelectMode,
       leaveTypeOptions,
       numberFilterOperators,
       stringFilterOperators,
@@ -449,18 +587,65 @@ const Balances = ({
 
   return (
     <>
-      {canWrite && (
-        <StyledButton
-          onClick={handleCreateBalance}
-          size="small"
-          startIcon={<Add />}
-          variant="contained"
-        >
-          {tAttendance("balances.actions.create")}
-        </StyledButton>
+      {(canWrite || canBatchRevoke) && (
+        <ToolbarStack direction="row">
+          {!isSelectMode && (
+            <>
+              {canWrite && (
+                <Button
+                  onClick={handleCreateBalance}
+                  size="small"
+                  startIcon={<Add />}
+                  variant="contained"
+                >
+                  {tAttendance("balances.actions.create")}
+                </Button>
+              )}
+              {canBatchRevoke && (
+                <Button
+                  disabled={!hasSelectableRows}
+                  onClick={handleEnterDeferralBatchRevokeMode}
+                  size="small"
+                  startIcon={<EventBusy />}
+                  variant="outlined"
+                >
+                  {tAttendance("balances.actions.batchRevokeDeferral.title")}
+                </Button>
+              )}
+            </>
+          )}
+          {isSelectMode && (
+            <>
+              <Button
+                onClick={handleCancelDeferralBatchRevoke}
+                size="small"
+                startIcon={<Cancel />}
+                variant="outlined"
+              >
+                {tAttendance(
+                  "balances.actions.batchRevokeDeferral.cancel.label",
+                )}
+              </Button>
+              <Button
+                color="error"
+                disabled={!selectedRows.length}
+                onClick={handleSubmitDeferralBatchRevoke}
+                size="small"
+                startIcon={<EventBusy />}
+                variant="contained"
+              >
+                {tAttendance(
+                  "balances.actions.batchRevokeDeferral.submit.label",
+                  { count: selectedRows.length },
+                )}
+              </Button>
+            </>
+          )}
+        </ToolbarStack>
       )}
       <DataGrid
         {...DATA_GRID_PROPS}
+        {...rowSelectionProps}
         apiRef={apiRef}
         columns={columns}
         filterMode="server"

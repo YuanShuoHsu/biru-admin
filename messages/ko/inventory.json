@@ -2,6 +2,20 @@
   "createdAt": "생성 일시",
   "ingredients": {
     "actions": {
+      "batchDeleteIngredient": {
+        "cancel": {
+          "confirm": "<bold>식자재</bold> 일괄 삭제를 취소하시겠습니까? 선택한 항목이 해제됩니다.",
+          "label": "식자재 일괄 삭제 취소"
+        },
+        "confirm": "<bold>식자재</bold>을(를) 일괄 삭제하시겠습니까?",
+        "submit": {
+          "confirm": "선택한 <bold>{count}개의 식자재</bold>을(를) 삭제하시겠습니까?",
+          "error": "식자재 일괄 삭제에 실패했습니다",
+          "label": "선택한 식자재 삭제 ({count})",
+          "success": "식자재 {count}개를 삭제했습니다"
+        },
+        "title": "식자재 일괄 삭제"
+      },
       "createIngredient": {
         "error": "식자재 추가에 실패했습니다",
         "success": "식자재 {name}이(가) 추가되었습니다",
@@ -123,6 +137,20 @@
     },
     "ingredients": {
       "actions": {
+        "batchDeleteRecipeIngredient": {
+          "cancel": {
+            "confirm": "<bold>재료</bold> 일괄 삭제를 취소하시겠습니까? 선택한 항목이 해제됩니다.",
+            "label": "재료 일괄 삭제 취소"
+          },
+          "confirm": "<bold>재료</bold>을(를) 일괄 삭제하시겠습니까?",
+          "submit": {
+            "confirm": "선택한 <bold>{count}개의 재료</bold>을(를) 삭제하시겠습니까?",
+            "error": "재료 일괄 삭제에 실패했습니다",
+            "label": "선택한 재료 삭제 ({count})",
+            "success": "재료 {count}개를 삭제했습니다"
+          },
+          "title": "재료 일괄 삭제"
+        },
         "createRecipeIngredient": {
           "error": "재료 추가에 실패했습니다",
           "success": "재료이(가) 추가되었습니다",
@@ -184,6 +212,20 @@
   "reorder": "순서",
   "suppliers": {
     "actions": {
+      "batchDeleteSupplier": {
+        "cancel": {
+          "confirm": "<bold>공급업체</bold> 일괄 삭제를 취소하시겠습니까? 선택한 항목이 해제됩니다.",
+          "label": "공급업체 일괄 삭제 취소"
+        },
+        "confirm": "<bold>공급업체</bold>을(를) 일괄 삭제하시겠습니까?",
+        "submit": {
+          "confirm": "선택한 <bold>{count}개의 공급업체</bold>을(를) 삭제하시겠습니까?",
+          "error": "공급업체 일괄 삭제에 실패했습니다",
+          "label": "선택한 공급업체 삭제 ({count})",
+          "success": "공급업체 {count}개를 삭제했습니다"
+        },
+        "title": "공급업체 일괄 삭제"
+      },
       "createSupplier": {
         "error": "공급업체 추가에 실패했습니다",
         "success": "공급업체이(가) 추가되었습니다",

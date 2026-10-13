@@ -10,7 +10,6 @@ import BannerDialog from "./BannerDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
 import { DragHandle, Sortable } from "@/components/Sortable";
-
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -26,8 +25,8 @@ import {
   useBooleanFilterOperators,
   useDateFilterOperators,
 } from "@/hooks/useFilterOperators";
+import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
-
 import { Add, Cancel, Delete, Edit, Save, Sort } from "@mui/icons-material";
 import {
   Avatar,
@@ -55,7 +54,11 @@ import type {
   BannerFilterField,
   BannerSortField,
 } from "@/types/banners";
-import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  FilterOperator,
+  SortDirection,
+  ToolbarMode,
+} from "@/types/dataGrid";
 
 import {
   getDataGridSearchParams,
@@ -118,7 +121,9 @@ const Banners = ({
   sortBy,
   sortDirection,
 }: BannersProps) => {
-  const [isReorderMode, setIsReorderMode] = useState(false);
+  const [toolbarMode, setToolbarMode] = useState<ToolbarMode>(null);
+  const isReorderMode = toolbarMode === "reorder";
+  const isSelectMode = toolbarMode === "select";
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -193,6 +198,13 @@ const Banners = ({
     },
   );
 
+  const {
+    clearRowSelection,
+    hasSelectableRows,
+    rowSelectionProps,
+    selectedRows,
+  } = useRowSelection({ enabled: isSelectMode, rows });
+
   const isReorderDisabled =
     rowCount < 2 || isFilteredOrSorted(filterModel, sortModel);
 
@@ -254,7 +266,7 @@ const Banners = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
-        setIsReorderMode(true);
+        setToolbarMode("reorder");
         setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
@@ -282,7 +294,7 @@ const Banners = ({
             }),
           });
 
-          setIsReorderMode(false);
+          setToolbarMode(null);
 
           setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
 
@@ -320,7 +332,7 @@ const Banners = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
-        setIsReorderMode(false);
+        setToolbarMode(null);
 
         mutate();
       },
@@ -396,6 +408,88 @@ const Banners = ({
     [mutate, setDialog, tBanners],
   );
 
+  const handleEnterBatchDeleteMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tBanners.rich("actions.batchDeleteBanner.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setToolbarMode("select");
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tBanners("actions.batchDeleteBanner.title"),
+    });
+  }, [apiRef, setDialog, tBanners]);
+
+  const handleSubmitBatchDelete = useCallback(() => {
+    const count = selectedRows.length;
+
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tBanners.rich("actions.batchDeleteBanner.submit.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            count,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          await fetcher("/api/banners", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
+          });
+
+          setToolbarMode(null);
+          clearRowSelection();
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tBanners("actions.batchDeleteBanner.submit.success", { count }),
+            {
+              variant: "success",
+            },
+          );
+        } catch {
+          enqueueSnackbar(tBanners("actions.batchDeleteBanner.submit.error"), {
+            variant: "error",
+          });
+        }
+
+        mutate();
+      },
+      open: true,
+      title: tBanners("actions.batchDeleteBanner.submit.label", { count }),
+    });
+  }, [apiRef, clearRowSelection, mutate, selectedRows, setDialog, tBanners]);
+
+  const handleCancelBatchDelete = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tBanners.rich("actions.batchDeleteBanner.cancel.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setToolbarMode(null);
+        clearRowSelection();
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tBanners("actions.batchDeleteBanner.cancel.label"),
+    });
+  }, [apiRef, clearRowSelection, setDialog, tBanners]);
+
   const columns = useMemo<GridColDef[]>(
     () => [
       ...(isReorderMode
@@ -411,7 +505,7 @@ const Banners = ({
             },
           ]
         : []),
-      ...(!isReorderMode
+      ...(!toolbarMode
         ? [
             {
               disableColumnMenu: true,
@@ -507,13 +601,14 @@ const Banners = ({
       handleUpdateBanner,
       isReorderMode,
       tBanners,
+      toolbarMode,
     ],
   );
 
   return (
     <>
       <ToolbarStack direction="row">
-        {!isReorderMode ? (
+        {!toolbarMode && (
           <>
             <Button
               onClick={handleCreateBanner}
@@ -532,8 +627,18 @@ const Banners = ({
             >
               {tBanners("actions.reorderBanner.title")}
             </Button>
+            <Button
+              disabled={!hasSelectableRows}
+              onClick={handleEnterBatchDeleteMode}
+              size="small"
+              startIcon={<Delete />}
+              variant="outlined"
+            >
+              {tBanners("actions.batchDeleteBanner.title")}
+            </Button>
           </>
-        ) : (
+        )}
+        {isReorderMode && (
           <>
             <Button
               onClick={handleCancelReorder}
@@ -553,10 +658,35 @@ const Banners = ({
             </Button>
           </>
         )}
+        {isSelectMode && (
+          <>
+            <Button
+              onClick={handleCancelBatchDelete}
+              size="small"
+              startIcon={<Cancel />}
+              variant="outlined"
+            >
+              {tBanners("actions.batchDeleteBanner.cancel.label")}
+            </Button>
+            <Button
+              color="error"
+              disabled={!selectedRows.length}
+              onClick={handleSubmitBatchDelete}
+              size="small"
+              startIcon={<Delete />}
+              variant="contained"
+            >
+              {tBanners("actions.batchDeleteBanner.submit.label", {
+                count: selectedRows.length,
+              })}
+            </Button>
+          </>
+        )}
       </ToolbarStack>
       <DragDropProvider onDragEnd={handleDragEnd}>
         <DataGrid
           {...DATA_GRID_PROPS}
+          {...rowSelectionProps}
           apiRef={apiRef}
           columns={columns}
           filterMode="server"

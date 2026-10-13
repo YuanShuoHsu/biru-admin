@@ -10,7 +10,6 @@ import RecipeIngredientDialog from "../RecipeIngredientDialog";
 
 import { renderEmptyableCell } from "@/components/EmptyCell";
 import { DragHandle, Sortable } from "@/components/Sortable";
-
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -28,8 +27,8 @@ import {
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 import { useFormatMoney } from "@/hooks/useFormatMoney";
+import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
-
 import { Add, Cancel, Delete, Edit, Save, Sort } from "@mui/icons-material";
 import {
   Button,
@@ -50,7 +49,11 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  FilterOperator,
+  SortDirection,
+  ToolbarMode,
+} from "@/types/dataGrid";
 import type {
   Ingredient,
   MenuItemRecipeDetail,
@@ -126,7 +129,9 @@ const RecipeIngredients = ({
   sortBy,
   sortDirection,
 }: RecipeIngredientsProps) => {
-  const [isReorderMode, setIsReorderMode] = useState(false);
+  const [toolbarMode, setToolbarMode] = useState<ToolbarMode>(null);
+  const isReorderMode = toolbarMode === "reorder";
+  const isSelectMode = toolbarMode === "select";
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -216,6 +221,13 @@ const RecipeIngredients = ({
     },
   );
 
+  const {
+    clearRowSelection,
+    hasSelectableRows,
+    rowSelectionProps,
+    selectedRows,
+  } = useRowSelection({ enabled: isSelectMode, rows });
+
   const handleMutate = useCallback(() => {
     mutate();
     mutateRecipe();
@@ -283,7 +295,7 @@ const RecipeIngredients = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
-        setIsReorderMode(true);
+        setToolbarMode("reorder");
 
         setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
@@ -318,7 +330,7 @@ const RecipeIngredients = ({
             },
           );
 
-          setIsReorderMode(false);
+          setToolbarMode(null);
 
           setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
 
@@ -366,7 +378,7 @@ const RecipeIngredients = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
-        setIsReorderMode(false);
+        setToolbarMode(null);
 
         mutate();
       },
@@ -481,6 +493,118 @@ const RecipeIngredients = ({
     [handleMutate, locale, recipe, setDialog, tInventory],
   );
 
+  const handleEnterBatchDeleteMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tInventory.rich(
+            "recipes.ingredients.actions.batchDeleteRecipeIngredient.confirm",
+            {
+              bold: (chunks) => <strong>{chunks}</strong>,
+            },
+          )}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setToolbarMode("select");
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tInventory(
+        "recipes.ingredients.actions.batchDeleteRecipeIngredient.title",
+      ),
+    });
+  }, [apiRef, setDialog, tInventory]);
+
+  const handleSubmitBatchDelete = useCallback(() => {
+    const count = selectedRows.length;
+
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tInventory.rich(
+            "recipes.ingredients.actions.batchDeleteRecipeIngredient.submit.confirm",
+            {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              count,
+            },
+          )}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          await fetcher(`/api/recipes/${recipe.id}/recipe-ingredients`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
+          });
+
+          setToolbarMode(null);
+          clearRowSelection();
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tInventory(
+              "recipes.ingredients.actions.batchDeleteRecipeIngredient.submit.success",
+              { count },
+            ),
+            {
+              variant: "success",
+            },
+          );
+        } catch {
+          enqueueSnackbar(
+            tInventory(
+              "recipes.ingredients.actions.batchDeleteRecipeIngredient.submit.error",
+            ),
+            { variant: "error" },
+          );
+        }
+
+        mutate();
+      },
+      open: true,
+      title: tInventory(
+        "recipes.ingredients.actions.batchDeleteRecipeIngredient.submit.label",
+        { count },
+      ),
+    });
+  }, [
+    apiRef,
+    clearRowSelection,
+    mutate,
+    recipe.id,
+    selectedRows,
+    setDialog,
+    tInventory,
+  ]);
+
+  const handleCancelBatchDelete = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tInventory.rich(
+            "recipes.ingredients.actions.batchDeleteRecipeIngredient.cancel.confirm",
+            {
+              bold: (chunks) => <strong>{chunks}</strong>,
+            },
+          )}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setToolbarMode(null);
+        clearRowSelection();
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tInventory(
+        "recipes.ingredients.actions.batchDeleteRecipeIngredient.cancel.label",
+      ),
+    });
+  }, [apiRef, clearRowSelection, setDialog, tInventory]);
+
   const columns = useMemo<GridColDef[]>(() => {
     const costColumns: GridColDef[] = [
       {
@@ -528,7 +652,7 @@ const RecipeIngredients = ({
             },
           ]
         : []),
-      ...((canWrite || canDelete) && !isReorderMode
+      ...((canWrite || canDelete) && !toolbarMode
         ? [
             {
               disableColumnMenu: true,
@@ -621,13 +745,14 @@ const RecipeIngredients = ({
     stringFilterOperators,
     tCommon,
     tInventory,
+    toolbarMode,
   ]);
 
   return (
     <>
-      {(canCreate || canWrite) && (
+      {(canCreate || canWrite || canDelete) && (
         <ToolbarStack direction="row">
-          {!isReorderMode ? (
+          {!toolbarMode && (
             <>
               {canCreate && (
                 <Button
@@ -654,8 +779,22 @@ const RecipeIngredients = ({
                   )}
                 </Button>
               )}
+              {canDelete && (
+                <Button
+                  disabled={!hasSelectableRows}
+                  onClick={handleEnterBatchDeleteMode}
+                  size="small"
+                  startIcon={<Delete />}
+                  variant="outlined"
+                >
+                  {tInventory(
+                    "recipes.ingredients.actions.batchDeleteRecipeIngredient.title",
+                  )}
+                </Button>
+              )}
             </>
-          ) : (
+          )}
+          {isReorderMode && (
             <>
               <Button
                 onClick={handleCancelReorder}
@@ -679,11 +818,39 @@ const RecipeIngredients = ({
               </Button>
             </>
           )}
+          {isSelectMode && (
+            <>
+              <Button
+                onClick={handleCancelBatchDelete}
+                size="small"
+                startIcon={<Cancel />}
+                variant="outlined"
+              >
+                {tInventory(
+                  "recipes.ingredients.actions.batchDeleteRecipeIngredient.cancel.label",
+                )}
+              </Button>
+              <Button
+                color="error"
+                disabled={!selectedRows.length}
+                onClick={handleSubmitBatchDelete}
+                size="small"
+                startIcon={<Delete />}
+                variant="contained"
+              >
+                {tInventory(
+                  "recipes.ingredients.actions.batchDeleteRecipeIngredient.submit.label",
+                  { count: selectedRows.length },
+                )}
+              </Button>
+            </>
+          )}
         </ToolbarStack>
       )}
       <DragDropProvider onDragEnd={handleDragEnd}>
         <DataGrid
           {...DATA_GRID_PROPS}
+          {...rowSelectionProps}
           apiRef={apiRef}
           columns={columns}
           filterMode="server"

@@ -12,7 +12,6 @@ import useSWR from "swr";
 import SubstituteDialog from "./SubstituteDialog";
 
 import { renderEmptyableCell } from "@/components/EmptyCell";
-
 import { HOLIDAY_SUBSTITUTE_STATUS_COLORS } from "@/constants/attendance";
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { getPageSizeOptions } from "@/constants/pagination";
@@ -22,10 +21,17 @@ import {
   useDateFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
+import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
-
-import { EventAvailable, EventBusy } from "@mui/icons-material";
-import { Chip, DialogContentText, IconButton, Tooltip } from "@mui/material";
+import { Cancel, EventAvailable, EventBusy } from "@mui/icons-material";
+import {
+  Button,
+  Chip,
+  DialogContentText,
+  IconButton,
+  Stack,
+  Tooltip,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
@@ -64,6 +70,12 @@ const YearDatePicker = styled(DatePicker)({
   alignSelf: "flex-start",
 });
 
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
 interface HolidaySubstitutesProps {
   canUpdate: boolean;
   filterField?: AttendanceHolidaySubstituteFilterField;
@@ -95,6 +107,7 @@ const HolidaySubstitutes = ({
   sortDirection,
   year: initialYear,
 }: HolidaySubstitutesProps) => {
+  const [isSelectMode, setIsSelectMode] = useState(false);
   const [year, setYear] = useState(initialYear);
 
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
@@ -171,6 +184,22 @@ const HolidaySubstitutes = ({
       },
     },
   );
+
+  const isHolidaySubstituteSelectable = useCallback(
+    ({ substituteId }: AttendanceHolidaySubstitute) => !!substituteId,
+    [],
+  );
+
+  const {
+    clearRowSelection,
+    hasSelectableRows,
+    rowSelectionProps,
+    selectedRows,
+  } = useRowSelection({
+    enabled: isSelectMode,
+    isRowSelectable: isHolidaySubstituteSelectable,
+    rows,
+  });
 
   const handleYearChange = useCallback(
     (value: number) => {
@@ -295,9 +324,118 @@ const HolidaySubstitutes = ({
     [mutate, organizationSlug, setDialog, tAttendance],
   );
 
+  const handleEnterHolidaySubstituteBatchRevokeMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAttendance.rich("holidaySubstitutes.actions.batchRevoke.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(true);
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tAttendance("holidaySubstitutes.actions.batchRevoke.title"),
+    });
+  }, [apiRef, setDialog, tAttendance]);
+
+  const handleSubmitHolidaySubstituteBatchRevoke = useCallback(() => {
+    const count = selectedRows.length;
+
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAttendance.rich(
+            "holidaySubstitutes.actions.batchRevoke.submit.confirm",
+            {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              count,
+            },
+          )}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          await fetcher(
+            attendancePath(organizationSlug, "org", "holiday-substitutes"),
+            {
+              method: "DELETE",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                ids: selectedRows.flatMap(
+                  ({ substituteId }) => substituteId ?? [],
+                ),
+              }),
+            },
+          );
+
+          setIsSelectMode(false);
+          clearRowSelection();
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tAttendance(
+              "holidaySubstitutes.actions.batchRevoke.submit.success",
+              { count },
+            ),
+            {
+              variant: "success",
+            },
+          );
+        } catch (error) {
+          enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+            variant: "error",
+          });
+        }
+
+        mutate();
+      },
+      open: true,
+      title: tAttendance(
+        "holidaySubstitutes.actions.batchRevoke.submit.label",
+        { count },
+      ),
+    });
+  }, [
+    apiRef,
+    clearRowSelection,
+    mutate,
+    organizationSlug,
+    selectedRows,
+    setDialog,
+    tAttendance,
+  ]);
+
+  const handleCancelHolidaySubstituteBatchRevoke = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAttendance.rich(
+            "holidaySubstitutes.actions.batchRevoke.cancel.confirm",
+            {
+              bold: (chunks) => <strong>{chunks}</strong>,
+            },
+          )}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(false);
+        clearRowSelection();
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tAttendance("holidaySubstitutes.actions.batchRevoke.cancel.label"),
+    });
+  }, [apiRef, clearRowSelection, setDialog, tAttendance]);
+
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...(canUpdate
+      ...(canUpdate && !isSelectMode
         ? [
             {
               disableColumnMenu: true,
@@ -393,6 +531,7 @@ const HolidaySubstitutes = ({
       format,
       handleDesignate,
       handleRevoke,
+      isSelectMode,
       stringFilterOperators,
       tAttendance,
     ],
@@ -400,14 +539,61 @@ const HolidaySubstitutes = ({
 
   return (
     <>
-      <YearDatePicker
-        label={tAttendance("year")}
-        onChange={(value) => value?.isValid() && handleYearChange(value.year())}
-        value={dayjs(`${year}-01-01`)}
-        views={["year"]}
-      />
+      <ToolbarStack direction="row">
+        {!isSelectMode && (
+          <>
+            <YearDatePicker
+              label={tAttendance("year")}
+              onChange={(value) =>
+                value?.isValid() && handleYearChange(value.year())
+              }
+              value={dayjs(`${year}-01-01`)}
+              views={["year"]}
+            />
+            {canUpdate && (
+              <Button
+                disabled={!hasSelectableRows}
+                onClick={handleEnterHolidaySubstituteBatchRevokeMode}
+                size="small"
+                startIcon={<EventBusy />}
+                variant="outlined"
+              >
+                {tAttendance("holidaySubstitutes.actions.batchRevoke.title")}
+              </Button>
+            )}
+          </>
+        )}
+        {isSelectMode && (
+          <>
+            <Button
+              onClick={handleCancelHolidaySubstituteBatchRevoke}
+              size="small"
+              startIcon={<Cancel />}
+              variant="outlined"
+            >
+              {tAttendance(
+                "holidaySubstitutes.actions.batchRevoke.cancel.label",
+              )}
+            </Button>
+            <Button
+              color="error"
+              disabled={!selectedRows.length}
+              onClick={handleSubmitHolidaySubstituteBatchRevoke}
+              size="small"
+              startIcon={<EventBusy />}
+              variant="contained"
+            >
+              {tAttendance(
+                "holidaySubstitutes.actions.batchRevoke.submit.label",
+                { count: selectedRows.length },
+              )}
+            </Button>
+          </>
+        )}
+      </ToolbarStack>
       <DataGrid
         {...DATA_GRID_PROPS}
+        {...rowSelectionProps}
         apiRef={apiRef}
         columns={columns}
         filterMode="server"

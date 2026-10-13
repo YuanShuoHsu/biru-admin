@@ -16,9 +16,9 @@ import {
 import { getPageSizeOptions } from "@/constants/pagination";
 
 import { useStringFilterOperators } from "@/hooks/useFilterOperators";
+import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
-
-import { Add, Delete, Edit } from "@mui/icons-material";
+import { Add, Cancel, Delete, Edit } from "@mui/icons-material";
 import {
   Button,
   DialogContentText,
@@ -56,9 +56,11 @@ const ActionsStack = styled(Stack)({
   alignItems: "center",
 });
 
-const StyledButton = styled(Button)({
-  alignSelf: "flex-start",
-});
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -92,6 +94,7 @@ const ShiftTypes = ({
   sortBy,
   sortDirection,
 }: ShiftTypesProps) => {
+  const [isSelectMode, setIsSelectMode] = useState(false);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -156,6 +159,13 @@ const ShiftTypes = ({
       },
     },
   );
+
+  const {
+    clearRowSelection,
+    hasSelectableRows,
+    rowSelectionProps,
+    selectedRows,
+  } = useRowSelection({ enabled: isSelectMode, rows });
 
   const handlePaginationModelChange = useCallback(
     (newModel: GridPaginationModel) => {
@@ -260,38 +270,142 @@ const ShiftTypes = ({
     [base, mutate, setDialog, tAttendance],
   );
 
+  const handleEnterShiftTypeBatchDeleteMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAttendance.rich("shiftTypes.actions.batchDelete.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(true);
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tAttendance("shiftTypes.actions.batchDelete.title"),
+    });
+  }, [apiRef, setDialog, tAttendance]);
+
+  const handleSubmitShiftTypeBatchDelete = useCallback(() => {
+    const count = selectedRows.length;
+
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAttendance.rich("shiftTypes.actions.batchDelete.submit.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            count,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          await fetcher(base, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
+          });
+
+          setIsSelectMode(false);
+          clearRowSelection();
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tAttendance("shiftTypes.actions.batchDelete.submit.success", {
+              count,
+            }),
+            {
+              variant: "success",
+            },
+          );
+        } catch (error) {
+          enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+            variant: "error",
+          });
+        }
+
+        mutate();
+      },
+      open: true,
+      title: tAttendance("shiftTypes.actions.batchDelete.submit.label", {
+        count,
+      }),
+    });
+  }, [
+    apiRef,
+    base,
+    clearRowSelection,
+    mutate,
+    selectedRows,
+    setDialog,
+    tAttendance,
+  ]);
+
+  const handleCancelShiftTypeBatchDelete = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAttendance.rich("shiftTypes.actions.batchDelete.cancel.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(false);
+        clearRowSelection();
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tAttendance("shiftTypes.actions.batchDelete.cancel.label"),
+    });
+  }, [apiRef, clearRowSelection, setDialog, tAttendance]);
+
   const columns = useMemo<GridColDef[]>(
     () => [
-      {
-        disableColumnMenu: true,
-        disableExport: true,
-        field: "actions",
-        filterable: false,
-        headerName: tAttendance("actions"),
-        renderCell: ({ row }: GridRenderCellParams<AttendanceShiftType>) => (
-          <ActionsStack direction="row">
-            <Tooltip title={tAttendance("shiftTypes.actions.update.title")}>
-              <IconButton
-                onClick={() => handleShiftTypeDialog(row)}
-                size="small"
-              >
-                <Edit fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={tAttendance("shiftTypes.actions.delete.title")}>
-              <IconButton
-                color="error"
-                onClick={() => handleDeleteShiftType(row)}
-                size="small"
-              >
-                <Delete fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </ActionsStack>
-        ),
-        resizable: false,
-        sortable: false,
-      },
+      ...(!isSelectMode
+        ? [
+            {
+              disableColumnMenu: true,
+              disableExport: true,
+              field: "actions",
+              filterable: false,
+              headerName: tAttendance("actions"),
+              renderCell: ({
+                row,
+              }: GridRenderCellParams<AttendanceShiftType>) => (
+                <ActionsStack direction="row">
+                  <Tooltip
+                    title={tAttendance("shiftTypes.actions.update.title")}
+                  >
+                    <IconButton
+                      onClick={() => handleShiftTypeDialog(row)}
+                      size="small"
+                    >
+                      <Edit fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip
+                    title={tAttendance("shiftTypes.actions.delete.title")}
+                  >
+                    <IconButton
+                      color="error"
+                      onClick={() => handleDeleteShiftType(row)}
+                      size="small"
+                    >
+                      <Delete fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </ActionsStack>
+              ),
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
         field: "name",
         filterOperators: stringFilterOperators,
@@ -315,6 +429,7 @@ const ShiftTypes = ({
     [
       handleDeleteShiftType,
       handleShiftTypeDialog,
+      isSelectMode,
       stringFilterOperators,
       tAttendance,
       tCommon,
@@ -323,15 +438,56 @@ const ShiftTypes = ({
 
   return (
     <>
-      <StyledButton
-        onClick={() => handleShiftTypeDialog()}
-        startIcon={<Add />}
-        variant="contained"
-      >
-        {tAttendance("shiftTypes.actions.create.title")}
-      </StyledButton>
+      <ToolbarStack direction="row">
+        {!isSelectMode && (
+          <>
+            <Button
+              onClick={() => handleShiftTypeDialog()}
+              size="small"
+              startIcon={<Add />}
+              variant="contained"
+            >
+              {tAttendance("shiftTypes.actions.create.title")}
+            </Button>
+            <Button
+              disabled={!hasSelectableRows}
+              onClick={handleEnterShiftTypeBatchDeleteMode}
+              size="small"
+              startIcon={<Delete />}
+              variant="outlined"
+            >
+              {tAttendance("shiftTypes.actions.batchDelete.title")}
+            </Button>
+          </>
+        )}
+        {isSelectMode && (
+          <>
+            <Button
+              onClick={handleCancelShiftTypeBatchDelete}
+              size="small"
+              startIcon={<Cancel />}
+              variant="outlined"
+            >
+              {tAttendance("shiftTypes.actions.batchDelete.cancel.label")}
+            </Button>
+            <Button
+              color="error"
+              disabled={!selectedRows.length}
+              onClick={handleSubmitShiftTypeBatchDelete}
+              size="small"
+              startIcon={<Delete />}
+              variant="contained"
+            >
+              {tAttendance("shiftTypes.actions.batchDelete.submit.label", {
+                count: selectedRows.length,
+              })}
+            </Button>
+          </>
+        )}
+      </ToolbarStack>
       <DataGrid
         {...DATA_GRID_PROPS}
+        {...rowSelectionProps}
         apiRef={apiRef}
         columns={columns}
         filterMode="server"

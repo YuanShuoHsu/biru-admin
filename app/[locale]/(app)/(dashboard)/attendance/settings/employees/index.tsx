@@ -11,7 +11,6 @@ import TaxIdentityDialog from "../../payroll/withholding/TaxIdentityDialog";
 import EmployeeDialog from "./EmployeeDialog";
 
 import { renderEmptyableCell } from "@/components/EmptyCell";
-
 import { EMPLOYEE_STATUS_COLORS } from "@/constants/attendance";
 import {
   autosizeOptions,
@@ -25,10 +24,17 @@ import {
   useEnumFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
+import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
-
-import { AssignmentInd, Delete, Edit, Payments } from "@mui/icons-material";
 import {
+  AssignmentInd,
+  Cancel,
+  Delete,
+  Edit,
+  Payments,
+} from "@mui/icons-material";
+import {
+  Button,
   Chip,
   DialogContentText,
   IconButton,
@@ -73,6 +79,12 @@ const StyledStack = styled(Stack)({
   height: "100%",
   alignItems: "center",
 });
+
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
 
 const StyledIconButton = styled(IconButton, {
   shouldForwardProp: (prop) => prop !== "visible",
@@ -124,6 +136,7 @@ const Employees = ({
   sortDirection,
   terms: initialTerms,
 }: EmployeesProps) => {
+  const [isSelectMode, setIsSelectMode] = useState(false);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -201,6 +214,28 @@ const Employees = ({
       },
     },
   );
+
+  const getEmployeeRowId = useCallback(
+    ({ userId }: AttendanceMember) => userId,
+    [],
+  );
+
+  const isEmployeeSelectable = useCallback(
+    ({ deletable, employee }: AttendanceMember) => deletable && !!employee,
+    [],
+  );
+
+  const {
+    clearRowSelection,
+    hasSelectableRows,
+    rowSelectionProps,
+    selectedRows,
+  } = useRowSelection({
+    enabled: isSelectMode,
+    getRowId: getEmployeeRowId,
+    isRowSelectable: isEmployeeSelectable,
+    rows,
+  });
 
   const handlePaginationModelChange = useCallback(
     (newModel: GridPaginationModel) => {
@@ -364,9 +399,106 @@ const Employees = ({
     [mutate, organizationSlug, setDialog, tAttendance],
   );
 
+  const handleEnterEmployeeBatchDeleteMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAttendance.rich("employees.actions.batchDelete.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(true);
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tAttendance("employees.actions.batchDelete.title"),
+    });
+  }, [apiRef, setDialog, tAttendance]);
+
+  const handleSubmitEmployeeBatchDelete = useCallback(() => {
+    const count = selectedRows.length;
+
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAttendance.rich("employees.actions.batchDelete.submit.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            count,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          await fetcher(attendancePath(organizationSlug, "org", "employees"), {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ids: selectedRows.flatMap(({ employee }) => employee?.id ?? []),
+            }),
+          });
+
+          setIsSelectMode(false);
+          clearRowSelection();
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tAttendance("employees.actions.batchDelete.submit.success", {
+              count,
+            }),
+            {
+              variant: "success",
+            },
+          );
+        } catch (error) {
+          enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+            variant: "error",
+          });
+        }
+
+        mutate();
+      },
+      open: true,
+      title: tAttendance("employees.actions.batchDelete.submit.label", {
+        count,
+      }),
+    });
+  }, [
+    apiRef,
+    clearRowSelection,
+    mutate,
+    organizationSlug,
+    selectedRows,
+    setDialog,
+    tAttendance,
+  ]);
+
+  const handleCancelEmployeeBatchDelete = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tAttendance.rich("employees.actions.batchDelete.cancel.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(false);
+        clearRowSelection();
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tAttendance("employees.actions.batchDelete.cancel.label"),
+    });
+  }, [apiRef, clearRowSelection, setDialog, tAttendance]);
+
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...(canWrite || canDelete || canManageTerms || canManageTaxIdentity
+      ...((canWrite || canDelete || canManageTerms || canManageTaxIdentity) &&
+      !isSelectMode
         ? [
             {
               disableColumnMenu: true,
@@ -414,7 +546,7 @@ const Employees = ({
                       </StyledIconButton>
                     </Tooltip>
                   )}
-                  {canDelete && row.deletable && (
+                  {canDelete && isEmployeeSelectable(row) && (
                     <Tooltip
                       title={tAttendance("employees.actions.delete.title")}
                     >
@@ -527,31 +659,75 @@ const Employees = ({
       handleEmployeeDialog,
       handleTaxIdentityDialog,
       handleTermsDialog,
+      isEmployeeSelectable,
+      isSelectMode,
       stringFilterOperators,
       tAttendance,
     ],
   );
 
   return (
-    <DataGrid
-      {...DATA_GRID_PROPS}
-      apiRef={apiRef}
-      columns={columns}
-      filterMode="server"
-      filterModel={filterModel}
-      getRowId={({ userId }) => userId}
-      loading={loading}
-      onFilterModelChange={handleFilterModelChange}
-      onPaginationModelChange={handlePaginationModelChange}
-      onSortModelChange={handleSortModelChange}
-      pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
-      paginationMode="server"
-      paginationModel={paginationModel}
-      rowCount={rowCount}
-      rows={rows}
-      sortingMode="server"
-      sortModel={sortModel}
-    />
+    <>
+      {canDelete && (
+        <ToolbarStack direction="row">
+          {!isSelectMode && (
+            <Button
+              disabled={!hasSelectableRows}
+              onClick={handleEnterEmployeeBatchDeleteMode}
+              size="small"
+              startIcon={<Delete />}
+              variant="outlined"
+            >
+              {tAttendance("employees.actions.batchDelete.title")}
+            </Button>
+          )}
+          {isSelectMode && (
+            <>
+              <Button
+                onClick={handleCancelEmployeeBatchDelete}
+                size="small"
+                startIcon={<Cancel />}
+                variant="outlined"
+              >
+                {tAttendance("employees.actions.batchDelete.cancel.label")}
+              </Button>
+              <Button
+                color="error"
+                disabled={!selectedRows.length}
+                onClick={handleSubmitEmployeeBatchDelete}
+                size="small"
+                startIcon={<Delete />}
+                variant="contained"
+              >
+                {tAttendance("employees.actions.batchDelete.submit.label", {
+                  count: selectedRows.length,
+                })}
+              </Button>
+            </>
+          )}
+        </ToolbarStack>
+      )}
+      <DataGrid
+        {...DATA_GRID_PROPS}
+        {...rowSelectionProps}
+        apiRef={apiRef}
+        columns={columns}
+        filterMode="server"
+        filterModel={filterModel}
+        getRowId={({ userId }) => userId}
+        loading={loading}
+        onFilterModelChange={handleFilterModelChange}
+        onPaginationModelChange={handlePaginationModelChange}
+        onSortModelChange={handleSortModelChange}
+        pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
+        paginationMode="server"
+        paginationModel={paginationModel}
+        rowCount={rowCount}
+        rows={rows}
+        sortingMode="server"
+        sortModel={sortModel}
+      />
+    </>
   );
 };
 

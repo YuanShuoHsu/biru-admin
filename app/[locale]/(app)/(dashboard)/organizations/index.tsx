@@ -8,7 +8,7 @@
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import CreateOrganizationDialog from "./CreateOrganizationDialog";
@@ -23,6 +23,7 @@ import { authClient, getErrorMessage } from "@/lib/auth-client";
 
 import {
   AddBusiness,
+  Cancel,
   Delete,
   DoNotDisturbOn,
   Edit,
@@ -43,7 +44,7 @@ import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useOrganizations } from "@/hooks/organizations";
-
+import { useRowSelection } from "@/hooks/useRowSelection";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Organization } from "@/types/organizations";
@@ -56,6 +57,7 @@ import {
   getOrganizationPermissions,
   type OrganizationPermissions,
 } from "@/utils/organizations";
+import { runSequentially, SequentialRunError } from "@/utils/dataGrid";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -105,6 +107,8 @@ const Organizations = ({
   organizationPermissions: initialOrganizationPermissions,
   rows: initialRows,
 }: OrganizationsProps) => {
+  const [isSelectMode, setIsSelectMode] = useState(false);
+
   const apiRef = useGridApiRef();
 
   const {
@@ -133,6 +137,23 @@ const Organizations = ({
     () => getOrganizationPermissions(rows),
     { fallbackData: initialOrganizationPermissions },
   );
+
+  const isOrganizationSelectable = useCallback(
+    ({ id }: Organization) =>
+      !!organizationPermissions[id]?.canDeleteOrganization,
+    [organizationPermissions],
+  );
+
+  const {
+    clearRowSelection,
+    hasSelectableRows,
+    rowSelectionProps,
+    selectedRows,
+  } = useRowSelection({
+    enabled: isSelectMode,
+    isRowSelectable: isOrganizationSelectable,
+    rows,
+  });
 
   const { setDialog } = useDialogStore((state) => state);
 
@@ -174,7 +195,7 @@ const Organizations = ({
     ({ id, name }: Organization) => {
       setDialog({
         confirmDisabled: true,
-        content: <DeleteOrganizationConfirm name={name} />,
+        content: <DeleteOrganizationConfirm names={[name]} />,
         onConfirm: async () => {
           await authClient.organization.delete(
             { organizationId: id },
@@ -201,6 +222,129 @@ const Organizations = ({
     },
     [locale, mutate, setDialog, tOrganizations],
   );
+
+  const handleEnterOrganizationBatchDeleteMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tOrganizations.rich("actions.batchDeleteOrganization.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(true);
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tOrganizations("actions.batchDeleteOrganization.title"),
+    });
+  }, [apiRef, setDialog, tOrganizations]);
+
+  const handleSubmitOrganizationBatchDelete = useCallback(() => {
+    const count = selectedRows.length;
+
+    setDialog({
+      confirmDisabled: true,
+      content: (
+        <DeleteOrganizationConfirm
+          names={selectedRows.map(({ name }) => name)}
+        />
+      ),
+      onConfirm: async () => {
+        try {
+          const permissions = await getOrganizationPermissions(selectedRows);
+          if (
+            !selectedRows.every(
+              ({ id }) => permissions[id]?.canDeleteOrganization,
+            )
+          ) {
+            enqueueSnackbar(
+              tOrganizations("actions.batchDeleteOrganization.submit.stale"),
+              { variant: "error" },
+            );
+            mutate();
+            return;
+          }
+
+          await runSequentially(selectedRows, async ({ id }) => {
+            const { error } = await authClient.organization.delete({
+              organizationId: id,
+            });
+            if (error)
+              throw new Error(
+                getErrorMessage(error.code ?? "", locale) || error.message,
+              );
+          });
+
+          setIsSelectMode(false);
+          clearRowSelection();
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tOrganizations("actions.batchDeleteOrganization.submit.success", {
+              count,
+            }),
+            {
+              variant: "success",
+            },
+          );
+        } catch (error) {
+          const reason =
+            error instanceof SequentialRunError ? error.reason : error;
+          const message = getFetchErrorMessage(reason);
+
+          enqueueSnackbar(
+            error instanceof SequentialRunError && error.done
+              ? tOrganizations(
+                  "actions.batchDeleteOrganization.submit.partial",
+                  { done: error.done, message },
+                )
+              : message,
+            { variant: "error" },
+          );
+        }
+
+        mutate();
+      },
+      open: true,
+      title: tOrganizations("actions.batchDeleteOrganization.submit.label", {
+        count,
+      }),
+    });
+  }, [
+    apiRef,
+    clearRowSelection,
+    locale,
+    mutate,
+    selectedRows,
+    setDialog,
+    tOrganizations,
+  ]);
+
+  const handleCancelOrganizationBatchDelete = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tOrganizations.rich(
+            "actions.batchDeleteOrganization.cancel.confirm",
+            {
+              bold: (chunks) => <strong>{chunks}</strong>,
+            },
+          )}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(false);
+        clearRowSelection();
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tOrganizations("actions.batchDeleteOrganization.cancel.label"),
+    });
+  }, [apiRef, clearRowSelection, setDialog, tOrganizations]);
 
   const handleToggleClosed = useCallback(
     ({ closedAt, id, name }: Organization) => {
@@ -260,99 +404,107 @@ const Organizations = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      {
-        disableColumnMenu: true,
-        disableExport: true,
-        field: "actions",
-        filterable: false,
-        headerName: tOrganizations("actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<Organization>) => {
-          const {
-            canDeleteOrganization = false,
-            canUpdateOrganization = false,
-          } = organizationPermissions[row.id] ?? {};
+      ...(!isSelectMode
+        ? [
+            {
+              disableColumnMenu: true,
+              disableExport: true,
+              field: "actions",
+              filterable: false,
+              headerName: tOrganizations("actions.label"),
+              renderCell: ({ row }: GridRenderCellParams<Organization>) => {
+                const {
+                  canDeleteOrganization = false,
+                  canUpdateOrganization = false,
+                } = organizationPermissions[row.id] ?? {};
 
-          return (
-            <ActionsStack direction="row">
-              <Tooltip
-                title={tOrganizations("actions.manageOrganization.title")}
-              >
-                <IconButton
-                  onClick={(event) => {
-                    event.stopPropagation();
+                return (
+                  <ActionsStack direction="row">
+                    <Tooltip
+                      title={tOrganizations("actions.manageOrganization.title")}
+                    >
+                      <IconButton
+                        onClick={(event) => {
+                          event.stopPropagation();
 
-                    router.push(`/organizations/${row.slug}/members`);
-                  }}
-                  size="small"
-                >
-                  <ManageAccounts fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              {canUpdateOrganizations && (
-                <Tooltip
-                  title={tOrganizations("actions.updateOrganization.title")}
-                >
-                  <StyledIconButton
-                    onClick={(event) => {
-                      event.stopPropagation();
+                          router.push(`/organizations/${row.slug}/members`);
+                        }}
+                        size="small"
+                      >
+                        <ManageAccounts fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                    {canUpdateOrganizations && (
+                      <Tooltip
+                        title={tOrganizations(
+                          "actions.updateOrganization.title",
+                        )}
+                      >
+                        <StyledIconButton
+                          onClick={(event) => {
+                            event.stopPropagation();
 
-                      handleUpdateOrganization(row);
-                    }}
-                    size="small"
-                    visible={canUpdateOrganization}
-                  >
-                    <Edit fontSize="small" />
-                  </StyledIconButton>
-                </Tooltip>
-              )}
-              {canDeleteOrganizations && (
-                <Tooltip
-                  title={tOrganizations("actions.deleteOrganization.title")}
-                >
-                  <StyledIconButton
-                    color="error"
-                    onClick={(event) => {
-                      event.stopPropagation();
-
-                      handleDeleteOrganization(row);
-                    }}
-                    size="small"
-                    visible={canDeleteOrganization}
-                  >
-                    <Delete fontSize="small" />
-                  </StyledIconButton>
-                </Tooltip>
-              )}
-              {canCloseOrganization && (
-                <Tooltip
-                  title={tOrganizations(
-                    row.closedAt
-                      ? "actions.reopenOrganization.title"
-                      : "actions.closeOrganization.title",
-                  )}
-                >
-                  <IconButton
-                    onClick={(event) => {
-                      event.stopPropagation();
-
-                      handleToggleClosed(row);
-                    }}
-                    size="small"
-                  >
-                    {row.closedAt ? (
-                      <Storefront fontSize="small" />
-                    ) : (
-                      <DoNotDisturbOn fontSize="small" />
+                            handleUpdateOrganization(row);
+                          }}
+                          size="small"
+                          visible={canUpdateOrganization}
+                        >
+                          <Edit fontSize="small" />
+                        </StyledIconButton>
+                      </Tooltip>
                     )}
-                  </IconButton>
-                </Tooltip>
-              )}
-            </ActionsStack>
-          );
-        },
-        resizable: false,
-        sortable: false,
-      },
+                    {canDeleteOrganizations && (
+                      <Tooltip
+                        title={tOrganizations(
+                          "actions.deleteOrganization.title",
+                        )}
+                      >
+                        <StyledIconButton
+                          color="error"
+                          onClick={(event) => {
+                            event.stopPropagation();
+
+                            handleDeleteOrganization(row);
+                          }}
+                          size="small"
+                          visible={canDeleteOrganization}
+                        >
+                          <Delete fontSize="small" />
+                        </StyledIconButton>
+                      </Tooltip>
+                    )}
+                    {canCloseOrganization && (
+                      <Tooltip
+                        title={tOrganizations(
+                          row.closedAt
+                            ? "actions.reopenOrganization.title"
+                            : "actions.closeOrganization.title",
+                        )}
+                      >
+                        <IconButton
+                          onClick={(event) => {
+                            event.stopPropagation();
+
+                            handleToggleClosed(row);
+                          }}
+                          size="small"
+                        >
+                          {row.closedAt ? (
+                            <Storefront fontSize="small" />
+                          ) : (
+                            <DoNotDisturbOn fontSize="small" />
+                          )}
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                  </ActionsStack>
+                );
+              },
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
         field: "closedAt",
         headerName: tOrganizations("status.label"),
@@ -404,6 +556,7 @@ const Organizations = ({
       handleDeleteOrganization,
       handleToggleClosed,
       handleUpdateOrganization,
+      isSelectMode,
       organizationPermissions,
       router,
       tOrganizations,
@@ -412,20 +565,63 @@ const Organizations = ({
 
   return (
     <>
-      {canCreateOrganization && (
+      {(canCreateOrganization || canDeleteOrganizations) && (
         <ToolbarStack direction="row">
-          <Button
-            onClick={handleCreateOrganization}
-            size="small"
-            startIcon={<AddBusiness />}
-            variant="contained"
-          >
-            {tOrganizations("actions.createOrganization.title")}
-          </Button>
+          {!isSelectMode && (
+            <>
+              {canCreateOrganization && (
+                <Button
+                  onClick={handleCreateOrganization}
+                  size="small"
+                  startIcon={<AddBusiness />}
+                  variant="contained"
+                >
+                  {tOrganizations("actions.createOrganization.title")}
+                </Button>
+              )}
+              {canDeleteOrganizations && (
+                <Button
+                  disabled={!hasSelectableRows}
+                  onClick={handleEnterOrganizationBatchDeleteMode}
+                  size="small"
+                  startIcon={<Delete />}
+                  variant="outlined"
+                >
+                  {tOrganizations("actions.batchDeleteOrganization.title")}
+                </Button>
+              )}
+            </>
+          )}
+          {isSelectMode && (
+            <>
+              <Button
+                onClick={handleCancelOrganizationBatchDelete}
+                size="small"
+                startIcon={<Cancel />}
+                variant="outlined"
+              >
+                {tOrganizations("actions.batchDeleteOrganization.cancel.label")}
+              </Button>
+              <Button
+                color="error"
+                disabled={!selectedRows.length}
+                onClick={handleSubmitOrganizationBatchDelete}
+                size="small"
+                startIcon={<Delete />}
+                variant="contained"
+              >
+                {tOrganizations(
+                  "actions.batchDeleteOrganization.submit.label",
+                  { count: selectedRows.length },
+                )}
+              </Button>
+            </>
+          )}
         </ToolbarStack>
       )}
       <DataGrid
         {...DATA_GRID_PROPS}
+        {...rowSelectionProps}
         apiRef={apiRef}
         columns={columns}
         loading={loadingOrganizations || loadingPermissions}

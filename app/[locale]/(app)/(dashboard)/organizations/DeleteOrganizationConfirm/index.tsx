@@ -13,19 +13,24 @@ const StyledStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface DeleteOrganizationConfirmProps {
-  name: string;
+  names: string[];
 }
 
 const DeleteOrganizationConfirm = ({
-  name,
+  names,
 }: DeleteOrganizationConfirmProps) => {
   const { confirmLoading, setDialog } = useDialogStore((state) => state);
 
+  const tCommon = useTranslations("common");
   const tOrganizations = useTranslations("organizations");
 
-  const [typedName, setTypedName] = useState("");
+  const [typedValue, setTypedValue] = useState("");
 
-  const matches = typedName.trim() === name;
+  const [name] = names;
+  const isBatch = names.length > 1;
+  const expected = isBatch ? String(names.length) : name;
+
+  const matches = typedValue.trim() === expected;
 
   useEffect(() => {
     setDialog({ confirmDisabled: !matches });
@@ -34,19 +39,41 @@ const DeleteOrganizationConfirm = ({
   return (
     <StyledStack>
       <DialogContentText>
-        {tOrganizations.rich("actions.deleteOrganization.confirm", {
-          bold: (chunks) => <strong>{chunks}</strong>,
-          name,
-        })}
+        {isBatch
+          ? tOrganizations.rich(
+              "actions.batchDeleteOrganization.submit.confirm",
+              {
+                bold: (chunks) => <strong>{chunks}</strong>,
+                count: names.length,
+              },
+            )
+          : tOrganizations.rich("actions.deleteOrganization.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name,
+            })}
       </DialogContentText>
+      {isBatch && (
+        <DialogContentText>
+          {names.join(tCommon("delimiter"))}
+        </DialogContentText>
+      )}
       <TextField
         autoComplete="off"
         disabled={confirmLoading}
         fullWidth
-        label={tOrganizations("actions.deleteOrganization.typeName", { name })}
-        onChange={({ target }) => setTypedName(target.value)}
+        label={
+          isBatch
+            ? tOrganizations(
+                "actions.batchDeleteOrganization.submit.typeCount",
+                {
+                  count: names.length,
+                },
+              )
+            : tOrganizations("actions.deleteOrganization.typeName", { name })
+        }
+        onChange={({ target }) => setTypedValue(target.value)}
         size="small"
-        value={typedName}
+        value={typedValue}
       />
     </StyledStack>
   );

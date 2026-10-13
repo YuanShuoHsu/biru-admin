@@ -1,5 +1,19 @@
 {
   "actions": {
+    "batchDeleteCoupon": {
+      "cancel": {
+        "confirm": "<bold>クーポン</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。",
+        "label": "クーポンの一括削除をキャンセル"
+      },
+      "confirm": "<bold>クーポン</bold>を一括削除しますか？",
+      "submit": {
+        "confirm": "選択した <bold>{count} 件のクーポン</bold>を削除しますか？",
+        "error": "クーポンの一括削除に失敗しました",
+        "label": "選択したクーポンを削除（{count}）",
+        "success": "クーポン {count} 件を削除しました"
+      },
+      "title": "クーポンを一括削除"
+    },
     "createCoupon": {
       "error": "クーポンの追加に失敗しました",
       "success": "クーポン {code} を追加しました",

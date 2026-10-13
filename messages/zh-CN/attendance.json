@@ -15,6 +15,19 @@
   "assignParentalChild": "确认子女归户",
   "balances": {
     "actions": {
+      "batchRevokeDeferral": {
+        "cancel": {
+          "confirm": "确定要取消<bold>递延协议</bold>批量撤销吗？已勾选的项目将会清除。",
+          "label": "取消批量撤销递延协议"
+        },
+        "confirm": "确定要进行<bold>递延协议</bold>批量撤销吗？",
+        "submit": {
+          "confirm": "确定要撤销所选的 <bold>{count} 条递延协议</bold>吗？",
+          "label": "撤销所选递延协议（{count}）",
+          "success": "已撤销 {count} 条递延协议"
+        },
+        "title": "批量撤销递延协议"
+      },
       "create": "新增休假额度",
       "defer": "记录递延协议",
       "revokeDeferral": "撤销递延协议"
@@ -92,6 +105,19 @@
         "confirm": "确定要删除 <bold>{name}</bold> 的员工设置吗？此员工没有任何出勤或薪资记录，删除后回到“未设置”。",
         "success": "已删除 {name} 的员工设置",
         "title": "删除员工设置"
+      },
+      "batchDelete": {
+        "title": "批量删除员工设置",
+        "confirm": "确定要进行<bold>员工设置</bold>批量删除吗？",
+        "cancel": {
+          "label": "取消批量删除员工设置",
+          "confirm": "确定要取消<bold>员工设置</bold>批量删除吗？已勾选的项目将会清除。"
+        },
+        "submit": {
+          "label": "删除所选员工设置（{count}）",
+          "confirm": "确定要删除所选的 <bold>{count} 条员工设置</bold>吗？这些员工没有任何出勤或薪资记录，删除后回到“未设置”。",
+          "success": "已删除 {count} 条员工设置"
+        }
       }
     },
     "label": "员工管理",
@@ -363,6 +389,19 @@
   },
   "leaveCases": {
     "actions": {
+      "batchDelete": {
+        "cancel": {
+          "confirm": "确定要取消<bold>事件假额度</bold>批量删除吗？已勾选的项目将会清除。",
+          "label": "取消批量删除事件假额度"
+        },
+        "confirm": "确定要进行<bold>事件假额度</bold>批量删除吗？",
+        "submit": {
+          "confirm": "确定要删除所选的 <bold>{count} 条事件假额度</bold>吗？",
+          "label": "删除所选事件假额度（{count}）",
+          "success": "已删除 {count} 条事件假额度"
+        },
+        "title": "批量删除事件假额度"
+      },
       "create": "新增事件假额度",
       "delete": "删除事件假额度",
       "update": "编辑事件假额度"
@@ -391,6 +430,19 @@
   },
   "leaveTypes": {
     "actions": {
+      "batchDelete": {
+        "cancel": {
+          "confirm": "确定要取消<bold>假别</bold>批量删除吗？已勾选的项目将会清除。",
+          "label": "取消批量删除假别"
+        },
+        "confirm": "确定要进行<bold>假别</bold>批量删除吗？",
+        "submit": {
+          "confirm": "确定要删除所选的 <bold>{count} 条假别</bold>吗？尚未使用的假别额度将一并删除，且无法撤销。",
+          "label": "删除所选假别（{count}）",
+          "success": "已删除 {count} 条假别"
+        },
+        "title": "批量删除假别"
+      },
       "create": {
         "success": "已新增假别 {name}",
         "title": "新增假别"
@@ -825,6 +877,19 @@
     "substituteShift": "补假的工作日班次",
     "noWorkdayShifts": "{date} 前没有可指定的工作日班次，请先排班",
     "actions": {
+      "batchRevoke": {
+        "cancel": {
+          "confirm": "确定要取消<bold>补假日</bold>批量撤销吗？已勾选的项目将会清除。",
+          "label": "取消批量撤销补假日"
+        },
+        "confirm": "确定要进行<bold>补假日</bold>批量撤销吗？",
+        "submit": {
+          "confirm": "确定要撤销所选的 <bold>{count} 条补假日</bold>吗？",
+          "label": "撤销所选补假日（{count}）",
+          "success": "已撤销 {count} 条补假日"
+        },
+        "title": "批量撤销补假日"
+      },
       "designate": "指定补假日",
       "revoke": "撤销补假日"
     },
@@ -908,6 +973,19 @@
         "title": "删除加项名目",
         "confirm": "确定要删除 <bold>{name}</bold> 吗？",
         "success": "已删除「{name}」"
+      },
+      "batchDelete": {
+        "title": "批量删除加项名目",
+        "confirm": "确定要进行<bold>加项名目</bold>批量删除吗？",
+        "cancel": {
+          "label": "取消批量删除加项名目",
+          "confirm": "确定要取消<bold>加项名目</bold>批量删除吗？已勾选的项目将会清除。"
+        },
+        "submit": {
+          "label": "删除所选加项名目（{count}）",
+          "confirm": "确定要删除所选的 <bold>{count} 条加项名目</bold>吗？",
+          "success": "已删除 {count} 条加项名目"
+        }
       }
     }
   },
@@ -1006,6 +1084,19 @@
         "title": "删除班别",
         "confirm": "确定要删除 <bold>{name}</bold> 吗？",
         "success": "已删除「{name}」"
+      },
+      "batchDelete": {
+        "title": "批量删除班别",
+        "confirm": "确定要进行<bold>班别</bold>批量删除吗？",
+        "cancel": {
+          "label": "取消批量删除班别",
+          "confirm": "确定要取消<bold>班别</bold>批量删除吗？已勾选的项目将会清除。"
+        },
+        "submit": {
+          "label": "删除所选班别（{count}）",
+          "confirm": "确定要删除所选的 <bold>{count} 条班别</bold>吗？",
+          "success": "已删除 {count} 条班别"
+        }
       }
     }
   },

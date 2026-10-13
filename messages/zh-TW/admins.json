@@ -22,6 +22,21 @@
       "success": "已封鎖 {email}",
       "title": "封鎖使用者"
     },
+    "batchRemoveUser": {
+      "cancel": {
+        "confirm": "確定要取消<bold>使用者</bold>批次刪除嗎？已勾選的項目將會清除。",
+        "label": "取消批次刪除使用者"
+      },
+      "confirm": "確定要進行<bold>使用者</bold>批次刪除嗎？",
+      "submit": {
+        "confirm": "確定要刪除所選的 <bold>{count} 位使用者</bold>嗎？",
+        "label": "刪除所選使用者（{count}）",
+        "partial": "已刪除 {done} 位使用者，之後的未刪除：{message}",
+        "stale": "所選的使用者已有變動，請重新選取",
+        "success": "已刪除 {count} 位使用者"
+      },
+      "title": "批次刪除使用者"
+    },
     "createUser": {
       "confirmPassword": {
         "label": "確認密碼",
@@ -100,15 +115,24 @@
   "userSessions": {
     "label": "使用者 Sessions",
     "actions": {
+      "batchRevokeUserSession": {
+        "cancel": {
+          "confirm": "確定要取消<bold>Session</bold>批次撤銷嗎？已勾選的項目將會清除。",
+          "label": "取消批次撤銷Session"
+        },
+        "confirm": "確定要進行<bold>Session</bold>批次撤銷嗎？",
+        "submit": {
+          "confirm": "確定要撤銷所選的 <bold>{count} 個 Session</bold>嗎？",
+          "label": "撤銷所選Session（{count}）",
+          "partial": "已撤銷 {done} 個 Session，之後的未撤銷：{message}",
+          "success": "已撤銷 {count} 個 Session"
+        },
+        "title": "批次撤銷Session"
+      },
       "label": "操作",
       "revokeUserSession": {
         "success": "已撤銷 {email} 的一個 session",
         "title": "撤銷 Session"
-      },
-      "revokeUserSessions": {
-        "confirm": "確定要撤銷 <bold>{email}</bold> 的所有 session 嗎？",
-        "success": "已撤銷 {email} 的所有 session",
-        "title": "撤銷全部"
       }
     },
     "createdAt": "登入時間",

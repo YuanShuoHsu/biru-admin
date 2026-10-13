@@ -1,4 +1,18 @@
 {
+  "batchRestore": {
+    "cancel": {
+      "confirm": "Are you sure you want to cancel batch restore <bold>records</bold>? Your selection will be cleared.",
+      "label": "Cancel Batch Restore Records"
+    },
+    "confirm": "Are you sure you want to batch restore <bold>records</bold>?",
+    "submit": {
+      "confirm": "Are you sure you want to restore the <bold>{count} selected records</bold>? Related records deleted with them will be restored too.",
+      "label": "Restore Selected Records ({count})",
+      "partial": "Restored {done} records; the rest were not restored: {message}",
+      "success": "Restored {count} records"
+    },
+    "title": "Batch Restore Records"
+  },
   "columns": {
     "actions": "Actions",
     "deletedAt": "Deleted at",

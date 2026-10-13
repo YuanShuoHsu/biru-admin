@@ -4,18 +4,26 @@ import { useFormatter, useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import UpdateTeamDialog from "./UpdateTeamDialog";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
+import { useRowSelection } from "@/hooks/useRowSelection";
+
 import { useRouter } from "@/i18n/navigation";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
-import { Delete, Edit, FolderShared, People } from "@mui/icons-material";
+import {
+  Cancel,
+  Delete,
+  Edit,
+  FolderShared,
+  People,
+} from "@mui/icons-material";
 import {
   Button,
   DialogContentText,
@@ -32,6 +40,8 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { ActiveOrganization, Team } from "@/types/organizations";
 
 import { sortByCreatedAtDesc } from "@/utils/organizations";
+import { runSequentially, SequentialRunError } from "@/utils/dataGrid";
+import { getErrorMessage as getFetchErrorMessage } from "@/utils/errors";
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
   height: "100%",
@@ -63,6 +73,8 @@ const OrganizationsSlugTeams = ({
   canDeleteTeam,
   canUpdateTeam,
 }: OrganizationsSlugTeamsProps) => {
+  const [isSelectMode, setIsSelectMode] = useState(false);
+
   const apiRef = useGridApiRef();
 
   const { setDialog } = useDialogStore((state) => state);
@@ -107,6 +119,13 @@ const OrganizationsSlugTeams = ({
       },
     },
   );
+
+  const {
+    clearRowSelection,
+    hasSelectableRows,
+    rowSelectionProps,
+    selectedRows,
+  } = useRowSelection({ enabled: isSelectMode, rows });
 
   const handleCreateTeam = () => {
     setDialog({
@@ -183,62 +202,181 @@ const OrganizationsSlugTeams = ({
     [locale, mutate, organizationId, setDialog, tTeams],
   );
 
+  const handleEnterTeamBatchRemoveMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tTeams.rich("actions.batchRemoveTeam.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(true);
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tTeams("actions.batchRemoveTeam.title"),
+    });
+  }, [apiRef, setDialog, tTeams]);
+
+  const handleSubmitTeamBatchRemove = useCallback(() => {
+    const count = selectedRows.length;
+
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tTeams.rich("actions.batchRemoveTeam.submit.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            count,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          const teamIds = new Set((await mutate())?.rows.map(({ id }) => id));
+          if (!selectedRows.every(({ id }) => teamIds.has(id))) {
+            enqueueSnackbar(tTeams("actions.batchRemoveTeam.submit.stale"), {
+              variant: "error",
+            });
+            mutate();
+            return;
+          }
+
+          await runSequentially(selectedRows, async ({ id: teamId }) => {
+            const { error } = await authClient.organization.removeTeam({
+              organizationId,
+              teamId,
+            });
+            if (error)
+              throw new Error(
+                getErrorMessage(error.code ?? "", locale) || error.message,
+              );
+          });
+
+          setIsSelectMode(false);
+          clearRowSelection();
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tTeams("actions.batchRemoveTeam.submit.success", { count }),
+            {
+              variant: "success",
+            },
+          );
+        } catch (error) {
+          const reason =
+            error instanceof SequentialRunError ? error.reason : error;
+          const message = getFetchErrorMessage(reason);
+
+          enqueueSnackbar(
+            error instanceof SequentialRunError && error.done
+              ? tTeams("actions.batchRemoveTeam.submit.partial", {
+                  done: error.done,
+                  message,
+                })
+              : message,
+            { variant: "error" },
+          );
+        }
+
+        mutate();
+      },
+      open: true,
+      title: tTeams("actions.batchRemoveTeam.submit.label", { count }),
+    });
+  }, [
+    apiRef,
+    clearRowSelection,
+    locale,
+    mutate,
+    organizationId,
+    selectedRows,
+    setDialog,
+    tTeams,
+  ]);
+
+  const handleCancelTeamBatchRemove = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tTeams.rich("actions.batchRemoveTeam.cancel.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setIsSelectMode(false);
+        clearRowSelection();
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tTeams("actions.batchRemoveTeam.cancel.label"),
+    });
+  }, [apiRef, clearRowSelection, setDialog, tTeams]);
+
   const columns = useMemo<GridColDef[]>(
     () => [
-      {
-        disableColumnMenu: true,
-        disableExport: true,
-        field: "actions",
-        filterable: false,
-        headerName: tTeams("actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<Team>) => (
-          <ActionsStack direction="row">
-            <Tooltip title={tTeams("actions.manageTeamMembers.title")}>
-              <IconButton
-                onClick={(event) => {
-                  event.stopPropagation();
+      ...(!isSelectMode
+        ? [
+            {
+              disableColumnMenu: true,
+              disableExport: true,
+              field: "actions",
+              filterable: false,
+              headerName: tTeams("actions.label"),
+              renderCell: ({ row }: GridRenderCellParams<Team>) => (
+                <ActionsStack direction="row">
+                  <Tooltip title={tTeams("actions.manageTeamMembers.title")}>
+                    <IconButton
+                      onClick={(event) => {
+                        event.stopPropagation();
 
-                  handleViewTeamMembers(row);
-                }}
-                size="small"
-              >
-                <People fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            {canUpdateTeam && (
-              <Tooltip title={tTeams("actions.updateTeam.title")}>
-                <IconButton
-                  onClick={(event) => {
-                    event.stopPropagation();
+                        handleViewTeamMembers(row);
+                      }}
+                      size="small"
+                    >
+                      <People fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  {canUpdateTeam && (
+                    <Tooltip title={tTeams("actions.updateTeam.title")}>
+                      <IconButton
+                        onClick={(event) => {
+                          event.stopPropagation();
 
-                    handleUpdateTeam(row);
-                  }}
-                  size="small"
-                >
-                  <Edit fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-            {canDeleteTeam && (
-              <Tooltip title={tTeams("actions.removeTeam.title")}>
-                <IconButton
-                  color="error"
-                  onClick={(event) => {
-                    event.stopPropagation();
+                          handleUpdateTeam(row);
+                        }}
+                        size="small"
+                      >
+                        <Edit fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {canDeleteTeam && (
+                    <Tooltip title={tTeams("actions.removeTeam.title")}>
+                      <IconButton
+                        color="error"
+                        onClick={(event) => {
+                          event.stopPropagation();
 
-                    handleRemoveTeam(row);
-                  }}
-                  size="small"
-                >
-                  <Delete fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-          </ActionsStack>
-        ),
-        resizable: false,
-        sortable: false,
-      },
+                          handleRemoveTeam(row);
+                        }}
+                        size="small"
+                      >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </ActionsStack>
+              ),
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
         field: "name",
         headerName: tTeams("name.label"),
@@ -257,26 +395,69 @@ const OrganizationsSlugTeams = ({
       handleRemoveTeam,
       handleUpdateTeam,
       handleViewTeamMembers,
+      isSelectMode,
       tTeams,
     ],
   );
 
   return (
     <>
-      {canCreateTeam && (
+      {(canCreateTeam || canDeleteTeam) && (
         <ToolbarStack direction="row">
-          <Button
-            onClick={handleCreateTeam}
-            size="small"
-            startIcon={<FolderShared />}
-            variant="contained"
-          >
-            {tTeams("actions.createTeam.title")}
-          </Button>
+          {!isSelectMode && (
+            <>
+              {canCreateTeam && (
+                <Button
+                  onClick={handleCreateTeam}
+                  size="small"
+                  startIcon={<FolderShared />}
+                  variant="contained"
+                >
+                  {tTeams("actions.createTeam.title")}
+                </Button>
+              )}
+              {canDeleteTeam && (
+                <Button
+                  disabled={!hasSelectableRows}
+                  onClick={handleEnterTeamBatchRemoveMode}
+                  size="small"
+                  startIcon={<Delete />}
+                  variant="outlined"
+                >
+                  {tTeams("actions.batchRemoveTeam.title")}
+                </Button>
+              )}
+            </>
+          )}
+          {isSelectMode && (
+            <>
+              <Button
+                onClick={handleCancelTeamBatchRemove}
+                size="small"
+                startIcon={<Cancel />}
+                variant="outlined"
+              >
+                {tTeams("actions.batchRemoveTeam.cancel.label")}
+              </Button>
+              <Button
+                color="error"
+                disabled={!selectedRows.length}
+                onClick={handleSubmitTeamBatchRemove}
+                size="small"
+                startIcon={<Delete />}
+                variant="contained"
+              >
+                {tTeams("actions.batchRemoveTeam.submit.label", {
+                  count: selectedRows.length,
+                })}
+              </Button>
+            </>
+          )}
         </ToolbarStack>
       )}
       <DataGrid
         {...DATA_GRID_PROPS}
+        {...rowSelectionProps}
         apiRef={apiRef}
         columns={columns}
         loading={loading}

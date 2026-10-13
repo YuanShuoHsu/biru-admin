@@ -22,6 +22,21 @@
       "success": "{email} を利用停止にしました",
       "title": "ユーザーを停止"
     },
+    "batchRemoveUser": {
+      "cancel": {
+        "confirm": "<bold>ユーザー</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。",
+        "label": "ユーザーの一括削除をキャンセル"
+      },
+      "confirm": "<bold>ユーザー</bold>を一括削除しますか？",
+      "submit": {
+        "confirm": "選択した <bold>{count} 件のユーザー</bold>を削除しますか？",
+        "label": "選択したユーザーを削除（{count}）",
+        "partial": "{done} 件を削除しました。残りは削除されていません：{message}",
+        "stale": "選択したユーザーが変更されました。もう一度選択してください。",
+        "success": "ユーザー {count} 件を削除しました"
+      },
+      "title": "ユーザーを一括削除"
+    },
     "createUser": {
       "confirmPassword": {
         "label": "パスワード確認",
@@ -100,15 +115,24 @@
   "userSessions": {
     "label": "ユーザーセッション",
     "actions": {
+      "batchRevokeUserSession": {
+        "cancel": {
+          "confirm": "<bold>セッション</bold>の一括無効化をキャンセルしますか？選択した項目はクリアされます。",
+          "label": "セッションの一括無効化をキャンセル"
+        },
+        "confirm": "<bold>セッション</bold>を一括無効化しますか？",
+        "submit": {
+          "confirm": "選択した <bold>{count} 件のセッション</bold>を無効化しますか？",
+          "label": "選択したセッションを無効化（{count}）",
+          "partial": "{done} 件を無効化しました。残りは無効化されていません：{message}",
+          "success": "セッション {count} 件を無効化しました"
+        },
+        "title": "セッションを一括無効化"
+      },
       "label": "操作",
       "revokeUserSession": {
         "success": "{email} のセッションを 1 件無効化しました",
         "title": "セッションを無効化"
-      },
-      "revokeUserSessions": {
-        "confirm": "<bold>{email}</bold> のすべてのセッションを無効化しますか？",
-        "success": "{email} のすべてのセッションを無効化しました",
-        "title": "すべて無効化"
       }
     },
     "createdAt": "ログイン日時",

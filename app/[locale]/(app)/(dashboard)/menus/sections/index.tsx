@@ -13,7 +13,6 @@ import UpdateMenuSectionDialog from "./UpdateMenuSectionDialog";
 import AuditLogButton from "@/components/AuditLogButton";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 import { DragHandle, Sortable } from "@/components/Sortable";
-
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -32,8 +31,8 @@ import {
   useDateFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
+import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
-
 import { useRouter } from "@/i18n/navigation";
 
 import {
@@ -64,7 +63,11 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  FilterOperator,
+  SortDirection,
+  ToolbarMode,
+} from "@/types/dataGrid";
 import type {
   Menu,
   MenuSection,
@@ -128,7 +131,9 @@ const MenusMenuId = ({
   sortBy,
   sortDirection,
 }: MenuDetailProps) => {
-  const [isReorderMode, setIsReorderMode] = useState(false);
+  const [toolbarMode, setToolbarMode] = useState<ToolbarMode>(null);
+  const isReorderMode = toolbarMode === "reorder";
+  const isSelectMode = toolbarMode === "select";
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -209,6 +214,13 @@ const MenusMenuId = ({
     },
   );
 
+  const {
+    clearRowSelection,
+    hasSelectableRows,
+    rowSelectionProps,
+    selectedRows,
+  } = useRowSelection({ enabled: isSelectMode, rows });
+
   const isReorderDisabled =
     rowCount < 2 || isFilteredOrSorted(filterModel, sortModel);
 
@@ -270,7 +282,7 @@ const MenusMenuId = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
-        setIsReorderMode(true);
+        setToolbarMode("reorder");
         setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
@@ -298,7 +310,7 @@ const MenusMenuId = ({
             }),
           });
 
-          setIsReorderMode(false);
+          setToolbarMode(null);
 
           setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
 
@@ -339,7 +351,7 @@ const MenusMenuId = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
-        setIsReorderMode(false);
+        setToolbarMode(null);
 
         mutate();
       },
@@ -435,6 +447,101 @@ const MenusMenuId = ({
     [locale, mutate, setDialog, tMenus],
   );
 
+  const handleEnterBatchDeleteMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tMenus.rich("sections.actions.batchDeleteSection.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setToolbarMode("select");
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tMenus("sections.actions.batchDeleteSection.title"),
+    });
+  }, [apiRef, setDialog, tMenus]);
+
+  const handleSubmitBatchDelete = useCallback(() => {
+    const count = selectedRows.length;
+
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tMenus.rich("sections.actions.batchDeleteSection.submit.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            count,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          await fetcher(`/api/menus/${menu.id}/menu-sections`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
+          });
+
+          setToolbarMode(null);
+          clearRowSelection();
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(
+            tMenus("sections.actions.batchDeleteSection.submit.success", {
+              count,
+            }),
+            {
+              variant: "success",
+            },
+          );
+        } catch {
+          enqueueSnackbar(
+            tMenus("sections.actions.batchDeleteSection.submit.error"),
+            { variant: "error" },
+          );
+        }
+
+        mutate();
+      },
+      open: true,
+      title: tMenus("sections.actions.batchDeleteSection.submit.label", {
+        count,
+      }),
+    });
+  }, [
+    apiRef,
+    clearRowSelection,
+    menu.id,
+    mutate,
+    selectedRows,
+    setDialog,
+    tMenus,
+  ]);
+
+  const handleCancelBatchDelete = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tMenus.rich("sections.actions.batchDeleteSection.cancel.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setToolbarMode(null);
+        clearRowSelection();
+
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tMenus("sections.actions.batchDeleteSection.cancel.label"),
+    });
+  }, [apiRef, clearRowSelection, setDialog, tMenus]);
+
   const columns = useMemo<GridColDef[]>(
     () => [
       ...(isReorderMode
@@ -450,7 +557,7 @@ const MenusMenuId = ({
             },
           ]
         : []),
-      ...(!isReorderMode
+      ...(!toolbarMode
         ? [
             {
               disableColumnMenu: true,
@@ -557,13 +664,14 @@ const MenusMenuId = ({
       stringFilterOperators,
       tCommon,
       tMenus,
+      toolbarMode,
     ],
   );
 
   return (
     <>
       <ToolbarStack direction="row">
-        {!isReorderMode ? (
+        {!toolbarMode && (
           <>
             {canWrite && (
               <Button
@@ -586,8 +694,20 @@ const MenusMenuId = ({
                 {tMenus("sections.actions.reorderSection.title")}
               </Button>
             )}
+            {canWrite && (
+              <Button
+                disabled={!hasSelectableRows}
+                onClick={handleEnterBatchDeleteMode}
+                size="small"
+                startIcon={<Delete />}
+                variant="outlined"
+              >
+                {tMenus("sections.actions.batchDeleteSection.title")}
+              </Button>
+            )}
           </>
-        ) : (
+        )}
+        {isReorderMode && (
           <>
             <Button
               onClick={handleCancelReorder}
@@ -607,10 +727,35 @@ const MenusMenuId = ({
             </Button>
           </>
         )}
+        {isSelectMode && (
+          <>
+            <Button
+              onClick={handleCancelBatchDelete}
+              size="small"
+              startIcon={<Cancel />}
+              variant="outlined"
+            >
+              {tMenus("sections.actions.batchDeleteSection.cancel.label")}
+            </Button>
+            <Button
+              color="error"
+              disabled={!selectedRows.length}
+              onClick={handleSubmitBatchDelete}
+              size="small"
+              startIcon={<Delete />}
+              variant="contained"
+            >
+              {tMenus("sections.actions.batchDeleteSection.submit.label", {
+                count: selectedRows.length,
+              })}
+            </Button>
+          </>
+        )}
       </ToolbarStack>
       <DragDropProvider onDragEnd={handleDragEnd}>
         <DataGrid
           {...DATA_GRID_PROPS}
+          {...rowSelectionProps}
           apiRef={apiRef}
           columns={columns}
           filterMode="server"

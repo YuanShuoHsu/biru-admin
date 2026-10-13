@@ -1,5 +1,21 @@
 {
   "actions": {
+    "batchDeleteOrganization": {
+      "cancel": {
+        "confirm": "<bold>組織</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。",
+        "label": "組織の一括削除をキャンセル"
+      },
+      "confirm": "<bold>組織</bold>を一括削除しますか？",
+      "submit": {
+        "confirm": "選択した <bold>{count} 件の組織</bold>を削除しますか？メンバー、メニュー、在庫などのデータも削除されます。30 日以内であればプラットフォーム管理者が復元できます。",
+        "label": "選択した組織を削除（{count}）",
+        "partial": "{done} 件を削除しました。残りは削除されていません：{message}",
+        "stale": "選択した組織が変更されました。もう一度選択してください。",
+        "success": "組織 {count} 件を削除しました",
+        "typeCount": "確認のため削除する組織の数「{count}」を入力してください"
+      },
+      "title": "組織を一括削除"
+    },
     "closeOrganization": {
       "title": "営業終了",
       "confirm": "<bold>{name}</bold> の営業を終了しますか？店舗一覧から非表示になり、お客様は注文や順番待ちができなくなり、スタッフはデータの閲覧のみ可能になります。後からプラットフォーム管理者が営業を再開できます。",
@@ -68,6 +84,21 @@
   },
   "invitations": {
     "actions": {
+      "batchCancelInvitation": {
+        "cancel": {
+          "confirm": "<bold>招待</bold>の一括キャンセルをキャンセルしますか？選択した項目はクリアされます。",
+          "label": "招待の一括キャンセルをキャンセル"
+        },
+        "confirm": "<bold>招待</bold>を一括キャンセルしますか？",
+        "submit": {
+          "confirm": "選択した <bold>{count} 件の招待</bold>をキャンセルしますか？",
+          "label": "選択した招待をキャンセル（{count}）",
+          "partial": "{done} 件をキャンセルしました。残りはキャンセルされていません：{message}",
+          "stale": "選択した招待が変更されました。もう一度選択してください。",
+          "success": "招待 {count} 件をキャンセルしました"
+        },
+        "title": "招待を一括キャンセル"
+      },
       "cancelInvitation": {
         "confirm": "<bold>{email}</bold> への招待をキャンセルしますか？",
         "success": "{email} への招待のキャンセルに成功しました",
@@ -125,6 +156,36 @@
   "logo": "ロゴ",
   "members": {
     "actions": {
+      "batchRemoveMember": {
+        "cancel": {
+          "confirm": "<bold>メンバー</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。",
+          "label": "メンバーの一括削除をキャンセル"
+        },
+        "confirm": "<bold>メンバー</bold>を一括削除しますか？",
+        "submit": {
+          "confirm": "選択した <bold>{count} 件のメンバー</bold>を削除しますか？",
+          "label": "選択したメンバーを削除（{count}）",
+          "partial": "{done} 件を削除しました。残りは削除されていません：{message}",
+          "stale": "選択したメンバーが変更されました。もう一度選択してください。",
+          "success": "メンバー {count} 件を削除しました"
+        },
+        "title": "メンバーを一括削除"
+      },
+      "batchRemoveTeamMember": {
+        "cancel": {
+          "confirm": "<bold>チームメンバー</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。",
+          "label": "チームメンバーの一括削除をキャンセル"
+        },
+        "confirm": "<bold>チームメンバー</bold>を一括削除しますか？",
+        "submit": {
+          "confirm": "選択した <bold>{count} 件のチームメンバー</bold>を削除しますか？",
+          "label": "選択したチームメンバーを削除（{count}）",
+          "partial": "{done} 件を削除しました。残りは削除されていません：{message}",
+          "stale": "選択したチームメンバーが変更されました。もう一度選択してください。",
+          "success": "チームメンバー {count} 件を削除しました"
+        },
+        "title": "チームメンバーを一括削除"
+      },
       "inviteMember": {
         "email": {
           "label": "メール",
@@ -238,6 +299,21 @@
       "addTeamMember": {
         "success": "{email} を {team} チームに追加しました",
         "title": "チームメンバーを追加"
+      },
+      "batchRemoveTeam": {
+        "cancel": {
+          "confirm": "<bold>チーム</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。",
+          "label": "チームの一括削除をキャンセル"
+        },
+        "confirm": "<bold>チーム</bold>を一括削除しますか？",
+        "submit": {
+          "confirm": "選択した <bold>{count} 件のチーム</bold>を削除しますか？",
+          "label": "選択したチームを削除（{count}）",
+          "partial": "{done} 件を削除しました。残りは削除されていません：{message}",
+          "stale": "選択したチームが変更されました。もう一度選択してください。",
+          "success": "チーム {count} 件を削除しました"
+        },
+        "title": "チームを一括削除"
       },
       "createTeam": {
         "success": "{name} の作成に成功しました",
