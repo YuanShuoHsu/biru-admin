@@ -144,7 +144,7 @@ const OrganizationsSlugMembers = ({
     mutate,
     isValidating: loading,
   } = useSWR(
-    `organization-members-${slug}`,
+    ["organization-members", slug],
     async () => {
       const { data, error } = await authClient.organization.getFullOrganization(
         {

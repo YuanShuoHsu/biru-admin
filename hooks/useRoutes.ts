@@ -866,7 +866,7 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
 
   const decodedSlug = decodeURIComponent(slug);
   const { data: organizationData } = useSWR(
-    slug ? `organization-${slug}` : null,
+    slug ? ["organization", slug] : null,
     async () => {
       const { data } = await authClient.organization.getFullOrganization({
         query: { organizationSlug: decodedSlug },
