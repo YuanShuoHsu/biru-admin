@@ -6,6 +6,8 @@ import { useState } from "react";
 
 import type { Provider } from "..";
 
+import { query } from "@/constants/query";
+
 import useListAccounts from "@/hooks/useListAccounts";
 
 import { StyledListItem, StyledListItemText } from "@/components/FormCard";
@@ -33,7 +35,7 @@ const ProviderRow = ({ id, Icon, label }: Provider) => {
   const { setDialog } = useDialogStore((state) => state);
 
   const { data: accounts, mutate } = useListAccounts();
-  const isLinked = accounts?.some(({ providerId }) => providerId === id);
+  const linkedAccount = accounts?.find(({ providerId }) => providerId === id);
 
   const locale = useLocale();
 
@@ -42,9 +44,14 @@ const ProviderRow = ({ id, Icon, label }: Provider) => {
   const tAuth = useTranslations("auth");
 
   const handleLinkConfirm = async () => {
+    const callbackURL = `${process.env.NEXT_PUBLIC_ADMIN_URL}/${locale}/auth/settings/security`;
+    const errorCallbackURL = new URL(callbackURL);
+    errorCallbackURL.searchParams.set(query.oauth, id);
+
     await authClient.linkSocial({
       provider: id,
-      callbackURL: `${process.env.NEXT_PUBLIC_ADMIN_URL}/${locale}/auth/settings/security`,
+      callbackURL,
+      errorCallbackURL: errorCallbackURL.toString(),
       fetchOptions: {
         onRequest: () => setLoading(true),
         onError: ({ error: { code } }) => {
@@ -73,8 +80,10 @@ const ProviderRow = ({ id, Icon, label }: Provider) => {
   };
 
   const handleUnlinkConfirm = async () => {
+    if (!linkedAccount) return;
+
     await authClient.unlinkAccount(
-      { providerId: id },
+      { accountId: linkedAccount.id },
       {
         onRequest: () => setLoading(true),
         onError: ({ error: { code } }) => {
@@ -112,7 +121,7 @@ const ProviderRow = ({ id, Icon, label }: Provider) => {
     });
   };
 
-  const secondaryAction = isLinked ? (
+  const secondaryAction = linkedAccount ? (
     <Button
       color="error"
       loading={loading}

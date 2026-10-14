@@ -103,6 +103,11 @@ export const authClient = createAuthClient({
 type ErrorTypes = Partial<
   Record<
     | keyof typeof authClient.$ERROR_CODES
+    | "access_denied"
+    | "account_already_linked_to_different_user"
+    | "email_does_not_match"
+    | "invalid_code"
+    | "unable_to_get_user_info"
     | "ORGANIZATION_CLOSED"
     | "ORGANIZATION_HAS_BUSINESS_RECORDS"
     | "PHONE_NUMBER_ALREADY_EXISTS"
@@ -430,6 +435,46 @@ const errorCodes = {
     [LocaleEnum.Ja]: "自分自身を削除することはできません",
     [LocaleEnum.Ko]: "자기 자신을 삭제할 수 없습니다",
     [LocaleEnum.ZhCN]: "您无法移除自己",
+  },
+  access_denied: {
+    [LocaleEnum.ZhTW]: "已取消授權",
+    [LocaleEnum.En]: "Authorization was cancelled.",
+    [LocaleEnum.Ja]: "認証がキャンセルされました",
+    [LocaleEnum.Ko]: "인증이 취소되었습니다",
+    [LocaleEnum.ZhCN]: "已取消授权",
+  },
+  account_already_linked_to_different_user: {
+    [LocaleEnum.ZhTW]: "此帳號已連結到其他使用者",
+    [LocaleEnum.En]: "This account is already linked to another user.",
+    [LocaleEnum.Ja]: "このアカウントは既に別のユーザーと連携されています",
+    [LocaleEnum.Ko]: "이 계정은 이미 다른 사용자와 연결되어 있습니다",
+    [LocaleEnum.ZhCN]: "此账号已关联到其他用户",
+  },
+  email_does_not_match: {
+    [LocaleEnum.ZhTW]: "此帳號的信箱與目前帳號不同，無法連結",
+    [LocaleEnum.En]:
+      "This account's email doesn't match yours, so it can't be linked.",
+    [LocaleEnum.Ja]:
+      "このアカウントのメールアドレスが現在のアカウントと異なるため、連携できません",
+    [LocaleEnum.Ko]: "이 계정의 이메일이 현재 계정과 달라 연결할 수 없습니다",
+    [LocaleEnum.ZhCN]: "此账号的邮箱与当前账号不同，无法关联",
+  },
+  invalid_code: {
+    [LocaleEnum.ZhTW]: "授權已逾時，請重新操作",
+    [LocaleEnum.En]: "Authorization expired. Please try again.",
+    [LocaleEnum.Ja]: "認証の有効期限が切れました。もう一度お試しください",
+    [LocaleEnum.Ko]: "인증이 만료되었습니다. 다시 시도해 주세요",
+    [LocaleEnum.ZhCN]: "授权已过期，请重新操作",
+  },
+  unable_to_get_user_info: {
+    [LocaleEnum.ZhTW]: "無法取得帳號資料，請稍後再試",
+    [LocaleEnum.En]:
+      "Couldn't get your account details. Please try again later.",
+    [LocaleEnum.Ja]:
+      "アカウント情報を取得できませんでした。しばらくしてからもう一度お試しください",
+    [LocaleEnum.Ko]:
+      "계정 정보를 가져올 수 없습니다. 잠시 후 다시 시도해 주세요",
+    [LocaleEnum.ZhCN]: "无法获取账号资料，请稍后再试",
   },
 } satisfies ErrorTypes;
 

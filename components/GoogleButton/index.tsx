@@ -1,11 +1,14 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 
 import { query } from "@/constants/query";
 import { DEFAULT_AUTHENTICATED_ROUTE } from "@/constants/route";
+
+import { usePathname } from "@/i18n/navigation";
 
 import { authClient, getErrorMessage } from "@/lib/auth-client";
 
@@ -35,6 +38,10 @@ const GoogleButton = ({ action, redirectTo }: GoogleButtonProps) => {
 
   const locale = useLocale();
 
+  const pathname = usePathname();
+
+  const searchParams = useSearchParams();
+
   const tAuth = useTranslations("auth");
   const label = tAuth(`google.${action}`);
 
@@ -45,12 +52,20 @@ const GoogleButton = ({ action, redirectTo }: GoogleButtonProps) => {
   url.searchParams.set(query.oauth, "google");
   const callbackURL = url.toString();
 
+  // 登入失敗時還沒有 session，轉去登入後的頁面會被導回登入頁，錯誤參數就被包進 redirectTo 而丟失
+  const errorURL = new URL(
+    `/${locale}${pathname}?${searchParams.toString()}`,
+    process.env.NEXT_PUBLIC_ADMIN_URL,
+  );
+  errorURL.searchParams.set(query.oauth, "google");
+  const errorCallbackURL = errorURL.toString();
+
   const handleClick = async () => {
     await authClient.signIn.social(
       {
         provider: "google",
         callbackURL,
-        errorCallbackURL: callbackURL,
+        errorCallbackURL,
       },
       {
         onError: ({ error }) => {

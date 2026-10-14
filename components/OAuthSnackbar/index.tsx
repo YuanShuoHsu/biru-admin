@@ -33,6 +33,7 @@ const OAuthSnackbar = () => {
     const newParams = new URLSearchParams(searchParams);
     newParams.delete(query.oauth);
     newParams.delete("error");
+    newParams.delete("error_description");
     const search = newParams.toString();
     router.replace(`${pathname}${search ? `?${search}` : ""}`);
 

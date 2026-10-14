@@ -31,7 +31,7 @@
     "@react-three/fiber": "^9.7.0",
     "@react-three/postprocessing": "^3.1.2",
     "autosuggest-highlight": "^3.3.4",
-    "better-auth": "^1.6.30",
+    "better-auth": "^1.7.7",
     "browser-image-compression": "^2.0.2",
     "date-fns": "^4.4.0",
     "dayjs": "^1.11.19",
@@ -53,7 +53,7 @@
     "swr": "^2.3.6",
     "three": "^0.186.0",
     "ua-parser-js": "^2.0.9",
-    "zod": "^4.4.3",
+    "zod": "^4.6.7",
     "zustand": "^5.0.8"
   },
   "devDependencies": {
