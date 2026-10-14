@@ -5,8 +5,6 @@ import { notFound } from "next/navigation";
 
 import Employees from ".";
 
-import AttendanceTabsLayout from "../../AttendanceTabsLayout";
-
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -17,7 +15,6 @@ import {
 } from "@/types/api";
 
 import {
-  getAttendanceAccess,
   getAttendanceLegalStatusObligations,
   getAttendanceMembers,
   getPayrollTerms,
@@ -25,6 +22,7 @@ import {
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceEmployeeEnumOptions } from "@/utils/enumOptions";
 import { hasRolePermission } from "@/utils/organizations";
+import { getAttendanceAccess } from "@/utils/session";
 
 interface EmployeesPageProps {
   params: Promise<{ locale: Locale }>;
@@ -65,10 +63,7 @@ const EmployeesPage = async ({ params, searchParams }: EmployeesPageProps) => {
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const access = await getAttendanceAccess(
-    rawSearchParams.organization,
-    cookieStore.toString(),
-  );
+  const access = await getAttendanceAccess(rawSearchParams.organization);
 
   if (!access) notFound();
 
@@ -138,31 +133,29 @@ const EmployeesPage = async ({ params, searchParams }: EmployeesPageProps) => {
     ]);
 
   return (
-    <AttendanceTabsLayout memberRole={memberRole}>
-      <Employees
-        canDelete={hasRolePermission(memberRole, { employee: ["delete"] })}
-        canManageTaxIdentity={hasRolePermission(memberRole, {
-          payrollTerm: ["update"],
-        })}
-        canManageTerms={canManageTerms}
-        canWrite={hasRolePermission(memberRole, {
-          employee: ["create", "update"],
-        })}
-        filterField={filterField}
-        filterOperator={filterOperator}
-        filterValue={filterValue}
-        legalStatusObligations={legalStatusObligations}
-        organization={organization}
-        page={page}
-        pageSize={pageSize}
-        quickFilterValue={quickFilterValue}
-        rowCount={rowCount}
-        rows={rows}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-        terms={terms}
-      />
-    </AttendanceTabsLayout>
+    <Employees
+      canDelete={hasRolePermission(memberRole, { employee: ["delete"] })}
+      canManageTaxIdentity={hasRolePermission(memberRole, {
+        payrollTerm: ["update"],
+      })}
+      canManageTerms={canManageTerms}
+      canWrite={hasRolePermission(memberRole, {
+        employee: ["create", "update"],
+      })}
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
+      legalStatusObligations={legalStatusObligations}
+      organization={organization}
+      page={page}
+      pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
+      rowCount={rowCount}
+      rows={rows}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+      terms={terms}
+    />
   );
 };
 

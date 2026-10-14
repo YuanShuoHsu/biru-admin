@@ -13,7 +13,11 @@ import { ROLE_RANK } from "@/constants/organizations";
 
 import { useRowSelection } from "@/hooks/useRowSelection";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import {
+  authClient,
+  getErrorMessage,
+  getAuthErrorMessage,
+} from "@/lib/auth-client";
 
 import { Cancel, PersonAdd, PersonRemove } from "@mui/icons-material";
 import {
@@ -34,8 +38,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { ActiveOrganization, Team } from "@/types/organizations";
 
 import { buildTeamMembers, type TeamMemberRow } from "@/utils/teams";
-import { runSequentially, SequentialRunError } from "@/utils/dataGrid";
-import { getErrorMessage as getFetchErrorMessage } from "@/utils/errors";
+import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -241,26 +244,14 @@ const OrganizationsSlugTeamsTeamId = ({
       ),
       onConfirm: async () => {
         try {
-          const memberIds = new Set((await mutate())?.map(({ id }) => id));
-          if (!selectedRows.every(({ id }) => memberIds.has(id))) {
-            enqueueSnackbar(
-              tMembers("actions.batchRemoveTeamMember.submit.stale"),
-              { variant: "error" },
-            );
-            mutate();
-            return;
-          }
-
-          await runSequentially(selectedRows, async ({ userId }) => {
-            const { error } = await authClient.organization.removeTeamMember({
-              teamId: team.id,
-              userId,
-            });
-            if (error)
-              throw new Error(
-                getErrorMessage(error.code ?? "", locale) || error.message,
-              );
-          });
+          await fetcher(
+            `/api/organizations/${team.organizationId}/teams/${team.id}/members`,
+            {
+              method: "DELETE",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
+            },
+          );
 
           setIsSelectMode(false);
           clearRowSelection();
@@ -274,19 +265,9 @@ const OrganizationsSlugTeamsTeamId = ({
             },
           );
         } catch (error) {
-          const reason =
-            error instanceof SequentialRunError ? error.reason : error;
-          const message = getFetchErrorMessage(reason);
-
-          enqueueSnackbar(
-            error instanceof SequentialRunError && error.done
-              ? tMembers("actions.batchRemoveTeamMember.submit.partial", {
-                  done: error.done,
-                  message,
-                })
-              : message,
-            { variant: "error" },
-          );
+          enqueueSnackbar(getAuthErrorMessage(error, locale), {
+            variant: "error",
+          });
         }
 
         mutate();
@@ -302,6 +283,7 @@ const OrganizationsSlugTeamsTeamId = ({
     selectedRows,
     setDialog,
     team.id,
+    team.organizationId,
     tMembers,
   ]);
 

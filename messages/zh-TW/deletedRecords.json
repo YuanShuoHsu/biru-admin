@@ -8,7 +8,6 @@
     "submit": {
       "confirm": "確定要還原所選的 <bold>{count} 筆資料</bold>嗎？同一次刪除的相關資料也會一起還原。",
       "label": "還原所選資料（{count}）",
-      "partial": "已還原 {done} 筆資料，之後的未還原：{message}",
       "success": "已還原 {count} 筆資料"
     },
     "title": "批次還原資料"

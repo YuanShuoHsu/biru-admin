@@ -5,8 +5,6 @@ import { notFound } from "next/navigation";
 
 import Payroll from ".";
 
-import AttendanceTabsLayout from "../../AttendanceTabsLayout";
-
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
@@ -19,7 +17,6 @@ import {
 } from "@/types/api";
 
 import {
-  getAttendanceAccess,
   getAttendanceEmployees,
   getPayrollStatements,
   getPayrollEarningTypes,
@@ -28,6 +25,7 @@ import {
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getPayrollStatementEnumOptions } from "@/utils/enumOptions";
 import { hasRolePermission } from "@/utils/organizations";
+import { getAttendanceAccess } from "@/utils/session";
 
 interface PayrollPageProps {
   params: Promise<{ locale: Locale }>;
@@ -68,10 +66,7 @@ const PayrollPage = async ({ params, searchParams }: PayrollPageProps) => {
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const access = await getAttendanceAccess(
-    rawSearchParams.organization,
-    cookieStore.toString(),
-  );
+  const access = await getAttendanceAccess(rawSearchParams.organization);
 
   if (!access) notFound();
 
@@ -154,30 +149,28 @@ const PayrollPage = async ({ params, searchParams }: PayrollPageProps) => {
   ]);
 
   return (
-    <AttendanceTabsLayout memberRole={memberRole}>
-      <Payroll
-        canCreate={hasRolePermission(memberRole, { payslip: ["create"] })}
-        canViewCosts={hasRolePermission(memberRole, { payslip: ["read"] })}
-        canManage={hasRolePermission(memberRole, { payslip: ["update"] })}
-        canManageTerms={hasRolePermission(memberRole, {
-          payrollTerm: ["create", "update"],
-        })}
-        earningTypes={earningTypes}
-        employees={employees}
-        filterField={filterField}
-        filterOperator={filterOperator}
-        filterValue={filterValue}
-        organization={organization}
-        page={page}
-        pageSize={pageSize}
-        quickFilterValue={quickFilterValue}
-        rowCount={rowCount}
-        rows={rows}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-        terms={terms}
-      />
-    </AttendanceTabsLayout>
+    <Payroll
+      canCreate={hasRolePermission(memberRole, { payslip: ["create"] })}
+      canViewCosts={hasRolePermission(memberRole, { payslip: ["read"] })}
+      canManage={hasRolePermission(memberRole, { payslip: ["update"] })}
+      canManageTerms={hasRolePermission(memberRole, {
+        payrollTerm: ["create", "update"],
+      })}
+      earningTypes={earningTypes}
+      employees={employees}
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
+      organization={organization}
+      page={page}
+      pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
+      rowCount={rowCount}
+      rows={rows}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+      terms={terms}
+    />
   );
 };
 

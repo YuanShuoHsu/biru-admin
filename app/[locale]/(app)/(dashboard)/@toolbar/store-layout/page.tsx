@@ -1,8 +1,6 @@
-import { cookies } from "next/headers";
-
 import OrganizationSelect from "@/components/OrganizationSelect";
 
-import { authClient } from "@/lib/auth-client";
+import { listOrganizations } from "@/utils/session";
 
 interface ToolbarStoreLayoutPageProps {
   searchParams: Promise<{ organization?: string }>;
@@ -11,22 +9,13 @@ interface ToolbarStoreLayoutPageProps {
 const ToolbarStoreLayoutPage = async ({
   searchParams,
 }: ToolbarStoreLayoutPageProps) => {
-  const [cookieStore, { organization = "" }] = await Promise.all([
-    cookies(),
-    searchParams,
-  ]);
+  const { organization = "" } = await searchParams;
 
-  const { data: organizations } = await authClient.organization.list({
-    fetchOptions: {
-      headers: {
-        cookie: cookieStore.toString(),
-      },
-    },
-  });
+  const organizations = await listOrganizations();
 
   return (
     <OrganizationSelect
-      organizations={organizations || []}
+      organizations={organizations}
       organizationSlug={organization}
     />
   );

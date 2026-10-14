@@ -5,8 +5,6 @@ import { notFound } from "next/navigation";
 
 import Mine from ".";
 
-import AttendanceTabsLayout from "../../AttendanceTabsLayout";
-
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
@@ -19,7 +17,6 @@ import {
 } from "@/types/api";
 
 import {
-  getAttendanceAccess,
   getAttendanceContext,
   getAttendanceLeaveCases,
   getAttendanceLeaveTypes,
@@ -28,6 +25,7 @@ import {
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceDayKindEnumOptions } from "@/utils/enumOptions";
+import { getAttendanceAccess } from "@/utils/session";
 
 interface MinePageProps {
   params: Promise<{ locale: Locale }>;
@@ -68,14 +66,11 @@ const MinePage = async ({ params, searchParams }: MinePageProps) => {
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const access = await getAttendanceAccess(
-    rawSearchParams.organization,
-    cookieStore.toString(),
-  );
+  const access = await getAttendanceAccess(rawSearchParams.organization);
 
   if (!access) notFound();
 
-  const { memberRole, organization } = access;
+  const { organization } = access;
 
   const {
     filterField,
@@ -159,25 +154,23 @@ const MinePage = async ({ params, searchParams }: MinePageProps) => {
     : [{ shifts: [], total: 0 }, [], { leaveTypes: [] }, { leaveCases: [] }];
 
   return (
-    <AttendanceTabsLayout memberRole={memberRole}>
-      <Mine
-        enabled={enabled}
-        filterField={filterField}
-        filterOperator={filterOperator}
-        filterValue={filterValue}
-        leaveCases={leaveCases}
-        leaveTypes={leaveTypes}
-        organization={organization}
-        page={page}
-        pageSize={pageSize}
-        punchableShifts={punchableShifts}
-        quickFilterValue={quickFilterValue}
-        rowCount={rowCount}
-        rows={rows}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-      />
-    </AttendanceTabsLayout>
+    <Mine
+      enabled={enabled}
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
+      leaveCases={leaveCases}
+      leaveTypes={leaveTypes}
+      organization={organization}
+      page={page}
+      pageSize={pageSize}
+      punchableShifts={punchableShifts}
+      quickFilterValue={quickFilterValue}
+      rowCount={rowCount}
+      rows={rows}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+    />
   );
 };
 

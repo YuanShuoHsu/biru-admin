@@ -1,27 +1,21 @@
 import { NextIntlClientProvider } from "next-intl";
-import { cookies } from "next/headers";
 
 import AppClientProviders from "./AppClientProviders";
-
-import { authClient } from "@/lib/auth-client";
 
 import {
   defaultOrganizationSlugKey,
   resolveDefaultOrganizationSlug,
 } from "@/utils/organizations";
-import { getSession } from "@/utils/session";
+import { getSession, listOrganizations } from "@/utils/session";
 
 interface AppProvidersProps {
   children: React.ReactNode;
 }
 
 const AppProviders = async ({ children }: AppProvidersProps) => {
-  const cookieStore = await cookies();
-  const [initialSession, { data: organizations }] = await Promise.all([
+  const [initialSession, organizations] = await Promise.all([
     getSession(),
-    authClient.organization.list({
-      fetchOptions: { headers: { cookie: cookieStore.toString() } },
-    }),
+    listOrganizations(),
   ]);
 
   const fallback = {

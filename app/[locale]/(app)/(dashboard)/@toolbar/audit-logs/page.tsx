@@ -1,10 +1,6 @@
-import { cookies } from "next/headers";
-
 import OrganizationSelect from "@/components/OrganizationSelect";
 
-import { authClient } from "@/lib/auth-client";
-
-import { getSession } from "@/utils/session";
+import { getSession, listOrganizations } from "@/utils/session";
 
 interface ToolbarAuditLogsPageProps {
   searchParams: Promise<{ organization?: string }>;
@@ -13,27 +9,18 @@ interface ToolbarAuditLogsPageProps {
 const ToolbarAuditLogsPage = async ({
   searchParams,
 }: ToolbarAuditLogsPageProps) => {
-  const [cookieStore, { organization = "" }] = await Promise.all([
-    cookies(),
-    searchParams,
-  ]);
+  const { organization = "" } = await searchParams;
 
-  const fetchOptions = {
-    headers: {
-      cookie: cookieStore.toString(),
-    },
-  };
-
-  const [session, { data: organizations }] = await Promise.all([
+  const [session, organizations] = await Promise.all([
     getSession(),
-    authClient.organization.list({ fetchOptions }),
+    listOrganizations(),
   ]);
 
   if (session?.user?.role === "admin") return null;
 
   return (
     <OrganizationSelect
-      organizations={organizations || []}
+      organizations={organizations}
       organizationSlug={organization}
     />
   );

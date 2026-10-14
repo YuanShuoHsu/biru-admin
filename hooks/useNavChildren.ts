@@ -1,6 +1,9 @@
 "use client";
 
-import { useActiveMemberRole } from "@/hooks/organizations";
+import {
+  useActiveMemberRole,
+  useDefaultOrganizationSlug,
+} from "@/hooks/organizations";
 import { useAttendanceReviewCounts } from "@/hooks/useAttendanceReviewCounts";
 import { useAuthNavItems } from "@/hooks/useAuth";
 import { useRoutes } from "@/hooks/useRoutes";
@@ -22,7 +25,7 @@ export const useNavChildren = (): Record<string, NavItem[]> => {
 
   const accountChildren = useAccountNavItems();
   const authChildren = useAuthNavItems();
-  const reviewCounts = useAttendanceReviewCounts();
+  const reviewCounts = useAttendanceReviewCounts(useDefaultOrganizationSlug());
 
   return {
     "/attendance": attendanceNavGroups(memberRole).map(({ children, path }) =>

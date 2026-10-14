@@ -13,8 +13,7 @@ import {
   getDeletedRecords,
 } from "@/utils/deletedRecords";
 import { resolveGridSearchParams } from "@/utils/dataGrid";
-import { getResolvedAdminOrganization } from "@/utils/menus";
-import { getSession } from "@/utils/session";
+import { getResolvedAdminOrganization, getSession } from "@/utils/session";
 
 interface DeletedRecordsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -53,7 +52,7 @@ const DeletedRecordsPage = async ({
   const isPlatformAdmin = session?.user?.role === "admin";
   const organization = isPlatformAdmin
     ? undefined
-    : await getResolvedAdminOrganization(rawSearchParams.organization, cookie);
+    : await getResolvedAdminOrganization(rawSearchParams.organization);
   if (
     !isPlatformAdmin &&
     (!organization ||

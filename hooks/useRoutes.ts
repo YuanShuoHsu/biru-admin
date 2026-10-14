@@ -14,7 +14,7 @@ import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";
 
 import { resolveDashboardRange } from "@/app/[locale]/(app)/(dashboard)/dashboard/definitions";
 
-import { useDefaultOrganization } from "@/hooks/organizations";
+import { useSelectedOrganizationSlug } from "@/hooks/organizations";
 
 import { usePathname } from "@/i18n/navigation";
 
@@ -1010,12 +1010,12 @@ export const useRoutes = () => {
   const labels = useDynamicLabels();
 
   const pathname = usePathname();
-  const defaultOrganization = useDefaultOrganization() || null;
+  const organizationSlug = useSelectedOrganizationSlug() || null;
 
   const values: Record<RouteQuery, string | null> = {
     back: pathname,
     date: attendanceCalendarDate(),
-    organization: searchParams.get("organization") || defaultOrganization,
+    organization: organizationSlug,
     page: DEFAULT_PAGINATION_QUERY.page,
     pageSize: DEFAULT_PAGINATION_QUERY.pageSize,
     range: resolveDashboardRange(searchParams.get("range") || undefined),

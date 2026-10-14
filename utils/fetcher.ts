@@ -5,6 +5,7 @@
 
 interface ErrorInfo {
   message: string;
+  code?: string;
   documentation_url?: string;
   id?: string;
 }

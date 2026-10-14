@@ -8,18 +8,14 @@ import { notFound } from "next/navigation";
 
 import Withholding from ".";
 
-import AttendanceTabsLayout from "../../AttendanceTabsLayout";
-
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-import {
-  getAttendanceAccess,
-  getPayrollWithholdingSummary,
-} from "@/utils/attendance";
+import { getPayrollWithholdingSummary } from "@/utils/attendance";
 import { hasRolePermission } from "@/utils/organizations";
+import { getAttendanceAccess } from "@/utils/session";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -57,10 +53,7 @@ const WithholdingPage = async ({
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const access = await getAttendanceAccess(
-    rawSearchParams.organization,
-    cookieStore.toString(),
-  );
+  const access = await getAttendanceAccess(rawSearchParams.organization);
 
   if (!access) notFound();
 
@@ -99,13 +92,11 @@ const WithholdingPage = async ({
   );
 
   return (
-    <AttendanceTabsLayout memberRole={memberRole}>
-      <Withholding
-        canManage={hasRolePermission(memberRole, { payrollTerm: ["update"] })}
-        organization={organization}
-        summary={summary}
-      />
-    </AttendanceTabsLayout>
+    <Withholding
+      canManage={hasRolePermission(memberRole, { payrollTerm: ["update"] })}
+      organization={organization}
+      summary={summary}
+    />
   );
 };
 

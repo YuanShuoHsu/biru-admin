@@ -31,8 +31,6 @@
       "submit": {
         "confirm": "Are you sure you want to delete the <bold>{count} selected users</bold>?",
         "label": "Delete Selected Users ({count})",
-        "partial": "Deleted {done} users; the rest were not deleted: {message}",
-        "stale": "The selected users have changed. Please select again.",
         "success": "Deleted {count} users"
       },
       "title": "Batch Delete Users"
@@ -124,7 +122,6 @@
         "submit": {
           "confirm": "Are you sure you want to revoke the <bold>{count} selected sessions</bold>?",
           "label": "Revoke Selected Sessions ({count})",
-          "partial": "Revoked {done} sessions; the rest were not revoked: {message}",
           "success": "Revoked {count} sessions"
         },
         "title": "Batch Revoke Sessions"

@@ -7,6 +7,7 @@ import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
 import type {
   Coupon,
   CouponFilterField,
+  CouponListResponse,
   CouponRecipient,
   CouponRecipientFilterField,
   CouponRecipientSortField,
@@ -83,7 +84,7 @@ export const getCoupons = cache(
       for (const entry of quickFilterEnums || [])
         params.append("quickFilterEnums", entry);
 
-      const result = await fetcher<{ data: Coupon[]; total: number }>(
+      const result = await fetcher<CouponListResponse>(
         `${getCouponsPath(organizationSlug)}?${params.toString()}`,
         init,
       );

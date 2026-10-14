@@ -5,8 +5,6 @@ import { notFound } from "next/navigation";
 
 import ParentalChildren from ".";
 
-import AttendanceTabsLayout from "../../AttendanceTabsLayout";
-
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
@@ -19,13 +17,13 @@ import {
 } from "@/types/api";
 
 import {
-  getAttendanceAccess,
   getAttendanceContext,
   getAttendanceEmployees,
   getAttendanceParentalChildren,
 } from "@/utils/attendance";
 import { resolveGridSearchParams } from "@/utils/dataGrid";
 import { hasRolePermission } from "@/utils/organizations";
+import { getAttendanceAccess } from "@/utils/session";
 
 interface ParentalChildrenPageProps {
   params: Promise<{ locale: Locale }>;
@@ -69,10 +67,7 @@ const ParentalChildrenPage = async ({
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const access = await getAttendanceAccess(
-    rawSearchParams.organization,
-    cookieStore.toString(),
-  );
+  const access = await getAttendanceAccess(rawSearchParams.organization);
 
   if (!access) notFound();
 
@@ -140,26 +135,24 @@ const ParentalChildrenPage = async ({
   ]);
 
   return (
-    <AttendanceTabsLayout memberRole={memberRole}>
-      <ParentalChildren
-        canViewAll={canViewAll}
-        canWrite={canWrite}
-        canReviewOwn={selfReviewAllowed.parentalChild}
-        employeeId={employee?.id}
-        employees={employees}
-        filterField={filterField}
-        filterOperator={filterOperator}
-        filterValue={filterValue}
-        organization={organization}
-        page={page}
-        pageSize={pageSize}
-        quickFilterValue={quickFilterValue}
-        rowCount={rowCount}
-        rows={rows}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-      />
-    </AttendanceTabsLayout>
+    <ParentalChildren
+      canViewAll={canViewAll}
+      canWrite={canWrite}
+      canReviewOwn={selfReviewAllowed.parentalChild}
+      employeeId={employee?.id}
+      employees={employees}
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
+      organization={organization}
+      page={page}
+      pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
+      rowCount={rowCount}
+      rows={rows}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+    />
   );
 };
 

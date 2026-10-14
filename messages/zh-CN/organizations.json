@@ -9,8 +9,6 @@
       "submit": {
         "confirm": "确定要删除所选的 <bold>{count} 个组织</bold>吗？成员、菜单、库存等数据会一并删除，30 天内可由平台管理员还原。",
         "label": "删除所选组织（{count}）",
-        "partial": "已删除 {done} 个组织，之后的未删除：{message}",
-        "stale": "所选的组织已有变动，请重新选取",
         "success": "已删除 {count} 个组织",
         "typeCount": "请输入要删除的组织数量“{count}”以确认"
       },
@@ -93,8 +91,6 @@
         "submit": {
           "confirm": "确定要取消所选的 <bold>{count} 条邀请</bold>吗？",
           "label": "取消所选邀请（{count}）",
-          "partial": "已取消 {done} 条邀请，之后的未取消：{message}",
-          "stale": "所选的邀请已有变动，请重新选取",
           "success": "已取消 {count} 条邀请"
         },
         "title": "批量取消邀请"
@@ -165,8 +161,6 @@
         "submit": {
           "confirm": "确定要移除所选的 <bold>{count} 位成员</bold>吗？",
           "label": "移除所选成员（{count}）",
-          "partial": "已移除 {done} 位成员，之后的未移除：{message}",
-          "stale": "所选的成员已有变动，请重新选取",
           "success": "已移除 {count} 位成员"
         },
         "title": "批量移除成员"
@@ -180,8 +174,6 @@
         "submit": {
           "confirm": "确定要移除所选的 <bold>{count} 位团队成员</bold>吗？",
           "label": "移除所选团队成员（{count}）",
-          "partial": "已移除 {done} 位团队成员，之后的未移除：{message}",
-          "stale": "所选的团队成员已有变动，请重新选取",
           "success": "已移除 {count} 位团队成员"
         },
         "title": "批量移除团队成员"
@@ -309,8 +301,6 @@
         "submit": {
           "confirm": "确定要删除所选的 <bold>{count} 个团队</bold>吗？",
           "label": "删除所选团队（{count}）",
-          "partial": "已删除 {done} 个团队，之后的未删除：{message}",
-          "stale": "所选的团队已有变动，请重新选取",
           "success": "已删除 {count} 个团队"
         },
         "title": "批量删除团队"

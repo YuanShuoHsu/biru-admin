@@ -8,8 +8,6 @@ import ModifierGroups from ".";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-import { authClient } from "@/lib/auth-client";
-
 import {
   filterOperatorValues,
   modifierGroupFilterFieldValues,
@@ -17,14 +15,12 @@ import {
 } from "@/types/api";
 
 import { resolveGridSearchParams } from "@/utils/dataGrid";
-import {
-  getAdminModifierGroups,
-  getResolvedAdminOrganizationMenu,
-} from "@/utils/menus";
+import { getAdminModifierGroups } from "@/utils/menus";
 import { hasRolePermission } from "@/utils/organizations";
-import { getSession } from "@/utils/session";
-
-import MenusTabsLayout from "../MenusTabsLayout";
+import {
+  getMemberRole,
+  getResolvedAdminOrganizationMenu,
+} from "@/utils/session";
 
 interface ModifierGroupsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -65,10 +61,7 @@ const ModifierGroupsPage = async ({
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
   const { organization: selectedOrganization, menu } =
-    await getResolvedAdminOrganizationMenu(
-      rawSearchParams.organization,
-      fetchOptions,
-    );
+    await getResolvedAdminOrganizationMenu(rawSearchParams.organization);
 
   if (!selectedOrganization || !menu) notFound();
 
@@ -96,57 +89,43 @@ const ModifierGroupsPage = async ({
       locale,
     });
 
-  const [{ groups: rows, total: rowCount }, session, fullOrgData] =
-    await Promise.all([
-      getAdminModifierGroups(
-        menu.id,
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-        fetchOptions,
-      ),
-      getSession(),
-      authClient.organization.getFullOrganization({
-        query: { organizationId: menu.organizationId },
-        fetchOptions,
-      }),
-    ]);
+  const [{ groups: rows, total: rowCount }, role] = await Promise.all([
+    getAdminModifierGroups(
+      menu.id,
+      page,
+      pageSize,
+      filterField,
+      filterOperator,
+      filterValue,
+      quickFilterValue,
+      sortBy,
+      sortDirection,
+      fetchOptions,
+    ),
+    getMemberRole(menu.organizationId),
+  ]);
 
-  const currentUserId = session?.user?.id;
-  const members = fullOrgData.data?.members || [];
-  const role = members.find(({ userId }) => userId === currentUserId)?.role;
   const canWrite = hasRolePermission(role, { menu: ["update"] });
   const canViewAuditLog = hasRolePermission(role, {
     auditLog: ["read"],
   });
 
   return (
-    <MenusTabsLayout
+    <ModifierGroups
       canViewAuditLog={canViewAuditLog}
       canWrite={canWrite}
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
       menu={menu}
-    >
-      <ModifierGroups
-        canViewAuditLog={canViewAuditLog}
-        canWrite={canWrite}
-        filterField={filterField}
-        filterOperator={filterOperator}
-        filterValue={filterValue}
-        menu={menu}
-        page={page}
-        pageSize={pageSize}
-        quickFilterValue={quickFilterValue}
-        rowCount={rowCount}
-        rows={rows}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-      />
-    </MenusTabsLayout>
+      page={page}
+      pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
+      rowCount={rowCount}
+      rows={rows}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+    />
   );
 };
 

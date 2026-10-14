@@ -19,7 +19,11 @@ import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
 import { useRouter } from "@/i18n/navigation";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import {
+  authClient,
+  getErrorMessage,
+  getAuthErrorMessage,
+} from "@/lib/auth-client";
 
 import {
   AddBusiness,
@@ -57,7 +61,6 @@ import {
   getOrganizationPermissions,
   type OrganizationPermissions,
 } from "@/utils/organizations";
-import { runSequentially, SequentialRunError } from "@/utils/dataGrid";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -253,28 +256,10 @@ const Organizations = ({
       ),
       onConfirm: async () => {
         try {
-          const permissions = await getOrganizationPermissions(selectedRows);
-          if (
-            !selectedRows.every(
-              ({ id }) => permissions[id]?.canDeleteOrganization,
-            )
-          ) {
-            enqueueSnackbar(
-              tOrganizations("actions.batchDeleteOrganization.submit.stale"),
-              { variant: "error" },
-            );
-            mutate();
-            return;
-          }
-
-          await runSequentially(selectedRows, async ({ id }) => {
-            const { error } = await authClient.organization.delete({
-              organizationId: id,
-            });
-            if (error)
-              throw new Error(
-                getErrorMessage(error.code ?? "", locale) || error.message,
-              );
+          await fetcher(`/api/organizations`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
           });
 
           setIsSelectMode(false);
@@ -291,19 +276,9 @@ const Organizations = ({
             },
           );
         } catch (error) {
-          const reason =
-            error instanceof SequentialRunError ? error.reason : error;
-          const message = getFetchErrorMessage(reason);
-
-          enqueueSnackbar(
-            error instanceof SequentialRunError && error.done
-              ? tOrganizations(
-                  "actions.batchDeleteOrganization.submit.partial",
-                  { done: error.done, message },
-                )
-              : message,
-            { variant: "error" },
-          );
+          enqueueSnackbar(getAuthErrorMessage(error, locale), {
+            variant: "error",
+          });
         }
 
         mutate();

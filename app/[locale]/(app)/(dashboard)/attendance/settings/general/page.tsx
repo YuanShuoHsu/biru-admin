@@ -5,17 +5,15 @@ import { notFound } from "next/navigation";
 
 import Settings from ".";
 
-import AttendanceTabsLayout from "../../AttendanceTabsLayout";
-
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import {
-  getAttendanceAccess,
   getAttendanceSettings,
   getOccupationalIndustryRates,
 } from "@/utils/attendance";
 import { hasRolePermission } from "@/utils/organizations";
+import { getAttendanceAccess } from "@/utils/session";
 
 interface SettingsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -40,10 +38,7 @@ const SettingsPage = async ({ params, searchParams }: SettingsPageProps) => {
 
   setRequestLocale(locale);
 
-  const access = await getAttendanceAccess(
-    organizationSlug,
-    cookieStore.toString(),
-  );
+  const access = await getAttendanceAccess(organizationSlug);
 
   if (!access) notFound();
 
@@ -69,13 +64,11 @@ const SettingsPage = async ({ params, searchParams }: SettingsPageProps) => {
   ]);
 
   return (
-    <AttendanceTabsLayout memberRole={memberRole}>
-      <Settings
-        occupationalIndustryRates={occupationalIndustryRates}
-        organization={organization}
-        settings={settings}
-      />
-    </AttendanceTabsLayout>
+    <Settings
+      occupationalIndustryRates={occupationalIndustryRates}
+      organization={organization}
+      settings={settings}
+    />
   );
 };
 

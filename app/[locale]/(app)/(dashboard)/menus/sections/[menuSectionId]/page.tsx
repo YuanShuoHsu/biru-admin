@@ -8,8 +8,6 @@ import MenusMenuIdSectionId from ".";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-import { authClient } from "@/lib/auth-client";
-
 import {
   filterOperatorValues,
   menuItemFilterFieldValues,
@@ -23,10 +21,9 @@ import {
   getAdminMenu,
   getAdminMenuSection,
   getAdminMenuSectionItems,
-  getAdminOrganization,
 } from "@/utils/menus";
 import { hasRolePermission } from "@/utils/organizations";
-import { getSession } from "@/utils/session";
+import { getAdminOrganization, getMemberRole } from "@/utils/session";
 
 interface MenusMenuIdSectionIdPageProps {
   params: Promise<{ locale: Locale; menuSectionId: string }>;
@@ -69,7 +66,7 @@ const MenusMenuIdSectionIdPage = async ({
 
   const [menu, selectedOrganization] = await Promise.all([
     getAdminMenu(section.menuId, fetchOptions),
-    getAdminOrganization(rawSearchParams.organization, fetchOptions),
+    getAdminOrganization(rawSearchParams.organization),
   ]);
 
   if (!selectedOrganization || selectedOrganization.id !== menu?.organizationId)
@@ -108,31 +105,23 @@ const MenusMenuIdSectionIdPage = async ({
     ? getQuickFilterEnums(quickFilterValue, getMenuEnumOptions(tMenus, tOrder))
     : [];
 
-  const [{ items: rows, total: rowCount }, session, fullOrgData] =
-    await Promise.all([
-      getAdminMenuSectionItems(
-        menuSectionId,
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterValue,
-        quickFilterEnums,
-        sortBy,
-        sortDirection,
-        fetchOptions,
-      ),
-      getSession(),
-      authClient.organization.getFullOrganization({
-        query: { organizationId: menu.organizationId },
-        fetchOptions,
-      }),
-    ]);
+  const [{ items: rows, total: rowCount }, role] = await Promise.all([
+    getAdminMenuSectionItems(
+      menuSectionId,
+      page,
+      pageSize,
+      filterField,
+      filterOperator,
+      filterValue,
+      quickFilterValue,
+      quickFilterEnums,
+      sortBy,
+      sortDirection,
+      fetchOptions,
+    ),
+    getMemberRole(menu.organizationId),
+  ]);
 
-  const currentUserId = session?.user?.id;
-  const members = fullOrgData.data?.members || [];
-  const role = members.find(({ userId }) => userId === currentUserId)?.role;
   const canWrite = hasRolePermission(role, { menu: ["update"] });
   const canViewAuditLog = hasRolePermission(role, {
     auditLog: ["read"],

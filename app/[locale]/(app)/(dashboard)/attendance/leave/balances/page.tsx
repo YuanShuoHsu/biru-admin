@@ -5,8 +5,6 @@ import { notFound } from "next/navigation";
 
 import Balances from ".";
 
-import AttendanceTabsLayout from "../../AttendanceTabsLayout";
-
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
@@ -19,7 +17,6 @@ import {
 } from "@/types/api";
 
 import {
-  getAttendanceAccess,
   getAttendanceEmployees,
   getAttendanceLeaveBalances,
   getAttendanceLeaveTypes,
@@ -27,6 +24,7 @@ import {
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceLeaveTypeNameEnumOptions } from "@/utils/enumOptions";
 import { hasRolePermission } from "@/utils/organizations";
+import { getAttendanceAccess } from "@/utils/session";
 
 interface BalancesPageProps {
   params: Promise<{ locale: Locale }>;
@@ -67,10 +65,7 @@ const BalancesPage = async ({ params, searchParams }: BalancesPageProps) => {
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const access = await getAttendanceAccess(
-    rawSearchParams.organization,
-    cookieStore.toString(),
-  );
+  const access = await getAttendanceAccess(rawSearchParams.organization);
 
   if (!access) notFound();
 
@@ -160,29 +155,27 @@ const BalancesPage = async ({ params, searchParams }: BalancesPageProps) => {
     ]);
 
   return (
-    <AttendanceTabsLayout memberRole={memberRole}>
-      <Balances
-        canDefer={canDefer}
-        canRevokeDeferral={canRevokeDeferral}
-        canViewAll={canViewAll}
-        canWrite={canWrite}
-        employees={employees}
-        filterField={filterField}
-        filterOperator={filterOperator}
-        filterValue={filterValue}
-        leaveTypes={leaveTypes.filter(
-          ({ statutoryKind }) => statutoryKind === "custom",
-        )}
-        organization={organization}
-        page={page}
-        pageSize={pageSize}
-        quickFilterValue={quickFilterValue}
-        rowCount={rowCount}
-        rows={rows}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-      />
-    </AttendanceTabsLayout>
+    <Balances
+      canDefer={canDefer}
+      canRevokeDeferral={canRevokeDeferral}
+      canViewAll={canViewAll}
+      canWrite={canWrite}
+      employees={employees}
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
+      leaveTypes={leaveTypes.filter(
+        ({ statutoryKind }) => statutoryKind === "custom",
+      )}
+      organization={organization}
+      page={page}
+      pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
+      rowCount={rowCount}
+      rows={rows}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+    />
   );
 };
 

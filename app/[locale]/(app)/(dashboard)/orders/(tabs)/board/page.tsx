@@ -7,8 +7,8 @@ import OrdersBoard from ".";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-import { getResolvedAdminOrganization } from "@/utils/menus";
 import { getAdminOrderBoard } from "@/utils/orders";
+import { getResolvedAdminOrganization } from "@/utils/session";
 
 interface OrdersBoardPageProps {
   params: Promise<{ locale: Locale }>;
@@ -38,10 +38,7 @@ const OrdersBoardPage = async ({
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const selectedOrganization = await getResolvedAdminOrganization(
-    organization,
-    cookieStore.toString(),
-  );
+  const selectedOrganization = await getResolvedAdminOrganization(organization);
 
   if (!selectedOrganization) return null;
 

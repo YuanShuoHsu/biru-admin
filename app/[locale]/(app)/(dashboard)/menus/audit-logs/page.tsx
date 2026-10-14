@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
 import AuditLogsPage, {
@@ -9,7 +8,7 @@ import AuditLogsPage, {
 
 import type { Locale } from "@/i18n/routing";
 
-import { getResolvedAdminOrganizationMenu } from "@/utils/menus";
+import { getResolvedAdminOrganizationMenu } from "@/utils/session";
 
 interface MenuAuditLogsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -29,18 +28,11 @@ const MenuAuditLogsPage = async ({
   params,
   searchParams,
 }: MenuAuditLogsPageProps) => {
-  const [cookieStore, { locale }, query] = await Promise.all([
-    cookies(),
-    params,
-    searchParams,
-  ]);
+  const [{ locale }, query] = await Promise.all([params, searchParams]);
 
   setRequestLocale(locale);
 
-  const { menu } = await getResolvedAdminOrganizationMenu(query.organization, {
-    headers: { cookie: cookieStore.toString() },
-  });
-
+  const { menu } = await getResolvedAdminOrganizationMenu(query.organization);
   if (!menu) notFound();
 
   return (

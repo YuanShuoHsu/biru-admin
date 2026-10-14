@@ -17,7 +17,11 @@ import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { deviceSessionsKey } from "@/hooks/useDeviceSessions";
 import { useRowSelection } from "@/hooks/useRowSelection";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import {
+  authClient,
+  getErrorMessage,
+  getAuthErrorMessage,
+} from "@/lib/auth-client";
 
 import { Cancel, DeleteOutlined } from "@mui/icons-material";
 import {
@@ -36,8 +40,7 @@ import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { formatUserAgent } from "@/utils/auth";
-import { runSequentially, SequentialRunError } from "@/utils/dataGrid";
-import { getErrorMessage as getFetchErrorMessage } from "@/utils/errors";
+import { fetcher } from "@/utils/fetcher";
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
   height: "100%",
@@ -202,18 +205,11 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
       ),
       onConfirm: async () => {
         try {
-          await runSequentially(
-            selectedRows,
-            async ({ token: sessionToken }) => {
-              const { error } = await authClient.admin.revokeUserSession({
-                sessionToken,
-              });
-              if (error)
-                throw new Error(
-                  getErrorMessage(error.code ?? "", locale) || error.message,
-                );
-            },
-          );
+          await fetcher(`/api/users/${user.id}/sessions`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
+          });
 
           setIsSelectMode(false);
           clearRowSelection();
@@ -229,19 +225,9 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
             },
           );
         } catch (error) {
-          const reason =
-            error instanceof SequentialRunError ? error.reason : error;
-          const message = getFetchErrorMessage(reason);
-
-          enqueueSnackbar(
-            error instanceof SequentialRunError && error.done
-              ? tUserSessions("actions.batchRevokeUserSession.submit.partial", {
-                  done: error.done,
-                  message,
-                })
-              : message,
-            { variant: "error" },
-          );
+          enqueueSnackbar(getAuthErrorMessage(error, locale), {
+            variant: "error",
+          });
         }
 
         mutate(deviceSessionsKey);
@@ -261,6 +247,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
     selectedRows,
     setDialog,
     tUserSessions,
+    user.id,
   ]);
 
   const handleCancelUserSessionBatchRevoke = useCallback(() => {

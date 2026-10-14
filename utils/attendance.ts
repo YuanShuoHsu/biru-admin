@@ -8,8 +8,6 @@ import { ATTENDANCE_NAV_GROUPS } from "@/constants/attendance";
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 import { PLATFORM_TIMEZONE, STORE_TIMEZONE } from "@/constants/timezone";
 
-import { authClient } from "@/lib/auth-client";
-
 import type { GridColDef } from "@mui/x-data-grid";
 
 import {
@@ -73,7 +71,6 @@ import type {
 } from "@/types/attendance";
 import { getGridSearchParams, type GridQuery } from "@/utils/dataGrid";
 import { fetcher, type FetchError } from "@/utils/fetcher";
-import { getResolvedAdminOrganization } from "@/utils/menus";
 import { hasRolePermission } from "@/utils/organizations";
 
 dayjs.extend(utc);
@@ -138,27 +135,6 @@ export const attendanceNavGroups = (
       .map(({ path }) => path),
     path,
   })).filter(({ children }) => children.length);
-
-export const getAttendanceAccess = cache(
-  async (organizationSlug: string | undefined, cookie: string) => {
-    const organization = await getResolvedAdminOrganization(
-      organizationSlug,
-      cookie,
-    );
-
-    if (!organization) return null;
-
-    const { data: memberRole } =
-      await authClient.organization.getActiveMemberRole({
-        query: { organizationId: organization.id },
-        fetchOptions: { headers: { cookie } },
-      });
-
-    if (!memberRole?.role) return null;
-
-    return { memberRole: memberRole.role, organization };
-  },
-);
 
 type AttendanceScope = "org" | "me";
 

@@ -36,6 +36,8 @@ export const sortByCreatedAtDesc = <T extends { createdAt: Date }>(
   items: T[],
 ) => items.toSorted((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
+export const activeMemberRoleKey = "active-member-role";
+
 export const defaultOrganizationSlugKey = "default-organization-slug";
 
 export const resolveDefaultOrganizationSlug = (
@@ -51,7 +53,7 @@ type CheckRolePermissionInput = Parameters<
 >[0];
 
 export const hasRolePermission = (
-  role: CheckRolePermissionInput["role"] | undefined,
+  role: CheckRolePermissionInput["role"] | null | undefined,
   permissions: CheckRolePermissionInput["permissions"],
 ): boolean =>
   !!role && authClient.organization.checkRolePermission({ role, permissions });

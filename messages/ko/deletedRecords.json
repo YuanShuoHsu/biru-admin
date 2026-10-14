@@ -8,7 +8,6 @@
     "submit": {
       "confirm": "선택한 <bold>{count}개의 데이터</bold>을(를) 복원하시겠습니까? 함께 삭제된 관련 데이터도 복원됩니다.",
       "label": "선택한 데이터 복원 ({count})",
-      "partial": "{done}개를 복원했으며 나머지는 복원되지 않았습니다: {message}",
       "success": "데이터 {count}개를 복원했습니다"
     },
     "title": "데이터 일괄 복원"

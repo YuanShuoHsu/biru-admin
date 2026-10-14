@@ -5,8 +5,6 @@ import { notFound } from "next/navigation";
 
 import Shifts from ".";
 
-import AttendanceTabsLayout from "../../AttendanceTabsLayout";
-
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
@@ -19,7 +17,6 @@ import {
 } from "@/types/api";
 
 import {
-  getAttendanceAccess,
   getAttendanceEmployees,
   getAttendanceShifts,
   getAttendanceShiftTypes,
@@ -28,6 +25,7 @@ import {
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceDayKindEnumOptions } from "@/utils/enumOptions";
 import { hasRolePermission } from "@/utils/organizations";
+import { getAttendanceAccess } from "@/utils/session";
 
 interface ShiftsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -70,10 +68,7 @@ const ShiftsPage = async ({ params, searchParams }: ShiftsPageProps) => {
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const access = await getAttendanceAccess(
-    rawSearchParams.organization,
-    cookieStore.toString(),
-  );
+  const access = await getAttendanceAccess(rawSearchParams.organization);
 
   if (!access) notFound();
 
@@ -165,28 +160,26 @@ const ShiftsPage = async ({ params, searchParams }: ShiftsPageProps) => {
   ]);
 
   return (
-    <AttendanceTabsLayout memberRole={memberRole}>
-      <Shifts
-        canCancel={hasRolePermission(memberRole, { shift: ["update"] })}
-        canCreate={hasRolePermission(memberRole, { shift: ["create"] })}
-        canReviewExtraWork={canReviewExtraWork}
-        employees={employees}
-        filterField={filterField}
-        filterOperator={filterOperator}
-        filterValue={filterValue}
-        organization={organization}
-        page={page}
-        pageSize={pageSize}
-        quickFilterValue={quickFilterValue}
-        rowCount={rowCount}
-        rows={rows}
-        shiftTypes={shiftTypes}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-        teams={teams}
-        shiftFilter={shiftFilter}
-      />
-    </AttendanceTabsLayout>
+    <Shifts
+      canCancel={hasRolePermission(memberRole, { shift: ["update"] })}
+      canCreate={hasRolePermission(memberRole, { shift: ["create"] })}
+      canReviewExtraWork={canReviewExtraWork}
+      employees={employees}
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
+      organization={organization}
+      page={page}
+      pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
+      rowCount={rowCount}
+      rows={rows}
+      shiftTypes={shiftTypes}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+      teams={teams}
+      shiftFilter={shiftFilter}
+    />
   );
 };
 

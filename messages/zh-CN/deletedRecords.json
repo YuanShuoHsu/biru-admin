@@ -8,7 +8,6 @@
     "submit": {
       "confirm": "确定要还原所选的 <bold>{count} 条数据</bold>吗？同一次删除的相关数据也会一起还原。",
       "label": "还原所选数据（{count}）",
-      "partial": "已还原 {done} 条数据，之后的未还原：{message}",
       "success": "已还原 {count} 条数据"
     },
     "title": "批量还原数据"

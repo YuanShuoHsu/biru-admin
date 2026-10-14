@@ -12,6 +12,8 @@ import { LocaleEnum } from "@/enums/Locale";
 
 import { type Locale, routing } from "@/i18n/routing";
 
+import type { FetchError } from "@/utils/fetcher";
+
 export const authClient = createAuthClient({
   baseURL: process.env.NEXT_PUBLIC_ADMIN_URL,
   plugins: [
@@ -99,10 +101,19 @@ export const authClient = createAuthClient({
 });
 
 type ErrorTypes = Partial<
-  Record<keyof typeof authClient.$ERROR_CODES, Record<Locale, string>>
+  Record<
+    | keyof typeof authClient.$ERROR_CODES
+    | "ORGANIZATION_CLOSED"
+    | "ORGANIZATION_HAS_BUSINESS_RECORDS"
+    | "PHONE_NUMBER_ALREADY_EXISTS"
+    | "UNAUTHORIZED"
+    | "USER_HAS_EMPLOYMENT_RECORDS"
+    | "USER_IS_SOLE_ORGANIZATION_OWNER",
+    Record<Locale, string>
+  >
 >;
 
-const customErrorCodes: Record<string, Record<Locale, string>> = {
+const errorCodes = {
   BANNED_USER: {
     [LocaleEnum.ZhTW]: "您的帳號已被停用，請聯繫管理員",
     [LocaleEnum.En]:
@@ -112,7 +123,17 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "계정이 정지되었습니다. 관리자에게 문의해 주세요",
     [LocaleEnum.ZhCN]: "您的账号已被停用，请联系管理员",
   },
-  EMAIL_IS_ALREADY_VERIFIED: {
+  CREDENTIAL_ACCOUNT_NOT_FOUND: {
+    [LocaleEnum.ZhTW]: "此帳號尚未設定密碼，請用「發送重設連結」設定密碼",
+    [LocaleEnum.En]:
+      "This account has no password yet. Use “Send reset link” to set one.",
+    [LocaleEnum.Ja]:
+      "このアカウントにはパスワードが設定されていません。「リセットリンクを送信」から設定してください",
+    [LocaleEnum.Ko]:
+      "이 계정에는 아직 비밀번호가 없습니다. ‘재설정 링크 발송’으로 설정해 주세요",
+    [LocaleEnum.ZhCN]: "此账号尚未设置密码，请用“发送重置链接”设置密码",
+  },
+  EMAIL_ALREADY_VERIFIED: {
     [LocaleEnum.ZhTW]: "此信箱已完成驗證，請直接登入",
     [LocaleEnum.En]: "Email already verified. Please sign in.",
     [LocaleEnum.Ja]:
@@ -133,6 +154,47 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ja]: "最後のログイン方法は解除できません",
     [LocaleEnum.Ko]: "마지막 로그인 방법은 연결 해제할 수 없습니다",
     [LocaleEnum.ZhCN]: "无法解除最后一个登录方式",
+  },
+  INVALID_EMAIL_OR_PASSWORD: {
+    [LocaleEnum.ZhTW]: "電子郵件或密碼錯誤，請重新輸入",
+    [LocaleEnum.En]: "Invalid email or password. Please try again.",
+    [LocaleEnum.Ja]:
+      "メールアドレスまたはパスワードが間違っています。再入力してください",
+    [LocaleEnum.Ko]:
+      "이메일 또는 비밀번호가 올바르지 않습니다. 다시 입력해 주세요",
+    [LocaleEnum.ZhCN]: "电子邮件或密码错误，请重新输入",
+  },
+  INVALID_PASSWORD: {
+    [LocaleEnum.ZhTW]: "目前密碼錯誤，請重新輸入",
+    [LocaleEnum.En]: "Invalid password. Please try again.",
+    [LocaleEnum.Ja]: "現在のパスワードが間違っています。再入力してください",
+    [LocaleEnum.Ko]: "현재 비밀번호가 올바르지 않습니다. 다시 입력해 주세요",
+    [LocaleEnum.ZhCN]: "目前密码错误，请重新输入",
+  },
+  INVALID_SESSION_TOKEN: {
+    [LocaleEnum.ZhTW]: "此裝置的登入已失效，請重新登入",
+    [LocaleEnum.En]: "This session is no longer valid. Please sign in again.",
+    [LocaleEnum.Ja]:
+      "このデバイスのログインは無効になっています。再度ログインしてください",
+    [LocaleEnum.Ko]: "이 기기의 로그인이 만료되었습니다. 다시 로그인해 주세요",
+    [LocaleEnum.ZhCN]: "此设备的登录已失效，请重新登录",
+  },
+  INVALID_TOKEN: {
+    [LocaleEnum.ZhTW]: "驗證連結無效或已過期，請重新寄送",
+    [LocaleEnum.En]: "Invalid or expired verification link. Please resend.",
+    [LocaleEnum.Ja]: "認証リンクが無効または期限切れです。再送してください",
+    [LocaleEnum.Ko]: "유효하지 않거나 만료된 인증 링크입니다. 다시 보내주세요",
+    [LocaleEnum.ZhCN]: "验证链接无效或已过期，请重新发送",
+  },
+  INVALID_USER: {
+    [LocaleEnum.ZhTW]: "此驗證連結不屬於目前登入的帳號，請先登出再開啟",
+    [LocaleEnum.En]:
+      "This verification link belongs to a different account. Please sign out and open it again.",
+    [LocaleEnum.Ja]:
+      "この認証リンクは別のアカウントのものです。ログアウトしてから開き直してください",
+    [LocaleEnum.Ko]:
+      "이 인증 링크는 다른 계정의 것입니다. 로그아웃한 후 다시 열어 주세요",
+    [LocaleEnum.ZhCN]: "此验证链接不属于当前登录的账号，请先退出登录再打开",
   },
   INVITATION_NOT_FOUND: {
     [LocaleEnum.ZhTW]: "邀請連結無效或已過期",
@@ -183,6 +245,13 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
       "이 매장에는 법적으로 보관해야 하는 주문, 근태 또는 급여 기록이 있어 삭제할 수 없습니다",
     [LocaleEnum.ZhCN]: "此店家已有订单、考勤或薪资记录，依法须保存，无法删除",
   },
+  ORGANIZATION_NOT_FOUND: {
+    [LocaleEnum.ZhTW]: "找不到該組織",
+    [LocaleEnum.En]: "Organization not found.",
+    [LocaleEnum.Ja]: "組織が見つかりません",
+    [LocaleEnum.Ko]: "조직을 찾을 수 없습니다",
+    [LocaleEnum.ZhCN]: "找不到该组织",
+  },
   ORGANIZATION_SLUG_ALREADY_TAKEN: {
     [LocaleEnum.ZhTW]: "此識別碼已被使用，請換一個",
     [LocaleEnum.En]: "This slug is already taken. Please choose another.",
@@ -191,20 +260,13 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "이미 사용 중인 슬러그입니다. 다른 것을 선택해 주세요",
     [LocaleEnum.ZhCN]: "此标识符已被使用，请换一个",
   },
-  // TEAM_ALREADY_EXISTS: {
-  //   [LocaleEnum.ZhTW]: "此團隊已存在",
-  //   [LocaleEnum.En]: "Team already exists.",
-  //   [LocaleEnum.Ja]: "このチームは既に存在します",
-  //   [LocaleEnum.Ko]: "이미 존재하는 팀입니다",
-  //   [LocaleEnum.ZhCN]: "此团队已存在",
-  // },
-  // TEAM_NOT_FOUND: {
-  //   [LocaleEnum.ZhTW]: "找不到該團隊",
-  //   [LocaleEnum.En]: "Team not found.",
-  //   [LocaleEnum.Ja]: "チームが見つかりません",
-  //   [LocaleEnum.Ko]: "팀을 찾을 수 없습니다",
-  //   [LocaleEnum.ZhCN]: "找不到该团队",
-  // },
+  PASSWORD_TOO_LONG: {
+    [LocaleEnum.ZhTW]: "密碼過長，請縮短後再試",
+    [LocaleEnum.En]: "Password is too long. Please use a shorter one.",
+    [LocaleEnum.Ja]: "パスワードが長すぎます。短くしてください",
+    [LocaleEnum.Ko]: "비밀번호가 너무 깁니다. 더 짧게 입력해 주세요",
+    [LocaleEnum.ZhCN]: "密码过长，请缩短后再试",
+  },
   PHONE_NUMBER_ALREADY_EXISTS: {
     [LocaleEnum.ZhTW]: "此電話號碼已被註冊",
     [LocaleEnum.En]: "This phone number is already registered.",
@@ -212,12 +274,34 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "이 전화번호는 이미 등록되어 있습니다",
     [LocaleEnum.ZhCN]: "此电话号码已被注册",
   },
+  TEAM_NOT_FOUND: {
+    [LocaleEnum.ZhTW]: "找不到該團隊",
+    [LocaleEnum.En]: "Team not found.",
+    [LocaleEnum.Ja]: "チームが見つかりません",
+    [LocaleEnum.Ko]: "팀을 찾을 수 없습니다",
+    [LocaleEnum.ZhCN]: "找不到该团队",
+  },
+  TOKEN_EXPIRED: {
+    [LocaleEnum.ZhTW]: "驗證連結已過期，請重新寄送",
+    [LocaleEnum.En]: "Verification link has expired. Please resend.",
+    [LocaleEnum.Ja]: "認証リンクの有効期限が切れています。再送してください",
+    [LocaleEnum.Ko]: "인증 링크가 만료되었습니다. 다시 보내주세요",
+    [LocaleEnum.ZhCN]: "验证链接已过期，请重新发送",
+  },
   UNAUTHORIZED: {
     [LocaleEnum.ZhTW]: "請先登入",
     [LocaleEnum.En]: "Please sign in first",
     [LocaleEnum.Ja]: "先にログインしてください",
     [LocaleEnum.Ko]: "먼저 로그인해 주세요",
     [LocaleEnum.ZhCN]: "请先登录",
+  },
+  USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL: {
+    [LocaleEnum.ZhTW]: "此帳號已被註冊，請使用其他信箱",
+    [LocaleEnum.En]: "User already registered. Please use another email.",
+    [LocaleEnum.Ja]:
+      "このユーザーは既に登録されています。別のメールアドレスを使用してください",
+    [LocaleEnum.Ko]: "이미 등록된 사용자입니다. 다른 이메일을 사용해 주세요",
+    [LocaleEnum.ZhCN]: "此账号已被注册，请使用其他邮箱",
   },
   USER_HAS_EMPLOYMENT_RECORDS: {
     [LocaleEnum.ZhTW]: "此帳號有出勤或薪資紀錄，依法須保存，無法刪除",
@@ -228,18 +312,6 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]:
       "이 계정에는 법적으로 보관해야 하는 근태 또는 급여 기록이 있어 삭제할 수 없습니다",
     [LocaleEnum.ZhCN]: "此账号有考勤或薪资记录，依法须保存，无法删除",
-  },
-  USER_IS_SOLE_ORGANIZATION_OWNER: {
-    [LocaleEnum.ZhTW]:
-      "此帳號是店家唯一的擁有者，請先將擁有者身分移轉給其他成員再刪除",
-    [LocaleEnum.En]:
-      "This account is the only owner of a store. Transfer ownership to another member before deleting it.",
-    [LocaleEnum.Ja]:
-      "このアカウントは店舗の唯一のオーナーです。削除する前にオーナー権限を他のメンバーに移してください",
-    [LocaleEnum.Ko]:
-      "이 계정은 매장의 유일한 소유자입니다. 삭제하기 전에 다른 멤버에게 소유권을 이전하세요",
-    [LocaleEnum.ZhCN]:
-      "此账号是店家唯一的拥有者，请先将拥有者身份转移给其他成员再删除",
   },
   USER_IS_ALREADY_A_MEMBER_OF_THIS_ORGANIZATION: {
     [LocaleEnum.ZhTW]: "此用戶已是該組織的成員",
@@ -255,6 +327,39 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "이 사용자는 이미 이 조직에 초대되었습니다",
     [LocaleEnum.ZhCN]: "此用户已被邀请至该组织",
   },
+  USER_IS_NOT_A_MEMBER_OF_THE_ORGANIZATION: {
+    [LocaleEnum.ZhTW]: "此用戶不是該組織的成員",
+    [LocaleEnum.En]: "User is not a member of this organization.",
+    [LocaleEnum.Ja]: "このユーザーはこの組織のメンバーではありません",
+    [LocaleEnum.Ko]: "이 사용자는 이 조직의 멤버가 아닙니다",
+    [LocaleEnum.ZhCN]: "此用户不是该组织的成员",
+  },
+  USER_IS_NOT_A_MEMBER_OF_THE_TEAM: {
+    [LocaleEnum.ZhTW]: "此用戶不是該團隊的成員",
+    [LocaleEnum.En]: "User is not a member of this team.",
+    [LocaleEnum.Ja]: "このユーザーはこのチームのメンバーではありません",
+    [LocaleEnum.Ko]: "이 사용자는 이 팀의 멤버가 아닙니다",
+    [LocaleEnum.ZhCN]: "此用户不是该团队的成员",
+  },
+  USER_IS_SOLE_ORGANIZATION_OWNER: {
+    [LocaleEnum.ZhTW]:
+      "此帳號是店家唯一的擁有者，請先將擁有者身分移轉給其他成員再刪除",
+    [LocaleEnum.En]:
+      "This account is the only owner of a store. Transfer ownership to another member before deleting it.",
+    [LocaleEnum.Ja]:
+      "このアカウントは店舗の唯一のオーナーです。削除する前にオーナー権限を他のメンバーに移してください",
+    [LocaleEnum.Ko]:
+      "이 계정은 매장의 유일한 소유자입니다. 삭제하기 전에 다른 멤버에게 소유권을 이전하세요",
+    [LocaleEnum.ZhCN]:
+      "此账号是店家唯一的拥有者，请先将拥有者身份转移给其他成员再删除",
+  },
+  USER_NOT_FOUND: {
+    [LocaleEnum.ZhTW]: "找不到該用戶",
+    [LocaleEnum.En]: "User not found.",
+    [LocaleEnum.Ja]: "ユーザーが見つかりません",
+    [LocaleEnum.Ko]: "사용자를 찾을 수 없습니다",
+    [LocaleEnum.ZhCN]: "找不到该用户",
+  },
   VALIDATION_ERROR: {
     [LocaleEnum.ZhTW]: "資料驗證失敗",
     [LocaleEnum.En]: "Validation Error",
@@ -269,29 +374,6 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "이 조직을 삭제할 권한이 없습니다",
     [LocaleEnum.ZhCN]: "您没有权限删除此组织",
   },
-  // YOU_ARE_NOT_ALLOWED_TO_CREATE_TEAMS_IN_THIS_ORGANIZATION: {
-  //   [LocaleEnum.ZhTW]: "您沒有權限在此組織建立團隊",
-  //   [LocaleEnum.En]:
-  //     "You are not allowed to create teams in this organization.",
-  //   [LocaleEnum.Ja]: "この組織でチームを作成する権限がありません",
-  //   [LocaleEnum.Ko]: "이 조직에서 팀을 생성할 권한이 없습니다",
-  //   [LocaleEnum.ZhCN]: "您没有权限在此组织创建团队",
-  // },
-  // YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_TEAM: {
-  //   [LocaleEnum.ZhTW]: "您沒有權限刪除此團隊",
-  //   [LocaleEnum.En]: "You are not allowed to delete this team.",
-  //   [LocaleEnum.Ja]: "このチームを削除する権限がありません",
-  //   [LocaleEnum.Ko]: "이 팀을 삭제할 권한이 없습니다",
-  //   [LocaleEnum.ZhCN]: "您没有权限删除此团队",
-  // },
-  // YOU_ARE_NOT_ALLOWED_TO_DELETE_TEAMS_IN_THIS_ORGANIZATION: {
-  //   [LocaleEnum.ZhTW]: "您沒有權限刪除此組織的團隊",
-  //   [LocaleEnum.En]:
-  //     "You are not allowed to delete teams in this organization.",
-  //   [LocaleEnum.Ja]: "この組織のチームを削除する権限がありません",
-  //   [LocaleEnum.Ko]: "이 조직의 팀을 삭제할 권한이 없습니다",
-  //   [LocaleEnum.ZhCN]: "您没有权限删除此组织的团队",
-  // },
   YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_MEMBER: {
     [LocaleEnum.ZhTW]: "您沒有權限更新此成員",
     [LocaleEnum.En]: "You are not allowed to update this member.",
@@ -299,20 +381,6 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "이 멤버를 업데이트할 권한이 없습니다",
     [LocaleEnum.ZhCN]: "您没有权限更新此成员",
   },
-  // YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_TEAM: {
-  //   [LocaleEnum.ZhTW]: "您沒有權限更新此團隊",
-  //   [LocaleEnum.En]: "You are not allowed to update this team.",
-  //   [LocaleEnum.Ja]: "このチームを更新する権限がありません",
-  //   [LocaleEnum.Ko]: "이 팀을 업데이트할 권한이 없습니다",
-  //   [LocaleEnum.ZhCN]: "您没有权限更新此团队",
-  // },
-  // YOU_HAVE_REACHED_THE_MAXIMUM_NUMBER_OF_TEAMS: {
-  //   [LocaleEnum.ZhTW]: "已達可建立團隊數量上限",
-  //   [LocaleEnum.En]: "You have reached the maximum number of teams.",
-  //   [LocaleEnum.Ja]: "作成できるチーム数の上限に達しました",
-  //   [LocaleEnum.Ko]: "생성 가능한 팀 수 한도에 도달했습니다",
-  //   [LocaleEnum.ZhCN]: "已达到可创建团队数量上限",
-  // },
   YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_ORGANIZATION: {
     [LocaleEnum.ZhTW]: "您沒有權限更新此組織",
     [LocaleEnum.En]: "You are not allowed to update this organization.",
@@ -341,13 +409,6 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "관리자 계정을 가장할 수 없습니다",
     [LocaleEnum.ZhCN]: "无法模拟管理员账号",
   },
-  YOU_CANNOT_REMOVE_YOURSELF: {
-    [LocaleEnum.ZhTW]: "您無法移除自己",
-    [LocaleEnum.En]: "You cannot remove yourself.",
-    [LocaleEnum.Ja]: "自分自身を削除することはできません",
-    [LocaleEnum.Ko]: "자기 자신을 삭제할 수 없습니다",
-    [LocaleEnum.ZhCN]: "您无法移除自己",
-  },
   YOU_CANNOT_LEAVE_THE_ORGANIZATION_AS_THE_ONLY_OWNER: {
     [LocaleEnum.ZhTW]: "您是唯一的擁有者，無法離開組織",
     [LocaleEnum.En]: "You cannot leave the organization as the only owner.",
@@ -363,46 +424,24 @@ const customErrorCodes: Record<string, Record<Locale, string>> = {
     [LocaleEnum.Ko]: "조직을 탈퇴하기 전에 소유권을 이전해 주세요",
     [LocaleEnum.ZhCN]: "请先转移拥有者权限，再离开组织",
   },
-};
-
-const errorCodes = {
-  INVALID_EMAIL_OR_PASSWORD: {
-    [LocaleEnum.ZhTW]: "電子郵件或密碼錯誤，請重新輸入",
-    [LocaleEnum.En]: "Invalid email or password. Please try again.",
-    [LocaleEnum.Ja]:
-      "メールアドレスまたはパスワードが間違っています。再入力してください",
-    [LocaleEnum.Ko]:
-      "이메일 또는 비밀번호가 올바르지 않습니다. 다시 입력해 주세요",
-    [LocaleEnum.ZhCN]: "电子邮件或密码错误，请重新输入",
-  },
-  INVALID_PASSWORD: {
-    [LocaleEnum.ZhTW]: "目前密碼錯誤，請重新輸入",
-    [LocaleEnum.En]: "Invalid password. Please try again.",
-    [LocaleEnum.Ja]: "現在のパスワードが間違っています。再入力してください",
-    [LocaleEnum.Ko]: "현재 비밀번호가 올바르지 않습니다. 다시 입력해 주세요",
-    [LocaleEnum.ZhCN]: "目前密码错误，请重新输入",
-  },
-  INVALID_TOKEN: {
-    [LocaleEnum.ZhTW]: "驗證連結無效或已過期，請重新寄送",
-    [LocaleEnum.En]: "Invalid or expired verification link. Please resend.",
-    [LocaleEnum.Ja]: "認証リンクが無効または期限切れです。再送してください",
-    [LocaleEnum.Ko]: "유효하지 않거나 만료된 인증 링크입니다. 다시 보내주세요",
-    [LocaleEnum.ZhCN]: "验证链接无效或已过期，请重新发送",
-  },
-  USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL: {
-    [LocaleEnum.ZhTW]: "此帳號已被註冊，請使用其他信箱",
-    [LocaleEnum.En]: "User already registered. Please use another email.",
-    [LocaleEnum.Ja]:
-      "このユーザーは既に登録されています。別のメールアドレスを使用してください",
-    [LocaleEnum.Ko]: "이미 등록된 사용자입니다. 다른 이메일을 사용해 주세요",
-    [LocaleEnum.ZhCN]: "此账号已被注册，请使用其他邮箱",
+  YOU_CANNOT_REMOVE_YOURSELF: {
+    [LocaleEnum.ZhTW]: "您無法移除自己",
+    [LocaleEnum.En]: "You cannot remove yourself.",
+    [LocaleEnum.Ja]: "自分自身を削除することはできません",
+    [LocaleEnum.Ko]: "자기 자신을 삭제할 수 없습니다",
+    [LocaleEnum.ZhCN]: "您无法移除自己",
   },
 } satisfies ErrorTypes;
 
 export const getErrorMessage = (code: string, locale: Locale) => {
   if (code in errorCodes)
     return errorCodes[code as keyof typeof errorCodes][locale];
-  if (code in customErrorCodes) return customErrorCodes[code][locale];
 
   return "";
+};
+
+export const getAuthErrorMessage = (error: unknown, locale: Locale) => {
+  const { info, message } = error as FetchError;
+
+  return getErrorMessage(info?.code ?? "", locale) || message;
 };

@@ -38,11 +38,10 @@ import type {
 } from "@/types/deletedRecords";
 
 import { attendanceErrorKey } from "@/utils/attendance";
+import { getDeletedRecordsPath } from "@/utils/deletedRecords";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
-import { getDeletedRecordsPath } from "@/utils/deletedRecords";
 import { localize } from "@/utils/locale";
-import { runSequentially, SequentialRunError } from "@/utils/dataGrid";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -175,12 +174,13 @@ const DeletedRecords = ({
     [tAttendance],
   );
 
-  const restoreBatch = useCallback(
-    async (batchId: string) => {
-      await fetcher(
-        `${getDeletedRecordsPath(organizationSlug)}/${batchId}/restore`,
-        { method: "POST" },
-      );
+  const restoreBatches = useCallback(
+    async (ids: number[]) => {
+      await fetcher(`${getDeletedRecordsPath(organizationSlug)}/restore`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids }),
+      });
     },
     [organizationSlug],
   );
@@ -202,7 +202,7 @@ const DeletedRecords = ({
         ),
         onConfirm: async () => {
           try {
-            await restoreBatch(batchId);
+            await restoreBatches([batchId]);
 
             enqueueSnackbar(tDeletedRecords("restore.success", { name }), {
               variant: "success",
@@ -220,7 +220,7 @@ const DeletedRecords = ({
     [
       locale,
       mutate,
-      restoreBatch,
+      restoreBatches,
       restoreErrorMessage,
       setDialog,
       tDeletedRecords,
@@ -259,9 +259,7 @@ const DeletedRecords = ({
       ),
       onConfirm: async () => {
         try {
-          await runSequentially(selectedRows, ({ batchId }) =>
-            restoreBatch(batchId),
-          );
+          await restoreBatches(selectedRows.map(({ batchId }) => batchId));
 
           setIsSelectMode(false);
           clearRowSelection();
@@ -275,19 +273,7 @@ const DeletedRecords = ({
             },
           );
         } catch (error) {
-          const reason =
-            error instanceof SequentialRunError ? error.reason : error;
-          const message = restoreErrorMessage(reason);
-
-          enqueueSnackbar(
-            error instanceof SequentialRunError && error.done
-              ? tDeletedRecords("batchRestore.submit.partial", {
-                  done: error.done,
-                  message,
-                })
-              : message,
-            { variant: "error" },
-          );
+          enqueueSnackbar(restoreErrorMessage(error), { variant: "error" });
         }
 
         mutate();
@@ -299,7 +285,7 @@ const DeletedRecords = ({
     apiRef,
     clearRowSelection,
     mutate,
-    restoreBatch,
+    restoreBatches,
     restoreErrorMessage,
     selectedRows,
     setDialog,

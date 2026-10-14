@@ -7,8 +7,6 @@ import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
 import { LOW_STOCK_THRESHOLD } from "@/constants/menus";
 import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";
 
-import { authClient } from "@/lib/auth-client";
-
 import type {
   Menu,
   MenuItem,
@@ -31,54 +29,6 @@ export const isLowStock = (offer?: OrderMenuOffer): boolean => {
 export const DEFAULT_MENUS_HREF = getHref(
   "/menus/sections",
   DEFAULT_PAGINATION_QUERY,
-);
-
-export const getAdminOrganization = cache(
-  async (organizationSlug?: string, init?: { headers: { cookie: string } }) => {
-    const { data: organizations = [] } = await authClient.organization.list({
-      fetchOptions: init,
-    });
-
-    return organizations?.find(({ slug }) => slug === organizationSlug);
-  },
-);
-
-export const getResolvedAdminOrganization = cache(
-  async (organizationSlug?: string, cookie?: string) => {
-    const init = cookie ? { headers: { cookie } } : undefined;
-
-    const [{ data: rawOrganizations }, { data: session }] = await Promise.all([
-      authClient.organization.list({ fetchOptions: init }),
-      authClient.getSession({ fetchOptions: init }),
-    ]);
-
-    const organizations = rawOrganizations ?? [];
-
-    return (
-      organizations.find(({ slug }) => slug === organizationSlug) ||
-      organizations.find(
-        ({ id }) => id === session?.session?.activeOrganizationId,
-      ) ||
-      organizations[0]
-    );
-  },
-);
-
-export const getResolvedAdminOrganizationMenu = cache(
-  async (organizationSlug?: string, init?: { headers: { cookie: string } }) => {
-    const organization = await getResolvedAdminOrganization(
-      organizationSlug,
-      init?.headers.cookie,
-    );
-    if (!organization) return { organization: null, menu: null };
-
-    const menus = await fetcher<Menu[]>(
-      `/api/organizations/${organization.id}/menus`,
-      init,
-    );
-
-    return { organization, menu: menus[0] };
-  },
 );
 
 export const getAdminMenu = cache(

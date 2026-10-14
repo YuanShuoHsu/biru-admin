@@ -31,8 +31,6 @@
       "submit": {
         "confirm": "選択した <bold>{count} 件のユーザー</bold>を削除しますか？",
         "label": "選択したユーザーを削除（{count}）",
-        "partial": "{done} 件を削除しました。残りは削除されていません：{message}",
-        "stale": "選択したユーザーが変更されました。もう一度選択してください。",
         "success": "ユーザー {count} 件を削除しました"
       },
       "title": "ユーザーを一括削除"
@@ -124,7 +122,6 @@
         "submit": {
           "confirm": "選択した <bold>{count} 件のセッション</bold>を無効化しますか？",
           "label": "選択したセッションを無効化（{count}）",
-          "partial": "{done} 件を無効化しました。残りは無効化されていません：{message}",
           "success": "セッション {count} 件を無効化しました"
         },
         "title": "セッションを一括無効化"

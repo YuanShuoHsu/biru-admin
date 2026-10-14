@@ -5,8 +5,6 @@ import { notFound } from "next/navigation";
 
 import LeaveTypes from ".";
 
-import AttendanceTabsLayout from "../../AttendanceTabsLayout";
-
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -16,16 +14,14 @@ import {
   filterOperatorValues,
 } from "@/types/api";
 
-import {
-  getAttendanceAccess,
-  getAttendanceLeaveTypes,
-} from "@/utils/attendance";
+import { getAttendanceLeaveTypes } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import {
   getAttendanceLeaveTypeEnumOptions,
   getAttendanceLeaveTypeNameEnumOptions,
 } from "@/utils/enumOptions";
 import { hasRolePermission } from "@/utils/organizations";
+import { getAttendanceAccess } from "@/utils/session";
 
 interface LeaveTypesPageProps {
   params: Promise<{ locale: Locale }>;
@@ -69,10 +65,7 @@ const LeaveTypesPage = async ({
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const access = await getAttendanceAccess(
-    rawSearchParams.organization,
-    cookieStore.toString(),
-  );
+  const access = await getAttendanceAccess(rawSearchParams.organization);
 
   if (!access) notFound();
 
@@ -137,21 +130,19 @@ const LeaveTypesPage = async ({
   );
 
   return (
-    <AttendanceTabsLayout memberRole={memberRole}>
-      <LeaveTypes
-        filterField={filterField}
-        filterOperator={filterOperator}
-        filterValue={filterValue}
-        organization={organization}
-        page={page}
-        pageSize={pageSize}
-        quickFilterValue={quickFilterValue}
-        rowCount={rowCount}
-        rows={rows}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-      />
-    </AttendanceTabsLayout>
+    <LeaveTypes
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
+      organization={organization}
+      page={page}
+      pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
+      rowCount={rowCount}
+      rows={rows}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+    />
   );
 };
 

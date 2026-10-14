@@ -31,8 +31,6 @@
       "submit": {
         "confirm": "確定要刪除所選的 <bold>{count} 位使用者</bold>嗎？",
         "label": "刪除所選使用者（{count}）",
-        "partial": "已刪除 {done} 位使用者，之後的未刪除：{message}",
-        "stale": "所選的使用者已有變動，請重新選取",
         "success": "已刪除 {count} 位使用者"
       },
       "title": "批次刪除使用者"
@@ -124,7 +122,6 @@
         "submit": {
           "confirm": "確定要撤銷所選的 <bold>{count} 個 Session</bold>嗎？",
           "label": "撤銷所選Session（{count}）",
-          "partial": "已撤銷 {done} 個 Session，之後的未撤銷：{message}",
           "success": "已撤銷 {count} 個 Session"
         },
         "title": "批次撤銷Session"

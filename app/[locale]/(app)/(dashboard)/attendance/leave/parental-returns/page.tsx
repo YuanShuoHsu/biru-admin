@@ -5,8 +5,6 @@ import { notFound } from "next/navigation";
 
 import ParentalReturns from ".";
 
-import AttendanceTabsLayout from "../../AttendanceTabsLayout";
-
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -17,13 +15,13 @@ import {
 } from "@/types/api";
 
 import {
-  getAttendanceAccess,
   getAttendanceContext,
   getAttendanceParentalReturns,
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceParentalReturnEnumOptions } from "@/utils/enumOptions";
 import { hasRolePermission } from "@/utils/organizations";
+import { getAttendanceAccess } from "@/utils/session";
 
 interface ParentalReturnsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -67,10 +65,7 @@ const ParentalReturnsPage = async ({
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const access = await getAttendanceAccess(
-    rawSearchParams.organization,
-    cookieStore.toString(),
-  );
+  const access = await getAttendanceAccess(rawSearchParams.organization);
 
   if (!access) notFound();
 
@@ -140,27 +135,25 @@ const ParentalReturnsPage = async ({
   ]);
 
   return (
-    <AttendanceTabsLayout memberRole={memberRole}>
-      <ParentalReturns
-        canReview={hasRolePermission(memberRole, {
-          parentalReturn: ["update"],
-        })}
-        canViewAll={canViewAll}
-        canReviewOwn={selfReviewAllowed.parentalReturn}
-        employeeId={employee?.id}
-        filterField={filterField}
-        filterOperator={filterOperator}
-        filterValue={filterValue}
-        organization={organization}
-        page={page}
-        pageSize={pageSize}
-        quickFilterValue={quickFilterValue}
-        rowCount={rowCount}
-        rows={rows}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-      />
-    </AttendanceTabsLayout>
+    <ParentalReturns
+      canReview={hasRolePermission(memberRole, {
+        parentalReturn: ["update"],
+      })}
+      canViewAll={canViewAll}
+      canReviewOwn={selfReviewAllowed.parentalReturn}
+      employeeId={employee?.id}
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
+      organization={organization}
+      page={page}
+      pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
+      rowCount={rowCount}
+      rows={rows}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+    />
   );
 };
 

@@ -5,14 +5,10 @@ import { notFound } from "next/navigation";
 
 import Suppliers from ".";
 
-import InventoryTabsLayout from "../InventoryTabsLayout";
-
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
-
-import { authClient } from "@/lib/auth-client";
 
 import {
   filterOperatorValues,
@@ -22,8 +18,8 @@ import {
 
 import { resolveGridSearchParams } from "@/utils/dataGrid";
 import { getIngredients, getSuppliers } from "@/utils/inventory";
-import { getResolvedAdminOrganization } from "@/utils/menus";
 import { hasRolePermission } from "@/utils/organizations";
+import { getMemberRole, getResolvedAdminOrganization } from "@/utils/session";
 
 interface SuppliersPageProps {
   params: Promise<{ locale: Locale }>;
@@ -62,7 +58,6 @@ const SuppliersPage = async ({ params, searchParams }: SuppliersPageProps) => {
 
   const organization = await getResolvedAdminOrganization(
     rawSearchParams.organization,
-    cookieStore.toString(),
   );
 
   if (!organization) notFound();
@@ -91,38 +86,31 @@ const SuppliersPage = async ({ params, searchParams }: SuppliersPageProps) => {
       locale,
     });
 
-  const [{ data: memberRole }, { suppliers: rows, total: rowCount }] =
-    await Promise.all([
-      authClient.organization.getActiveMemberRole({
-        query: { organizationId: organization.id },
-        fetchOptions,
-      }),
-      getSuppliers(
-        organization.slug,
-        {
-          page,
-          pageSize,
-          filterField,
-          filterOperator,
-          filterValue,
-          quickFilterValue,
-          sortBy,
-          sortDirection,
-        },
-        fetchOptions,
-      ),
-    ]);
+  const [memberRole, { suppliers: rows, total: rowCount }] = await Promise.all([
+    getMemberRole(organization.id),
+    getSuppliers(
+      organization.slug,
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
+      fetchOptions,
+    ),
+  ]);
 
-  const canViewAuditLog = hasRolePermission(memberRole?.role, {
+  const canViewAuditLog = hasRolePermission(memberRole, {
     auditLog: ["read"],
   });
-  const canViewInventory = hasRolePermission(memberRole?.role, {
-    inventory: ["read"],
-  });
-  const canViewPurchasing = hasRolePermission(memberRole?.role, {
+  const canViewPurchasing = hasRolePermission(memberRole, {
     purchasing: ["read"],
   });
-  const canWrite = hasRolePermission(memberRole?.role, {
+  const canWrite = hasRolePermission(memberRole, {
     purchasing: ["update"],
   });
 
@@ -137,27 +125,22 @@ const SuppliersPage = async ({ params, searchParams }: SuppliersPageProps) => {
     : { ingredients: [] };
 
   return (
-    <InventoryTabsLayout
-      canViewInventory={canViewInventory}
-      canViewPurchasing={canViewPurchasing}
-    >
-      <Suppliers
-        canViewAuditLog={canViewAuditLog}
-        canWrite={canWrite}
-        filterField={filterField}
-        filterOperator={filterOperator}
-        filterValue={filterValue}
-        ingredients={ingredients}
-        organization={organization}
-        page={page}
-        pageSize={pageSize}
-        quickFilterValue={quickFilterValue}
-        rowCount={rowCount}
-        rows={rows}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-      />
-    </InventoryTabsLayout>
+    <Suppliers
+      canViewAuditLog={canViewAuditLog}
+      canWrite={canWrite}
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
+      ingredients={ingredients}
+      organization={organization}
+      page={page}
+      pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
+      rowCount={rowCount}
+      rows={rows}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+    />
   );
 };
 

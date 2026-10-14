@@ -9,7 +9,7 @@ import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import IngredientDialog from "./IngredientDialog";
-import StockCell from "./StockCell";
+import StockCell from "../../StockCell";
 
 import AuditLogButton from "@/components/AuditLogButton";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";

@@ -7,8 +7,6 @@ import Orders from ".";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-import { authClient } from "@/lib/auth-client";
-
 import {
   filterOperatorValues,
   orderFilterFieldValues,
@@ -17,9 +15,9 @@ import {
 
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getOrderEnumOptions } from "@/utils/enumOptions";
-import { getResolvedAdminOrganization } from "@/utils/menus";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAdminOrders } from "@/utils/orders";
+import { getMemberRole, getResolvedAdminOrganization } from "@/utils/session";
 
 interface OrdersPageProps {
   params: Promise<{ locale: Locale }>;
@@ -59,7 +57,6 @@ const OrdersPage = async ({ params, searchParams }: OrdersPageProps) => {
 
   const selectedOrganization = await getResolvedAdminOrganization(
     rawSearchParams.organization,
-    cookieStore.toString(),
   );
 
   if (!selectedOrganization) return null;
@@ -97,12 +94,8 @@ const OrdersPage = async ({ params, searchParams }: OrdersPageProps) => {
       )
     : [];
 
-  const { data: memberRole } =
-    await authClient.organization.getActiveMemberRole({
-      query: { organizationId: selectedOrganization.id },
-      fetchOptions,
-    });
-  const canViewAuditLog = hasRolePermission(memberRole?.role, {
+  const memberRole = await getMemberRole(selectedOrganization.id);
+  const canViewAuditLog = hasRolePermission(memberRole, {
     auditLog: ["read"],
   });
 

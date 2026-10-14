@@ -9,8 +9,6 @@
       "submit": {
         "confirm": "確定要刪除所選的 <bold>{count} 個組織</bold>嗎？成員、菜單、庫存等資料會一併刪除，30 天內可由平台管理員還原。",
         "label": "刪除所選組織（{count}）",
-        "partial": "已刪除 {done} 個組織，之後的未刪除：{message}",
-        "stale": "所選的組織已有變動，請重新選取",
         "success": "已刪除 {count} 個組織",
         "typeCount": "請輸入要刪除的組織數量「{count}」以確認"
       },
@@ -93,8 +91,6 @@
         "submit": {
           "confirm": "確定要取消所選的 <bold>{count} 筆邀請</bold>嗎？",
           "label": "取消所選邀請（{count}）",
-          "partial": "已取消 {done} 筆邀請，之後的未取消：{message}",
-          "stale": "所選的邀請已有變動，請重新選取",
           "success": "已取消 {count} 筆邀請"
         },
         "title": "批次取消邀請"
@@ -165,8 +161,6 @@
         "submit": {
           "confirm": "確定要移除所選的 <bold>{count} 位成員</bold>嗎？",
           "label": "移除所選成員（{count}）",
-          "partial": "已移除 {done} 位成員，之後的未移除：{message}",
-          "stale": "所選的成員已有變動，請重新選取",
           "success": "已移除 {count} 位成員"
         },
         "title": "批次移除成員"
@@ -180,8 +174,6 @@
         "submit": {
           "confirm": "確定要移除所選的 <bold>{count} 位團隊成員</bold>嗎？",
           "label": "移除所選團隊成員（{count}）",
-          "partial": "已移除 {done} 位團隊成員，之後的未移除：{message}",
-          "stale": "所選的團隊成員已有變動，請重新選取",
           "success": "已移除 {count} 位團隊成員"
         },
         "title": "批次移除團隊成員"
@@ -309,8 +301,6 @@
         "submit": {
           "confirm": "確定要刪除所選的 <bold>{count} 個團隊</bold>嗎？",
           "label": "刪除所選團隊（{count}）",
-          "partial": "已刪除 {done} 個團隊，之後的未刪除：{message}",
-          "stale": "所選的團隊已有變動，請重新選取",
           "success": "已刪除 {count} 個團隊"
         },
         "title": "批次刪除團隊"

@@ -13,8 +13,6 @@ import { STORE_TIMEZONE } from "@/constants/timezone";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-import { authClient } from "@/lib/auth-client";
-
 import type { UserStatsResponse } from "@/types/admins";
 import type { OrderMenu } from "@/types/menus";
 import type { MenuItemSalesResponse, OrderStatsResponse } from "@/types/orders";
@@ -24,7 +22,7 @@ import type { WaitlistStats, WaitlistStatusResponse } from "@/types/waitlist";
 import { getChangePercent } from "@/utils/dashboard";
 import { fetcher } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
-import { getSession } from "@/utils/session";
+import { getMemberRole, getSession, listOrganizations } from "@/utils/session";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -62,19 +60,17 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
   const session = await getSession();
   const isAdmin = session?.user?.role === "admin";
 
-  const { data: organizations } = await authClient.organization.list({
-    fetchOptions,
-  });
-  const selectedOrganization = organizations?.find(
+  const organizations = await listOrganizations();
+  const selectedOrganization = organizations.find(
     ({ slug }) => slug === organization,
   );
 
   const resolvedSlug =
     selectedOrganization?.slug ||
-    organizations?.find(
+    organizations.find(
       ({ id }) => id === session?.session?.activeOrganizationId,
     )?.slug ||
-    organizations?.[0]?.slug;
+    organizations[0]?.slug;
 
   if (resolvedSlug && organization !== resolvedSlug) {
     const params = new URLSearchParams({ organization: resolvedSlug, range });
@@ -83,7 +79,7 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
   }
 
   const organizationSlug = resolvedSlug || "";
-  const resolvedOrganizationId = organizations?.find(
+  const resolvedOrganizationId = organizations.find(
     ({ slug }) => slug === resolvedSlug,
   )?.id;
 
@@ -137,13 +133,8 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
         ).catch(() => [])
       : Promise.resolve([]),
     resolvedOrganizationId
-      ? authClient.organization
-          .getActiveMemberRole({
-            query: { organizationId: resolvedOrganizationId },
-            fetchOptions,
-          })
-          .then(({ data }) => data?.role)
-      : Promise.resolve(undefined),
+      ? getMemberRole(resolvedOrganizationId)
+      : Promise.resolve(null),
   ]);
 
   const canViewWaitlist =

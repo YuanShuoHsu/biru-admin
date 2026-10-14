@@ -10,6 +10,8 @@ export type AvailableCoupon = components["schemas"]["AvailableCouponDto"];
 export type Coupon = components["schemas"]["CouponResponseDto"];
 export type CouponDiscountType = Coupon["discountType"];
 export type CouponIssueTrigger = NonNullable<Coupon["issueTrigger"]>;
+export type CouponListItem = components["schemas"]["CouponListItemDto"];
+export type CouponListResponse = components["schemas"]["CouponListResponseDto"];
 export type CouponRecipient =
   components["schemas"]["CouponRecipientResponseDto"];
 export type CouponScope = Coupon["scope"];

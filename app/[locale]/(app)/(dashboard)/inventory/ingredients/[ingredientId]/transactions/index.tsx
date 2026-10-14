@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
-import StockCell from "../../StockCell";
+import StockCell from "../../../StockCell";
 
 import { renderEmptyableCell } from "@/components/EmptyCell";
 

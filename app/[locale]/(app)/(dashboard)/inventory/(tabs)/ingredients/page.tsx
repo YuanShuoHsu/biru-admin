@@ -5,14 +5,10 @@ import { notFound } from "next/navigation";
 
 import Ingredients from ".";
 
-import InventoryTabsLayout from "../InventoryTabsLayout";
-
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-
-import { authClient } from "@/lib/auth-client";
 
 import {
   filterOperatorValues,
@@ -23,8 +19,8 @@ import {
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getIngredientEnumOptions } from "@/utils/enumOptions";
 import { getIngredients, getSuppliers } from "@/utils/inventory";
-import { getResolvedAdminOrganization } from "@/utils/menus";
 import { hasRolePermission } from "@/utils/organizations";
+import { getMemberRole, getResolvedAdminOrganization } from "@/utils/session";
 
 interface IngredientsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -67,7 +63,6 @@ const IngredientsPage = async ({
 
   const organization = await getResolvedAdminOrganization(
     rawSearchParams.organization,
-    cookieStore.toString(),
   );
 
   if (!organization) notFound();
@@ -96,25 +91,21 @@ const IngredientsPage = async ({
       locale,
     });
 
-  const { data: memberRole } =
-    await authClient.organization.getActiveMemberRole({
-      query: { organizationId: organization.id },
-      fetchOptions,
-    });
+  const memberRole = await getMemberRole(organization.id);
 
-  const canRecordTransaction = hasRolePermission(memberRole?.role, {
+  const canRecordTransaction = hasRolePermission(memberRole, {
     inventoryTransaction: ["create"],
   });
-  const canViewAuditLog = hasRolePermission(memberRole?.role, {
+  const canViewAuditLog = hasRolePermission(memberRole, {
     auditLog: ["read"],
   });
-  const canViewInventory = hasRolePermission(memberRole?.role, {
+  const canViewInventory = hasRolePermission(memberRole, {
     inventory: ["read"],
   });
-  const canViewPurchasing = hasRolePermission(memberRole?.role, {
+  const canViewPurchasing = hasRolePermission(memberRole, {
     purchasing: ["read"],
   });
-  const canWrite = hasRolePermission(memberRole?.role, {
+  const canWrite = hasRolePermission(memberRole, {
     inventory: ["update"],
   });
 
@@ -156,29 +147,24 @@ const IngredientsPage = async ({
     ]);
 
   return (
-    <InventoryTabsLayout
-      canViewInventory={canViewInventory}
+    <Ingredients
+      canRecordTransaction={canRecordTransaction}
+      canViewAuditLog={canViewAuditLog}
       canViewPurchasing={canViewPurchasing}
-    >
-      <Ingredients
-        canRecordTransaction={canRecordTransaction}
-        canViewAuditLog={canViewAuditLog}
-        canViewPurchasing={canViewPurchasing}
-        canWrite={canWrite}
-        filterField={filterField}
-        filterOperator={filterOperator}
-        filterValue={filterValue}
-        organization={organization}
-        page={page}
-        pageSize={pageSize}
-        quickFilterValue={quickFilterValue}
-        rowCount={rowCount}
-        rows={rows}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-        suppliers={suppliers}
-      />
-    </InventoryTabsLayout>
+      canWrite={canWrite}
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
+      organization={organization}
+      page={page}
+      pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
+      rowCount={rowCount}
+      rows={rows}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+      suppliers={suppliers}
+    />
   );
 };
 

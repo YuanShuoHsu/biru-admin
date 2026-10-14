@@ -11,7 +11,7 @@ import SelectedListItem from "./SelectedListItem";
 import {
   useActiveMemberRole,
   useCanRestoreDeletedRecords,
-  useDefaultOrganization,
+  useDefaultOrganizationSlug,
 } from "@/hooks/organizations";
 import { useNavChildren } from "@/hooks/useNavChildren";
 import { useRoutes } from "@/hooks/useRoutes";
@@ -27,7 +27,7 @@ import { hasRolePermission } from "@/utils/organizations";
 const useNavItems = (): NavItem[][] => {
   const session = useAuthStore((state) => state.session);
 
-  const defaultOrganizationSlug = useDefaultOrganization();
+  const defaultOrganizationSlug = useDefaultOrganizationSlug();
   const memberRole = useActiveMemberRole();
   const canRestoreDeletedRecords = useCanRestoreDeletedRecords();
 

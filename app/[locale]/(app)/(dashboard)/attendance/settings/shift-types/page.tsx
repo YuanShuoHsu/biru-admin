@@ -5,8 +5,6 @@ import { notFound } from "next/navigation";
 
 import ShiftTypes from ".";
 
-import AttendanceTabsLayout from "../../AttendanceTabsLayout";
-
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -16,12 +14,10 @@ import {
   filterOperatorValues,
 } from "@/types/api";
 
-import {
-  getAttendanceAccess,
-  getAttendanceShiftTypes,
-} from "@/utils/attendance";
+import { getAttendanceShiftTypes } from "@/utils/attendance";
 import { resolveGridSearchParams } from "@/utils/dataGrid";
 import { hasRolePermission } from "@/utils/organizations";
+import { getAttendanceAccess } from "@/utils/session";
 
 interface ShiftTypesPageProps {
   params: Promise<{ locale: Locale }>;
@@ -65,10 +61,7 @@ const ShiftTypesPage = async ({
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const access = await getAttendanceAccess(
-    rawSearchParams.organization,
-    cookieStore.toString(),
-  );
+  const access = await getAttendanceAccess(rawSearchParams.organization);
 
   if (!access) notFound();
 
@@ -116,21 +109,19 @@ const ShiftTypesPage = async ({
   );
 
   return (
-    <AttendanceTabsLayout memberRole={memberRole}>
-      <ShiftTypes
-        filterField={filterField}
-        filterOperator={filterOperator}
-        filterValue={filterValue}
-        organization={organization}
-        page={page}
-        pageSize={pageSize}
-        quickFilterValue={quickFilterValue}
-        rowCount={rowCount}
-        rows={rows}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-      />
-    </AttendanceTabsLayout>
+    <ShiftTypes
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
+      organization={organization}
+      page={page}
+      pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
+      rowCount={rowCount}
+      rows={rows}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+    />
   );
 };
 

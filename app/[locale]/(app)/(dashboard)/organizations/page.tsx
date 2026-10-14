@@ -6,13 +6,11 @@ import Organizations from ".";
 
 import type { Locale } from "@/i18n/routing";
 
-import { authClient } from "@/lib/auth-client";
-
 import {
   getOrganizationPermissions,
   sortByCreatedAtDesc,
 } from "@/utils/organizations";
-import { getSession } from "@/utils/session";
+import { getSession, listOrganizations } from "@/utils/session";
 
 interface OrganizationsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -37,12 +35,12 @@ const OrganizationsPage = async ({ params }: OrganizationsPageProps) => {
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const [{ data }, session] = await Promise.all([
-    authClient.organization.list({ fetchOptions }),
+  const [data, session] = await Promise.all([
+    listOrganizations(),
     getSession(),
   ]);
 
-  const organizations = sortByCreatedAtDesc(data || []);
+  const organizations = sortByCreatedAtDesc(data);
 
   const organizationPermissions = await getOrganizationPermissions(
     organizations,

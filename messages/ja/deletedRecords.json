@@ -8,7 +8,6 @@
     "submit": {
       "confirm": "選択した <bold>{count} 件のデータ</bold>を復元しますか？同時に削除された関連データも復元されます。",
       "label": "選択したデータを復元（{count}）",
-      "partial": "{done} 件を復元しました。残りは復元されていません：{message}",
       "success": "データ {count} 件を復元しました"
     },
     "title": "データを一括復元"

@@ -8,8 +8,6 @@ import { notFound } from "next/navigation";
 
 import HolidaySubstitutes from ".";
 
-import AttendanceTabsLayout from "../../AttendanceTabsLayout";
-
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { redirect } from "@/i18n/navigation";
@@ -21,12 +19,10 @@ import {
   filterOperatorValues,
 } from "@/types/api";
 
-import {
-  getAttendanceAccess,
-  getAttendanceHolidaySubstitutes,
-} from "@/utils/attendance";
+import { getAttendanceHolidaySubstitutes } from "@/utils/attendance";
 import { resolveGridSearchParams } from "@/utils/dataGrid";
 import { hasRolePermission } from "@/utils/organizations";
+import { getAttendanceAccess } from "@/utils/session";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -72,10 +68,7 @@ const HolidaySubstitutesPage = async ({
 
   setRequestLocale(locale);
 
-  const access = await getAttendanceAccess(
-    rawSearchParams.organization,
-    cookieStore.toString(),
-  );
+  const access = await getAttendanceAccess(rawSearchParams.organization);
 
   if (!access) notFound();
 
@@ -130,23 +123,21 @@ const HolidaySubstitutesPage = async ({
     );
 
   return (
-    <AttendanceTabsLayout memberRole={memberRole}>
-      <HolidaySubstitutes
-        canUpdate={hasRolePermission(memberRole, { shift: ["update"] })}
-        filterField={filterField}
-        filterOperator={filterOperator}
-        filterValue={filterValue}
-        organization={organization}
-        page={page}
-        pageSize={pageSize}
-        quickFilterValue={quickFilterValue}
-        rowCount={rowCount}
-        rows={rows}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-        year={resolvedYear}
-      />
-    </AttendanceTabsLayout>
+    <HolidaySubstitutes
+      canUpdate={hasRolePermission(memberRole, { shift: ["update"] })}
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
+      organization={organization}
+      page={page}
+      pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
+      rowCount={rowCount}
+      rows={rows}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+      year={resolvedYear}
+    />
   );
 };
 

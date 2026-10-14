@@ -64,6 +64,8 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type {
   Coupon,
   CouponFilterField,
+  CouponListItem,
+  CouponListResponse,
   CouponSortField,
 } from "@/types/coupons";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
@@ -117,7 +119,7 @@ interface CouponsProps {
   pageSize: number;
   quickFilterValue?: string;
   rowCount: number;
-  rows: Coupon[];
+  rows: CouponListItem[];
   sortBy?: CouponSortField;
   sortDirection?: SortDirection;
 }
@@ -239,9 +241,7 @@ const Coupons = ({
       );
       params.set("lang", locale);
 
-      return fetcher<{ data: Coupon[]; total: number }>(
-        `${couponsPath}?${params}`,
-      );
+      return fetcher<CouponListResponse>(`${couponsPath}?${params}`);
     },
     {
       fallbackData: { data: initialRows, total: initialRowCount },
@@ -253,12 +253,21 @@ const Coupons = ({
     },
   );
 
+  const isCouponSelectable = useCallback(
+    ({ claimed }: CouponListItem) => !claimed,
+    [],
+  );
+
   const {
     clearRowSelection,
     hasSelectableRows,
     rowSelectionProps,
     selectedRows,
-  } = useRowSelection({ enabled: isSelectMode, rows });
+  } = useRowSelection({
+    enabled: isSelectMode,
+    isRowSelectable: isCouponSelectable,
+    rows,
+  });
 
   const handlePaginationModelChange = useCallback(
     (newModel: GridPaginationModel) => {
@@ -485,7 +494,7 @@ const Coupons = ({
               field: "actions",
               filterable: false,
               headerName: tCoupons("actions.label"),
-              renderCell: ({ row }: GridRenderCellParams<Coupon>) => (
+              renderCell: ({ row }: GridRenderCellParams<CouponListItem>) => (
                 <ActionsStack direction="row">
                   {canManageCoupon && (
                     <Tooltip title={tCoupons("actions.updateCoupon.title")}>
@@ -528,13 +537,14 @@ const Coupons = ({
                   {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
                   {canManageCoupon && (
                     <Tooltip title={tCoupons("actions.deleteCoupon.title")}>
-                      <IconButton
+                      <StyledIconButton
                         color="error"
                         onClick={() => handleDeleteCoupon(row)}
                         size="small"
+                        visible={isCouponSelectable(row)}
                       >
                         <Delete fontSize="small" />
-                      </IconButton>
+                      </StyledIconButton>
                     </Tooltip>
                   )}
                 </ActionsStack>
@@ -773,6 +783,7 @@ const Coupons = ({
       handleDeleteCoupon,
       handleGrantCoupon,
       handleUpdateCoupon,
+      isCouponSelectable,
       isSelectMode,
       numberFilterOperators,
       organization?.id,

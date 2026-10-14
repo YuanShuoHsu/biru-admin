@@ -13,7 +13,11 @@ import { countKeys, ROLE_RANK } from "@/constants/organizations";
 
 import { useRowSelection } from "@/hooks/useRowSelection";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import {
+  authClient,
+  getErrorMessage,
+  getAuthErrorMessage,
+} from "@/lib/auth-client";
 
 import { Cancel, Delete } from "@mui/icons-material";
 import {
@@ -34,8 +38,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { ActiveOrganization, Invitation } from "@/types/organizations";
 
 import { sortByCreatedAtDesc } from "@/utils/organizations";
-import { runSequentially, SequentialRunError } from "@/utils/dataGrid";
-import { getErrorMessage as getFetchErrorMessage } from "@/utils/errors";
+import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -60,7 +63,11 @@ interface OrganizationsSlugInvitationsProps {
 }
 
 const OrganizationsSlugInvitations = ({
-  activeOrganization: { invitations: initialInvitations, teams: initialTeams },
+  activeOrganization: {
+    id: organizationId,
+    invitations: initialInvitations,
+    teams: initialTeams,
+  },
   canCancelInvitation,
 }: OrganizationsSlugInvitationsProps) => {
   const [isSelectMode, setIsSelectMode] = useState(false);
@@ -207,26 +214,10 @@ const OrganizationsSlugInvitations = ({
       ),
       onConfirm: async () => {
         try {
-          const invitationIds = new Set(
-            (await mutate())?.rows.map(({ id }) => id),
-          );
-          if (!selectedRows.every(({ id }) => invitationIds.has(id))) {
-            enqueueSnackbar(
-              tInvitations("actions.batchCancelInvitation.submit.stale"),
-              { variant: "error" },
-            );
-            mutate();
-            return;
-          }
-
-          await runSequentially(selectedRows, async ({ id: invitationId }) => {
-            const { error } = await authClient.organization.cancelInvitation({
-              invitationId,
-            });
-            if (error)
-              throw new Error(
-                getErrorMessage(error.code ?? "", locale) || error.message,
-              );
+          await fetcher(`/api/organizations/${organizationId}/invitations`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
           });
 
           setIsSelectMode(false);
@@ -243,19 +234,9 @@ const OrganizationsSlugInvitations = ({
             },
           );
         } catch (error) {
-          const reason =
-            error instanceof SequentialRunError ? error.reason : error;
-          const message = getFetchErrorMessage(reason);
-
-          enqueueSnackbar(
-            error instanceof SequentialRunError && error.done
-              ? tInvitations("actions.batchCancelInvitation.submit.partial", {
-                  done: error.done,
-                  message,
-                })
-              : message,
-            { variant: "error" },
-          );
+          enqueueSnackbar(getAuthErrorMessage(error, locale), {
+            variant: "error",
+          });
         }
 
         mutate();
@@ -270,6 +251,7 @@ const OrganizationsSlugInvitations = ({
     clearRowSelection,
     locale,
     mutate,
+    organizationId,
     selectedRows,
     setDialog,
     tInvitations,

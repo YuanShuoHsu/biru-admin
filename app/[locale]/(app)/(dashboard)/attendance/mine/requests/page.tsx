@@ -5,8 +5,6 @@ import { notFound } from "next/navigation";
 
 import Requests from ".";
 
-import AttendanceTabsLayout from "../../AttendanceTabsLayout";
-
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
@@ -19,7 +17,6 @@ import {
 } from "@/types/api";
 
 import {
-  getAttendanceAccess,
   getAttendanceContext,
   getAttendanceLeaveCases,
   getAttendanceLeaveTypes,
@@ -30,6 +27,7 @@ import {
   getAttendanceLeaveTypeNameEnumOptions,
   getAttendanceRequestEnumOptions,
 } from "@/utils/enumOptions";
+import { getAttendanceAccess } from "@/utils/session";
 
 interface RequestsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -70,14 +68,11 @@ const RequestsPage = async ({ params, searchParams }: RequestsPageProps) => {
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const access = await getAttendanceAccess(
-    rawSearchParams.organization,
-    cookieStore.toString(),
-  );
+  const access = await getAttendanceAccess(rawSearchParams.organization);
 
   if (!access) notFound();
 
-  const { memberRole, organization } = access;
+  const { organization } = access;
 
   const {
     filterField,
@@ -160,24 +155,22 @@ const RequestsPage = async ({ params, searchParams }: RequestsPageProps) => {
     ]);
 
   return (
-    <AttendanceTabsLayout memberRole={memberRole}>
-      <Requests
-        enabled={enabled}
-        filterField={filterField}
-        filterOperator={filterOperator}
-        filterValue={filterValue}
-        leaveCases={leaveCases}
-        leaveTypes={leaveTypes}
-        organization={organization}
-        page={page}
-        pageSize={pageSize}
-        quickFilterValue={quickFilterValue}
-        rowCount={rowCount}
-        rows={rows}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-      />
-    </AttendanceTabsLayout>
+    <Requests
+      enabled={enabled}
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
+      leaveCases={leaveCases}
+      leaveTypes={leaveTypes}
+      organization={organization}
+      page={page}
+      pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
+      rowCount={rowCount}
+      rows={rows}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+    />
   );
 };
 

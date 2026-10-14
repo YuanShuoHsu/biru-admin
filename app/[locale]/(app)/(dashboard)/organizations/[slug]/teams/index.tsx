@@ -15,7 +15,11 @@ import { useRowSelection } from "@/hooks/useRowSelection";
 
 import { useRouter } from "@/i18n/navigation";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import {
+  authClient,
+  getErrorMessage,
+  getAuthErrorMessage,
+} from "@/lib/auth-client";
 
 import {
   Cancel,
@@ -40,8 +44,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { ActiveOrganization, Team } from "@/types/organizations";
 
 import { sortByCreatedAtDesc } from "@/utils/organizations";
-import { runSequentially, SequentialRunError } from "@/utils/dataGrid";
-import { getErrorMessage as getFetchErrorMessage } from "@/utils/errors";
+import { fetcher } from "@/utils/fetcher";
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
   height: "100%",
@@ -234,24 +237,10 @@ const OrganizationsSlugTeams = ({
       ),
       onConfirm: async () => {
         try {
-          const teamIds = new Set((await mutate())?.rows.map(({ id }) => id));
-          if (!selectedRows.every(({ id }) => teamIds.has(id))) {
-            enqueueSnackbar(tTeams("actions.batchRemoveTeam.submit.stale"), {
-              variant: "error",
-            });
-            mutate();
-            return;
-          }
-
-          await runSequentially(selectedRows, async ({ id: teamId }) => {
-            const { error } = await authClient.organization.removeTeam({
-              organizationId,
-              teamId,
-            });
-            if (error)
-              throw new Error(
-                getErrorMessage(error.code ?? "", locale) || error.message,
-              );
+          await fetcher(`/api/organizations/${organizationId}/teams`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
           });
 
           setIsSelectMode(false);
@@ -266,19 +255,9 @@ const OrganizationsSlugTeams = ({
             },
           );
         } catch (error) {
-          const reason =
-            error instanceof SequentialRunError ? error.reason : error;
-          const message = getFetchErrorMessage(reason);
-
-          enqueueSnackbar(
-            error instanceof SequentialRunError && error.done
-              ? tTeams("actions.batchRemoveTeam.submit.partial", {
-                  done: error.done,
-                  message,
-                })
-              : message,
-            { variant: "error" },
-          );
+          enqueueSnackbar(getAuthErrorMessage(error, locale), {
+            variant: "error",
+          });
         }
 
         mutate();

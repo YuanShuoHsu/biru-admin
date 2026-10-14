@@ -10,8 +10,6 @@ import { DEFAULT_PAGE_SIZE } from "@/constants/pagination";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-import { authClient } from "@/lib/auth-client";
-
 import {
   auditLogFilterFieldValues,
   auditLogSortFieldValues,
@@ -24,9 +22,12 @@ import type { Ingredient } from "@/types/inventory";
 import { getAuditLogs } from "@/utils/audit";
 import { getQuickFilterEnums } from "@/utils/dataGrid";
 import { getAuditLogEnumOptions } from "@/utils/enumOptions";
-import { getResolvedAdminOrganization } from "@/utils/menus";
 import { getOrganizations, hasRolePermission } from "@/utils/organizations";
-import { getSession } from "@/utils/session";
+import {
+  getMemberRole,
+  getResolvedAdminOrganization,
+  getSession,
+} from "@/utils/session";
 
 export interface AuditLogSearchParams {
   filterField?: string;
@@ -105,7 +106,7 @@ const AuditLogsPage = async ({
 
   const selectedOrganization = isAdmin
     ? undefined
-    : await getResolvedAdminOrganization(organization, cookieStore.toString());
+    : await getResolvedAdminOrganization(organization);
   if (!isAdmin && !selectedOrganization) notFound();
 
   if (
@@ -140,13 +141,8 @@ const AuditLogsPage = async ({
   }
 
   if (selectedOrganization) {
-    const { data: memberRole } =
-      await authClient.organization.getActiveMemberRole({
-        query: { organizationId: selectedOrganization.id },
-        fetchOptions,
-      });
-    if (!hasRolePermission(memberRole?.role, { auditLog: ["read"] }))
-      notFound();
+    const memberRole = await getMemberRole(selectedOrganization.id);
+    if (!hasRolePermission(memberRole, { auditLog: ["read"] })) notFound();
   }
 
   const [tAudit, organizations] = await Promise.all([

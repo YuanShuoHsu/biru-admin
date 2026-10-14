@@ -2,18 +2,22 @@
 
 import { useCallback, useMemo, useState } from "react";
 
-import type { GridRowParams, GridRowSelectionModel } from "@mui/x-data-grid";
+import type {
+  GridRowId,
+  GridRowParams,
+  GridRowSelectionModel,
+} from "@mui/x-data-grid";
 
 const emptySelection: GridRowSelectionModel = {
   ids: new Set(),
   type: "include",
 };
 
-const rowIdOf = (row: object) => String(Reflect.get(row, "id"));
+const rowIdOf = (row: object): GridRowId => Reflect.get(row, "id");
 
 interface UseRowSelectionOptions<Row> {
   enabled: boolean;
-  getRowId?: (row: Row) => string;
+  getRowId?: (row: Row) => GridRowId;
   isRowSelectable?: (row: Row) => boolean;
   rows: Row[];
 }
@@ -55,7 +59,7 @@ export const useRowSelection = <Row extends object>({
       checkboxSelection: enabled,
       isRowSelectable: isRowSelectable
         ? ({ id }: GridRowParams) => {
-            const row = rowsById.get(String(id));
+            const row = rowsById.get(id);
 
             return !!row && isRowSelectable(row);
           }

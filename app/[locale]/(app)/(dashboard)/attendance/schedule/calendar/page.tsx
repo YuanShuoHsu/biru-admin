@@ -5,8 +5,6 @@ import { notFound } from "next/navigation";
 
 import Calendar from ".";
 
-import AttendanceTabsLayout from "../../AttendanceTabsLayout";
-
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -17,7 +15,6 @@ import {
   attendanceCalendarDate,
   attendanceCalendarRange,
   DEFAULT_ATTENDANCE_CALENDAR_VIEW,
-  getAttendanceAccess,
   getAttendanceCalendarDayKinds,
   getAttendanceCalendarLeaves,
   getAttendanceCalendarShifts,
@@ -27,6 +24,7 @@ import {
   SCHEDULABLE_EMPLOYEES_QUERY,
 } from "@/utils/attendance";
 import { hasRolePermission } from "@/utils/organizations";
+import { getAttendanceAccess } from "@/utils/session";
 
 interface CalendarPageProps {
   params: Promise<{ locale: Locale }>;
@@ -58,10 +56,7 @@ const CalendarPage = async ({ params, searchParams }: CalendarPageProps) => {
 
   setRequestLocale(locale);
 
-  const access = await getAttendanceAccess(
-    organizationSlug,
-    cookieStore.toString(),
-  );
+  const access = await getAttendanceAccess(organizationSlug);
 
   if (!access) notFound();
 
@@ -123,22 +118,20 @@ const CalendarPage = async ({ params, searchParams }: CalendarPageProps) => {
     ]);
 
   return (
-    <AttendanceTabsLayout memberRole={memberRole}>
-      <Calendar
-        canCreate={hasRolePermission(memberRole, { shift: ["create"] })}
-        canReadLeaves={canReadLeaves}
-        canUpdate={hasRolePermission(memberRole, { shift: ["update"] })}
-        dayKinds={dayKinds}
-        employees={employees}
-        leaves={leaves}
-        organization={organization}
-        shifts={shifts}
-        shiftTypes={shiftTypes}
-        teams={teams}
-        date={date}
-        view={view}
-      />
-    </AttendanceTabsLayout>
+    <Calendar
+      canCreate={hasRolePermission(memberRole, { shift: ["create"] })}
+      canReadLeaves={canReadLeaves}
+      canUpdate={hasRolePermission(memberRole, { shift: ["update"] })}
+      dayKinds={dayKinds}
+      employees={employees}
+      leaves={leaves}
+      organization={organization}
+      shifts={shifts}
+      shiftTypes={shiftTypes}
+      teams={teams}
+      date={date}
+      view={view}
+    />
   );
 };
 

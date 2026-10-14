@@ -1,5 +1,6 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import useSWR, { type SWRConfiguration } from "swr";
 
 import { authClient } from "@/lib/auth-client";
@@ -8,16 +9,16 @@ import type { Organization } from "@/types/organizations";
 
 import { canRestoreDeletedRecords } from "@/utils/deletedRecords";
 import {
+  activeMemberRoleKey,
   defaultOrganizationSlugKey,
   resolveDefaultOrganizationSlug,
   sortByCreatedAtDesc,
 } from "@/utils/organizations";
 
-const activeMemberRoleKey = "active-member-role";
 const deletedRecordPermissionKey = "deleted-record-permission";
 const organizationsKey = "organizations";
 
-export const useDefaultOrganization = () => {
+export const useDefaultOrganizationSlug = () => {
   const { data: defaultOrganizationSlug = "" } = useSWR<string>(
     defaultOrganizationSlugKey,
     async () => {
@@ -36,9 +37,7 @@ export const useDefaultOrganization = () => {
   return defaultOrganizationSlug;
 };
 
-export const useActiveMemberRole = () => {
-  const organizationSlug = useDefaultOrganization();
-
+const useMemberRole = (organizationSlug: string) => {
   const { data: role } = useSWR(
     organizationSlug ? [activeMemberRoleKey, organizationSlug] : null,
     async ([, slug]: [string, string]) => {
@@ -50,11 +49,23 @@ export const useActiveMemberRole = () => {
     },
   );
 
-  return role ?? undefined;
+  return role;
 };
 
+export const useActiveMemberRole = () =>
+  useMemberRole(useDefaultOrganizationSlug());
+
+export const useSelectedOrganizationSlug = () => {
+  const defaultOrganizationSlug = useDefaultOrganizationSlug();
+
+  return useSearchParams().get("organization") || defaultOrganizationSlug;
+};
+
+export const useSelectedMemberRole = () =>
+  useMemberRole(useSelectedOrganizationSlug());
+
 export const useCanRestoreDeletedRecords = () => {
-  const organizationSlug = useDefaultOrganization();
+  const organizationSlug = useDefaultOrganizationSlug();
 
   const { data: canRestore = false } = useSWR(
     organizationSlug ? [deletedRecordPermissionKey, organizationSlug] : null,

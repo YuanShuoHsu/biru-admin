@@ -7,8 +7,6 @@ import WaitlistTickets from ".";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-import { authClient } from "@/lib/auth-client";
-
 import {
   filterOperatorValues,
   waitlistTicketFilterFieldValues,
@@ -17,8 +15,8 @@ import {
 
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getWaitlistEnumOptions } from "@/utils/enumOptions";
-import { getResolvedAdminOrganization } from "@/utils/menus";
 import { hasRolePermission } from "@/utils/organizations";
+import { getMemberRole, getResolvedAdminOrganization } from "@/utils/session";
 import { getWaitlistTickets } from "@/utils/waitlist";
 
 interface WaitlistListPageProps {
@@ -62,7 +60,6 @@ const WaitlistListPage = async ({
 
   const selectedOrganization = await getResolvedAdminOrganization(
     rawSearchParams.organization,
-    cookieStore.toString(),
   );
 
   if (!selectedOrganization) return null;
@@ -94,33 +91,29 @@ const WaitlistListPage = async ({
     ? getQuickFilterEnums(quickFilterValue, getWaitlistEnumOptions(tWaitlist))
     : [];
 
-  const [{ data: memberRole }, { tickets: rows, total: rowCount }] =
-    await Promise.all([
-      authClient.organization.getActiveMemberRole({
-        query: { organizationId: selectedOrganization.id },
-        fetchOptions,
-      }),
-      getWaitlistTickets(
-        selectedOrganization.slug,
-        {
-          page,
-          pageSize,
-          filterField,
-          filterOperator,
-          filterValue,
-          quickFilterEnums,
-          quickFilterValue,
-          sortBy,
-          sortDirection,
-        },
-        fetchOptions,
-      ),
-    ]);
+  const [memberRole, { tickets: rows, total: rowCount }] = await Promise.all([
+    getMemberRole(selectedOrganization.id),
+    getWaitlistTickets(
+      selectedOrganization.slug,
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterEnums,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
+      fetchOptions,
+    ),
+  ]);
 
-  const canViewAuditLog = hasRolePermission(memberRole?.role, {
+  const canViewAuditLog = hasRolePermission(memberRole, {
     auditLog: ["read"],
   });
-  const canUpdate = hasRolePermission(memberRole?.role, {
+  const canUpdate = hasRolePermission(memberRole, {
     waitlist: ["update"],
   });
 

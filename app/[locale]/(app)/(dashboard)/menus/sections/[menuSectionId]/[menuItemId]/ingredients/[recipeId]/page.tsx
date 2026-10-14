@@ -8,8 +8,6 @@ import RecipeIngredients from ".";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-import { authClient } from "@/lib/auth-client";
-
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import {
@@ -29,9 +27,9 @@ import {
   getAdminMenu,
   getAdminMenuItem,
   getAdminMenuSection,
-  getAdminOrganization,
 } from "@/utils/menus";
 import { hasRolePermission } from "@/utils/organizations";
+import { getAdminOrganization, getMemberRole } from "@/utils/session";
 
 interface RecipeIngredientsPageProps {
   params: Promise<{
@@ -81,7 +79,7 @@ const RecipeIngredientsPage = async ({
 
   const [menu, selectedOrganization, menuItem] = await Promise.all([
     getAdminMenu(section.menuId, fetchOptions),
-    getAdminOrganization(rawSearchParams.organization, fetchOptions),
+    getAdminOrganization(rawSearchParams.organization),
     getAdminMenuItem(menuItemId, fetchOptions),
   ]);
 
@@ -90,11 +88,8 @@ const RecipeIngredientsPage = async ({
   if (!selectedOrganization || selectedOrganization.id !== menu?.organizationId)
     return redirect({ href: DEFAULT_MENUS_HREF, locale });
 
-  const [{ data: memberRole }, { ingredients }, recipe] = await Promise.all([
-    authClient.organization.getActiveMemberRole({
-      query: { organizationId: menu.organizationId },
-      fetchOptions,
-    }),
+  const [memberRole, { ingredients }, recipe] = await Promise.all([
+    getMemberRole(menu.organizationId),
     getIngredients(
       selectedOrganization.slug,
       { pageSize: MAX_PAGE_SIZE },
@@ -144,16 +139,16 @@ const RecipeIngredientsPage = async ({
     fetchOptions,
   );
 
-  const canCreate = hasRolePermission(memberRole?.role, {
+  const canCreate = hasRolePermission(memberRole, {
     inventory: ["create"],
   });
-  const canDelete = hasRolePermission(memberRole?.role, {
+  const canDelete = hasRolePermission(memberRole, {
     inventory: ["delete"],
   });
-  const canViewPurchasing = hasRolePermission(memberRole?.role, {
+  const canViewPurchasing = hasRolePermission(memberRole, {
     purchasing: ["read"],
   });
-  const canWrite = hasRolePermission(memberRole?.role, {
+  const canWrite = hasRolePermission(memberRole, {
     inventory: ["update"],
   });
 

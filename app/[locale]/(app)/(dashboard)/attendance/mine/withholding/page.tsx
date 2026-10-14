@@ -5,15 +5,11 @@ import { notFound } from "next/navigation";
 
 import MyWithholding from ".";
 
-import AttendanceTabsLayout from "../../AttendanceTabsLayout";
-
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-import {
-  getAttendanceAccess,
-  getMyWithholdingCertificates,
-} from "@/utils/attendance";
+import { getMyWithholdingCertificates } from "@/utils/attendance";
+import { getAttendanceAccess } from "@/utils/session";
 
 interface MyWithholdingPageProps {
   params: Promise<{ locale: Locale }>;
@@ -44,14 +40,11 @@ const MyWithholdingPage = async ({
 
   setRequestLocale(locale);
 
-  const access = await getAttendanceAccess(
-    rawSearchParams.organization,
-    cookieStore.toString(),
-  );
+  const access = await getAttendanceAccess(rawSearchParams.organization);
 
   if (!access) notFound();
 
-  const { memberRole, organization } = access;
+  const { organization } = access;
 
   if (rawSearchParams.organization !== organization.slug) {
     const params = new URLSearchParams({ organization: organization.slug });
@@ -67,9 +60,7 @@ const MyWithholdingPage = async ({
   });
 
   return (
-    <AttendanceTabsLayout memberRole={memberRole}>
-      <MyWithholding certificates={certificates} organization={organization} />
-    </AttendanceTabsLayout>
+    <MyWithholding certificates={certificates} organization={organization} />
   );
 };
 

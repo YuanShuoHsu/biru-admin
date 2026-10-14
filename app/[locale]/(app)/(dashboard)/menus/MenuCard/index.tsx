@@ -3,8 +3,6 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 
-import RouteTabs from "@/components/RouteTabs";
-
 import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";
 
 import { Link, useRouter } from "@/i18n/navigation";
@@ -30,11 +28,6 @@ import { localize } from "@/utils/locale";
 
 import theme from "@/theme";
 import UpdateMenuDialog from "../UpdateMenuDialog";
-
-const LayoutStack = styled(Stack)(({ theme }) => ({
-  height: "100%",
-  gap: theme.spacing(2),
-}));
 
 const StyledCard = styled(Card)(({ theme }) => ({
   display: "flex",
@@ -87,19 +80,13 @@ const StyledCardActions = styled(CardActions)(({ theme }) => ({
   padding: theme.spacing(2),
 }));
 
-interface MenusTabsLayoutProps {
-  canViewAuditLog?: boolean;
-  canWrite?: boolean;
-  children: React.ReactNode;
+interface MenuCardProps {
+  canViewAuditLog: boolean;
+  canWrite: boolean;
   menu: Menu;
 }
 
-const MenusTabsLayout = ({
-  canViewAuditLog = false,
-  canWrite = false,
-  children,
-  menu,
-}: MenusTabsLayoutProps) => {
+const MenuCard = ({ canViewAuditLog, canWrite, menu }: MenuCardProps) => {
   const { setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
@@ -120,57 +107,50 @@ const MenusTabsLayout = ({
   };
 
   return (
-    <LayoutStack>
-      <StyledCard variant="outlined">
-        <StyledCardMedia image={menu.image || undefined}>
-          {!menu.image && <RestaurantMenu color="disabled" fontSize="large" />}
-        </StyledCardMedia>
-        <InfoStack>
-          <StyledCardContent>
-            <NameTypography variant="subtitle1">
-              {localize(menu.name, locale)}
-            </NameTypography>
-            {localize(menu.description, locale) && (
-              <WrapTypography color="textSecondary" variant="body2">
-                {localize(menu.description, locale)}
-              </WrapTypography>
-            )}
-          </StyledCardContent>
-          <StyledCardActions>
-            {canWrite && (
-              <Button
-                onClick={handleEditMenu}
-                size="small"
-                startIcon={<Edit fontSize="small" />}
-                variant="outlined"
-              >
-                {tMenus("settings.actions.update.title")}
-              </Button>
-            )}
-            {canViewAuditLog && (
-              <Button
-                component={Link}
-                href={getHref("/menus/audit-logs", {
-                  ...DEFAULT_PAGINATION_QUERY,
-                  organization: searchParams.get("organization"),
-                })}
-                size="small"
-                startIcon={<History fontSize="small" />}
-                variant="outlined"
-              >
-                {tAudit("title")}
-              </Button>
-            )}
-          </StyledCardActions>
-        </InfoStack>
-      </StyledCard>
-      <RouteTabs
-        ariaLabel="menu tabs"
-        tabs={[{ path: "/menus/sections" }, { path: "/menus/modifier-groups" }]}
-      />
-      {children}
-    </LayoutStack>
+    <StyledCard variant="outlined">
+      <StyledCardMedia image={menu.image || undefined}>
+        {!menu.image && <RestaurantMenu color="disabled" fontSize="large" />}
+      </StyledCardMedia>
+      <InfoStack>
+        <StyledCardContent>
+          <NameTypography variant="subtitle1">
+            {localize(menu.name, locale)}
+          </NameTypography>
+          {localize(menu.description, locale) && (
+            <WrapTypography color="textSecondary" variant="body2">
+              {localize(menu.description, locale)}
+            </WrapTypography>
+          )}
+        </StyledCardContent>
+        <StyledCardActions>
+          {canWrite && (
+            <Button
+              onClick={handleEditMenu}
+              size="small"
+              startIcon={<Edit fontSize="small" />}
+              variant="outlined"
+            >
+              {tMenus("settings.actions.update.title")}
+            </Button>
+          )}
+          {canViewAuditLog && (
+            <Button
+              component={Link}
+              href={getHref("/menus/audit-logs", {
+                ...DEFAULT_PAGINATION_QUERY,
+                organization: searchParams.get("organization"),
+              })}
+              size="small"
+              startIcon={<History fontSize="small" />}
+              variant="outlined"
+            >
+              {tAudit("title")}
+            </Button>
+          )}
+        </StyledCardActions>
+      </InfoStack>
+    </StyledCard>
   );
 };
 
-export default MenusTabsLayout;
+export default MenuCard;

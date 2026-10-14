@@ -5,8 +5,6 @@ import { notFound } from "next/navigation";
 
 import Payslips from ".";
 
-import AttendanceTabsLayout from "../../AttendanceTabsLayout";
-
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -16,8 +14,9 @@ import {
   payrollStatementSortFieldValues,
 } from "@/types/api";
 
-import { getAttendanceAccess, getPayrollStatements } from "@/utils/attendance";
+import { getPayrollStatements } from "@/utils/attendance";
 import { resolveGridSearchParams } from "@/utils/dataGrid";
+import { getAttendanceAccess } from "@/utils/session";
 
 interface PayslipsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -58,14 +57,11 @@ const PayslipsPage = async ({ params, searchParams }: PayslipsPageProps) => {
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const access = await getAttendanceAccess(
-    rawSearchParams.organization,
-    cookieStore.toString(),
-  );
+  const access = await getAttendanceAccess(rawSearchParams.organization);
 
   if (!access) notFound();
 
-  const { memberRole, organization } = access;
+  const { organization } = access;
 
   const {
     filterField,
@@ -108,21 +104,19 @@ const PayslipsPage = async ({ params, searchParams }: PayslipsPageProps) => {
   );
 
   return (
-    <AttendanceTabsLayout memberRole={memberRole}>
-      <Payslips
-        filterField={filterField}
-        filterOperator={filterOperator}
-        filterValue={filterValue}
-        organization={organization}
-        page={page}
-        pageSize={pageSize}
-        quickFilterValue={quickFilterValue}
-        rowCount={rowCount}
-        rows={rows}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-      />
-    </AttendanceTabsLayout>
+    <Payslips
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
+      organization={organization}
+      page={page}
+      pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
+      rowCount={rowCount}
+      rows={rows}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+    />
   );
 };
 

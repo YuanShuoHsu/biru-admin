@@ -5,8 +5,6 @@ import { notFound } from "next/navigation";
 
 import LeaveCases from ".";
 
-import AttendanceTabsLayout from "../../AttendanceTabsLayout";
-
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
@@ -19,7 +17,6 @@ import {
 } from "@/types/api";
 
 import {
-  getAttendanceAccess,
   getAttendanceContext,
   getAttendanceEmployees,
   getAttendanceLeaveCases,
@@ -29,6 +26,7 @@ import {
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceLeaveTypeNameEnumOptions } from "@/utils/enumOptions";
 import { hasRolePermission } from "@/utils/organizations";
+import { getAttendanceAccess } from "@/utils/session";
 
 interface LeaveCasesPageProps {
   params: Promise<{ locale: Locale }>;
@@ -72,10 +70,7 @@ const LeaveCasesPage = async ({
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const access = await getAttendanceAccess(
-    rawSearchParams.organization,
-    cookieStore.toString(),
-  );
+  const access = await getAttendanceAccess(rawSearchParams.organization);
 
   if (!access) notFound();
 
@@ -168,33 +163,31 @@ const LeaveCasesPage = async ({
   ]);
 
   return (
-    <AttendanceTabsLayout memberRole={memberRole}>
-      <LeaveCases
-        canDelete={hasRolePermission(memberRole, { leaveCase: ["delete"] })}
-        canUpdate={hasRolePermission(memberRole, { leaveCase: ["update"] })}
-        canAssignChild={hasRolePermission(memberRole, {
-          leaveCase: ["update"],
-        })}
-        canViewAll={canViewAll}
-        canWrite={canWrite}
-        canReviewOwn={selfReviewAllowed.leaveCase}
-        employeeId={employee?.id}
-        employees={employees}
-        filterField={filterField}
-        filterOperator={filterOperator}
-        filterValue={filterValue}
-        leaveTypes={leaveTypes}
-        organization={organization}
-        page={page}
-        pageSize={pageSize}
-        parentalChildren={parentalChildren}
-        quickFilterValue={quickFilterValue}
-        rowCount={rowCount}
-        rows={rows}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-      />
-    </AttendanceTabsLayout>
+    <LeaveCases
+      canDelete={hasRolePermission(memberRole, { leaveCase: ["delete"] })}
+      canUpdate={hasRolePermission(memberRole, { leaveCase: ["update"] })}
+      canAssignChild={hasRolePermission(memberRole, {
+        leaveCase: ["update"],
+      })}
+      canViewAll={canViewAll}
+      canWrite={canWrite}
+      canReviewOwn={selfReviewAllowed.leaveCase}
+      employeeId={employee?.id}
+      employees={employees}
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
+      leaveTypes={leaveTypes}
+      organization={organization}
+      page={page}
+      pageSize={pageSize}
+      parentalChildren={parentalChildren}
+      quickFilterValue={quickFilterValue}
+      rowCount={rowCount}
+      rows={rows}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+    />
   );
 };
 

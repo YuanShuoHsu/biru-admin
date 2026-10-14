@@ -5,8 +5,6 @@ import { notFound } from "next/navigation";
 
 import Reviews from ".";
 
-import AttendanceTabsLayout from "../../AttendanceTabsLayout";
-
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
@@ -19,7 +17,6 @@ import {
 } from "@/types/api";
 
 import {
-  getAttendanceAccess,
   getAttendanceContext,
   getAttendanceEmployees,
   getAttendanceLeaveTypes,
@@ -31,6 +28,7 @@ import {
   getAttendanceRequestEnumOptions,
 } from "@/utils/enumOptions";
 import { hasRolePermission } from "@/utils/organizations";
+import { getAttendanceAccess } from "@/utils/session";
 
 interface ReviewsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -71,10 +69,7 @@ const ReviewsPage = async ({ params, searchParams }: ReviewsPageProps) => {
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const access = await getAttendanceAccess(
-    rawSearchParams.organization,
-    cookieStore.toString(),
-  );
+  const access = await getAttendanceAccess(rawSearchParams.organization);
 
   if (!access) notFound();
 
@@ -155,31 +150,29 @@ const ReviewsPage = async ({ params, searchParams }: ReviewsPageProps) => {
   ]);
 
   return (
-    <AttendanceTabsLayout memberRole={memberRole}>
-      <Reviews
-        canGrantLeaveCase={hasRolePermission(memberRole, {
-          leaveCase: ["create"],
-        })}
-        canReview={hasRolePermission(memberRole, {
-          attendanceRequest: ["update"],
-        })}
-        canReviewOwn={selfReviewAllowed.attendanceRequest}
-        employeeId={employee?.id}
-        employees={employees}
-        filterField={filterField}
-        filterOperator={filterOperator}
-        filterValue={filterValue}
-        leaveTypes={leaveTypes}
-        organization={organization}
-        page={page}
-        pageSize={pageSize}
-        quickFilterValue={quickFilterValue}
-        rowCount={rowCount}
-        rows={rows}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-      />
-    </AttendanceTabsLayout>
+    <Reviews
+      canGrantLeaveCase={hasRolePermission(memberRole, {
+        leaveCase: ["create"],
+      })}
+      canReview={hasRolePermission(memberRole, {
+        attendanceRequest: ["update"],
+      })}
+      canReviewOwn={selfReviewAllowed.attendanceRequest}
+      employeeId={employee?.id}
+      employees={employees}
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
+      leaveTypes={leaveTypes}
+      organization={organization}
+      page={page}
+      pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
+      rowCount={rowCount}
+      rows={rows}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+    />
   );
 };
 

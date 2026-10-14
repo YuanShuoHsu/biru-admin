@@ -23,7 +23,9 @@ const RouteTabs = ({ ariaLabel, tabs }: RouteTabsProps) => {
   const navItem = useRoutes();
 
   const value =
-    tabs.find(({ path }) => pathname.startsWith(path))?.path || tabs[0].path;
+    tabs.find(({ path }) => pathname.startsWith(path))?.path ||
+    tabs[0]?.path ||
+    false;
 
   return (
     <Tabs

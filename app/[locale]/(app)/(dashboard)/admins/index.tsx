@@ -46,7 +46,11 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 
 import { deviceSessionsKey } from "@/hooks/useDeviceSessions";
 import { useRowSelection } from "@/hooks/useRowSelection";
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import {
+  authClient,
+  getErrorMessage,
+  getAuthErrorMessage,
+} from "@/lib/auth-client";
 
 import {
   AssignmentInd,
@@ -100,15 +104,9 @@ import {
   getUserSessions,
   type UserSessions,
 } from "@/utils/admins";
-import {
-  getDataGridSearchParams,
-  getFilterItemParams,
-  runSequentially,
-  SequentialRunError,
-} from "@/utils/dataGrid";
+import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAdminEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
-import { getErrorMessage as getFetchErrorMessage } from "@/utils/errors";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -593,22 +591,10 @@ const Admins = ({
       ),
       onConfirm: async () => {
         try {
-          const deletableIds = await getDeletableUserIds(selectedRows);
-          if (!selectedRows.every(({ id }) => deletableIds.has(id))) {
-            enqueueSnackbar(tAdmins("actions.batchRemoveUser.submit.stale"), {
-              variant: "error",
-            });
-            mutateAdmins();
-            mutate(deviceSessionsKey);
-            return;
-          }
-
-          await runSequentially(selectedRows, async ({ id: userId }) => {
-            const { error } = await authClient.admin.removeUser({ userId });
-            if (error)
-              throw new Error(
-                getErrorMessage(error.code ?? "", locale) || error.message,
-              );
+          await fetcher(`/api/users`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
           });
 
           setIsSelectMode(false);
@@ -623,19 +609,9 @@ const Admins = ({
             },
           );
         } catch (error) {
-          const reason =
-            error instanceof SequentialRunError ? error.reason : error;
-          const message = getFetchErrorMessage(reason);
-
-          enqueueSnackbar(
-            error instanceof SequentialRunError && error.done
-              ? tAdmins("actions.batchRemoveUser.submit.partial", {
-                  done: error.done,
-                  message,
-                })
-              : message,
-            { variant: "error" },
-          );
+          enqueueSnackbar(getAuthErrorMessage(error, locale), {
+            variant: "error",
+          });
         }
 
         mutateAdmins();

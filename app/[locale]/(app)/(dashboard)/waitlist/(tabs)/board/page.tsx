@@ -10,7 +10,7 @@ import type { Locale } from "@/i18n/routing";
 import type { AdminWaitlistResponse } from "@/types/waitlist";
 
 import { fetcher } from "@/utils/fetcher";
-import { getResolvedAdminOrganization } from "@/utils/menus";
+import { getResolvedAdminOrganization } from "@/utils/session";
 
 interface WaitlistPageProps {
   params: Promise<{ locale: Locale }>;
@@ -35,10 +35,7 @@ const WaitlistPage = async ({ params, searchParams }: WaitlistPageProps) => {
 
   setRequestLocale(locale);
 
-  const selectedOrganization = await getResolvedAdminOrganization(
-    organization,
-    cookieStore.toString(),
-  );
+  const selectedOrganization = await getResolvedAdminOrganization(organization);
 
   if (!selectedOrganization) return null;
 

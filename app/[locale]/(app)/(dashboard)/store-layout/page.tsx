@@ -10,8 +10,8 @@ import type { Locale } from "@/i18n/routing";
 
 import { STORE_LAYOUT_ORGANIZATION_SLUG } from "@/constants/storeLayout";
 
-import { getResolvedAdminOrganization } from "@/utils/menus";
 import { getAdminOrderBoard } from "@/utils/orders";
+import { getResolvedAdminOrganization } from "@/utils/session";
 
 interface StoreLayoutPageProps {
   params: Promise<{ locale: Locale }>;
@@ -39,10 +39,7 @@ const StoreLayoutPage = async ({
 
   setRequestLocale(locale);
 
-  const organization = await getResolvedAdminOrganization(
-    organizationSlug,
-    cookieStore.toString(),
-  );
+  const organization = await getResolvedAdminOrganization(organizationSlug);
 
   if (!organization) notFound();
 

@@ -7,8 +7,6 @@ import Coupons from ".";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-import { authClient } from "@/lib/auth-client";
-
 import {
   couponFilterFieldValues,
   couponSortFieldValues,
@@ -18,9 +16,12 @@ import {
 import { getCoupons } from "@/utils/coupons";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getCouponEnumOptions } from "@/utils/enumOptions";
-import { getResolvedAdminOrganization } from "@/utils/menus";
 import { getOrganizations, hasRolePermission } from "@/utils/organizations";
-import { getSession } from "@/utils/session";
+import {
+  getMemberRole,
+  getResolvedAdminOrganization,
+  getSession,
+} from "@/utils/session";
 
 interface CouponsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -64,7 +65,6 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
 
   const memberOrganization = await getResolvedAdminOrganization(
     rawSearchParams.organization,
-    cookieStore.toString(),
   );
 
   const selectedOrganization = isAdmin ? undefined : memberOrganization;
@@ -90,17 +90,14 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
   if (redirectParams)
     redirect({ href: `/coupons?${redirectParams.toString()}`, locale });
 
-  const { data: memberRole } = memberOrganization
-    ? await authClient.organization.getActiveMemberRole({
-        query: { organizationId: memberOrganization.id },
-        fetchOptions,
-      })
-    : { data: undefined };
+  const memberRole = memberOrganization
+    ? await getMemberRole(memberOrganization.id)
+    : null;
 
   const canGrantCoupon =
-    isAdmin || hasRolePermission(memberRole?.role, { coupon: ["create"] });
+    isAdmin || hasRolePermission(memberRole, { coupon: ["create"] });
 
-  const canViewAuditLog = hasRolePermission(memberRole?.role, {
+  const canViewAuditLog = hasRolePermission(memberRole, {
     auditLog: ["read"],
   });
 
