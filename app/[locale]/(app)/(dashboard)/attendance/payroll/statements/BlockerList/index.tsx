@@ -35,7 +35,7 @@ const BlockerList = ({
     snapshot: { blockers },
   },
 }: BlockerListProps) => {
-  const closeDialog = useDialogStore((state) => state.closeDialog);
+  const { closeDialog } = useDialogStore((state) => state);
 
   const tAttendance = useTranslations("attendance");
 

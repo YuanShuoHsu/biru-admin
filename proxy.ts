@@ -9,6 +9,7 @@ import createMiddleware from "next-intl/middleware";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+import { query } from "./constants/query";
 import {
   DEFAULT_AUTHENTICATED_ROUTE,
   NO_ADMIN_ACCESS_ROUTE,
@@ -87,7 +88,7 @@ export const proxy = async (request: NextRequest) => {
     const redirectTo =
       pathname.slice(`/${locale}`.length) + request.nextUrl.search;
     const url = new URL(`/${locale}${route}`, request.url);
-    if (redirectTo) url.searchParams.set("redirectTo", redirectTo);
+    if (redirectTo) url.searchParams.set(query.redirectTo, redirectTo);
 
     return NextResponse.redirect(url);
   };
@@ -111,7 +112,7 @@ export const proxy = async (request: NextRequest) => {
     return redirectWithReturn(NO_ADMIN_ACCESS_ROUTE);
 
   if (session && isNoAccessPage && canAccessAdmin) {
-    const redirectTo = request.nextUrl.searchParams.get("redirectTo");
+    const redirectTo = request.nextUrl.searchParams.get(query.redirectTo);
     const route = redirectTo?.startsWith("/")
       ? redirectTo
       : DEFAULT_AUTHENTICATED_ROUTE;
