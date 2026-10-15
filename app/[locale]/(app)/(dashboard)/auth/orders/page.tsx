@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 
@@ -28,14 +28,12 @@ export const generateMetadata = async ({
 };
 
 const AuthOrdersPage = async ({
-  params,
   searchParams,
 }: PageProps<"/[locale]/auth/orders">) => {
-  const [{ locale }, { page: rawPage, pageSize: rawPageSize }] =
-    await Promise.all([params, searchParams]);
-  if (!hasLocale(routing.locales, locale)) notFound();
-
-  setRequestLocale(locale);
+  const [locale, { page: rawPage, pageSize: rawPageSize }] = await Promise.all([
+    getLocale(),
+    searchParams,
+  ]);
 
   const page = Math.max(1, Number(rawPage) || 1);
   const pageSize = Math.min(

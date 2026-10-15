@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 
 import Banners from ".";
@@ -47,8 +47,6 @@ const BannersPage = async ({ params, searchParams }: BannersPageProps) => {
     params,
     searchParams,
   ]);
-
-  setRequestLocale(locale);
 
   const {
     filterField,

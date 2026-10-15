@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import AuthDeleteAccount from ".";
@@ -25,15 +25,9 @@ export const generateMetadata = async ({
 };
 
 const AuthDeleteAccountPage = async ({
-  params,
   searchParams,
 }: AuthDeleteAccountPageProps) => {
-  const [{ locale }, { email, redirectTo, token }] = await Promise.all([
-    params,
-    searchParams,
-  ]);
-
-  setRequestLocale(locale);
+  const { email, redirectTo, token } = await searchParams;
 
   const safeEmail = typeof email === "string" ? email : "";
   const safeRedirectTo =

@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
@@ -65,8 +65,6 @@ const HolidaySubstitutesPage = async ({
     params,
     searchParams,
   ]);
-
-  setRequestLocale(locale);
 
   const access = await getAttendanceAccess(rawSearchParams.organization);
 

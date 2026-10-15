@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 
 import Admins from ".";
@@ -52,8 +52,6 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
     params,
     searchParams,
   ]);
-
-  setRequestLocale(locale);
 
   const {
     filterField,

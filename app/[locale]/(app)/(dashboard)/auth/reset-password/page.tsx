@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import AuthResetPassword from ".";
@@ -26,15 +26,9 @@ export const generateMetadata = async ({
 };
 
 const AuthResetPasswordPage = async ({
-  params,
   searchParams,
 }: AuthResetPasswordPageProps) => {
-  const [{ locale }, { email, error, redirectTo, token }] = await Promise.all([
-    params,
-    searchParams,
-  ]);
-
-  setRequestLocale(locale);
+  const { email, error, redirectTo, token } = await searchParams;
 
   const safeEmail = typeof email === "string" ? email : "";
   const safeRedirectTo =

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
@@ -23,12 +23,7 @@ export const generateMetadata = async ({
 };
 
 const UserSessionsPage = async ({ params }: UserSessionsPageProps) => {
-  const [cookieStore, { locale, userId }] = await Promise.all([
-    cookies(),
-    params,
-  ]);
-
-  setRequestLocale(locale);
+  const [cookieStore, { userId }] = await Promise.all([cookies(), params]);
 
   const fetchOptions = {
     headers: {

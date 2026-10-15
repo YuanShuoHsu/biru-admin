@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import AuthVerifyEmail from ".";
@@ -32,8 +32,6 @@ const AuthVerifyEmailPage = async ({
     params,
     searchParams,
   ]);
-
-  setRequestLocale(locale);
 
   const safeEmail = typeof email === "string" ? email : "";
   const safeRedirectTo =

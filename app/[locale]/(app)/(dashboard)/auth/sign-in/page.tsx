@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 
 import AuthSignIn from ".";
@@ -22,16 +22,8 @@ export const generateMetadata = async ({
   return { title: tAuth("signIn.label") };
 };
 
-const AuthSignInPage = async ({
-  params,
-  searchParams,
-}: AuthSignInPageProps) => {
-  const [{ locale }, { redirectTo }] = await Promise.all([
-    params,
-    searchParams,
-  ]);
-
-  setRequestLocale(locale);
+const AuthSignInPage = async ({ searchParams }: AuthSignInPageProps) => {
+  const { redirectTo } = await searchParams;
 
   const safeRedirectTo =
     typeof redirectTo === "string" && redirectTo.startsWith("/")

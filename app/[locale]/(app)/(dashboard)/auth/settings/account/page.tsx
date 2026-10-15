@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import Account from ".";
@@ -18,15 +18,6 @@ export const generateMetadata = async ({
   return { title: tAuth("settings.account.label") };
 };
 
-const AuthSettingsAccountPage = async ({
-  params,
-}: PageProps<"/[locale]/auth/settings/account">) => {
-  const { locale } = await params;
-  if (!hasLocale(routing.locales, locale)) notFound();
-
-  setRequestLocale(locale);
-
-  return <Account />;
-};
+const AuthSettingsAccountPage = () => <Account />;
 
 export default AuthSettingsAccountPage;

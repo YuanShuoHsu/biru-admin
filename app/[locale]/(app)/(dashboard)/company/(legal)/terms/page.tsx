@@ -1,25 +1,22 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import CompanyLegalTerms from ".";
 
 import BackButton from "@/components/BackButton";
 
-import type { Locale } from "@/i18n/routing";
-
 import { buildMetadata } from "@/utils/metadata";
 
 interface CompanyLegalTermsPageProps {
-  params: Promise<{ locale: Locale }>;
   searchParams: Promise<{ back?: string; redirectTo?: string }>;
 }
 
-export const generateMetadata = async ({
-  params,
-}: CompanyLegalTermsPageProps): Promise<Metadata> => {
-  const { locale } = await params;
-  const tCompany = await getTranslations({ locale, namespace: "company" });
-  const tMetadata = await getTranslations({ locale, namespace: "metadata" });
+export const generateMetadata = async (): Promise<Metadata> => {
+  const [locale, tCompany, tMetadata] = await Promise.all([
+    getLocale(),
+    getTranslations("company"),
+    getTranslations("metadata"),
+  ]);
 
   return buildMetadata({
     description: tMetadata("terms.description"),
@@ -30,15 +27,12 @@ export const generateMetadata = async ({
 };
 
 const CompanyLegalTermsPage = async ({
-  params,
   searchParams,
 }: CompanyLegalTermsPageProps) => {
-  const [{ locale }, { back, redirectTo }] = await Promise.all([
-    params,
+  const [locale, { back, redirectTo }] = await Promise.all([
+    getLocale(),
     searchParams,
   ]);
-
-  setRequestLocale(locale);
 
   const safeBack =
     typeof back === "string" && back.startsWith("/") ? back : "/";

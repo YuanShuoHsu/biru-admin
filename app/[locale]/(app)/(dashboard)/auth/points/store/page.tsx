@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 
@@ -23,14 +23,7 @@ export const generateMetadata = async ({
   return { title: tAuth("store.label") };
 };
 
-const AuthPointsStorePage = async ({
-  params,
-}: PageProps<"/[locale]/auth/points/store">) => {
-  const { locale } = await params;
-  if (!hasLocale(routing.locales, locale)) notFound();
-
-  setRequestLocale(locale);
-
+const AuthPointsStorePage = async () => {
   const reqHeaders = await headers();
   const cookie = reqHeaders.get("cookie") || "";
   const points = await fetcher<MyPoints>("/api/users/me/points", {

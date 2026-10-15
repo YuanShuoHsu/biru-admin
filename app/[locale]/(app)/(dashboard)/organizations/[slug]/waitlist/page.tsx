@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
@@ -34,12 +34,7 @@ export const generateMetadata = async ({
 const OrganizationsSlugWaitlistPage = async ({
   params,
 }: OrganizationsSlugWaitlistPageProps) => {
-  const [cookieStore, { locale, slug }] = await Promise.all([
-    cookies(),
-    params,
-  ]);
-
-  setRequestLocale(locale);
+  const [cookieStore, { slug }] = await Promise.all([cookies(), params]);
 
   const organizationSlug = decodeURIComponent(slug);
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };

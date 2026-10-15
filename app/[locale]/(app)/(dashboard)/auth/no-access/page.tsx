@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 
 import AuthNoAccess from ".";
 
@@ -30,8 +30,6 @@ const AuthNoAccessPage = async ({
     params,
     searchParams,
   ]);
-
-  setRequestLocale(locale);
 
   const safeRedirectTo =
     typeof redirectTo === "string" && redirectTo.startsWith("/")

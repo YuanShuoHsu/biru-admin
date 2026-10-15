@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
@@ -44,8 +44,6 @@ const MenuItemRecipePage = async ({
 }: MenuItemRecipePageProps) => {
   const [cookieStore, { locale, menuSectionId, menuItemId }, rawSearchParams] =
     await Promise.all([cookies(), params, searchParams]);
-
-  setRequestLocale(locale);
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
   const section = await getAdminMenuSection(menuSectionId, fetchOptions);

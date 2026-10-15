@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
@@ -53,8 +53,6 @@ const CalendarPage = async ({ params, searchParams }: CalendarPageProps) => {
     { locale },
     { date: dateParam, organization: organizationSlug, view: viewParam },
   ] = await Promise.all([cookies(), params, searchParams]);
-
-  setRequestLocale(locale);
 
   const access = await getAttendanceAccess(organizationSlug);
 

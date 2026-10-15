@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
@@ -34,8 +34,6 @@ const IngredientAuditLogsPage = async ({
     searchParams,
     cookies(),
   ]);
-
-  setRequestLocale(locale);
 
   const ingredient = await getIngredient(ingredientId, {
     headers: { cookie: cookieStore.toString() },

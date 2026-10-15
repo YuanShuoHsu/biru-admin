@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 
 import AuthForgotPassword from ".";
 
@@ -20,15 +20,9 @@ export const generateMetadata = async ({
 };
 
 const AuthForgotPasswordPage = async ({
-  params,
   searchParams,
 }: AuthForgotPasswordPageProps) => {
-  const [{ locale }, { redirectTo }] = await Promise.all([
-    params,
-    searchParams,
-  ]);
-
-  setRequestLocale(locale);
+  const { redirectTo } = await searchParams;
 
   const safeRedirectTo =
     typeof redirectTo === "string" && redirectTo.startsWith("/")

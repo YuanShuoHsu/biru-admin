@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 
 import AuditLogsPage, {
   type AuditLogSearchParams,
@@ -32,8 +32,6 @@ const MenuItemAddOnAuditLogsPage = async ({
 }: MenuItemAddOnAuditLogsPageProps) => {
   const [{ locale, addOnId, menuItemId, menuSectionId }, query] =
     await Promise.all([params, searchParams]);
-
-  setRequestLocale(locale);
 
   return (
     <AuditLogsPage

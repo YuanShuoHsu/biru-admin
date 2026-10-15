@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
@@ -32,12 +32,10 @@ export const generateMetadata = async ({
 const OrganizationsSlugTeamsTeamIdPage = async ({
   params,
 }: OrganizationsSlugTeamsTeamIdPageProps) => {
-  const [cookieStore, { locale, slug, teamId }] = await Promise.all([
+  const [cookieStore, { slug, teamId }] = await Promise.all([
     cookies(),
     params,
   ]);
-
-  setRequestLocale(locale);
 
   const cookieHeader = { cookie: cookieStore.toString() };
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
@@ -36,8 +36,6 @@ const StoreLayoutPage = async ({
 }: StoreLayoutPageProps) => {
   const [cookieStore, { locale }, { organization: organizationSlug }] =
     await Promise.all([cookies(), params, searchParams]);
-
-  setRequestLocale(locale);
 
   const organization = await getResolvedAdminOrganization(organizationSlug);
 

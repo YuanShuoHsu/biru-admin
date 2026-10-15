@@ -4,6 +4,8 @@
 
 import { Formats, hasLocale } from "next-intl";
 import { getRequestConfig } from "next-intl/server";
+import { notFound } from "next/navigation";
+import * as rootParams from "next/root-params";
 
 import { PLATFORM_TIMEZONE } from "@/constants/timezone";
 
@@ -80,11 +82,13 @@ export const formats = {
   },
 } satisfies Formats;
 
-export default getRequestConfig(async ({ requestLocale }) => {
-  const requested = await requestLocale;
-  const locale = hasLocale(routing.locales, requested)
-    ? requested
-    : routing.defaultLocale;
+export default getRequestConfig(async ({ locale }) => {
+  if (!locale) {
+    const paramValue = await rootParams.locale();
+
+    if (hasLocale(routing.locales, paramValue)) locale = paramValue;
+    else notFound();
+  }
 
   const messages = Object.fromEntries(
     await Promise.all(

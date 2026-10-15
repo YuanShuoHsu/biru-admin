@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
@@ -43,8 +43,6 @@ const DeletedRecordsPage = async ({
   const [cookieStore, { locale }, rawSearchParams, session] = await Promise.all(
     [cookies(), params, searchParams, getSession()],
   );
-
-  setRequestLocale(locale);
 
   const cookie = cookieStore.toString();
   const init = { headers: { cookie } };

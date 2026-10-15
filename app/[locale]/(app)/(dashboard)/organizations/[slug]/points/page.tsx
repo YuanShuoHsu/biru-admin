@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
@@ -31,12 +31,7 @@ export const generateMetadata = async ({
 const OrganizationsSlugPointsPage = async ({
   params,
 }: OrganizationsSlugPointsPageProps) => {
-  const [cookieStore, { locale, slug }] = await Promise.all([
-    cookies(),
-    params,
-  ]);
-
-  setRequestLocale(locale);
+  const [cookieStore, { slug }] = await Promise.all([cookies(), params]);
 
   const [{ data }, session] = await Promise.all([
     authClient.organization.getFullOrganization({

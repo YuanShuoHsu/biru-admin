@@ -3,9 +3,10 @@
 
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
+import { locale as rootLocale } from "next/root-params";
 
 import "./globals.css";
 
@@ -30,10 +31,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const generateMetadata = async ({
-  params,
-}: LayoutProps<"/[locale]">): Promise<Metadata> => {
-  const { locale } = await params;
+export const generateMetadata = async (): Promise<Metadata> => {
+  const locale = await rootLocale();
   if (!hasLocale(routing.locales, locale)) notFound();
 
   const tMetadata = await getTranslations({ locale, namespace: "metadata" });
@@ -55,11 +54,9 @@ export const generateMetadata = async ({
 export const generateStaticParams = async () =>
   routing.locales.map((locale) => ({ locale }));
 
-const RootLayout = async ({ children, params }: LayoutProps<"/[locale]">) => {
-  const { locale } = await params;
+const RootLayout = async ({ children }: LayoutProps<"/[locale]">) => {
+  const locale = await rootLocale();
   if (!hasLocale(routing.locales, locale)) notFound();
-
-  setRequestLocale(locale);
 
   return (
     <html

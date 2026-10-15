@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 
 import Dashboard from ".";
@@ -48,8 +48,6 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
   const range = resolveDashboardRange(rangeParam);
   const { hourly, bucketDays, buckets } = DASHBOARD_RANGES[range];
   const trendPeriodDays = hourly ? 1 : buckets * bucketDays;
-
-  setRequestLocale(locale);
 
   const fetchOptions = {
     headers: {

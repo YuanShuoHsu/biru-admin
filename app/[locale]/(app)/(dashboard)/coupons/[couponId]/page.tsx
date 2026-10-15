@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
@@ -48,8 +48,6 @@ const CouponRecipientsPage = async ({
 }: CouponRecipientsPageProps) => {
   const [cookieStore, { couponId, locale }, rawSearchParams] =
     await Promise.all([cookies(), params, searchParams]);
-
-  setRequestLocale(locale);
 
   const {
     filterField,

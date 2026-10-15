@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 
 import AdminWaitlist from ".";
@@ -32,8 +32,6 @@ const WaitlistPage = async ({ params, searchParams }: WaitlistPageProps) => {
     params,
     searchParams,
   ]);
-
-  setRequestLocale(locale);
 
   const selectedOrganization = await getResolvedAdminOrganization(organization);
 

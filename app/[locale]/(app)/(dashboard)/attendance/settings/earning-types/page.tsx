@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
@@ -57,8 +57,6 @@ const EarningTypesPage = async ({
     params,
     searchParams,
   ]);
-
-  setRequestLocale(locale);
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
