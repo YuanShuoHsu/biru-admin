@@ -4195,6 +4195,7 @@ export interface components {
     };
     AttendanceBatchSkippedResponseDto: {
       id: string;
+      message: string;
       reason: components["schemas"]["AttendanceErrorCode"];
     };
     AttendanceBatchResponseDto: {

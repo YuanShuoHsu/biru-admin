@@ -50,7 +50,6 @@ import type {
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
-import { getWaitlistErrorCode } from "@/utils/waitlist";
 
 const COLUMN_STATUSES = [
   "waiting",
@@ -144,12 +143,7 @@ const AdminWaitlist = ({
     });
 
   const showError = (error: unknown) => {
-    const code = getWaitlistErrorCode(error);
-
-    enqueueSnackbar(
-      code ? tWaitlist(`errors.${code}`) : getErrorMessage(error),
-      { variant: "error" },
-    );
+    enqueueSnackbar(getErrorMessage(error), { variant: "error" });
   };
 
   const handleTransition = async (

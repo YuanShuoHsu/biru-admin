@@ -8,7 +8,6 @@ export type CreateWaitlistTicketDto =
   components["schemas"]["CreateWaitlistTicketDto"];
 export type UpdateWaitlistSettingsDto =
   components["schemas"]["UpdateWaitlistSettingsDto"];
-export type WaitlistErrorCode = components["schemas"]["WaitlistErrorCode"];
 export type WaitlistGroup = components["schemas"]["WaitlistGroupDto"];
 export type WaitlistSettingsResponse =
   components["schemas"]["WaitlistSettingsResponseDto"];

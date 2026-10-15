@@ -55,12 +55,9 @@ import type { Organization } from "@/types/organizations";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceLeaveTypeEnumOptions } from "@/utils/enumOptions";
-import {
-  attendanceErrorKey,
-  attendancePath,
-  getStatutoryLeaveName,
-} from "@/utils/attendance";
+import { attendancePath, getStatutoryLeaveName } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { getErrorMessage } from "@/utils/errors";
 
 const ActionsStack = styled(Stack)({
   height: "100%",
@@ -295,7 +292,7 @@ const LeaveTypes = ({
 
             mutate();
           } catch (error) {
-            enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+            enqueueSnackbar(getErrorMessage(error), {
               variant: "error",
             });
           }
@@ -358,7 +355,7 @@ const LeaveTypes = ({
             },
           );
         } catch (error) {
-          enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+          enqueueSnackbar(getErrorMessage(error), {
             variant: "error",
           });
         }

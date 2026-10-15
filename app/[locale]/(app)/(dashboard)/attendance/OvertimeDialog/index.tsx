@@ -29,8 +29,9 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { AttendanceShift } from "@/types/attendance";
 
-import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
+import { attendancePath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { getErrorMessage } from "@/utils/errors";
 import { scheduledHours } from "@/utils/scheduledHours";
 
 dayjs.extend(utc);
@@ -183,7 +184,7 @@ const OvertimeDialog = ({
 
       mutate();
     } catch (error) {
-      enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+      enqueueSnackbar(getErrorMessage(error), {
         variant: "error",
       });
 

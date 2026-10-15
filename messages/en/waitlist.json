@@ -49,16 +49,6 @@
     "success": "Updated {ticketNumber}"
   },
   "empty": "No one is waiting",
-  "errors": {
-    "waitlistClosed": "The store is closed, so the waitlist isn't open.",
-    "waitlistCutoff": "It's close to closing time, so guests can no longer join the waitlist.",
-    "waitlistDisabled": "The walk-in waitlist is off for this store.",
-    "waitlistGroupsInvalid": "Party size groups must start at 1 and be continuous without overlaps.",
-    "waitlistPartySizeUnavailable": "No group covers this party size.",
-    "waitlistPaused": "The waitlist is paused.",
-    "waitlistPhoneInQueue": "This phone number is already on the waitlist.",
-    "waitlistTransitionInvalid": "This ticket has changed. Please refresh."
-  },
   "group": "Group {prefix}",
   "label": "Waitlist",
   "list": {

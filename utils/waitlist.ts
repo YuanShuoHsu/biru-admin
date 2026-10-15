@@ -2,24 +2,13 @@ import { cache } from "react";
 
 import { fetcher } from "./fetcher";
 
-import { waitlistErrorCodeValues } from "@/types/api";
 import type {
-  WaitlistErrorCode,
   WaitlistTicketFilterField,
   WaitlistTicketListItem,
   WaitlistTicketSortField,
 } from "@/types/waitlist";
 
 import { type GridQuery, getGridSearchParams } from "@/utils/dataGrid";
-import type { FetchError } from "@/utils/fetcher";
-
-export const getWaitlistErrorCode = (
-  error: unknown,
-): WaitlistErrorCode | undefined => {
-  const code = (error as FetchError)?.info?.message;
-
-  return waitlistErrorCodeValues.find((value) => value === code);
-};
 
 export const getWaitlistTickets = cache(
   async (

@@ -50,8 +50,9 @@ import type {
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 
-import { attendanceErrorKey, payrollPath } from "@/utils/attendance";
+import { payrollPath } from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
+import { getErrorMessage } from "@/utils/errors";
 import { getPayrollEarningTypeEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 
@@ -280,7 +281,7 @@ const EarningTypes = ({
 
             mutate();
           } catch (error) {
-            enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+            enqueueSnackbar(getErrorMessage(error), {
               variant: "error",
             });
           }
@@ -343,7 +344,7 @@ const EarningTypes = ({
             },
           );
         } catch (error) {
-          enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+          enqueueSnackbar(getErrorMessage(error), {
             variant: "error",
           });
         }

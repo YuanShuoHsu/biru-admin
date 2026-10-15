@@ -43,8 +43,9 @@ import type {
   AttendanceTeam,
 } from "@/types/attendance";
 
-import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
+import { attendancePath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { getErrorMessage } from "@/utils/errors";
 import { getSingleDaySchedule } from "@/utils/openingHours";
 
 dayjs.extend(utc);
@@ -300,7 +301,7 @@ const ShiftDialog = ({
       } catch (error) {
         if (!controller.signal.aborted)
           setConflict({
-            message: tAttendance(attendanceErrorKey(error)),
+            message: getErrorMessage(error),
             requestKey,
           });
       }
@@ -389,7 +390,7 @@ const ShiftDialog = ({
 
       mutate();
     } catch (error) {
-      enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+      enqueueSnackbar(getErrorMessage(error), {
         variant: "error",
       });
 

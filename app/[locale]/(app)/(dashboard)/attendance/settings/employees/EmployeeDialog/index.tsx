@@ -52,13 +52,9 @@ import type {
   SaveAttendanceEmployee,
 } from "@/types/attendance";
 
-import {
-  attendanceErrorKey,
-  attendancePath,
-  WEEK_DAYS,
-  weekdayDate,
-} from "@/utils/attendance";
+import { attendancePath, WEEK_DAYS, weekdayDate } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { getErrorMessage } from "@/utils/errors";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -362,7 +358,7 @@ const EmployeeDialog = ({
 
       mutate();
     } catch (error) {
-      enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+      enqueueSnackbar(getErrorMessage(error), {
         variant: "error",
       });
 

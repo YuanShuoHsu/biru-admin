@@ -20,12 +20,9 @@ import type {
   AttendanceParentalChild,
 } from "@/types/attendance";
 
-import {
-  attendanceErrorKey,
-  attendancePath,
-  getStatutoryLeaveName,
-} from "@/utils/attendance";
+import { attendancePath, getStatutoryLeaveName } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { getErrorMessage } from "@/utils/errors";
 
 interface AssignChildDialogProps {
   leaveCase: AttendanceLeaveCase;
@@ -91,7 +88,7 @@ const AssignChildDialog = ({
 
       mutate();
     } catch (error) {
-      enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+      enqueueSnackbar(getErrorMessage(error), {
         variant: "error",
       });
 

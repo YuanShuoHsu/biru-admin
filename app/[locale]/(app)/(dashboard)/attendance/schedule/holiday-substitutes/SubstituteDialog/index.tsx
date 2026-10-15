@@ -28,11 +28,11 @@ import type {
 
 import {
   attendanceCalendarPath,
-  attendanceErrorKey,
   attendancePath,
   formatScheduledShift,
 } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { getErrorMessage } from "@/utils/errors";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -127,7 +127,7 @@ const SubstituteDialog = ({
 
       mutate();
     } catch (error) {
-      enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+      enqueueSnackbar(getErrorMessage(error), {
         variant: "error",
       });
 

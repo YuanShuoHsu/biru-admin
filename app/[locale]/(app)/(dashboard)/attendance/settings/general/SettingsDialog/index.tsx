@@ -47,8 +47,9 @@ import type {
   OccupationalIndustryRate,
 } from "@/types/attendance";
 
-import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
+import { attendancePath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { getErrorMessage } from "@/utils/errors";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -225,7 +226,7 @@ const SettingsDialog = ({
 
       router.refresh();
     } catch (error) {
-      enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+      enqueueSnackbar(getErrorMessage(error), {
         variant: "error",
       });
 

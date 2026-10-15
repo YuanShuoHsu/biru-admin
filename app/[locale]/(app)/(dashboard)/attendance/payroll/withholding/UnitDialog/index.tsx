@@ -22,8 +22,9 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { PayrollWithholdingUnit } from "@/types/attendance";
 
-import { attendanceErrorKey, payrollPath } from "@/utils/attendance";
+import { payrollPath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { getErrorMessage } from "@/utils/errors";
 
 interface UnitDialogProps {
   mutate: () => void;
@@ -110,7 +111,7 @@ const UnitDialog = ({ mutate, organizationSlug, unit }: UnitDialogProps) => {
 
       mutate();
     } catch (error) {
-      enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+      enqueueSnackbar(getErrorMessage(error), {
         variant: "error",
       });
 

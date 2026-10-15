@@ -23,8 +23,9 @@ import type {
   AttendanceShift,
 } from "@/types/attendance";
 
-import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
+import { attendancePath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { getErrorMessage } from "@/utils/errors";
 
 const ContentStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(2),
@@ -140,7 +141,7 @@ const PunchCard = ({
       mutate();
       onPunched();
     } catch (error) {
-      enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+      enqueueSnackbar(getErrorMessage(error), {
         variant: "error",
       });
     } finally {

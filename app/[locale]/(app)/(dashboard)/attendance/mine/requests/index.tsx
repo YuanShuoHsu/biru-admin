@@ -60,14 +60,11 @@ import type {
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 
-import {
-  attendanceErrorKey,
-  attendancePath,
-  getStatutoryLeaveName,
-} from "@/utils/attendance";
+import { attendancePath, getStatutoryLeaveName } from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceRequestEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
+import { getErrorMessage } from "@/utils/errors";
 
 const DataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
@@ -334,7 +331,7 @@ const Requests = ({
             );
             mutate();
           } catch (error) {
-            enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+            enqueueSnackbar(getErrorMessage(error), {
               variant: "error",
             });
           }

@@ -39,7 +39,6 @@ import type {
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
-import { getWaitlistErrorCode } from "@/utils/waitlist";
 
 const CUTOFF_MINUTES_MAX = 240;
 const GRACE_MINUTES_MAX = 60;
@@ -77,7 +76,6 @@ const UpdateWaitlistDialog = ({
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const tOrganizations = useTranslations("organizations");
-  const tWaitlist = useTranslations("waitlist");
 
   const waitlistFormSchema = useWaitlistFormSchema();
 
@@ -166,12 +164,7 @@ const UpdateWaitlistDialog = ({
 
       onSaved(saved);
     } catch (error) {
-      const code = getWaitlistErrorCode(error);
-
-      enqueueSnackbar(
-        code ? tWaitlist(`errors.${code}`) : getErrorMessage(error),
-        { variant: "error" },
-      );
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
 
       setDialog({ confirmLoading: false });
     }

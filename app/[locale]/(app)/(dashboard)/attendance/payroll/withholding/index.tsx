@@ -42,8 +42,9 @@ import type {
 } from "@/types/attendance";
 import type { Organization } from "@/types/organizations";
 
-import { attendanceErrorKey, fromCents, payrollPath } from "@/utils/attendance";
+import { fromCents, payrollPath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { getErrorMessage } from "@/utils/errors";
 
 const ToolbarStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",
@@ -181,14 +182,14 @@ const Withholding = ({
         anchor.click();
         URL.revokeObjectURL(url);
       } catch (error) {
-        enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+        enqueueSnackbar(getErrorMessage(error), {
           variant: "error",
         });
       } finally {
         setDownloading(null);
       }
     },
-    [organizationSlug, tAttendance],
+    [organizationSlug],
   );
 
   const amountColumn = useCallback(

@@ -1,7 +1,5 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-
 import { List, ListItem, ListItemText } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -18,16 +16,11 @@ interface BatchSkippedListProps {
 }
 
 const BatchSkippedList = ({ labels, skipped }: BatchSkippedListProps) => {
-  const tAttendance = useTranslations("attendance");
-
   return (
     <StyledList dense disablePadding>
-      {skipped.map(({ id, reason }) => (
+      {skipped.map(({ id, message }) => (
         <ListItem disableGutters key={id}>
-          <ListItemText
-            primary={labels[id]}
-            secondary={tAttendance(`errors.${reason}`)}
-          />
+          <ListItemText primary={labels[id]} secondary={message} />
         </ListItem>
       ))}
     </StyledList>

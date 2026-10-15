@@ -30,7 +30,6 @@ import type {
 import { getPhoneDefaults, getPhoneFormatting } from "@/utils/countries";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
-import { getWaitlistErrorCode } from "@/utils/waitlist";
 
 export const WAITLIST_TICKET_FORM_ID = "waitlist-ticket-form";
 
@@ -135,12 +134,7 @@ const WaitlistTicketDialog = ({
 
       mutate();
     } catch (error) {
-      const code = getWaitlistErrorCode(error);
-
-      enqueueSnackbar(
-        code ? tWaitlist(`errors.${code}`) : getErrorMessage(error),
-        { variant: "error" },
-      );
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
 
       setDialog({ confirmLoading: false });
     }

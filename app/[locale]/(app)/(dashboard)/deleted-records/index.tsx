@@ -37,7 +37,6 @@ import type {
   DeletedRecordTable,
 } from "@/types/deletedRecords";
 
-import { attendanceErrorKey } from "@/utils/attendance";
 import { getDeletedRecordsPath } from "@/utils/deletedRecords";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
@@ -94,7 +93,6 @@ const DeletedRecords = ({
 
   const apiRef = useGridApiRef();
 
-  const tAttendance = useTranslations("attendance");
   const tDeletedRecords = useTranslations("deletedRecords");
 
   const updateQuery = useUpdateQuery();
@@ -163,17 +161,6 @@ const DeletedRecords = ({
     [updateQuery],
   );
 
-  const restoreErrorMessage = useCallback(
-    (error: unknown) => {
-      const attendanceKey = attendanceErrorKey(error);
-
-      return attendanceKey === "errors.error"
-        ? getErrorMessage(error)
-        : tAttendance(attendanceKey);
-    },
-    [tAttendance],
-  );
-
   const restoreBatches = useCallback(
     async (ids: number[]) => {
       await fetcher(`${getDeletedRecordsPath(organizationSlug)}/restore`, {
@@ -210,21 +197,14 @@ const DeletedRecords = ({
 
             mutate();
           } catch (error) {
-            enqueueSnackbar(restoreErrorMessage(error), { variant: "error" });
+            enqueueSnackbar(getErrorMessage(error), { variant: "error" });
           }
         },
         open: true,
         title: tDeletedRecords("restore.title"),
       });
     },
-    [
-      locale,
-      mutate,
-      restoreBatches,
-      restoreErrorMessage,
-      setDialog,
-      tDeletedRecords,
-    ],
+    [locale, mutate, restoreBatches, setDialog, tDeletedRecords],
   );
 
   const handleEnterDeletedRecordBatchRestoreMode = useCallback(() => {
@@ -273,7 +253,7 @@ const DeletedRecords = ({
             },
           );
         } catch (error) {
-          enqueueSnackbar(restoreErrorMessage(error), { variant: "error" });
+          enqueueSnackbar(getErrorMessage(error), { variant: "error" });
         }
 
         mutate();
@@ -286,7 +266,6 @@ const DeletedRecords = ({
     clearRowSelection,
     mutate,
     restoreBatches,
-    restoreErrorMessage,
     selectedRows,
     setDialog,
     tDeletedRecords,

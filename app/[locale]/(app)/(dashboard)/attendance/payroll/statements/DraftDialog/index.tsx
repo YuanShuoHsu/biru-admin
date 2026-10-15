@@ -46,13 +46,9 @@ import type {
   PayrollStatement,
 } from "@/types/attendance";
 
-import {
-  attendanceErrorKey,
-  fromCents,
-  payrollPath,
-  toCents,
-} from "@/utils/attendance";
+import { fromCents, payrollPath, toCents } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { getErrorMessage } from "@/utils/errors";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -214,7 +210,7 @@ const DraftDialog = ({
 
       mutate();
     } catch (error) {
-      enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+      enqueueSnackbar(getErrorMessage(error), {
         variant: "error",
       });
 

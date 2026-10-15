@@ -9,19 +9,21 @@ import { Button, DialogContentText } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { attendanceErrorCodeValues } from "@/types/api";
-import type { AttendanceErrorCode, AttendanceShift } from "@/types/attendance";
+import type { AttendanceShift } from "@/types/attendance";
 
-import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
+import { attendancePath } from "@/utils/attendance";
+import { getErrorMessage } from "@/utils/errors";
 import { type FetchError, fetcher } from "@/utils/fetcher";
 
 import CancelShiftDialog from "@/app/[locale]/(app)/(dashboard)/attendance/CancelShiftDialog";
 
-const irreversibleRule = (error: unknown) => {
+const irreversibleReason = (error: unknown) => {
   const info = (error as FetchError)?.info;
 
-  return info?.message === "cancelIrreversible" && "reason" in info
-    ? attendanceErrorCodeValues.find((code) => code === info.reason)
+  return info?.code === "cancelIrreversible" &&
+    "reasonMessage" in info &&
+    typeof info.reasonMessage === "string"
+    ? info.reasonMessage
     : undefined;
 };
 
@@ -65,7 +67,7 @@ export const useCancelShift = (
                         { variant: "success" },
                       );
                     } catch (error) {
-                      enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+                      enqueueSnackbar(getErrorMessage(error), {
                         variant: "error",
                       });
                     }
@@ -96,7 +98,7 @@ export const useCancelShift = (
   );
 
   const confirmIrreversible = useCallback(
-    (shift: AttendanceShift, rule: AttendanceErrorCode, reason?: string) =>
+    (shift: AttendanceShift, ruleMessage: string, reason?: string) =>
       setDialog({
         confirmText: tAttendance("cancelShift"),
         content: (
@@ -104,7 +106,7 @@ export const useCancelShift = (
             {tAttendance.rich("cancelShiftIrreversible", {
               bold: (chunks) => <strong>{chunks}</strong>,
               name: shift.employeeName,
-              reason: tAttendance(`errors.${rule}`),
+              reason: ruleMessage,
             })}
           </DialogContentText>
         ),
@@ -115,7 +117,7 @@ export const useCancelShift = (
 
             handleCancelled(shift, false);
           } catch (error) {
-            enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+            enqueueSnackbar(getErrorMessage(error), {
               variant: "error",
             });
           }
@@ -135,26 +137,20 @@ export const useCancelShift = (
 
         handleCancelled(shift, true);
       } catch (error) {
-        const rule = irreversibleRule(error);
+        const ruleMessage = irreversibleReason(error);
 
-        if (rule) {
-          confirmIrreversible(shift, rule, reason);
+        if (ruleMessage) {
+          confirmIrreversible(shift, ruleMessage, reason);
 
           return;
         }
 
-        enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+        enqueueSnackbar(getErrorMessage(error), {
           variant: "error",
         });
       }
     },
-    [
-      closeDialog,
-      confirmIrreversible,
-      handleCancelled,
-      requestCancel,
-      tAttendance,
-    ],
+    [closeDialog, confirmIrreversible, handleCancelled, requestCancel],
   );
 
   return useCallback(

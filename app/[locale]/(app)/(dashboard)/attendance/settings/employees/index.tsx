@@ -66,14 +66,11 @@ import type {
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 
-import {
-  attendanceErrorKey,
-  attendancePath,
-  payrollPath,
-} from "@/utils/attendance";
+import { attendancePath, payrollPath } from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceEmployeeEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
+import { getErrorMessage } from "@/utils/errors";
 
 const StyledStack = styled(Stack)({
   height: "100%",
@@ -388,7 +385,7 @@ const Employees = ({
 
             mutate();
           } catch (error) {
-            enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+            enqueueSnackbar(getErrorMessage(error), {
               variant: "error",
             });
           }
@@ -453,7 +450,7 @@ const Employees = ({
             },
           );
         } catch (error) {
-          enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+          enqueueSnackbar(getErrorMessage(error), {
             variant: "error",
           });
         }

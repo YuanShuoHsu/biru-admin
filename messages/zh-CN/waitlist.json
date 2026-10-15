@@ -49,16 +49,6 @@
     "success": "已更新 {ticketNumber}"
   },
   "empty": "当前没有排队",
-  "errors": {
-    "waitlistClosed": "当前非营业时间，暂不开放取号。",
-    "waitlistCutoff": "已接近打烊时间，现场排队已停止取号。",
-    "waitlistDisabled": "本店尚未开启现场排队。",
-    "waitlistGroupsInvalid": "人数分组须从 1 开始连续且不可重叠。",
-    "waitlistPartySizeUnavailable": "没有符合此人数的分组。",
-    "waitlistPaused": "当前暂停取号。",
-    "waitlistPhoneInQueue": "此电话号码已在排队中。",
-    "waitlistTransitionInvalid": "号码牌状态已变更，请刷新。"
-  },
   "group": "{prefix} 组",
   "label": "现场排队",
   "list": {

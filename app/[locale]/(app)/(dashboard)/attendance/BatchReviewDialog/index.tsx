@@ -18,8 +18,8 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { AttendanceBatchResult } from "@/types/attendance";
 
-import { attendanceErrorKey } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { getErrorMessage } from "@/utils/errors";
 
 interface BatchReviewDialogProps {
   labels: Record<string, string>;
@@ -85,7 +85,7 @@ const BatchReviewDialog = ({
         });
       else closeDialog();
     } catch (error) {
-      enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+      enqueueSnackbar(getErrorMessage(error), {
         variant: "error",
       });
 

@@ -11,8 +11,6 @@ import { PLATFORM_TIMEZONE, STORE_TIMEZONE } from "@/constants/timezone";
 import type { GridColDef } from "@mui/x-data-grid";
 
 import {
-  attendanceErrorCodeValues,
-  payrollBlockerValues,
   payrollDeductionLineCodeValues,
   payrollEarningLineCodeValues,
   payrollEmployerCostCodeValues,
@@ -23,7 +21,6 @@ import type {
   AttendanceEmployee,
   AttendanceEmployeeFilterField,
   AttendanceEmployeeSortField,
-  AttendanceErrorCode,
   AttendanceHolidaySubstitute,
   AttendanceHolidaySubstituteFilterField,
   AttendanceHolidaySubstitutePage,
@@ -58,7 +55,6 @@ import type {
   AttendanceTeam,
   OccupationalIndustryRate,
   MyWithholdingCertificate,
-  PayrollBlocker,
   PayrollEarningType,
   PayrollEarningTypeFilterField,
   PayrollEarningTypeSortField,
@@ -70,7 +66,7 @@ import type {
   PayrollWithholdingSummary,
 } from "@/types/attendance";
 import { getGridSearchParams, type GridQuery } from "@/utils/dataGrid";
-import { fetcher, type FetchError } from "@/utils/fetcher";
+import { fetcher } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 
 dayjs.extend(utc);
@@ -627,11 +623,6 @@ export const getPayrollTerms = cache(
   },
 );
 
-const attendanceErrorCodes = [
-  ...attendanceErrorCodeValues,
-  ...payrollBlockerValues,
-];
-
 type Formatter = ReturnType<typeof useFormatter>;
 
 export const formatScheduledShift = (
@@ -660,14 +651,6 @@ export const formatClockedShift = (
   return clockOutAt == null
     ? `${format.dateTime(new Date(clockInAt), style)}–`
     : format.dateTimeRange(new Date(clockInAt), new Date(clockOutAt), style);
-};
-
-export const attendanceErrorKey = (
-  error: unknown,
-): `errors.${AttendanceErrorCode | PayrollBlocker | "error"}` => {
-  const code = (error as FetchError)?.info?.message;
-
-  return `errors.${attendanceErrorCodes.find((key) => key === code) ?? "error"}`;
 };
 
 export const getStatutoryLeaveName = (

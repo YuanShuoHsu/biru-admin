@@ -32,7 +32,6 @@ import type { AdminWaitlistResponse } from "@/types/waitlist";
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
-import { getWaitlistErrorCode } from "@/utils/waitlist";
 
 const HeaderStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",
@@ -96,12 +95,7 @@ const WaitlistControls = () => {
   if (!organizationSlug || !waitlist?.enabled) return null;
 
   const showError = (error: unknown) => {
-    const code = getWaitlistErrorCode(error);
-
-    enqueueSnackbar(
-      code ? tWaitlist(`errors.${code}`) : getErrorMessage(error),
-      { variant: "error" },
-    );
+    enqueueSnackbar(getErrorMessage(error), { variant: "error" });
   };
 
   const handleAddDialog = async () => {

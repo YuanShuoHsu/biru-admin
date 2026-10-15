@@ -51,13 +51,13 @@ import {
   ATTENDANCE_CALENDAR_VIEWS,
   attendanceCalendarPath,
   attendanceCalendarRange,
-  attendanceErrorKey,
   attendancePath,
   getStatutoryLeaveName,
   type AttendanceCalendarView,
 } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 import { getDaySchedules, toTimeDayjs } from "@/utils/openingHours";
+import { getErrorMessage } from "@/utils/errors";
 import { scheduledHours } from "@/utils/scheduledHours";
 
 dayjs.extend(utc);
@@ -476,7 +476,7 @@ const Calendar = ({
                     ),
                   );
                 } catch (error) {
-                  enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+                  enqueueSnackbar(getErrorMessage(error), {
                     variant: "error",
                   });
                 }
@@ -593,7 +593,7 @@ const Calendar = ({
                   try {
                     await saveShift(shift.id, original);
                   } catch (error) {
-                    enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+                    enqueueSnackbar(getErrorMessage(error), {
                       variant: "error",
                     });
                   }
@@ -609,7 +609,7 @@ const Calendar = ({
 
         return true;
       } catch (error) {
-        enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+        enqueueSnackbar(getErrorMessage(error), {
           variant: "error",
         });
 

@@ -18,8 +18,9 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import { payrollEarningCategoryValues } from "@/types/api";
 import type { PayrollEarningType } from "@/types/attendance";
 
-import { attendanceErrorKey, payrollPath } from "@/utils/attendance";
+import { payrollPath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { getErrorMessage } from "@/utils/errors";
 
 interface EarningTypeDialogProps {
   earningType?: PayrollEarningType;
@@ -85,7 +86,7 @@ const EarningTypeDialog = ({
 
       mutate();
     } catch (error) {
-      enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+      enqueueSnackbar(getErrorMessage(error), {
         variant: "error",
       });
 

@@ -59,12 +59,12 @@ import type { Organization } from "@/types/organizations";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import {
-  attendanceErrorKey,
   attendancePath,
   formatLeaveDuration,
   getStatutoryLeaveName,
 } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { getErrorMessage } from "@/utils/errors";
 
 const StyledStack = styled(Stack)({
   alignItems: "center",
@@ -335,7 +335,7 @@ const LeaveCases = ({
             );
             mutate();
           } catch (error) {
-            enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+            enqueueSnackbar(getErrorMessage(error), {
               variant: "error",
             });
           }
@@ -467,7 +467,7 @@ const LeaveCases = ({
             },
           );
         } catch (error) {
-          enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+          enqueueSnackbar(getErrorMessage(error), {
             variant: "error",
           });
         }

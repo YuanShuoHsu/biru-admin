@@ -25,8 +25,9 @@ import { styled } from "@mui/material/styles";
 import type { MyWithholdingCertificate } from "@/types/attendance";
 import type { Organization } from "@/types/organizations";
 
-import { attendanceErrorKey, fromCents, payrollPath } from "@/utils/attendance";
+import { fromCents, payrollPath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { getErrorMessage } from "@/utils/errors";
 
 const CardsStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(2),
@@ -94,7 +95,7 @@ const MyWithholding = ({
 
       router.refresh();
     } catch (error) {
-      enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+      enqueueSnackbar(getErrorMessage(error), {
         variant: "error",
       });
     }

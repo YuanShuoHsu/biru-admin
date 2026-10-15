@@ -39,12 +39,12 @@ import type {
 } from "@/types/attendance";
 
 import {
-  attendanceErrorKey,
   attendancePath,
   formatScheduledShift,
   getStatutoryLeaveName,
 } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { getErrorMessage } from "@/utils/errors";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -213,7 +213,7 @@ const ReviewDialog = ({
 
       mutate();
     } catch (error) {
-      enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+      enqueueSnackbar(getErrorMessage(error), {
         variant: "error",
       });
 

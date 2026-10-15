@@ -22,8 +22,9 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { residenceCountryCodeValues } from "@/types/api";
 
-import { attendanceErrorKey, payrollPath } from "@/utils/attendance";
+import { payrollPath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { getErrorMessage } from "@/utils/errors";
 
 const OTHER_COUNTRY_CODE = "ZZ";
 
@@ -112,7 +113,7 @@ const TaxIdentityDialog = ({
 
       mutate();
     } catch (error) {
-      enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+      enqueueSnackbar(getErrorMessage(error), {
         variant: "error",
       });
 

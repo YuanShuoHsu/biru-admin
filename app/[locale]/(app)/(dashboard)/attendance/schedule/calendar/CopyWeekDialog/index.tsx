@@ -28,8 +28,9 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { AttendanceCopyWeekResult } from "@/types/attendance";
 
-import { attendanceErrorKey, attendancePath } from "@/utils/attendance";
+import { attendancePath } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { getErrorMessage } from "@/utils/errors";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -109,7 +110,7 @@ const CopyWeekDialog = ({
 
       onCopied(result);
     } catch (error) {
-      enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+      enqueueSnackbar(getErrorMessage(error), {
         variant: "error",
       });
 
@@ -146,11 +147,7 @@ const CopyWeekDialog = ({
         )}
       </TextField>
       {isLoading && <LinearProgress />}
-      {error && (
-        <Typography color="error">
-          {tAttendance(attendanceErrorKey(error))}
-        </Typography>
-      )}
+      {error && <Typography color="error">{getErrorMessage(error)}</Typography>}
       {preview && !preview.created.length && !preview.skipped.length && (
         <Typography>{tAttendance("copyWeek.empty")}</Typography>
       )}

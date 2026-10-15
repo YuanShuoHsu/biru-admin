@@ -1,7 +1,6 @@
 import {
   attendanceEmployeeFilterFieldValues,
   attendanceEmployeeSortFieldValues,
-  attendanceErrorCodeValues,
   attendanceHolidaySubstituteFilterFieldValues,
   attendanceHolidaySubstituteSortFieldValues,
   attendanceLeaveBalanceFilterFieldValues,
@@ -146,7 +145,6 @@ export type PayrollEarningTypeFilterField =
 export type PayrollEarningTypeSortField =
   (typeof payrollEarningTypeSortFieldValues)[number];
 
-export type AttendanceErrorCode = (typeof attendanceErrorCodeValues)[number];
 export type PayrollBlocker = (typeof payrollBlockerValues)[number];
 
 export type AttendanceRequestFilterField =

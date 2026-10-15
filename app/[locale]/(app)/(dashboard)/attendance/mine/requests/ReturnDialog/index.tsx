@@ -23,12 +23,9 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { AttendanceRequest } from "@/types/attendance";
 
-import {
-  attendanceErrorKey,
-  attendancePath,
-  getStatutoryLeaveName,
-} from "@/utils/attendance";
+import { attendancePath, getStatutoryLeaveName } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
+import { getErrorMessage } from "@/utils/errors";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -119,7 +116,7 @@ const ReturnDialog = ({
 
       mutate();
     } catch (error) {
-      enqueueSnackbar(tAttendance(attendanceErrorKey(error)), {
+      enqueueSnackbar(getErrorMessage(error), {
         variant: "error",
       });
 
