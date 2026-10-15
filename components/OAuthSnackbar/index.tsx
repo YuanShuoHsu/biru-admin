@@ -12,8 +12,10 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 import { authClient } from "@/lib/auth-client";
 
 const oauthErrorCodes = [
+  "BANNED_USER",
   "access_denied",
   "account_already_linked_to_different_user",
+  "account_not_linked",
   "email_does_not_match",
   "invalid_code",
   "unable_to_get_user_info",
