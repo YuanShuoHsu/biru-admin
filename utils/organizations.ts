@@ -1,3 +1,4 @@
+import type { useTranslations } from "next-intl";
 import { cache } from "react";
 
 import { fetcher } from "./fetcher";
@@ -5,6 +6,7 @@ import { fetcher } from "./fetcher";
 import { authClient } from "@/lib/auth-client";
 
 import type {
+  Organization,
   OrganizationDeletability,
   OrganizationResponse,
 } from "@/types/organizations";
@@ -23,7 +25,7 @@ export const getOrganizations = cache(
   async (fetchOptions?: { headers: { cookie: string } }) => {
     try {
       return await fetcher<OrganizationResponse[]>(
-        "/api/organizations",
+        "/api/organizations?includeClosed=true",
         fetchOptions,
       );
     } catch {
@@ -31,6 +33,14 @@ export const getOrganizations = cache(
     }
   },
 );
+
+export const getOrganizationLabel = (
+  tCommon: ReturnType<typeof useTranslations<"common">>,
+  {
+    closedAt,
+    name,
+  }: Pick<Organization | OrganizationResponse, "closedAt" | "name">,
+) => (closedAt ? tCommon("organization.closed", { name }) : name);
 
 export const sortByCreatedAtDesc = <T extends { createdAt: Date }>(
   items: T[],

@@ -145,15 +145,16 @@ const AuditLogsPage = async ({
     if (!hasRolePermission(memberRole, { auditLog: ["read"] })) notFound();
   }
 
-  const [tAudit, organizations] = await Promise.all([
+  const [tAudit, tCommon, organizations] = await Promise.all([
     getTranslations({ locale, namespace: "audit" }),
+    getTranslations({ locale, namespace: "common" }),
     isAdmin ? getOrganizations(fetchOptions) : [],
   ]);
 
   const quickFilterEnums = quickFilterValue
     ? getQuickFilterEnums(
         quickFilterValue,
-        getAuditLogEnumOptions(tAudit, !resource, organizations),
+        getAuditLogEnumOptions(tAudit, tCommon, !resource, organizations),
       )
     : [];
 

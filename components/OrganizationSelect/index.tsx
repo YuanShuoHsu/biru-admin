@@ -7,11 +7,12 @@ import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
-import type { OrganizationResponse } from "@/types/organizations";
+import type { Organization, OrganizationResponse } from "@/types/organizations";
 
 import { MenuItem, TextField, styled } from "@mui/material";
 
 import { getHref } from "@/utils/href";
+import { getOrganizationLabel } from "@/utils/organizations";
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
   [theme.breakpoints.up("sm")]: {
@@ -20,7 +21,10 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
 }));
 
 interface OrganizationSelectProps {
-  organizations: Pick<OrganizationResponse, "id" | "name" | "slug">[];
+  organizations: Pick<
+    Organization | OrganizationResponse,
+    "closedAt" | "id" | "name" | "slug"
+  >[];
   organizationSlug: string;
   readOnly?: boolean;
 }
@@ -64,7 +68,7 @@ const OrganizationSelect = ({
               displayEmpty: true,
               renderValue: () =>
                 currentOrganization ? (
-                  currentOrganization.name
+                  getOrganizationLabel(tCommon, currentOrganization)
                 ) : (
                   <em>{tCommon("organization.placeholder")}</em>
                 ),
@@ -72,7 +76,9 @@ const OrganizationSelect = ({
       }}
       value={
         readOnly
-          ? currentOrganization?.name || ""
+          ? currentOrganization
+            ? getOrganizationLabel(tCommon, currentOrganization)
+            : ""
           : currentOrganization?.slug || ""
       }
       onChange={readOnly ? undefined : handleChange}
@@ -83,9 +89,9 @@ const OrganizationSelect = ({
             <MenuItem disabled key="" value="">
               <em>{tCommon("organization.placeholder")}</em>
             </MenuItem>,
-            ...organizations.map(({ id, name, slug }) => (
-              <MenuItem key={id} value={slug}>
-                {name}
+            ...organizations.map((organization) => (
+              <MenuItem key={organization.id} value={organization.slug}>
+                {getOrganizationLabel(tCommon, organization)}
               </MenuItem>
             )),
           ]}

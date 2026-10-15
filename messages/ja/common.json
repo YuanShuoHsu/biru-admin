@@ -35,6 +35,7 @@
   "multiply": "×",
   "optional": "（任意）",
   "organization": {
+    "closed": "{name}（営業終了）",
     "label": "組織",
     "placeholder": "組織を選択してください"
   },

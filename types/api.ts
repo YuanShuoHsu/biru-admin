@@ -3134,7 +3134,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 查詢營業中的組織 */
+    /** 查詢營業中的組織；平台管理員可帶 includeClosed 含停業 */
     get: operations["OrganizationsController_findAll"];
     put?: never;
     post?: never;
@@ -16392,7 +16392,10 @@ export interface operations {
   };
   OrganizationsController_findAll: {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description 含停業的組織；限平台管理員 */
+        includeClosed?: boolean;
+      };
       header?: never;
       path?: never;
       cookie?: never;

@@ -35,6 +35,7 @@
   "multiply": "×",
   "optional": "(optional)",
   "organization": {
+    "closed": "{name} (closed)",
     "label": "Organization",
     "placeholder": "Please select your organization"
   },

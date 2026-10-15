@@ -108,6 +108,7 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
         quickFilterValue,
         getCouponEnumOptions(
           await getTranslations({ locale, namespace: "coupons" }),
+          await getTranslations({ locale, namespace: "common" }),
           await organizationsPromise,
         ),
       )

@@ -510,8 +510,8 @@ const AuditLogs = ({
   const dateFilterOperators = useDateFilterOperators();
 
   const enumOptions = useMemo(
-    () => getAuditLogEnumOptions(tAudit, !resource, organizations),
-    [organizations, resource, tAudit],
+    () => getAuditLogEnumOptions(tAudit, tCommon, !resource, organizations),
+    [organizations, resource, tAudit, tCommon],
   );
   const valueLabels = useAuditLogValueLabels();
   const objectLabels = useAuditLogObjectLabels();

@@ -35,6 +35,7 @@
   "multiply": "×",
   "optional": "（選填）",
   "organization": {
+    "closed": "{name}（已停業）",
     "label": "組織",
     "placeholder": "請選擇您的組織"
   },

@@ -188,6 +188,7 @@ const Coupons = ({
   const locale = useLocale();
 
   const tAuth = useTranslations("auth");
+  const tCommon = useTranslations("common");
   const tCoupons = useTranslations("coupons");
 
   const stringFilterOperators = useStringFilterOperators();
@@ -200,13 +201,13 @@ const Coupons = ({
 
   const { data: organizations = initialOrganizations } = useSWR<
     OrganizationResponse[]
-  >(canManageCoupon ? "/api/organizations" : null, fetcher, {
+  >(canManageCoupon ? "/api/organizations?includeClosed=true" : null, fetcher, {
     fallbackData: initialOrganizations,
   });
 
   const enumOptions = useMemo(
-    () => getCouponEnumOptions(tCoupons, organizations),
-    [organizations, tCoupons],
+    () => getCouponEnumOptions(tCoupons, tCommon, organizations),
+    [organizations, tCommon, tCoupons],
   );
 
   const couponsPath =
@@ -576,12 +577,14 @@ const Coupons = ({
             }: GridRenderCellParams<Coupon>) => (
               <ChipsStack direction="row">
                 {applicableOrganizationIds?.length ? (
-                  organizations
-                    .filter(({ id }) => applicableOrganizationIds.includes(id))
-                    .map(({ id, name }) => (
+                  enumOptions.applicableOrganizationIds
+                    .filter(({ value }) =>
+                      applicableOrganizationIds.includes(value),
+                    )
+                    .map(({ label, value }) => (
                       <Chip
-                        key={id}
-                        label={name}
+                        key={value}
+                        label={label}
                         size="small"
                         variant="outlined"
                       />
@@ -787,7 +790,6 @@ const Coupons = ({
       isSelectMode,
       numberFilterOperators,
       organization?.id,
-      organizations,
       stringFilterOperators,
       tAuth,
       tCoupons,

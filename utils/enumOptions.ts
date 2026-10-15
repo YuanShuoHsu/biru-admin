@@ -35,8 +35,11 @@ import {
 } from "@/types/api";
 import type { OrganizationResponse } from "@/types/organizations";
 
+import { getOrganizationLabel } from "@/utils/organizations";
+
 export const getAuditLogEnumOptions = (
   tAudit: ReturnType<typeof useTranslations<"audit">>,
+  tCommon: ReturnType<typeof useTranslations<"common">>,
   hasResourceColumn: boolean,
   organizations: OrganizationResponse[],
 ) => ({
@@ -47,7 +50,10 @@ export const getAuditLogEnumOptions = (
   organizationId: organizations.length
     ? [
         { label: tAudit("platform"), value: PLATFORM_ORGANIZATION_ID },
-        ...organizations.map(({ id, name }) => ({ label: name, value: id })),
+        ...organizations.map((organization) => ({
+          label: getOrganizationLabel(tCommon, organization),
+          value: organization.id,
+        })),
       ]
     : [],
   resource: hasResourceColumn
@@ -86,11 +92,15 @@ export const getBannerEnumOptions = (
 
 export const getCouponEnumOptions = (
   tCoupons: ReturnType<typeof useTranslations<"coupons">>,
+  tCommon: ReturnType<typeof useTranslations<"common">>,
   organizations: OrganizationResponse[],
 ) => ({
   applicableOrganizationIds: [
     { label: tCoupons("organizationScope.all"), value: "all" },
-    ...organizations.map(({ id, name }) => ({ label: name, value: id })),
+    ...organizations.map((organization) => ({
+      label: getOrganizationLabel(tCommon, organization),
+      value: organization.id,
+    })),
   ],
   distribution: [
     { label: tCoupons("isPublic.label"), value: "isPublic" },

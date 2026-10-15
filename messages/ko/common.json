@@ -35,6 +35,7 @@
   "multiply": "×",
   "optional": "(선택)",
   "organization": {
+    "closed": "{name} (영업 종료)",
     "label": "조직",
     "placeholder": "조직을 선택해 주세요"
   },

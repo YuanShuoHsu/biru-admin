@@ -42,6 +42,7 @@ import type { OrderMenu } from "@/types/menus";
 import type { OrganizationResponse } from "@/types/organizations";
 
 import { fetcher } from "@/utils/fetcher";
+import { getOrganizationLabel } from "@/utils/organizations";
 
 const StyledGrid = styled(Grid)({
   width: "100%",
@@ -172,18 +173,22 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
   const allOrganizationsOption = {
     id: "",
     name: tCoupons("organizationScope.all"),
+    disabled: false,
   };
-  const organizationOptions = [
-    allOrganizationsOption,
-    ...organizations.map(({ id, name }) => ({ id, name })),
-  ];
+  const storeOptions = organizations.map((organization) => ({
+    id: organization.id,
+    name: getOrganizationLabel(tCommon, organization),
+    disabled:
+      !!organization.closedAt &&
+      !coupon?.applicableOrganizationIds?.includes(organization.id),
+  }));
+  const organizationOptions = [allOrganizationsOption, ...storeOptions];
 
   const onSubmitHandler = async (values: CouponFormValues) => {
     try {
       setDialog({ confirmLoading: true });
 
       const body: CreateCouponDto = {
-        // null 表示清除，讓已限定店家的券可改回全部店家通用
         applicableOrganizationIds: values.applicableOrganizationIds.length
           ? values.applicableOrganizationIds
           : null,
@@ -192,7 +197,6 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
         discountType: values.discountType,
         discountValue: Number(values.discountValue),
         isActive: values.isActive,
-        // 點數兌換券的取得管道旗標由 server 寫入時正規化，client 不重複執行
         isClaimable: values.isClaimable,
         isPublic: values.isPublic,
         ...(values.issueTrigger === "spend" &&
@@ -209,7 +213,6 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
         ...(values.perUserLimit && {
           perUserLimit: Number(values.perUserLimit),
         }),
-        // null 表示清除，讓已設定的券可取消點數兌換
         pointsCost: values.pointsCost ? Number(values.pointsCost) : null,
         scope: values.scope,
         ...(values.totalLimit && { totalLimit: Number(values.totalLimit) }),
@@ -299,6 +302,7 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
               { shouldValidate: isSubmitted },
             );
           }}
+          getOptionDisabled={({ disabled }) => disabled}
           options={organizationOptions}
           renderInput={(params) => (
             <TextField
@@ -330,7 +334,8 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
               setValue("menuItemIds", []);
               setValue("menuSectionIds", []);
             }}
-            options={organizations}
+            getOptionDisabled={({ disabled }) => disabled}
+            options={storeOptions}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -345,7 +350,7 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
               />
             )}
             value={
-              organizations.find(
+              storeOptions.find(
                 ({ id }) => id === applicableOrganizationIds[0],
               ) || null
             }
