@@ -37,14 +37,14 @@
     "dayjs": "^1.11.19",
     "js-cookie": "^3.0.8",
     "libphonenumber-js": "^1.12.38",
-    "next": "16.3.2",
+    "next": "16.4.0",
     "next-intl": "^4.8.3",
     "nipplejs": "^1.0.4",
     "notistack": "^3.0.2",
     "postprocessing": "^6.39.5",
     "qrcode.react": "^4.2.0",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
     "react-hook-form": "^7.71.2",
     "react-imask": "^7.6.1",
     "react-number-format": "^5.4.5",
@@ -57,7 +57,7 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/turbopack": "^4.3.3",
     "@types/autosuggest-highlight": "^3.2.3",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
@@ -66,7 +66,7 @@
     "@types/three": "^0.186.0",
     "@types/ua-parser-js": "^0.7.39",
     "eslint": "^9",
-    "eslint-config-next": "16.3.2",
+    "eslint-config-next": "16.4.0",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "lint-staged": "^16.3.2",
@@ -75,6 +75,7 @@
     "tailwindcss": "^4",
     "typescript": "^5"
   },
+  "packageManager": "pnpm@12.4.2",
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
   }

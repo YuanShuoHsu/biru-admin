@@ -18,6 +18,8 @@ import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
 import { buildOpenGraph, buildTwitter } from "@/utils/metadata";
 import { getSiteMeta } from "@/utils/siteMeta";
 
+export const instant = false;
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
