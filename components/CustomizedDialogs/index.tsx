@@ -104,8 +104,7 @@ const CustomizedDialogs = () => {
       await onConfirm?.();
       closeDialog();
     } catch (error) {
-      const message = getErrorMessage(error);
-      enqueueSnackbar(message, { variant: "error" });
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
     } finally {
       setDialog({ confirmLoading: false });
     }

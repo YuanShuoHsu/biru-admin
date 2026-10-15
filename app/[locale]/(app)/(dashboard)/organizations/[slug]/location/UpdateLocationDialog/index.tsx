@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm } from "react-hook-form";
@@ -14,7 +14,7 @@ import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import { Chip, Divider } from "@mui/material";
 
@@ -35,8 +35,6 @@ const UpdateLocationDialog = ({
   organization,
 }: UpdateLocationDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
-
-  const locale = useLocale();
 
   const tOrganizations = useTranslations("organizations");
 
@@ -93,8 +91,7 @@ const UpdateLocationDialog = ({
         },
       },
       {
-        onError: ({ error: { code } }) => {
-          const message = getErrorMessage(code, locale);
+        onError: ({ error: { message } }) => {
           enqueueSnackbar(message, { variant: "error" });
 
           setDialog({ confirmLoading: false });

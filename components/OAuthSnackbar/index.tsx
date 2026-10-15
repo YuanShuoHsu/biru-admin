@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useRef } from "react";
@@ -9,12 +9,18 @@ import { query } from "@/constants/query";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
+
+const oauthErrorCodes = [
+  "access_denied",
+  "account_already_linked_to_different_user",
+  "email_does_not_match",
+  "invalid_code",
+  "unable_to_get_user_info",
+] as const;
 
 const OAuthSnackbar = () => {
   const handled = useRef(false);
-
-  const locale = useLocale();
 
   const pathname = usePathname();
 
@@ -38,7 +44,11 @@ const OAuthSnackbar = () => {
     router.replace(`${pathname}${search ? `?${search}` : ""}`);
 
     if (error) {
-      enqueueSnackbar(getErrorMessage(error, locale), { variant: "error" });
+      const code = oauthErrorCodes.find((value) => value === error);
+
+      enqueueSnackbar(tAuth(`oauthErrors.${code ?? "default"}`), {
+        variant: "error",
+      });
     } else if (provider === "google") {
       authClient.getSession().then(({ data: session }) => {
         enqueueSnackbar(
@@ -47,7 +57,7 @@ const OAuthSnackbar = () => {
         );
       });
     }
-  }, [error, locale, pathname, provider, router, searchParams, tAuth]);
+  }, [error, pathname, provider, router, searchParams, tAuth]);
 
   return null;
 };

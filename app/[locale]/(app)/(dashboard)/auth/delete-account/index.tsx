@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -16,7 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useRouter } from "@/i18n/navigation";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import {
   CheckCircle,
@@ -85,8 +85,6 @@ const AuthDeleteAccount = ({
 
   const { setSession } = useAuthStore((state) => state);
 
-  const locale = useLocale();
-
   const router = useRouter();
 
   const tAuth = useTranslations("auth");
@@ -108,10 +106,9 @@ const AuthDeleteAccount = ({
       await authClient.deleteUser(
         { token },
         {
-          headers: { "Accept-Language": locale },
-          onError: ({ error: { code } }) => {
+          onError: ({ error: { message } }) => {
             setState({
-              errorMessage: getErrorMessage(code, locale),
+              errorMessage: message,
               status: DELETE_STATUS.FAILED,
             });
           },
@@ -129,7 +126,7 @@ const AuthDeleteAccount = ({
     };
 
     deleteAccount();
-  }, [locale, router, setSession, signInPath, startCountdown, token]);
+  }, [router, setSession, signInPath, startCountdown, token]);
 
   const configs: Record<
     DeleteStatus,

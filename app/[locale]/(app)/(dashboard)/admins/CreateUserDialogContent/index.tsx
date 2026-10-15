@@ -24,7 +24,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { usePasswordValidation } from "@/hooks/usePasswordValidation";
 import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
@@ -149,8 +149,7 @@ const CreateUserDialogContent = ({
             },
           },
           {
-            onError: ({ error: { code } }) => {
-              const message = getErrorMessage(code, locale);
+            onError: ({ error: { message } }) => {
               enqueueSnackbar(message, { variant: "error" });
 
               setDialog({ confirmLoading: false });

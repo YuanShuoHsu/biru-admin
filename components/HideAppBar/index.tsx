@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import { Suspense } from "react";
 
@@ -27,7 +27,7 @@ import { useRoutes } from "@/hooks/useRoutes";
 
 import { useRouter } from "@/i18n/navigation";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import { Close, Menu } from "@mui/icons-material";
 import {
@@ -86,8 +86,6 @@ const HideAppBar = () => {
   const { session, setSession } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
 
-  const locale = useLocale();
-
   const router = useRouter();
 
   const navItem = useRoutes();
@@ -119,8 +117,8 @@ const HideAppBar = () => {
       onConfirm: async () => {
         await authClient.admin.stopImpersonating({
           fetchOptions: {
-            onError: ({ error: { code } }) => {
-              enqueueSnackbar(getErrorMessage(code, locale), {
+            onError: ({ error: { message } }) => {
+              enqueueSnackbar(message, {
                 variant: "error",
               });
             },

@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -17,7 +17,7 @@ import { userRoleValues } from "@/types/api";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import type { User } from "@/types/admins";
 
@@ -35,8 +35,6 @@ const SetRoleDialogContent = ({
   user,
 }: SetRoleDialogContentProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
-
-  const locale = useLocale();
 
   const tAdmins = useTranslations("admins");
 
@@ -59,8 +57,7 @@ const SetRoleDialogContent = ({
       await authClient.admin.setRole(
         { role, userId: user.id },
         {
-          onError: ({ error: { code } }) => {
-            const message = getErrorMessage(code, locale);
+          onError: ({ error: { message } }) => {
             enqueueSnackbar(message, { variant: "error" });
 
             setDialog({ confirmLoading: false });

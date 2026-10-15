@@ -32,6 +32,7 @@
     "label": "操作",
     "leaveOrganization": {
       "confirm": "<bold>{name}</bold> を退出しますか？",
+      "noAccess": "このアカウントには管理画面へのアクセス権限がありません。管理者にお問い合わせください。",
       "success": "組織の退出に成功しました",
       "title": "組織を退出"
     },

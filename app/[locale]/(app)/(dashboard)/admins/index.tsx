@@ -11,7 +11,7 @@
 
 "use client";
 
-import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
@@ -46,11 +46,7 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 
 import { deviceSessionsKey } from "@/hooks/useDeviceSessions";
 import { useRowSelection } from "@/hooks/useRowSelection";
-import {
-  authClient,
-  getErrorMessage,
-  getAuthErrorMessage,
-} from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import {
   AssignmentInd,
@@ -106,6 +102,7 @@ import {
 } from "@/utils/admins";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAdminEnumOptions } from "@/utils/enumOptions";
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
@@ -221,8 +218,6 @@ const Admins = ({
   const format = useFormatter();
 
   const apiRef = useGridApiRef();
-
-  const locale = useLocale();
 
   const pathname = usePathname();
 
@@ -445,8 +440,7 @@ const Admins = ({
           await authClient.admin.unbanUser(
             { userId: id },
             {
-              onError: ({ error: { code } }) => {
-                const message = getErrorMessage(code, locale);
+              onError: ({ error: { message } }) => {
                 enqueueSnackbar(message, { variant: "error" });
               },
               onSuccess: () => {
@@ -462,7 +456,7 @@ const Admins = ({
         title: tAdmins("actions.unbanUser.title"),
       });
     },
-    [locale, mutateAdmins, setDialog, tAdmins],
+    [mutateAdmins, setDialog, tAdmins],
   );
 
   const handleImpersonateUser = useCallback(
@@ -480,8 +474,8 @@ const Admins = ({
           await authClient.admin.impersonateUser(
             { userId: user.id },
             {
-              onError: ({ error: { code } }) => {
-                enqueueSnackbar(getErrorMessage(code, locale), {
+              onError: ({ error: { message } }) => {
+                enqueueSnackbar(message, {
                   variant: "error",
                 });
               },
@@ -518,7 +512,7 @@ const Admins = ({
         title: tAdmins("actions.impersonateUser.title"),
       });
     },
-    [locale, paginationModel, pathname, router, setDialog, setSession, tAdmins],
+    [paginationModel, pathname, router, setDialog, setSession, tAdmins],
   );
 
   const handleRemoveUser = useCallback(
@@ -536,8 +530,7 @@ const Admins = ({
           await authClient.admin.removeUser(
             { userId: id },
             {
-              onError: ({ error: { code } }) => {
-                const message = getErrorMessage(code, locale);
+              onError: ({ error: { message } }) => {
                 enqueueSnackbar(message, { variant: "error" });
               },
               onSuccess: () => {
@@ -556,7 +549,7 @@ const Admins = ({
         title: tAdmins("actions.removeUser.title"),
       });
     },
-    [locale, mutate, mutateAdmins, setDialog, tAdmins],
+    [mutate, mutateAdmins, setDialog, tAdmins],
   );
 
   const handleEnterUserBatchRemoveMode = useCallback(() => {
@@ -609,7 +602,7 @@ const Admins = ({
             },
           );
         } catch (error) {
-          enqueueSnackbar(getAuthErrorMessage(error, locale), {
+          enqueueSnackbar(getErrorMessage(error), {
             variant: "error",
           });
         }
@@ -623,7 +616,6 @@ const Admins = ({
   }, [
     apiRef,
     clearRowSelection,
-    locale,
     mutate,
     mutateAdmins,
     selectedRows,

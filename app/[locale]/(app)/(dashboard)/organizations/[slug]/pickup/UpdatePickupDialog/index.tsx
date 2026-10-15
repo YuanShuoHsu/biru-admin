@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -14,7 +14,7 @@ import { PICKUP_MAX_ADVANCE_DAYS } from "@/constants/pickup";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -30,8 +30,6 @@ const UpdatePickupDialog = ({
   organization,
 }: UpdatePickupDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
-
-  const locale = useLocale();
 
   const tOrganizations = useTranslations("organizations");
 
@@ -78,8 +76,7 @@ const UpdatePickupDialog = ({
         },
       },
       {
-        onError: ({ error: { code } }) => {
-          const message = getErrorMessage(code, locale);
+        onError: ({ error: { message } }) => {
           enqueueSnackbar(message, { variant: "error" });
 
           setDialog({ confirmLoading: false });

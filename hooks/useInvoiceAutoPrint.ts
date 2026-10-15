@@ -16,12 +16,6 @@ interface InvoicePrintReadyPayload {
   orderId: string;
 }
 
-/**
- * 開票完成後在櫃檯自動印出證明聯。
- *
- * 瀏覽器不會靜默列印，一般模式仍會跳出列印對話框；
- * 要免點擊直接出紙，櫃檯那台 Chrome 需以 --kiosk-printing 啟動。
- */
 const useInvoiceAutoPrint = (enabled: boolean, organizationSlug: string) => {
   useEffect(() => {
     if (!enabled) return;
@@ -35,7 +29,6 @@ const useInvoiceAutoPrint = (enabled: boolean, organizationSlug: string) => {
 
         printDocument(printHtml);
       } catch (error) {
-        // 自動列印沒出紙，櫃檯要知道才會改用手動列印
         enqueueSnackbar(getErrorMessage(error), { variant: "error" });
       }
     };

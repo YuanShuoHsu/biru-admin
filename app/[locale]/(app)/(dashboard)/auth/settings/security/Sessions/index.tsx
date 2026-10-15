@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import { Fragment, useState } from "react";
 import useSWR from "swr";
@@ -15,7 +15,7 @@ import FormCard, {
 
 import { useRouter } from "@/i18n/navigation";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import { Logout } from "@mui/icons-material";
 import {
@@ -51,8 +51,6 @@ const Sessions = () => {
   const { session, setSession } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
 
-  const locale = useLocale();
-
   const router = useRouter();
 
   const { enqueueSnackbar } = useSnackbar();
@@ -77,10 +75,10 @@ const Sessions = () => {
     await authClient.revokeSession({
       token: session.session.token,
       fetchOptions: {
-        onError: ({ error: { code } }) => {
+        onError: ({ error: { message } }) => {
           setLoading(false);
 
-          enqueueSnackbar(getErrorMessage(code, locale), { variant: "error" });
+          enqueueSnackbar(message, { variant: "error" });
         },
         onRequest: () => setLoading(true),
         onSuccess: async () => {

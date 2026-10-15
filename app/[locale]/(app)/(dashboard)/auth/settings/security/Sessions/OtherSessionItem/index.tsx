@@ -1,11 +1,11 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { useSWRConfig } from "swr";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import { Close } from "@mui/icons-material";
 import { Button, DialogContentText } from "@mui/material";
@@ -26,8 +26,6 @@ const OtherSessionItem = ({ session }: OtherSessionItemProps) => {
   const { session: authSession } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
 
-  const locale = useLocale();
-
   const { enqueueSnackbar } = useSnackbar();
 
   const { mutate } = useSWRConfig();
@@ -38,10 +36,10 @@ const OtherSessionItem = ({ session }: OtherSessionItemProps) => {
     await authClient.revokeSession({
       token: session.token,
       fetchOptions: {
-        onError: ({ error: { code } }) => {
+        onError: ({ error: { message } }) => {
           setLoading(false);
 
-          enqueueSnackbar(getErrorMessage(code, locale), { variant: "error" });
+          enqueueSnackbar(message, { variant: "error" });
         },
         onRequest: () => setLoading(true),
         onSuccess: async () => {

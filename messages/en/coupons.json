@@ -32,7 +32,6 @@
         "label": "Member email",
         "placeholder": "Please enter your member email"
       },
-      "error": "Failed to grant coupon",
       "success": "Coupon {code} granted to {email}",
       "title": "Grant coupon"
     },

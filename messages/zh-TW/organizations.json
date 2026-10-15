@@ -32,6 +32,7 @@
     "label": "操作",
     "leaveOrganization": {
       "confirm": "確定要離開 <bold>{name}</bold> 嗎？",
+      "noAccess": "您的帳號無權限存取後台，請聯繫管理員",
       "success": "成功離開組織",
       "title": "離開組織"
     },

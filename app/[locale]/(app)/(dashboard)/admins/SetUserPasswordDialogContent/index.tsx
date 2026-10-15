@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -17,7 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { usePasswordValidation } from "@/hooks/usePasswordValidation";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import type { User } from "@/types/admins";
 
@@ -39,7 +39,6 @@ const SetUserPasswordDialogContent = ({
   user,
 }: SetUserPasswordDialogContentProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
-  const locale = useLocale();
   const tAdmins = useTranslations("admins");
   const tAuth = useTranslations("auth");
   const setUserPasswordFormSchema = useSetUserPasswordFormSchema();
@@ -82,8 +81,8 @@ const SetUserPasswordDialogContent = ({
       await authClient.admin.setUserPassword(
         { userId: user.id, newPassword },
         {
-          onError: ({ error: { code } }) => {
-            enqueueSnackbar(getErrorMessage(code, locale), {
+          onError: ({ error: { message } }) => {
+            enqueueSnackbar(message, {
               variant: "error",
             });
             setDialog({ confirmLoading: false });

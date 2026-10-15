@@ -32,7 +32,6 @@
         "label": "会员电子邮箱",
         "placeholder": "请输入您的会员电子邮箱"
       },
-      "error": "发放优惠券失败",
       "success": "已将优惠券 {code} 发放给 {email}",
       "title": "发放优惠券"
     },

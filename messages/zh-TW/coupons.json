@@ -32,7 +32,6 @@
         "label": "會員電子信箱",
         "placeholder": "請輸入您的會員電子信箱"
       },
-      "error": "發放優惠券失敗",
       "success": "已將優惠券 {code} 發放給 {email}",
       "title": "發放優惠券"
     },

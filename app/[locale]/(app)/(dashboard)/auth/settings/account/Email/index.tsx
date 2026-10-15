@@ -14,7 +14,7 @@ import FormCard, {
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import {
   Button,
@@ -73,8 +73,8 @@ const Email = () => {
       newEmail: email,
       callbackURL: `${process.env.NEXT_PUBLIC_ADMIN_URL}/${locale}/auth/settings/account`,
       fetchOptions: {
-        onError: ({ error: { code } }) => {
-          enqueueSnackbar(getErrorMessage(code, locale), {
+        onError: ({ error: { message } }) => {
+          enqueueSnackbar(message, {
             variant: "error",
           });
         },

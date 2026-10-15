@@ -2,7 +2,7 @@
 
 import type { UserWithRole } from "better-auth/client/plugins";
 import type { Session } from "better-auth/types";
-import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
@@ -17,11 +17,7 @@ import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { deviceSessionsKey } from "@/hooks/useDeviceSessions";
 import { useRowSelection } from "@/hooks/useRowSelection";
 
-import {
-  authClient,
-  getErrorMessage,
-  getAuthErrorMessage,
-} from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import { Cancel, DeleteOutlined } from "@mui/icons-material";
 import {
@@ -40,6 +36,7 @@ import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { formatUserAgent } from "@/utils/auth";
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
@@ -99,8 +96,6 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
 
   const format = useFormatter();
 
-  const locale = useLocale();
-
   const tUserSessions = useTranslations("admins.userSessions");
 
   const [loading, setLoading] = useState(false);
@@ -109,10 +104,10 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
     await authClient.admin.listUserSessions(
       { userId: user.id },
       {
-        onError: ({ error: { code } }) => {
+        onError: ({ error: { message } }) => {
           setLoading(false);
 
-          enqueueSnackbar(getErrorMessage(code, locale), {
+          enqueueSnackbar(message, {
             variant: "error",
           });
         },
@@ -130,7 +125,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
         },
       },
     );
-  }, [apiRef, locale, user.id]);
+  }, [apiRef, user.id]);
 
   const handleRevokeUserSession = useCallback(
     (session: Pick<Session, "token" | "ipAddress" | "userAgent">) => {
@@ -140,8 +135,8 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
           await authClient.admin.revokeUserSession(
             { sessionToken: session.token },
             {
-              onError: ({ error: { code } }) => {
-                enqueueSnackbar(getErrorMessage(code, locale), {
+              onError: ({ error: { message } }) => {
+                enqueueSnackbar(message, {
                   variant: "error",
                 });
               },
@@ -163,14 +158,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
         title: tUserSessions("actions.revokeUserSession.title"),
       });
     },
-    [
-      fetchListUserSessions,
-      mutate,
-      locale,
-      setDialog,
-      tUserSessions,
-      user.email,
-    ],
+    [fetchListUserSessions, mutate, setDialog, tUserSessions, user.email],
   );
 
   const handleEnterUserSessionBatchRevokeMode = useCallback(() => {
@@ -225,7 +213,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
             },
           );
         } catch (error) {
-          enqueueSnackbar(getAuthErrorMessage(error, locale), {
+          enqueueSnackbar(getErrorMessage(error), {
             variant: "error",
           });
         }
@@ -242,7 +230,6 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
     apiRef,
     clearRowSelection,
     fetchListUserSessions,
-    locale,
     mutate,
     selectedRows,
     setDialog,

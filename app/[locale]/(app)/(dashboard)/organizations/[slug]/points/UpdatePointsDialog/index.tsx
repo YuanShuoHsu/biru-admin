@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -16,7 +16,7 @@ import NumberSpinner from "@/components/NumberSpinner";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import { TextField } from "@mui/material";
 
@@ -34,8 +34,6 @@ const UpdatePointsDialog = ({
   organization,
 }: UpdatePointsDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
-
-  const locale = useLocale();
 
   const tCommon = useTranslations("common");
   const tOrganizations = useTranslations("organizations");
@@ -83,8 +81,7 @@ const UpdatePointsDialog = ({
         },
       },
       {
-        onError: ({ error: { code } }) => {
-          const message = getErrorMessage(code, locale);
+        onError: ({ error: { message } }) => {
           enqueueSnackbar(message, { variant: "error" });
 
           setDialog({ confirmLoading: false });

@@ -4,7 +4,7 @@
 
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useForm } from "react-hook-form";
 
@@ -23,7 +23,7 @@ import { query } from "@/constants/query";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import { Button, Link, Stack, TextField, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -62,8 +62,6 @@ const AuthForgotPassword = ({ redirectTo }: AuthForgotPasswordProps) => {
     resolver: zodResolver(forgotPasswordFormSchema),
   });
 
-  const locale = useLocale();
-
   const tAuth = useTranslations("auth");
   const sendPasswordResetLink = tAuth("sendPasswordResetLink");
 
@@ -75,9 +73,8 @@ const AuthForgotPassword = ({ redirectTo }: AuthForgotPasswordProps) => {
     await authClient.requestPasswordReset(
       { ...data, redirectTo },
       {
-        headers: { "Accept-Language": locale },
-        onError: ({ error: { code } }) => {
-          enqueueSnackbar(getErrorMessage(code, locale), {
+        onError: ({ error: { message } }) => {
+          enqueueSnackbar(message, {
             variant: "error",
           });
         },

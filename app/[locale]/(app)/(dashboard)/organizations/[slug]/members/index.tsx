@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
@@ -17,11 +17,7 @@ import { useRowSelection } from "@/hooks/useRowSelection";
 
 import { useRouter } from "@/i18n/navigation";
 
-import {
-  authClient,
-  getErrorMessage,
-  getAuthErrorMessage,
-} from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import {
   Cancel,
@@ -54,6 +50,7 @@ import type {
 } from "@/types/organizations";
 
 import { sortByCreatedAtDesc } from "@/utils/organizations";
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
@@ -142,8 +139,6 @@ const OrganizationsSlugMembers = ({
 
   const format = useFormatter();
 
-  const locale = useLocale();
-
   const { slug } = useParams<{ slug: string }>();
 
   const router = useRouter();
@@ -182,8 +177,8 @@ const OrganizationsSlugMembers = ({
         teams: initialTeams,
         pendingInvitationCount: 0,
       },
-      onError: (error) => {
-        enqueueSnackbar(getErrorMessage(error.code, locale), {
+      onError: ({ message }) => {
+        enqueueSnackbar(message, {
           variant: "error",
         });
       },
@@ -287,8 +282,8 @@ const OrganizationsSlugMembers = ({
           await authClient.organization.removeMember(
             { organizationId, memberIdOrEmail: memberId },
             {
-              onError: ({ error: { code } }) => {
-                enqueueSnackbar(getErrorMessage(code, locale), {
+              onError: ({ error: { message } }) => {
+                enqueueSnackbar(message, {
                   variant: "error",
                 });
               },
@@ -305,7 +300,7 @@ const OrganizationsSlugMembers = ({
         title: tMembers("actions.removeMember.title"),
       });
     },
-    [locale, mutate, organizationId, setDialog, tMembers],
+    [mutate, organizationId, setDialog, tMembers],
   );
 
   const handleEnterMemberBatchRemoveMode = useCallback(() => {
@@ -358,7 +353,7 @@ const OrganizationsSlugMembers = ({
             },
           );
         } catch (error) {
-          enqueueSnackbar(getAuthErrorMessage(error, locale), {
+          enqueueSnackbar(getErrorMessage(error), {
             variant: "error",
           });
         }
@@ -371,7 +366,6 @@ const OrganizationsSlugMembers = ({
   }, [
     apiRef,
     clearRowSelection,
-    locale,
     mutate,
     organizationId,
     selectedRows,
@@ -413,8 +407,8 @@ const OrganizationsSlugMembers = ({
         await authClient.organization.leave(
           { organizationId },
           {
-            onError: ({ error: { code } }) => {
-              enqueueSnackbar(getErrorMessage(code, locale), {
+            onError: ({ error: { message } }) => {
+              enqueueSnackbar(message, {
                 variant: "error",
               });
             },
@@ -427,10 +421,8 @@ const OrganizationsSlugMembers = ({
               const { data } = await authClient.organization.list();
               if (!data?.length) {
                 enqueueSnackbar(
-                  getErrorMessage("NO_ACTIVE_ORGANIZATION", locale),
-                  {
-                    variant: "error",
-                  },
+                  tOrganizations("actions.leaveOrganization.noAccess"),
+                  { variant: "error" },
                 );
 
                 if (session) {
@@ -454,7 +446,6 @@ const OrganizationsSlugMembers = ({
       title: tOrganizations("actions.leaveOrganization.title"),
     });
   }, [
-    locale,
     organizationId,
     router,
     session,

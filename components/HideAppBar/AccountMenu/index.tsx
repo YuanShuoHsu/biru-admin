@@ -5,7 +5,7 @@
 
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useSnackbar } from "notistack";
 import { useState, type MouseEvent } from "react";
@@ -18,7 +18,7 @@ import { useRoutes } from "@/hooks/useRoutes";
 
 import { Link, usePathname } from "@/i18n/navigation";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import { AccountCircle } from "@mui/icons-material";
 import {
@@ -128,8 +128,6 @@ const AccountMenu = () => {
   const { setDialog } = useDialogStore((state) => state);
   const displayName = getDisplayName(session?.user);
 
-  const locale = useLocale();
-
   const pathname = usePathname();
 
   const router = useRouter();
@@ -166,8 +164,8 @@ const AccountMenu = () => {
     await authClient.multiSession.setActive({
       sessionToken,
       fetchOptions: {
-        onError: ({ error }) => {
-          enqueueSnackbar(getErrorMessage(error.code, locale), {
+        onError: ({ error: { message } }) => {
+          enqueueSnackbar(message, {
             variant: "error",
           });
         },

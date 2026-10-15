@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm } from "react-hook-form";
@@ -17,7 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import { TextField } from "@mui/material";
 
@@ -35,8 +35,6 @@ const UpdateOrganizationDialog = ({
   organization,
 }: UpdateOrganizationDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
-
-  const locale = useLocale();
 
   const uploadKey = `update-organization-avatar-${organization.id}`;
   const logo = useUploadAvatarSrc(uploadKey, organization.logo);
@@ -63,8 +61,7 @@ const UpdateOrganizationDialog = ({
         data: { logo, name, slug },
       },
       {
-        onError: ({ error: { code } }) => {
-          const message = getErrorMessage(code, locale);
+        onError: ({ error: { message } }) => {
           enqueueSnackbar(message, { variant: "error" });
 
           setDialog({ confirmLoading: false });

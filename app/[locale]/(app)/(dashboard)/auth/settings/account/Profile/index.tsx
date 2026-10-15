@@ -23,7 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import {
   Button,
@@ -155,8 +155,8 @@ const Profile = () => {
           ).number
         : "",
       fetchOptions: {
-        onError: ({ error }) => {
-          enqueueSnackbar(getErrorMessage(error.code, locale), {
+        onError: ({ error: { message } }) => {
+          enqueueSnackbar(message, {
             variant: "error",
           });
         },

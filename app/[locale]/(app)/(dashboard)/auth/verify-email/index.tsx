@@ -19,7 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import {
   MarkEmailRead,
@@ -111,10 +111,9 @@ const AuthVerifyEmail = ({
       await authClient.verifyEmail(
         { query: { token } },
         {
-          headers: { "Accept-Language": locale },
-          onError: ({ error: { code } }) => {
+          onError: ({ error: { message } }) => {
             setVerifyState({
-              errorMessage: getErrorMessage(code, locale),
+              errorMessage: message,
               status: VERIFY_STATUS.FAILED,
             });
           },
@@ -187,9 +186,8 @@ const AuthVerifyEmail = ({
     await authClient.sendVerificationEmail(
       { callbackURL: redirectTo, email },
       {
-        headers: { "Accept-Language": locale },
-        onError: ({ error: { code } }) => {
-          enqueueSnackbar(getErrorMessage(code, locale), {
+        onError: ({ error: { code, message } }) => {
+          enqueueSnackbar(message, {
             variant: "error",
           });
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useForm } from "react-hook-form";
 
@@ -10,7 +10,7 @@ import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import { TextField } from "@mui/material";
 
@@ -31,8 +31,6 @@ const UpdateTeamDialog = ({
 }: UpdateTeamDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
-  const locale = useLocale();
-
   const tTeams = useTranslations("organizations.teams");
 
   const teamFormSchema = useTeamFormSchema();
@@ -50,9 +48,7 @@ const UpdateTeamDialog = ({
       await authClient.organization.updateTeam(
         { teamId: team.id, data: { name } },
         {
-          headers: { "Accept-Language": locale },
-          onError: ({ error: { code } }) => {
-            const message = getErrorMessage(code, locale);
+          onError: ({ error: { message } }) => {
             enqueueSnackbar(message, { variant: "error" });
 
             setDialog({ confirmLoading: false });
@@ -75,9 +71,7 @@ const UpdateTeamDialog = ({
     await authClient.organization.createTeam(
       { name, organizationId },
       {
-        headers: { "Accept-Language": locale },
-        onError: ({ error: { code } }) => {
-          const message = getErrorMessage(code, locale);
+        onError: ({ error: { message } }) => {
           enqueueSnackbar(message, { variant: "error" });
 
           setDialog({ confirmLoading: false });

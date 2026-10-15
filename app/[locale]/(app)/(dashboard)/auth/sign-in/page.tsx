@@ -41,13 +41,7 @@ const AuthSignInPage = async ({
   const cookieStore = await cookies();
   const rememberMe = cookieStore.get(REMEMBER_ME)?.value === "true";
 
-  return (
-    <AuthSignIn
-      locale={locale}
-      redirectTo={safeRedirectTo}
-      rememberMe={rememberMe}
-    />
-  );
+  return <AuthSignIn redirectTo={safeRedirectTo} rememberMe={rememberMe} />;
 };
 
 export default AuthSignInPage;

@@ -5,7 +5,7 @@
 
 "use client";
 
-import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
@@ -19,11 +19,7 @@ import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
 import { useRouter } from "@/i18n/navigation";
 
-import {
-  authClient,
-  getErrorMessage,
-  getAuthErrorMessage,
-} from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import {
   AddBusiness,
@@ -54,7 +50,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { Organization } from "@/types/organizations";
 
 import { stringAvatar } from "@/utils/avatar";
-import { getErrorMessage as getFetchErrorMessage } from "@/utils/errors";
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 import {
@@ -120,8 +116,8 @@ const Organizations = ({
     isValidating: loadingOrganizations,
   } = useOrganizations({
     fallbackData: initialRows,
-    onError: (error) => {
-      enqueueSnackbar(getErrorMessage(error.code, locale), {
+    onError: ({ message }) => {
+      enqueueSnackbar(message, {
         variant: "error",
       });
     },
@@ -162,8 +158,6 @@ const Organizations = ({
 
   const format = useFormatter();
 
-  const locale = useLocale();
-
   const router = useRouter();
 
   const tOrganizations = useTranslations("organizations");
@@ -203,8 +197,7 @@ const Organizations = ({
           await authClient.organization.delete(
             { organizationId: id },
             {
-              onError: ({ error: { code } }) => {
-                const message = getErrorMessage(code, locale);
+              onError: ({ error: { message } }) => {
                 enqueueSnackbar(message, { variant: "error" });
               },
               onSuccess: () => {
@@ -223,7 +216,7 @@ const Organizations = ({
         title: tOrganizations("actions.deleteOrganization.title"),
       });
     },
-    [locale, mutate, setDialog, tOrganizations],
+    [mutate, setDialog, tOrganizations],
   );
 
   const handleEnterOrganizationBatchDeleteMode = useCallback(() => {
@@ -276,7 +269,7 @@ const Organizations = ({
             },
           );
         } catch (error) {
-          enqueueSnackbar(getAuthErrorMessage(error, locale), {
+          enqueueSnackbar(getErrorMessage(error), {
             variant: "error",
           });
         }
@@ -291,7 +284,6 @@ const Organizations = ({
   }, [
     apiRef,
     clearRowSelection,
-    locale,
     mutate,
     selectedRows,
     setDialog,
@@ -350,7 +342,7 @@ const Organizations = ({
 
             mutate();
           } catch (error) {
-            enqueueSnackbar(getFetchErrorMessage(error), { variant: "error" });
+            enqueueSnackbar(getErrorMessage(error), { variant: "error" });
           }
         },
         open: true,

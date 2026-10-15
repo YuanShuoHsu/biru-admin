@@ -11,7 +11,7 @@ import FormCard, {
   StyledListItemText,
 } from "@/components/FormCard";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import { Button, DialogContentText, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -42,11 +42,10 @@ const Danger = () => {
     await authClient.deleteUser({
       callbackURL: `${process.env.NEXT_PUBLIC_ADMIN_URL}/${locale}/auth/sign-in`,
       fetchOptions: {
-        headers: { "Accept-Language": locale },
         onRequest: () => setLoading(true),
-        onError: ({ error: { code } }) => {
+        onError: ({ error: { message } }) => {
           setLoading(false);
-          enqueueSnackbar(getErrorMessage(code, locale), { variant: "error" });
+          enqueueSnackbar(message, { variant: "error" });
         },
         onSuccess: () => {
           setLoading(false);

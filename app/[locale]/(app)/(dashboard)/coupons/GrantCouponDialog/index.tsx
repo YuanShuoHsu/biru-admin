@@ -63,10 +63,7 @@ const GrantCouponDialog = ({
 
       closeDialog();
     } catch (error) {
-      enqueueSnackbar(
-        getErrorMessage(error) || tCoupons("actions.grantCoupon.error"),
-        { variant: "error" },
-      );
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
 
       setDialog({ confirmLoading: false });
     }

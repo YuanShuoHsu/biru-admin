@@ -23,7 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import useListAccounts from "@/hooks/useListAccounts";
 import { usePasswordValidation } from "@/hooks/usePasswordValidation";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
@@ -124,8 +124,8 @@ const ChangePassword = () => {
       currentPassword,
       newPassword,
       fetchOptions: {
-        onError: ({ error: { code } }) => {
-          enqueueSnackbar(getErrorMessage(code, locale), {
+        onError: ({ error: { message } }) => {
+          enqueueSnackbar(message, {
             variant: "error",
           });
         },
@@ -165,11 +165,10 @@ const ChangePassword = () => {
         redirectTo: `${process.env.NEXT_PUBLIC_ADMIN_URL}/${locale}/auth/reset-password`,
       },
       {
-        headers: { "Accept-Language": locale },
-        onError: ({ error: { code } }) => {
+        onError: ({ error: { message } }) => {
           setLoading(false);
 
-          enqueueSnackbar(getErrorMessage(code, locale), { variant: "error" });
+          enqueueSnackbar(message, { variant: "error" });
         },
         onRequest: () => setLoading(true),
         onSuccess: () => {

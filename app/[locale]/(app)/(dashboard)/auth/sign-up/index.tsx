@@ -34,7 +34,7 @@ import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 import { useRouter } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
@@ -215,9 +215,8 @@ const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
         // phoneNumber,
       },
       {
-        headers: { "Accept-Language": locale },
-        onError: ({ error: { code } }) => {
-          enqueueSnackbar(getErrorMessage(code, locale), {
+        onError: ({ error: { message } }) => {
+          enqueueSnackbar(message, {
             variant: "error",
           });
         },

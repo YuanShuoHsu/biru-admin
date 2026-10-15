@@ -12,7 +12,7 @@ import useListAccounts from "@/hooks/useListAccounts";
 
 import { StyledListItem, StyledListItemText } from "@/components/FormCard";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import { Link as LinkIcon, LinkOff as LinkOffIcon } from "@mui/icons-material";
 import {
@@ -54,10 +54,10 @@ const ProviderRow = ({ id, Icon, label }: Provider) => {
       errorCallbackURL: errorCallbackURL.toString(),
       fetchOptions: {
         onRequest: () => setLoading(true),
-        onError: ({ error: { code } }) => {
+        onError: ({ error: { message } }) => {
           setLoading(false);
 
-          enqueueSnackbar(getErrorMessage(code, locale), { variant: "error" });
+          enqueueSnackbar(message, { variant: "error" });
         },
       },
     });
@@ -86,10 +86,10 @@ const ProviderRow = ({ id, Icon, label }: Provider) => {
       { accountId: linkedAccount.id },
       {
         onRequest: () => setLoading(true),
-        onError: ({ error: { code } }) => {
+        onError: ({ error: { message } }) => {
           setLoading(false);
 
-          enqueueSnackbar(getErrorMessage(code, locale), { variant: "error" });
+          enqueueSnackbar(message, { variant: "error" });
         },
         onSuccess: () => {
           setLoading(false);

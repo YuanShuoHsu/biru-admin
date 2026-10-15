@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { useSWRConfig } from "swr";
@@ -11,7 +11,7 @@ import AccountItem from "../AccountItem";
 
 import { deviceSessionsKey } from "@/hooks/useDeviceSessions";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import { MoreHoriz } from "@mui/icons-material";
 import { DialogContentText, IconButton, Menu, MenuItem } from "@mui/material";
@@ -39,8 +39,6 @@ const OtherAccountItem = ({ token, user }: OtherAccountItemProps) => {
   const { setSession } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
 
-  const locale = useLocale();
-
   const { enqueueSnackbar } = useSnackbar();
 
   const { mutate } = useSWRConfig();
@@ -56,10 +54,10 @@ const OtherAccountItem = ({ token, user }: OtherAccountItemProps) => {
     await authClient.multiSession.setActive({
       sessionToken: token,
       fetchOptions: {
-        onError: ({ error: { code } }) => {
+        onError: ({ error: { message } }) => {
           setIsLoading(false);
 
-          enqueueSnackbar(getErrorMessage(code, locale), { variant: "error" });
+          enqueueSnackbar(message, { variant: "error" });
         },
         onRequest: () => setIsLoading(true),
         onSuccess: async () => {
@@ -101,10 +99,10 @@ const OtherAccountItem = ({ token, user }: OtherAccountItemProps) => {
     await authClient.multiSession.revoke({
       sessionToken: token,
       fetchOptions: {
-        onError: ({ error: { code } }) => {
+        onError: ({ error: { message } }) => {
           setIsLoading(false);
 
-          enqueueSnackbar(getErrorMessage(code, locale), { variant: "error" });
+          enqueueSnackbar(message, { variant: "error" });
         },
         onRequest: () => setIsLoading(true),
         onSuccess: async () => {

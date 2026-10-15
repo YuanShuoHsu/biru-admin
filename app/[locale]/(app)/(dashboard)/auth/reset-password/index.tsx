@@ -4,7 +4,7 @@
 
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -29,7 +29,7 @@ import { usePasswordValidation } from "@/hooks/usePasswordValidation";
 
 import { useRouter } from "@/i18n/navigation";
 
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
@@ -74,8 +74,6 @@ const AuthResetPassword = ({
     newPassword: false,
     confirmNewPassword: false,
   });
-
-  const locale = useLocale();
 
   const router = useRouter();
 
@@ -131,9 +129,8 @@ const AuthResetPassword = ({
       await authClient.resetPassword(
         { ...data, token },
         {
-          headers: { "Accept-Language": locale },
-          onError: ({ error: { code } }) => {
-            enqueueSnackbar(getErrorMessage(code, locale), {
+          onError: ({ error: { message } }) => {
+            enqueueSnackbar(message, {
               variant: "error",
             });
           },

@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
@@ -15,11 +15,7 @@ import { useRowSelection } from "@/hooks/useRowSelection";
 
 import { useRouter } from "@/i18n/navigation";
 
-import {
-  authClient,
-  getErrorMessage,
-  getAuthErrorMessage,
-} from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import {
   Cancel,
@@ -44,6 +40,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { ActiveOrganization, Team } from "@/types/organizations";
 
 import { sortByCreatedAtDesc } from "@/utils/organizations";
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
@@ -84,8 +81,6 @@ const OrganizationsSlugTeams = ({
 
   const format = useFormatter();
 
-  const locale = useLocale();
-
   const { slug } = useParams<{ slug: string }>();
 
   const router = useRouter();
@@ -110,8 +105,8 @@ const OrganizationsSlugTeams = ({
     },
     {
       fallbackData: { rows: initialTeams },
-      onError: (error) => {
-        enqueueSnackbar(getErrorMessage(error.code, locale), {
+      onError: ({ message }) => {
+        enqueueSnackbar(message, {
           variant: "error",
         });
       },
@@ -181,8 +176,8 @@ const OrganizationsSlugTeams = ({
           await authClient.organization.removeTeam(
             { organizationId, teamId },
             {
-              onError: ({ error: { code } }) => {
-                enqueueSnackbar(getErrorMessage(code, locale), {
+              onError: ({ error: { message } }) => {
+                enqueueSnackbar(message, {
                   variant: "error",
                 });
               },
@@ -202,7 +197,7 @@ const OrganizationsSlugTeams = ({
         title: tTeams("actions.removeTeam.title"),
       });
     },
-    [locale, mutate, organizationId, setDialog, tTeams],
+    [mutate, organizationId, setDialog, tTeams],
   );
 
   const handleEnterTeamBatchRemoveMode = useCallback(() => {
@@ -255,7 +250,7 @@ const OrganizationsSlugTeams = ({
             },
           );
         } catch (error) {
-          enqueueSnackbar(getAuthErrorMessage(error, locale), {
+          enqueueSnackbar(getErrorMessage(error), {
             variant: "error",
           });
         }
@@ -268,7 +263,6 @@ const OrganizationsSlugTeams = ({
   }, [
     apiRef,
     clearRowSelection,
-    locale,
     mutate,
     organizationId,
     selectedRows,

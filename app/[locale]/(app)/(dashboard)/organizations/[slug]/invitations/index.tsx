@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
@@ -13,11 +13,7 @@ import { countKeys, ROLE_RANK } from "@/constants/organizations";
 
 import { useRowSelection } from "@/hooks/useRowSelection";
 
-import {
-  authClient,
-  getErrorMessage,
-  getAuthErrorMessage,
-} from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 
 import { Cancel, Delete } from "@mui/icons-material";
 import {
@@ -38,6 +34,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { ActiveOrganization, Invitation } from "@/types/organizations";
 
 import { sortByCreatedAtDesc } from "@/utils/organizations";
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 const DataGrid = dynamic(
@@ -78,8 +75,6 @@ const OrganizationsSlugInvitations = ({
   const { setCount } = useCountStore((state) => state);
 
   const format = useFormatter();
-
-  const locale = useLocale();
 
   const { slug } = useParams<{ slug: string }>();
 
@@ -123,8 +118,8 @@ const OrganizationsSlugInvitations = ({
         teams: initialTeams,
         pendingInvitationCount: 0,
       },
-      onError: (error) => {
-        enqueueSnackbar(getErrorMessage(error.code, locale), {
+      onError: ({ message }) => {
+        enqueueSnackbar(message, {
           variant: "error",
         });
       },
@@ -159,8 +154,8 @@ const OrganizationsSlugInvitations = ({
           await authClient.organization.cancelInvitation(
             { invitationId },
             {
-              onError: ({ error: { code } }) => {
-                enqueueSnackbar(getErrorMessage(code, locale), {
+              onError: ({ error: { message } }) => {
+                enqueueSnackbar(message, {
                   variant: "error",
                 });
               },
@@ -179,7 +174,7 @@ const OrganizationsSlugInvitations = ({
         title: tInvitations("actions.cancelInvitation.title"),
       });
     },
-    [locale, mutate, setDialog, tInvitations],
+    [mutate, setDialog, tInvitations],
   );
 
   const handleEnterInvitationBatchCancelMode = useCallback(() => {
@@ -234,7 +229,7 @@ const OrganizationsSlugInvitations = ({
             },
           );
         } catch (error) {
-          enqueueSnackbar(getAuthErrorMessage(error, locale), {
+          enqueueSnackbar(getErrorMessage(error), {
             variant: "error",
           });
         }
@@ -249,7 +244,6 @@ const OrganizationsSlugInvitations = ({
   }, [
     apiRef,
     clearRowSelection,
-    locale,
     mutate,
     organizationId,
     selectedRows,

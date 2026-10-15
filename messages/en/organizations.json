@@ -32,6 +32,7 @@
     "label": "Actions",
     "leaveOrganization": {
       "confirm": "Are you sure you want to leave <bold>{name}</bold>?",
+      "noAccess": "Your account does not have access to the admin panel. Please contact your administrator.",
       "success": "You have left the organization successfully",
       "title": "Leave organization"
     },
