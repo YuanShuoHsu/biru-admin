@@ -11,12 +11,13 @@ import FormCard, {
   StyledListItemText,
 } from "@/components/FormCard";
 
+import { useSession } from "@/hooks/useSession";
+
 import { authClient } from "@/lib/auth-client";
 
 import { Button, DialogContentText, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 const StyledFormCard = styled(FormCard)(({ theme }) => ({
@@ -30,7 +31,7 @@ const StyledTypography = styled(Typography)({
 const Danger = () => {
   const [loading, setLoading] = useState(false);
 
-  const { session } = useAuthStore((state) => state);
+  const session = useSession();
   const { setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();

@@ -22,6 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import useListAccounts from "@/hooks/useListAccounts";
 import { usePasswordValidation } from "@/hooks/usePasswordValidation";
+import { useSession } from "@/hooks/useSession";
 
 import { authClient } from "@/lib/auth-client";
 
@@ -37,7 +38,6 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import {
@@ -66,7 +66,7 @@ const ChangePassword = () => {
     confirmNewPassword: false,
   });
 
-  const { session } = useAuthStore((state) => state);
+  const session = useSession();
   const { setDialog } = useDialogStore((state) => state);
 
   const changePasswordFormSchema = useChangePasswordFormSchema();

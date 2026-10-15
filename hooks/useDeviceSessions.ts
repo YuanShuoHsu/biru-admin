@@ -1,8 +1,8 @@
 import useSWR from "swr";
 
-import { authClient } from "@/lib/auth-client";
+import { useSession } from "@/hooks/useSession";
 
-import { useAuthStore } from "@/providers/auth-store-provider";
+import { authClient } from "@/lib/auth-client";
 
 export const deviceSessionsKey = "device-sessions";
 
@@ -11,7 +11,7 @@ type DeviceSession = NonNullable<
 >[number];
 
 const useDeviceSessions = () => {
-  const { session } = useAuthStore((state) => state);
+  const session = useSession();
 
   return useSWR<DeviceSession[]>(
     session ? deviceSessionsKey : null,

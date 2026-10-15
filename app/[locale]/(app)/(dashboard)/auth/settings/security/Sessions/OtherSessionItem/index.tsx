@@ -5,12 +5,13 @@ import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { useSWRConfig } from "swr";
 
+import { useSession } from "@/hooks/useSession";
+
 import { authClient } from "@/lib/auth-client";
 
 import { Close } from "@mui/icons-material";
 import { Button, DialogContentText } from "@mui/material";
 
-import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { sessionsKey, type UserSession } from "..";
@@ -23,7 +24,7 @@ interface OtherSessionItemProps {
 const OtherSessionItem = ({ session }: OtherSessionItemProps) => {
   const [loading, setLoading] = useState(false);
 
-  const { session: authSession } = useAuthStore((state) => state);
+  const authSession = useSession();
   const { setDialog } = useDialogStore((state) => state);
 
   const { enqueueSnackbar } = useSnackbar();

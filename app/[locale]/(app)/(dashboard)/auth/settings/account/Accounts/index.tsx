@@ -21,6 +21,7 @@ import { Button, DialogContentText, Divider, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import useDeviceSessions from "@/hooks/useDeviceSessions";
+import { useSession } from "@/hooks/useSession";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -32,7 +33,8 @@ const StyledTypography = styled(Typography)({
 const Accounts = () => {
   const [loading, setLoading] = useState(false);
 
-  const { session, setSession } = useAuthStore((state) => state);
+  const session = useSession();
+  const { setSession } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
 
   const router = useRouter();

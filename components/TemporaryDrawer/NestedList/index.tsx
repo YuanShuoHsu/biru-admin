@@ -15,17 +15,16 @@ import {
 } from "@/hooks/organizations";
 import { useNavChildren } from "@/hooks/useNavChildren";
 import { useRoutes } from "@/hooks/useRoutes";
+import { useSession } from "@/hooks/useSession";
 
 import { List, ListSubheader, Toolbar } from "@mui/material";
-
-import { useAuthStore } from "@/providers/auth-store-provider";
 
 import type { NavItem } from "@/types/navItem";
 
 import { hasRolePermission } from "@/utils/organizations";
 
 const useNavItems = (): NavItem[][] => {
-  const session = useAuthStore((state) => state.session);
+  const session = useSession();
 
   const defaultOrganizationSlug = useDefaultOrganizationSlug();
   const memberRole = useActiveMemberRole();

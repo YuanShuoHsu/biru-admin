@@ -22,6 +22,7 @@ import { LocaleEnum } from "@/enums/Locale";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
+import { useSession } from "@/hooks/useSession";
 
 import { authClient } from "@/lib/auth-client";
 
@@ -70,7 +71,8 @@ const toBirthDateValue = (value: Date | string | null | undefined): string =>
   value ? dayjs(value).format("YYYY-MM-DD") : "";
 
 const Profile = () => {
-  const { session, setSession } = useAuthStore((state) => state);
+  const session = useSession();
+  const { setSession } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();

@@ -1,13 +1,13 @@
 import useSWR from "swr";
 
-import { authClient } from "@/lib/auth-client";
+import { useSession } from "@/hooks/useSession";
 
-import { useAuthStore } from "@/providers/auth-store-provider";
+import { authClient } from "@/lib/auth-client";
 
 import { listAccountsKey } from "@/utils/auth";
 
 const useListAccounts = () => {
-  const { session } = useAuthStore((state) => state);
+  const session = useSession();
 
   return useSWR(
     session ? [listAccountsKey, session.user.id] : null,

@@ -3,7 +3,8 @@ import { createStore } from "zustand/vanilla";
 import type { Session } from "@/types/auth";
 
 type AuthState = {
-  session: Session | null;
+  session?: Session | null;
+  sessionPromise: Promise<Session | null>;
 };
 
 type AuthActions = {
@@ -13,7 +14,7 @@ type AuthActions = {
 export type AuthStore = AuthState & AuthActions;
 
 export const defaultInitState: AuthState = {
-  session: null,
+  sessionPromise: Promise.resolve(null),
 };
 
 export const createAuthStore = (initState: AuthState = defaultInitState) => {

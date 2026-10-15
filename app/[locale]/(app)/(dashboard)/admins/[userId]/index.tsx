@@ -16,6 +16,7 @@ import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
 import { deviceSessionsKey } from "@/hooks/useDeviceSessions";
 import { useRowSelection } from "@/hooks/useRowSelection";
+import { useSession } from "@/hooks/useSession";
 
 import { authClient } from "@/lib/auth-client";
 
@@ -32,7 +33,6 @@ import { styled } from "@mui/material/styles";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
-import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { formatUserAgent } from "@/utils/auth";
@@ -73,7 +73,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
 
   const apiRef = useGridApiRef();
 
-  const { session: currentSession } = useAuthStore((state) => state);
+  const currentSession = useSession();
 
   const isUserSessionSelectable = useCallback(
     ({ token }: Session) => token !== currentSession?.session.token,

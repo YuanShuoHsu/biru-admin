@@ -4,6 +4,7 @@ import { useSnackbar } from "notistack";
 import { useSWRConfig } from "swr";
 
 import { deviceSessionsKey } from "@/hooks/useDeviceSessions";
+import { useSession } from "@/hooks/useSession";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -13,7 +14,8 @@ import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 export const useLogout = () => {
-  const { session, setSession } = useAuthStore((state) => state);
+  const session = useSession();
+  const { setSession } = useAuthStore((state) => state);
 
   const { setDialog } = useDialogStore((state) => state);
 

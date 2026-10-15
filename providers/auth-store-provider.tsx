@@ -13,14 +13,14 @@ const AuthStoreContext = createContext<StoreApi<AuthStore> | undefined>(
 
 interface AuthStoreProviderProps {
   children: ReactNode;
-  initialSession: Session | null;
+  sessionPromise: Promise<Session | null>;
 }
 
 export const AuthStoreProvider = ({
   children,
-  initialSession,
+  sessionPromise,
 }: AuthStoreProviderProps) => {
-  const [store] = useState(() => createAuthStore({ session: initialSession }));
+  const [store] = useState(() => createAuthStore({ sessionPromise }));
 
   return (
     <AuthStoreContext.Provider value={store}>

@@ -37,6 +37,18 @@ export const getAdminOrganization = cache(
     (await listOrganizations()).find(({ slug }) => slug === organizationSlug),
 );
 
+export const getDefaultOrganizationSlug = cache(async () => {
+  const [session, organizations] = await Promise.all([
+    getSession(),
+    listOrganizations(),
+  ]);
+
+  return resolveDefaultOrganizationSlug(
+    session?.session?.activeOrganizationId,
+    organizations,
+  );
+});
+
 export const getResolvedAdminOrganization = cache(
   async (organizationSlug: string | undefined) => {
     const [organizations, session] = await Promise.all([

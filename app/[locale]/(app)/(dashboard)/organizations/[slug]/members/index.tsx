@@ -14,6 +14,7 @@ import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { countKeys, ROLE_RANK } from "@/constants/organizations";
 
 import { useRowSelection } from "@/hooks/useRowSelection";
+import { useSession } from "@/hooks/useSession";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -133,7 +134,8 @@ const OrganizationsSlugMembers = ({
 
   const apiRef = useGridApiRef();
 
-  const { session, setSession } = useAuthStore((state) => state);
+  const session = useSession();
+  const { setSession } = useAuthStore((state) => state);
   const { setCount } = useCountStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
 

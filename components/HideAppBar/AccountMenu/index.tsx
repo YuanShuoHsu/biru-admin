@@ -37,6 +37,7 @@ import {
 import { styled } from "@mui/material/styles";
 
 import useDeviceSessions from "@/hooks/useDeviceSessions";
+import { useSession } from "@/hooks/useSession";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -124,7 +125,8 @@ const AccountMenu = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const { session, setSession } = useAuthStore((state) => state);
+  const session = useSession();
+  const { setSession } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
   const displayName = getDisplayName(session?.user);
 

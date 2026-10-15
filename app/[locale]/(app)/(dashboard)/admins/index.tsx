@@ -46,6 +46,7 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 
 import { deviceSessionsKey } from "@/hooks/useDeviceSessions";
 import { useRowSelection } from "@/hooks/useRowSelection";
+import { useSession } from "@/hooks/useSession";
 import { authClient } from "@/lib/auth-client";
 
 import {
@@ -212,7 +213,8 @@ const Admins = ({
     quickFilterValues: initialQuickFilterValue ? [initialQuickFilterValue] : [],
   });
 
-  const { session, setSession } = useAuthStore((state) => state);
+  const session = useSession();
+  const { setSession } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();

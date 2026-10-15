@@ -7,8 +7,7 @@ import {
 import { useAttendanceReviewCounts } from "@/hooks/useAttendanceReviewCounts";
 import { useAuthNavItems } from "@/hooks/useAuth";
 import { useRoutes } from "@/hooks/useRoutes";
-
-import { useAuthStore } from "@/providers/auth-store-provider";
+import { useSession } from "@/hooks/useSession";
 
 import type { NavItem } from "@/types/navItem";
 
@@ -17,7 +16,7 @@ import { attendanceNavGroups } from "@/utils/attendance";
 import { hasRolePermission } from "@/utils/organizations";
 
 export const useNavChildren = (): Record<string, NavItem[]> => {
-  const session = useAuthStore((state) => state.session);
+  const session = useSession();
 
   const memberRole = useActiveMemberRole();
 

@@ -24,6 +24,7 @@ import {
 import { SCROLL_TRIGGER_THRESHOLD } from "@/constants/scroll";
 
 import { useRoutes } from "@/hooks/useRoutes";
+import { useSession } from "@/hooks/useSession";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -83,7 +84,8 @@ const EndStack = styled(Stack)(({ theme }) => ({
 }));
 
 const HideAppBar = () => {
-  const { session, setSession } = useAuthStore((state) => state);
+  const session = useSession();
+  const { setSession } = useAuthStore((state) => state);
   const { setDialog } = useDialogStore((state) => state);
 
   const router = useRouter();

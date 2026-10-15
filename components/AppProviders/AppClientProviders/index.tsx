@@ -26,13 +26,13 @@ import type { Session } from "@/types/auth";
 interface AppClientProvidersProps {
   children: React.ReactNode;
   fallback: SWRConfiguration["fallback"];
-  initialSession: Session | null;
+  sessionPromise: Promise<Session | null>;
 }
 
 const AppClientProviders = ({
   children,
   fallback,
-  initialSession,
+  sessionPromise,
 }: AppClientProvidersProps) => (
   <AppRouterCacheProvider options={{ enableCssLayer: true }}>
     <LocaleProvider>
@@ -58,7 +58,7 @@ const AppClientProviders = ({
           <OAuthSnackbar />
         </Suspense>
         <SWRProvider fallback={fallback}>
-          <AuthStoreProvider initialSession={initialSession}>
+          <AuthStoreProvider sessionPromise={sessionPromise}>
             <CountdownStoreProvider>
               <DialogStoreProvider>
                 <DrawerStoreProvider>

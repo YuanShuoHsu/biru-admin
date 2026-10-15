@@ -12,6 +12,8 @@ import FormCard, {
   StyledCardHeader,
 } from "@/components/FormCard";
 
+import { useSession } from "@/hooks/useSession";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { authClient } from "@/lib/auth-client";
@@ -25,7 +27,6 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 const StyledTypography = styled(Typography)({
@@ -42,7 +43,7 @@ const StyledCardActions = styled(CardActions)(({ theme }) => ({
 }));
 
 const Email = () => {
-  const { session } = useAuthStore((state) => state);
+  const session = useSession();
   const { setDialog } = useDialogStore((state) => state);
 
   const currentEmail = session?.user.email || "";
