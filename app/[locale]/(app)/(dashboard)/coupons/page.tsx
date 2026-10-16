@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 
 import Coupons from ".";
 
@@ -64,6 +65,8 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
   const memberOrganization = await getResolvedAdminOrganization(
     rawSearchParams.organization,
   );
+
+  if (!isAdmin && !memberOrganization) notFound();
 
   const selectedOrganization = isAdmin ? undefined : memberOrganization;
 

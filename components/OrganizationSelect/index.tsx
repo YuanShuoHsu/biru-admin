@@ -14,7 +14,7 @@ import { MenuItem, TextField, styled } from "@mui/material";
 import { getHref } from "@/utils/href";
 import { getOrganizationLabel } from "@/utils/organizations";
 
-const StyledTextField = styled(TextField)(({ theme }) => ({
+export const StyledTextField = styled(TextField)(({ theme }) => ({
   [theme.breakpoints.up("sm")]: {
     width: theme.spacing(30),
   },

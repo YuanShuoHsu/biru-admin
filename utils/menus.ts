@@ -1,11 +1,9 @@
 import { cache } from "react";
 
 import { fetcher } from "./fetcher";
-import { getHref } from "./href";
 
 import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
 import { LOW_STOCK_THRESHOLD } from "@/constants/menus";
-import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";
 
 import type {
   Menu,
@@ -25,11 +23,6 @@ export const isLowStock = (offer?: OrderMenuOffer): boolean => {
 
   return stock <= LOW_STOCK_THRESHOLD;
 };
-
-export const DEFAULT_MENUS_HREF = getHref(
-  "/menus/sections",
-  DEFAULT_PAGINATION_QUERY,
-);
 
 export const getAdminMenu = cache(
   async (menuId: string, init?: RequestInit) => {

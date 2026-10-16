@@ -33,8 +33,18 @@ export const listOrganizations = cache(async () => {
 });
 
 export const getAdminOrganization = cache(
-  async (organizationSlug: string | undefined) =>
-    (await listOrganizations()).find(({ slug }) => slug === organizationSlug),
+  async (
+    organizationId: string | undefined,
+    organizationSlug: string | undefined,
+  ) => {
+    const organization = (await listOrganizations()).find(
+      ({ id }) => id === organizationId,
+    );
+
+    return !organizationSlug || organizationSlug === organization?.slug
+      ? organization
+      : undefined;
+  },
 );
 
 export const getDefaultOrganizationSlug = cache(async () => {
@@ -56,15 +66,14 @@ export const getResolvedAdminOrganization = cache(
       getSession(),
     ]);
 
-    const defaultSlug = resolveDefaultOrganizationSlug(
-      session?.session?.activeOrganizationId,
-      organizations,
-    );
+    const resolvedSlug =
+      organizationSlug ||
+      resolveDefaultOrganizationSlug(
+        session?.session?.activeOrganizationId,
+        organizations,
+      );
 
-    return (
-      organizations.find(({ slug }) => slug === organizationSlug) ??
-      organizations.find(({ slug }) => slug === defaultSlug)
-    );
+    return organizations.find(({ slug }) => slug === resolvedSlug);
   },
 );
 

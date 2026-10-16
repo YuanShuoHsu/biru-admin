@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 
 import Orders from ".";
 
@@ -15,8 +16,8 @@ import {
 
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getOrderEnumOptions } from "@/utils/enumOptions";
-import { hasRolePermission } from "@/utils/organizations";
 import { getAdminOrders } from "@/utils/orders";
+import { hasRolePermission } from "@/utils/organizations";
 import { getMemberRole, getResolvedAdminOrganization } from "@/utils/session";
 
 interface OrdersPageProps {
@@ -56,8 +57,7 @@ const OrdersPage = async ({ params, searchParams }: OrdersPageProps) => {
   const selectedOrganization = await getResolvedAdminOrganization(
     rawSearchParams.organization,
   );
-
-  if (!selectedOrganization) return null;
+  if (!selectedOrganization) notFound();
 
   const {
     filterField,

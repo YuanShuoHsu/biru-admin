@@ -10,9 +10,9 @@ import type { Locale } from "@/i18n/routing";
 
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
+import { getHref } from "@/utils/href";
 import { getIngredients, getRecipeByMenuItem } from "@/utils/inventory";
 import {
-  DEFAULT_MENUS_HREF,
   getAdminMenu,
   getAdminMenuItem,
   getAdminMenuSection,
@@ -50,19 +50,32 @@ const MenuItemRecipePage = async ({
 
   if (!section?.menuId) notFound();
 
-  const [menu, selectedOrganization, menuItem] = await Promise.all([
+  const [menu, menuItem] = await Promise.all([
     getAdminMenu(section.menuId, fetchOptions),
-    getAdminOrganization(rawSearchParams.organization),
     getAdminMenuItem(menuItemId, fetchOptions),
   ]);
 
   if (!menuItem) notFound();
 
-  if (!selectedOrganization || selectedOrganization.id !== menu?.organizationId)
-    return redirect({ href: DEFAULT_MENUS_HREF, locale });
+  const selectedOrganization = await getAdminOrganization(
+    menu?.organizationId,
+    rawSearchParams.organization,
+  );
+  if (!selectedOrganization) notFound();
+
+  if (rawSearchParams.organization !== selectedOrganization.slug)
+    redirect({
+      href: getHref(
+        `/menus/sections/${menuSectionId}/${menuItemId}/ingredients`,
+        {
+          organization: selectedOrganization.slug,
+        },
+      ),
+      locale,
+    });
 
   const [memberRole, { ingredients }, recipe] = await Promise.all([
-    getMemberRole(menu.organizationId),
+    getMemberRole(selectedOrganization.id),
     menuItem.recipe
       ? { ingredients: [], total: 0 }
       : getIngredients(

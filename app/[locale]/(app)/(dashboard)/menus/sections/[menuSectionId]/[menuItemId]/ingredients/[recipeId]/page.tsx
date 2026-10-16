@@ -23,7 +23,6 @@ import {
   getRecipeIngredients,
 } from "@/utils/inventory";
 import {
-  DEFAULT_MENUS_HREF,
   getAdminMenu,
   getAdminMenuItem,
   getAdminMenuSection,
@@ -75,19 +74,21 @@ const RecipeIngredientsPage = async ({
 
   if (!section?.menuId) notFound();
 
-  const [menu, selectedOrganization, menuItem] = await Promise.all([
+  const [menu, menuItem] = await Promise.all([
     getAdminMenu(section.menuId, fetchOptions),
-    getAdminOrganization(rawSearchParams.organization),
     getAdminMenuItem(menuItemId, fetchOptions),
   ]);
 
   if (!menuItem) notFound();
 
-  if (!selectedOrganization || selectedOrganization.id !== menu?.organizationId)
-    return redirect({ href: DEFAULT_MENUS_HREF, locale });
+  const selectedOrganization = await getAdminOrganization(
+    menu?.organizationId,
+    rawSearchParams.organization,
+  );
+  if (!selectedOrganization) notFound();
 
   const [memberRole, { ingredients }, recipe] = await Promise.all([
-    getMemberRole(menu.organizationId),
+    getMemberRole(selectedOrganization.id),
     getIngredients(
       selectedOrganization.slug,
       { pageSize: MAX_PAGE_SIZE },

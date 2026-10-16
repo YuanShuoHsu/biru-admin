@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 
 import AdminWaitlist from ".";
 
@@ -34,8 +35,7 @@ const WaitlistPage = async ({ params, searchParams }: WaitlistPageProps) => {
   ]);
 
   const selectedOrganization = await getResolvedAdminOrganization(organization);
-
-  if (!selectedOrganization) return null;
+  if (!selectedOrganization) notFound();
 
   if (organization !== selectedOrganization.slug) {
     const params = new URLSearchParams({

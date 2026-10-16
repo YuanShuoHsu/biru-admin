@@ -17,7 +17,6 @@ import {
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getMenuEnumOptions } from "@/utils/enumOptions";
 import {
-  DEFAULT_MENUS_HREF,
   getAdminMenu,
   getAdminMenuSection,
   getAdminMenuSectionItems,
@@ -62,13 +61,12 @@ const MenusMenuIdSectionIdPage = async ({
 
   if (!section?.menuId) notFound();
 
-  const [menu, selectedOrganization] = await Promise.all([
-    getAdminMenu(section.menuId, fetchOptions),
-    getAdminOrganization(rawSearchParams.organization),
-  ]);
-
-  if (!selectedOrganization || selectedOrganization.id !== menu?.organizationId)
-    return redirect({ href: DEFAULT_MENUS_HREF, locale });
+  const menu = await getAdminMenu(section.menuId, fetchOptions);
+  const selectedOrganization = await getAdminOrganization(
+    menu?.organizationId,
+    rawSearchParams.organization,
+  );
+  if (!selectedOrganization) notFound();
 
   const {
     filterField,
@@ -117,7 +115,7 @@ const MenusMenuIdSectionIdPage = async ({
       sortDirection,
       fetchOptions,
     ),
-    getMemberRole(menu.organizationId),
+    getMemberRole(selectedOrganization.id),
   ]);
 
   const canWrite = hasRolePermission(role, { menu: ["update"] });

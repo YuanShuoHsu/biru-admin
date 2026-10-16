@@ -16,7 +16,6 @@ import {
 
 import { resolveGridSearchParams } from "@/utils/dataGrid";
 import {
-  DEFAULT_MENUS_HREF,
   getAdminMenu,
   getAdminMenuItemModifierGroups,
   getAdminMenuSection,
@@ -64,13 +63,12 @@ const MenuItemModifierGroupsPage = async ({
 
   if (!section?.menuId) notFound();
 
-  const [menu, selectedOrganization] = await Promise.all([
-    getAdminMenu(section.menuId, fetchOptions),
-    getAdminOrganization(rawSearchParams.organization),
-  ]);
-
-  if (!selectedOrganization || selectedOrganization.id !== menu?.organizationId)
-    return redirect({ href: DEFAULT_MENUS_HREF, locale });
+  const menu = await getAdminMenu(section.menuId, fetchOptions);
+  const selectedOrganization = await getAdminOrganization(
+    menu?.organizationId,
+    rawSearchParams.organization,
+  );
+  if (!selectedOrganization) notFound();
 
   const {
     filterField,
@@ -109,7 +107,7 @@ const MenuItemModifierGroupsPage = async ({
       sortDirection,
       fetchOptions,
     ),
-    getMemberRole(menu.organizationId),
+    getMemberRole(selectedOrganization.id),
   ]);
 
   const canWrite = hasRolePermission(role, { menu: ["update"] });
@@ -124,7 +122,7 @@ const MenuItemModifierGroupsPage = async ({
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
-      menuId={menu.id}
+      menuId={section.menuId}
       menuItemId={menuItemId}
       page={page}
       pageSize={pageSize}

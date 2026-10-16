@@ -18,7 +18,7 @@ import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getInventoryTransactionEnumOptions } from "@/utils/enumOptions";
 import { getIngredient, getInventoryTransactions } from "@/utils/inventory";
 import { hasRolePermission } from "@/utils/organizations";
-import { getMemberRole } from "@/utils/session";
+import { getAdminOrganization, getMemberRole } from "@/utils/session";
 
 interface IngredientTransactionsPageProps {
   params: Promise<{ ingredientId: string; locale: Locale }>;
@@ -58,7 +58,13 @@ const IngredientTransactionsPage = async ({
 
   if (!ingredient) notFound();
 
-  const memberRole = await getMemberRole(ingredient.organizationId);
+  const organization = await getAdminOrganization(
+    ingredient.organizationId,
+    rawSearchParams.organization,
+  );
+  if (!organization) notFound();
+
+  const memberRole = await getMemberRole(organization.id);
 
   const canViewPurchasing = hasRolePermission(memberRole, {
     purchasing: ["read"],
@@ -79,6 +85,7 @@ const IngredientTransactionsPage = async ({
     sortFields: inventoryTransactionSortFieldValues,
     filterFields: inventoryTransactionFilterFieldValues,
     filterOperators: filterOperatorValues,
+    organizationSlug: organization.slug,
   });
 
   if (redirectParams)

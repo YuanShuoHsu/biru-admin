@@ -4,6 +4,7 @@ import utc from "dayjs/plugin/utc";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 
 import Dashboard from ".";
 import { DASHBOARD_RANGES, resolveDashboardRange } from "./definitions";
@@ -22,7 +23,11 @@ import type { WaitlistStats, WaitlistStatusResponse } from "@/types/waitlist";
 import { getChangePercent } from "@/utils/dashboard";
 import { fetcher } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
-import { getMemberRole, getSession, listOrganizations } from "@/utils/session";
+import {
+  getMemberRole,
+  getResolvedAdminOrganization,
+  getSession,
+} from "@/utils/session";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -58,28 +63,21 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
   const session = await getSession();
   const isAdmin = session?.user?.role === "admin";
 
-  const organizations = await listOrganizations();
-  const selectedOrganization = organizations.find(
-    ({ slug }) => slug === organization,
-  );
+  const selectedOrganization = await getResolvedAdminOrganization(organization);
 
-  const resolvedSlug =
-    selectedOrganization?.slug ||
-    organizations.find(
-      ({ id }) => id === session?.session?.activeOrganizationId,
-    )?.slug ||
-    organizations[0]?.slug;
+  if (organization && !selectedOrganization) notFound();
 
-  if (resolvedSlug && organization !== resolvedSlug) {
-    const params = new URLSearchParams({ organization: resolvedSlug, range });
+  if (selectedOrganization && organization !== selectedOrganization.slug) {
+    const params = new URLSearchParams({
+      organization: selectedOrganization.slug,
+      range,
+    });
 
     redirect({ href: `/dashboard?${params.toString()}`, locale });
   }
 
-  const organizationSlug = resolvedSlug || "";
-  const resolvedOrganizationId = organizations.find(
-    ({ slug }) => slug === resolvedSlug,
-  )?.id;
+  const organizationSlug = selectedOrganization?.slug ?? "";
+  const resolvedOrganizationId = selectedOrganization?.id;
 
   const storeToday = dayjs().tz(STORE_TIMEZONE).startOf("day");
 
