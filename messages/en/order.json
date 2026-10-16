@@ -122,6 +122,10 @@
       },
       "title": "Invoice details"
     },
+    "notFound": {
+      "subtitle": "This link may be incomplete or expired. Please view your order from the page shown after ordering, or ask our staff for assistance.",
+      "title": "Order not found"
+    },
     "pending": {
       "retry": "Pay again",
       "subtitle": "Your order was created but payment has not been received. If you have already paid, this page will update shortly; if not, please ask our staff for assistance.",

@@ -1902,6 +1902,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/ecpay/back/{merchantTradeNo}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["EcpayController_back"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/ecpay/sync-invoice-word-settings": {
     parameters: {
       query?: never;
@@ -6180,20 +6196,6 @@ export interface components {
        */
       TradeDesc: string;
       /**
-       * Format: uri
-       * @description Client 端返回特店的按鈕連結
-       *     消費者點選此按鈕後，會將頁面導回到此設定的網址
-       *     注意事項：
-       *     1. 導回時不會帶付款結果到此網址，只是將頁面導回而已。
-       *     2. 設定此參數，綠界會在付款完成或取號完成頁面上顯示 [返回商店] 的按鈕。
-       *     3. 設定此參數，發生簡訊 OTP 驗證失敗時，頁面上會顯示 [返回商店] 的按鈕。
-       *     4. 若未設定此參數，則綠界付款完成頁或取號完成頁面，不會顯示 [返回商店] 的按鈕。
-       *     5. 若導回網址未使用 https 時，部份瀏覽器可能會出現警告訊息。
-       *     6. 參數內容若有包含 %26(&) 及 %3C(<) 這二個值時，請先進行 urldecode() 避免呼叫 API 失敗。
-       * @example https://your-domain.com/shop
-       */
-      ClientBackURL?: string;
-      /**
        * @description 語系設定
        *     預設語系為中文，若要變更語系參數值請帶：
        *     - ENG：英語
@@ -6203,6 +6205,11 @@ export interface components {
        * @example ENG
        */
       Language?: components["schemas"]["BaseEcpayLanguage"];
+      /**
+       * Format: uri
+       * @description 付款完成或在綠界頁按返回後要回到的前台網址；由後端保存，不直接交給綠界
+       */
+      returnUrl?: string;
       /** @description 訂單 ID */
       orderId: string;
       /** @description 建立訂單時取得；訪客訂單必帶 */
@@ -12975,9 +12982,7 @@ export interface operations {
   };
   EcpayController_result: {
     parameters: {
-      query: {
-        redirect: string;
-      };
+      query?: never;
       header?: never;
       path?: never;
       cookie?: never;
@@ -12989,6 +12994,32 @@ export interface operations {
     };
     responses: {
       201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  EcpayController_back: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        merchantTradeNo: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
         headers: {
           [name: string]: unknown;
         };
