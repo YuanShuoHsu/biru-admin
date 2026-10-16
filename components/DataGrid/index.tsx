@@ -1,12 +1,27 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { createContext, use } from "react";
 
-import DataGridSkeleton from "@/components/DataGridSkeleton";
+import DataGridSkeleton, {
+  type DataGridSkeletonProps,
+} from "@/components/DataGridSkeleton";
 
-const DataGrid = dynamic(
+const SkeletonPropsContext = createContext<DataGridSkeletonProps>({});
+
+const DataGridLoading = () => (
+  <DataGridSkeleton {...use(SkeletonPropsContext)} />
+);
+
+const LazyDataGrid = dynamic(
   () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { loading: () => <DataGridSkeleton />, ssr: false },
+  { loading: DataGridLoading, ssr: false },
+);
+
+const DataGrid = (props: React.ComponentProps<typeof LazyDataGrid>) => (
+  <SkeletonPropsContext value={props}>
+    <LazyDataGrid {...props} />
+  </SkeletonPropsContext>
 );
 
 export default DataGrid;

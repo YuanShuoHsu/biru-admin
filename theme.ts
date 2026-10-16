@@ -195,6 +195,17 @@ const theme = createTheme({
           "& .MuiDataGrid-sortButton": {
             transition: theme.transitions.create("background-color"),
           },
+          "&:not(.MuiDataGrid-columnHeader--sorted) .MuiDataGrid-sortButton": {
+            transition: [
+              theme.transitions.create("background-color"),
+              theme.transitions.create("opacity", {
+                duration: theme.transitions.duration.short,
+              }),
+            ].join(","),
+          },
+        }),
+        columnHeaders: ({ theme }) => ({
+          transition: theme.transitions.create("background-color"),
         }),
         columnsManagement: ({ theme }) => ({
           color: theme.vars.palette.text.primary,
@@ -248,8 +259,18 @@ const theme = createTheme({
             },
           },
         }),
+        scrollbarFiller: ({ theme }) => ({
+          transition: theme.transitions.create([
+            "background-color",
+            "border-color",
+          ]),
+        }),
         toolbar: ({ theme }) => ({
-          transition: theme.transitions.create("border-color"),
+          transition: theme.transitions.create([
+            "background-color",
+            "border-color",
+            "color",
+          ]),
         }),
       },
     },
@@ -421,11 +442,12 @@ const theme = createTheme({
     },
     MuiTab: {
       styleOverrides: {
-        icon: {
-          transition: "none",
-        },
         root: ({ theme }) => ({
           transition: theme.transitions.create("color"),
+
+          "& .MuiSvgIcon-root": {
+            transition: "none",
+          },
         }),
       },
     },
