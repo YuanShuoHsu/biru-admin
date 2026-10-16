@@ -2,43 +2,45 @@
 
 import { DEFAULT_PAGE_SIZE } from "@/constants/pagination";
 
-import { Box, Skeleton, Stack } from "@mui/material";
+import { Box, Divider, Skeleton } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 const Root = styled(Box)(({ theme }) => ({
-  border: `1px solid ${theme.vars.palette.divider}`,
-  borderRadius: theme.shape.borderRadius,
+  flex: 1,
+  height: "100%",
+  minWidth: 0,
+  minHeight: 0,
+  display: "flex",
+  flexDirection: "column",
   overflow: "hidden",
+  border: `1px solid ${theme.vars.palette.TableCell.border}`,
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: theme.vars.palette.background.paper,
 }));
 
-const ToolbarStack = styled(Stack)(({ theme }) => ({
-  height: 52,
-  flexDirection: "row",
+const Toolbar = styled(Box)(({ theme }) => ({
+  display: "flex",
   alignItems: "center",
   justifyContent: "flex-end",
-  gap: theme.spacing(1),
-  paddingInline: theme.spacing(1),
-  borderBottom: `1px solid ${theme.vars.palette.divider}`,
+  gap: theme.spacing(0.25),
+  padding: theme.spacing(0.75),
+  minHeight: 52,
+  borderBottom: `1px solid ${theme.vars.palette.TableCell.border}`,
 }));
 
-const RowStack = styled(Stack)(({ theme }) => ({
-  flexDirection: "row",
+const ToolbarButton = () => (
+  <Skeleton height={36} variant="circular" width={36} />
+);
+
+const ToolbarDivider = styled(Divider)(({ theme }) => ({
+  marginInline: theme.spacing(0.5),
+}));
+
+const Row = styled(Box)(({ theme }) => ({
+  display: "flex",
   alignItems: "center",
-  gap: theme.spacing(2),
+  gap: theme.spacing(2.5),
   paddingInline: theme.spacing(1.25),
-  borderBottom: `1px solid ${theme.vars.palette.divider}`,
-}));
-
-const HeaderStack = styled(RowStack)({ height: 56 });
-
-const BodyStack = styled(RowStack)({ height: 52 });
-
-const FooterStack = styled(Stack)(({ theme }) => ({
-  height: 53,
-  flexDirection: "row",
-  alignItems: "center",
-  justifyContent: "flex-end",
-  paddingInline: theme.spacing(2),
 }));
 
 const COLUMNS = [3, 2, 2, 1];
@@ -48,24 +50,101 @@ const Cells = () =>
     <Skeleton key={index} sx={{ flex }} variant="text" />
   ));
 
+const Header = styled(Row)(({ theme }) => ({
+  height: 56,
+  borderBottom: `1px solid ${theme.vars.palette.TableCell.border}`,
+}));
+
+const Body = styled(Box)({
+  flex: 1,
+  minHeight: 0,
+  overflow: "hidden",
+});
+
+const BodyRow = styled(Row)(({ theme }) => ({
+  height: 52,
+  borderTop: `1px solid ${theme.vars.palette.TableCell.border}`,
+
+  "&:first-of-type": {
+    borderTopColor: "transparent",
+  },
+}));
+
+const Footer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  minHeight: 52,
+  borderTop: `1px solid ${theme.vars.palette.TableCell.border}`,
+}));
+
+const Pagination = styled(Box)(({ theme }) => ({
+  flex: 1,
+  display: "flex",
+  alignItems: "center",
+  minHeight: 52,
+  paddingLeft: theme.spacing(2),
+  paddingRight: 2,
+
+  [theme.breakpoints.up("sm")]: {
+    paddingLeft: theme.spacing(3),
+  },
+}));
+
+const PaginationSpacer = styled(Box)({
+  flex: "1 1 100%",
+});
+
+const PaginationText = styled(Skeleton)({
+  flexShrink: 0,
+});
+
+const PaginationSelect = styled(PaginationText)({
+  marginLeft: 8,
+  marginRight: 32,
+});
+
+const PaginationActions = styled(Box)({
+  display: "flex",
+  flexShrink: 0,
+  marginLeft: 20,
+});
+
+const PaginationItem = styled(Skeleton)({
+  margin: "0 3px",
+});
+
 const DataGridSkeleton = () => (
   <Root aria-busy>
-    <ToolbarStack>
-      <Skeleton height={32} variant="circular" width={32} />
-      <Skeleton height={32} variant="circular" width={32} />
-      <Skeleton height={32} variant="circular" width={32} />
-    </ToolbarStack>
-    <HeaderStack>
+    <Toolbar>
+      <ToolbarButton />
+      <ToolbarButton />
+      <ToolbarDivider flexItem orientation="vertical" variant="middle" />
+      <ToolbarButton />
+      <ToolbarButton />
+    </Toolbar>
+    <Header>
       <Cells />
-    </HeaderStack>
-    {Array.from({ length: DEFAULT_PAGE_SIZE }, (_, index) => (
-      <BodyStack key={index}>
-        <Cells />
-      </BodyStack>
-    ))}
-    <FooterStack>
-      <Skeleton variant="text" width={200} />
-    </FooterStack>
+    </Header>
+    <Body>
+      {Array.from({ length: DEFAULT_PAGE_SIZE }, (_, index) => (
+        <BodyRow key={index}>
+          <Cells />
+        </BodyRow>
+      ))}
+    </Body>
+    <Footer>
+      <Pagination>
+        <PaginationSpacer />
+        <PaginationText variant="text" width={61} />
+        <PaginationSelect variant="text" width={48} />
+        <PaginationText variant="text" width={54} />
+        <PaginationActions>
+          <PaginationItem height={32} variant="circular" width={32} />
+          <PaginationItem height={32} variant="circular" width={32} />
+          <PaginationItem height={32} variant="circular" width={32} />
+        </PaginationActions>
+      </Pagination>
+    </Footer>
   </Root>
 );
 
