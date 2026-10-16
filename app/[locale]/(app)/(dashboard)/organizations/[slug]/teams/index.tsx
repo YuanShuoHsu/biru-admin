@@ -1,13 +1,14 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import UpdateTeamDialog from "./UpdateTeamDialog";
+
+import DataGrid from "@/components/DataGrid";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -39,9 +40,9 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { ActiveOrganization, Team } from "@/types/organizations";
 
-import { sortByCreatedAtDesc } from "@/utils/organizations";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
+import { sortByCreatedAtDesc } from "@/utils/organizations";
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
   height: "100%",
@@ -54,11 +55,6 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",
   gap: theme.spacing(1),
 }));
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 interface OrganizationsSlugTeamsProps {
   activeOrganization: ActiveOrganization;

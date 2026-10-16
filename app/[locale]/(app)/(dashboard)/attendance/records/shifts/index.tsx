@@ -1,16 +1,15 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import useSWR, { mutate as mutateCache } from "swr";
 
 import ShiftDialog from "../../ShiftDialog";
-
 import BatchReviewDialog from "../../BatchReviewDialog";
 import EventsDialogContent from "../../EventsDialogContent";
 import ReviewDialog from "../reviews/ReviewDialog";
 
+import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
 import { SHIFT_STATE_COLORS } from "@/constants/attendance";
@@ -21,14 +20,14 @@ import {
 } from "@/constants/dataGrid";
 import { getPageSizeOptions } from "@/constants/pagination";
 
+import { attendanceReviewCountsKey } from "@/hooks/useAttendanceReviewCounts";
+import { useCancelShift } from "@/hooks/useCancelShift";
 import {
   useDateFilterOperators,
   useEnumFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
-import { useCancelShift } from "@/hooks/useCancelShift";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
-import { attendanceReviewCountsKey } from "@/hooks/useAttendanceReviewCounts";
 
 import { Add, Cancel, Check, Close, History } from "@mui/icons-material";
 import { Button, Chip, IconButton, Stack, Tooltip } from "@mui/material";
@@ -70,11 +69,6 @@ import {
 } from "@/utils/dataGrid";
 import { getAttendanceDayKindEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
   height: "100%",

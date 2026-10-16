@@ -4,13 +4,11 @@ import dayjs from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useFormatter, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
+import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
-
-import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import {
   autosizeOptions,
@@ -18,6 +16,7 @@ import {
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
 import { getPageSizeOptions } from "@/constants/pagination";
+import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { useMonthFilterOperators } from "@/hooks/useFilterOperators";
 import { useFormatMoney } from "@/hooks/useFormatMoney";
@@ -41,20 +40,16 @@ import type {
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 
-import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import {
   fromCents,
   getPayrollAmountColumns,
   payrollPath,
 } from "@/utils/attendance";
+import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 interface PayslipsProps {
   filterField?: PayrollStatementFilterField;

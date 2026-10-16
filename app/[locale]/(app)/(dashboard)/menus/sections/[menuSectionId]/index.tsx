@@ -1,7 +1,6 @@
 "use client";
 
 import { useFormatter, useLocale, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
@@ -12,18 +11,15 @@ import CreateMenuItemDialog from "./CreateMenuItemDialog";
 import UpdateMenuItemDialog from "./UpdateMenuItemDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import DataGrid from "@/components/DataGrid";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 import { DragHandle, Sortable } from "@/components/Sortable";
+
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import {
-  DEFAULT_PAGINATION_QUERY,
-  getPageSizeOptions,
-} from "@/constants/pagination";
-
 import { ITEM_AVAILABILITY_COLOR_MAP } from "@/constants/itemAvailability";
 import {
   SERVING_TEMPERATURE_COLOR_MAP,
@@ -31,6 +27,10 @@ import {
   SWEETNESS_COLOR_MAP,
 } from "@/constants/menus";
 import { MODE_COLORS } from "@/constants/orderMode";
+import {
+  DEFAULT_PAGINATION_QUERY,
+  getPageSizeOptions,
+} from "@/constants/pagination";
 
 import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
@@ -45,6 +45,7 @@ import {
 import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
+
 import { useRouter } from "@/i18n/navigation";
 
 import {
@@ -98,11 +99,6 @@ import {
 import { getMenuEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
   height: "100%",

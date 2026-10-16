@@ -1,7 +1,6 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import useSWR, { mutate as mutateCache } from "swr";
 
@@ -9,6 +8,7 @@ import BatchReviewDialog from "../../BatchReviewDialog";
 import LeaveCaseDialog from "../../leave/cases/LeaveCaseDialog";
 import ReviewDialog from "./ReviewDialog";
 
+import DataGrid from "@/components/DataGrid";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 
 import { REQUEST_STATUS_COLORS } from "@/constants/attendance";
@@ -19,13 +19,13 @@ import {
 } from "@/constants/dataGrid";
 import { getPageSizeOptions } from "@/constants/pagination";
 
+import { attendanceReviewCountsKey } from "@/hooks/useAttendanceReviewCounts";
 import {
   useDateFilterOperators,
   useEnumFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
-import { attendanceReviewCountsKey } from "@/hooks/useAttendanceReviewCounts";
 
 import { Check, Close } from "@mui/icons-material";
 import { Button, Chip, IconButton, Stack, Tooltip } from "@mui/material";
@@ -53,13 +53,13 @@ import type {
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 
+import { attendancePath, getStatutoryLeaveName } from "@/utils/attendance";
 import {
   getDataGridSearchParams,
   getFilterItemParams,
   getSelectedRows,
 } from "@/utils/dataGrid";
 import { getAttendanceRequestEnumOptions } from "@/utils/enumOptions";
-import { attendancePath, getStatutoryLeaveName } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
 
 const StyledStack = styled(Stack)(({ theme }) => ({
@@ -73,11 +73,6 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
   flexWrap: "wrap",
   gap: theme.spacing(2),
 }));
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 interface ReviewsProps {
   canGrantLeaveCase: boolean;

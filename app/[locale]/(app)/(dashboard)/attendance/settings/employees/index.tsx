@@ -1,16 +1,17 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
-import { useCallback, useMemo, useState } from "react";
 import { enqueueSnackbar } from "notistack";
+import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import TermsDialog from "../../payroll/statements/TermsDialog";
 import TaxIdentityDialog from "../../payroll/withholding/TaxIdentityDialog";
 import EmployeeDialog from "./EmployeeDialog";
 
+import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
+
 import { EMPLOYEE_STATUS_COLORS } from "@/constants/attendance";
 import {
   autosizeOptions,
@@ -26,6 +27,7 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
+
 import {
   AssignmentInd,
   Cancel,
@@ -69,8 +71,8 @@ import type { Organization } from "@/types/organizations";
 import { attendancePath, payrollPath } from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceEmployeeEnumOptions } from "@/utils/enumOptions";
-import { fetcher } from "@/utils/fetcher";
 import { getErrorMessage } from "@/utils/errors";
+import { fetcher } from "@/utils/fetcher";
 
 const StyledStack = styled(Stack)({
   height: "100%",
@@ -88,11 +90,6 @@ const StyledIconButton = styled(IconButton, {
 })<{ visible: boolean }>(({ visible }) => ({
   visibility: visible ? "visible" : "hidden",
 }));
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 interface EmployeesProps {
   canDelete: boolean;

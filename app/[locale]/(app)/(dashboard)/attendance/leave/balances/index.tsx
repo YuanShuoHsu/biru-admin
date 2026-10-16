@@ -1,14 +1,16 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
+import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import BalanceDialog from "./BalanceDialog";
 import DeferralDialog from "./DeferralDialog";
 
+import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
+
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -25,6 +27,7 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
+
 import { Add, Cancel, EventBusy, EventRepeat } from "@mui/icons-material";
 import {
   Button,
@@ -43,8 +46,6 @@ import type {
 } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
-import { enqueueSnackbar } from "notistack";
-
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
@@ -58,25 +59,20 @@ import type {
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 
-import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import {
   attendancePath,
   formatLeaveDuration,
   getStatutoryLeaveName,
 } from "@/utils/attendance";
-import { fetcher } from "@/utils/fetcher";
+import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getErrorMessage } from "@/utils/errors";
+import { fetcher } from "@/utils/fetcher";
 
 const ToolbarStack = styled(Stack)(({ theme }) => ({
   flexWrap: "wrap",
   alignItems: "center",
   gap: theme.spacing(1),
 }));
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 interface BalancesProps {
   canDefer: boolean;

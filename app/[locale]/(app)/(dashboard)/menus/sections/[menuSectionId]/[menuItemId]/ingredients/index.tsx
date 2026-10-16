@@ -1,7 +1,6 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo } from "react";
 import useSWR from "swr";
@@ -9,6 +8,7 @@ import useSWR from "swr";
 import RecipeIngredientDialog from "./RecipeIngredientDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import DataGrid from "@/components/DataGrid";
 import RecipeDialog from "@/components/RecipeDialog";
 
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
@@ -52,11 +52,6 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",
   gap: theme.spacing(2),
 }));
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 interface MenuItemRecipeProps {
   canCreate: boolean;

@@ -3,6 +3,8 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 
+import UpdateMenuDialog from "../UpdateMenuDialog";
+
 import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";
 
 import { Link, useRouter } from "@/i18n/navigation";
@@ -21,13 +23,12 @@ import { type CSSObject, styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
+import theme from "@/theme";
+
 import type { Menu } from "@/types/menus";
 
 import { getHref } from "@/utils/href";
 import { localize } from "@/utils/locale";
-
-import theme from "@/theme";
-import UpdateMenuDialog from "../UpdateMenuDialog";
 
 const StyledCard = styled(Card)(({ theme }) => ({
   display: "flex",

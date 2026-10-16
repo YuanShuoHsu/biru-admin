@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+
 import { type VerifyEmailForm, useVerifyEmailFormSchema } from "./definitions";
 
 import FormCard, {

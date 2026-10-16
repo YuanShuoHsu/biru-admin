@@ -19,6 +19,10 @@ import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
 import { buildOpenGraph, buildTwitter } from "@/utils/metadata";
 import { getSiteMeta } from "@/utils/siteMeta";
 
+// Cache Components: routes read request-time data (session cookies, searchParams)
+// outside <Suspense>, so the app opts out of the static shell and renders as
+// blocking routes until it adopts streaming.
+// https://nextjs.org/docs/messages/blocking-prerender-dynamic
 export const instant = false;
 
 const geistSans = Geist({

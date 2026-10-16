@@ -3,7 +3,6 @@
 import type { UserWithRole } from "better-auth/client/plugins";
 import type { Session } from "better-auth/types";
 import { useFormatter, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
@@ -11,7 +10,9 @@ import { useSWRConfig } from "swr";
 
 import RevokeUserSessionDialogContent from "./RevokeUserSessionDialogContent";
 
+import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
+
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
 import { deviceSessionsKey } from "@/hooks/useDeviceSessions";
@@ -56,11 +57,6 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",
   gap: theme.spacing(1),
 }));
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 interface UserSessionsProps {
   initialRows: Session[];

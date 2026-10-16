@@ -1,11 +1,12 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import ChildDialog from "./ChildDialog";
+
+import DataGrid from "@/components/DataGrid";
 
 import {
   autosizeOptions,
@@ -43,18 +44,13 @@ import type {
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 
-import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { attendancePath } from "@/utils/attendance";
+import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
 
 const StyledButton = styled(Button)({
   alignSelf: "flex-start",
 });
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 interface ParentalChildrenProps {
   canViewAll: boolean;

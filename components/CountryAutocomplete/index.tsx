@@ -15,6 +15,8 @@ import FlagImage from "@/components/FlagImage";
 
 import { countries } from "@/constants/countries";
 
+import { useCurrencies } from "@/hooks/useCurrencies";
+
 import {
   Autocomplete,
   Box,
@@ -29,7 +31,6 @@ import {
 import { darken, lighten, styled } from "@mui/material/styles";
 
 import type { CountryType } from "@/types/countries";
-import { useCurrencies } from "@/hooks/useCurrencies";
 import type { CurrencyType } from "@/types/currencies";
 
 import { formatPhone } from "@/utils/countries";

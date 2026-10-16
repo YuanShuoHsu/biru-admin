@@ -1,17 +1,19 @@
 "use client";
 
 import { useFormatter, useLocale, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
+import DataGrid from "@/components/DataGrid";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
+
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { getPageSizeOptions } from "@/constants/pagination";
 
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
+
 import type { Locale } from "@/i18n/routing";
 
 import { Cancel, Undo } from "@mui/icons-material";
@@ -41,11 +43,6 @@ import { getDeletedRecordsPath } from "@/utils/deletedRecords";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 const ToolbarStack = styled(Stack)(({ theme }) => ({
   flexWrap: "wrap",

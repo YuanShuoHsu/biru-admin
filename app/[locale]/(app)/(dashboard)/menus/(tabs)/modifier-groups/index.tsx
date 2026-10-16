@@ -1,7 +1,6 @@
 "use client";
 
 import { useFormatter, useLocale, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
@@ -11,7 +10,9 @@ import CreateModifierGroupDialog from "./CreateModifierGroupDialog";
 import UpdateModifierGroupDialog from "./UpdateModifierGroupDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import DataGrid from "@/components/DataGrid";
 import { DragHandle, Sortable } from "@/components/Sortable";
+
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -33,6 +34,7 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
+
 import { useRouter } from "@/i18n/navigation";
 
 import {
@@ -94,11 +96,6 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",
   gap: theme.spacing(2),
 }));
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 interface ModifierGroupsProps {
   canViewAuditLog: boolean;

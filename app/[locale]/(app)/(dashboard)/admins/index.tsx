@@ -12,7 +12,6 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR, { useSWRConfig } from "swr";
@@ -23,7 +22,9 @@ import SetRoleDialogContent from "./SetRoleDialogContent";
 import SetUserPasswordDialogContent from "./SetUserPasswordDialogContent";
 import UpdateUserDialogContent from "./UpdateUserDialogContent";
 
+import DataGrid from "@/components/DataGrid";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
+
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -35,18 +36,18 @@ import {
   IMPERSONATE_RETURN_KEY,
 } from "@/constants/route";
 
+import { deviceSessionsKey } from "@/hooks/useDeviceSessions";
 import {
   useDateFilterOperators,
   useEnumFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
+import { useRowSelection } from "@/hooks/useRowSelection";
+import { useSession } from "@/hooks/useSession";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
-import { deviceSessionsKey } from "@/hooks/useDeviceSessions";
-import { useRowSelection } from "@/hooks/useRowSelection";
-import { useSession } from "@/hooks/useSession";
 import { authClient } from "@/lib/auth-client";
 
 import {
@@ -105,11 +106,6 @@ import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAdminEnumOptions } from "@/utils/enumOptions";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
   height: "100%",

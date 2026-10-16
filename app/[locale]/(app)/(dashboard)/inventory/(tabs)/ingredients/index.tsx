@@ -1,7 +1,6 @@
 "use client";
 
 import { useFormatter, useLocale, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
@@ -12,8 +11,10 @@ import IngredientDialog from "./IngredientDialog";
 import StockCell from "../../StockCell";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import DataGrid from "@/components/DataGrid";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 import { DragHandle, Sortable } from "@/components/Sortable";
+
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -36,6 +37,7 @@ import {
 import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
+
 import { useRouter } from "@/i18n/navigation";
 
 import {
@@ -75,13 +77,13 @@ import type {
   SortDirection,
   ToolbarMode,
 } from "@/types/dataGrid";
-import type { Organization } from "@/types/organizations";
 import type {
   Ingredient,
   IngredientFilterField,
   IngredientSortField,
   Supplier,
 } from "@/types/inventory";
+import type { Organization } from "@/types/organizations";
 
 import {
   getDataGridSearchParams,
@@ -96,11 +98,6 @@ import {
   formatUnitPrice,
 } from "@/utils/ingredients";
 import { localize } from "@/utils/locale";
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
   height: "100%",

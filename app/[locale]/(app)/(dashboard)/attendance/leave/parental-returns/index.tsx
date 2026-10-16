@@ -1,13 +1,13 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR, { mutate as mutateCache } from "swr";
 
 import ReturnReviewDialog from "./ReturnReviewDialog";
 
+import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
 import { REQUEST_STATUS_COLORS } from "@/constants/attendance";
@@ -18,13 +18,13 @@ import {
 } from "@/constants/dataGrid";
 import { getPageSizeOptions } from "@/constants/pagination";
 
+import { attendanceReviewCountsKey } from "@/hooks/useAttendanceReviewCounts";
 import {
   useDateFilterOperators,
   useEnumFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
-import { attendanceReviewCountsKey } from "@/hooks/useAttendanceReviewCounts";
 
 import { Check, Close, Undo } from "@mui/icons-material";
 import {
@@ -58,8 +58,8 @@ import type { Organization } from "@/types/organizations";
 import { attendancePath } from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceParentalReturnEnumOptions } from "@/utils/enumOptions";
-import { fetcher } from "@/utils/fetcher";
 import { getErrorMessage } from "@/utils/errors";
+import { fetcher } from "@/utils/fetcher";
 
 const StyledStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",
@@ -72,11 +72,6 @@ const StyledIconButton = styled(IconButton, {
 })<{ visible: boolean }>(({ visible }) => ({
   visibility: visible ? "visible" : "hidden",
 }));
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 interface ParentalReturnsProps {
   canReview: boolean;

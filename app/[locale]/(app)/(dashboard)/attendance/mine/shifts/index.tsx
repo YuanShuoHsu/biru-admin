@@ -2,17 +2,16 @@
 
 import dayjs from "dayjs";
 import { useFormatter, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import PunchCard from "./PunchCard";
-
 import CorrectionDialog from "../../CorrectionDialog";
 import EventsDialogContent from "../../EventsDialogContent";
 import OvertimeDialog from "../../OvertimeDialog";
 import LeaveDialog from "../requests/LeaveDialog";
 
+import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
 import { SHIFT_STATE_COLORS } from "@/constants/attendance";
@@ -55,13 +54,13 @@ import type {
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 
-import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
-import { getAttendanceDayKindEnumOptions } from "@/utils/enumOptions";
 import {
   attendancePath,
   formatClockedShift,
   formatScheduledShift,
 } from "@/utils/attendance";
+import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
+import { getAttendanceDayKindEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
@@ -81,11 +80,6 @@ const ChipsStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(0.5),
   height: "100%",
 }));
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 interface MineProps {
   enabled: boolean;

@@ -1,7 +1,6 @@
 "use client";
 
 import { useFormatter, useLocale, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
@@ -10,7 +9,9 @@ import CouponDialog from "./CouponDialog";
 import GrantCouponDialog from "./GrantCouponDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
+
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -31,6 +32,7 @@ import {
 import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
+
 import { Link } from "@/i18n/navigation";
 
 import {
@@ -76,11 +78,6 @@ import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getCouponEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 import { getHref } from "@/utils/href";
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
   height: "100%",

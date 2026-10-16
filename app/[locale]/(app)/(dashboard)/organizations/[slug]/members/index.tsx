@@ -1,7 +1,6 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
@@ -9,6 +8,8 @@ import useSWR from "swr";
 
 import InviteMemberDialog from "./InviteMemberDialog";
 import UpdateMemberRoleDialog from "./UpdateMemberRoleDialog";
+
+import DataGrid from "@/components/DataGrid";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { countKeys, ROLE_RANK } from "@/constants/organizations";
@@ -50,14 +51,9 @@ import type {
   Member,
 } from "@/types/organizations";
 
-import { sortByCreatedAtDesc } from "@/utils/organizations";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
+import { sortByCreatedAtDesc } from "@/utils/organizations";
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
   height: "100%",

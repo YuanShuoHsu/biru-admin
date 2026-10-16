@@ -1,7 +1,6 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
@@ -9,7 +8,9 @@ import useSWR from "swr";
 import BannerDialog from "./BannerDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import DataGrid from "@/components/DataGrid";
 import { DragHandle, Sortable } from "@/components/Sortable";
+
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -27,6 +28,7 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
+
 import { Add, Cancel, Delete, Edit, Save, Sort } from "@mui/icons-material";
 import {
   Avatar,
@@ -67,11 +69,6 @@ import {
 } from "@/utils/dataGrid";
 import { getBannerEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
   height: "100%",

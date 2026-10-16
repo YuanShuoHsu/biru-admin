@@ -1,9 +1,12 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
+
+import AuditLogButton from "@/components/AuditLogButton";
+import DataGrid from "@/components/DataGrid";
+import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 
 import {
   autosizeOptions,
@@ -55,25 +58,17 @@ import type {
 import { useGridApiRef } from "@mui/x-data-grid";
 
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
-import type { Organization } from "@/types/organizations";
 import type {
   AdminOrderResponse,
   OrderFilterField,
   OrderSortField,
   OrderTransition,
 } from "@/types/orders";
+import type { Organization } from "@/types/organizations";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getOrderEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
-
-import AuditLogButton from "@/components/AuditLogButton";
-import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 const StyledStack = styled(Stack)(({ theme }) => ({
   height: "100%",

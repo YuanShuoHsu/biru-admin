@@ -2,14 +2,15 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import AssignChildDialog from "./AssignChildDialog";
 import LeaveCaseDialog from "./LeaveCaseDialog";
 
+import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
+
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -25,6 +26,7 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
+
 import { Add, Cancel, ChildCare, Delete, Edit } from "@mui/icons-material";
 import {
   Button,
@@ -57,14 +59,14 @@ import type {
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 
-import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import {
   attendancePath,
   formatLeaveDuration,
   getStatutoryLeaveName,
 } from "@/utils/attendance";
-import { fetcher } from "@/utils/fetcher";
+import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getErrorMessage } from "@/utils/errors";
+import { fetcher } from "@/utils/fetcher";
 
 const StyledStack = styled(Stack)({
   alignItems: "center",
@@ -82,11 +84,6 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",
   gap: theme.spacing(1),
 }));
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 interface LeaveCasesProps {
   canAssignChild: boolean;

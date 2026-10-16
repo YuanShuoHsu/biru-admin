@@ -3,12 +3,12 @@
 import dayjs from "dayjs";
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 
 import TaxIdentityDialog from "./TaxIdentityDialog";
 import UnitDialog from "./UnitDialog";
 
+import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
@@ -43,8 +43,8 @@ import type {
 import type { Organization } from "@/types/organizations";
 
 import { fromCents, payrollPath } from "@/utils/attendance";
-import { fetcher } from "@/utils/fetcher";
 import { getErrorMessage } from "@/utils/errors";
+import { fetcher } from "@/utils/fetcher";
 
 const ToolbarStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",
@@ -56,11 +56,6 @@ const ActionsStack = styled(Stack)({
   height: "100%",
   alignItems: "center",
 });
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 const ANNUAL_AMOUNT_FIELDS = [
   "salaryCents",

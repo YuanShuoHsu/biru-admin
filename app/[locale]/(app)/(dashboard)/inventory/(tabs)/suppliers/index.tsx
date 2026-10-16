@@ -1,7 +1,6 @@
 "use client";
 
 import { useFormatter, useLocale, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
@@ -9,7 +8,9 @@ import useSWR from "swr";
 import SupplierDialog from "./SupplierDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import DataGrid from "@/components/DataGrid";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
+
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -23,6 +24,7 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
+
 import { Add, Cancel, Delete, Edit } from "@mui/icons-material";
 import {
   Button,
@@ -46,13 +48,13 @@ import { useGridApiRef } from "@mui/x-data-grid";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
-import type { Organization } from "@/types/organizations";
 import type {
   Ingredient,
   Supplier,
   SupplierFilterField,
   SupplierSortField,
 } from "@/types/inventory";
+import type { Organization } from "@/types/organizations";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
@@ -75,11 +77,6 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",
   gap: theme.spacing(2),
 }));
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 interface SuppliersProps {
   canViewAuditLog: boolean;

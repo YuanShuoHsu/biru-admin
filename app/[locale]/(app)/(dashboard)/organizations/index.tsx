@@ -6,7 +6,6 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
@@ -15,7 +14,12 @@ import CreateOrganizationDialog from "./CreateOrganizationDialog";
 import DeleteOrganizationConfirm from "./DeleteOrganizationConfirm";
 import UpdateOrganizationDialog from "./UpdateOrganizationDialog";
 
+import DataGrid from "@/components/DataGrid";
+
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+
+import { useOrganizations } from "@/hooks/organizations";
+import { useRowSelection } from "@/hooks/useRowSelection";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -43,8 +47,6 @@ import {
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
-import { useOrganizations } from "@/hooks/organizations";
-import { useRowSelection } from "@/hooks/useRowSelection";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Organization } from "@/types/organizations";
@@ -52,16 +54,10 @@ import type { Organization } from "@/types/organizations";
 import { stringAvatar } from "@/utils/avatar";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
-
 import {
   getOrganizationPermissions,
   type OrganizationPermissions,
 } from "@/utils/organizations";
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
   height: "100%",

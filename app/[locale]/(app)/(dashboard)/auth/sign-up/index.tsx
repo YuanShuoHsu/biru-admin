@@ -10,6 +10,7 @@ import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, type ReactNode, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
+
 import { type SignUpForm, useSignUpFormSchema } from "./definitions";
 
 import FormCard, {

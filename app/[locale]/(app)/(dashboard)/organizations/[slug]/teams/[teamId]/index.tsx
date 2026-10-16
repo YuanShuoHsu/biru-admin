@@ -1,12 +1,13 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import AddTeamMemberDialog from "./AddTeamMemberDialog";
+
+import DataGrid from "@/components/DataGrid";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { ROLE_RANK } from "@/constants/organizations";
@@ -33,14 +34,9 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { ActiveOrganization, Team } from "@/types/organizations";
 
-import { buildTeamMembers, type TeamMemberRow } from "@/utils/teams";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
+import { buildTeamMembers, type TeamMemberRow } from "@/utils/teams";
 
 const ROLE_COLOR_MAP: Record<string, "error" | "warning" | "default"> = {
   owner: "error",

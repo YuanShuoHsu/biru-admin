@@ -1,10 +1,10 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
+import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
 import {
@@ -47,11 +47,6 @@ const StyledStack = styled(Stack)({
   alignItems: "center",
   height: "100%",
 });
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 interface CouponRecipientsProps {
   couponId: string;

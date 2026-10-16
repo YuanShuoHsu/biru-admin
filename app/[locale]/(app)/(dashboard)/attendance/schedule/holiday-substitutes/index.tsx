@@ -4,14 +4,15 @@ import dayjs from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useFormatter, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import SubstituteDialog from "./SubstituteDialog";
 
+import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
+
 import { HOLIDAY_SUBSTITUTE_STATUS_COLORS } from "@/constants/attendance";
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { getPageSizeOptions } from "@/constants/pagination";
@@ -23,6 +24,7 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
+
 import { Cancel, EventAvailable, EventBusy } from "@mui/icons-material";
 import {
   Button,
@@ -56,16 +58,11 @@ import type { Organization } from "@/types/organizations";
 
 import { attendancePath } from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
-import { fetcher } from "@/utils/fetcher";
 import { getErrorMessage } from "@/utils/errors";
+import { fetcher } from "@/utils/fetcher";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 const YearDatePicker = styled(DatePicker)({
   alignSelf: "flex-start",

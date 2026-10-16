@@ -1,13 +1,14 @@
 "use client";
 
-import { RoundedBox, useGLTF } from "@react-three/drei";
 import { Suspense, useMemo } from "react";
 import { Material, Mesh } from "three";
 
-import type { StoreLayoutItem } from "@/types/storeLayout";
-
 import { ghostSurface } from "../ghost";
 import Surface, { SURFACES, surfaceOf } from "./Surface";
+
+import { RoundedBox, useGLTF } from "@react-three/drei";
+
+import type { StoreLayoutItem } from "@/types/storeLayout";
 
 const CORNER_RADIUS = 0.02;
 const CORNER_SEGMENTS = 2;

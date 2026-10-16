@@ -1,6 +1,7 @@
+import { useFormatter, useTranslations } from "next-intl";
+
 import { Box, type BoxProps } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useFormatter, useTranslations } from "next-intl";
 
 import type { Ingredient } from "@/types/inventory";
 

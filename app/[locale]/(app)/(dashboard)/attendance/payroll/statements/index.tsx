@@ -4,7 +4,6 @@ import dayjs from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useFormatter, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
@@ -14,9 +13,8 @@ import DraftDialog from "./DraftDialog";
 import EmployerSupplementDialog from "./EmployerSupplementDialog";
 import TermsDialog from "./TermsDialog";
 
+import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
-
-import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { PAYROLL_STATUS_COLORS } from "@/constants/attendance";
 import {
@@ -25,6 +23,7 @@ import {
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
 import { getPageSizeOptions } from "@/constants/pagination";
+import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import {
   useEnumFilterOperators,
@@ -87,11 +86,6 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
   flexWrap: "wrap",
   gap: theme.spacing(2),
 }));
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 interface PayrollProps {
   canCreate: boolean;

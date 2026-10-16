@@ -2,11 +2,12 @@
 
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import LeaveTypeDialog from "./LeaveTypeDialog";
+
+import DataGrid from "@/components/DataGrid";
 
 import {
   autosizeOptions,
@@ -23,6 +24,7 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
+
 import { Add, Cancel, Delete, Edit } from "@mui/icons-material";
 import {
   Button,
@@ -53,11 +55,11 @@ import type {
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 
+import { attendancePath, getStatutoryLeaveName } from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceLeaveTypeEnumOptions } from "@/utils/enumOptions";
-import { attendancePath, getStatutoryLeaveName } from "@/utils/attendance";
-import { fetcher } from "@/utils/fetcher";
 import { getErrorMessage } from "@/utils/errors";
+import { fetcher } from "@/utils/fetcher";
 
 const ActionsStack = styled(Stack)({
   height: "100%",
@@ -75,11 +77,6 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",
   gap: theme.spacing(1),
 }));
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 interface LeaveTypesProps {
   filterField?: AttendanceLeaveTypeFilterField;

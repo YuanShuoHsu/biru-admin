@@ -1,13 +1,14 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
+import DataGrid from "@/components/DataGrid";
 import EmptyCell from "@/components/EmptyCell";
+
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { countKeys, ROLE_RANK } from "@/constants/organizations";
 
@@ -33,14 +34,9 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { ActiveOrganization, Invitation } from "@/types/organizations";
 
-import { sortByCreatedAtDesc } from "@/utils/organizations";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
+import { sortByCreatedAtDesc } from "@/utils/organizations";
 
 const ToolbarStack = styled(Stack)(({ theme }) => ({
   flexWrap: "wrap",

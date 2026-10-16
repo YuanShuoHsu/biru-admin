@@ -1,12 +1,12 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import StockCell from "../../../StockCell";
 
+import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
 import {
@@ -47,11 +47,6 @@ import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getInventoryTransactionEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 import { formatStockDelta, formatUnitPriceOf } from "@/utils/ingredients";
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 interface IngredientTransactionsProps {
   canViewPurchasing: boolean;

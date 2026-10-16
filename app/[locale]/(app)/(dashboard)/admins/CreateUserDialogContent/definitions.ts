@@ -1,8 +1,9 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { userRoleValues } from "@/types/api";
 import { PASSWORD_MIN_LENGTH } from "@/constants/password";
+
+import { userRoleValues } from "@/types/api";
 
 export const useCreateUserFormSchema = () => {
   const tValidation = useTranslations("validation");

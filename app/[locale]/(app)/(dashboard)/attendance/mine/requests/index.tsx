@@ -2,7 +2,6 @@
 
 import dayjs from "dayjs";
 import { useFormatter, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
@@ -10,6 +9,7 @@ import useSWR from "swr";
 import LeaveDialog from "./LeaveDialog";
 import ReturnDialog from "./ReturnDialog";
 
+import DataGrid from "@/components/DataGrid";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 
 import { REQUEST_STATUS_COLORS } from "@/constants/attendance";
@@ -63,13 +63,8 @@ import type { Organization } from "@/types/organizations";
 import { attendancePath, getStatutoryLeaveName } from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceRequestEnumOptions } from "@/utils/enumOptions";
-import { fetcher } from "@/utils/fetcher";
 import { getErrorMessage } from "@/utils/errors";
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
+import { fetcher } from "@/utils/fetcher";
 
 const StyledStack = styled(Stack)(({ theme }) => ({
   height: "100%",

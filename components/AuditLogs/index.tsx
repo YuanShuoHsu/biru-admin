@@ -1,11 +1,11 @@
 "use client";
 
 import { useFormatter, useLocale, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
+import DataGrid from "@/components/DataGrid";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 
 import {
@@ -60,19 +60,14 @@ import type { Ingredient } from "@/types/inventory";
 import type { LocalizedText } from "@/types/locale";
 import type { Organization, OrganizationResponse } from "@/types/organizations";
 
+import { formatLeaveDuration, weekdayDate } from "@/utils/attendance";
 import { getAuditLogHref, getAuditLogsPath } from "@/utils/audit";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAuditLogEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
-import { formatLeaveDuration, weekdayDate } from "@/utils/attendance";
 import { getHref } from "@/utils/href";
 import { formatStock } from "@/utils/ingredients";
 import { localize } from "@/utils/locale";
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 const ChangesStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",

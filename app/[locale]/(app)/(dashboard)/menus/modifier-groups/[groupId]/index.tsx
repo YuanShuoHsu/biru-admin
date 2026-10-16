@@ -1,7 +1,6 @@
 "use client";
 
 import { useFormatter, useLocale, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
@@ -10,17 +9,18 @@ import CreateModifierDialog from "./CreateModifierDialog";
 import UpdateModifierDialog from "./UpdateModifierDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import DataGrid from "@/components/DataGrid";
 import EmptyCell from "@/components/EmptyCell";
 import { DragHandle, Sortable } from "@/components/Sortable";
+
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
-
 import { ITEM_AVAILABILITY_COLOR_MAP } from "@/constants/itemAvailability";
 import { MODE_COLORS } from "@/constants/orderMode";
+import { getPageSizeOptions } from "@/constants/pagination";
 
 import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
@@ -35,6 +35,7 @@ import {
 import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
+
 import { Add, Cancel, Delete, Edit, Save, Sort } from "@mui/icons-material";
 import {
   Button,
@@ -95,11 +96,6 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",
   gap: theme.spacing(2),
 }));
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 interface ModifiersProps {
   canViewAuditLog: boolean;

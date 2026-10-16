@@ -1,7 +1,6 @@
 "use client";
 
 import { useFormatter, useLocale, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
@@ -10,8 +9,10 @@ import CreateAddOnDialog from "./CreateAddOnDialog";
 import UpdateAddOnDialog from "./UpdateAddOnDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 import { DragHandle, Sortable } from "@/components/Sortable";
+
 import {
   autosizeOptions,
   DATA_GRID_PROPS,
@@ -19,15 +20,16 @@ import {
 } from "@/constants/dataGrid";
 import { getPageSizeOptions } from "@/constants/pagination";
 
+import { arrayMove } from "@dnd-kit/helpers";
+import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
+import { isSortableOperation } from "@dnd-kit/react/sortable";
+
 import {
   useDateFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
-import { arrayMove } from "@dnd-kit/helpers";
-import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
-import { isSortableOperation } from "@dnd-kit/react/sortable";
 
 import { Add, Cancel, Delete, Edit, Save, Sort } from "@mui/icons-material";
 import {
@@ -79,11 +81,6 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",
   gap: theme.spacing(2),
 }));
-
-const DataGrid = dynamic(
-  () => import("@mui/x-data-grid").then(({ DataGrid }) => DataGrid),
-  { ssr: false },
-);
 
 interface MenuItemAddOnsProps {
   canViewAuditLog: boolean;

@@ -1,4 +1,3 @@
-import { DialogContentText } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import { useSWRConfig } from "swr";
@@ -9,6 +8,8 @@ import { useSession } from "@/hooks/useSession";
 import { useRouter } from "@/i18n/navigation";
 
 import { authClient } from "@/lib/auth-client";
+
+import { DialogContentText } from "@mui/material";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
