@@ -6205,6 +6205,8 @@ export interface components {
       Language?: components["schemas"]["BaseEcpayLanguage"];
       /** @description 訂單 ID */
       orderId: string;
+      /** @description 建立訂單時取得；訪客訂單必帶 */
+      accessToken?: string;
     };
     CheckoutEcpayResponseDto: {
       /** @description 綠界結帳端點，前端以 hidden form POST 導向 */
@@ -7128,12 +7130,6 @@ export interface components {
       pickupTime?: string;
       tableNumber?: number;
     };
-    OrderCustomerDto: {
-      email?: string | null;
-      name: string;
-      remark?: string | null;
-      telephone?: string | null;
-    };
     OrderItemModifierSnapshotDto: {
       modifierGroupId: string;
       modifierGroupName: string;
@@ -7176,14 +7172,11 @@ export interface components {
       /** Format: date-time */
       updatedAt: string;
     };
-    OrderResponseDto: {
+    CreateOrderResponseDto: {
       id: string;
-      sellerId: string;
-      userId?: string | null;
       /** @enum {string} */
       mode: "counter" | "dineIn" | "driveThru" | "pickup";
       orderNumber: string;
-      customer: components["schemas"]["OrderCustomerDto"];
       /** @enum {string} */
       paymentMethod:
         | "ApplePay"
@@ -7226,6 +7219,8 @@ export interface components {
       createdAt: string;
       /** Format: date-time */
       updatedAt: string;
+      /** @description 查詢此訂單、訂閱狀態與付款時帶上；訪客訂單沒有登入身分，只能靠它證明是下單者 */
+      accessToken: string;
     };
     /** @enum {string} */
     OrderFilterField:
@@ -7281,6 +7276,12 @@ export interface components {
       | "OrderProcessing"
       | "OrderPickupAvailable"
       | "OrderDelivered";
+    OrderCustomerDto: {
+      email?: string | null;
+      name: string;
+      remark?: string | null;
+      telephone?: string | null;
+    };
     /** @enum {string} */
     OrderTransitionDirection: "advance" | "cancel" | "revert";
     /** @enum {string} */
@@ -7358,6 +7359,105 @@ export interface components {
       orderStatus: components["schemas"]["OrderFlowStatus"];
       orders: components["schemas"]["AdminOrderResponseDto"][];
     };
+    OrderReceiptResponseDto: {
+      id: string;
+      /** @enum {string} */
+      mode: "counter" | "dineIn" | "driveThru" | "pickup";
+      orderNumber: string;
+      /** @enum {string} */
+      paymentMethod:
+        | "ApplePay"
+        | "Cash"
+        | "Credit"
+        | "iPASS"
+        | "Jkopay"
+        | "TWQR"
+        | "WeiXin";
+      paymentMethodId?: string | null;
+      /** @enum {string} */
+      orderStatus:
+        | "OrderPaymentDue"
+        | "OrderProcessing"
+        | "OrderPickupAvailable"
+        | "OrderDelivered"
+        | "OrderCancelled"
+        | "OrderProblem"
+        | "OrderReturned";
+      confirmationNumber?: string | null;
+      /** Format: date-time */
+      orderDate: string;
+      /** Format: date-time */
+      paymentDate?: string | null;
+      /** Format: date-time */
+      paymentDueDate?: string | null;
+      tradeNo?: string | null;
+      partySize?: number | null;
+      /** Format: date-time */
+      pickupTime?: string | null;
+      tableNumber?: number | null;
+      discount?: string | null;
+      discountCode?: string | null;
+      discountCurrency?: string | null;
+      subtotal: string;
+      total: string;
+      invoice?: components["schemas"]["OrderInvoiceDto"] | null;
+      items: components["schemas"]["OrderItemResponseDto"][];
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    OrderResponseDto: {
+      id: string;
+      sellerId: string;
+      userId?: string | null;
+      /** @enum {string} */
+      mode: "counter" | "dineIn" | "driveThru" | "pickup";
+      orderNumber: string;
+      customer: components["schemas"]["OrderCustomerDto"];
+      /** @enum {string} */
+      paymentMethod:
+        | "ApplePay"
+        | "Cash"
+        | "Credit"
+        | "iPASS"
+        | "Jkopay"
+        | "TWQR"
+        | "WeiXin";
+      paymentMethodId?: string | null;
+      /** @enum {string} */
+      orderStatus:
+        | "OrderPaymentDue"
+        | "OrderProcessing"
+        | "OrderPickupAvailable"
+        | "OrderDelivered"
+        | "OrderCancelled"
+        | "OrderProblem"
+        | "OrderReturned";
+      confirmationNumber?: string | null;
+      /** Format: date-time */
+      orderDate: string;
+      /** Format: date-time */
+      paymentDate?: string | null;
+      /** Format: date-time */
+      paymentDueDate?: string | null;
+      tradeNo?: string | null;
+      partySize?: number | null;
+      /** Format: date-time */
+      pickupTime?: string | null;
+      tableNumber?: number | null;
+      discount?: string | null;
+      discountCode?: string | null;
+      discountCurrency?: string | null;
+      subtotal: string;
+      total: string;
+      invoice?: components["schemas"]["OrderInvoiceDto"] | null;
+      items: components["schemas"]["OrderItemResponseDto"][];
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
     ApplyTransitionsDto: {
       orderIds: string[];
     };
@@ -7370,12 +7470,9 @@ export interface components {
     };
     UserOrderResponseDto: {
       id: string;
-      sellerId: string;
-      userId?: string | null;
       /** @enum {string} */
       mode: "counter" | "dineIn" | "driveThru" | "pickup";
       orderNumber: string;
-      customer: components["schemas"]["OrderCustomerDto"];
       /** @enum {string} */
       paymentMethod:
         | "ApplePay"
@@ -13913,6 +14010,7 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
+        recipeId: string;
         recipeIngredientId: string;
       };
       cookie?: never;
@@ -13939,6 +14037,7 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
+        recipeId: string;
         recipeIngredientId: string;
       };
       cookie?: never;
@@ -14151,7 +14250,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["OrderResponseDto"];
+          "application/json": components["schemas"]["CreateOrderResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -14221,7 +14320,9 @@ export interface operations {
   };
   OrdersController_findOne: {
     parameters: {
-      query?: never;
+      query?: {
+        accessToken?: string;
+      };
       header?: never;
       path: {
         organizationSlug: string;
@@ -14236,7 +14337,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["OrderResponseDto"];
+          "application/json": components["schemas"]["OrderReceiptResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -18014,14 +18115,14 @@ export const createOrderDtoModeValues: ReadonlyArray<
 export const createOrderDtoPaymentValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CreateOrderDto"]["payment"]
 > = ["ApplePay", "Cash", "Credit", "iPASS", "Jkopay", "TWQR", "WeiXin"];
-export const orderResponseDtoModeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["OrderResponseDto"]["mode"]
+export const createOrderResponseDtoModeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CreateOrderResponseDto"]["mode"]
 > = ["counter", "dineIn", "driveThru", "pickup"];
-export const orderResponseDtoPaymentMethodValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["OrderResponseDto"]["paymentMethod"]
+export const createOrderResponseDtoPaymentMethodValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CreateOrderResponseDto"]["paymentMethod"]
 > = ["ApplePay", "Cash", "Credit", "iPASS", "Jkopay", "TWQR", "WeiXin"];
-export const orderResponseDtoOrderStatusValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["OrderResponseDto"]["orderStatus"]
+export const createOrderResponseDtoOrderStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CreateOrderResponseDto"]["orderStatus"]
 > = [
   "OrderPaymentDue",
   "OrderProcessing",
@@ -18104,6 +18205,40 @@ export const adminOrderResponseDtoPaymentMethodValues: ReadonlyArray<
 > = ["ApplePay", "Cash", "Credit", "iPASS", "Jkopay", "TWQR", "WeiXin"];
 export const adminOrderResponseDtoOrderStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AdminOrderResponseDto"]["orderStatus"]
+> = [
+  "OrderPaymentDue",
+  "OrderProcessing",
+  "OrderPickupAvailable",
+  "OrderDelivered",
+  "OrderCancelled",
+  "OrderProblem",
+  "OrderReturned",
+];
+export const orderReceiptResponseDtoModeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OrderReceiptResponseDto"]["mode"]
+> = ["counter", "dineIn", "driveThru", "pickup"];
+export const orderReceiptResponseDtoPaymentMethodValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OrderReceiptResponseDto"]["paymentMethod"]
+> = ["ApplePay", "Cash", "Credit", "iPASS", "Jkopay", "TWQR", "WeiXin"];
+export const orderReceiptResponseDtoOrderStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OrderReceiptResponseDto"]["orderStatus"]
+> = [
+  "OrderPaymentDue",
+  "OrderProcessing",
+  "OrderPickupAvailable",
+  "OrderDelivered",
+  "OrderCancelled",
+  "OrderProblem",
+  "OrderReturned",
+];
+export const orderResponseDtoModeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OrderResponseDto"]["mode"]
+> = ["counter", "dineIn", "driveThru", "pickup"];
+export const orderResponseDtoPaymentMethodValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OrderResponseDto"]["paymentMethod"]
+> = ["ApplePay", "Cash", "Credit", "iPASS", "Jkopay", "TWQR", "WeiXin"];
+export const orderResponseDtoOrderStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OrderResponseDto"]["orderStatus"]
 > = [
   "OrderPaymentDue",
   "OrderProcessing",
