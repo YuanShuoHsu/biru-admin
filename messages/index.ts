@@ -18,6 +18,7 @@ import metadata from "./en/metadata.json";
 import order from "./en/order.json";
 import orders from "./en/orders.json";
 import organizations from "./en/organizations.json";
+import quant from "./en/quant.json";
 import storeLayout from "./en/storeLayout.json";
 import validation from "./en/validation.json";
 import waitlist from "./en/waitlist.json";
@@ -43,6 +44,7 @@ const messages = {
   order,
   orders,
   organizations,
+  quant,
   storeLayout,
   validation,
   waitlist,

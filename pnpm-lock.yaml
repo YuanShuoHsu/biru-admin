@@ -279,6 +279,9 @@ importers:
       libphonenumber-js:
         specifier: ^1.12.38
         version: 1.12.38
+      lightweight-charts:
+        specifier: 5.2.1
+        version: 5.2.1
       next:
         specifier: 16.4.0
         version: 16.4.0(@babel/core@7.29.0(supports-color@10.2.2))(@types/node@20.19.2)(babel-plugin-macros@3.1.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -321,6 +324,9 @@ importers:
       swr:
         specifier: ^2.3.6
         version: 2.4.1(react@19.3.0)
+      technicalindicators:
+        specifier: 3.1.0
+        version: 3.1.0
       three:
         specifier: ^0.186.0
         version: 0.186.0
@@ -2675,6 +2681,12 @@ packages:
         integrity: sha512-9pLGGwdzOUBDYi0GNjM97FIA+f92fqSke6joWeBjWXllfNxZBs7qeMF7tvtOIsbY45xkWkxrdwUfUf3MnQa9gA==,
       }
 
+  "@types/node@6.14.13":
+    resolution:
+      {
+        integrity: sha512-J1F0XJ/9zxlZel5ZlbeSuHW2OpabrUAqpFuC2sm2I3by8sERQ8+KCjNKUcq8QHuzpGMWiJpo9ZxeHrqrP2KzQw==,
+      }
+
   "@types/offscreencanvas@2019.7.3":
     resolution:
       {
@@ -4201,6 +4213,12 @@ packages:
         integrity: sha512-9U/jZUgjnSGyntRr6y5Muu1MJcwFl6kPu7k8qLF0IMNfLqvw0NZ4nnVDq0RVoZ0RvCyumib4Ez3KYrVfilrw+g==,
       }
 
+  fancy-canvas@2.1.0:
+    resolution:
+      {
+        integrity: sha512-nifxXJ95JNLFR2NgRV4/MxVP45G9909wJTEKz5fg/TZS20JJZA6hfgRVh/bC9bwl2zBtBNcYPjiBE4njQHVBwQ==,
+      }
+
   fast-check@3.23.2:
     resolution:
       {
@@ -5176,6 +5194,12 @@ packages:
         integrity: sha512-NXYBzinNrblfraPGyrbPoD19C1h9lfI/1mzgWYvXUTe414Gz/X1FD2XBZSZM7rRTrMA8JL3OtAaGifrIKhQ5yQ==,
       }
     engines: { node: ">= 12.0.0" }
+
+  lightweight-charts@5.2.1:
+    resolution:
+      {
+        integrity: sha512-IVwoK1RLFiLPubaKIjNbtjWLnpPMqiABSrTay6whmNa8L1+19292VtHJ+BWyPUuLCwF0tcQlhEWd1CLB2a1nsQ==,
+      }
 
   lilconfig@2.1.0:
     resolution:
@@ -6465,6 +6489,12 @@ packages:
         integrity: sha512-uxc/zpqFg6x7C8vOE7lh6Lbda8eEL9zmVm/PLeTPBRhh1xCgdWaQ+J1CUieGpIfm2HdtsUpRv+HshiasBMcc6A==,
       }
     engines: { node: ">=6" }
+
+  technicalindicators@3.1.0:
+    resolution:
+      {
+        integrity: sha512-f16mOc+Y05hNy/of+UbGxhxQQmxUztCiluhsqC5QLUYz4WowUgKde9m6nIjK1Kay0wGHigT0IkOabpp0+22UfA==,
+      }
 
   three-mesh-bvh@0.8.3:
     resolution:
@@ -8438,6 +8468,8 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
+  "@types/node@6.14.13": {}
+
   "@types/offscreencanvas@2019.7.3": {}
 
   "@types/parse-json@4.0.2": {}
@@ -9490,6 +9522,8 @@ snapshots:
   exsolve@1.1.1:
     optional: true
 
+  fancy-canvas@2.1.0: {}
+
   fast-check@3.23.2:
     dependencies:
       pure-rand: 6.1.0
@@ -10008,6 +10042,10 @@ snapshots:
       lightningcss-linux-x64-musl: 1.32.0
       lightningcss-win32-arm64-msvc: 1.32.0
       lightningcss-win32-x64-msvc: 1.32.0
+
+  lightweight-charts@5.2.1:
+    dependencies:
+      fancy-canvas: 2.1.0
 
   lilconfig@2.1.0:
     optional: true
@@ -10830,6 +10868,10 @@ snapshots:
   tailwindcss@4.3.3: {}
 
   tapable@2.3.3: {}
+
+  technicalindicators@3.1.0:
+    dependencies:
+      "@types/node": 6.14.13
 
   three-mesh-bvh@0.8.3(three@0.186.0):
     dependencies:

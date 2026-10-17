@@ -1,0 +1,46 @@
+{
+  "indicators": {
+    "bollingerBands": "BOLL",
+    "ema": "EMA",
+    "label": "インジケーター",
+    "ma": "MA",
+    "macd": "MACD",
+    "rsi": "RSI"
+  },
+  "intervals": {
+    "12H": "12時間",
+    "15M": "15分",
+    "1D": "1日",
+    "1M": "1分",
+    "30M": "30分",
+    "4H": "4時間",
+    "5M": "5分",
+    "60M": "1時間",
+    "8H": "8時間"
+  },
+  "label": "クオンツ取引",
+  "market": {
+    "change": "24h 変動率",
+    "disconnected": "リアルタイム相場の接続が切断されました。再接続しています…",
+    "high": "24h 高値",
+    "label": "チャート",
+    "low": "24h 安値",
+    "notFound": "この取引ペアは見つかりません。上場廃止された可能性があります。",
+    "quoteVolume": "24h 売買代金",
+    "symbol": "取引ペア",
+    "volume": "24h 出来高"
+  },
+  "orderBook": {
+    "label": "板情報",
+    "price": "価格",
+    "size": "数量",
+    "spread": "スプレッド",
+    "total": "累計"
+  },
+  "trades": {
+    "label": "約定履歴",
+    "price": "価格",
+    "size": "数量",
+    "time": "時刻"
+  }
+}

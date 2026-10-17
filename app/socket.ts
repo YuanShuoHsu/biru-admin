@@ -11,3 +11,5 @@ const manager = new Manager(url, { withCredentials: true });
 // export const socket = manager.socket("/");
 
 export const menuSocket = manager.socket("/menus");
+
+export const quantSocket = manager.socket("/quant");

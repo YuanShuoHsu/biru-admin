@@ -1,0 +1,46 @@
+{
+  "indicators": {
+    "bollingerBands": "BOLL",
+    "ema": "EMA",
+    "label": "指标",
+    "ma": "MA",
+    "macd": "MACD",
+    "rsi": "RSI"
+  },
+  "intervals": {
+    "12H": "12时",
+    "15M": "15分",
+    "1D": "1日",
+    "1M": "1分",
+    "30M": "30分",
+    "4H": "4时",
+    "5M": "5分",
+    "60M": "1时",
+    "8H": "8时"
+  },
+  "label": "量化交易",
+  "market": {
+    "change": "24h 涨跌",
+    "disconnected": "实时行情连接中断，正在重新连接…",
+    "high": "24h 最高",
+    "label": "看盘",
+    "low": "24h 最低",
+    "notFound": "找不到这个交易对，可能已下架。",
+    "quoteVolume": "24h 成交额",
+    "symbol": "交易对",
+    "volume": "24h 成交量"
+  },
+  "orderBook": {
+    "label": "委托簿",
+    "price": "价格",
+    "size": "数量",
+    "spread": "价差",
+    "total": "累计"
+  },
+  "trades": {
+    "label": "最新成交",
+    "price": "价格",
+    "size": "数量",
+    "time": "时间"
+  }
+}

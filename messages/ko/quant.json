@@ -1,0 +1,46 @@
+{
+  "indicators": {
+    "bollingerBands": "BOLL",
+    "ema": "EMA",
+    "label": "지표",
+    "ma": "MA",
+    "macd": "MACD",
+    "rsi": "RSI"
+  },
+  "intervals": {
+    "12H": "12시간",
+    "15M": "15분",
+    "1D": "1일",
+    "1M": "1분",
+    "30M": "30분",
+    "4H": "4시간",
+    "5M": "5분",
+    "60M": "1시간",
+    "8H": "8시간"
+  },
+  "label": "퀀트 트레이딩",
+  "market": {
+    "change": "24h 변동률",
+    "disconnected": "실시간 시세 연결이 끊겼습니다. 다시 연결하는 중…",
+    "high": "24h 고가",
+    "label": "차트",
+    "low": "24h 저가",
+    "notFound": "이 거래쌍을 찾을 수 없습니다. 상장 폐지되었을 수 있습니다.",
+    "quoteVolume": "24h 거래대금",
+    "symbol": "거래쌍",
+    "volume": "24h 거래량"
+  },
+  "orderBook": {
+    "label": "호가창",
+    "price": "가격",
+    "size": "수량",
+    "spread": "스프레드",
+    "total": "누적"
+  },
+  "trades": {
+    "label": "최근 체결",
+    "price": "가격",
+    "size": "수량",
+    "time": "시간"
+  }
+}

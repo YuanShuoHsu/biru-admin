@@ -1,0 +1,46 @@
+{
+  "indicators": {
+    "bollingerBands": "BOLL",
+    "ema": "EMA",
+    "label": "Indicators",
+    "ma": "MA",
+    "macd": "MACD",
+    "rsi": "RSI"
+  },
+  "intervals": {
+    "12H": "12h",
+    "15M": "15m",
+    "1D": "1D",
+    "1M": "1m",
+    "30M": "30m",
+    "4H": "4h",
+    "5M": "5m",
+    "60M": "1h",
+    "8H": "8h"
+  },
+  "label": "Quant Trading",
+  "market": {
+    "change": "24h Change",
+    "disconnected": "Live market feed disconnected. Reconnecting…",
+    "high": "24h High",
+    "label": "Market",
+    "low": "24h Low",
+    "notFound": "This trading pair was not found. It may have been delisted.",
+    "quoteVolume": "24h Turnover",
+    "symbol": "Symbol",
+    "volume": "24h Volume"
+  },
+  "orderBook": {
+    "label": "Order Book",
+    "price": "Price",
+    "size": "Size",
+    "spread": "Spread",
+    "total": "Total"
+  },
+  "trades": {
+    "label": "Recent Trades",
+    "price": "Price",
+    "size": "Size",
+    "time": "Time"
+  }
+}

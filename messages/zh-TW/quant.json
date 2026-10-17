@@ -1,0 +1,46 @@
+{
+  "indicators": {
+    "bollingerBands": "BOLL",
+    "ema": "EMA",
+    "label": "指標",
+    "ma": "MA",
+    "macd": "MACD",
+    "rsi": "RSI"
+  },
+  "intervals": {
+    "12H": "12時",
+    "15M": "15分",
+    "1D": "1日",
+    "1M": "1分",
+    "30M": "30分",
+    "4H": "4時",
+    "5M": "5分",
+    "60M": "1時",
+    "8H": "8時"
+  },
+  "label": "量化交易",
+  "market": {
+    "change": "24h 漲跌",
+    "disconnected": "即時行情連線中斷，正在重新連線…",
+    "high": "24h 最高",
+    "label": "看盤",
+    "low": "24h 最低",
+    "notFound": "找不到這個交易對，可能已下架。",
+    "quoteVolume": "24h 成交額",
+    "symbol": "交易對",
+    "volume": "24h 成交量"
+  },
+  "orderBook": {
+    "label": "委託簿",
+    "price": "價格",
+    "size": "數量",
+    "spread": "價差",
+    "total": "累計"
+  },
+  "trades": {
+    "label": "最新成交",
+    "price": "價格",
+    "size": "數量",
+    "time": "時間"
+  }
+}

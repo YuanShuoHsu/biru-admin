@@ -34,6 +34,7 @@ import {
   Block,
   Business,
   CalendarMonth,
+  CandlestickChart,
   Category,
   Checklist,
   ConfirmationNumber,
@@ -656,6 +657,11 @@ const routes: Route[] = [
     label: "deletedRecords.label",
     query: ["organization", "page", "pageSize"],
     segment: "deleted-records",
+  },
+  {
+    icon: CandlestickChart,
+    label: "quant.label",
+    segment: "quant",
   },
   {
     icon: ViewInAr,

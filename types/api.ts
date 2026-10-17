@@ -3314,6 +3314,57 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/quant/markets": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 列出可交易的現貨交易對與 24 小時行情 */
+    get: operations["QuantController_findMarkets"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/markets/{symbol}/candles": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得 K 線（時間由舊到新） */
+    get: operations["QuantController_findCandles"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/markets/{symbol}/trades": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得最近成交（時間由新到舊） */
+    get: operations["QuantController_findTrades"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -8607,6 +8658,56 @@ export interface components {
       role: "admin" | "member" | "owner";
       teams: components["schemas"]["OrganizationMemberTeamDto"][];
       userId: string;
+    };
+    QuantMarketDto: {
+      /** @example BTC_USDT */
+      symbol: string;
+      baseCurrency: string;
+      quoteCurrency: string;
+      /** @description 價格小數位數 */
+      pricePrecision: number;
+      /** @description 數量小數位數 */
+      sizePrecision: number;
+      /** @description 24 小時前的價格 */
+      open: number;
+      /** @description 最新價 */
+      close: number;
+      high: number;
+      low: number;
+      /** @description 24 小時成交量（基礎幣） */
+      volume: number;
+      /** @description 24 小時成交額（計價幣） */
+      quoteVolume: number;
+    };
+    /** @enum {string} */
+    QuantCandleInterval:
+      | "1M"
+      | "5M"
+      | "15M"
+      | "30M"
+      | "60M"
+      | "4H"
+      | "8H"
+      | "12H"
+      | "1D";
+    QuantCandleDto: {
+      /** @description 開盤時間（毫秒） */
+      time: number;
+      open: number;
+      high: number;
+      low: number;
+      close: number;
+      volume: number;
+    };
+    /** @enum {string} */
+    QuantTradeSide: "BUY" | "SELL";
+    QuantTradeDto: {
+      id: string;
+      price: number;
+      size: number;
+      side: components["schemas"]["QuantTradeSide"];
+      /** @description 成交時間（毫秒） */
+      time: number;
     };
   };
   responses: never;
@@ -16857,6 +16958,93 @@ export interface operations {
       };
     };
   };
+  QuantController_findMarkets: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantMarketDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantController_findCandles: {
+    parameters: {
+      query: {
+        interval: components["schemas"]["QuantCandleInterval"];
+        limit?: number;
+        /** @description 只取此時間（毫秒）之前的 K 線 */
+        endTime?: number;
+      };
+      header?: never;
+      path: {
+        symbol: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantCandleDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantController_findTrades: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        symbol: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantTradeDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
 }
 type FlattenedDeepRequired<T> = {
   [K in keyof T]-?: FlattenedDeepRequired<
@@ -18504,3 +18692,9 @@ export const waitlistTicketSortFieldValues: ReadonlyArray<
 export const organizationMemberResponseDtoRoleValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrganizationMemberResponseDto"]["role"]
 > = ["admin", "member", "owner"];
+export const quantCandleIntervalValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantCandleInterval"]
+> = ["1M", "5M", "15M", "30M", "60M", "4H", "8H", "12H", "1D"];
+export const quantTradeSideValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantTradeSide"]
+> = ["BUY", "SELL"];
