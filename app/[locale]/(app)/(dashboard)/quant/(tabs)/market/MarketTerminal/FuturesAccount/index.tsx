@@ -248,6 +248,17 @@ const FuturesAccount = ({
   };
 
   const positionColumns: GridColDef[] = [
+    {
+      field: "actions",
+      filterable: false,
+      headerName: tQuant("account.columns.actions"),
+      renderCell: ({ row }: GridRenderCellParams<QuantPosition>) => (
+        <Button color="error" onClick={() => closePosition(row)} size="small">
+          {tQuant("futures.closePosition.label")}
+        </Button>
+      ),
+      sortable: false,
+    },
     symbolColumn,
     directionColumn,
     {
@@ -300,17 +311,6 @@ const FuturesAccount = ({
         </Box>
       ),
     },
-    {
-      field: "actions",
-      filterable: false,
-      headerName: tQuant("account.columns.actions"),
-      renderCell: ({ row }: GridRenderCellParams<QuantPosition>) => (
-        <Button color="error" onClick={() => closePosition(row)} size="small">
-          {tQuant("futures.closePosition.label")}
-        </Button>
-      ),
-      sortable: false,
-    },
   ];
 
   const orderColumns: GridColDef[] = [
@@ -359,7 +359,6 @@ const FuturesAccount = ({
   ];
 
   const openOrderColumns: GridColDef[] = [
-    ...orderColumns,
     {
       field: "actions",
       filterable: false,
@@ -377,6 +376,7 @@ const FuturesAccount = ({
       ),
       sortable: false,
     },
+    ...orderColumns,
   ];
 
   const historyColumns: GridColDef[] = [

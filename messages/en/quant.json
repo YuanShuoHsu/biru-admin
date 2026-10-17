@@ -98,6 +98,7 @@
       "fills": "Fills",
       "orders": "Orders",
       "pionexGrid": "This is a Pionex grid bot. See individual fills in the Pionex app.",
+      "pionexSignal": "This is a Pionex smart copy bot; see individual fills in the Pionex app.",
       "summary": {
         "averageCost": "Avg. cost",
         "equity": "Equity",
@@ -115,6 +116,7 @@
       "exit": "Exit",
       "funding": "Funding",
       "grid_started": "Grid started",
+      "manual_signal": "Manual signal",
       "order_rejected": "Order rejected",
       "order_skipped": "Order skipped",
       "stopped": "Stopped",
@@ -243,6 +245,16 @@
       "name": "Name",
       "paperFeeRate": "Fee rate (%)",
       "paperFeeRateHelper": "Charged on simulated fills. See <link>Pionex fees</link>",
+      "signal": {
+        "compound": "Reinvest profits",
+        "hint": "Starting the bot creates a dedicated Pionex custom signal and copy bot. TradingView alerts go straight to Pionex, not through this system, so server downtime doesn't affect it.",
+        "leverage": "Leverage",
+        "leverageMax": "Up to {max}x for this symbol; Pionex recommends at most 10x for signal bots",
+        "stopLoss": "Stop loss (%, optional)",
+        "stopLossHelper": "Pionex closes when the loss reaches this share of the investment",
+        "takeProfit": "Take profit (%, optional)",
+        "takeProfitHelper": "Pionex closes when the profit reaches this share of the investment"
+      },
       "strategy": "Strategy",
       "symbol": "Symbol",
       "webhook": {
@@ -279,6 +291,29 @@
       "stopped_by_user": "Stopped manually",
       "user_cancel": "Stopped in Pionex"
     },
+    "signal": {
+      "action": "Action",
+      "actions": {
+        "buy": "Buy",
+        "sell": "Sell"
+      },
+      "contracts": "Size (contracts)",
+      "description": "Create an alert in TradingView and use the webhook URL and message below. The message template comes from Pionex; keep its field names unchanged.",
+      "message": "Alert message",
+      "positionSize": "Target position (position_size)",
+      "positionSizeHelper": "Position after the signal: positive is long, negative is short, 0 is flat, same as the TradingView strategy position_size",
+      "reveal": "Show TradingView setup",
+      "secret": "The webhook URL contains a Pionex token; anyone with it can trade for this bot. Keep it private.",
+      "send": {
+        "confirm": "Send \"{action}, size {contracts}, target position {positionSize}\"? Pionex will place real orders from this signal.",
+        "label": "Send a signal manually",
+        "submit": "Send signal",
+        "success": "Signal sent",
+        "title": "Send signal"
+      },
+      "title": "TradingView signal",
+      "webhookUrl": "Webhook URL"
+    },
     "skipReasons": {
       "above_maximum": "Above the exchange maximum",
       "below_minimum": "Below the exchange minimum",
@@ -298,14 +333,16 @@
       "grid": "Buys low and sells high within a range, suited to sideways markets. Live grids run on Pionex.",
       "indicator": "Buys and sells on technical indicator conditions.",
       "webhook": "Trades on external signals such as TradingView alerts.",
-      "futures_grid": "Leveraged long, short or neutral grid within a price range. Live bots run on Pionex futures grid."
+      "futures_grid": "Leveraged long, short or neutral grid within a price range. Live bots run on Pionex futures grid.",
+      "signal": "Pionex opens and closes positions from your TradingView strategy signals, with its own position and Pionex-run take profit / stop loss. Live only."
     },
     "types": {
       "dca": "DCA",
       "grid": "Grid",
       "indicator": "Indicator",
       "webhook": "Webhook",
-      "futures_grid": "Futures grid"
+      "futures_grid": "Futures grid",
+      "signal": "Signal bot"
     },
     "webhook": {
       "actionsHint": "Actions: buy, sell, close. Add amount to sell to sell only part.",

@@ -58,7 +58,7 @@ const Metric = ({
 interface BacktestPanelProps {
   form: BotForm;
   market?: QuantMarket;
-  type: Exclude<QuantBotType, "webhook">;
+  type: Exclude<QuantBotType, "signal" | "webhook">;
 }
 
 const BacktestPanel = ({ form, market, type }: BacktestPanelProps) => {

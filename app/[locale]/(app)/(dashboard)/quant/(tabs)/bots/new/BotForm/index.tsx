@@ -22,6 +22,7 @@ import {
 import { type BotForm, NumberField, SelectField } from "./fields";
 import GridFields from "./GridFields";
 import IndicatorFields from "./IndicatorFields";
+import SignalFields from "./SignalFields";
 
 import FuturesGridFields from "./FuturesGridFields";
 
@@ -102,7 +103,8 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
   const { mutate } = useSWRConfig();
   const setDialog = useDialogStore((state) => state.setDialog);
 
-  const isFutures = type === "futures_grid";
+  const isSignal = type === "signal";
+  const isFutures = type === "futures_grid" || isSignal;
   const { credentials } = useQuantCredentials();
   const { data: markets } = useSWR<QuantMarket[]>(
     `/api/quant/markets?type=${isFutures ? "PERP" : "SPOT"}`,
@@ -129,7 +131,7 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
   const market = markets?.find((item) => item.symbol === symbol);
   const quote = market?.quoteCurrency ?? "";
   const isLiveGrid = mode === "live" && type === "grid";
-  const isLiveFuturesGrid = mode === "live" && isFutures;
+  const isLiveFuturesGrid = mode === "live" && type === "futures_grid";
 
   const onSubmitHandler = async (values: BotFormValues) => {
     try {
@@ -233,24 +235,26 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
                   value={symbol}
                 />
               </Grid>
-              <Grid size={12}>
-                <ToggleButtonGroup
-                  aria-label={tForm("mode")}
-                  exclusive
-                  onChange={(_, value: QuantBotMode | null) =>
-                    value && setValue("mode", value, setOptions)
-                  }
-                  size="small"
-                  value={mode}
-                >
-                  <ToggleButton value="paper">
-                    {tBots("modes.paper")}
-                  </ToggleButton>
-                  <ToggleButton color="warning" value="live">
-                    {tBots("modes.live")}
-                  </ToggleButton>
-                </ToggleButtonGroup>
-              </Grid>
+              {!isSignal && (
+                <Grid size={12}>
+                  <ToggleButtonGroup
+                    aria-label={tForm("mode")}
+                    exclusive
+                    onChange={(_, value: QuantBotMode | null) =>
+                      value && setValue("mode", value, setOptions)
+                    }
+                    size="small"
+                    value={mode}
+                  >
+                    <ToggleButton value="paper">
+                      {tBots("modes.paper")}
+                    </ToggleButton>
+                    <ToggleButton color="warning" value="live">
+                      {tBots("modes.live")}
+                    </ToggleButton>
+                  </ToggleButtonGroup>
+                </Grid>
+              )}
               {mode === "live" &&
                 (credentials?.length ? (
                   <Grid size={12}>
@@ -288,7 +292,11 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
               {(isLiveGrid || isLiveFuturesGrid) && (
                 <Grid size={12}>
                   <Alert severity="info">
-                    {tForm(isFutures ? "liveFuturesGridNote" : "liveGridNote")}
+                    {tForm(
+                      isLiveFuturesGrid
+                        ? "liveFuturesGridNote"
+                        : "liveGridNote",
+                    )}
                   </Alert>
                 </Grid>
               )}
@@ -302,26 +310,28 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
                   required
                 />
               </Grid>
-              <Grid size={{ sm: 6, xs: 12 }}>
-                <NumberField
-                  adornment="%"
-                  form={form}
-                  helperText={tForm.rich("paperFeeRateHelper", {
-                    link: (chunks) => (
-                      <MuiLink
-                        href={PIONEX_FEES_URL}
-                        rel="noopener noreferrer"
-                        target="_blank"
-                      >
-                        {chunks}
-                      </MuiLink>
-                    ),
-                  })}
-                  label={tForm("paperFeeRate")}
-                  name="paperFeeRate"
-                  required={mode === "paper"}
-                />
-              </Grid>
+              {!isSignal && (
+                <Grid size={{ sm: 6, xs: 12 }}>
+                  <NumberField
+                    adornment="%"
+                    form={form}
+                    helperText={tForm.rich("paperFeeRateHelper", {
+                      link: (chunks) => (
+                        <MuiLink
+                          href={PIONEX_FEES_URL}
+                          rel="noopener noreferrer"
+                          target="_blank"
+                        >
+                          {chunks}
+                        </MuiLink>
+                      ),
+                    })}
+                    label={tForm("paperFeeRate")}
+                    name="paperFeeRate"
+                    required={mode === "paper"}
+                  />
+                </Grid>
+              )}
               {!isLiveGrid && (
                 <Grid size={{ sm: 6, xs: 12 }}>
                   <NumberField
@@ -344,7 +354,8 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
                 market={market}
               />
             )}
-            {isFutures && (
+            {isSignal && <SignalFields form={form} market={market} />}
+            {type === "futures_grid" && (
               <FuturesGridFields
                 checkCredentialId={credentialId || credentials?.[0]?.id}
                 form={form}
@@ -376,7 +387,7 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
             {tBots("new.submit")}
           </Button>
         </FormBox>
-        {type !== "webhook" && (
+        {type !== "webhook" && type !== "signal" && (
           <BacktestSection>
             <BacktestPanel form={form} market={market} type={type} />
           </BacktestSection>
@@ -408,9 +419,14 @@ const BotForm = ({ fromId, type }: BotFormProps) => {
     />
   ) : (
     <BotFormFields
-      initialValues={defaultValues(
-        DEFAULT_QUANT_SYMBOLS[type === "futures_grid" ? "PERP" : "SPOT"],
-      )}
+      initialValues={{
+        ...defaultValues(
+          DEFAULT_QUANT_SYMBOLS[
+            type === "futures_grid" || type === "signal" ? "PERP" : "SPOT"
+          ],
+        ),
+        mode: type === "signal" ? "live" : "paper",
+      }}
       type={type}
     />
   );

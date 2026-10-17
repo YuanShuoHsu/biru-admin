@@ -12,6 +12,7 @@ import type {
   QuantBotType,
   QuantCandleInterval,
   QuantIndicatorKind,
+  SignalBotConfig,
   WebhookConfig,
 } from "@/types/quant";
 
@@ -71,6 +72,12 @@ export interface BotFormValues {
   mode: QuantBotMode;
   name: string;
   paperFeeRate: string;
+  signal: {
+    compound: boolean;
+    leverage: string;
+    stopLoss: string;
+    takeProfit: string;
+  };
   symbol: string;
   webhook: { orderAmount: string };
 }
@@ -135,6 +142,7 @@ export const defaultValues = (symbol: string): BotFormValues => ({
   mode: "paper",
   name: "",
   paperFeeRate: "",
+  signal: { compound: false, leverage: "", stopLoss: "", takeProfit: "" },
   symbol,
   webhook: { orderAmount: "" },
 });
@@ -234,6 +242,17 @@ export const valuesFromBot = (bot: QuantBot): BotFormValues => {
       values.webhook = {
         orderAmount: text((bot.config as WebhookConfig).orderAmount),
       };
+      break;
+    case "signal": {
+      const config = bot.config as SignalBotConfig;
+      values.mode = "live";
+      values.signal = {
+        compound: config.compound,
+        leverage: text(config.leverage),
+        stopLoss: text(config.stopLoss),
+        takeProfit: text(config.takeProfit),
+      };
+    }
   }
 
   return values;
@@ -352,6 +371,13 @@ export const toConfig = (type: QuantBotType, values: BotFormValues) => {
       return {
         orderAmount: Number(values.webhook.orderAmount),
       } satisfies WebhookConfig;
+    case "signal":
+      return {
+        compound: values.signal.compound,
+        leverage: Number(values.signal.leverage),
+        stopLoss: optionalNumber(values.signal.stopLoss),
+        takeProfit: optionalNumber(values.signal.takeProfit),
+      } satisfies SignalBotConfig;
   }
 };
 
@@ -396,6 +422,10 @@ export const useBotFormSchema = (type: QuantBotType) => {
         Number(value) <= max,
       { error: tValidation("range", { max, min }) },
     );
+  const positiveInteger = required.refine(
+    (value) => Number.isInteger(Number(value)) && Number(value) >= 1,
+    { error: tValidation("positiveInteger") },
+  );
   const condition = z.object({
     band: z.enum(["lower", "upper"]),
     direction: z.enum(["death", "golden"]),
@@ -430,11 +460,7 @@ export const useBotFormSchema = (type: QuantBotType) => {
         type === "futures_grid"
           ? z.object({
               extraMargin: optionalPositive,
-              leverage: required.refine(
-                (value) =>
-                  Number.isInteger(Number(value)) && Number(value) >= 1,
-                { error: tValidation("positiveInteger") },
-              ),
+              leverage: positiveInteger,
               lossStopHigh: optionalPositive,
               trend: z.enum(["long", "short", "no_trend"]),
             })
@@ -471,6 +497,15 @@ export const useBotFormSchema = (type: QuantBotType) => {
       mode: z.enum(["paper", "live"]),
       name: required.max(50),
       paperFeeRate: z.string(),
+      signal:
+        type === "signal"
+          ? z.object({
+              compound: z.boolean(),
+              leverage: positiveInteger,
+              stopLoss: optionalPositive,
+              takeProfit: optionalPositive,
+            })
+          : loose,
       symbol: required,
       webhook: type === "webhook" ? z.object({ orderAmount: positive }) : loose,
     })
@@ -481,7 +516,7 @@ export const useBotFormSchema = (type: QuantBotType) => {
           message: tValidation("required"),
           path: ["credentialId"],
         });
-      if (values.mode === "paper") {
+      if (values.mode === "paper" && type !== "signal") {
         const fee = Number(values.paperFeeRate);
         if (
           values.paperFeeRate.trim() === "" ||

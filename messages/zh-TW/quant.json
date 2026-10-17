@@ -98,6 +98,7 @@
       "fills": "成交",
       "orders": "委託",
       "pionexGrid": "這是 Pionex 內建網格，逐筆成交請在 Pionex App 查看。",
+      "pionexSignal": "這是 Pionex 智慧跟單機器人，逐筆成交請在 Pionex App 查看。",
       "summary": {
         "averageCost": "持倉均價",
         "equity": "權益",
@@ -115,6 +116,7 @@
       "exit": "出場",
       "funding": "資金費",
       "grid_started": "網格開始",
+      "manual_signal": "手動訊號",
       "order_rejected": "委託被拒",
       "order_skipped": "委託略過",
       "stopped": "已停止",
@@ -243,6 +245,16 @@
       "name": "名稱",
       "paperFeeRate": "手續費率（%）",
       "paperFeeRateHelper": "模擬成交時扣的手續費，可參考 <link>Pionex 費率</link>",
+      "signal": {
+        "compound": "獲利滾入本金",
+        "hint": "啟動時會在 Pionex 建立專屬的自訂訊號與跟單機器人。TradingView 的 alert 直接送到 Pionex，不經過本系統，伺服器停機也不影響。",
+        "leverage": "槓桿",
+        "leverageMax": "此交易對最高 {max}x；Pionex 建議訊號機器人不超過 10x",
+        "stopLoss": "停損（%，選填）",
+        "stopLossHelper": "虧損達投入的此比例時由 Pionex 平倉",
+        "takeProfit": "停利（%，選填）",
+        "takeProfitHelper": "獲利達投入的此比例時由 Pionex 平倉"
+      },
       "strategy": "策略參數",
       "symbol": "交易對",
       "webhook": {
@@ -279,6 +291,29 @@
       "stopped_by_user": "手動停止",
       "user_cancel": "在 Pionex 手動停止"
     },
+    "signal": {
+      "action": "方向",
+      "actions": {
+        "buy": "買入",
+        "sell": "賣出"
+      },
+      "contracts": "數量（contracts）",
+      "description": "在 TradingView 建立 alert，Webhook URL 與訊息填下面的內容。訊息範本來自 Pionex，請不要修改欄位名稱。",
+      "message": "Alert 訊息",
+      "positionSize": "目標部位（position_size）",
+      "positionSizeHelper": "送出後的部位：正數做多、負數做空、0 平倉，和 TradingView 策略的 position_size 相同",
+      "reveal": "顯示 TradingView 設定",
+      "secret": "Webhook URL 含有 Pionex 的 token，任何人拿到都能替這個機器人下單，請勿外流。",
+      "send": {
+        "confirm": "確定要送出「{action}，數量 {contracts}，目標部位 {positionSize}」嗎？Pionex 會照這筆訊號實際下單。",
+        "label": "手動送出訊號",
+        "submit": "送出訊號",
+        "success": "已送出訊號",
+        "title": "送出訊號"
+      },
+      "title": "TradingView 訊號",
+      "webhookUrl": "Webhook URL"
+    },
     "skipReasons": {
       "above_maximum": "高於交易所最大下單量",
       "below_minimum": "低於交易所最小下單量",
@@ -298,14 +333,16 @@
       "grid": "在價格區間內自動低買高賣，適合震盪行情。實盤交給 Pionex 內建網格執行。",
       "indicator": "依技術指標的進出場條件自動買賣。",
       "webhook": "接收 TradingView alert 等外部訊號下單。",
-      "futures_grid": "在價格區間內用槓桿做多、做空或中性網格。實盤交給 Pionex 合約網格執行。"
+      "futures_grid": "在價格區間內用槓桿做多、做空或中性網格。實盤交給 Pionex 合約網格執行。",
+      "signal": "由 Pionex 依你的 TradingView 策略訊號開平倉，倉位獨立、停利停損由 Pionex 執行。只能實盤。"
     },
     "types": {
       "dca": "DCA 定投",
       "grid": "網格",
       "indicator": "指標訊號",
       "webhook": "Webhook 訊號",
-      "futures_grid": "合約網格"
+      "futures_grid": "合約網格",
+      "signal": "訊號機器人"
     },
     "webhook": {
       "actionsHint": "可用的 action：buy、sell、close；sell 可加 amount 只賣出部分",

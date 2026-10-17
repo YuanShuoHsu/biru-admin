@@ -102,19 +102,6 @@ const CredentialSettings = () => {
     });
 
   const columns: GridColDef[] = [
-    { field: "label", headerName: tQuant("settings.columns.label") },
-    {
-      field: "apiKeyLast4",
-      headerName: tQuant("settings.columns.apiKey"),
-      valueFormatter: (value: string) => `••••${value}`,
-    },
-    {
-      field: "createdAt",
-      headerName: tQuant("settings.columns.createdAt"),
-      minWidth: TIME_COLUMN_MIN_WIDTH,
-      valueFormatter: (value: string) =>
-        format.dateTime(new Date(value), "dateTime"),
-    },
     {
       field: "actions",
       filterable: false,
@@ -139,12 +126,30 @@ const CredentialSettings = () => {
       ),
       sortable: false,
     },
+    { field: "label", headerName: tQuant("settings.columns.label") },
+    {
+      field: "apiKeyLast4",
+      headerName: tQuant("settings.columns.apiKey"),
+      valueFormatter: (value: string) => `••••${value}`,
+    },
+    {
+      field: "createdAt",
+      headerName: tQuant("settings.columns.createdAt"),
+      minWidth: TIME_COLUMN_MIN_WIDTH,
+      valueFormatter: (value: string) =>
+        format.dateTime(new Date(value), "dateTime"),
+    },
   ];
 
   return (
     <Stack sx={{ gap: 2 }}>
       <Box>
-        <Button onClick={handleAdd} startIcon={<Add />} variant="contained">
+        <Button
+          onClick={handleAdd}
+          size="small"
+          startIcon={<Add />}
+          variant="contained"
+        >
           {tQuant("settings.add.label")}
         </Button>
       </Box>

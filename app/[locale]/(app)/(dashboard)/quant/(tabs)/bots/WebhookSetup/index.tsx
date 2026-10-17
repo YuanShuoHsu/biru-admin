@@ -23,7 +23,13 @@ export const webhookUrl = (botId: string) =>
 export const alertTemplate = (token: string) =>
   JSON.stringify({ action: "buy", id: "{{timenow}}", token });
 
-const CopyField = ({ label, value }: { label: string; value: string }) => {
+export const CopyField = ({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) => {
   const tWebhook = useTranslations("quant.bots.webhook");
 
   const copy = async () => {

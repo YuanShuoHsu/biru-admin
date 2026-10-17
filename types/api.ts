@@ -3504,6 +3504,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/quant/bots/signal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** 建立訊號機器人（Pionex 自訂訊號＋智慧跟單，只能實盤） */
+        post: operations["QuantBotsController_createSignal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/quant/bots/dca": {
         parameters: {
             query?: never;
@@ -3634,6 +3651,24 @@ export interface paths {
         put?: never;
         /** 重新產生 Webhook token（舊的立即失效） */
         post: operations["QuantBotsController_regenerateWebhookToken"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/quant/bots/{id}/signal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 訊號機器人在 TradingView 要填的 Webhook URL 與訊息 */
+        get: operations["QuantBotsController_findSignalSetup"];
+        put?: never;
+        /** 手動送出一筆訊號給訊號機器人（會實際下單） */
+        post: operations["QuantBotsController_sendSignal"];
         delete?: never;
         options?: never;
         head?: never;
@@ -8281,6 +8316,15 @@ export interface components {
             /** @description 價格觸及才開始 */
             trigger?: components["schemas"]["TriggerDto"];
         };
+        SignalBotConfigDto: {
+            leverage: number;
+            /** @description 停利（%，相對投入），由 Pionex 執行 */
+            takeProfit?: number;
+            /** @description 停損（%，相對投入），由 Pionex 執行 */
+            stopLoss?: number;
+            /** @description 獲利是否滾入下一筆的本金 */
+            compound: boolean;
+        };
         /**
          * @description 停止時是否把持有的基礎幣賣回計價幣
          * @enum {string}
@@ -8367,7 +8411,7 @@ export interface components {
             orderAmount: number;
         };
         /** @enum {string} */
-        QuantBotType: "grid" | "dca" | "indicator" | "webhook" | "futures_grid";
+        QuantBotType: "grid" | "dca" | "indicator" | "webhook" | "futures_grid" | "signal";
         /** @enum {string} */
         QuantBotMode: "paper" | "live";
         /** @enum {string} */
@@ -8400,7 +8444,7 @@ export interface components {
             /** @description 停止或錯誤的原因 */
             statusReason?: string;
             credentialId?: string;
-            config: components["schemas"]["GridConfigDto"] | components["schemas"]["DcaConfigDto"] | components["schemas"]["IndicatorConfigDto"] | components["schemas"]["WebhookConfigDto"] | components["schemas"]["FuturesGridConfigDto"];
+            config: components["schemas"]["GridConfigDto"] | components["schemas"]["DcaConfigDto"] | components["schemas"]["IndicatorConfigDto"] | components["schemas"]["WebhookConfigDto"] | components["schemas"]["FuturesGridConfigDto"] | components["schemas"]["SignalBotConfigDto"];
             investment: number;
             paperFeeRate?: number;
             maxDailyLoss?: number;
@@ -8439,7 +8483,7 @@ export interface components {
             /** @description 停止或錯誤的原因 */
             statusReason?: string;
             credentialId?: string;
-            config: components["schemas"]["GridConfigDto"] | components["schemas"]["DcaConfigDto"] | components["schemas"]["IndicatorConfigDto"] | components["schemas"]["WebhookConfigDto"] | components["schemas"]["FuturesGridConfigDto"];
+            config: components["schemas"]["GridConfigDto"] | components["schemas"]["DcaConfigDto"] | components["schemas"]["IndicatorConfigDto"] | components["schemas"]["WebhookConfigDto"] | components["schemas"]["FuturesGridConfigDto"] | components["schemas"]["SignalBotConfigDto"];
             investment: number;
             paperFeeRate?: number;
             maxDailyLoss?: number;
@@ -8489,6 +8533,21 @@ export interface components {
             /** @description 上方預估強平價 */
             liquidationPriceUp?: number;
         };
+        CreateSignalBotDto: {
+            name: string;
+            /** @example BTC_USDT */
+            symbol: string;
+            mode: components["schemas"]["QuantBotMode"];
+            /** @description 實盤必填 */
+            credentialId?: string;
+            /** @description 投入金額（計價幣），也是機器人可動用資金的上限 */
+            investment: number;
+            /** @description 模擬盤必填：手續費率（例如 0.0005） */
+            paperFeeRate?: number;
+            /** @description 每日最大虧損（計價幣），觸發即停止 */
+            maxDailyLoss?: number;
+            config: components["schemas"]["SignalBotConfigDto"];
+        };
         CreateDcaBotDto: {
             name: string;
             /** @example BTC_USDT */
@@ -8537,6 +8596,21 @@ export interface components {
         WebhookTokenDto: {
             /** @description 新的 token，只在這次回傳；舊 token 立即失效 */
             webhookToken: string;
+        };
+        SignalSetupDto: {
+            /** @description 填到 TradingView alert 的 Webhook URL（含 Pionex 的 token，請勿外流） */
+            webhookUrl: string;
+            /** @description TradingView alert 的訊息範本 */
+            message: string;
+        };
+        /** @enum {string} */
+        QuantSignalAction: "buy" | "sell";
+        SendSignalDto: {
+            action: components["schemas"]["QuantSignalAction"];
+            /** @description 這筆訊號的數量，對應 TradingView 的 contracts */
+            contracts: number;
+            /** @description 訊號送出後的目標部位，對應 TradingView 的 position_size：正數做多、負數做空、0 平倉 */
+            positionSize: number;
         };
         /** @enum {string} */
         QuantBotOrderStatus: "open" | "filled" | "canceled" | "rejected";
@@ -17604,6 +17678,36 @@ export interface operations {
             };
         };
     };
+    QuantBotsController_createSignal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateSignalBotDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateQuantBotResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     QuantBotsController_createDca: {
         parameters: {
             query?: never;
@@ -17820,6 +17924,64 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["WebhookTokenDto"];
                 };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    QuantBotsController_findSignalSetup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SignalSetupDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    QuantBotsController_sendSignal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SendSignalDto"];
+            };
+        };
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Internal server error */
             500: {
@@ -18987,9 +19149,10 @@ export const quantIndicatorKindValues: ReadonlyArray<FlattenedDeepRequired<compo
 export const quantConditionOperatorValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["QuantConditionOperator"]> = ["above", "below"];
 export const quantCrossDirectionValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["QuantCrossDirection"]> = ["golden", "death"];
 export const quantBollingerBandValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["QuantBollingerBand"]> = ["upper", "lower"];
-export const quantBotTypeValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["QuantBotType"]> = ["grid", "dca", "indicator", "webhook", "futures_grid"];
+export const quantBotTypeValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["QuantBotType"]> = ["grid", "dca", "indicator", "webhook", "futures_grid", "signal"];
 export const quantBotModeValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["QuantBotMode"]> = ["paper", "live"];
 export const quantBotStatusValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["QuantBotStatus"]> = ["running", "stopped", "error"];
+export const quantSignalActionValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["QuantSignalAction"]> = ["buy", "sell"];
 export const quantBotOrderStatusValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["QuantBotOrderStatus"]> = ["open", "filled", "canceled", "rejected"];
 export const quantMarketTypeValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["QuantMarketType"]> = ["SPOT", "PERP"];
 export const quantPositionModeValues: ReadonlyArray<FlattenedDeepRequired<components>["schemas"]["QuantPositionMode"]> = ["BUYSELL", "OPENCLOSE"];

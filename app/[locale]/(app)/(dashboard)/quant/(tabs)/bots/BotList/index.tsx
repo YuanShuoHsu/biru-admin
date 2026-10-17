@@ -127,6 +127,59 @@ const BotList = () => {
 
   const columns: GridColDef[] = [
     {
+      field: "actions",
+      filterable: false,
+      headerName: tBots("columns.actions"),
+      minWidth: 140,
+      renderCell: ({ row }: GridRenderCellParams<QuantBot>) => (
+        <ActionsStack direction="row">
+          {!row.startedAt && (
+            <Tooltip title={tBots("actions.start.label")}>
+              <IconButton
+                color="success"
+                onClick={() =>
+                  request(
+                    `${QUANT_BOTS_URL}/${row.id}/start`,
+                    tBots("actions.start.success"),
+                  )
+                }
+                size="small"
+              >
+                <PlayArrow fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          )}
+          {row.status === "running" && (
+            <Tooltip title={tBots("actions.stop.label")}>
+              <IconButton
+                color="error"
+                onClick={() => confirm("stop", row)}
+                size="small"
+              >
+                <Stop fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          )}
+          <Tooltip title={tBots("actions.duplicate")}>
+            <IconButton
+              onClick={() => router.push(`/quant/bots/new?from=${row.id}`)}
+              size="small"
+            >
+              <ContentCopy fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          {row.status !== "running" && (
+            <Tooltip title={tBots("actions.archive.label")}>
+              <IconButton onClick={() => confirm("archive", row)} size="small">
+                <Archive fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          )}
+        </ActionsStack>
+      ),
+      sortable: false,
+    },
+    {
       field: "name",
       headerName: tBots("columns.name"),
       minWidth: 160,
@@ -204,59 +257,6 @@ const BotList = () => {
       valueFormatter: (value?: string) =>
         value ? format.dateTime(new Date(value), "dateTime") : "—",
     },
-    {
-      field: "actions",
-      filterable: false,
-      headerName: tBots("columns.actions"),
-      minWidth: 140,
-      renderCell: ({ row }: GridRenderCellParams<QuantBot>) => (
-        <ActionsStack direction="row">
-          {!row.startedAt && (
-            <Tooltip title={tBots("actions.start.label")}>
-              <IconButton
-                color="success"
-                onClick={() =>
-                  request(
-                    `${QUANT_BOTS_URL}/${row.id}/start`,
-                    tBots("actions.start.success"),
-                  )
-                }
-                size="small"
-              >
-                <PlayArrow fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          )}
-          {row.status === "running" && (
-            <Tooltip title={tBots("actions.stop.label")}>
-              <IconButton
-                color="error"
-                onClick={() => confirm("stop", row)}
-                size="small"
-              >
-                <Stop fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          )}
-          <Tooltip title={tBots("actions.duplicate")}>
-            <IconButton
-              onClick={() => router.push(`/quant/bots/new?from=${row.id}`)}
-              size="small"
-            >
-              <ContentCopy fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          {row.status !== "running" && (
-            <Tooltip title={tBots("actions.archive.label")}>
-              <IconButton onClick={() => confirm("archive", row)} size="small">
-                <Archive fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          )}
-        </ActionsStack>
-      ),
-      sortable: false,
-    },
   ];
 
   return (
@@ -264,6 +264,7 @@ const BotList = () => {
       <Stack sx={{ flexDirection: "row", gap: 1 }}>
         <Button
           onClick={(event) => setMenuAnchor(event.currentTarget)}
+          size="small"
           startIcon={<Add />}
           variant="contained"
         >
@@ -273,6 +274,7 @@ const BotList = () => {
           color="error"
           disabled={!running.length}
           onClick={handleStopAll}
+          size="small"
           startIcon={<StopCircle />}
           variant="outlined"
         >

@@ -200,7 +200,6 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
   ];
 
   const openOrderColumns: GridColDef[] = [
-    ...orderColumns,
     {
       field: "actions",
       filterable: false,
@@ -218,6 +217,7 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
       ),
       sortable: false,
     },
+    ...orderColumns,
   ];
 
   const historyColumns: GridColDef[] = [

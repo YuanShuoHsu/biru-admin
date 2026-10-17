@@ -61,6 +61,9 @@ export type CreateQuantBotResponse =
   components["schemas"]["CreateQuantBotResponseDto"];
 export type GridConfig = components["schemas"]["GridConfigDto"];
 export type FuturesGridConfig = components["schemas"]["FuturesGridConfigDto"];
+export type SignalBotConfig = components["schemas"]["SignalBotConfigDto"];
+export type SignalSetup = components["schemas"]["SignalSetupDto"];
+export type SendSignalDto = components["schemas"]["SendSignalDto"];
 export type FuturesGridCheckDto = components["schemas"]["FuturesGridCheckDto"];
 export type FuturesGridCheckResult =
   components["schemas"]["FuturesGridCheckResultDto"];

@@ -98,6 +98,7 @@
       "fills": "約定",
       "orders": "注文",
       "pionexGrid": "これは Pionex の内蔵グリッドです。個別の約定は Pionex アプリで確認してください。",
+      "pionexSignal": "これは Pionex のスマートコピーボットです。個別の約定は Pionex アプリで確認してください。",
       "summary": {
         "averageCost": "平均取得価格",
         "equity": "資産",
@@ -115,6 +116,7 @@
       "exit": "エグジット",
       "funding": "資金調達料",
       "grid_started": "グリッド開始",
+      "manual_signal": "手動シグナル",
       "order_rejected": "注文拒否",
       "order_skipped": "注文スキップ",
       "stopped": "停止",
@@ -243,6 +245,16 @@
       "name": "名前",
       "paperFeeRate": "手数料率（%）",
       "paperFeeRateHelper": "シミュレーション約定で差し引く手数料。<link>Pionex の手数料</link>を参考にしてください",
+      "signal": {
+        "compound": "利益を元本に再投資",
+        "hint": "起動時に Pionex に専用のカスタムシグナルとコピーボットを作成します。TradingView のアラートは本システムを経由せず直接 Pionex に送られるため、サーバー停止の影響を受けません。",
+        "leverage": "レバレッジ",
+        "leverageMax": "この銘柄は最大 {max}x。Pionex はシグナルボットで 10x 以下を推奨しています",
+        "stopLoss": "損切り（%、任意）",
+        "stopLossHelper": "損失が投資額のこの割合に達すると Pionex が決済します",
+        "takeProfit": "利確（%、任意）",
+        "takeProfitHelper": "利益が投資額のこの割合に達すると Pionex が決済します"
+      },
       "strategy": "戦略パラメータ",
       "symbol": "取引ペア",
       "webhook": {
@@ -279,6 +291,29 @@
       "stopped_by_user": "手動で停止",
       "user_cancel": "Pionex で手動停止"
     },
+    "signal": {
+      "action": "方向",
+      "actions": {
+        "buy": "買い",
+        "sell": "売り"
+      },
+      "contracts": "数量（contracts）",
+      "description": "TradingView でアラートを作成し、下の Webhook URL とメッセージを設定してください。メッセージのテンプレートは Pionex のもので、項目名は変更しないでください。",
+      "message": "アラートメッセージ",
+      "positionSize": "目標ポジション（position_size）",
+      "positionSizeHelper": "シグナル後のポジション。正はロング、負はショート、0 はノーポジションで、TradingView 戦略の position_size と同じです",
+      "reveal": "TradingView の設定を表示",
+      "secret": "Webhook URL には Pionex のトークンが含まれ、入手した人は誰でもこのボットで発注できます。外部に漏らさないでください。",
+      "send": {
+        "confirm": "「{action}、数量 {contracts}、目標ポジション {positionSize}」を送信しますか？Pionex がこのシグナルで実際に発注します。",
+        "label": "シグナルを手動送信",
+        "submit": "シグナルを送信",
+        "success": "シグナルを送信しました",
+        "title": "シグナルを送信"
+      },
+      "title": "TradingView シグナル",
+      "webhookUrl": "Webhook URL"
+    },
     "skipReasons": {
       "above_maximum": "取引所の最大注文量を超えています",
       "below_minimum": "取引所の最小注文量未満です",
@@ -298,14 +333,16 @@
       "grid": "価格帯の中で自動的に安く買って高く売り、レンジ相場に向いています。本番は Pionex の内蔵グリッドで実行します。",
       "indicator": "テクニカル指標の条件で自動売買します。",
       "webhook": "TradingView のアラートなど外部シグナルで注文します。",
-      "futures_grid": "価格レンジ内でレバレッジをかけたロング・ショート・ニュートラルのグリッド。実運用は Pionex の先物グリッドで実行します。"
+      "futures_grid": "価格レンジ内でレバレッジをかけたロング・ショート・ニュートラルのグリッド。実運用は Pionex の先物グリッドで実行します。",
+      "signal": "TradingView 戦略のシグナルに従って Pionex が建玉・決済します。ポジションは独立し、利確・損切りは Pionex が実行します。実運用のみ。"
     },
     "types": {
       "dca": "DCA",
       "grid": "グリッド",
       "indicator": "インジケーター",
       "webhook": "Webhook",
-      "futures_grid": "先物グリッド"
+      "futures_grid": "先物グリッド",
+      "signal": "シグナルボット"
     },
     "webhook": {
       "actionsHint": "action は buy、sell、close が使えます。sell に amount を付けると一部だけ売却します",

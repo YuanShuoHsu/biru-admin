@@ -98,6 +98,7 @@
       "fills": "체결",
       "orders": "주문",
       "pionexGrid": "Pionex 내장 그리드입니다. 개별 체결은 Pionex 앱에서 확인하세요.",
+      "pionexSignal": "Pionex 스마트 카피 봇입니다. 개별 체결은 Pionex 앱에서 확인하세요.",
       "summary": {
         "averageCost": "평균 단가",
         "equity": "자산",
@@ -115,6 +116,7 @@
       "exit": "청산",
       "funding": "펀딩비",
       "grid_started": "그리드 시작",
+      "manual_signal": "수동 신호",
       "order_rejected": "주문 거부",
       "order_skipped": "주문 건너뜀",
       "stopped": "중지",
@@ -243,6 +245,16 @@
       "name": "이름",
       "paperFeeRate": "수수료율(%)",
       "paperFeeRateHelper": "모의 체결 시 차감하는 수수료입니다. <link>Pionex 수수료</link>를 참고하세요",
+      "signal": {
+        "compound": "수익을 원금에 재투자",
+        "hint": "시작하면 Pionex에 전용 사용자 신호와 카피 봇을 만듭니다. TradingView 알림은 이 시스템을 거치지 않고 바로 Pionex로 가므로 서버가 멈춰도 영향이 없습니다.",
+        "leverage": "레버리지",
+        "leverageMax": "이 종목은 최대 {max}x. Pionex는 신호 봇에 10x 이하를 권장합니다",
+        "stopLoss": "손절(%, 선택)",
+        "stopLossHelper": "손실이 투자 금액의 이 비율에 도달하면 Pionex가 청산합니다",
+        "takeProfit": "익절(%, 선택)",
+        "takeProfitHelper": "수익이 투자 금액의 이 비율에 도달하면 Pionex가 청산합니다"
+      },
       "strategy": "전략 설정",
       "symbol": "거래쌍",
       "webhook": {
@@ -279,6 +291,29 @@
       "stopped_by_user": "수동 중지",
       "user_cancel": "Pionex에서 수동 중지"
     },
+    "signal": {
+      "action": "방향",
+      "actions": {
+        "buy": "매수",
+        "sell": "매도"
+      },
+      "contracts": "수량(contracts)",
+      "description": "TradingView에서 알림을 만들고 아래 Webhook URL과 메시지를 입력하세요. 메시지 템플릿은 Pionex에서 제공하므로 필드 이름을 바꾸지 마세요.",
+      "message": "알림 메시지",
+      "positionSize": "목표 포지션(position_size)",
+      "positionSizeHelper": "신호 후 포지션: 양수는 롱, 음수는 숏, 0은 무포지션이며 TradingView 전략의 position_size와 같습니다",
+      "reveal": "TradingView 설정 보기",
+      "secret": "Webhook URL에는 Pionex 토큰이 들어 있어 이를 가진 사람은 누구나 이 봇으로 주문할 수 있습니다. 외부에 공유하지 마세요.",
+      "send": {
+        "confirm": "\"{action}, 수량 {contracts}, 목표 포지션 {positionSize}\"을(를) 보낼까요? Pionex가 이 신호로 실제 주문합니다.",
+        "label": "신호 수동 전송",
+        "submit": "신호 보내기",
+        "success": "신호를 보냈습니다",
+        "title": "신호 보내기"
+      },
+      "title": "TradingView 신호",
+      "webhookUrl": "Webhook URL"
+    },
     "skipReasons": {
       "above_maximum": "거래소 최대 주문량 초과",
       "below_minimum": "거래소 최소 주문량 미만",
@@ -298,14 +333,16 @@
       "grid": "가격 범위 안에서 자동으로 싸게 사고 비싸게 팔며 횡보장에 적합합니다. 실거래는 Pionex 내장 그리드로 실행됩니다.",
       "indicator": "기술 지표 조건에 따라 자동으로 매매합니다.",
       "webhook": "TradingView 알림 등 외부 신호로 주문합니다.",
-      "futures_grid": "가격 범위 안에서 레버리지를 사용하는 롱·숏·중립 그리드입니다. 실전은 Pionex 선물 그리드에서 실행됩니다."
+      "futures_grid": "가격 범위 안에서 레버리지를 사용하는 롱·숏·중립 그리드입니다. 실전은 Pionex 선물 그리드에서 실행됩니다.",
+      "signal": "TradingView 전략 신호에 따라 Pionex가 진입·청산합니다. 포지션은 독립적이며 익절·손절은 Pionex가 실행합니다. 실전 전용."
     },
     "types": {
       "dca": "DCA",
       "grid": "그리드",
       "indicator": "지표",
       "webhook": "Webhook",
-      "futures_grid": "선물 그리드"
+      "futures_grid": "선물 그리드",
+      "signal": "신호 봇"
     },
     "webhook": {
       "actionsHint": "action은 buy, sell, close를 사용할 수 있습니다. sell에 amount를 추가하면 일부만 매도합니다",
