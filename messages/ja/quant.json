@@ -1,5 +1,6 @@
 {
   "account": {
+    "botOrdersHint": "ここには手動の注文のみ表示されます。ボットの注文は各ボットのページで確認してください。",
     "cancel": {
       "label": "取消",
       "success": "注文を取り消しました"
@@ -33,6 +34,251 @@
       "filled": "約定済",
       "open": "未約定",
       "partiallyCanceled": "一部約定後取消"
+    }
+  },
+  "bots": {
+    "actions": {
+      "archive": {
+        "confirm": "<bold>{name}</bold> をアーカイブしますか？一覧には表示されなくなりますが、記録は残ります。",
+        "label": "アーカイブ",
+        "success": "アーカイブしました",
+        "title": "ボットをアーカイブ"
+      },
+      "duplicate": "この設定で新しいボットを作成",
+      "start": {
+        "label": "開始",
+        "success": "開始しました"
+      },
+      "stop": {
+        "confirm": "<bold>{name}</bold> を停止しますか？すべての注文を取り消し、停止後は再開できません。",
+        "label": "停止",
+        "success": "停止しました",
+        "title": "ボットを停止"
+      },
+      "stopAll": {
+        "confirm": "実行中の {count} 個のボットをすべて停止しますか？Pionex のグリッドも含めて注文を取り消します。",
+        "label": "すべて停止",
+        "success": "すべてのボットを停止しました",
+        "title": "すべてのボットを停止"
+      }
+    },
+    "backtest": {
+      "candles": "ローソク足の本数",
+      "equity": "資産",
+      "interval": "約定判定の足",
+      "label": "バックテスト",
+      "maxDrawdown": "最大ドローダウン",
+      "needsFee": "先に手数料率を入力してください",
+      "note": "各ローソク足の中で価格が始値・高値・安値・終値の順に動くと仮定しています。設定の比較用であり、将来の収益を示すものではありません。",
+      "period": "{from} ～ {to}",
+      "pnl": "損益",
+      "returnRate": "リターン",
+      "run": "バックテストを実行",
+      "sharpe": "シャープレシオ",
+      "stoppedEarly": "途中で停止：{reason}",
+      "trades": "約定数",
+      "winRate": "勝率"
+    },
+    "columns": {
+      "actions": "操作",
+      "investment": "投資額",
+      "mode": "モード",
+      "name": "名前",
+      "pnl": "損益",
+      "position": "保有",
+      "realizedPnl": "確定損益",
+      "startedAt": "開始日時",
+      "status": "状態",
+      "symbol": "取引ペア",
+      "tag": "タグ",
+      "type": "戦略"
+    },
+    "detail": {
+      "events": "イベント",
+      "fills": "約定",
+      "orders": "注文",
+      "pionexGrid": "これは Pionex の内蔵グリッドです。個別の約定は Pionex アプリで確認してください。",
+      "summary": {
+        "averageCost": "平均取得価格",
+        "equity": "資産",
+        "fills": "約定数",
+        "pnl": "総損益",
+        "position": "保有",
+        "realizedPnl": "確定損益"
+      }
+    },
+    "empty": "まだボットがありません",
+    "events": {
+      "error": "エラー",
+      "exit": "エグジット",
+      "grid_started": "グリッド開始",
+      "order_rejected": "注文拒否",
+      "order_skipped": "注文スキップ",
+      "stopped": "停止",
+      "triggered": "トリガー価格に到達",
+      "webhook_signal": "シグナル受信"
+    },
+    "form": {
+      "basic": "基本設定",
+      "credential": "取引口座",
+      "dca": {
+        "baseOrderAmount": "初回注文額",
+        "maxInvestment": "最大 {amount} {quote} が必要です",
+        "maxSafetyOrders": "最大追加回数",
+        "priceDeviation": "追加の下落幅（%）",
+        "safetyOrderAmount": "追加注文額",
+        "stepScale": "下落幅の倍率",
+        "stopLoss": "損切り（%、任意）",
+        "takeProfit": "利確（%）",
+        "volumeScale": "金額の倍率"
+      },
+      "grid": {
+        "aiStrategy": "AI 推奨パラメータを適用",
+        "aiStrategyApplied": "Pionex AI 推奨を適用しました：年率 {annualized}、最大ドローダウン {drawdown}",
+        "aiStrategyNeedsCredential": "先に API キーを登録してください",
+        "bottom": "下限価格",
+        "closeModel": {
+          "NOT_SELL": "保有コインを残す",
+          "TO_QUOTE": "{quote} に売却",
+          "label": "停止時"
+        },
+        "gridType": {
+          "arithmetic": "等差",
+          "geometric": "等比",
+          "label": "間隔"
+        },
+        "lossStop": "損切り（任意）",
+        "profitStop": "利確（任意）",
+        "row": "グリッド数",
+        "stopType": {
+          "price": "価格",
+          "profit_amount": "金額"
+        },
+        "top": "上限価格",
+        "trigger": "トリガー価格（任意）",
+        "triggerDirection": {
+          "above": "この価格まで上昇で開始",
+          "below": "この価格まで下落で開始"
+        }
+      },
+      "indicator": {
+        "addCondition": "条件を追加",
+        "band": {
+          "lower": "下限バンドを下抜け",
+          "upper": "上限バンドを上抜け"
+        },
+        "bandCondition": "バンド条件",
+        "comparison": "比較",
+        "cross": "クロス",
+        "direction": {
+          "death": "デッドクロス",
+          "golden": "ゴールデンクロス"
+        },
+        "entry": "エントリー条件（すべて満たす）",
+        "exit": "エグジット条件（いずれかを満たす）",
+        "fast": "短期",
+        "interval": "足",
+        "kind": "インジケーター",
+        "kinds": {
+          "bollinger": "ボリンジャーバンド",
+          "emaCross": "EMA クロス",
+          "maCross": "移動平均クロス",
+          "macdCross": "MACD クロス",
+          "rsi": "RSI"
+        },
+        "operator": {
+          "above": "より上",
+          "below": "より下"
+        },
+        "orderAmount": "1 回のエントリー額",
+        "period": "期間",
+        "removeCondition": "条件を削除",
+        "slow": "長期",
+        "stdDev": "標準偏差の倍数",
+        "stopLoss": "損切り（%、任意）",
+        "takeProfit": "利確（%、任意）",
+        "value": "値"
+      },
+      "investment": "投資額",
+      "investmentHelper": "ボットはこの金額だけを使います",
+      "liveGridNote": "本番グリッドは Pionex に内蔵グリッドボットを作成し、Pionex アプリでも確認・管理できます。",
+      "maxDailyLoss": "1 日の最大損失（任意）",
+      "maxDailyLossHelper": "当日の損失がこの金額に達すると自動で停止します",
+      "mode": "モード",
+      "name": "名前",
+      "paperFeeRate": "手数料率（%）",
+      "paperFeeRateHelper": "シミュレーション約定で差し引く手数料。<link>Pionex の手数料</link>を参考にしてください",
+      "strategy": "戦略パラメータ",
+      "symbol": "取引ペア",
+      "webhook": {
+        "orderAmount": "シグナルに金額がない場合の購入額"
+      }
+    },
+    "label": "ボット",
+    "modes": {
+      "live": "本番",
+      "paper": "シミュレーション"
+    },
+    "new": {
+      "label": "ボットを作成",
+      "submit": "作成",
+      "success": "ボットを作成しました",
+      "title": "{type}ボットを作成"
+    },
+    "reasons": {
+      "create_failed": "Pionex での作成に失敗",
+      "daily_loss_limit": "1 日の損失上限に到達",
+      "dca_base_order_failed": "DCA の初回注文に失敗",
+      "grid_open_failed": "グリッドの開始注文に失敗",
+      "loss_stop": "損切りに到達",
+      "not_enough_balance": "Pionex の残高不足",
+      "order_canceled_externally": "注文が Pionex で手動取消されました",
+      "pionex_finished": "Pionex で終了",
+      "profit_stop": "利確に到達",
+      "stop_loss": "損切りに到達",
+      "stopped_all": "一括停止",
+      "stopped_by_user": "手動で停止",
+      "user_cancel": "Pionex で手動停止"
+    },
+    "skipReasons": {
+      "above_maximum": "取引所の最大注文量を超えています",
+      "below_minimum": "取引所の最小注文量未満です",
+      "insufficient_budget": "ボットの資金が不足しています",
+      "insufficient_position": "ボットの保有が不足しています",
+      "invalid_price": "価格が無効です"
+    },
+    "statuses": {
+      "error": "エラー",
+      "notStarted": "未開始",
+      "running": "実行中",
+      "stopped": "停止中"
+    },
+    "typeDescriptions": {
+      "dca": "段階的に買い増して平均取得価格を下げ、利確したら次のサイクルを始めます。",
+      "grid": "価格帯の中で自動的に安く買って高く売り、レンジ相場に向いています。本番は Pionex の内蔵グリッドで実行します。",
+      "indicator": "テクニカル指標の条件で自動売買します。",
+      "webhook": "TradingView のアラートなど外部シグナルで注文します。"
+    },
+    "types": {
+      "dca": "DCA",
+      "grid": "グリッド",
+      "indicator": "インジケーター",
+      "webhook": "Webhook"
+    },
+    "webhook": {
+      "actionsHint": "action は buy、sell、close が使えます。sell に amount を付けると一部だけ売却します",
+      "copied": "コピーしました",
+      "copy": "コピー",
+      "regenerate": {
+        "confirm": "古いトークンはすぐに無効になります。TradingView のアラートも更新してください。",
+        "label": "トークンを再発行",
+        "success": "トークンを再発行しました",
+        "title": "トークンを再発行"
+      },
+      "template": "TradingView アラートのメッセージ例",
+      "title": "Webhook 設定",
+      "tokenOnce": "トークンはこの 1 回しか表示されません。すぐにコピーしてください。紛失した場合は再発行できます。",
+      "url": "Webhook URL"
     }
   },
   "indicators": {
@@ -95,7 +341,9 @@
       "minAmount": "最小注文金額は {min} {coin} です",
       "minSize": "最小数量は {min} です",
       "positive": "0 より大きい値を入力してください",
-      "required": "必須"
+      "range": "{min} から {max} の間で入力してください",
+      "required": "必須",
+      "topAboveBottom": "上限価格は下限価格より高くしてください"
     }
   },
   "orderBook": {

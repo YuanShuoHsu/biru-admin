@@ -1,5 +1,6 @@
 {
   "account": {
+    "botOrdersHint": "여기에는 수동 주문만 표시됩니다. 봇의 주문은 각 봇 페이지에서 확인하세요.",
     "cancel": {
       "label": "취소",
       "success": "주문을 취소했습니다"
@@ -33,6 +34,251 @@
       "filled": "체결됨",
       "open": "미체결",
       "partiallyCanceled": "일부 체결 후 취소"
+    }
+  },
+  "bots": {
+    "actions": {
+      "archive": {
+        "confirm": "<bold>{name}</bold>을(를) 보관할까요? 목록에서는 숨겨지지만 기록은 유지됩니다.",
+        "label": "보관",
+        "success": "보관했습니다",
+        "title": "봇 보관"
+      },
+      "duplicate": "이 설정으로 새 봇 만들기",
+      "start": {
+        "label": "시작",
+        "success": "시작했습니다"
+      },
+      "stop": {
+        "confirm": "<bold>{name}</bold>을(를) 중지할까요? 모든 주문이 취소되며 중지 후에는 다시 시작할 수 없습니다.",
+        "label": "중지",
+        "success": "중지했습니다",
+        "title": "봇 중지"
+      },
+      "stopAll": {
+        "confirm": "실행 중인 봇 {count}개를 모두 중지할까요? Pionex 그리드를 포함해 모든 주문이 취소됩니다.",
+        "label": "모두 중지",
+        "success": "모든 봇을 중지했습니다",
+        "title": "모든 봇 중지"
+      }
+    },
+    "backtest": {
+      "candles": "캔들 수",
+      "equity": "자산",
+      "interval": "체결 판정 주기",
+      "label": "백테스트",
+      "maxDrawdown": "최대 낙폭",
+      "needsFee": "먼저 수수료율을 입력하세요",
+      "note": "각 캔들 안에서 가격이 시가, 고가, 저가, 종가 순으로 움직인다고 가정합니다. 설정 비교용이며 미래 수익을 의미하지 않습니다.",
+      "period": "{from} ~ {to}",
+      "pnl": "손익",
+      "returnRate": "수익률",
+      "run": "백테스트 실행",
+      "sharpe": "샤프 지수",
+      "stoppedEarly": "중간에 중지됨: {reason}",
+      "trades": "체결 수",
+      "winRate": "승률"
+    },
+    "columns": {
+      "actions": "작업",
+      "investment": "투자금",
+      "mode": "모드",
+      "name": "이름",
+      "pnl": "손익",
+      "position": "보유량",
+      "realizedPnl": "실현 손익",
+      "startedAt": "시작 시간",
+      "status": "상태",
+      "symbol": "거래쌍",
+      "tag": "태그",
+      "type": "전략"
+    },
+    "detail": {
+      "events": "이벤트",
+      "fills": "체결",
+      "orders": "주문",
+      "pionexGrid": "Pionex 내장 그리드입니다. 개별 체결은 Pionex 앱에서 확인하세요.",
+      "summary": {
+        "averageCost": "평균 단가",
+        "equity": "자산",
+        "fills": "체결 수",
+        "pnl": "총 손익",
+        "position": "보유량",
+        "realizedPnl": "실현 손익"
+      }
+    },
+    "empty": "아직 봇이 없습니다",
+    "events": {
+      "error": "오류",
+      "exit": "청산",
+      "grid_started": "그리드 시작",
+      "order_rejected": "주문 거부",
+      "order_skipped": "주문 건너뜀",
+      "stopped": "중지",
+      "triggered": "트리거 가격 도달",
+      "webhook_signal": "신호 수신"
+    },
+    "form": {
+      "basic": "기본 설정",
+      "credential": "거래 계정",
+      "dca": {
+        "baseOrderAmount": "첫 주문 금액",
+        "maxInvestment": "최대 {amount} {quote}가 필요합니다",
+        "maxSafetyOrders": "최대 추가 매수 횟수",
+        "priceDeviation": "추가 매수 하락폭(%)",
+        "safetyOrderAmount": "추가 매수 금액",
+        "stepScale": "하락폭 배율",
+        "stopLoss": "손절(%, 선택)",
+        "takeProfit": "익절(%)",
+        "volumeScale": "금액 배율"
+      },
+      "grid": {
+        "aiStrategy": "AI 추천 값 적용",
+        "aiStrategyApplied": "Pionex AI 추천을 적용했습니다: 연환산 {annualized}, 최대 낙폭 {drawdown}",
+        "aiStrategyNeedsCredential": "먼저 API 키를 등록하세요",
+        "bottom": "하단 가격",
+        "closeModel": {
+          "NOT_SELL": "보유 코인 유지",
+          "TO_QUOTE": "{quote}로 매도",
+          "label": "중지 시"
+        },
+        "gridType": {
+          "arithmetic": "등차",
+          "geometric": "등비",
+          "label": "간격"
+        },
+        "lossStop": "손절(선택)",
+        "profitStop": "익절(선택)",
+        "row": "그리드 수",
+        "stopType": {
+          "price": "가격",
+          "profit_amount": "금액"
+        },
+        "top": "상단 가격",
+        "trigger": "트리거 가격(선택)",
+        "triggerDirection": {
+          "above": "이 가격까지 오르면 시작",
+          "below": "이 가격까지 내리면 시작"
+        }
+      },
+      "indicator": {
+        "addCondition": "조건 추가",
+        "band": {
+          "lower": "하단 밴드 이탈",
+          "upper": "상단 밴드 돌파"
+        },
+        "bandCondition": "밴드 조건",
+        "comparison": "비교",
+        "cross": "교차 방향",
+        "direction": {
+          "death": "데드 크로스",
+          "golden": "골든 크로스"
+        },
+        "entry": "진입 조건(모두 충족)",
+        "exit": "청산 조건(하나라도 충족)",
+        "fast": "단기",
+        "interval": "주기",
+        "kind": "지표",
+        "kinds": {
+          "bollinger": "볼린저 밴드",
+          "emaCross": "EMA 교차",
+          "maCross": "이동평균 교차",
+          "macdCross": "MACD 교차",
+          "rsi": "RSI"
+        },
+        "operator": {
+          "above": "초과",
+          "below": "미만"
+        },
+        "orderAmount": "진입당 금액",
+        "period": "기간",
+        "removeCondition": "조건 삭제",
+        "slow": "장기",
+        "stdDev": "표준편차 배수",
+        "stopLoss": "손절(%, 선택)",
+        "takeProfit": "익절(%, 선택)",
+        "value": "값"
+      },
+      "investment": "투자금",
+      "investmentHelper": "봇은 이 금액만 사용합니다",
+      "liveGridNote": "실거래 그리드는 Pionex에 내장 그리드 봇을 만들며 Pionex 앱에서도 확인하고 관리할 수 있습니다.",
+      "maxDailyLoss": "일일 최대 손실(선택)",
+      "maxDailyLossHelper": "당일 손실이 이 금액에 도달하면 자동으로 중지됩니다",
+      "mode": "모드",
+      "name": "이름",
+      "paperFeeRate": "수수료율(%)",
+      "paperFeeRateHelper": "모의 체결 시 차감하는 수수료입니다. <link>Pionex 수수료</link>를 참고하세요",
+      "strategy": "전략 설정",
+      "symbol": "거래쌍",
+      "webhook": {
+        "orderAmount": "신호에 금액이 없을 때 매수 금액"
+      }
+    },
+    "label": "봇",
+    "modes": {
+      "live": "실거래",
+      "paper": "모의 거래"
+    },
+    "new": {
+      "label": "봇 만들기",
+      "submit": "만들기",
+      "success": "봇을 만들었습니다",
+      "title": "{type} 봇 만들기"
+    },
+    "reasons": {
+      "create_failed": "Pionex 생성 실패",
+      "daily_loss_limit": "일일 손실 한도 도달",
+      "dca_base_order_failed": "DCA 첫 주문 실패",
+      "grid_open_failed": "그리드 시작 주문 실패",
+      "loss_stop": "손절 도달",
+      "not_enough_balance": "Pionex 잔액 부족",
+      "order_canceled_externally": "주문이 Pionex에서 수동으로 취소되었습니다",
+      "pionex_finished": "Pionex에서 종료됨",
+      "profit_stop": "익절 도달",
+      "stop_loss": "손절 도달",
+      "stopped_all": "모두 중지",
+      "stopped_by_user": "수동 중지",
+      "user_cancel": "Pionex에서 수동 중지"
+    },
+    "skipReasons": {
+      "above_maximum": "거래소 최대 주문량 초과",
+      "below_minimum": "거래소 최소 주문량 미만",
+      "insufficient_budget": "봇 사용 가능 자금 부족",
+      "insufficient_position": "봇 보유량 부족",
+      "invalid_price": "잘못된 가격"
+    },
+    "statuses": {
+      "error": "오류",
+      "notStarted": "시작 전",
+      "running": "실행 중",
+      "stopped": "중지됨"
+    },
+    "typeDescriptions": {
+      "dca": "단계적으로 추가 매수해 평균 단가를 낮추고, 익절하면 다음 회차를 시작합니다.",
+      "grid": "가격 범위 안에서 자동으로 싸게 사고 비싸게 팔며 횡보장에 적합합니다. 실거래는 Pionex 내장 그리드로 실행됩니다.",
+      "indicator": "기술 지표 조건에 따라 자동으로 매매합니다.",
+      "webhook": "TradingView 알림 등 외부 신호로 주문합니다."
+    },
+    "types": {
+      "dca": "DCA",
+      "grid": "그리드",
+      "indicator": "지표",
+      "webhook": "Webhook"
+    },
+    "webhook": {
+      "actionsHint": "action은 buy, sell, close를 사용할 수 있습니다. sell에 amount를 추가하면 일부만 매도합니다",
+      "copied": "복사했습니다",
+      "copy": "복사",
+      "regenerate": {
+        "confirm": "이전 토큰은 즉시 무효가 됩니다. TradingView 알림도 함께 수정하세요.",
+        "label": "토큰 재발급",
+        "success": "토큰을 재발급했습니다",
+        "title": "토큰 재발급"
+      },
+      "template": "TradingView 알림 메시지 예시",
+      "title": "Webhook 설정",
+      "tokenOnce": "토큰은 이번 한 번만 표시됩니다. 지금 복사하세요. 잃어버리면 재발급할 수 있습니다.",
+      "url": "Webhook URL"
     }
   },
   "indicators": {
@@ -95,7 +341,9 @@
       "minAmount": "최소 주문 금액은 {min} {coin}입니다",
       "minSize": "최소 수량은 {min}입니다",
       "positive": "0보다 커야 합니다",
-      "required": "필수"
+      "range": "{min}에서 {max} 사이여야 합니다",
+      "required": "필수",
+      "topAboveBottom": "상단 가격은 하단 가격보다 높아야 합니다"
     }
   },
   "orderBook": {

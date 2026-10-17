@@ -3436,6 +3436,312 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/quant/bots": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 列出自己的機器人（不含已封存） */
+    get: operations["QuantBotsController_findAll"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/bots/grid": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 建立網格機器人（實盤交給 Pionex 內建網格執行） */
+    post: operations["QuantBotsController_createGrid"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/bots/dca": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 建立 DCA 機器人 */
+    post: operations["QuantBotsController_createDca"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/bots/indicator": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 建立指標訊號機器人 */
+    post: operations["QuantBotsController_createIndicator"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/bots/webhook": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 建立 TradingView Webhook 機器人 */
+    post: operations["QuantBotsController_createWebhook"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/bots/stop-all": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 一鍵停止自己所有執行中的機器人 */
+    post: operations["QuantBotsController_stopAll"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/bots/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得機器人與損益摘要 */
+    get: operations["QuantBotsController_findOne"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/bots/{id}/start": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 啟動機器人（每個機器人只能啟動一次） */
+    post: operations["QuantBotsController_start"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/bots/{id}/stop": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 停止機器人並撤銷掛單 */
+    post: operations["QuantBotsController_stop"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/bots/{id}/webhook-token": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 重新產生 Webhook token（舊的立即失效） */
+    post: operations["QuantBotsController_regenerateWebhookToken"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/bots/{id}/archive": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 封存已停止的機器人 */
+    post: operations["QuantBotsController_archive"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/bots/{id}/orders": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 機器人的委託 */
+    get: operations["QuantBotsController_findOrders"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/bots/{id}/fills": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 機器人的成交 */
+    get: operations["QuantBotsController_findFills"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/bots/{id}/events": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 機器人最近的事件紀錄 */
+    get: operations["QuantBotsController_findEvents"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/credentials/{id}/grid-ai-strategy": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Pionex 的網格 AI 推薦參數 */
+    get: operations["QuantBotsController_gridAiStrategy"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/backtests/grid": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 網格回測 */
+    post: operations["QuantBotsController_backtestGrid"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/backtests/dca": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** DCA 回測 */
+    post: operations["QuantBotsController_backtestDca"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/backtests/indicator": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 指標訊號回測 */
+    post: operations["QuantBotsController_backtestIndicator"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/quant/markets": {
     parameters: {
       query?: never;
@@ -3481,6 +3787,23 @@ export interface paths {
     get: operations["QuantController_findTrades"];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/webhooks/{botId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 接收 TradingView 等外部訊號 */
+    post: operations["QuantWebhookController_receive"];
     delete?: never;
     options?: never;
     head?: never;
@@ -8866,6 +9189,379 @@ export interface components {
       /** @description 成交時間（毫秒） */
       time: number;
     };
+    /** @enum {string} */
+    QuantGridType: "arithmetic" | "geometric";
+    /** @enum {string} */
+    QuantGridStopType: "price" | "profit_amount";
+    GridStopDto: {
+      type: components["schemas"]["QuantGridStopType"];
+      /** @description price：觸發價；profit_amount：金額（計價幣） */
+      value: number;
+    };
+    /** @enum {string} */
+    QuantTriggerDirection: "above" | "below";
+    TriggerDto: {
+      price: number;
+      direction: components["schemas"]["QuantTriggerDirection"];
+    };
+    /**
+     * @description 停止時是否把持有的基礎幣賣回計價幣
+     * @enum {string}
+     */
+    QuantGridCloseModel: "NOT_SELL" | "TO_QUOTE";
+    GridConfigDto: {
+      /** @description 上界 */
+      top: number;
+      /** @description 下界 */
+      bottom: number;
+      /** @description 格數 */
+      row: number;
+      gridType: components["schemas"]["QuantGridType"];
+      lossStop?: components["schemas"]["GridStopDto"];
+      profitStop?: components["schemas"]["GridStopDto"];
+      /** @description 價格觸及才開始 */
+      trigger?: components["schemas"]["TriggerDto"];
+      /** @description 停止時是否把持有的基礎幣賣回計價幣 */
+      closeModel: components["schemas"]["QuantGridCloseModel"];
+    };
+    DcaConfigDto: {
+      /** @description 首單金額（計價幣） */
+      baseOrderAmount: number;
+      /** @description 首筆加碼金額（計價幣） */
+      safetyOrderAmount: number;
+      /** @description 最多加碼次數 */
+      maxSafetyOrders: number;
+      /** @description 首筆加碼的跌幅（%） */
+      priceDeviation: number;
+      /** @description 加碼間距倍率（每次跌幅乘以此倍率） */
+      stepScale: number;
+      /** @description 加碼金額倍率（每次金額乘以此倍率） */
+      volumeScale: number;
+      /** @description 停利（%，相對均價） */
+      takeProfit: number;
+      /** @description 停損（%，相對均價） */
+      stopLoss?: number;
+    };
+    /** @enum {string} */
+    QuantCandleInterval:
+      | "1M"
+      | "5M"
+      | "15M"
+      | "30M"
+      | "60M"
+      | "4H"
+      | "8H"
+      | "12H"
+      | "1D";
+    /** @enum {string} */
+    QuantIndicatorKind:
+      | "rsi"
+      | "maCross"
+      | "emaCross"
+      | "macdCross"
+      | "bollinger";
+    /**
+     * @description RSI 高於／低於門檻；布林通道為收盤價突破上軌／跌破下軌
+     * @enum {string}
+     */
+    QuantConditionOperator: "above" | "below";
+    /** @enum {string} */
+    QuantCrossDirection: "golden" | "death";
+    /** @enum {string} */
+    QuantBollingerBand: "upper" | "lower";
+    IndicatorConditionDto: {
+      kind: components["schemas"]["QuantIndicatorKind"];
+      /** @description RSI／布林通道週期 */
+      period?: number;
+      /** @description 均線交叉的快線週期 */
+      fast?: number;
+      /** @description 均線交叉的慢線週期 */
+      slow?: number;
+      /** @description RSI 高於／低於門檻；布林通道為收盤價突破上軌／跌破下軌 */
+      operator?: components["schemas"]["QuantConditionOperator"];
+      /** @description RSI 門檻 */
+      value?: number;
+      direction?: components["schemas"]["QuantCrossDirection"];
+      /** @description 布林通道標準差倍數 */
+      stdDev?: number;
+      band?: components["schemas"]["QuantBollingerBand"];
+    };
+    IndicatorConfigDto: {
+      interval: components["schemas"]["QuantCandleInterval"];
+      /** @description 全部成立才進場 */
+      entry: components["schemas"]["IndicatorConditionDto"][];
+      /** @description 任一成立就出場 */
+      exit: components["schemas"]["IndicatorConditionDto"][];
+      /** @description 每次進場金額（計價幣） */
+      orderAmount: number;
+      /** @description 停利（%，相對進場均價） */
+      takeProfit?: number;
+      /** @description 停損（%，相對進場均價） */
+      stopLoss?: number;
+    };
+    WebhookConfigDto: {
+      /** @description 訊號未指定金額時的每次買入金額（計價幣） */
+      orderAmount: number;
+    };
+    /** @enum {string} */
+    QuantBotType: "grid" | "dca" | "indicator" | "webhook";
+    /** @enum {string} */
+    QuantBotMode: "paper" | "live";
+    /** @enum {string} */
+    QuantBotStatus: "running" | "stopped" | "error";
+    QuantBotSummaryDto: {
+      /** @description 目前權益（計價幣） */
+      equity: number;
+      /** @description 總損益（計價幣） */
+      pnl: number;
+      /** @description 已實現損益（計價幣） */
+      realizedPnl: number;
+      /** @description 持有基礎幣數量 */
+      position: number;
+      /** @description 持倉均價 */
+      averageCost: number;
+      /** @description 成交筆數 */
+      fillCount: number;
+    };
+    QuantBotDto: {
+      id: string;
+      name: string;
+      type: components["schemas"]["QuantBotType"];
+      mode: components["schemas"]["QuantBotMode"];
+      symbol: string;
+      status: components["schemas"]["QuantBotStatus"];
+      /** @description 停止或錯誤的原因 */
+      statusReason?: string;
+      credentialId?: string;
+      config:
+        | components["schemas"]["GridConfigDto"]
+        | components["schemas"]["DcaConfigDto"]
+        | components["schemas"]["IndicatorConfigDto"]
+        | components["schemas"]["WebhookConfigDto"];
+      investment: number;
+      paperFeeRate?: number;
+      maxDailyLoss?: number;
+      /** @description Pionex 內建機器人 id */
+      pionexBotId?: string;
+      summary: components["schemas"]["QuantBotSummaryDto"];
+      /** Format: date-time */
+      startedAt?: string;
+      /** Format: date-time */
+      stoppedAt?: string;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    CreateGridBotDto: {
+      name: string;
+      /** @example BTC_USDT */
+      symbol: string;
+      mode: components["schemas"]["QuantBotMode"];
+      /** @description 實盤必填 */
+      credentialId?: string;
+      /** @description 投入金額（計價幣），也是機器人可動用資金的上限 */
+      investment: number;
+      /** @description 模擬盤必填：手續費率（例如 0.0005） */
+      paperFeeRate?: number;
+      /** @description 每日最大虧損（計價幣），觸發即停止 */
+      maxDailyLoss?: number;
+      config: components["schemas"]["GridConfigDto"];
+    };
+    CreateQuantBotResponseDto: {
+      id: string;
+      name: string;
+      type: components["schemas"]["QuantBotType"];
+      mode: components["schemas"]["QuantBotMode"];
+      symbol: string;
+      status: components["schemas"]["QuantBotStatus"];
+      /** @description 停止或錯誤的原因 */
+      statusReason?: string;
+      credentialId?: string;
+      config:
+        | components["schemas"]["GridConfigDto"]
+        | components["schemas"]["DcaConfigDto"]
+        | components["schemas"]["IndicatorConfigDto"]
+        | components["schemas"]["WebhookConfigDto"];
+      investment: number;
+      paperFeeRate?: number;
+      maxDailyLoss?: number;
+      /** @description Pionex 內建機器人 id */
+      pionexBotId?: string;
+      summary: components["schemas"]["QuantBotSummaryDto"];
+      /** Format: date-time */
+      startedAt?: string;
+      /** Format: date-time */
+      stoppedAt?: string;
+      /** Format: date-time */
+      createdAt: string;
+      /** @description Webhook 機器人的 token，只在建立時回傳這一次 */
+      webhookToken?: string;
+    };
+    CreateDcaBotDto: {
+      name: string;
+      /** @example BTC_USDT */
+      symbol: string;
+      mode: components["schemas"]["QuantBotMode"];
+      /** @description 實盤必填 */
+      credentialId?: string;
+      /** @description 投入金額（計價幣），也是機器人可動用資金的上限 */
+      investment: number;
+      /** @description 模擬盤必填：手續費率（例如 0.0005） */
+      paperFeeRate?: number;
+      /** @description 每日最大虧損（計價幣），觸發即停止 */
+      maxDailyLoss?: number;
+      config: components["schemas"]["DcaConfigDto"];
+    };
+    CreateIndicatorBotDto: {
+      name: string;
+      /** @example BTC_USDT */
+      symbol: string;
+      mode: components["schemas"]["QuantBotMode"];
+      /** @description 實盤必填 */
+      credentialId?: string;
+      /** @description 投入金額（計價幣），也是機器人可動用資金的上限 */
+      investment: number;
+      /** @description 模擬盤必填：手續費率（例如 0.0005） */
+      paperFeeRate?: number;
+      /** @description 每日最大虧損（計價幣），觸發即停止 */
+      maxDailyLoss?: number;
+      config: components["schemas"]["IndicatorConfigDto"];
+    };
+    CreateWebhookBotDto: {
+      name: string;
+      /** @example BTC_USDT */
+      symbol: string;
+      mode: components["schemas"]["QuantBotMode"];
+      /** @description 實盤必填 */
+      credentialId?: string;
+      /** @description 投入金額（計價幣），也是機器人可動用資金的上限 */
+      investment: number;
+      /** @description 模擬盤必填：手續費率（例如 0.0005） */
+      paperFeeRate?: number;
+      /** @description 每日最大虧損（計價幣），觸發即停止 */
+      maxDailyLoss?: number;
+      config: components["schemas"]["WebhookConfigDto"];
+    };
+    WebhookTokenDto: {
+      /** @description 新的 token，只在這次回傳；舊 token 立即失效 */
+      webhookToken: string;
+    };
+    /** @enum {string} */
+    QuantBotOrderStatus: "open" | "filled" | "canceled" | "rejected";
+    QuantBotOrderDto: {
+      id: string;
+      side: components["schemas"]["QuantOrderSide"];
+      type: components["schemas"]["QuantOrderType"];
+      price?: number;
+      size?: number;
+      amount?: number;
+      filledSize: number;
+      filledAmount: number;
+      fee: number;
+      status: components["schemas"]["QuantBotOrderStatus"];
+      tag?: string;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    QuantBotFillDto: {
+      id: string;
+      orderId: string;
+      side: components["schemas"]["QuantOrderSide"];
+      price: number;
+      size: number;
+      fee: number;
+      feeCoin: string;
+      /** Format: date-time */
+      filledAt: string;
+    };
+    QuantBotEventDto: {
+      id: string;
+      /** @description 事件種類，例如 started、stopped、risk_blocked */
+      kind: string;
+      payload?: {
+        [key: string]: unknown;
+      };
+      /** Format: date-time */
+      createdAt: string;
+    };
+    GridAiStrategyDto: {
+      /** @description 建議上界 */
+      top: number;
+      /** @description 建議下界 */
+      bottom: number;
+      /** @description 建議格數 */
+      row: number;
+      /** @description 回測年化報酬（0.1 = 10%） */
+      annualized: number;
+      /** @description 回測最大回撤（0.1 = 10%） */
+      maxDrawdown: number;
+    };
+    GridBacktestDto: {
+      /** @example BTC_USDT */
+      symbol: string;
+      /** @description 撮合用的 K 線週期；指標策略以設定的週期為準 */
+      interval: components["schemas"]["QuantCandleInterval"];
+      /** @description 回測 K 線數量（交易所最多往回 10000 根） */
+      candleCount: number;
+      investment: number;
+      /** @description 手續費率（例如 0.0005） */
+      feeRate: number;
+      config: components["schemas"]["GridConfigDto"];
+    };
+    BacktestPointDto: {
+      time: number;
+      value: number;
+    };
+    BacktestTradeDto: {
+      side: components["schemas"]["QuantOrderSide"];
+      price: number;
+      size: number;
+      time: number;
+    };
+    BacktestResultDto: {
+      equity: components["schemas"]["BacktestPointDto"][];
+      trades: components["schemas"]["BacktestTradeDto"][];
+      /** @description 總損益（計價幣） */
+      pnl: number;
+      /** @description 報酬率（0.1 = 10%） */
+      returnRate: number;
+      /** @description 最大回撤（0.1 = 10%） */
+      maxDrawdown: number;
+      /** @description 年化夏普值 */
+      sharpe?: number;
+      /** @description 勝率（賣出成交中獲利的比例） */
+      winRate?: number;
+      tradeCount: number;
+      /** @description 提前停止的原因，例如觸發停損 */
+      stoppedReason?: string;
+      /** @description 回測區間起點（毫秒） */
+      from: number;
+      /** @description 回測區間終點（毫秒） */
+      to: number;
+    };
+    DcaBacktestDto: {
+      /** @example BTC_USDT */
+      symbol: string;
+      /** @description 撮合用的 K 線週期；指標策略以設定的週期為準 */
+      interval: components["schemas"]["QuantCandleInterval"];
+      /** @description 回測 K 線數量（交易所最多往回 10000 根） */
+      candleCount: number;
+      investment: number;
+      /** @description 手續費率（例如 0.0005） */
+      feeRate: number;
+      config: components["schemas"]["DcaConfigDto"];
+    };
+    IndicatorBacktestDto: {
+      /** @example BTC_USDT */
+      symbol: string;
+      /** @description 撮合用的 K 線週期；指標策略以設定的週期為準 */
+      interval: components["schemas"]["QuantCandleInterval"];
+      /** @description 回測 K 線數量（交易所最多往回 10000 根） */
+      candleCount: number;
+      investment: number;
+      /** @description 手續費率（例如 0.0005） */
+      feeRate: number;
+      config: components["schemas"]["IndicatorConfigDto"];
+    };
     QuantMarketDto: {
       /** @example BTC_USDT */
       symbol: string;
@@ -8894,17 +9590,6 @@ export interface components {
       /** @description 24 小時成交額（計價幣） */
       quoteVolume: number;
     };
-    /** @enum {string} */
-    QuantCandleInterval:
-      | "1M"
-      | "5M"
-      | "15M"
-      | "30M"
-      | "60M"
-      | "4H"
-      | "8H"
-      | "12H"
-      | "1D";
     QuantCandleDto: {
       /** @description 開盤時間（毫秒） */
       time: number;
@@ -8921,6 +9606,16 @@ export interface components {
       side: components["schemas"]["QuantOrderSide"];
       /** @description 成交時間（毫秒） */
       time: number;
+    };
+    /** @enum {string} */
+    QuantWebhookAction: "buy" | "sell" | "close";
+    WebhookSignalDto: {
+      token: string;
+      action: components["schemas"]["QuantWebhookAction"];
+      /** @description 買入金額（計價幣），省略則用預設 */
+      amount?: number;
+      /** @description 訊號 id，重送同一個 id 只會執行一次 */
+      id?: string;
     };
   };
   responses: never;
@@ -17460,6 +18155,518 @@ export interface operations {
       };
     };
   };
+  QuantBotsController_findAll: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantBotDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantBotsController_createGrid: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateGridBotDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CreateQuantBotResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantBotsController_createDca: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateDcaBotDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CreateQuantBotResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantBotsController_createIndicator: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateIndicatorBotDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CreateQuantBotResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantBotsController_createWebhook: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateWebhookBotDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CreateQuantBotResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantBotsController_stopAll: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantBotsController_findOne: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantBotDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantBotsController_start: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantBotDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantBotsController_stop: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantBotDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantBotsController_regenerateWebhookToken: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["WebhookTokenDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantBotsController_archive: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantBotsController_findOrders: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantBotOrderDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantBotsController_findFills: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantBotFillDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantBotsController_findEvents: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantBotEventDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantBotsController_gridAiStrategy: {
+    parameters: {
+      query: {
+        symbol: string;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["GridAiStrategyDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantBotsController_backtestGrid: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["GridBacktestDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["BacktestResultDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantBotsController_backtestDca: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DcaBacktestDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["BacktestResultDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantBotsController_backtestIndicator: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["IndicatorBacktestDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["BacktestResultDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   QuantController_findMarkets: {
     parameters: {
       query?: never;
@@ -17537,6 +18744,36 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["QuantTradeDto"][];
         };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantWebhookController_receive: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        botId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["WebhookSignalDto"];
+      };
+    };
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {
@@ -19206,6 +20443,45 @@ export const quantOrderStatusValues: ReadonlyArray<
 export const quantFillRoleValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantFillRole"]
 > = ["MAKER", "TAKER"];
+export const quantGridTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantGridType"]
+> = ["arithmetic", "geometric"];
+export const quantGridStopTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantGridStopType"]
+> = ["price", "profit_amount"];
+export const quantTriggerDirectionValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantTriggerDirection"]
+> = ["above", "below"];
+export const quantGridCloseModelValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantGridCloseModel"]
+> = ["NOT_SELL", "TO_QUOTE"];
 export const quantCandleIntervalValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantCandleInterval"]
 > = ["1M", "5M", "15M", "30M", "60M", "4H", "8H", "12H", "1D"];
+export const quantIndicatorKindValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantIndicatorKind"]
+> = ["rsi", "maCross", "emaCross", "macdCross", "bollinger"];
+export const quantConditionOperatorValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantConditionOperator"]
+> = ["above", "below"];
+export const quantCrossDirectionValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantCrossDirection"]
+> = ["golden", "death"];
+export const quantBollingerBandValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantBollingerBand"]
+> = ["upper", "lower"];
+export const quantBotTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantBotType"]
+> = ["grid", "dca", "indicator", "webhook"];
+export const quantBotModeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantBotMode"]
+> = ["paper", "live"];
+export const quantBotStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantBotStatus"]
+> = ["running", "stopped", "error"];
+export const quantBotOrderStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantBotOrderStatus"]
+> = ["open", "filled", "canceled", "rejected"];
+export const quantWebhookActionValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantWebhookAction"]
+> = ["buy", "sell", "close"];

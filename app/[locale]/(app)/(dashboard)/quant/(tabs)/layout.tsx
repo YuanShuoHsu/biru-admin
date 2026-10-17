@@ -11,7 +11,11 @@ const QuantTabsLayout = ({ children }: { children: React.ReactNode }) => {
     <>
       <RouteTabs
         ariaLabel={tQuant("label")}
-        tabs={[{ path: "/quant/market" }, { path: "/quant/settings" }]}
+        tabs={[
+          { path: "/quant/market" },
+          { path: "/quant/bots" },
+          { path: "/quant/settings" },
+        ]}
       />
       {children}
     </>

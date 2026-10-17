@@ -1,5 +1,6 @@
 {
   "account": {
+    "botOrdersHint": "Only manual orders are listed here. See each bot for its orders.",
     "cancel": {
       "label": "Cancel",
       "success": "Order canceled"
@@ -33,6 +34,251 @@
       "filled": "Filled",
       "open": "Open",
       "partiallyCanceled": "Partially filled, canceled"
+    }
+  },
+  "bots": {
+    "actions": {
+      "archive": {
+        "confirm": "Archive <bold>{name}</bold>? It will be hidden from the list; its records are kept.",
+        "label": "Archive",
+        "success": "Archived",
+        "title": "Archive bot"
+      },
+      "duplicate": "Create a new bot with these settings",
+      "start": {
+        "label": "Start",
+        "success": "Started"
+      },
+      "stop": {
+        "confirm": "Stop <bold>{name}</bold>? All open orders will be canceled and it cannot be started again.",
+        "label": "Stop",
+        "success": "Stopped",
+        "title": "Stop bot"
+      },
+      "stopAll": {
+        "confirm": "Stop all {count} running bots? All open orders will be canceled, including Pionex grids.",
+        "label": "Stop all",
+        "success": "All bots stopped",
+        "title": "Stop all bots"
+      }
+    },
+    "backtest": {
+      "candles": "Candles",
+      "equity": "Equity",
+      "interval": "Fill interval",
+      "label": "Backtest",
+      "maxDrawdown": "Max drawdown",
+      "needsFee": "Enter a fee rate first",
+      "note": "The backtest assumes each candle moves through open, high, low and close in order. Use it to compare settings; it does not predict future returns.",
+      "period": "{from} – {to}",
+      "pnl": "P&L",
+      "returnRate": "Return",
+      "run": "Run backtest",
+      "sharpe": "Sharpe",
+      "stoppedEarly": "Stopped early: {reason}",
+      "trades": "Trades",
+      "winRate": "Win rate"
+    },
+    "columns": {
+      "actions": "Actions",
+      "investment": "Investment",
+      "mode": "Mode",
+      "name": "Name",
+      "pnl": "P&L",
+      "position": "Position",
+      "realizedPnl": "Realized",
+      "startedAt": "Started",
+      "status": "Status",
+      "symbol": "Symbol",
+      "tag": "Tag",
+      "type": "Strategy"
+    },
+    "detail": {
+      "events": "Events",
+      "fills": "Fills",
+      "orders": "Orders",
+      "pionexGrid": "This is a Pionex grid bot. See individual fills in the Pionex app.",
+      "summary": {
+        "averageCost": "Avg. cost",
+        "equity": "Equity",
+        "fills": "Fills",
+        "pnl": "Total P&L",
+        "position": "Position",
+        "realizedPnl": "Realized P&L"
+      }
+    },
+    "empty": "No bots yet",
+    "events": {
+      "error": "Error",
+      "exit": "Exit",
+      "grid_started": "Grid started",
+      "order_rejected": "Order rejected",
+      "order_skipped": "Order skipped",
+      "stopped": "Stopped",
+      "triggered": "Trigger reached",
+      "webhook_signal": "Signal received"
+    },
+    "form": {
+      "basic": "Basics",
+      "credential": "Trading account",
+      "dca": {
+        "baseOrderAmount": "Base order",
+        "maxInvestment": "Needs up to {amount} {quote}",
+        "maxSafetyOrders": "Max safety orders",
+        "priceDeviation": "Price deviation (%)",
+        "safetyOrderAmount": "Safety order",
+        "stepScale": "Step scale",
+        "stopLoss": "Stop loss (%, optional)",
+        "takeProfit": "Take profit (%)",
+        "volumeScale": "Volume scale"
+      },
+      "grid": {
+        "aiStrategy": "Apply AI suggestion",
+        "aiStrategyApplied": "Applied the Pionex AI suggestion: {annualized} annualized, {drawdown} max drawdown",
+        "aiStrategyNeedsCredential": "Add an API key first",
+        "bottom": "Lower price",
+        "closeModel": {
+          "NOT_SELL": "Keep the coins",
+          "TO_QUOTE": "Sell to {quote}",
+          "label": "On stop"
+        },
+        "gridType": {
+          "arithmetic": "Arithmetic",
+          "geometric": "Geometric",
+          "label": "Spacing"
+        },
+        "lossStop": "Stop loss (optional)",
+        "profitStop": "Take profit (optional)",
+        "row": "Grids",
+        "stopType": {
+          "price": "Price",
+          "profit_amount": "Amount"
+        },
+        "top": "Upper price",
+        "trigger": "Trigger price (optional)",
+        "triggerDirection": {
+          "above": "Start when price rises to",
+          "below": "Start when price drops to"
+        }
+      },
+      "indicator": {
+        "addCondition": "Add condition",
+        "band": {
+          "lower": "Below lower band",
+          "upper": "Above upper band"
+        },
+        "bandCondition": "Band condition",
+        "comparison": "Comparison",
+        "cross": "Cross",
+        "direction": {
+          "death": "Death cross",
+          "golden": "Golden cross"
+        },
+        "entry": "Entry (all must hold)",
+        "exit": "Exit (any holds)",
+        "fast": "Fast",
+        "interval": "Interval",
+        "kind": "Indicator",
+        "kinds": {
+          "bollinger": "Bollinger Bands",
+          "emaCross": "EMA cross",
+          "maCross": "MA cross",
+          "macdCross": "MACD cross",
+          "rsi": "RSI"
+        },
+        "operator": {
+          "above": "Above",
+          "below": "Below"
+        },
+        "orderAmount": "Amount per entry",
+        "period": "Period",
+        "removeCondition": "Remove condition",
+        "slow": "Slow",
+        "stdDev": "Std. dev.",
+        "stopLoss": "Stop loss (%, optional)",
+        "takeProfit": "Take profit (%, optional)",
+        "value": "Value"
+      },
+      "investment": "Investment",
+      "investmentHelper": "The bot can only use this amount",
+      "liveGridNote": "A live grid creates a Pionex grid bot, which you can also view and manage in the Pionex app.",
+      "maxDailyLoss": "Max daily loss (optional)",
+      "maxDailyLossHelper": "The bot stops when the day's loss reaches this amount",
+      "mode": "Mode",
+      "name": "Name",
+      "paperFeeRate": "Fee rate (%)",
+      "paperFeeRateHelper": "Charged on simulated fills. See <link>Pionex fees</link>",
+      "strategy": "Strategy",
+      "symbol": "Symbol",
+      "webhook": {
+        "orderAmount": "Buy amount when the signal has none"
+      }
+    },
+    "label": "Bots",
+    "modes": {
+      "live": "Live",
+      "paper": "Paper"
+    },
+    "new": {
+      "label": "Create bot",
+      "submit": "Create",
+      "success": "Bot created",
+      "title": "Create {type} bot"
+    },
+    "reasons": {
+      "create_failed": "Pionex failed to create it",
+      "daily_loss_limit": "Daily loss limit reached",
+      "dca_base_order_failed": "DCA base order failed",
+      "grid_open_failed": "Grid opening order failed",
+      "loss_stop": "Stop loss triggered",
+      "not_enough_balance": "Insufficient Pionex balance",
+      "order_canceled_externally": "An order was canceled outside the bot (e.g. in Pionex)",
+      "pionex_finished": "Finished on Pionex",
+      "profit_stop": "Take profit triggered",
+      "stop_loss": "Stop loss triggered",
+      "stopped_all": "Stop all",
+      "stopped_by_user": "Stopped manually",
+      "user_cancel": "Stopped in Pionex"
+    },
+    "skipReasons": {
+      "above_maximum": "Above the exchange maximum",
+      "below_minimum": "Below the exchange minimum",
+      "insufficient_budget": "Not enough bot funds",
+      "insufficient_position": "Not enough bot position",
+      "invalid_price": "Invalid price"
+    },
+    "statuses": {
+      "error": "Error",
+      "notStarted": "Not started",
+      "running": "Running",
+      "stopped": "Stopped"
+    },
+    "typeDescriptions": {
+      "dca": "Averages down in steps, takes profit, then starts the next cycle.",
+      "grid": "Buys low and sells high within a range, suited to sideways markets. Live grids run on Pionex.",
+      "indicator": "Buys and sells on technical indicator conditions.",
+      "webhook": "Trades on external signals such as TradingView alerts."
+    },
+    "types": {
+      "dca": "DCA",
+      "grid": "Grid",
+      "indicator": "Indicator",
+      "webhook": "Webhook"
+    },
+    "webhook": {
+      "actionsHint": "Actions: buy, sell, close. Add amount to sell to sell only part.",
+      "copied": "Copied",
+      "copy": "Copy",
+      "regenerate": {
+        "confirm": "The old token stops working immediately; update your TradingView alerts too.",
+        "label": "Regenerate token",
+        "success": "Token regenerated",
+        "title": "Regenerate token"
+      },
+      "template": "TradingView alert message template",
+      "title": "Webhook settings",
+      "tokenOnce": "The token is shown only once. Copy it now; you can regenerate it if lost.",
+      "url": "Webhook URL"
     }
   },
   "indicators": {
@@ -95,7 +341,9 @@
       "minAmount": "Minimum order is {min} {coin}",
       "minSize": "Minimum size is {min}",
       "positive": "Must be greater than 0",
-      "required": "Required"
+      "range": "Must be between {min} and {max}",
+      "required": "Required",
+      "topAboveBottom": "The upper price must be higher than the lower price"
     }
   },
   "orderBook": {

@@ -25,6 +25,7 @@ import {
   Tab,
   Tabs,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
@@ -297,6 +298,9 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
           </Button>
         )}
       </Stack>
+      <Typography color="text.secondary" variant="caption">
+        {tQuant("account.botOrdersHint")}
+      </Typography>
       <Box sx={{ height: GRID_HEIGHT }}>
         {tab === "fills" ? (
           <DataGrid

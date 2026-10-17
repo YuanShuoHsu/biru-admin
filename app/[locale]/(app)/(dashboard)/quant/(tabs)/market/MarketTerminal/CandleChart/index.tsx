@@ -22,6 +22,7 @@ import {
 import { useFormatter, useTranslations } from "next-intl";
 import useSWR from "swr";
 
+import { type ChartPalette, useChartPalette } from "../../../useChartPalette";
 import { CHART_HEIGHT } from "../styled";
 import {
   type Indicator,
@@ -32,7 +33,6 @@ import {
   computeOverlay,
   computeRsi,
 } from "./indicators";
-import { type ChartPalette, useChartPalette } from "./useChartPalette";
 
 import {
   Box,

@@ -1,5 +1,6 @@
 {
   "account": {
+    "botOrdersHint": "这里只列手动委托；机器人的委托请到机器人页查看。",
     "cancel": {
       "label": "撤单",
       "success": "已撤销委托"
@@ -33,6 +34,251 @@
       "filled": "已成交",
       "open": "未完成",
       "partiallyCanceled": "部分成交后撤销"
+    }
+  },
+  "bots": {
+    "actions": {
+      "archive": {
+        "confirm": "确定要归档 <bold>{name}</bold> 吗？归档后不会出现在列表中，记录仍会保留。",
+        "label": "归档",
+        "success": "已归档",
+        "title": "归档机器人"
+      },
+      "duplicate": "以此设置创建新机器人",
+      "start": {
+        "label": "启动",
+        "success": "已启动"
+      },
+      "stop": {
+        "confirm": "确定要停止 <bold>{name}</bold> 吗？会撤销所有挂单，停止后不能再启动。",
+        "label": "停止",
+        "success": "已停止",
+        "title": "停止机器人"
+      },
+      "stopAll": {
+        "confirm": "确定要停止全部 {count} 个运行中的机器人吗？会撤销所有挂单，Pionex 网格也会一并停止。",
+        "label": "全部停止",
+        "success": "已停止全部机器人",
+        "title": "停止所有机器人"
+      }
+    },
+    "backtest": {
+      "candles": "K 线数量",
+      "equity": "权益",
+      "interval": "撮合周期",
+      "label": "回测",
+      "maxDrawdown": "最大回撤",
+      "needsFee": "请先填写手续费率",
+      "note": "回测假设每根 K 线内的价格依次走过开、高、低、收，结果仅供比较参数，不代表未来收益。",
+      "period": "{from} ～ {to}",
+      "pnl": "盈亏",
+      "returnRate": "收益率",
+      "run": "执行回测",
+      "sharpe": "夏普比率",
+      "stoppedEarly": "回测中途停止：{reason}",
+      "trades": "成交笔数",
+      "winRate": "胜率"
+    },
+    "columns": {
+      "actions": "操作",
+      "investment": "投入",
+      "mode": "模式",
+      "name": "名称",
+      "pnl": "盈亏",
+      "position": "持仓",
+      "realizedPnl": "已实现",
+      "startedAt": "启动时间",
+      "status": "状态",
+      "symbol": "交易对",
+      "tag": "标记",
+      "type": "策略"
+    },
+    "detail": {
+      "events": "事件",
+      "fills": "成交",
+      "orders": "委托",
+      "pionexGrid": "这是 Pionex 内置网格，逐笔成交请在 Pionex App 查看。",
+      "summary": {
+        "averageCost": "持仓均价",
+        "equity": "权益",
+        "fills": "成交笔数",
+        "pnl": "总盈亏",
+        "position": "持仓",
+        "realizedPnl": "已实现盈亏"
+      }
+    },
+    "empty": "还没有机器人",
+    "events": {
+      "error": "错误",
+      "exit": "出场",
+      "grid_started": "网格开始",
+      "order_rejected": "委托被拒",
+      "order_skipped": "委托跳过",
+      "stopped": "已停止",
+      "triggered": "触发价已到",
+      "webhook_signal": "收到信号"
+    },
+    "form": {
+      "basic": "基本设置",
+      "credential": "交易账户",
+      "dca": {
+        "baseOrderAmount": "首单金额",
+        "maxInvestment": "最多需要 {amount} {quote}",
+        "maxSafetyOrders": "最多加仓次数",
+        "priceDeviation": "加仓跌幅（%）",
+        "safetyOrderAmount": "加仓金额",
+        "stepScale": "跌幅倍率",
+        "stopLoss": "止损（%，选填）",
+        "takeProfit": "止盈（%）",
+        "volumeScale": "金额倍率"
+      },
+      "grid": {
+        "aiStrategy": "套用 AI 推荐参数",
+        "aiStrategyApplied": "已套用 Pionex AI 推荐：年化 {annualized}，最大回撤 {drawdown}",
+        "aiStrategyNeedsCredential": "需要先绑定 API key",
+        "bottom": "下界",
+        "closeModel": {
+          "NOT_SELL": "保留持有的币",
+          "TO_QUOTE": "卖回 {quote}",
+          "label": "停止时"
+        },
+        "gridType": {
+          "arithmetic": "等差",
+          "geometric": "等比",
+          "label": "间距"
+        },
+        "lossStop": "止损（选填）",
+        "profitStop": "止盈（选填）",
+        "row": "格数",
+        "stopType": {
+          "price": "价格",
+          "profit_amount": "金额"
+        },
+        "top": "上界",
+        "trigger": "触发价（选填）",
+        "triggerDirection": {
+          "above": "涨到此价开始",
+          "below": "跌到此价开始"
+        }
+      },
+      "indicator": {
+        "addCondition": "新增条件",
+        "band": {
+          "lower": "跌破下轨",
+          "upper": "突破上轨"
+        },
+        "bandCondition": "通道条件",
+        "comparison": "比较",
+        "cross": "交叉方向",
+        "direction": {
+          "death": "死叉",
+          "golden": "金叉"
+        },
+        "entry": "进场条件（全部成立）",
+        "exit": "出场条件（任一成立）",
+        "fast": "快线",
+        "interval": "周期",
+        "kind": "指标",
+        "kinds": {
+          "bollinger": "布林带",
+          "emaCross": "EMA 交叉",
+          "maCross": "均线交叉",
+          "macdCross": "MACD 交叉",
+          "rsi": "RSI"
+        },
+        "operator": {
+          "above": "高于",
+          "below": "低于"
+        },
+        "orderAmount": "每次进场金额",
+        "period": "周期",
+        "removeCondition": "移除条件",
+        "slow": "慢线",
+        "stdDev": "标准差倍数",
+        "stopLoss": "止损（%，选填）",
+        "takeProfit": "止盈（%，选填）",
+        "value": "数值"
+      },
+      "investment": "投入金额",
+      "investmentHelper": "机器人只能动用这笔资金",
+      "liveGridNote": "实盘网格会在 Pionex 创建内置网格机器人，可在 Pionex App 中查看与管理。",
+      "maxDailyLoss": "每日最大亏损（选填）",
+      "maxDailyLossHelper": "当日亏损达到此金额就自动停止",
+      "mode": "模式",
+      "name": "名称",
+      "paperFeeRate": "手续费率（%）",
+      "paperFeeRateHelper": "模拟成交时扣的手续费，可参考 <link>Pionex 费率</link>",
+      "strategy": "策略参数",
+      "symbol": "交易对",
+      "webhook": {
+        "orderAmount": "信号未指定金额时的买入金额"
+      }
+    },
+    "label": "机器人",
+    "modes": {
+      "live": "实盘",
+      "paper": "模拟盘"
+    },
+    "new": {
+      "label": "创建机器人",
+      "submit": "创建",
+      "success": "已创建机器人",
+      "title": "创建机器人：{type}"
+    },
+    "reasons": {
+      "create_failed": "Pionex 创建失败",
+      "daily_loss_limit": "触发每日亏损上限",
+      "dca_base_order_failed": "DCA 首单失败",
+      "grid_open_failed": "网格开仓失败",
+      "loss_stop": "触发止损",
+      "not_enough_balance": "Pionex 账户余额不足",
+      "order_canceled_externally": "委托在 Pionex 被手动撤销",
+      "pionex_finished": "Pionex 已结束",
+      "profit_stop": "触发止盈",
+      "stop_loss": "触发止损",
+      "stopped_all": "一键全停",
+      "stopped_by_user": "手动停止",
+      "user_cancel": "在 Pionex 手动停止"
+    },
+    "skipReasons": {
+      "above_maximum": "高于交易所最大下单量",
+      "below_minimum": "低于交易所最小下单量",
+      "insufficient_budget": "机器人可用资金不足",
+      "insufficient_position": "机器人持仓不足",
+      "invalid_price": "价格无效"
+    },
+    "statuses": {
+      "error": "错误",
+      "notStarted": "未启动",
+      "running": "运行中",
+      "stopped": "已停止"
+    },
+    "typeDescriptions": {
+      "dca": "分批加仓摊平成本，达到止盈就出场并开始下一轮。",
+      "grid": "在价格区间内自动低买高卖，适合震荡行情。实盘交给 Pionex 内置网格执行。",
+      "indicator": "依技术指标的进出场条件自动买卖。",
+      "webhook": "接收 TradingView alert 等外部信号下单。"
+    },
+    "types": {
+      "dca": "DCA 定投",
+      "grid": "网格",
+      "indicator": "指标信号",
+      "webhook": "Webhook 信号"
+    },
+    "webhook": {
+      "actionsHint": "可用的 action：buy、sell、close；sell 可加 amount 只卖出部分",
+      "copied": "已复制",
+      "copy": "复制",
+      "regenerate": {
+        "confirm": "重新生成后，旧的 token 会立即失效，TradingView 的 alert 也要一并更新。",
+        "label": "重新生成 token",
+        "success": "已重新生成 token",
+        "title": "重新生成 token"
+      },
+      "template": "TradingView alert 消息模板",
+      "title": "Webhook 设置",
+      "tokenOnce": "token 只会显示这一次，请立即复制保存；遗失可以重新生成。",
+      "url": "Webhook 网址"
     }
   },
   "indicators": {
@@ -95,7 +341,9 @@
       "minAmount": "最小下单金额为 {min} {coin}",
       "minSize": "最小数量为 {min}",
       "positive": "须大于 0",
-      "required": "必填"
+      "range": "需介于 {min} 到 {max}",
+      "required": "必填",
+      "topAboveBottom": "上界必须高于下界"
     }
   },
   "orderBook": {

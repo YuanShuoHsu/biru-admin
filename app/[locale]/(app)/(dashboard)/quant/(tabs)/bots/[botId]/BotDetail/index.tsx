@@ -1,0 +1,509 @@
+"use client";
+
+import { useState } from "react";
+
+import { useFormatter, useTranslations } from "next-intl";
+import dynamic from "next/dynamic";
+import { enqueueSnackbar } from "notistack";
+import useSWR, { useSWRConfig } from "swr";
+
+import {
+  QUANT_BOTS_URL,
+  isQuantBotKey,
+  pnlColor,
+  useBotLabels,
+  useBotStream,
+} from "../../useQuantBots";
+import WebhookSetup from "../../WebhookSetup";
+
+import DataGrid from "@/components/DataGrid";
+
+import { DATA_GRID_PROPS } from "@/constants/dataGrid";
+
+import { Link } from "@/i18n/navigation";
+
+import {
+  Archive,
+  ContentCopy,
+  Key,
+  PlayArrow,
+  Stop,
+} from "@mui/icons-material";
+import {
+  Alert,
+  Box,
+  Button,
+  Chip,
+  DialogContentText,
+  Grid,
+  Paper,
+  Skeleton,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
+import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+
+import { useDialogStore } from "@/providers/dialog-store-provider";
+
+import type {
+  QuantBot,
+  QuantBotEvent,
+  QuantBotFill,
+  QuantBotOrder,
+  QuantMarket,
+  WebhookToken,
+} from "@/types/quant";
+
+import { getErrorMessage } from "@/utils/errors";
+import { fetcher } from "@/utils/fetcher";
+
+const BotChart = dynamic(() => import("./BotChart"), { ssr: false });
+
+const GRID_HEIGHT = 420;
+const TIME_COLUMN_MIN_WIDTH = 180;
+
+const STATUS_COLORS = {
+  error: "error",
+  running: "success",
+  stopped: "default",
+} as const;
+
+const Panel = styled(Paper)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing(2),
+  padding: theme.spacing(2),
+}));
+
+type DetailTab = "events" | "fills" | "orders";
+
+const Stat = ({
+  color,
+  label,
+  value,
+}: {
+  color?: string;
+  label: string;
+  value: string;
+}) => (
+  <Stack>
+    <Typography color="text.secondary" variant="caption">
+      {label}
+    </Typography>
+    <Typography sx={{ color }} variant="h6">
+      {value}
+    </Typography>
+  </Stack>
+);
+
+const BotDetail = ({ botId }: { botId: string }) => {
+  const tBots = useTranslations("quant.bots");
+  const tQuant = useTranslations("quant");
+  const format = useFormatter();
+  const { mutate } = useSWRConfig();
+  const setDialog = useDialogStore((state) => state.setDialog);
+  const labels = useBotLabels();
+
+  useBotStream();
+
+  const botUrl = `${QUANT_BOTS_URL}/${botId}`;
+  const { data: bot, error } = useSWR<QuantBot>(botUrl, fetcher);
+  const { data: markets } = useSWR<QuantMarket[]>(
+    "/api/quant/markets",
+    fetcher,
+  );
+  const { data: orders } = useSWR<QuantBotOrder[]>(`${botUrl}/orders`, fetcher);
+  const { data: fills } = useSWR<QuantBotFill[]>(`${botUrl}/fills`, fetcher);
+  const { data: events } = useSWR<QuantBotEvent[]>(`${botUrl}/events`, fetcher);
+
+  const [tab, setTab] = useState<DetailTab>("orders");
+
+  if (error) return <Alert severity="error">{getErrorMessage(error)}</Alert>;
+  if (!bot) return <Skeleton height={480} variant="rounded" />;
+
+  const market = markets?.find(({ symbol }) => symbol === bot.symbol);
+  const pricePrecision = market?.pricePrecision ?? 2;
+  const sizePrecision = market?.sizePrecision ?? 6;
+  const quote = market?.quoteCurrency ?? "";
+  const base = market?.baseCurrency ?? "";
+  const isPionexGrid = bot.mode === "live" && bot.type === "grid";
+
+  const formatQuote = (value: number) =>
+    `${format.number(value, { maximumFractionDigits: 2, minimumFractionDigits: 2, signDisplay: "negative" })} ${quote}`;
+  const formatPrice = (value?: number) =>
+    value === undefined
+      ? "—"
+      : format.number(value, {
+          maximumFractionDigits: pricePrecision,
+          minimumFractionDigits: pricePrecision,
+        });
+  const formatSize = (value?: number) =>
+    value === undefined
+      ? "—"
+      : format.number(value, { maximumFractionDigits: sizePrecision });
+  const formatTime = (value: string) =>
+    format.dateTime(new Date(value), "short");
+
+  const request = async (path: string, success: string) => {
+    try {
+      await fetcher(`${botUrl}/${path}`, { method: "POST" });
+      enqueueSnackbar(success, { variant: "success" });
+    } catch (requestError) {
+      enqueueSnackbar(getErrorMessage(requestError), { variant: "error" });
+    } finally {
+      void mutate(isQuantBotKey);
+    }
+  };
+
+  const confirm = (action: "archive" | "stop") =>
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tBots.rich(`actions.${action}.confirm`, {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            name: bot.name,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: () => request(action, tBots(`actions.${action}.success`)),
+      open: true,
+      title: tBots(`actions.${action}.title`),
+    });
+
+  const regenerateToken = () =>
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tBots("webhook.regenerate.confirm")}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          const { webhookToken } = await fetcher<WebhookToken>(
+            `${botUrl}/webhook-token`,
+            { method: "POST" },
+          );
+          enqueueSnackbar(tBots("webhook.regenerate.success"), {
+            variant: "success",
+          });
+          setDialog({
+            content: <WebhookSetup botId={bot.id} token={webhookToken} />,
+            open: true,
+            showCancel: false,
+            title: tBots("webhook.title"),
+          });
+        } catch (requestError) {
+          enqueueSnackbar(getErrorMessage(requestError), { variant: "error" });
+        }
+      },
+      open: true,
+      title: tBots("webhook.regenerate.title"),
+    });
+
+  const { summary } = bot;
+
+  const sideCell = ({
+    row,
+  }: GridRenderCellParams<QuantBotFill | QuantBotOrder>) => (
+    <Box
+      component="span"
+      sx={{ color: row.side === "BUY" ? "success.main" : "error.main" }}
+    >
+      {tQuant(`order.side.${row.side}`)}
+    </Box>
+  );
+
+  const orderColumns: GridColDef[] = [
+    {
+      field: "createdAt",
+      headerName: tQuant("account.columns.time"),
+      minWidth: TIME_COLUMN_MIN_WIDTH,
+      valueFormatter: (value: string) => formatTime(value),
+    },
+    {
+      field: "side",
+      headerName: tQuant("account.columns.side"),
+      renderCell: sideCell,
+    },
+    {
+      field: "type",
+      headerName: tQuant("account.columns.type"),
+      valueFormatter: (value: QuantBotOrder["type"]) =>
+        tQuant(`order.type.${value}`),
+    },
+    {
+      field: "price",
+      headerName: tQuant("account.columns.price"),
+      valueFormatter: (value?: number) => formatPrice(value),
+    },
+    {
+      field: "size",
+      headerName: tQuant("account.columns.size"),
+      minWidth: 140,
+      valueGetter: (_, { amount, size }: QuantBotOrder) =>
+        size !== undefined
+          ? `${formatSize(size)} ${base}`
+          : amount !== undefined
+            ? formatQuote(amount)
+            : "—",
+    },
+    {
+      field: "filledSize",
+      headerName: tQuant("account.columns.filled"),
+      valueFormatter: (value: number) => formatSize(value),
+    },
+    {
+      field: "status",
+      headerName: tQuant("account.columns.status"),
+      valueFormatter: (value: QuantBotOrder["status"]) =>
+        value === "rejected"
+          ? tBots("events.order_rejected")
+          : tQuant(`account.status.${value}`),
+    },
+    { field: "tag", headerName: tBots("columns.tag"), minWidth: 140 },
+  ];
+
+  const fillColumns: GridColDef[] = [
+    {
+      field: "filledAt",
+      headerName: tQuant("account.columns.time"),
+      minWidth: TIME_COLUMN_MIN_WIDTH,
+      valueFormatter: (value: string) => formatTime(value),
+    },
+    {
+      field: "side",
+      headerName: tQuant("account.columns.side"),
+      renderCell: sideCell,
+    },
+    {
+      field: "price",
+      headerName: tQuant("account.columns.price"),
+      valueFormatter: (value: number) => formatPrice(value),
+    },
+    {
+      field: "size",
+      headerName: tQuant("account.columns.size"),
+      valueFormatter: (value: number) => formatSize(value),
+    },
+    {
+      field: "fee",
+      headerName: tQuant("account.columns.fee"),
+      valueGetter: (_, { fee, feeCoin }: QuantBotFill) =>
+        `${format.number(fee, "precise")} ${feeCoin}`,
+    },
+  ];
+
+  const describeEvent = ({ kind, payload }: QuantBotEvent) => {
+    const reason = payload?.reason;
+    if (typeof reason === "string")
+      return kind === "order_skipped"
+        ? labels.skipReason(reason)
+        : (labels.reason(reason) ?? reason);
+    if (typeof payload?.message === "string") return payload.message;
+
+    return payload ? JSON.stringify(payload) : "—";
+  };
+
+  const eventColumns: GridColDef[] = [
+    {
+      field: "createdAt",
+      headerName: tQuant("account.columns.time"),
+      minWidth: TIME_COLUMN_MIN_WIDTH,
+      valueFormatter: (value: string) => formatTime(value),
+    },
+    {
+      field: "kind",
+      headerName: tBots("detail.events"),
+      valueFormatter: (value: string) => labels.event(value),
+    },
+    {
+      field: "payload",
+      flex: 1,
+      headerName: "",
+      valueGetter: (_, row: QuantBotEvent) => describeEvent(row),
+    },
+  ];
+
+  return (
+    <Stack sx={{ gap: 2 }}>
+      <Panel>
+        <Stack
+          sx={{
+            alignItems: { md: "center" },
+            flexDirection: { md: "row" },
+            gap: 2,
+            justifyContent: "space-between",
+          }}
+        >
+          <Stack sx={{ gap: 1 }}>
+            <Typography variant="h5">{bot.name}</Typography>
+            <Stack sx={{ flexDirection: "row", flexWrap: "wrap", gap: 1 }}>
+              <Chip label={tBots(`types.${bot.type}`)} size="small" />
+              <Chip label={bot.symbol.replace("_", "/")} size="small" />
+              <Chip
+                color={bot.mode === "live" ? "warning" : "default"}
+                label={tBots(`modes.${bot.mode}`)}
+                size="small"
+              />
+              <Chip
+                color={STATUS_COLORS[bot.status]}
+                label={
+                  bot.statusReason && bot.status !== "running"
+                    ? `${labels.status(bot)}・${labels.reason(bot.statusReason)}`
+                    : labels.status(bot)
+                }
+                size="small"
+              />
+            </Stack>
+          </Stack>
+          <Stack sx={{ flexDirection: "row", flexWrap: "wrap", gap: 1 }}>
+            {!bot.startedAt && (
+              <Button
+                color="success"
+                onClick={() => request("start", tBots("actions.start.success"))}
+                startIcon={<PlayArrow />}
+                variant="contained"
+              >
+                {tBots("actions.start.label")}
+              </Button>
+            )}
+            {bot.status === "running" && (
+              <Button
+                color="error"
+                onClick={() => confirm("stop")}
+                startIcon={<Stop />}
+                variant="contained"
+              >
+                {tBots("actions.stop.label")}
+              </Button>
+            )}
+            {bot.type === "webhook" && (
+              <Button
+                onClick={regenerateToken}
+                startIcon={<Key />}
+                variant="outlined"
+              >
+                {tBots("webhook.regenerate.label")}
+              </Button>
+            )}
+            <Button
+              component={Link}
+              href={`/quant/bots/new?from=${bot.id}`}
+              startIcon={<ContentCopy />}
+              variant="outlined"
+            >
+              {tBots("actions.duplicate")}
+            </Button>
+            {bot.status !== "running" && (
+              <Button
+                onClick={() => confirm("archive")}
+                startIcon={<Archive />}
+                variant="outlined"
+              >
+                {tBots("actions.archive.label")}
+              </Button>
+            )}
+          </Stack>
+        </Stack>
+        <Grid container spacing={2}>
+          <Grid size={{ md: 2, sm: 4, xs: 6 }}>
+            <Stat
+              label={tBots("detail.summary.equity")}
+              value={formatQuote(summary.equity)}
+            />
+          </Grid>
+          <Grid size={{ md: 2, sm: 4, xs: 6 }}>
+            <Stat
+              color={pnlColor(summary.pnl)}
+              label={tBots("detail.summary.pnl")}
+              value={`${formatQuote(summary.pnl)} (${format.number(summary.pnl / bot.investment, { maximumFractionDigits: 2, signDisplay: "exceptZero", style: "percent" })})`}
+            />
+          </Grid>
+          <Grid size={{ md: 2, sm: 4, xs: 6 }}>
+            <Stat
+              color={pnlColor(summary.realizedPnl)}
+              label={tBots("detail.summary.realizedPnl")}
+              value={formatQuote(summary.realizedPnl)}
+            />
+          </Grid>
+          <Grid size={{ md: 2, sm: 4, xs: 6 }}>
+            <Stat
+              label={tBots("detail.summary.position")}
+              value={`${formatSize(summary.position)} ${base}`}
+            />
+          </Grid>
+          <Grid size={{ md: 2, sm: 4, xs: 6 }}>
+            <Stat
+              label={tBots("detail.summary.averageCost")}
+              value={
+                summary.position > 0 ? formatPrice(summary.averageCost) : "—"
+              }
+            />
+          </Grid>
+          {!isPionexGrid && (
+            <Grid size={{ md: 2, sm: 4, xs: 6 }}>
+              <Stat
+                label={tBots("detail.summary.fills")}
+                value={format.number(summary.fillCount)}
+              />
+            </Grid>
+          )}
+        </Grid>
+        {isPionexGrid && (
+          <Alert severity="info">{tBots("detail.pionexGrid")}</Alert>
+        )}
+      </Panel>
+      {bot.type === "webhook" && (
+        <Panel>
+          <Typography variant="h6">{tBots("webhook.title")}</Typography>
+          <WebhookSetup botId={bot.id} />
+        </Panel>
+      )}
+      <Panel>
+        <BotChart
+          bot={bot}
+          fills={fills ?? []}
+          pricePrecision={pricePrecision}
+        />
+      </Panel>
+      {!isPionexGrid && (
+        <Panel>
+          <Tabs onChange={(_, value: DetailTab) => setTab(value)} value={tab}>
+            <Tab label={tBots("detail.orders")} value="orders" />
+            <Tab label={tBots("detail.fills")} value="fills" />
+            <Tab label={tBots("detail.events")} value="events" />
+          </Tabs>
+          <Box sx={{ height: GRID_HEIGHT }}>
+            <DataGrid
+              {...DATA_GRID_PROPS}
+              columns={
+                tab === "orders"
+                  ? orderColumns
+                  : tab === "fills"
+                    ? fillColumns
+                    : eventColumns
+              }
+              key={tab}
+              loading={
+                tab === "orders" ? !orders : tab === "fills" ? !fills : !events
+              }
+              rows={
+                (tab === "orders"
+                  ? orders
+                  : tab === "fills"
+                    ? fills
+                    : events) ?? []
+              }
+              showToolbar={false}
+            />
+          </Box>
+        </Panel>
+      )}
+    </Stack>
+  );
+};
+
+export default BotDetail;

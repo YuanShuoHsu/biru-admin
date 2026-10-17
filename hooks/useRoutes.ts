@@ -24,6 +24,7 @@ import {
   AccountBalance,
   AccountBalanceWallet,
   AccountCircle,
+  Add,
   AddCard,
   AdminPanelSettings,
   Apartment,
@@ -82,6 +83,7 @@ import {
   Scale,
   Schedule,
   Settings,
+  SmartToy,
   SoupKitchen,
   Stars,
   Storefront,
@@ -100,6 +102,7 @@ import type { Ingredient, Supplier } from "@/types/inventory";
 import type { MenuItem, MenuSection, ModifierGroup } from "@/types/menus";
 import type { NavItem } from "@/types/navItem";
 import type { AdminOrderResponse } from "@/types/orders";
+import type { QuantBot } from "@/types/quant";
 import type { RouteParams } from "@/types/routeParams";
 import type { WaitlistTicketDetailResponse } from "@/types/waitlist";
 
@@ -667,6 +670,15 @@ const routes: Route[] = [
         segment: "market",
       },
       {
+        children: [
+          { icon: Add, label: "quant.bots.new.label", segment: "new" },
+          { icon: SmartToy, segment: "[botId]" },
+        ],
+        icon: SmartToy,
+        label: "quant.bots.label",
+        segment: "bots",
+      },
+      {
         icon: VpnKey,
         label: "quant.settings.label",
         segment: "settings",
@@ -858,6 +870,7 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
   const locale = useLocale();
 
   const {
+    botId,
     couponId,
     groupId,
     ingredientId,
@@ -951,6 +964,13 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
     },
   );
 
+  // 與機器人詳情頁共用同一個 key，快取內容必須是完整的機器人，不能只存名稱
+  const { data: bot } = useSWR<QuantBot>(
+    botId ? `/api/quant/bots/${botId}` : null,
+    fetcher,
+  );
+  const botName = bot?.name ?? "";
+
   const { data: couponCode = "" } = useSWR(
     couponId ? `/api/coupons/${couponId}` : null,
     async (url) => {
@@ -1009,6 +1029,7 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
   );
 
   return {
+    botId: botName,
     couponId: couponCode,
     groupId: modifierGroupName,
     ingredientId: ingredientName,
