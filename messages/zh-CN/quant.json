@@ -281,6 +281,94 @@
       "url": "Webhook 网址"
     }
   },
+  "futures": {
+    "actions": {
+      "buyLong": "买入／做多",
+      "closeLong": "平多",
+      "closeShort": "平空",
+      "openLong": "开多",
+      "openShort": "开空",
+      "sellShort": "卖出／做空"
+    },
+    "availableMargin": "可用保证金",
+    "close": "平仓",
+    "closable": "可平：多 {long}／空 {short}",
+    "closePosition": {
+      "confirm": "确定要以市价平掉 <bold>{pair}</bold> 的{direction}仓 {size} 吗？",
+      "label": "市价平仓",
+      "success": "已送出平仓委托",
+      "title": "市价平仓"
+    },
+    "columns": {
+      "avgPrice": "开仓均价",
+      "closePrice": "平仓均价",
+      "closeTime": "平仓时间",
+      "direction": "方向",
+      "fundingFee": "资金费",
+      "fundingRate": "资金费率",
+      "liquidationPrice": "预估强平价",
+      "margin": "保证金",
+      "marginMode": "模式／杠杆",
+      "maxSize": "最大持仓",
+      "realizedPnL": "已实现盈亏",
+      "unrealizedPnL": "未实现盈亏（收益率）"
+    },
+    "directions": {
+      "LONG": "多",
+      "SHORT": "空"
+    },
+    "fundingFees": "资金费记录",
+    "isolatedModes": {
+      "CROSS": "全仓",
+      "ISOLATED_BOTH": "逐仓",
+      "ISOLATED_LONG": "逐仓",
+      "ISOLATED_SHORT": "逐仓"
+    },
+    "leverage": "杠杆",
+    "leverageMax": "此交易对最高 {max}x",
+    "leverageRiskLimit": "已依你的合约风控设置限制在 {max}x 以内",
+    "leverageWarning": "杠杆越高，强平价离当前价格越近。调整只影响之后的委托与当前持仓的保证金。",
+    "liquidation": "强平",
+    "margin": "所需保证金 {margin} {quote}",
+    "marginModeDescriptions": {
+      "CROSS": "全仓：合约账户的可用保证金共同承担所有全仓仓位的风险。",
+      "ISOLATED": "逐仓：这个交易对的仓位只用自己的保证金，亏损以此为上限。"
+    },
+    "marginModes": {
+      "CROSS": "全仓",
+      "ISOLATED": "逐仓"
+    },
+    "open": "开仓",
+    "orderTypes": {
+      "FOK": "FOK（全部成交否则取消）",
+      "IOC": "IOC（立即成交剩余取消）",
+      "LIMIT": "GTC（一直有效）",
+      "MARKET_QTY": "市价",
+      "POSTONLY": "只做 Maker"
+    },
+    "positionHistory": "历史持仓",
+    "positionModeDescriptions": {
+      "BUYSELL": "单向持仓：每个交易对只有一个净仓位，买入与卖出互相抵消。",
+      "OPENCLOSE": "双向持仓：同一个交易对可以同时持有多仓与空仓，开仓与平仓分开下单。"
+    },
+    "positionModeWarning": "持仓模式是整个 Pionex 合约账户共用的设置，会一并影响 App 里的交易。有持仓或挂单时交易所可能不允许切换。",
+    "positionModes": {
+      "BUYSELL": "单向持仓",
+      "OPENCLOSE": "双向持仓"
+    },
+    "positions": "当前持仓",
+    "reduceOnly": "只减仓",
+    "settings": {
+      "leverage": "调整杠杆",
+      "marginMode": "保证金模式",
+      "positionMode": "持仓模式",
+      "success": "已更新设置"
+    },
+    "timeInForce": "有效方式",
+    "validation": {
+      "aboveClosable": "超过可平数量 {max}"
+    }
+  },
   "indicators": {
     "bollingerBands": "BOLL",
     "ema": "EMA",
@@ -310,7 +398,16 @@
     "notFound": "找不到这个交易对，可能已下架。",
     "quoteVolume": "24h 成交额",
     "symbol": "交易对",
-    "volume": "24h 成交量"
+    "volume": "24h 成交量",
+    "marketType": "市场",
+    "types": {
+      "SPOT": "现货",
+      "PERP": "合约"
+    },
+    "markPrice": "标记价格",
+    "indexPrice": "指数价格",
+    "funding": "资金费率 / 倒计时",
+    "openInterest": "未平仓量"
   },
   "order": {
     "amount": "金额",
@@ -378,7 +475,21 @@
       "labelPlaceholder": "例如：主账户"
     },
     "hint": "在 Pionex 创建 API key 时只需开启「读取」与「交易」权限，并建议绑定服务器的出口 IP 白名单。密钥会加密保存，只有你本人看得到。",
-    "label": "API key"
+    "label": "API key",
+    "risk": {
+      "hint": "这组上限套用在这个 Pionex 账户。留空表示不限制；系统不会替你预设数值。",
+      "integer": "须为整数",
+      "label": "合约风控",
+      "maxDailyLoss": "合约机器人每日亏损上限",
+      "maxDailyLossHelper": "所有合约机器人当日亏损合计超过就全部停止；不限制手动下单",
+      "maxLeverage": "杠杆上限",
+      "maxLeverageHelper": "手动下单与合约机器人都不能超过",
+      "minLiquidationDistance": "最小强平距离",
+      "minLiquidationDistanceHelper": "创建合约机器人时，预估强平价离当前价格不得小于此比例；不限制手动下单",
+      "success": "已更新合约风控",
+      "title": "合约风控：{label}",
+      "unlimited": "不限制"
+    }
   },
   "trades": {
     "label": "最新成交",

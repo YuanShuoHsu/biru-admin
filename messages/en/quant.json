@@ -281,6 +281,94 @@
       "url": "Webhook URL"
     }
   },
+  "futures": {
+    "actions": {
+      "buyLong": "Buy / Long",
+      "closeLong": "Close long",
+      "closeShort": "Close short",
+      "openLong": "Open long",
+      "openShort": "Open short",
+      "sellShort": "Sell / Short"
+    },
+    "availableMargin": "Available margin",
+    "close": "Close",
+    "closable": "Closable: long {long} / short {short}",
+    "closePosition": {
+      "confirm": "Close the <bold>{pair}</bold> {direction} position of {size} at market price?",
+      "label": "Market close",
+      "success": "Close order submitted",
+      "title": "Market close"
+    },
+    "columns": {
+      "avgPrice": "Entry price",
+      "closePrice": "Close price",
+      "closeTime": "Closed at",
+      "direction": "Direction",
+      "fundingFee": "Funding fee",
+      "fundingRate": "Funding rate",
+      "liquidationPrice": "Est. liq. price",
+      "margin": "Margin",
+      "marginMode": "Mode / Leverage",
+      "maxSize": "Max size",
+      "realizedPnL": "Realized PnL",
+      "unrealizedPnL": "Unrealized PnL (ROE)"
+    },
+    "directions": {
+      "LONG": "Long",
+      "SHORT": "Short"
+    },
+    "fundingFees": "Funding fees",
+    "isolatedModes": {
+      "CROSS": "Cross",
+      "ISOLATED_BOTH": "Isolated",
+      "ISOLATED_LONG": "Isolated",
+      "ISOLATED_SHORT": "Isolated"
+    },
+    "leverage": "Leverage",
+    "leverageMax": "Up to {max}x for this symbol",
+    "leverageRiskLimit": "Limited to {max}x by your futures risk settings",
+    "leverageWarning": "Higher leverage moves the liquidation price closer to the current price. Changes apply to new orders and the margin of current positions.",
+    "liquidation": "Liquidation",
+    "margin": "Required margin {margin} {quote}",
+    "marginModeDescriptions": {
+      "CROSS": "Cross: all cross positions share the futures account's available margin.",
+      "ISOLATED": "Isolated: this symbol's position only uses its own margin, which caps the loss."
+    },
+    "marginModes": {
+      "CROSS": "Cross",
+      "ISOLATED": "Isolated"
+    },
+    "open": "Open",
+    "orderTypes": {
+      "FOK": "FOK (fill or kill)",
+      "IOC": "IOC (immediate or cancel)",
+      "LIMIT": "GTC (good till canceled)",
+      "MARKET_QTY": "Market",
+      "POSTONLY": "Post only"
+    },
+    "positionHistory": "Position history",
+    "positionModeDescriptions": {
+      "BUYSELL": "One-way: each symbol has a single net position; buys and sells offset each other.",
+      "OPENCLOSE": "Hedge: hold long and short positions on the same symbol at once, opening and closing separately."
+    },
+    "positionModeWarning": "Position mode applies to the whole Pionex futures account, including trading in the app. The exchange may refuse to switch while you have positions or open orders.",
+    "positionModes": {
+      "BUYSELL": "One-way",
+      "OPENCLOSE": "Hedge"
+    },
+    "positions": "Positions",
+    "reduceOnly": "Reduce only",
+    "settings": {
+      "leverage": "Adjust leverage",
+      "marginMode": "Margin mode",
+      "positionMode": "Position mode",
+      "success": "Settings updated"
+    },
+    "timeInForce": "Time in force",
+    "validation": {
+      "aboveClosable": "Exceeds closable size {max}"
+    }
+  },
   "indicators": {
     "bollingerBands": "BOLL",
     "ema": "EMA",
@@ -310,7 +398,16 @@
     "notFound": "This trading pair was not found. It may have been delisted.",
     "quoteVolume": "24h Turnover",
     "symbol": "Symbol",
-    "volume": "24h Volume"
+    "volume": "24h Volume",
+    "marketType": "Market",
+    "types": {
+      "SPOT": "Spot",
+      "PERP": "Futures"
+    },
+    "markPrice": "Mark price",
+    "indexPrice": "Index price",
+    "funding": "Funding / Countdown",
+    "openInterest": "Open interest"
   },
   "order": {
     "amount": "Amount",
@@ -378,7 +475,21 @@
       "labelPlaceholder": "e.g. Main account"
     },
     "hint": "When creating the key on Pionex, enable only the Read and Trade permissions, and restrict it to the server’s outbound IPs. Keys are stored encrypted and only you can see them.",
-    "label": "API keys"
+    "label": "API keys",
+    "risk": {
+      "hint": "These limits apply to this Pionex account. Leave a field empty for no limit; the system never fills in values for you.",
+      "integer": "Must be a whole number",
+      "label": "Futures risk",
+      "maxDailyLoss": "Futures bots daily loss limit",
+      "maxDailyLossHelper": "Stops every futures bot once their combined loss for the day exceeds this; manual orders are not limited",
+      "maxLeverage": "Leverage limit",
+      "maxLeverageHelper": "Applies to manual orders and futures bots",
+      "minLiquidationDistance": "Minimum liquidation distance",
+      "minLiquidationDistanceHelper": "When creating a futures bot, the estimated liquidation price must be at least this far from the current price; manual orders are not limited",
+      "success": "Futures risk updated",
+      "title": "Futures risk: {label}",
+      "unlimited": "No limit"
+    }
   },
   "trades": {
     "label": "Recent Trades",

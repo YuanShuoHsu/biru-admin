@@ -11,6 +11,7 @@ import {
   isQuantAccountKey,
   quantAccountUrl,
 } from "../../../useQuantCredentials";
+import CredentialSelect, { NoCredential } from "../CredentialSelect";
 import {
   type OrderForm,
   floorToPrecision,
@@ -21,16 +22,10 @@ import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Link } from "@/i18n/navigation";
-
 import {
-  Alert,
   Button,
   ButtonGroup,
-  Chip,
   InputAdornment,
-  MenuItem,
-  Stack,
   Tab,
   Tabs,
   TextField,
@@ -114,15 +109,7 @@ const TradePanel = ({
       setValue("price", pickedPrice.price.toFixed(market.pricePrecision));
   }, [market.pricePrecision, pickedPrice, setValue]);
 
-  if (!credential)
-    return (
-      <Stack sx={{ gap: 2 }}>
-        <Alert severity="info">{tQuant("account.noCredential")}</Alert>
-        <Button component={Link} href="/quant/settings" variant="outlined">
-          {tQuant("account.goToSettings")}
-        </Button>
-      </Stack>
-    );
+  if (!credential) return <NoCredential />;
 
   const setOptions = { shouldValidate: isSubmitted };
 
@@ -189,23 +176,11 @@ const TradePanel = ({
 
   return (
     <FormBox noValidate onSubmit={onSubmit}>
-      <Stack sx={{ alignItems: "center", flexDirection: "row", gap: 1 }}>
-        <TextField
-          fullWidth
-          label={tQuant("order.credential")}
-          onChange={(event) => onCredentialChange(event.target.value)}
-          select
-          size="small"
-          value={credential.id}
-        >
-          {credentials.map(({ apiKeyLast4, id, label }) => (
-            <MenuItem key={id} value={id}>
-              {label} (…{apiKeyLast4})
-            </MenuItem>
-          ))}
-        </TextField>
-        <Chip color="warning" label={tQuant("order.live")} size="small" />
-      </Stack>
+      <CredentialSelect
+        credential={credential}
+        credentials={credentials}
+        onChange={onCredentialChange}
+      />
       <ToggleButtonGroup
         exclusive
         fullWidth

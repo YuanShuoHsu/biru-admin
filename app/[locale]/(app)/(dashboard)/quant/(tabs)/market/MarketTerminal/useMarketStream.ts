@@ -12,6 +12,7 @@ import type {
   QuantCandle,
   QuantCandleInterval,
   QuantDepth,
+  QuantPerpIndex,
   QuantTrade,
 } from "@/types/quant";
 
@@ -25,6 +26,7 @@ interface StreamKey {
 interface MarketStreamHandlers {
   onCandle?: (candle: QuantCandle) => void;
   onDepth?: (depth: QuantDepth) => void;
+  onPerpIndex?: (index: QuantPerpIndex) => void;
   onTrades?: (trades: QuantTrade[]) => void;
 }
 
@@ -58,6 +60,9 @@ export const useMarketStream = (
     const onDepth = (event: QuantDepth & Pick<StreamKey, "symbol">) => {
       if (event.symbol === symbol) handlersRef.current.onDepth?.(event);
     };
+    const onPerpIndex = (event: QuantPerpIndex & Pick<StreamKey, "symbol">) => {
+      if (event.symbol === symbol) handlersRef.current.onPerpIndex?.(event);
+    };
     const onTrades = (
       event: { trades: QuantTrade[] } & Pick<StreamKey, "symbol">,
     ) => {
@@ -66,11 +71,13 @@ export const useMarketStream = (
 
     quantSocket.on("candle", onCandle);
     quantSocket.on("depth", onDepth);
+    quantSocket.on("perpIndex", onPerpIndex);
     quantSocket.on("trades", onTrades);
 
     return () => {
       quantSocket.off("candle", onCandle);
       quantSocket.off("depth", onDepth);
+      quantSocket.off("perpIndex", onPerpIndex);
       quantSocket.off("trades", onTrades);
       quantSocket.emit("unwatchMarket");
     };

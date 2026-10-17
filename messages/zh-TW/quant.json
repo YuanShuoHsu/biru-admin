@@ -281,6 +281,94 @@
       "url": "Webhook 網址"
     }
   },
+  "futures": {
+    "actions": {
+      "buyLong": "買入／做多",
+      "closeLong": "平多",
+      "closeShort": "平空",
+      "openLong": "開多",
+      "openShort": "開空",
+      "sellShort": "賣出／做空"
+    },
+    "availableMargin": "可用保證金",
+    "close": "平倉",
+    "closable": "可平：多 {long}／空 {short}",
+    "closePosition": {
+      "confirm": "確定要以市價平掉 <bold>{pair}</bold> 的{direction}倉 {size} 嗎？",
+      "label": "市價平倉",
+      "success": "已送出平倉委託",
+      "title": "市價平倉"
+    },
+    "columns": {
+      "avgPrice": "開倉均價",
+      "closePrice": "平倉均價",
+      "closeTime": "平倉時間",
+      "direction": "方向",
+      "fundingFee": "資金費",
+      "fundingRate": "資金費率",
+      "liquidationPrice": "預估強平價",
+      "margin": "保證金",
+      "marginMode": "模式／槓桿",
+      "maxSize": "最大持倉",
+      "realizedPnL": "已實現盈虧",
+      "unrealizedPnL": "未實現盈虧（報酬率）"
+    },
+    "directions": {
+      "LONG": "多",
+      "SHORT": "空"
+    },
+    "fundingFees": "資金費紀錄",
+    "isolatedModes": {
+      "CROSS": "全倉",
+      "ISOLATED_BOTH": "逐倉",
+      "ISOLATED_LONG": "逐倉",
+      "ISOLATED_SHORT": "逐倉"
+    },
+    "leverage": "槓桿",
+    "leverageMax": "此交易對最高 {max}x",
+    "leverageRiskLimit": "已依你的合約風控設定限制在 {max}x 以內",
+    "leverageWarning": "槓桿越高，強平價離目前價格越近。調整只影響之後的委託與目前持倉的保證金。",
+    "liquidation": "強平",
+    "margin": "所需保證金 {margin} {quote}",
+    "marginModeDescriptions": {
+      "CROSS": "全倉：合約帳戶的可用保證金共同承擔所有全倉部位的風險。",
+      "ISOLATED": "逐倉：這個交易對的部位只用自己的保證金，虧損以此為上限。"
+    },
+    "marginModes": {
+      "CROSS": "全倉",
+      "ISOLATED": "逐倉"
+    },
+    "open": "開倉",
+    "orderTypes": {
+      "FOK": "FOK（全部成交否則取消）",
+      "IOC": "IOC（立即成交剩餘取消）",
+      "LIMIT": "GTC（一直有效）",
+      "MARKET_QTY": "市價",
+      "POSTONLY": "只做 Maker"
+    },
+    "positionHistory": "歷史持倉",
+    "positionModeDescriptions": {
+      "BUYSELL": "單向持倉：每個交易對只有一個淨部位，買入與賣出互相抵銷。",
+      "OPENCLOSE": "雙向持倉：同一個交易對可以同時持有多倉與空倉，開倉與平倉分開下單。"
+    },
+    "positionModeWarning": "持倉模式是整個 Pionex 合約帳戶共用的設定，會一併影響 App 裡的交易。有持倉或掛單時交易所可能不允許切換。",
+    "positionModes": {
+      "BUYSELL": "單向持倉",
+      "OPENCLOSE": "雙向持倉"
+    },
+    "positions": "目前持倉",
+    "reduceOnly": "只減倉",
+    "settings": {
+      "leverage": "調整槓桿",
+      "marginMode": "保證金模式",
+      "positionMode": "持倉模式",
+      "success": "已更新設定"
+    },
+    "timeInForce": "有效方式",
+    "validation": {
+      "aboveClosable": "超過可平數量 {max}"
+    }
+  },
   "indicators": {
     "bollingerBands": "BOLL",
     "ema": "EMA",
@@ -310,7 +398,16 @@
     "notFound": "找不到這個交易對，可能已下架。",
     "quoteVolume": "24h 成交額",
     "symbol": "交易對",
-    "volume": "24h 成交量"
+    "volume": "24h 成交量",
+    "marketType": "市場",
+    "types": {
+      "SPOT": "現貨",
+      "PERP": "合約"
+    },
+    "markPrice": "標記價格",
+    "indexPrice": "指數價格",
+    "funding": "資金費率 / 倒數",
+    "openInterest": "未平倉量"
   },
   "order": {
     "amount": "金額",
@@ -378,7 +475,21 @@
       "labelPlaceholder": "例如：主帳戶"
     },
     "hint": "在 Pionex 建立 API key 時只需開啟「讀取」與「交易」權限，並建議綁定伺服器的出口 IP 白名單。金鑰會加密保存，只有你本人看得到。",
-    "label": "API key"
+    "label": "API key",
+    "risk": {
+      "hint": "這組上限套用在這個 Pionex 帳戶。留空代表不限制；系統不會替你預設數值。",
+      "integer": "須為整數",
+      "label": "合約風控",
+      "maxDailyLoss": "合約機器人每日虧損上限",
+      "maxDailyLossHelper": "所有合約機器人當日虧損合計超過就全部停止；不限制手動下單",
+      "maxLeverage": "槓桿上限",
+      "maxLeverageHelper": "手動下單與合約機器人都不能超過",
+      "minLiquidationDistance": "最小強平距離",
+      "minLiquidationDistanceHelper": "建立合約機器人時，預估強平價離目前價格不得小於此比例；不限制手動下單",
+      "success": "已更新合約風控",
+      "title": "合約風控：{label}",
+      "unlimited": "不限制"
+    }
   },
   "trades": {
     "label": "最新成交",

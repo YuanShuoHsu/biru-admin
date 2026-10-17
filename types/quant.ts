@@ -4,14 +4,22 @@ import {
   quantBotStatusValues,
   quantBotTypeValues,
   quantCandleIntervalValues,
+  quantFuturesOrderTypeValues,
   quantIndicatorKindValues,
+  quantMarketTypeValues,
   quantOrderSideValues,
+  quantMarginModeValues,
   quantOrderTypeValues,
+  quantPositionModeValues,
+  quantPositionSideValues,
 } from "@/types/api";
 
 export type QuantMarket = components["schemas"]["QuantMarketDto"];
 export type QuantCandle = components["schemas"]["QuantCandleDto"];
 export type QuantTrade = components["schemas"]["QuantTradeDto"];
+export type QuantPerpInfo = components["schemas"]["QuantPerpInfoDto"];
+export type QuantRiskTier = components["schemas"]["QuantRiskTierDto"];
+export type QuantFundingRate = components["schemas"]["QuantFundingRateDto"];
 
 export type QuantCredential = components["schemas"]["QuantCredentialDto"];
 export type CreateQuantCredentialDto =
@@ -22,6 +30,27 @@ export type QuantFill = components["schemas"]["QuantFillDto"];
 export type PlaceQuantOrderDto = components["schemas"]["PlaceQuantOrderDto"];
 export type PlaceQuantOrderResponse =
   components["schemas"]["PlaceQuantOrderResponseDto"];
+
+export type QuantFuturesAccount =
+  components["schemas"]["QuantFuturesAccountDto"];
+export type QuantFuturesBalance =
+  components["schemas"]["QuantFuturesBalanceDto"];
+export type QuantFuturesSymbolSettings =
+  components["schemas"]["QuantFuturesSymbolSettingsDto"];
+export type QuantFuturesRisk = components["schemas"]["QuantFuturesRiskDto"];
+export type UpdateQuantFuturesRiskDto =
+  components["schemas"]["UpdateQuantFuturesRiskDto"];
+export type QuantPosition = components["schemas"]["QuantPositionDto"];
+export type QuantPositionHistory =
+  components["schemas"]["QuantPositionHistoryDto"];
+export type QuantFuturesOrder = components["schemas"]["QuantFuturesOrderDto"];
+export type QuantFuturesFill = components["schemas"]["QuantFuturesFillDto"];
+export type QuantFundingFee = components["schemas"]["QuantFundingFeeDto"];
+export type PlaceFuturesOrderDto =
+  components["schemas"]["PlaceFuturesOrderDto"];
+export type SetLeverageDto = components["schemas"]["SetLeverageDto"];
+export type SetMarginModeDto = components["schemas"]["SetMarginModeDto"];
+export type SetPositionModeDto = components["schemas"]["SetPositionModeDto"];
 
 export type QuantBot = components["schemas"]["QuantBotDto"];
 export type QuantBotSummary = components["schemas"]["QuantBotSummaryDto"];
@@ -52,17 +81,29 @@ export type QuantBotType = (typeof quantBotTypeValues)[number];
 export type QuantBotMode = (typeof quantBotModeValues)[number];
 export type QuantBotStatus = (typeof quantBotStatusValues)[number];
 export type QuantIndicatorKind = (typeof quantIndicatorKindValues)[number];
+export type QuantMarketType = (typeof quantMarketTypeValues)[number];
 export type QuantCandleInterval = (typeof quantCandleIntervalValues)[number];
 export type QuantOrderSide = (typeof quantOrderSideValues)[number];
 export type QuantOrderType = (typeof quantOrderTypeValues)[number];
+export type QuantFuturesOrderType =
+  (typeof quantFuturesOrderTypeValues)[number];
+export type QuantMarginMode = (typeof quantMarginModeValues)[number];
+export type QuantPositionMode = (typeof quantPositionModeValues)[number];
+export type QuantPositionSide = (typeof quantPositionSideValues)[number];
 
 export interface QuantDepth {
   asks: [price: number, size: number][];
   bids: [price: number, size: number][];
 }
 
+export type QuantPerpIndex = Pick<
+  QuantPerpInfo,
+  "indexPrice" | "markPrice" | "nextFundingRate" | "nextFundingTime"
+>;
+
 export interface QuantAccountEvent {
   credentialId: string;
+  market: QuantMarketType;
   symbol?: string;
-  topic: "BALANCE" | "FILL" | "ORDER";
+  topic: "BALANCE" | "FILL" | "ORDER" | "POSITION" | "RISK";
 }

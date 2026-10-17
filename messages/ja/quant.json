@@ -281,6 +281,94 @@
       "url": "Webhook URL"
     }
   },
+  "futures": {
+    "actions": {
+      "buyLong": "買い／ロング",
+      "closeLong": "ロング決済",
+      "closeShort": "ショート決済",
+      "openLong": "ロング",
+      "openShort": "ショート",
+      "sellShort": "売り／ショート"
+    },
+    "availableMargin": "利用可能証拠金",
+    "close": "決済",
+    "closable": "決済可能：ロング {long}／ショート {short}",
+    "closePosition": {
+      "confirm": "<bold>{pair}</bold> の{direction}ポジション {size} を成行で決済しますか？",
+      "label": "成行決済",
+      "success": "決済注文を送信しました",
+      "title": "成行決済"
+    },
+    "columns": {
+      "avgPrice": "建値",
+      "closePrice": "決済価格",
+      "closeTime": "決済日時",
+      "direction": "方向",
+      "fundingFee": "資金調達料",
+      "fundingRate": "資金調達率",
+      "liquidationPrice": "推定清算価格",
+      "margin": "証拠金",
+      "marginMode": "モード／レバレッジ",
+      "maxSize": "最大数量",
+      "realizedPnL": "実現損益",
+      "unrealizedPnL": "未実現損益（ROE）"
+    },
+    "directions": {
+      "LONG": "ロング",
+      "SHORT": "ショート"
+    },
+    "fundingFees": "資金調達料履歴",
+    "isolatedModes": {
+      "CROSS": "クロス",
+      "ISOLATED_BOTH": "分離",
+      "ISOLATED_LONG": "分離",
+      "ISOLATED_SHORT": "分離"
+    },
+    "leverage": "レバレッジ",
+    "leverageMax": "この銘柄は最大 {max}x",
+    "leverageRiskLimit": "先物リスク設定により {max}x までに制限されています",
+    "leverageWarning": "レバレッジが高いほど清算価格が現在価格に近づきます。変更は今後の注文と現在のポジションの証拠金に適用されます。",
+    "liquidation": "清算",
+    "margin": "必要証拠金 {margin} {quote}",
+    "marginModeDescriptions": {
+      "CROSS": "クロス：先物口座の利用可能証拠金をすべてのクロスポジションで共有します。",
+      "ISOLATED": "分離：この銘柄のポジションは自身の証拠金のみを使い、損失はその範囲に限られます。"
+    },
+    "marginModes": {
+      "CROSS": "クロス",
+      "ISOLATED": "分離"
+    },
+    "open": "新規",
+    "orderTypes": {
+      "FOK": "FOK（全量約定かキャンセル）",
+      "IOC": "IOC（即時約定、残りはキャンセル）",
+      "LIMIT": "GTC（キャンセルまで有効）",
+      "MARKET_QTY": "成行",
+      "POSTONLY": "Post Only"
+    },
+    "positionHistory": "ポジション履歴",
+    "positionModeDescriptions": {
+      "BUYSELL": "片方向：銘柄ごとに一つのネットポジションのみで、買いと売りは相殺されます。",
+      "OPENCLOSE": "両建て：同じ銘柄でロングとショートを同時に保有でき、新規と決済を別々に発注します。"
+    },
+    "positionModeWarning": "ポジションモードは Pionex 先物口座全体の設定で、アプリでの取引にも影響します。ポジションや未約定注文がある場合は切り替えられないことがあります。",
+    "positionModes": {
+      "BUYSELL": "片方向",
+      "OPENCLOSE": "両建て"
+    },
+    "positions": "保有ポジション",
+    "reduceOnly": "リデュースオンリー",
+    "settings": {
+      "leverage": "レバレッジ調整",
+      "marginMode": "証拠金モード",
+      "positionMode": "ポジションモード",
+      "success": "設定を更新しました"
+    },
+    "timeInForce": "有効期間",
+    "validation": {
+      "aboveClosable": "決済可能数量 {max} を超えています"
+    }
+  },
   "indicators": {
     "bollingerBands": "BOLL",
     "ema": "EMA",
@@ -310,7 +398,16 @@
     "notFound": "この取引ペアは見つかりません。上場廃止された可能性があります。",
     "quoteVolume": "24h 売買代金",
     "symbol": "取引ペア",
-    "volume": "24h 出来高"
+    "volume": "24h 出来高",
+    "marketType": "市場",
+    "types": {
+      "SPOT": "現物",
+      "PERP": "先物"
+    },
+    "markPrice": "マーク価格",
+    "indexPrice": "インデックス価格",
+    "funding": "資金調達率 / カウントダウン",
+    "openInterest": "未決済建玉"
   },
   "order": {
     "amount": "金額",
@@ -378,7 +475,21 @@
       "labelPlaceholder": "例：メイン口座"
     },
     "hint": "Pionex で API キーを作成する際は「読み取り」と「取引」の権限のみを有効にし、サーバーの送信元 IP で制限することをおすすめします。キーは暗号化して保存され、本人以外は閲覧できません。",
-    "label": "API キー"
+    "label": "API キー",
+    "risk": {
+      "hint": "この上限はこの Pionex 口座に適用されます。空欄は無制限です。システムが値を勝手に設定することはありません。",
+      "integer": "整数で入力してください",
+      "label": "先物リスク",
+      "maxDailyLoss": "先物ボットの日次損失上限",
+      "maxDailyLossHelper": "先物ボット全体の当日損失合計がこれを超えるとすべて停止します。手動注文は制限しません",
+      "maxLeverage": "レバレッジ上限",
+      "maxLeverageHelper": "手動注文と先物ボットの両方に適用されます",
+      "minLiquidationDistance": "最小清算距離",
+      "minLiquidationDistanceHelper": "先物ボット作成時、推定清算価格と現在価格の差がこの割合以上必要です。手動注文は制限しません",
+      "success": "先物リスクを更新しました",
+      "title": "先物リスク：{label}",
+      "unlimited": "無制限"
+    }
   },
   "trades": {
     "label": "約定履歴",

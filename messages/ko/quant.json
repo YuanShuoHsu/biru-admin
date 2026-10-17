@@ -281,6 +281,94 @@
       "url": "Webhook URL"
     }
   },
+  "futures": {
+    "actions": {
+      "buyLong": "매수／롱",
+      "closeLong": "롱 청산",
+      "closeShort": "숏 청산",
+      "openLong": "롱 진입",
+      "openShort": "숏 진입",
+      "sellShort": "매도／숏"
+    },
+    "availableMargin": "사용 가능 증거금",
+    "close": "청산",
+    "closable": "청산 가능: 롱 {long}／숏 {short}",
+    "closePosition": {
+      "confirm": "<bold>{pair}</bold> {direction} 포지션 {size}을(를) 시장가로 청산할까요?",
+      "label": "시장가 청산",
+      "success": "청산 주문을 보냈습니다",
+      "title": "시장가 청산"
+    },
+    "columns": {
+      "avgPrice": "진입가",
+      "closePrice": "청산가",
+      "closeTime": "청산 시간",
+      "direction": "방향",
+      "fundingFee": "펀딩비",
+      "fundingRate": "펀딩비율",
+      "liquidationPrice": "예상 강제청산가",
+      "margin": "증거금",
+      "marginMode": "모드／레버리지",
+      "maxSize": "최대 수량",
+      "realizedPnL": "실현 손익",
+      "unrealizedPnL": "미실현 손익(ROE)"
+    },
+    "directions": {
+      "LONG": "롱",
+      "SHORT": "숏"
+    },
+    "fundingFees": "펀딩비 내역",
+    "isolatedModes": {
+      "CROSS": "교차",
+      "ISOLATED_BOTH": "격리",
+      "ISOLATED_LONG": "격리",
+      "ISOLATED_SHORT": "격리"
+    },
+    "leverage": "레버리지",
+    "leverageMax": "이 종목은 최대 {max}x",
+    "leverageRiskLimit": "선물 리스크 설정에 따라 {max}x 이내로 제한됩니다",
+    "leverageWarning": "레버리지가 높을수록 강제청산가가 현재가에 가까워집니다. 변경은 이후 주문과 현재 포지션의 증거금에 적용됩니다.",
+    "liquidation": "강제청산",
+    "margin": "필요 증거금 {margin} {quote}",
+    "marginModeDescriptions": {
+      "CROSS": "교차: 모든 교차 포지션이 선물 계정의 사용 가능 증거금을 함께 사용합니다.",
+      "ISOLATED": "격리: 이 종목의 포지션은 자체 증거금만 사용하며 손실도 그 범위로 제한됩니다."
+    },
+    "marginModes": {
+      "CROSS": "교차",
+      "ISOLATED": "격리"
+    },
+    "open": "진입",
+    "orderTypes": {
+      "FOK": "FOK(전량 체결 아니면 취소)",
+      "IOC": "IOC(즉시 체결, 잔량 취소)",
+      "LIMIT": "GTC(취소 시까지 유효)",
+      "MARKET_QTY": "시장가",
+      "POSTONLY": "메이커 전용"
+    },
+    "positionHistory": "포지션 내역",
+    "positionModeDescriptions": {
+      "BUYSELL": "단방향: 종목마다 하나의 순포지션만 있으며 매수와 매도가 상쇄됩니다.",
+      "OPENCLOSE": "양방향: 같은 종목에서 롱과 숏을 동시에 보유할 수 있고 진입과 청산을 따로 주문합니다."
+    },
+    "positionModeWarning": "포지션 모드는 Pionex 선물 계정 전체에 적용되며 앱에서의 거래에도 영향을 줍니다. 포지션이나 미체결 주문이 있으면 전환이 거부될 수 있습니다.",
+    "positionModes": {
+      "BUYSELL": "단방향",
+      "OPENCLOSE": "양방향"
+    },
+    "positions": "보유 포지션",
+    "reduceOnly": "감소 전용",
+    "settings": {
+      "leverage": "레버리지 조정",
+      "marginMode": "증거금 모드",
+      "positionMode": "포지션 모드",
+      "success": "설정을 업데이트했습니다"
+    },
+    "timeInForce": "유효 기간",
+    "validation": {
+      "aboveClosable": "청산 가능 수량 {max}을(를) 초과합니다"
+    }
+  },
   "indicators": {
     "bollingerBands": "BOLL",
     "ema": "EMA",
@@ -310,7 +398,16 @@
     "notFound": "이 거래쌍을 찾을 수 없습니다. 상장 폐지되었을 수 있습니다.",
     "quoteVolume": "24h 거래대금",
     "symbol": "거래쌍",
-    "volume": "24h 거래량"
+    "volume": "24h 거래량",
+    "marketType": "시장",
+    "types": {
+      "SPOT": "현물",
+      "PERP": "선물"
+    },
+    "markPrice": "마크 가격",
+    "indexPrice": "인덱스 가격",
+    "funding": "펀딩비 / 카운트다운",
+    "openInterest": "미결제약정"
   },
   "order": {
     "amount": "금액",
@@ -378,7 +475,21 @@
       "labelPlaceholder": "예: 메인 계정"
     },
     "hint": "Pionex에서 API 키를 만들 때는 「읽기」와 「거래」 권한만 켜고, 서버의 아웃바운드 IP로 제한하는 것을 권장합니다. 키는 암호화되어 저장되며 본인만 볼 수 있습니다.",
-    "label": "API 키"
+    "label": "API 키",
+    "risk": {
+      "hint": "이 한도는 이 Pionex 계정에 적용됩니다. 비워 두면 제한하지 않으며 시스템이 값을 대신 정하지 않습니다.",
+      "integer": "정수여야 합니다",
+      "label": "선물 리스크",
+      "maxDailyLoss": "선물 봇 일일 손실 한도",
+      "maxDailyLossHelper": "모든 선물 봇의 당일 손실 합계가 이를 넘으면 전부 중지합니다. 수동 주문은 제한하지 않습니다",
+      "maxLeverage": "레버리지 한도",
+      "maxLeverageHelper": "수동 주문과 선물 봇 모두에 적용됩니다",
+      "minLiquidationDistance": "최소 강제청산 거리",
+      "minLiquidationDistanceHelper": "선물 봇을 만들 때 예상 강제청산가가 현재가에서 이 비율 이상 떨어져 있어야 합니다. 수동 주문은 제한하지 않습니다",
+      "success": "선물 리스크를 업데이트했습니다",
+      "title": "선물 리스크: {label}",
+      "unlimited": "제한 없음"
+    }
   },
   "trades": {
     "label": "최근 체결",

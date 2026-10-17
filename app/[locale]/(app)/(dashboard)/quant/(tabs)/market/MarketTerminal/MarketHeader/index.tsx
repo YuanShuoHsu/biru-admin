@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { useFormatter, useTranslations } from "next-intl";
 
@@ -10,11 +10,18 @@ import {
   Paper,
   Stack,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import type { QuantMarket } from "@/types/quant";
+import { quantMarketTypeValues } from "@/types/api";
+import type {
+  QuantMarket,
+  QuantMarketType,
+  QuantPerpIndex,
+} from "@/types/quant";
 
 const HeaderPaper = styled(Paper)(({ theme }) => ({
   alignItems: "center",
@@ -36,6 +43,23 @@ const Stat = ({ label, value }: { label: string; value: React.ReactNode }) => (
 const toPair = ({ baseCurrency, quoteCurrency }: QuantMarket) =>
   `${baseCurrency}/${quoteCurrency}`;
 
+const SECOND_MS = 1000;
+
+const FundingCountdown = ({ until }: { until: number }) => {
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now()), SECOND_MS);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const seconds = Math.max(0, Math.floor((until - now) / SECOND_MS));
+  const pad = (value: number) => String(value).padStart(2, "0");
+
+  return `${pad(Math.floor(seconds / 3600))}:${pad(Math.floor((seconds % 3600) / 60))}:${pad(seconds % 60)}`;
+};
+
 const changeRatio = ({ close, open }: QuantMarket) =>
   open ? (close - open) / open : 0;
 
@@ -43,14 +67,20 @@ interface MarketHeaderProps {
   lastPrice: number;
   market: QuantMarket;
   markets: QuantMarket[];
+  onMarketTypeChange: (type: QuantMarketType) => void;
   onSymbolChange: (symbol: string) => void;
+  openInterest?: number;
+  perpIndex?: QuantPerpIndex;
 }
 
 const MarketHeader = ({
   lastPrice,
   market,
   markets,
+  onMarketTypeChange,
   onSymbolChange,
+  openInterest,
+  perpIndex,
 }: MarketHeaderProps) => {
   const tQuant = useTranslations("quant");
   const format = useFormatter();
@@ -79,6 +109,21 @@ const MarketHeader = ({
 
   return (
     <HeaderPaper>
+      <ToggleButtonGroup
+        aria-label={tQuant("market.marketType")}
+        exclusive
+        onChange={(_, value: QuantMarketType | null) =>
+          value && onMarketTypeChange(value)
+        }
+        size="small"
+        value={market.type}
+      >
+        {quantMarketTypeValues.map((value) => (
+          <ToggleButton key={value} value={value}>
+            {tQuant(`market.types.${value}`)}
+          </ToggleButton>
+        ))}
+      </ToggleButtonGroup>
       <Autocomplete
         disableClearable
         getOptionLabel={toPair}
@@ -119,6 +164,32 @@ const MarketHeader = ({
       >
         {formatPrice(lastPrice, market)}
       </Typography>
+      {perpIndex && (
+        <>
+          <Stat
+            label={tQuant("market.markPrice")}
+            value={formatPrice(perpIndex.markPrice, market)}
+          />
+          <Stat
+            label={tQuant("market.indexPrice")}
+            value={formatPrice(perpIndex.indexPrice, market)}
+          />
+          <Stat
+            label={tQuant("market.funding")}
+            value={
+              <>
+                {format.number(perpIndex.nextFundingRate, {
+                  maximumFractionDigits: 4,
+                  minimumFractionDigits: 4,
+                  style: "percent",
+                })}
+                {" / "}
+                <FundingCountdown until={perpIndex.nextFundingTime} />
+              </>
+            }
+          />
+        </>
+      )}
       <Stat
         label={tQuant("market.change")}
         value={
@@ -143,6 +214,12 @@ const MarketHeader = ({
         label={`${tQuant("market.quoteVolume")} (${market.quoteCurrency})`}
         value={format.number(market.quoteVolume, { notation: "compact" })}
       />
+      {openInterest !== undefined && (
+        <Stat
+          label={`${tQuant("market.openInterest")} (${market.baseCurrency})`}
+          value={format.number(openInterest, { notation: "compact" })}
+        />
+      )}
     </HeaderPaper>
   );
 };
