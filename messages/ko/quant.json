@@ -125,7 +125,6 @@
         "realizedPnl": "실현 손익"
       }
     },
-    "empty": "아직 봇이 없습니다",
     "events": {
       "ai_decision": "AI 판단",
       "ai_error": "AI 호출 실패",
@@ -150,7 +149,7 @@
           "low": "빠르게",
           "medium": "표준"
         },
-        "guardHelper": "선택. AI가 아닌 시스템이 강제합니다",
+        "guardHelper": "AI가 아닌 시스템이 강제합니다",
         "guideline": "거래 방침(선택)",
         "guidelineHelper": "스타일과 감당할 수 있는 위험을 AI에게 알려 주세요. 최대 2000자",
         "guidelinePlaceholder": "예: 보수적으로, 추세가 불분명하면 관망하고 한 번 손실이 3%를 넘으면 청산",
@@ -161,8 +160,8 @@
         "maxOrderAmountHelper": "AI가 한 번에 진입할 수 있는 최대 금액(명목)",
         "monthlyCostLimit": "월간 AI 비용 한도",
         "monthlyCostLimitHelper": "이번 달(UTC) 비용이 한도에 도달하면 봇을 중지합니다",
-        "stopLoss": "손절(%)",
-        "takeProfit": "익절(%)"
+        "stopLoss": "손절(%, 선택)",
+        "takeProfit": "익절(%, 선택)"
       },
       "basic": "기본 설정",
       "credential": "거래 계정",
@@ -476,7 +475,6 @@
       "totalReturn": "총수익률",
       "trend": "방향／레버리지"
     },
-    "empty": "조건에 맞는 카피 그리드가 없습니다",
     "hint": "KOL의 Pionex 공유 코드를 입력하면 엄선한 선물 그리드를 볼 수 있습니다. \"파라미터 적용\"은 범위·그리드 수·방향·레버리지를 새 선물 그리드 양식에 채워 확인 후 생성하며, KOL 카피 트레이드 수익 분배에는 참여하지 않습니다.",
     "label": "KOL 카피",
     "pinned": "고정",
@@ -615,7 +613,9 @@
     "4H": "4시간",
     "5M": "5분",
     "60M": "1시간",
-    "8H": "8시간"
+    "8H": "8시간",
+    "1W": "1주",
+    "1m": "1개월"
   },
   "label": "퀀트 트레이딩",
   "market": {
@@ -715,7 +715,6 @@
       "success": "등록을 해제했습니다",
       "title": "API 키 등록 해제"
     },
-    "empty": "등록된 API 키가 없습니다",
     "form": {
       "apiKey": "API 키",
       "apiSecret": "API 시크릿",
@@ -733,7 +732,7 @@
       "maxLeverage": "레버리지 한도",
       "maxLeverageHelper": "수동 주문과 선물 봇 모두에 적용됩니다",
       "minLiquidationDistance": "최소 강제청산 거리",
-      "minLiquidationDistanceHelper": "선물 봇을 만들 때 예상 강제청산가가 현재가에서 이 비율 이상 떨어져 있어야 합니다. 수동 주문은 제한하지 않습니다",
+      "minLiquidationDistanceHelper": "선물 봇을 만들 때와 수동 진입 주문 전에 예상 강제청산가가 체결가에서 이 비율 이상 떨어져 있어야 합니다",
       "success": "선물 리스크를 업데이트했습니다",
       "title": "선물 리스크: {label}",
       "unlimited": "제한 없음"

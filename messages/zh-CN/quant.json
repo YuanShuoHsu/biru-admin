@@ -125,7 +125,6 @@
         "realizedPnl": "已实现盈亏"
       }
     },
-    "empty": "还没有机器人",
     "events": {
       "ai_decision": "AI 决策",
       "ai_error": "AI 调用失败",
@@ -150,7 +149,7 @@
           "low": "快速",
           "medium": "标准"
         },
-        "guardHelper": "选填；由系统强制执行，不经过 AI",
+        "guardHelper": "由系统强制执行，不经过 AI",
         "guideline": "交易方针（选填）",
         "guidelineHelper": "告诉 AI 你的风格与能承受的风险，最多 2000 字",
         "guidelinePlaceholder": "例如：偏保守，趋势不明时观望；单笔亏损超过 3% 就出场",
@@ -161,8 +160,8 @@
         "maxOrderAmountHelper": "AI 每次开仓最多动用的金额（名义）",
         "monthlyCostLimit": "每月 AI 费用上限",
         "monthlyCostLimitHelper": "本月（UTC）费用达到上限就停止机器人",
-        "stopLoss": "止损（%）",
-        "takeProfit": "止盈（%）"
+        "stopLoss": "止损（%，选填）",
+        "takeProfit": "止盈（%，选填）"
       },
       "basic": "基本设置",
       "credential": "交易账户",
@@ -476,7 +475,6 @@
       "totalReturn": "总收益",
       "trend": "方向／杠杆"
     },
-    "empty": "这位 KOL 没有符合条件的跟单网格",
     "hint": "输入 KOL 在 Pionex 的分享码，可以查看他精选的合约网格。「套用参数」会把区间、格数、方向与杠杆带进新建合约网格的表单，由你确认后创建；不会绑定 KOL 的跟单分润。",
     "label": "KOL 跟单",
     "pinned": "置顶",
@@ -615,7 +613,9 @@
     "4H": "4时",
     "5M": "5分",
     "60M": "1时",
-    "8H": "8时"
+    "8H": "8时",
+    "1W": "1周",
+    "1m": "1月"
   },
   "label": "量化交易",
   "market": {
@@ -715,7 +715,6 @@
       "success": "已解除绑定",
       "title": "解除绑定 API key"
     },
-    "empty": "尚未绑定任何 API key",
     "form": {
       "apiKey": "API key",
       "apiSecret": "API secret",
@@ -733,7 +732,7 @@
       "maxLeverage": "杠杆上限",
       "maxLeverageHelper": "手动下单与合约机器人都不能超过",
       "minLiquidationDistance": "最小强平距离",
-      "minLiquidationDistanceHelper": "创建合约机器人时，预估强平价离当前价格不得小于此比例；不限制手动下单",
+      "minLiquidationDistanceHelper": "合约机器人创建时与手动开仓前，预估强平价离成交价不得小于此比例",
       "success": "已更新合约风控",
       "title": "合约风控：{label}",
       "unlimited": "不限制"

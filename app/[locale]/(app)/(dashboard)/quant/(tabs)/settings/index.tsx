@@ -158,7 +158,6 @@ const CredentialSettings = () => {
         {...DATA_GRID_PROPS}
         columns={columns}
         loading={!credentials}
-        localeText={{ noRowsLabel: tQuant("settings.empty") }}
         rows={credentials ?? []}
         showToolbar={false}
       />

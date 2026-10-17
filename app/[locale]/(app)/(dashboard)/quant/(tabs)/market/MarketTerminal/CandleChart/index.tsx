@@ -34,6 +34,8 @@ import {
   computeRsi,
 } from "./indicators";
 
+import { isIntradayInterval } from "@/constants/quant";
+
 import {
   Box,
   Stack,
@@ -305,7 +307,7 @@ const CandleChart = ({
   }, [palette, renderCandles, renderIndicators]);
 
   useEffect(() => {
-    const intraday = interval !== "1D";
+    const intraday = isIntradayInterval(interval);
 
     chartRef.current?.applyOptions({
       localization: {
@@ -446,6 +448,7 @@ const CandleChart = ({
             value && onIntervalChange(value)
           }
           size="small"
+          sx={{ flexWrap: "wrap" }}
           value={interval}
         >
           {quantCandleIntervalValues.map((value) => (

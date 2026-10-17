@@ -13,6 +13,10 @@ import useSWR from "swr";
 import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";
 
 import { resolveDashboardRange } from "@/app/[locale]/(app)/(dashboard)/dashboard/definitions";
+import {
+  resolveQuantInterval,
+  resolveQuantSymbol,
+} from "@/app/[locale]/(app)/(dashboard)/quant/(tabs)/market/definitions";
 
 import { useSelectedOrganizationSlug } from "@/hooks/organizations";
 
@@ -119,11 +123,13 @@ type MessageKey = MessageKeys<Messages, NestedKeyOf<Messages>>;
 type RouteQuery =
   | "back"
   | "date"
+  | "interval"
   | "organization"
   | "page"
   | "pageSize"
   | "range"
   | "redirectTo"
+  | "symbol"
   | "view";
 
 interface Route {
@@ -667,6 +673,7 @@ const routes: Route[] = [
       {
         icon: CandlestickChart,
         label: "quant.market.label",
+        query: ["symbol", "interval"],
         segment: "market",
       },
       {
@@ -1061,11 +1068,13 @@ export const useRoutes = () => {
   const values: Record<RouteQuery, string | null> = {
     back: pathname,
     date: attendanceCalendarDate(),
+    interval: resolveQuantInterval(searchParams.get("interval")),
     organization: organizationSlug,
     page: DEFAULT_PAGINATION_QUERY.page,
     pageSize: DEFAULT_PAGINATION_QUERY.pageSize,
     range: resolveDashboardRange(searchParams.get("range") || undefined),
     redirectTo: searchParams.get("redirectTo") || pathname,
+    symbol: resolveQuantSymbol(searchParams.get("symbol")),
     view: DEFAULT_ATTENDANCE_CALENDAR_VIEW,
   };
 

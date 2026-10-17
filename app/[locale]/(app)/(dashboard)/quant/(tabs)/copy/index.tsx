@@ -252,7 +252,6 @@ const KolCopy = ({ shareCode }: { shareCode: string }) => {
           {...DATA_GRID_PROPS}
           columns={columns}
           loading={isLoading}
-          localeText={{ noRowsLabel: tCopy("empty") }}
           onPaginationModelChange={setPagination}
           paginationMode="server"
           paginationModel={pagination}

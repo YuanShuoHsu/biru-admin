@@ -284,7 +284,13 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
           justifyContent: "space-between",
         }}
       >
-        <Tabs onChange={(_, value: AccountTab) => setTab(value)} value={tab}>
+        <Tabs
+          onChange={(_, value: AccountTab) => setTab(value)}
+          scrollButtons="auto"
+          sx={{ flex: 1, minWidth: 0 }}
+          value={tab}
+          variant="scrollable"
+        >
           <Tab
             label={`${tQuant("account.openOrders")} (${openOrders?.length ?? 0})`}
             value="openOrders"

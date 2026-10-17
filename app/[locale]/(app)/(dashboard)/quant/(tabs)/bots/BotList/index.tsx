@@ -305,7 +305,6 @@ const BotList = () => {
         {...DATA_GRID_PROPS}
         columns={columns}
         loading={isLoading}
-        localeText={{ noRowsLabel: tBots("empty") }}
         rows={bots ?? []}
         showToolbar={false}
       />

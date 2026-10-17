@@ -125,7 +125,6 @@
         "realizedPnl": "已實現損益"
       }
     },
-    "empty": "還沒有機器人",
     "events": {
       "ai_decision": "AI 決策",
       "ai_error": "AI 呼叫失敗",
@@ -150,7 +149,7 @@
           "low": "快速",
           "medium": "標準"
         },
-        "guardHelper": "選填；由系統強制執行，不經過 AI",
+        "guardHelper": "由系統強制執行，不經過 AI",
         "guideline": "交易方針（選填）",
         "guidelineHelper": "告訴 AI 你的風格與能承受的風險，最多 2000 字",
         "guidelinePlaceholder": "例如：偏保守，趨勢不明時觀望；單筆虧損超過 3% 就出場",
@@ -161,8 +160,8 @@
         "maxOrderAmountHelper": "AI 每次開倉最多動用的金額（名目）",
         "monthlyCostLimit": "每月 AI 費用上限",
         "monthlyCostLimitHelper": "本月（UTC）費用達到上限就停止機器人",
-        "stopLoss": "停損（%）",
-        "takeProfit": "停利（%）"
+        "stopLoss": "停損（%，選填）",
+        "takeProfit": "停利（%，選填）"
       },
       "basic": "基本設定",
       "credential": "交易帳戶",
@@ -476,7 +475,6 @@
       "totalReturn": "總報酬",
       "trend": "方向／槓桿"
     },
-    "empty": "這位 KOL 沒有符合條件的跟單網格",
     "hint": "輸入 KOL 在 Pionex 的分享碼，可以查看他精選的合約網格。「套用參數」會把區間、格數、方向與槓桿帶進新建合約網格的表單，由你確認後建立；不會綁定 KOL 的跟單分潤。",
     "label": "KOL 跟單",
     "pinned": "置頂",
@@ -615,7 +613,9 @@
     "4H": "4時",
     "5M": "5分",
     "60M": "1時",
-    "8H": "8時"
+    "8H": "8時",
+    "1W": "1週",
+    "1m": "1月"
   },
   "label": "量化交易",
   "market": {
@@ -715,7 +715,6 @@
       "success": "已解除綁定",
       "title": "解除綁定 API key"
     },
-    "empty": "尚未綁定任何 API key",
     "form": {
       "apiKey": "API key",
       "apiSecret": "API secret",
@@ -733,7 +732,7 @@
       "maxLeverage": "槓桿上限",
       "maxLeverageHelper": "手動下單與合約機器人都不能超過",
       "minLiquidationDistance": "最小強平距離",
-      "minLiquidationDistanceHelper": "建立合約機器人時，預估強平價離目前價格不得小於此比例；不限制手動下單",
+      "minLiquidationDistanceHelper": "合約機器人建立時與手動開倉前，預估強平價離成交價不得小於此比例",
       "success": "已更新合約風控",
       "title": "合約風控：{label}",
       "unlimited": "不限制"

@@ -355,40 +355,36 @@ const FuturesTradePanel = ({
           <Tab label={tQuant("futures.close")} value="close" />
         </Tabs>
       )}
-      <Stack sx={{ alignItems: "center", flexDirection: "row", gap: 1 }}>
-        <Tabs
-          onChange={(_, value: PriceType) => {
-            setPriceType(value);
-            reset({ price, size: "" });
-          }}
-          sx={{ flex: 1 }}
-          value={priceType}
-          variant="fullWidth"
+      <Tabs
+        onChange={(_, value: PriceType) => {
+          setPriceType(value);
+          reset({ price, size: "" });
+        }}
+        value={priceType}
+        variant="fullWidth"
+      >
+        <Tab label={tQuant("order.type.LIMIT")} value="LIMIT" />
+        <Tab label={tQuant("order.type.MARKET")} value="MARKET_QTY" />
+      </Tabs>
+      {priceType === "LIMIT" && (
+        <TextField
+          label={tQuant("futures.timeInForce")}
+          onChange={(event) =>
+            setTimeInForce(
+              event.target.value as (typeof LIMIT_TIME_IN_FORCE)[number],
+            )
+          }
+          select
+          size="small"
+          value={timeInForce}
         >
-          <Tab label={tQuant("order.type.LIMIT")} value="LIMIT" />
-          <Tab label={tQuant("order.type.MARKET")} value="MARKET_QTY" />
-        </Tabs>
-        {priceType === "LIMIT" && (
-          <TextField
-            aria-label={tQuant("futures.timeInForce")}
-            onChange={(event) =>
-              setTimeInForce(
-                event.target.value as (typeof LIMIT_TIME_IN_FORCE)[number],
-              )
-            }
-            select
-            size="small"
-            value={timeInForce}
-            variant="standard"
-          >
-            {LIMIT_TIME_IN_FORCE.map((value) => (
-              <MenuItem key={value} value={value}>
-                {tQuant(`futures.orderTypes.${value}`)}
-              </MenuItem>
-            ))}
-          </TextField>
-        )}
-      </Stack>
+          {LIMIT_TIME_IN_FORCE.map((value) => (
+            <MenuItem key={value} value={value}>
+              {tQuant(`futures.orderTypes.${value}`)}
+            </MenuItem>
+          ))}
+        </TextField>
+      )}
       <Typography color="text.secondary" variant="body2">
         {tQuant("futures.availableMargin")}{" "}
         {format.number(available, {

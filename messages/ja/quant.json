@@ -125,7 +125,6 @@
         "realizedPnl": "確定損益"
       }
     },
-    "empty": "まだボットがありません",
     "events": {
       "ai_decision": "AI 判断",
       "ai_error": "AI 呼び出し失敗",
@@ -150,7 +149,7 @@
           "low": "速い",
           "medium": "標準"
         },
-        "guardHelper": "任意。AI ではなくシステムが強制します",
+        "guardHelper": "AI ではなくシステムが強制します",
         "guideline": "取引方針（任意）",
         "guidelineHelper": "スタイルと許容リスクを AI に伝えます。最大 2000 文字",
         "guidelinePlaceholder": "例：保守的に。トレンドが不明なら様子見、1 回の損失が 3% を超えたら決済",
@@ -161,8 +160,8 @@
         "maxOrderAmountHelper": "AI が 1 回に建てられる最大金額（名目）",
         "monthlyCostLimit": "月間 AI 費用上限",
         "monthlyCostLimitHelper": "今月（UTC）の費用が上限に達するとボットを停止します",
-        "stopLoss": "損切り（%）",
-        "takeProfit": "利確（%）"
+        "stopLoss": "損切り（%、任意）",
+        "takeProfit": "利確（%、任意）"
       },
       "basic": "基本設定",
       "credential": "取引口座",
@@ -476,7 +475,6 @@
       "totalReturn": "総リターン",
       "trend": "方向／レバレッジ"
     },
-    "empty": "条件に合うコピー用グリッドはありません",
     "hint": "KOL の Pionex 共有コードを入力すると、選りすぐりの先物グリッドを確認できます。「パラメータを適用」はレンジ・グリッド数・方向・レバレッジを新しい先物グリッドのフォームに入れ、確認後に作成します。KOL のコピートレード利益分配には参加しません。",
     "label": "KOL コピー",
     "pinned": "固定",
@@ -615,7 +613,9 @@
     "4H": "4時間",
     "5M": "5分",
     "60M": "1時間",
-    "8H": "8時間"
+    "8H": "8時間",
+    "1W": "1週",
+    "1m": "1ヶ月"
   },
   "label": "クオンツ取引",
   "market": {
@@ -715,7 +715,6 @@
       "success": "登録を解除しました",
       "title": "API キーの登録解除"
     },
-    "empty": "API キーはまだ登録されていません",
     "form": {
       "apiKey": "API キー",
       "apiSecret": "API シークレット",
@@ -733,7 +732,7 @@
       "maxLeverage": "レバレッジ上限",
       "maxLeverageHelper": "手動注文と先物ボットの両方に適用されます",
       "minLiquidationDistance": "最小清算距離",
-      "minLiquidationDistanceHelper": "先物ボット作成時、推定清算価格と現在価格の差がこの割合以上必要です。手動注文は制限しません",
+      "minLiquidationDistanceHelper": "先物ボットの作成時と手動の新規注文の前に、推定清算価格と約定価格の差がこの割合以上必要です",
       "success": "先物リスクを更新しました",
       "title": "先物リスク：{label}",
       "unlimited": "無制限"

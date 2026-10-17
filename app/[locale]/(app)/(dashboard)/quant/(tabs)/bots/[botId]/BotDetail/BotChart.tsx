@@ -22,6 +22,8 @@ import useSWR from "swr";
 
 import { useChartPalette } from "../../../useChartPalette";
 
+import { isIntradayInterval } from "@/constants/quant";
+
 import { Box } from "@mui/material";
 
 import type {
@@ -87,7 +89,10 @@ const BotChart = ({ bot, fills, pricePrecision }: BotChartProps) => {
       autoSize: true,
       layout: { attributionLogo: true, background: { color: "transparent" } },
       rightPriceScale: { borderVisible: false },
-      timeScale: { borderVisible: false, timeVisible: interval !== "1D" },
+      timeScale: {
+        borderVisible: false,
+        timeVisible: isIntradayInterval(interval),
+      },
     });
     chartRef.current = chart;
     seriesRef.current = chart.addSeries(CandlestickSeries, {

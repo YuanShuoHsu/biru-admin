@@ -115,6 +115,9 @@ const MarketTerminal = ({ interval, symbol }: MarketTerminalProps) => {
 
   return (
     <Stack sx={{ gap: 2 }}>
+      {!isConnected && (
+        <Alert severity="warning">{tQuant("market.disconnected")}</Alert>
+      )}
       {market ? (
         <MarketHeader
           lastPrice={lastPrice}
@@ -129,9 +132,6 @@ const MarketTerminal = ({ interval, symbol }: MarketTerminalProps) => {
         />
       ) : (
         <Skeleton height={72} variant="rounded" />
-      )}
-      {!isConnected && (
-        <Alert severity="warning">{tQuant("market.disconnected")}</Alert>
       )}
       <Board>
         <Stack sx={{ flex: 1, gap: 2, minWidth: 0 }}>

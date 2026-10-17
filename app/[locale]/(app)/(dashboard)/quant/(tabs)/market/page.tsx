@@ -1,17 +1,11 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
+import { resolveQuantInterval, resolveQuantSymbol } from "./definitions";
 import MarketTerminal from "./MarketTerminal";
 
+import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-
-import {
-  DEFAULT_QUANT_INTERVAL,
-  DEFAULT_QUANT_SYMBOL,
-} from "@/constants/quant";
-
-import { quantCandleIntervalValues } from "@/types/api";
-import type { QuantCandleInterval } from "@/types/quant";
 
 interface QuantMarketPageProps {
   params: Promise<{ locale: Locale }>;
@@ -27,18 +21,21 @@ export const generateMetadata = async ({
   return { title: tQuant("label") };
 };
 
-const isInterval = (value?: string): value is QuantCandleInterval =>
-  quantCandleIntervalValues.some((interval) => interval === value);
+const QuantMarketPage = async ({
+  params,
+  searchParams,
+}: QuantMarketPageProps) => {
+  const [{ locale }, query] = await Promise.all([params, searchParams]);
+  const interval = resolveQuantInterval(query.interval);
+  const symbol = resolveQuantSymbol(query.symbol);
 
-const QuantMarketPage = async ({ searchParams }: QuantMarketPageProps) => {
-  const { interval, symbol } = await searchParams;
+  if (query.interval !== interval || query.symbol !== symbol)
+    redirect({
+      href: `/quant/market?${new URLSearchParams({ interval, symbol })}`,
+      locale,
+    });
 
-  return (
-    <MarketTerminal
-      interval={isInterval(interval) ? interval : DEFAULT_QUANT_INTERVAL}
-      symbol={symbol?.toUpperCase() || DEFAULT_QUANT_SYMBOL}
-    />
-  );
+  return <MarketTerminal interval={interval} symbol={symbol} />;
 };
 
 export default QuantMarketPage;

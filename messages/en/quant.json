@@ -125,7 +125,6 @@
         "realizedPnl": "Realized P&L"
       }
     },
-    "empty": "No bots yet",
     "events": {
       "ai_decision": "AI decision",
       "ai_error": "AI call failed",
@@ -150,7 +149,7 @@
           "low": "Fast",
           "medium": "Standard"
         },
-        "guardHelper": "Optional; enforced by the system, not by the AI",
+        "guardHelper": "Enforced by the system, not by the AI",
         "guideline": "Trading guideline (optional)",
         "guidelineHelper": "Tell the AI your style and risk tolerance, up to 2000 characters",
         "guidelinePlaceholder": "For example: conservative, hold when the trend is unclear; exit when a trade loses more than 3%",
@@ -161,8 +160,8 @@
         "maxOrderAmountHelper": "Most the AI can open in one order (notional)",
         "monthlyCostLimit": "Monthly AI cost limit",
         "monthlyCostLimitHelper": "Stops the bot once this month's (UTC) cost reaches it",
-        "stopLoss": "Stop loss (%)",
-        "takeProfit": "Take profit (%)"
+        "stopLoss": "Stop loss (%, optional)",
+        "takeProfit": "Take profit (%, optional)"
       },
       "basic": "Basics",
       "credential": "Trading account",
@@ -476,7 +475,6 @@
       "totalReturn": "Total return",
       "trend": "Direction / leverage"
     },
-    "empty": "This KOL has no matching copy-trade grids",
     "hint": "Enter a KOL's Pionex share code to see their curated futures grids. \"Apply parameters\" fills the range, grid count, direction and leverage into a new futures grid form for you to confirm; it does not join the KOL's profit-sharing copy trade.",
     "label": "KOL copy",
     "pinned": "Pinned",
@@ -615,7 +613,9 @@
     "4H": "4h",
     "5M": "5m",
     "60M": "1h",
-    "8H": "8h"
+    "8H": "8h",
+    "1W": "1W",
+    "1m": "1Mo"
   },
   "label": "Quant Trading",
   "market": {
@@ -715,7 +715,6 @@
       "success": "API key removed",
       "title": "Remove API key"
     },
-    "empty": "No API keys yet",
     "form": {
       "apiKey": "API key",
       "apiSecret": "API secret",
@@ -733,7 +732,7 @@
       "maxLeverage": "Leverage limit",
       "maxLeverageHelper": "Applies to manual orders and futures bots",
       "minLiquidationDistance": "Minimum liquidation distance",
-      "minLiquidationDistanceHelper": "When creating a futures bot, the estimated liquidation price must be at least this far from the current price; manual orders are not limited",
+      "minLiquidationDistanceHelper": "When creating a futures bot or before a manual opening order, the estimated liquidation price must be at least this far from the fill price",
       "success": "Futures risk updated",
       "title": "Futures risk: {label}",
       "unlimited": "No limit"

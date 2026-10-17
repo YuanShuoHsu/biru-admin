@@ -608,6 +608,7 @@ const FuturesAccount = ({
         <Tabs
           onChange={(_, value: FuturesTab) => setTab(value)}
           scrollButtons="auto"
+          sx={{ flex: 1, minWidth: 0 }}
           value={tab}
           variant="scrollable"
         >
