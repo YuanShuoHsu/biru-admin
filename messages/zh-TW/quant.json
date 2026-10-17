@@ -1,4 +1,40 @@
 {
+  "account": {
+    "cancel": {
+      "label": "撤單",
+      "success": "已撤銷委託"
+    },
+    "cancelAll": {
+      "confirm": "確定要撤銷 <bold>{symbol}</bold> 的全部 {count} 筆未完成委託嗎？",
+      "label": "全部撤單",
+      "success": "已撤銷全部委託",
+      "title": "撤銷全部委託"
+    },
+    "columns": {
+      "actions": "操作",
+      "averagePrice": "成交均價",
+      "fee": "手續費",
+      "filled": "已成交",
+      "price": "價格",
+      "role": "角色",
+      "side": "方向",
+      "size": "數量／金額",
+      "status": "狀態",
+      "time": "時間",
+      "type": "類型"
+    },
+    "fills": "成交紀錄",
+    "goToSettings": "前往綁定",
+    "noCredential": "尚未綁定交易所 API key，綁定後才能下單與查看委託。",
+    "openOrders": "未完成委託",
+    "orders": "委託紀錄",
+    "status": {
+      "canceled": "已撤銷",
+      "filled": "已成交",
+      "open": "未完成",
+      "partiallyCanceled": "部分成交後撤銷"
+    }
+  },
   "indicators": {
     "bollingerBands": "BOLL",
     "ema": "EMA",
@@ -30,12 +66,71 @@
     "symbol": "交易對",
     "volume": "24h 成交量"
   },
+  "order": {
+    "amount": "金額",
+    "available": "可用",
+    "credential": "交易帳戶",
+    "live": "實盤",
+    "price": "價格",
+    "role": {
+      "MAKER": "Maker",
+      "TAKER": "Taker"
+    },
+    "side": {
+      "BUY": "買入",
+      "SELL": "賣出"
+    },
+    "size": "數量",
+    "submit": "{side} {coin}",
+    "success": "已送出委託",
+    "total": "預估金額",
+    "type": {
+      "LIMIT": "限價",
+      "MARKET": "市價"
+    },
+    "validation": {
+      "decimals": "最多 {precision} 位小數",
+      "insufficient": "可用餘額不足",
+      "maxSize": "最大數量為 {max}",
+      "minAmount": "最小下單金額為 {min} {coin}",
+      "minSize": "最小數量為 {min}",
+      "positive": "須大於 0",
+      "required": "必填"
+    }
+  },
   "orderBook": {
     "label": "委託簿",
     "price": "價格",
     "size": "數量",
     "spread": "價差",
     "total": "累計"
+  },
+  "settings": {
+    "add": {
+      "label": "綁定 API key",
+      "success": "已綁定 API key"
+    },
+    "columns": {
+      "actions": "操作",
+      "apiKey": "API key",
+      "createdAt": "綁定時間",
+      "label": "名稱"
+    },
+    "delete": {
+      "confirm": "確定要解除綁定 <bold>{label}</bold> 嗎？之後要再使用必須重新輸入金鑰。",
+      "label": "解除綁定",
+      "success": "已解除綁定",
+      "title": "解除綁定 API key"
+    },
+    "empty": "尚未綁定任何 API key",
+    "form": {
+      "apiKey": "API key",
+      "apiSecret": "API secret",
+      "label": "名稱",
+      "labelPlaceholder": "例如：主帳戶"
+    },
+    "hint": "在 Pionex 建立 API key 時只需開啟「讀取」與「交易」權限，並建議綁定伺服器的出口 IP 白名單。金鑰會加密保存，只有你本人看得到。",
+    "label": "API key"
   },
   "trades": {
     "label": "最新成交",

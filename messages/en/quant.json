@@ -1,4 +1,40 @@
 {
+  "account": {
+    "cancel": {
+      "label": "Cancel",
+      "success": "Order canceled"
+    },
+    "cancelAll": {
+      "confirm": "Cancel all {count} open orders for <bold>{symbol}</bold>?",
+      "label": "Cancel all",
+      "success": "All orders canceled",
+      "title": "Cancel all orders"
+    },
+    "columns": {
+      "actions": "Actions",
+      "averagePrice": "Avg. price",
+      "fee": "Fee",
+      "filled": "Filled",
+      "price": "Price",
+      "role": "Role",
+      "side": "Side",
+      "size": "Size / Amount",
+      "status": "Status",
+      "time": "Time",
+      "type": "Type"
+    },
+    "fills": "Trade history",
+    "goToSettings": "Add an API key",
+    "noCredential": "No exchange API key yet. Add one to place orders and see your orders.",
+    "openOrders": "Open orders",
+    "orders": "Order history",
+    "status": {
+      "canceled": "Canceled",
+      "filled": "Filled",
+      "open": "Open",
+      "partiallyCanceled": "Partially filled, canceled"
+    }
+  },
   "indicators": {
     "bollingerBands": "BOLL",
     "ema": "EMA",
@@ -30,12 +66,71 @@
     "symbol": "Symbol",
     "volume": "24h Volume"
   },
+  "order": {
+    "amount": "Amount",
+    "available": "Available",
+    "credential": "Trading account",
+    "live": "Live",
+    "price": "Price",
+    "role": {
+      "MAKER": "Maker",
+      "TAKER": "Taker"
+    },
+    "side": {
+      "BUY": "Buy",
+      "SELL": "Sell"
+    },
+    "size": "Size",
+    "submit": "{side} {coin}",
+    "success": "Order submitted",
+    "total": "Est. total",
+    "type": {
+      "LIMIT": "Limit",
+      "MARKET": "Market"
+    },
+    "validation": {
+      "decimals": "Up to {precision} decimal places",
+      "insufficient": "Insufficient available balance",
+      "maxSize": "Maximum size is {max}",
+      "minAmount": "Minimum order is {min} {coin}",
+      "minSize": "Minimum size is {min}",
+      "positive": "Must be greater than 0",
+      "required": "Required"
+    }
+  },
   "orderBook": {
     "label": "Order Book",
     "price": "Price",
     "size": "Size",
     "spread": "Spread",
     "total": "Total"
+  },
+  "settings": {
+    "add": {
+      "label": "Add API key",
+      "success": "API key added"
+    },
+    "columns": {
+      "actions": "Actions",
+      "apiKey": "API key",
+      "createdAt": "Added",
+      "label": "Name"
+    },
+    "delete": {
+      "confirm": "Remove <bold>{label}</bold>? You will need to enter the key again to use it.",
+      "label": "Remove",
+      "success": "API key removed",
+      "title": "Remove API key"
+    },
+    "empty": "No API keys yet",
+    "form": {
+      "apiKey": "API key",
+      "apiSecret": "API secret",
+      "label": "Name",
+      "labelPlaceholder": "e.g. Main account"
+    },
+    "hint": "When creating the key on Pionex, enable only the Read and Trade permissions, and restrict it to the server’s outbound IPs. Keys are stored encrypted and only you can see them.",
+    "label": "API keys"
   },
   "trades": {
     "label": "Recent Trades",

@@ -1,3 +1,5 @@
+"use client";
+
 import { Paper, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
 

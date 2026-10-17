@@ -91,6 +91,7 @@ import {
   ViewCarousel,
   ViewInAr,
   ViewKanban,
+  VpnKey,
 } from "@mui/icons-material";
 import type { SvgIconProps } from "@mui/material";
 
@@ -659,9 +660,22 @@ const routes: Route[] = [
     segment: "deleted-records",
   },
   {
+    children: [
+      {
+        icon: CandlestickChart,
+        label: "quant.market.label",
+        segment: "market",
+      },
+      {
+        icon: VpnKey,
+        label: "quant.settings.label",
+        segment: "settings",
+      },
+    ],
     icon: CandlestickChart,
     label: "quant.label",
     segment: "quant",
+    to: "/quant/market",
   },
   {
     icon: ViewInAr,

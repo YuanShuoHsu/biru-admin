@@ -3314,6 +3314,128 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/quant/credentials": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 列出自己綁定的交易所 API key */
+    get: operations["QuantAccountController_findAll"];
+    put?: never;
+    /** 綁定交易所 API key（會先向交易所驗證） */
+    post: operations["QuantAccountController_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/credentials/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 解除綁定交易所 API key */
+    delete: operations["QuantAccountController_remove"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/credentials/{id}/balances": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得交易帳戶餘額 */
+    get: operations["QuantAccountController_findBalances"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/credentials/{id}/open-orders": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得交易對的未完成委託 */
+    get: operations["QuantAccountController_findOpenOrders"];
+    put?: never;
+    post?: never;
+    /** 撤銷交易對的全部未完成委託 */
+    delete: operations["QuantAccountController_cancelAll"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/credentials/{id}/orders": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得交易對最近的委託紀錄 */
+    get: operations["QuantAccountController_findOrders"];
+    put?: never;
+    /** 下單（實盤） */
+    post: operations["QuantAccountController_placeOrder"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/credentials/{id}/orders/{orderId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 撤銷委託 */
+    delete: operations["QuantAccountController_cancelOrder"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/credentials/{id}/fills": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得交易對最近的成交紀錄 */
+    get: operations["QuantAccountController_findFills"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/quant/markets": {
     parameters: {
       query?: never;
@@ -8659,6 +8781,91 @@ export interface components {
       teams: components["schemas"]["OrganizationMemberTeamDto"][];
       userId: string;
     };
+    QuantCredentialDto: {
+      id: string;
+      label: string;
+      /** @description API key 末 4 碼 */
+      apiKeyLast4: string;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    CreateQuantCredentialDto: {
+      label: string;
+      apiKey: string;
+      apiSecret: string;
+    };
+    QuantBalanceDto: {
+      coin: string;
+      /** @description 可用 */
+      free: number;
+      /** @description 掛單凍結 */
+      frozen: number;
+    };
+    /** @enum {string} */
+    QuantOrderSide: "BUY" | "SELL";
+    /** @enum {string} */
+    QuantOrderType: "LIMIT" | "MARKET";
+    /** @enum {string} */
+    QuantOrderStatus: "OPEN" | "CLOSED";
+    QuantOrderDto: {
+      orderId: string;
+      symbol: string;
+      side: components["schemas"]["QuantOrderSide"];
+      type: components["schemas"]["QuantOrderType"];
+      /** @description 限價單價格 */
+      price?: number;
+      /** @description 委託數量（基礎幣） */
+      size?: number;
+      /** @description 市價買單金額（計價幣） */
+      amount?: number;
+      filledSize: number;
+      filledAmount: number;
+      fee: number;
+      feeCoin: string;
+      status: components["schemas"]["QuantOrderStatus"];
+      /** @description 建立時間（毫秒） */
+      createTime: number;
+      /** @description 最後更新時間（毫秒） */
+      updateTime: number;
+    };
+    PlaceQuantOrderDto: {
+      /** @example BTC_USDT */
+      symbol: string;
+      side: components["schemas"]["QuantOrderSide"];
+      type: components["schemas"]["QuantOrderType"];
+      /**
+       * @description 限價單必填
+       * @example 30000
+       */
+      price?: string;
+      /**
+       * @description 限價單與市價賣單必填（基礎幣）
+       * @example 0.001
+       */
+      size?: string;
+      /**
+       * @description 市價買單必填（計價幣）
+       * @example 20
+       */
+      amount?: string;
+    };
+    PlaceQuantOrderResponseDto: {
+      orderId: string;
+    };
+    /** @enum {string} */
+    QuantFillRole: "MAKER" | "TAKER";
+    QuantFillDto: {
+      id: string;
+      orderId: string;
+      side: components["schemas"]["QuantOrderSide"];
+      role: components["schemas"]["QuantFillRole"];
+      price: number;
+      size: number;
+      fee: number;
+      feeCoin: string;
+      /** @description 成交時間（毫秒） */
+      time: number;
+    };
     QuantMarketDto: {
       /** @example BTC_USDT */
       symbol: string;
@@ -8668,6 +8875,14 @@ export interface components {
       pricePrecision: number;
       /** @description 數量小數位數 */
       sizePrecision: number;
+      /** @description 市價買單金額小數位數 */
+      amountPrecision: number;
+      /** @description 最小下單金額（計價幣） */
+      minAmount: number;
+      /** @description 最小下單數量（基礎幣） */
+      minTradeSize: number;
+      /** @description 最大下單數量（基礎幣） */
+      maxTradeSize: number;
       /** @description 24 小時前的價格 */
       open: number;
       /** @description 最新價 */
@@ -8699,13 +8914,11 @@ export interface components {
       close: number;
       volume: number;
     };
-    /** @enum {string} */
-    QuantTradeSide: "BUY" | "SELL";
     QuantTradeDto: {
       id: string;
       price: number;
       size: number;
-      side: components["schemas"]["QuantTradeSide"];
+      side: components["schemas"]["QuantOrderSide"];
       /** @description 成交時間（毫秒） */
       time: number;
     };
@@ -16958,6 +17171,295 @@ export interface operations {
       };
     };
   };
+  QuantAccountController_findAll: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantCredentialDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAccountController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateQuantCredentialDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantCredentialDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAccountController_remove: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAccountController_findBalances: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantBalanceDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAccountController_findOpenOrders: {
+    parameters: {
+      query: {
+        symbol: string;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantOrderDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAccountController_cancelAll: {
+    parameters: {
+      query: {
+        symbol: string;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAccountController_findOrders: {
+    parameters: {
+      query: {
+        symbol: string;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantOrderDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAccountController_placeOrder: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PlaceQuantOrderDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PlaceQuantOrderResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAccountController_cancelOrder: {
+    parameters: {
+      query: {
+        symbol: string;
+      };
+      header?: never;
+      path: {
+        id: string;
+        orderId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAccountController_findFills: {
+    parameters: {
+      query: {
+        symbol: string;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantFillDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   QuantController_findMarkets: {
     parameters: {
       query?: never;
@@ -18692,9 +19194,18 @@ export const waitlistTicketSortFieldValues: ReadonlyArray<
 export const organizationMemberResponseDtoRoleValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrganizationMemberResponseDto"]["role"]
 > = ["admin", "member", "owner"];
+export const quantOrderSideValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantOrderSide"]
+> = ["BUY", "SELL"];
+export const quantOrderTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantOrderType"]
+> = ["LIMIT", "MARKET"];
+export const quantOrderStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantOrderStatus"]
+> = ["OPEN", "CLOSED"];
+export const quantFillRoleValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantFillRole"]
+> = ["MAKER", "TAKER"];
 export const quantCandleIntervalValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantCandleInterval"]
 > = ["1M", "5M", "15M", "30M", "60M", "4H", "8H", "12H", "1D"];
-export const quantTradeSideValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["QuantTradeSide"]
-> = ["BUY", "SELL"];

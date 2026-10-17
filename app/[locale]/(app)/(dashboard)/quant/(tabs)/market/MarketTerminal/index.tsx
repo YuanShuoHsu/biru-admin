@@ -6,10 +6,14 @@ import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import useSWR from "swr";
 
+import { useQuantCredentials } from "../../useQuantCredentials";
+import AccountOrders from "./AccountOrders";
 import MarketHeader from "./MarketHeader";
 import OrderBook from "./OrderBook";
 import RecentTrades from "./RecentTrades";
+import TradePanel from "./TradePanel";
 import { Board, Panel, SidePanel } from "./styled";
+import { useAccountStream } from "./useAccountStream";
 import { useMarketStream } from "./useMarketStream";
 
 import { useRouter } from "@/i18n/navigation";
@@ -51,12 +55,16 @@ const MarketTerminal = ({ interval, symbol }: MarketTerminalProps) => {
   const [depth, setDepth] = useState<QuantDepth | null>(null);
   const [liveCandle, setLiveCandle] = useState<QuantCandle | null>(null);
   const [liveTrades, setLiveTrades] = useState<QuantTrade[]>([]);
+  const [pickedPrice, setPickedPrice] = useState<{ price: number } | null>(
+    null,
+  );
 
   if (streamKey !== symbol) {
     setStreamKey(symbol);
     setDepth(null);
     setLiveCandle(null);
     setLiveTrades([]);
+    setPickedPrice(null);
   }
 
   const { isConnected } = useMarketStream(symbol, interval, {
@@ -71,12 +79,17 @@ const MarketTerminal = ({ interval, symbol }: MarketTerminalProps) => {
       ),
   });
 
+  const { credential, credentials, selectCredential } = useQuantCredentials();
+  useAccountStream(credential?.id, symbol, isConnected);
+
+  const lastPrice = liveTrades[0]?.price ?? market?.close ?? 0;
+
   const navigate = (next: {
     interval?: QuantCandleInterval;
     symbol?: string;
   }) =>
     router.replace(
-      `/quant?${new URLSearchParams({ interval, symbol, ...next })}`,
+      `/quant/market?${new URLSearchParams({ interval, symbol, ...next })}`,
     );
 
   if (markets && !market)
@@ -86,7 +99,7 @@ const MarketTerminal = ({ interval, symbol }: MarketTerminalProps) => {
     <Stack sx={{ gap: 2 }}>
       {market ? (
         <MarketHeader
-          lastPrice={liveTrades[0]?.price ?? market.close}
+          lastPrice={lastPrice}
           market={market}
           markets={markets ?? []}
           onSymbolChange={(value) => navigate({ symbol: value })}
@@ -98,19 +111,42 @@ const MarketTerminal = ({ interval, symbol }: MarketTerminalProps) => {
         <Alert severity="warning">{tQuant("market.disconnected")}</Alert>
       )}
       <Board>
-        <Panel sx={{ flex: 1, minWidth: 0 }}>
-          <CandleChart
-            interval={interval}
-            liveCandle={liveCandle}
-            onIntervalChange={(value) => navigate({ interval: value })}
-            pricePrecision={market?.pricePrecision ?? 2}
-            symbol={symbol}
-          />
-        </Panel>
+        <Stack sx={{ flex: 1, gap: 2, minWidth: 0 }}>
+          <Panel>
+            <CandleChart
+              interval={interval}
+              liveCandle={liveCandle}
+              onIntervalChange={(value) => navigate({ interval: value })}
+              pricePrecision={market?.pricePrecision ?? 2}
+              symbol={symbol}
+            />
+          </Panel>
+          {market && credential && (
+            <Panel>
+              <AccountOrders credential={credential} market={market} />
+            </Panel>
+          )}
+        </Stack>
         <SidePanel>
           <Panel>
-            <OrderBook depth={depth} market={market} />
+            <OrderBook
+              depth={depth}
+              market={market}
+              onPriceClick={(price) => setPickedPrice({ price })}
+            />
           </Panel>
+          {market && credentials && (
+            <Panel>
+              <TradePanel
+                credential={credential}
+                credentials={credentials}
+                lastPrice={lastPrice}
+                market={market}
+                onCredentialChange={selectCredential}
+                pickedPrice={pickedPrice}
+              />
+            </Panel>
+          )}
           <Panel>
             <RecentTrades
               liveTrades={liveTrades}

@@ -1,4 +1,40 @@
 {
+  "account": {
+    "cancel": {
+      "label": "取消",
+      "success": "注文を取り消しました"
+    },
+    "cancelAll": {
+      "confirm": "<bold>{symbol}</bold> の未約定注文 {count} 件をすべて取り消しますか？",
+      "label": "一括取消",
+      "success": "すべての注文を取り消しました",
+      "title": "一括取消"
+    },
+    "columns": {
+      "actions": "操作",
+      "averagePrice": "約定平均価格",
+      "fee": "手数料",
+      "filled": "約定済",
+      "price": "価格",
+      "role": "区分",
+      "side": "売買",
+      "size": "数量／金額",
+      "status": "状態",
+      "time": "時刻",
+      "type": "種類"
+    },
+    "fills": "約定履歴",
+    "goToSettings": "登録する",
+    "noCredential": "取引所の API キーが未登録です。登録すると注文と注文履歴を利用できます。",
+    "openOrders": "未約定注文",
+    "orders": "注文履歴",
+    "status": {
+      "canceled": "取消済",
+      "filled": "約定済",
+      "open": "未約定",
+      "partiallyCanceled": "一部約定後取消"
+    }
+  },
   "indicators": {
     "bollingerBands": "BOLL",
     "ema": "EMA",
@@ -30,12 +66,71 @@
     "symbol": "取引ペア",
     "volume": "24h 出来高"
   },
+  "order": {
+    "amount": "金額",
+    "available": "利用可能",
+    "credential": "取引口座",
+    "live": "本番",
+    "price": "価格",
+    "role": {
+      "MAKER": "Maker",
+      "TAKER": "Taker"
+    },
+    "side": {
+      "BUY": "買い",
+      "SELL": "売り"
+    },
+    "size": "数量",
+    "submit": "{coin} を{side}",
+    "success": "注文を送信しました",
+    "total": "概算金額",
+    "type": {
+      "LIMIT": "指値",
+      "MARKET": "成行"
+    },
+    "validation": {
+      "decimals": "小数点以下 {precision} 桁まで",
+      "insufficient": "利用可能残高が不足しています",
+      "maxSize": "最大数量は {max} です",
+      "minAmount": "最小注文金額は {min} {coin} です",
+      "minSize": "最小数量は {min} です",
+      "positive": "0 より大きい値を入力してください",
+      "required": "必須"
+    }
+  },
   "orderBook": {
     "label": "板情報",
     "price": "価格",
     "size": "数量",
     "spread": "スプレッド",
     "total": "累計"
+  },
+  "settings": {
+    "add": {
+      "label": "API キーを登録",
+      "success": "API キーを登録しました"
+    },
+    "columns": {
+      "actions": "操作",
+      "apiKey": "API キー",
+      "createdAt": "登録日時",
+      "label": "名前"
+    },
+    "delete": {
+      "confirm": "<bold>{label}</bold> の登録を解除しますか？再度使うにはキーを入力し直す必要があります。",
+      "label": "登録解除",
+      "success": "登録を解除しました",
+      "title": "API キーの登録解除"
+    },
+    "empty": "API キーはまだ登録されていません",
+    "form": {
+      "apiKey": "API キー",
+      "apiSecret": "API シークレット",
+      "label": "名前",
+      "labelPlaceholder": "例：メイン口座"
+    },
+    "hint": "Pionex で API キーを作成する際は「読み取り」と「取引」の権限のみを有効にし、サーバーの送信元 IP で制限することをおすすめします。キーは暗号化して保存され、本人以外は閲覧できません。",
+    "label": "API キー"
   },
   "trades": {
     "label": "約定履歴",

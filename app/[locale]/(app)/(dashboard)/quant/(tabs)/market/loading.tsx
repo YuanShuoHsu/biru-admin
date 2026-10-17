@@ -1,3 +1,5 @@
+"use client";
+
 import { Skeleton, Stack } from "@mui/material";
 
 import { Board, CHART_HEIGHT, Panel, SidePanel } from "./MarketTerminal/styled";

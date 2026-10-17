@@ -32,9 +32,10 @@ const accumulate = (levels: QuantDepth["bids"]) => {
 interface OrderBookProps {
   depth: QuantDepth | null;
   market?: QuantMarket;
+  onPriceClick: (price: number) => void;
 }
 
-const OrderBook = ({ depth, market }: OrderBookProps) => {
+const OrderBook = ({ depth, market, onPriceClick }: OrderBookProps) => {
   const tQuant = useTranslations("quant");
   const format = useFormatter();
 
@@ -73,7 +74,9 @@ const OrderBook = ({ depth, market }: OrderBookProps) => {
   ) => (
     <Row
       key={price}
+      onClick={() => onPriceClick(price)}
       sx={(theme) => ({
+        cursor: "pointer",
         background: `linear-gradient(to left, ${alpha(
           side === "ask"
             ? theme.palette.error.main
