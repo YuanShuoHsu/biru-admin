@@ -3,6 +3,7 @@ import * as z from "zod";
 
 import type {
   DcaConfig,
+  FuturesGridConfig,
   GridConfig,
   IndicatorCondition,
   IndicatorConfig,
@@ -59,6 +60,12 @@ export interface BotFormValues {
     stopLoss: string;
     takeProfit: string;
   };
+  futuresGrid: {
+    extraMargin: string;
+    leverage: string;
+    lossStopHigh: string;
+    trend: FuturesGridConfig["trend"];
+  };
   investment: string;
   maxDailyLoss: string;
   mode: QuantBotMode;
@@ -109,6 +116,12 @@ export const defaultValues = (symbol: string): BotFormValues => ({
     triggerDirection: "below",
     triggerPrice: "",
   },
+  futuresGrid: {
+    extraMargin: "",
+    leverage: "",
+    lossStopHigh: "",
+    trend: "long",
+  },
   indicator: {
     entry: [emptyCondition("entry")],
     exit: [],
@@ -127,6 +140,23 @@ export const defaultValues = (symbol: string): BotFormValues => ({
 });
 
 const text = (value?: number) => (value === undefined ? "" : String(value));
+
+const gridValues = (
+  base: BotFormValues["grid"],
+  config: FuturesGridConfig | GridConfig,
+): BotFormValues["grid"] => ({
+  ...base,
+  bottom: text(config.bottom),
+  gridType: config.gridType,
+  lossStop: text(config.lossStop?.value),
+  lossStopType: config.lossStop?.type ?? "price",
+  profitStop: text(config.profitStop?.value),
+  profitStopType: config.profitStop?.type ?? "price",
+  row: text(config.row),
+  top: text(config.top),
+  triggerDirection: config.trigger?.direction ?? "below",
+  triggerPrice: text(config.trigger?.price),
+});
 
 const conditionValues =
   (group: "entry" | "exit") =>
@@ -158,18 +188,19 @@ export const valuesFromBot = (bot: QuantBot): BotFormValues => {
     case "grid": {
       const config = bot.config as GridConfig;
       values.grid = {
-        ...base.grid,
-        bottom: text(config.bottom),
+        ...gridValues(base.grid, config),
         closeModel: config.closeModel,
-        gridType: config.gridType,
-        lossStop: text(config.lossStop?.value),
-        lossStopType: config.lossStop?.type ?? "price",
-        profitStop: text(config.profitStop?.value),
-        profitStopType: config.profitStop?.type ?? "price",
-        row: text(config.row),
-        top: text(config.top),
-        triggerDirection: config.trigger?.direction ?? "below",
-        triggerPrice: text(config.trigger?.price),
+      };
+      break;
+    }
+    case "futures_grid": {
+      const config = bot.config as FuturesGridConfig;
+      values.grid = gridValues(base.grid, config);
+      values.futuresGrid = {
+        extraMargin: text(config.extraMargin),
+        leverage: text(config.leverage),
+        lossStopHigh: text(config.lossStopHigh),
+        trend: config.trend,
       };
       break;
     }
@@ -246,32 +277,51 @@ const toCondition = (condition: ConditionValues): IndicatorCondition => {
   }
 };
 
+const gridConfig = ({ grid }: BotFormValues) => {
+  const stop = (stopType: "price" | "profit_amount", value: string) =>
+    value.trim() === "" ? undefined : { type: stopType, value: Number(value) };
+
+  return {
+    bottom: Number(grid.bottom),
+    gridType: grid.gridType,
+    lossStop: stop(grid.lossStopType, grid.lossStop),
+    profitStop: stop(grid.profitStopType, grid.profitStop),
+    row: Number(grid.row),
+    top: Number(grid.top),
+    trigger:
+      grid.triggerPrice.trim() === ""
+        ? undefined
+        : {
+            direction: grid.triggerDirection,
+            price: Number(grid.triggerPrice),
+          },
+  };
+};
+
+export const futuresGridConfig = (values: BotFormValues): FuturesGridConfig => {
+  const { futuresGrid } = values;
+
+  return {
+    ...gridConfig(values),
+    extraMargin: optionalNumber(futuresGrid.extraMargin),
+    leverage: Number(futuresGrid.leverage),
+    lossStopHigh:
+      futuresGrid.trend === "no_trend"
+        ? optionalNumber(futuresGrid.lossStopHigh)
+        : undefined,
+    trend: futuresGrid.trend,
+  };
+};
+
 export const toConfig = (type: QuantBotType, values: BotFormValues) => {
   switch (type) {
-    case "grid": {
-      const { grid } = values;
-      const stop = (stopType: "price" | "profit_amount", value: string) =>
-        value.trim() === ""
-          ? undefined
-          : { type: stopType, value: Number(value) };
-
+    case "grid":
       return {
-        bottom: Number(grid.bottom),
-        closeModel: grid.closeModel,
-        gridType: grid.gridType,
-        lossStop: stop(grid.lossStopType, grid.lossStop),
-        profitStop: stop(grid.profitStopType, grid.profitStop),
-        row: Number(grid.row),
-        top: Number(grid.top),
-        trigger:
-          grid.triggerPrice.trim() === ""
-            ? undefined
-            : {
-                direction: grid.triggerDirection,
-                price: Number(grid.triggerPrice),
-              },
+        ...gridConfig(values),
+        closeModel: values.grid.closeModel,
       } satisfies GridConfig;
-    }
+    case "futures_grid":
+      return futuresGridConfig(values);
     case "dca": {
       const { dca } = values;
 
@@ -376,8 +426,21 @@ export const useBotFormSchema = (type: QuantBotType) => {
               volumeScale: positive,
             })
           : loose,
+      futuresGrid:
+        type === "futures_grid"
+          ? z.object({
+              extraMargin: optionalPositive,
+              leverage: required.refine(
+                (value) =>
+                  Number.isInteger(Number(value)) && Number(value) >= 1,
+                { error: tValidation("positiveInteger") },
+              ),
+              lossStopHigh: optionalPositive,
+              trend: z.enum(["long", "short", "no_trend"]),
+            })
+          : loose,
       grid:
-        type === "grid"
+        type === "grid" || type === "futures_grid"
           ? z.object({
               bottom: positive,
               closeModel: z.enum(["NOT_SELL", "TO_QUOTE"]),
@@ -386,7 +449,7 @@ export const useBotFormSchema = (type: QuantBotType) => {
               lossStopType: z.enum(["price", "profit_amount"]),
               profitStop: optionalPositive,
               profitStopType: z.enum(["price", "profit_amount"]),
-              row: integer(2, 200),
+              row: type === "grid" ? integer(2, 200) : integer(2, 500),
               top: positive,
               triggerDirection: z.enum(["above", "below"]),
               triggerPrice: optionalPositive,
@@ -433,13 +496,24 @@ export const useBotFormSchema = (type: QuantBotType) => {
           });
       }
       if (
-        type === "grid" &&
+        (type === "grid" || type === "futures_grid") &&
         Number(values.grid.top) <= Number(values.grid.bottom)
       )
         ctx.addIssue({
           code: "custom",
           message: tValidation("topAboveBottom"),
           path: ["grid", "top"],
+        });
+      if (
+        type === "futures_grid" &&
+        values.futuresGrid.trend === "no_trend" &&
+        values.grid.profitStop.trim() !== "" &&
+        values.grid.profitStopType === "price"
+      )
+        ctx.addIssue({
+          code: "custom",
+          message: tValidation("neutralProfitStop"),
+          path: ["grid", "profitStop"],
         });
     });
 };

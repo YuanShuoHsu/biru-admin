@@ -102,6 +102,8 @@
         "averageCost": "平均取得価格",
         "equity": "資産",
         "fills": "約定数",
+        "fundingFee": "資金調達料",
+        "liquidationPrice": "推定清算価格",
         "pnl": "総損益",
         "position": "保有",
         "realizedPnl": "確定損益"
@@ -111,6 +113,7 @@
     "events": {
       "error": "エラー",
       "exit": "エグジット",
+      "funding": "資金調達料",
       "grid_started": "グリッド開始",
       "order_rejected": "注文拒否",
       "order_skipped": "注文スキップ",
@@ -131,6 +134,37 @@
         "stopLoss": "損切り（%、任意）",
         "takeProfit": "利確（%）",
         "volumeScale": "金額の倍率"
+      },
+      "futuresGrid": {
+        "check": "Pionex で試算",
+        "checkInvestment": "投資範囲：{min} – {max} {quote}",
+        "checkLiquidationDown": "下側の推定清算価格 {price}（現在価格から {distance}）",
+        "checkLiquidationUp": "上側の推定清算価格 {price}（現在価格から {distance}）",
+        "checkNeedsCredential": "先に API キーを連携してください",
+        "checkNote": "Pionex 公式の試算で、注文は出しません。実際の清算価格は約定や資金調達料で変動します。",
+        "checkPerVolume": "1 グリッドあたり {volume} {base}",
+        "extraMargin": "追加証拠金（任意）",
+        "extraMarginHelper": "グリッド取引には使わず、清算価格を遠ざけるためだけに使います",
+        "leverage": "レバレッジ",
+        "leverageMax": "この銘柄は最大 {max}x",
+        "lossStopHelper": {
+          "long": "価格がこの値まで下がると停止して決済します。金額の場合は損失がこの額に達したとき",
+          "no_trend": "下側の損切り：価格がこの値まで下がると停止して決済します。金額の場合は損失がこの額に達したとき",
+          "short": "価格がこの値まで上がると停止して決済します。金額の場合は損失がこの額に達したとき"
+        },
+        "lossStopHigh": "上側の損切り価格（任意）",
+        "lossStopHighHelper": "ニュートラルグリッドで価格がこの値まで上がると停止して決済します",
+        "profitStopHelper": {
+          "long": "価格がこの値まで上がると停止して決済します。金額の場合は利益がこの額に達したとき",
+          "no_trend": "ニュートラルグリッドの利確は金額でのみ設定できます",
+          "short": "価格がこの値まで下がると停止して決済します。金額の場合は利益がこの額に達したとき"
+        },
+        "trend": "方向",
+        "trends": {
+          "long": "ロング",
+          "no_trend": "ニュートラル",
+          "short": "ショート"
+        }
       },
       "grid": {
         "aiStrategy": "AI 推奨パラメータを適用",
@@ -201,6 +235,7 @@
       },
       "investment": "投資額",
       "investmentHelper": "ボットはこの金額だけを使います",
+      "liveFuturesGridNote": "実運用の先物グリッドは Pionex に独立したポジションと証拠金を持つ先物グリッドボットを作成し、Pionex アプリで確認・管理できます。先物口座に十分な USDT が必要です。",
       "liveGridNote": "本番グリッドは Pionex に内蔵グリッドボットを作成し、Pionex アプリでも確認・管理できます。",
       "maxDailyLoss": "1 日の最大損失（任意）",
       "maxDailyLossHelper": "当日の損失がこの金額に達すると自動で停止します",
@@ -229,9 +264,13 @@
       "create_failed": "Pionex での作成に失敗",
       "daily_loss_limit": "1 日の損失上限に到達",
       "dca_base_order_failed": "DCA の初回注文に失敗",
+      "force_liquidation": "Pionex で清算されました",
+      "futures_daily_loss_limit": "先物の日次損失上限に達しました",
       "grid_open_failed": "グリッドの開始注文に失敗",
+      "liquidated": "模擬清算",
       "loss_stop": "損切りに到達",
       "not_enough_balance": "Pionex の残高不足",
+      "not_enough_balance_when_lock": "Pionex での資金ロックに失敗しました",
       "order_canceled_externally": "注文が Pionex で手動取消されました",
       "pionex_finished": "Pionex で終了",
       "profit_stop": "利確に到達",
@@ -244,6 +283,7 @@
       "above_maximum": "取引所の最大注文量を超えています",
       "below_minimum": "取引所の最小注文量未満です",
       "insufficient_budget": "ボットの資金が不足しています",
+      "insufficient_margin": "証拠金不足",
       "insufficient_position": "ボットの保有が不足しています",
       "invalid_price": "価格が無効です"
     },
@@ -257,13 +297,15 @@
       "dca": "段階的に買い増して平均取得価格を下げ、利確したら次のサイクルを始めます。",
       "grid": "価格帯の中で自動的に安く買って高く売り、レンジ相場に向いています。本番は Pionex の内蔵グリッドで実行します。",
       "indicator": "テクニカル指標の条件で自動売買します。",
-      "webhook": "TradingView のアラートなど外部シグナルで注文します。"
+      "webhook": "TradingView のアラートなど外部シグナルで注文します。",
+      "futures_grid": "価格レンジ内でレバレッジをかけたロング・ショート・ニュートラルのグリッド。実運用は Pionex の先物グリッドで実行します。"
     },
     "types": {
       "dca": "DCA",
       "grid": "グリッド",
       "indicator": "インジケーター",
-      "webhook": "Webhook"
+      "webhook": "Webhook",
+      "futures_grid": "先物グリッド"
     },
     "webhook": {
       "actionsHint": "action は buy、sell、close が使えます。sell に amount を付けると一部だけ売却します",
@@ -437,7 +479,9 @@
       "maxSize": "最大数量は {max} です",
       "minAmount": "最小注文金額は {min} {coin} です",
       "minSize": "最小数量は {min} です",
+      "neutralProfitStop": "ニュートラルグリッドの利確は金額でのみ設定できます",
       "positive": "0 より大きい値を入力してください",
+      "positiveInteger": "正の整数で入力してください",
       "range": "{min} から {max} の間で入力してください",
       "required": "必須",
       "topAboveBottom": "上限価格は下限価格より高くしてください"

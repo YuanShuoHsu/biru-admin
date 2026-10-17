@@ -18,6 +18,7 @@ import {
 import DataGrid from "@/components/DataGrid";
 
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
+import { quantPairOf } from "@/constants/quant";
 
 import { Link, useRouter } from "@/i18n/navigation";
 
@@ -142,7 +143,7 @@ const BotList = () => {
     {
       field: "symbol",
       headerName: tBots("columns.symbol"),
-      valueFormatter: (value: string) => value.replace("_", "/"),
+      valueFormatter: (value: string) => quantPairOf(value),
     },
     {
       field: "mode",

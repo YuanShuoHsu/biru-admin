@@ -60,6 +60,10 @@ export type QuantBotEvent = components["schemas"]["QuantBotEventDto"];
 export type CreateQuantBotResponse =
   components["schemas"]["CreateQuantBotResponseDto"];
 export type GridConfig = components["schemas"]["GridConfigDto"];
+export type FuturesGridConfig = components["schemas"]["FuturesGridConfigDto"];
+export type FuturesGridCheckDto = components["schemas"]["FuturesGridCheckDto"];
+export type FuturesGridCheckResult =
+  components["schemas"]["FuturesGridCheckResultDto"];
 export type DcaConfig = components["schemas"]["DcaConfigDto"];
 export type IndicatorConfig = components["schemas"]["IndicatorConfigDto"];
 export type IndicatorCondition = components["schemas"]["IndicatorConditionDto"];

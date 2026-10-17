@@ -102,6 +102,8 @@
         "averageCost": "Avg. cost",
         "equity": "Equity",
         "fills": "Fills",
+        "fundingFee": "Funding fees",
+        "liquidationPrice": "Est. liquidation price",
         "pnl": "Total P&L",
         "position": "Position",
         "realizedPnl": "Realized P&L"
@@ -111,6 +113,7 @@
     "events": {
       "error": "Error",
       "exit": "Exit",
+      "funding": "Funding",
       "grid_started": "Grid started",
       "order_rejected": "Order rejected",
       "order_skipped": "Order skipped",
@@ -131,6 +134,37 @@
         "stopLoss": "Stop loss (%, optional)",
         "takeProfit": "Take profit (%)",
         "volumeScale": "Volume scale"
+      },
+      "futuresGrid": {
+        "check": "Check with Pionex",
+        "checkInvestment": "Investment range: {min} – {max} {quote}",
+        "checkLiquidationDown": "Est. lower liquidation price {price} ({distance} from current)",
+        "checkLiquidationUp": "Est. upper liquidation price {price} ({distance} from current)",
+        "checkNeedsCredential": "Bind an API key first",
+        "checkNote": "Official Pionex estimate; no order is placed. The actual liquidation price moves with fills and funding.",
+        "checkPerVolume": "Size per grid {volume} {base}",
+        "extraMargin": "Extra margin (optional)",
+        "extraMarginHelper": "Not traded by the grid; only pushes the liquidation price further away",
+        "leverage": "Leverage",
+        "leverageMax": "Up to {max}x for this symbol",
+        "lossStopHelper": {
+          "long": "Stops and closes when the price falls to this; by amount, when the loss reaches it",
+          "no_trend": "Lower stop loss: stops and closes when the price falls to this; by amount, when the loss reaches it",
+          "short": "Stops and closes when the price rises to this; by amount, when the loss reaches it"
+        },
+        "lossStopHigh": "Upper stop loss price (optional)",
+        "lossStopHighHelper": "Stops the neutral grid and closes when the price rises to this",
+        "profitStopHelper": {
+          "long": "Stops and closes when the price rises to this; by amount, when the profit reaches it",
+          "no_trend": "Neutral grids can only take profit by amount",
+          "short": "Stops and closes when the price falls to this; by amount, when the profit reaches it"
+        },
+        "trend": "Direction",
+        "trends": {
+          "long": "Long",
+          "no_trend": "Neutral",
+          "short": "Short"
+        }
       },
       "grid": {
         "aiStrategy": "Apply AI suggestion",
@@ -201,6 +235,7 @@
       },
       "investment": "Investment",
       "investmentHelper": "The bot can only use this amount",
+      "liveFuturesGridNote": "A live futures grid creates a Pionex futures grid bot with its own position and margin, visible and manageable in the Pionex app. Your futures account needs enough USDT.",
       "liveGridNote": "A live grid creates a Pionex grid bot, which you can also view and manage in the Pionex app.",
       "maxDailyLoss": "Max daily loss (optional)",
       "maxDailyLossHelper": "The bot stops when the day's loss reaches this amount",
@@ -229,9 +264,13 @@
       "create_failed": "Pionex failed to create it",
       "daily_loss_limit": "Daily loss limit reached",
       "dca_base_order_failed": "DCA base order failed",
+      "force_liquidation": "Liquidated on Pionex",
+      "futures_daily_loss_limit": "Futures daily loss limit reached",
       "grid_open_failed": "Grid opening order failed",
+      "liquidated": "Simulated liquidation",
       "loss_stop": "Stop loss triggered",
       "not_enough_balance": "Insufficient Pionex balance",
+      "not_enough_balance_when_lock": "Pionex failed to lock funds",
       "order_canceled_externally": "An order was canceled outside the bot (e.g. in Pionex)",
       "pionex_finished": "Finished on Pionex",
       "profit_stop": "Take profit triggered",
@@ -244,6 +283,7 @@
       "above_maximum": "Above the exchange maximum",
       "below_minimum": "Below the exchange minimum",
       "insufficient_budget": "Not enough bot funds",
+      "insufficient_margin": "Insufficient margin",
       "insufficient_position": "Not enough bot position",
       "invalid_price": "Invalid price"
     },
@@ -257,13 +297,15 @@
       "dca": "Averages down in steps, takes profit, then starts the next cycle.",
       "grid": "Buys low and sells high within a range, suited to sideways markets. Live grids run on Pionex.",
       "indicator": "Buys and sells on technical indicator conditions.",
-      "webhook": "Trades on external signals such as TradingView alerts."
+      "webhook": "Trades on external signals such as TradingView alerts.",
+      "futures_grid": "Leveraged long, short or neutral grid within a price range. Live bots run on Pionex futures grid."
     },
     "types": {
       "dca": "DCA",
       "grid": "Grid",
       "indicator": "Indicator",
-      "webhook": "Webhook"
+      "webhook": "Webhook",
+      "futures_grid": "Futures grid"
     },
     "webhook": {
       "actionsHint": "Actions: buy, sell, close. Add amount to sell to sell only part.",
@@ -437,7 +479,9 @@
       "maxSize": "Maximum size is {max}",
       "minAmount": "Minimum order is {min} {coin}",
       "minSize": "Minimum size is {min}",
+      "neutralProfitStop": "Neutral grids can only take profit by amount",
       "positive": "Must be greater than 0",
+      "positiveInteger": "Must be a positive whole number",
       "range": "Must be between {min} and {max}",
       "required": "Required",
       "topAboveBottom": "The upper price must be higher than the lower price"

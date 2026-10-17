@@ -12,3 +12,6 @@ export const quantMarketTypeOf = (symbol: string): QuantMarketType =>
   symbol.endsWith("_PERP") ? "PERP" : "SPOT";
 
 export const DEFAULT_QUANT_INTERVAL: QuantCandleInterval = "15M";
+
+export const quantPairOf = (symbol: string) =>
+  symbol.replace(/_PERP$/, "").replace("_", "/");

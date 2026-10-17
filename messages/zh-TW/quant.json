@@ -102,6 +102,8 @@
         "averageCost": "持倉均價",
         "equity": "權益",
         "fills": "成交筆數",
+        "fundingFee": "資金費",
+        "liquidationPrice": "預估強平價",
         "pnl": "總損益",
         "position": "持倉",
         "realizedPnl": "已實現損益"
@@ -111,6 +113,7 @@
     "events": {
       "error": "錯誤",
       "exit": "出場",
+      "funding": "資金費",
       "grid_started": "網格開始",
       "order_rejected": "委託被拒",
       "order_skipped": "委託略過",
@@ -131,6 +134,37 @@
         "stopLoss": "停損（%，選填）",
         "takeProfit": "停利（%）",
         "volumeScale": "金額倍率"
+      },
+      "futuresGrid": {
+        "check": "向 Pionex 試算",
+        "checkInvestment": "投入範圍：{min} – {max} {quote}",
+        "checkLiquidationDown": "下方預估強平價 {price}（距現價 {distance}）",
+        "checkLiquidationUp": "上方預估強平價 {price}（距現價 {distance}）",
+        "checkNeedsCredential": "需要先綁定 API key",
+        "checkNote": "Pionex 官方試算，不會下單；實際強平價會隨成交與資金費變動。",
+        "checkPerVolume": "每格數量 {volume} {base}",
+        "extraMargin": "額外保證金（選填）",
+        "extraMarginHelper": "不參與網格交易，只用來拉遠強平價",
+        "leverage": "槓桿",
+        "leverageMax": "此交易對最高 {max}x",
+        "lossStopHelper": {
+          "long": "價格跌到此價停止並平倉；金額為虧損達此金額",
+          "no_trend": "下方停損：價格跌到此價停止並平倉；金額為虧損達此金額",
+          "short": "價格漲到此價停止並平倉；金額為虧損達此金額"
+        },
+        "lossStopHigh": "上方停損價（選填）",
+        "lossStopHighHelper": "中性網格的價格漲到此價停止並平倉",
+        "profitStopHelper": {
+          "long": "價格漲到此價停止並平倉；金額為獲利達此金額",
+          "no_trend": "中性網格只能用金額停利",
+          "short": "價格跌到此價停止並平倉；金額為獲利達此金額"
+        },
+        "trend": "方向",
+        "trends": {
+          "long": "做多",
+          "no_trend": "中性",
+          "short": "做空"
+        }
       },
       "grid": {
         "aiStrategy": "套用 AI 推薦參數",
@@ -201,6 +235,7 @@
       },
       "investment": "投入金額",
       "investmentHelper": "機器人只能動用這筆資金",
+      "liveFuturesGridNote": "實盤合約網格會在 Pionex 建立合約網格機器人，倉位和保證金獨立，可在 Pionex App 中查看與管理。合約帳戶要先有足夠的 USDT。",
       "liveGridNote": "實盤網格會在 Pionex 建立內建網格機器人，可在 Pionex App 中查看與管理。",
       "maxDailyLoss": "每日最大虧損（選填）",
       "maxDailyLossHelper": "當日虧損達到此金額就自動停止",
@@ -229,9 +264,13 @@
       "create_failed": "Pionex 建立失敗",
       "daily_loss_limit": "觸發每日虧損上限",
       "dca_base_order_failed": "DCA 首單失敗",
+      "force_liquidation": "在 Pionex 被強平",
+      "futures_daily_loss_limit": "觸發合約每日虧損上限",
       "grid_open_failed": "網格開倉失敗",
+      "liquidated": "模擬強平",
       "loss_stop": "觸發停損",
       "not_enough_balance": "Pionex 帳戶餘額不足",
+      "not_enough_balance_when_lock": "Pionex 鎖定資金失敗",
       "order_canceled_externally": "委託在 Pionex 被手動撤銷",
       "pionex_finished": "Pionex 已結束",
       "profit_stop": "觸發停利",
@@ -244,6 +283,7 @@
       "above_maximum": "高於交易所最大下單量",
       "below_minimum": "低於交易所最小下單量",
       "insufficient_budget": "機器人可用資金不足",
+      "insufficient_margin": "保證金不足",
       "insufficient_position": "機器人持倉不足",
       "invalid_price": "價格無效"
     },
@@ -257,13 +297,15 @@
       "dca": "分批加碼攤平成本，達到停利就出場並開始下一輪。",
       "grid": "在價格區間內自動低買高賣，適合震盪行情。實盤交給 Pionex 內建網格執行。",
       "indicator": "依技術指標的進出場條件自動買賣。",
-      "webhook": "接收 TradingView alert 等外部訊號下單。"
+      "webhook": "接收 TradingView alert 等外部訊號下單。",
+      "futures_grid": "在價格區間內用槓桿做多、做空或中性網格。實盤交給 Pionex 合約網格執行。"
     },
     "types": {
       "dca": "DCA 定投",
       "grid": "網格",
       "indicator": "指標訊號",
-      "webhook": "Webhook 訊號"
+      "webhook": "Webhook 訊號",
+      "futures_grid": "合約網格"
     },
     "webhook": {
       "actionsHint": "可用的 action：buy、sell、close；sell 可加 amount 只賣出部分",
@@ -437,7 +479,9 @@
       "maxSize": "最大數量為 {max}",
       "minAmount": "最小下單金額為 {min} {coin}",
       "minSize": "最小數量為 {min}",
+      "neutralProfitStop": "中性網格只能用金額停利",
       "positive": "須大於 0",
+      "positiveInteger": "須為正整數",
       "range": "需介於 {min} 到 {max}",
       "required": "必填",
       "topAboveBottom": "上界必須高於下界"

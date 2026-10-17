@@ -26,9 +26,16 @@ interface GridFieldsProps {
   aiCredentialId?: string;
   form: BotForm;
   market?: QuantMarket;
+  /** 合約網格：沒有 AI 推薦與平倉方式，停損停利的方向依多空而定 */
+  stopHelpers?: { loss: string; profit: string };
 }
 
-const GridFields = ({ aiCredentialId, form, market }: GridFieldsProps) => {
+const GridFields = ({
+  aiCredentialId,
+  form,
+  market,
+  stopHelpers,
+}: GridFieldsProps) => {
   const tGrid = useTranslations("quant.bots.form.grid");
   const format = useFormatter();
 
@@ -69,25 +76,29 @@ const GridFields = ({ aiCredentialId, form, market }: GridFieldsProps) => {
     }
   };
 
+  const isFutures = !!stopHelpers;
+
   return (
     <Grid container spacing={2}>
-      <Grid size={12}>
-        <Tooltip
-          title={aiCredentialId ? "" : tGrid("aiStrategyNeedsCredential")}
-        >
-          <Box component="span">
-            <Button
-              disabled={!aiCredentialId || !market}
-              loading={loading}
-              onClick={applySuggestion}
-              startIcon={<AutoAwesome />}
-              variant="outlined"
-            >
-              {tGrid("aiStrategy")}
-            </Button>
-          </Box>
-        </Tooltip>
-      </Grid>
+      {!isFutures && (
+        <Grid size={12}>
+          <Tooltip
+            title={aiCredentialId ? "" : tGrid("aiStrategyNeedsCredential")}
+          >
+            <Box component="span">
+              <Button
+                disabled={!aiCredentialId || !market}
+                loading={loading}
+                onClick={applySuggestion}
+                startIcon={<AutoAwesome />}
+                variant="outlined"
+              >
+                {tGrid("aiStrategy")}
+              </Button>
+            </Box>
+          </Tooltip>
+        </Grid>
+      )}
       {suggestion && (
         <Grid size={12}>
           <Alert severity="info">
@@ -150,6 +161,7 @@ const GridFields = ({ aiCredentialId, form, market }: GridFieldsProps) => {
         <NumberField
           adornment={quote}
           form={form}
+          helperText={stopHelpers?.loss}
           label={tGrid("lossStop")}
           name="grid.lossStop"
         />
@@ -169,6 +181,7 @@ const GridFields = ({ aiCredentialId, form, market }: GridFieldsProps) => {
         <NumberField
           adornment={quote}
           form={form}
+          helperText={stopHelpers?.profit}
           label={tGrid("profitStop")}
           name="grid.profitStop"
         />
@@ -192,17 +205,19 @@ const GridFields = ({ aiCredentialId, form, market }: GridFieldsProps) => {
           }))}
         />
       </Grid>
-      <Grid size={12}>
-        <SelectField
-          form={form}
-          label={tGrid("closeModel.label")}
-          name="grid.closeModel"
-          options={quantGridCloseModelValues.map((value) => ({
-            label: tGrid(`closeModel.${value}`, { quote }),
-            value,
-          }))}
-        />
-      </Grid>
+      {!isFutures && (
+        <Grid size={12}>
+          <SelectField
+            form={form}
+            label={tGrid("closeModel.label")}
+            name="grid.closeModel"
+            options={quantGridCloseModelValues.map((value) => ({
+              label: tGrid(`closeModel.${value}`, { quote }),
+              value,
+            }))}
+          />
+        </Grid>
+      )}
     </Grid>
   );
 };

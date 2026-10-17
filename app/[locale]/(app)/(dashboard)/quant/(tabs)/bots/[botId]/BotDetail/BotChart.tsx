@@ -25,6 +25,7 @@ import { useChartPalette } from "../../../useChartPalette";
 import { Box } from "@mui/material";
 
 import type {
+  FuturesGridConfig,
   GridConfig,
   IndicatorConfig,
   QuantBot,
@@ -40,7 +41,12 @@ const CHART_CANDLES = 500;
 const toTime = (ms: number) => Math.floor(ms / 1000) as UTCTimestamp;
 
 // 和後端網格策略同一個算法，畫出來的格線就是實際掛單的價位
-const gridLines = ({ bottom, gridType, row, top }: GridConfig) =>
+const gridLines = ({
+  bottom,
+  gridType,
+  row,
+  top,
+}: FuturesGridConfig | GridConfig) =>
   Array.from({ length: row + 1 }, (_, index) =>
     gridType === "arithmetic"
       ? bottom + ((top - bottom) * index) / row
@@ -163,22 +169,36 @@ const BotChart = ({ bot, fills, pricePrecision }: BotChartProps) => {
     );
 
     for (const line of linesRef.current) series.removePriceLine(line);
-    const levels =
-      bot.type === "grid"
-        ? gridLines(bot.config as GridConfig).map((price) => ({
-            color: palette.text,
-            price,
-            style: LineStyle.Dotted,
-          }))
-        : bot.summary.position > 0 && bot.summary.averageCost > 0
-          ? [
-              {
-                color: palette.lines[0],
-                price: bot.summary.averageCost,
-                style: LineStyle.Dashed,
-              },
-            ]
-          : [];
+    const { averageCost, liquidationPrice, position } = bot.summary;
+    const levels = [
+      ...(bot.type === "grid" || bot.type === "futures_grid"
+        ? gridLines(bot.config as FuturesGridConfig | GridConfig).map(
+            (price) => ({
+              color: palette.text,
+              price,
+              style: LineStyle.Dotted,
+            }),
+          )
+        : []),
+      ...(bot.type !== "grid" && position !== 0 && averageCost > 0
+        ? [
+            {
+              color: palette.lines[0],
+              price: averageCost,
+              style: LineStyle.Dashed,
+            },
+          ]
+        : []),
+      ...(liquidationPrice
+        ? [
+            {
+              color: palette.down,
+              price: liquidationPrice,
+              style: LineStyle.Dashed,
+            },
+          ]
+        : []),
+    ];
     linesRef.current = levels.map(({ color, price, style }) =>
       series.createPriceLine({
         axisLabelVisible: false,

@@ -23,9 +23,11 @@ import { type BotForm, NumberField, SelectField } from "./fields";
 import GridFields from "./GridFields";
 import IndicatorFields from "./IndicatorFields";
 
+import FuturesGridFields from "./FuturesGridFields";
+
 import FormBox from "@/components/FormBox";
 
-import { DEFAULT_QUANT_SYMBOL } from "@/constants/quant";
+import { DEFAULT_QUANT_SYMBOLS, quantPairOf } from "@/constants/quant";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -100,9 +102,10 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
   const { mutate } = useSWRConfig();
   const setDialog = useDialogStore((state) => state.setDialog);
 
+  const isFutures = type === "futures_grid";
   const { credentials } = useQuantCredentials();
   const { data: markets } = useSWR<QuantMarket[]>(
-    "/api/quant/markets",
+    `/api/quant/markets?type=${isFutures ? "PERP" : "SPOT"}`,
     fetcher,
   );
 
@@ -126,6 +129,7 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
   const market = markets?.find((item) => item.symbol === symbol);
   const quote = market?.quoteCurrency ?? "";
   const isLiveGrid = mode === "live" && type === "grid";
+  const isLiveFuturesGrid = mode === "live" && isFutures;
 
   const onSubmitHandler = async (values: BotFormValues) => {
     try {
@@ -211,7 +215,7 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
               <Grid size={{ sm: 6, xs: 12 }}>
                 <Autocomplete
                   disableClearable
-                  getOptionLabel={(option) => option.replace("_", "/")}
+                  getOptionLabel={quantPairOf}
                   onChange={(_, value) => setValue("symbol", value, setOptions)}
                   options={(markets ?? [])
                     .toSorted((a, b) => b.quoteVolume - a.quoteVolume)
@@ -281,9 +285,11 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
                     </Alert>
                   </Grid>
                 ))}
-              {isLiveGrid && (
+              {(isLiveGrid || isLiveFuturesGrid) && (
                 <Grid size={12}>
-                  <Alert severity="info">{tForm("liveGridNote")}</Alert>
+                  <Alert severity="info">
+                    {tForm(isFutures ? "liveFuturesGridNote" : "liveGridNote")}
+                  </Alert>
                 </Grid>
               )}
               <Grid size={{ sm: 6, xs: 12 }}>
@@ -335,6 +341,14 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
               <GridFields
                 aiCredentialId={credentialId || credentials?.[0]?.id}
                 form={form}
+                market={market}
+              />
+            )}
+            {isFutures && (
+              <FuturesGridFields
+                checkCredentialId={credentialId || credentials?.[0]?.id}
+                form={form}
+                lastPrice={market?.close}
                 market={market}
               />
             )}
@@ -394,7 +408,9 @@ const BotForm = ({ fromId, type }: BotFormProps) => {
     />
   ) : (
     <BotFormFields
-      initialValues={defaultValues(DEFAULT_QUANT_SYMBOL)}
+      initialValues={defaultValues(
+        DEFAULT_QUANT_SYMBOLS[type === "futures_grid" ? "PERP" : "SPOT"],
+      )}
       type={type}
     />
   );

@@ -19,6 +19,7 @@ import WebhookSetup from "../../WebhookSetup";
 import DataGrid from "@/components/DataGrid";
 
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
+import { quantPairOf } from "@/constants/quant";
 
 import { Link } from "@/i18n/navigation";
 
@@ -49,6 +50,7 @@ import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
+  FuturesGridConfig,
   QuantBot,
   QuantBotEvent,
   QuantBotFill,
@@ -112,7 +114,9 @@ const BotDetail = ({ botId }: { botId: string }) => {
   const botUrl = `${QUANT_BOTS_URL}/${botId}`;
   const { data: bot, error } = useSWR<QuantBot>(botUrl, fetcher);
   const { data: markets } = useSWR<QuantMarket[]>(
-    "/api/quant/markets",
+    bot
+      ? `/api/quant/markets?type=${bot.type === "futures_grid" ? "PERP" : "SPOT"}`
+      : null,
     fetcher,
   );
   const { data: orders } = useSWR<QuantBotOrder[]>(`${botUrl}/orders`, fetcher);
@@ -129,7 +133,10 @@ const BotDetail = ({ botId }: { botId: string }) => {
   const sizePrecision = market?.sizePrecision ?? 6;
   const quote = market?.quoteCurrency ?? "";
   const base = market?.baseCurrency ?? "";
-  const isPionexGrid = bot.mode === "live" && bot.type === "grid";
+  const isPionexGrid =
+    bot.mode === "live" && (bot.type === "grid" || bot.type === "futures_grid");
+  const futuresConfig =
+    bot.type === "futures_grid" ? (bot.config as FuturesGridConfig) : null;
 
   const formatQuote = (value: number) =>
     `${format.number(value, { maximumFractionDigits: 2, minimumFractionDigits: 2, signDisplay: "negative" })} ${quote}`;
@@ -342,7 +349,13 @@ const BotDetail = ({ botId }: { botId: string }) => {
             <Typography variant="h5">{bot.name}</Typography>
             <Stack sx={{ flexDirection: "row", flexWrap: "wrap", gap: 1 }}>
               <Chip label={tBots(`types.${bot.type}`)} size="small" />
-              <Chip label={bot.symbol.replace("_", "/")} size="small" />
+              <Chip label={quantPairOf(bot.symbol)} size="small" />
+              {futuresConfig && (
+                <Chip
+                  label={`${tBots(`form.futuresGrid.trends.${futuresConfig.trend}`)} ${futuresConfig.leverage}x`}
+                  size="small"
+                />
+              )}
               <Chip
                 color={bot.mode === "live" ? "warning" : "default"}
                 label={tBots(`modes.${bot.mode}`)}
@@ -439,10 +452,27 @@ const BotDetail = ({ botId }: { botId: string }) => {
             <Stat
               label={tBots("detail.summary.averageCost")}
               value={
-                summary.position > 0 ? formatPrice(summary.averageCost) : "—"
+                summary.position !== 0 ? formatPrice(summary.averageCost) : "—"
               }
             />
           </Grid>
+          {futuresConfig && (
+            <>
+              <Grid size={{ md: 2, sm: 4, xs: 6 }}>
+                <Stat
+                  label={tBots("detail.summary.liquidationPrice")}
+                  value={formatPrice(summary.liquidationPrice)}
+                />
+              </Grid>
+              <Grid size={{ md: 2, sm: 4, xs: 6 }}>
+                <Stat
+                  color={pnlColor(summary.fundingFee ?? 0)}
+                  label={tBots("detail.summary.fundingFee")}
+                  value={formatQuote(summary.fundingFee ?? 0)}
+                />
+              </Grid>
+            </>
+          )}
           {!isPionexGrid && (
             <Grid size={{ md: 2, sm: 4, xs: 6 }}>
               <Stat

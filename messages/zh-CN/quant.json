@@ -102,6 +102,8 @@
         "averageCost": "持仓均价",
         "equity": "权益",
         "fills": "成交笔数",
+        "fundingFee": "资金费",
+        "liquidationPrice": "预估强平价",
         "pnl": "总盈亏",
         "position": "持仓",
         "realizedPnl": "已实现盈亏"
@@ -111,6 +113,7 @@
     "events": {
       "error": "错误",
       "exit": "出场",
+      "funding": "资金费",
       "grid_started": "网格开始",
       "order_rejected": "委托被拒",
       "order_skipped": "委托跳过",
@@ -131,6 +134,37 @@
         "stopLoss": "止损（%，选填）",
         "takeProfit": "止盈（%）",
         "volumeScale": "金额倍率"
+      },
+      "futuresGrid": {
+        "check": "向 Pionex 试算",
+        "checkInvestment": "投入范围：{min} – {max} {quote}",
+        "checkLiquidationDown": "下方预估强平价 {price}（距现价 {distance}）",
+        "checkLiquidationUp": "上方预估强平价 {price}（距现价 {distance}）",
+        "checkNeedsCredential": "需要先绑定 API key",
+        "checkNote": "Pionex 官方试算，不会下单；实际强平价会随成交与资金费变动。",
+        "checkPerVolume": "每格数量 {volume} {base}",
+        "extraMargin": "额外保证金（选填）",
+        "extraMarginHelper": "不参与网格交易，只用来拉远强平价",
+        "leverage": "杠杆",
+        "leverageMax": "此交易对最高 {max}x",
+        "lossStopHelper": {
+          "long": "价格跌到此价停止并平仓；金额为亏损达此金额",
+          "no_trend": "下方止损：价格跌到此价停止并平仓；金额为亏损达此金额",
+          "short": "价格涨到此价停止并平仓；金额为亏损达此金额"
+        },
+        "lossStopHigh": "上方止损价（选填）",
+        "lossStopHighHelper": "中性网格的价格涨到此价停止并平仓",
+        "profitStopHelper": {
+          "long": "价格涨到此价停止并平仓；金额为盈利达此金额",
+          "no_trend": "中性网格只能用金额止盈",
+          "short": "价格跌到此价停止并平仓；金额为盈利达此金额"
+        },
+        "trend": "方向",
+        "trends": {
+          "long": "做多",
+          "no_trend": "中性",
+          "short": "做空"
+        }
       },
       "grid": {
         "aiStrategy": "套用 AI 推荐参数",
@@ -201,6 +235,7 @@
       },
       "investment": "投入金额",
       "investmentHelper": "机器人只能动用这笔资金",
+      "liveFuturesGridNote": "实盘合约网格会在 Pionex 创建合约网格机器人，仓位和保证金独立，可在 Pionex App 中查看与管理。合约账户要先有足够的 USDT。",
       "liveGridNote": "实盘网格会在 Pionex 创建内置网格机器人，可在 Pionex App 中查看与管理。",
       "maxDailyLoss": "每日最大亏损（选填）",
       "maxDailyLossHelper": "当日亏损达到此金额就自动停止",
@@ -229,9 +264,13 @@
       "create_failed": "Pionex 创建失败",
       "daily_loss_limit": "触发每日亏损上限",
       "dca_base_order_failed": "DCA 首单失败",
+      "force_liquidation": "在 Pionex 被强平",
+      "futures_daily_loss_limit": "触发合约每日亏损上限",
       "grid_open_failed": "网格开仓失败",
+      "liquidated": "模拟强平",
       "loss_stop": "触发止损",
       "not_enough_balance": "Pionex 账户余额不足",
+      "not_enough_balance_when_lock": "Pionex 锁定资金失败",
       "order_canceled_externally": "委托在 Pionex 被手动撤销",
       "pionex_finished": "Pionex 已结束",
       "profit_stop": "触发止盈",
@@ -244,6 +283,7 @@
       "above_maximum": "高于交易所最大下单量",
       "below_minimum": "低于交易所最小下单量",
       "insufficient_budget": "机器人可用资金不足",
+      "insufficient_margin": "保证金不足",
       "insufficient_position": "机器人持仓不足",
       "invalid_price": "价格无效"
     },
@@ -257,13 +297,15 @@
       "dca": "分批加仓摊平成本，达到止盈就出场并开始下一轮。",
       "grid": "在价格区间内自动低买高卖，适合震荡行情。实盘交给 Pionex 内置网格执行。",
       "indicator": "依技术指标的进出场条件自动买卖。",
-      "webhook": "接收 TradingView alert 等外部信号下单。"
+      "webhook": "接收 TradingView alert 等外部信号下单。",
+      "futures_grid": "在价格区间内用杠杆做多、做空或中性网格。实盘交给 Pionex 合约网格执行。"
     },
     "types": {
       "dca": "DCA 定投",
       "grid": "网格",
       "indicator": "指标信号",
-      "webhook": "Webhook 信号"
+      "webhook": "Webhook 信号",
+      "futures_grid": "合约网格"
     },
     "webhook": {
       "actionsHint": "可用的 action：buy、sell、close；sell 可加 amount 只卖出部分",
@@ -437,7 +479,9 @@
       "maxSize": "最大数量为 {max}",
       "minAmount": "最小下单金额为 {min} {coin}",
       "minSize": "最小数量为 {min}",
+      "neutralProfitStop": "中性网格只能用金额止盈",
       "positive": "须大于 0",
+      "positiveInteger": "须为正整数",
       "range": "需介于 {min} 到 {max}",
       "required": "必填",
       "topAboveBottom": "上界必须高于下界"
