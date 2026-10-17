@@ -41,6 +41,7 @@ import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 const GRID_HEIGHT = 360;
+const TIME_COLUMN_MIN_WIDTH = 180;
 
 type AccountTab = "fills" | "openOrders" | "orders";
 
@@ -174,6 +175,7 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
     {
       field: "createTime",
       headerName: tQuant("account.columns.time"),
+      minWidth: TIME_COLUMN_MIN_WIDTH,
       valueFormatter: (value: number) => formatTime(value),
     },
     sideColumn,
@@ -244,6 +246,7 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
     {
       field: "time",
       headerName: tQuant("account.columns.time"),
+      minWidth: TIME_COLUMN_MIN_WIDTH,
       valueFormatter: (value: number) => formatTime(value),
     },
     sideColumn,

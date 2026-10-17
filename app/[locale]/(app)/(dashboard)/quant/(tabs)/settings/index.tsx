@@ -31,6 +31,8 @@ import type { QuantCredential } from "@/types/quant";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
+const TIME_COLUMN_MIN_WIDTH = 180;
+
 const CredentialSettings = () => {
   const tQuant = useTranslations("quant");
   const format = useFormatter();
@@ -91,6 +93,7 @@ const CredentialSettings = () => {
     {
       field: "createdAt",
       headerName: tQuant("settings.columns.createdAt"),
+      minWidth: TIME_COLUMN_MIN_WIDTH,
       valueFormatter: (value: string) =>
         format.dateTime(new Date(value), "dateTime"),
     },
