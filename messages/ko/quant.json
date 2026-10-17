@@ -62,6 +62,21 @@
         "title": "모든 봇 중지"
       }
     },
+    "ai": {
+      "confidence": "확신도 {value}",
+      "cost": "이번 달 AI 비용 {cost} / 한도 {limit} USD",
+      "empty": "아직 판단 기록이 없습니다",
+      "executed": "실행됨",
+      "skipped": "실행 안 됨: {reason}",
+      "title": "AI 판단 기록",
+      "actions": {
+        "close": "청산",
+        "hold": "관망",
+        "open": "진입"
+      },
+      "refusal": "모델이 답변을 거부함: {reason}",
+      "error": "호출 실패: {message}"
+    },
     "backtest": {
       "candles": "캔들 수",
       "equity": "자산",
@@ -112,6 +127,9 @@
     },
     "empty": "아직 봇이 없습니다",
     "events": {
+      "ai_decision": "AI 판단",
+      "ai_error": "AI 호출 실패",
+      "ai_refusal": "AI 거부",
       "error": "오류",
       "exit": "청산",
       "funding": "펀딩비",
@@ -124,6 +142,28 @@
       "webhook_signal": "신호 수신"
     },
     "form": {
+      "ai": {
+        "effort": "사고 깊이",
+        "effortHelper": "깊을수록 정확하지만 비용과 시간이 더 듭니다",
+        "efforts": {
+          "high": "깊게",
+          "low": "빠르게",
+          "medium": "표준"
+        },
+        "guardHelper": "선택. AI가 아닌 시스템이 강제합니다",
+        "guideline": "거래 방침(선택)",
+        "guidelineHelper": "스타일과 감당할 수 있는 위험을 AI에게 알려 주세요. 최대 2000자",
+        "guidelinePlaceholder": "예: 보수적으로, 추세가 불분명하면 관망하고 한 번 손실이 3%를 넘으면 청산",
+        "hint": "캔들이 마감될 때마다 여러 시간대의 캔들, 지표, 호가창, 포지션, 최근 판단을 Claude에게 전달하며 Claude는 진입·청산·관망 중 하나만 돌려줍니다. 실제 주문은 항상 봇의 자금과 위험 검사를 거칩니다. AI 봇은 백테스트를 제공하지 않습니다. 캔들마다 모델을 호출해야 해 비용을 예측할 수 없고, 과거 시세가 모델 학습 데이터에 들어 있을 수 있기 때문입니다.",
+        "interval": "판단 주기",
+        "intervalHelper": "캔들 마감마다 한 번 판단하며 주기가 짧을수록 비용이 큽니다",
+        "maxOrderAmount": "1회 진입 한도",
+        "maxOrderAmountHelper": "AI가 한 번에 진입할 수 있는 최대 금액(명목)",
+        "monthlyCostLimit": "월간 AI 비용 한도",
+        "monthlyCostLimitHelper": "이번 달(UTC) 비용이 한도에 도달하면 봇을 중지합니다",
+        "stopLoss": "손절(%)",
+        "takeProfit": "익절(%)"
+      },
       "basic": "기본 설정",
       "credential": "거래 계정",
       "dca": {
@@ -136,6 +176,16 @@
         "stopLoss": "손절(%, 선택)",
         "takeProfit": "익절(%)",
         "volumeScale": "금액 배율"
+      },
+      "futures": {
+        "direction": "방향",
+        "directions": {
+          "long": "롱",
+          "short": "숏"
+        },
+        "hint": "선물 버전은 격리 증거금으로 모의합니다. 투자 금액은 증거금이고 주문·추가 매수 금액은 포지션 명목 가치입니다(최대 투자 금액 × 레버리지). 숏일 때는 추가 매수·익절·손절의 가격 방향이 반대입니다.",
+        "leverage": "레버리지",
+        "leverageMax": "이 종목은 최대 {max}x"
       },
       "futuresGrid": {
         "check": "Pionex로 시산",
@@ -168,6 +218,7 @@
           "short": "숏"
         }
       },
+      "futuresStrategyPaperOnly": "선물 DCA／지표／Webhook은 현재 모의 거래만 가능합니다. 실전은 Pionex 신호 주문 수량 규칙을 실측으로 확인한 뒤 열립니다.",
       "grid": {
         "aiStrategy": "AI 추천 값 적용",
         "aiStrategyApplied": "Pionex AI 추천을 적용했습니다: 연환산 {annualized}, 최대 낙폭 {drawdown}",
@@ -261,6 +312,53 @@
         "orderAmount": "신호에 금액이 없을 때 매수 금액"
       }
     },
+    "futuresGridOperation": {
+      "amount": "금액",
+      "check": "시산",
+      "confirmHint": "시산을 통과했습니다. \"실행\"을 한 번 더 누르면 Pionex로 보냅니다.",
+      "descriptions": {
+        "addMargin": "선물 계정의 자금을 이 봇의 증거금으로 옮겨 강제청산가를 멀리 둡니다.",
+        "invest": "투자 금액을 추가하면 Pionex가 현재가로 포지션과 주문을 보충합니다.",
+        "pause": "주문 보충을 멈추지만 포지션은 유지하며 익절·손절은 계속 유효합니다.",
+        "range": "상한·하한과 그리드 수를 바꿉니다. 투자 금액은 그대로입니다.",
+        "reduce": "그리드당 수량 단위로 포지션을 줄이며 줄인 만큼 손익이 확정됩니다.",
+        "reduceMargin": "남는 증거금을 선물 계정으로 돌려보냅니다. 강제청산가가 가까워집니다.",
+        "resume": "주문 보충을 재개합니다. 가격 도달 시에만 재개하도록 설정할 수 있습니다.",
+        "stops": "익절·손절을 변경하거나 해제합니다. 비워 두면 해제됩니다."
+      },
+      "execute": "실행",
+      "label": "조정",
+      "liquidationDown": "하단 강제청산가: {before} → {after}",
+      "liquidationUp": "상단 강제청산가: {before} → {after}",
+      "lossStopHigh": "상단 손절가(중립 그리드)",
+      "maxAmount": "최대 {amount} {quote}까지 줄일 수 있습니다",
+      "operations": {
+        "addMargin": "증거금 추가",
+        "invest": "투자 추가",
+        "pause": "일시 중지",
+        "range": "범위 변경",
+        "reduce": "포지션 축소",
+        "reduceMargin": "증거금 축소",
+        "resume": "재개",
+        "stops": "익절·손절 변경"
+      },
+      "pauseMode": "중지 방식",
+      "pauseModes": {
+        "conditional": "가격 도달 시 중지",
+        "immediate": "즉시 중지"
+      },
+      "paused": "일시 중지됨",
+      "reducePnl": "예상 실현 손익 {pnl} {quote}",
+      "reduceNum": "축소 단위 수",
+      "reduceNumHelper": "먼저 시산하면 최대값을 볼 수 있습니다",
+      "reduceNumMax": "최대 {max}",
+      "rejected": "Pionex가 이 조정을 받아들이지 않았습니다: {reason}",
+      "stopClearHelper": "비워 두면 해제",
+      "success": "조정을 보냈습니다. Pionex 처리 후 반영됩니다",
+      "triggerDown": "이 가격까지 하락",
+      "triggerOptional": "선택. 둘 다 비우면 즉시",
+      "triggerUp": "이 가격까지 상승"
+    },
     "label": "봇",
     "modes": {
       "live": "실거래",
@@ -273,6 +371,7 @@
       "title": "{type} 봇 만들기"
     },
     "reasons": {
+      "ai_cost_limit": "월간 AI 비용 한도 도달",
       "create_failed": "Pionex 생성 실패",
       "daily_loss_limit": "일일 손실 한도 도달",
       "dca_base_order_failed": "DCA 첫 주문 실패",
@@ -320,7 +419,9 @@
       "insufficient_budget": "봇 사용 가능 자금 부족",
       "insufficient_margin": "증거금 부족",
       "insufficient_position": "봇 보유량 부족",
-      "invalid_price": "잘못된 가격"
+      "invalid_price": "잘못된 가격",
+      "no_position": "청산할 포지션이 없음",
+      "order_skipped": "위험 검사로 주문이 건너뜀"
     },
     "statuses": {
       "error": "오류",
@@ -334,7 +435,8 @@
       "indicator": "기술 지표 조건에 따라 자동으로 매매합니다.",
       "webhook": "TradingView 알림 등 외부 신호로 주문합니다.",
       "futures_grid": "가격 범위 안에서 레버리지를 사용하는 롱·숏·중립 그리드입니다. 실전은 Pionex 선물 그리드에서 실행됩니다.",
-      "signal": "TradingView 전략 신호에 따라 Pionex가 진입·청산합니다. 포지션은 독립적이며 익절·손절은 Pionex가 실행합니다. 실전 전용."
+      "signal": "TradingView 전략 신호에 따라 Pionex가 진입·청산합니다. 포지션은 독립적이며 익절·손절은 Pionex가 실행합니다. 실전 전용.",
+      "ai": "캔들이 마감될 때마다 Claude가 진입·청산·관망을 판단합니다. 주문은 봇의 자금, 1회 한도, 손절·익절을 따릅니다."
     },
     "types": {
       "dca": "DCA",
@@ -342,7 +444,8 @@
       "indicator": "지표",
       "webhook": "Webhook",
       "futures_grid": "선물 그리드",
-      "signal": "신호 봇"
+      "signal": "신호 봇",
+      "ai": "AI 트레이딩"
     },
     "webhook": {
       "actionsHint": "action은 buy, sell, close를 사용할 수 있습니다. sell에 amount를 추가하면 일부만 매도합니다",
@@ -360,6 +463,28 @@
       "url": "Webhook URL"
     }
   },
+  "copy": {
+    "all": "전체",
+    "apply": "파라미터 적용",
+    "columns": {
+      "actions": "작업",
+      "createTime": "생성 시간",
+      "gridApr": "그리드 연환산",
+      "investment": "투자",
+      "range": "범위",
+      "symbol": "종목",
+      "totalReturn": "총수익률",
+      "trend": "방향／레버리지"
+    },
+    "empty": "조건에 맞는 카피 그리드가 없습니다",
+    "hint": "KOL의 Pionex 공유 코드를 입력하면 엄선한 선물 그리드를 볼 수 있습니다. \"파라미터 적용\"은 범위·그리드 수·방향·레버리지를 새 선물 그리드 양식에 채워 확인 후 생성하며, KOL 카피 트레이드 수익 분배에는 참여하지 않습니다.",
+    "label": "KOL 카피",
+    "pinned": "고정",
+    "rows": "{row}개 그리드",
+    "search": "검색",
+    "shareCode": "KOL 공유 코드",
+    "shareCodeHelper": "Pionex 앱의 KOL 페이지에서 찾을 수 있습니다"
+  },
   "futures": {
     "actions": {
       "buyLong": "매수／롱",
@@ -370,8 +495,8 @@
       "sellShort": "매도／숏"
     },
     "availableMargin": "사용 가능 증거금",
-    "close": "청산",
     "closable": "청산 가능: 롱 {long}／숏 {short}",
+    "close": "청산",
     "closePosition": {
       "confirm": "<bold>{pair}</bold> {direction} 포지션 {size}을(를) 시장가로 청산할까요?",
       "label": "시장가 청산",
@@ -397,6 +522,26 @@
       "SHORT": "숏"
     },
     "fundingFees": "펀딩비 내역",
+    "fundingHistory": {
+      "average": "최근 90회 평균 {rate}",
+      "note": "양수 비율은 롱이 숏에게, 음수는 반대로 지급하며 8시간마다 정산됩니다.",
+      "rate": "펀딩비율",
+      "title": "펀딩비율 내역"
+    },
+    "isolatedMargin": {
+      "amount": "금액",
+      "directions": {
+        "IN": "추가",
+        "OUT": "축소"
+      },
+      "helpers": {
+        "IN": "교차 사용 가능 증거금에서 옮겨 강제청산가를 멀리 둡니다",
+        "OUT": "교차 사용 가능 증거금으로 돌려 강제청산가가 가까워집니다"
+      },
+      "label": "증거금",
+      "success": "증거금을 조정했습니다",
+      "title": "격리 증거금 조정: {pair}"
+    },
     "isolatedModes": {
       "CROSS": "교차",
       "ISOLATED_BOTH": "격리",
@@ -408,6 +553,11 @@
     "leverageRiskLimit": "선물 리스크 설정에 따라 {max}x 이내로 제한됩니다",
     "leverageWarning": "레버리지가 높을수록 강제청산가가 현재가에 가까워집니다. 변경은 이후 주문과 현재 포지션의 증거금에 적용됩니다.",
     "liquidation": "강제청산",
+    "liquidationEstimate": {
+      "long": "롱 예상 강제청산가 {price} (체결가 대비 {distance})",
+      "note": "예상값입니다. 교차는 다른 포지션의 손익 변동을 반영하지 않으며 실제 값은 체결 후 거래소가 알려주는 값이 기준입니다. 설정한 최소 강제청산 거리보다 작으면 빨간색으로 표시하고 진입을 막습니다.",
+      "short": "숏 예상 강제청산가 {price} (체결가 대비 {distance})"
+    },
     "margin": "필요 증거금 {margin} {quote}",
     "marginModeDescriptions": {
       "CROSS": "교차: 모든 교차 포지션이 선물 계정의 사용 가능 증거금을 함께 사용합니다.",
@@ -535,6 +685,23 @@
     "add": {
       "label": "API 키 등록",
       "success": "API 키를 등록했습니다"
+    },
+    "ai": {
+      "apiKey": "Claude API 키",
+      "bind": "Claude API 키 연결",
+      "bound": "연결됨 ••••{last4} ({date})",
+      "description": "AI 트레이딩 봇은 본인의 Claude API 키로 모델을 호출하며 비용은 본인의 Anthropic 계정으로 청구됩니다. 키는 암호화되어 저장되고 본인만 볼 수 있습니다.",
+      "hint": "Anthropic Console에서 API 키를 만드세요. 연결하기 전에 Anthropic에서 키를 확인합니다.",
+      "notBound": "연결 안 됨",
+      "remove": {
+        "confirm": "연결을 해제하면 실행 중인 AI 봇은 다음 판단에서 실패합니다. 해제할까요?",
+        "label": "연결 해제",
+        "success": "연결을 해제했습니다",
+        "title": "Claude API 키 연결 해제"
+      },
+      "replace": "변경",
+      "success": "Claude API 키를 연결했습니다",
+      "title": "Claude API 키"
     },
     "columns": {
       "actions": "작업",

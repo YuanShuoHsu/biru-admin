@@ -2,7 +2,7 @@
 
 import type { BaseSyntheticEvent } from "react";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useForm, useWatch } from "react-hook-form";
 import useSWR, { useSWRConfig } from "swr";
@@ -10,6 +10,7 @@ import useSWR, { useSWRConfig } from "swr";
 import { useQuantCredentials } from "../../../useQuantCredentials";
 import { QUANT_BOTS_URL, isQuantBotKey } from "../../useQuantBots";
 import WebhookSetup from "../../WebhookSetup";
+import AiFields from "./AiFields";
 import BacktestPanel from "./BacktestPanel";
 import DcaFields from "./DcaFields";
 import {
@@ -22,17 +23,23 @@ import {
 import { type BotForm, NumberField, SelectField } from "./fields";
 import GridFields from "./GridFields";
 import IndicatorFields from "./IndicatorFields";
+import FuturesPositionFields from "./FuturesPositionFields";
 import SignalFields from "./SignalFields";
 
 import FuturesGridFields from "./FuturesGridFields";
 
 import FormBox from "@/components/FormBox";
 
-import { DEFAULT_QUANT_SYMBOLS, quantPairOf } from "@/constants/quant";
+import {
+  DEFAULT_QUANT_SYMBOLS,
+  quantMarketTypeOf,
+  quantPairOf,
+} from "@/constants/quant";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Link, useRouter } from "@/i18n/navigation";
+import type { Locale } from "@/i18n/routing";
 
 import {
   Alert,
@@ -52,12 +59,18 @@ import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
+import {
+  quantFuturesGridTrendValues,
+  quantMarketTypeValues,
+} from "@/types/api";
 import type {
   CreateQuantBotResponse,
+  FuturesGridConfig,
   QuantBot,
   QuantBotMode,
   QuantBotType,
   QuantMarket,
+  QuantMarketType,
 } from "@/types/quant";
 
 import { getErrorMessage } from "@/utils/errors";
@@ -105,11 +118,12 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
 
   const isSignal = type === "signal";
   const isFutures = type === "futures_grid" || isSignal;
+  const canChooseMarket =
+    type === "dca" ||
+    type === "indicator" ||
+    type === "webhook" ||
+    type === "ai";
   const { credentials } = useQuantCredentials();
-  const { data: markets } = useSWR<QuantMarket[]>(
-    `/api/quant/markets?type=${isFutures ? "PERP" : "SPOT"}`,
-    fetcher,
-  );
 
   const schema = useBotFormSchema(type);
   const form: BotForm = useForm<BotFormValues>({
@@ -128,6 +142,16 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
     control,
     name: ["symbol", "mode", "credentialId"],
   });
+  const marketType: QuantMarketType = isFutures
+    ? "PERP"
+    : canChooseMarket
+      ? quantMarketTypeOf(symbol)
+      : "SPOT";
+  const isFuturesStrategy = canChooseMarket && marketType === "PERP";
+  const { data: markets } = useSWR<QuantMarket[]>(
+    `/api/quant/markets?type=${marketType}`,
+    fetcher,
+  );
   const market = markets?.find((item) => item.symbol === symbol);
   const quote = market?.quoteCurrency ?? "";
   const isLiveGrid = mode === "live" && type === "grid";
@@ -235,6 +259,32 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
                   value={symbol}
                 />
               </Grid>
+              {canChooseMarket && (
+                <Grid size={12}>
+                  <ToggleButtonGroup
+                    aria-label={tQuant("market.marketType")}
+                    exclusive
+                    onChange={(_, value: QuantMarketType | null) => {
+                      if (!value) return;
+                      setValue(
+                        "symbol",
+                        DEFAULT_QUANT_SYMBOLS[value],
+                        setOptions,
+                      );
+                      if (value === "PERP")
+                        setValue("mode", "paper", setOptions);
+                    }}
+                    size="small"
+                    value={marketType}
+                  >
+                    {quantMarketTypeValues.map((value) => (
+                      <ToggleButton key={value} value={value}>
+                        {tQuant(`market.types.${value}`)}
+                      </ToggleButton>
+                    ))}
+                  </ToggleButtonGroup>
+                </Grid>
+              )}
               {!isSignal && (
                 <Grid size={12}>
                   <ToggleButtonGroup
@@ -249,10 +299,21 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
                     <ToggleButton value="paper">
                       {tBots("modes.paper")}
                     </ToggleButton>
-                    <ToggleButton color="warning" value="live">
+                    <ToggleButton
+                      color="warning"
+                      disabled={isFuturesStrategy}
+                      value="live"
+                    >
                       {tBots("modes.live")}
                     </ToggleButton>
                   </ToggleButtonGroup>
+                </Grid>
+              )}
+              {isFuturesStrategy && (
+                <Grid size={12}>
+                  <Alert severity="info">
+                    {tForm("futuresStrategyPaperOnly")}
+                  </Alert>
                 </Grid>
               )}
               {mode === "live" &&
@@ -355,6 +416,10 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
               />
             )}
             {isSignal && <SignalFields form={form} market={market} />}
+            {type === "ai" && <AiFields form={form} quote={quote} />}
+            {isFuturesStrategy && (
+              <FuturesPositionFields form={form} market={market} />
+            )}
             {type === "futures_grid" && (
               <FuturesGridFields
                 checkCredentialId={credentialId || credentials?.[0]?.id}
@@ -387,7 +452,7 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
             {tBots("new.submit")}
           </Button>
         </FormBox>
-        {type !== "webhook" && type !== "signal" && (
+        {type !== "webhook" && type !== "signal" && type !== "ai" && (
           <BacktestSection>
             <BacktestPanel form={form} market={market} type={type} />
           </BacktestSection>
@@ -397,12 +462,55 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
   );
 };
 
+/** 從 KOL 跟單「套用參數」帶進來的合約網格參數 */
+export interface BotFormPreset {
+  bottom?: string;
+  leverage?: string;
+  row?: string;
+  symbol?: string;
+  top?: string;
+  trend?: string;
+}
+
 interface BotFormProps {
   fromId?: string;
+  preset?: BotFormPreset;
   type: QuantBotType;
 }
 
-const BotForm = ({ fromId, type }: BotFormProps) => {
+const isTrend = (value?: string): value is FuturesGridConfig["trend"] =>
+  quantFuturesGridTrendValues.some((trend) => trend === value);
+
+const presetValues = (
+  type: QuantBotType,
+  locale: Locale,
+  preset: BotFormPreset = {},
+): BotFormValues => {
+  const isPerpType = type === "futures_grid" || type === "signal";
+  const base = defaultValues(
+    preset.symbol ?? DEFAULT_QUANT_SYMBOLS[isPerpType ? "PERP" : "SPOT"],
+    locale,
+  );
+
+  return {
+    ...base,
+    futuresGrid: {
+      ...base.futuresGrid,
+      leverage: preset.leverage ?? base.futuresGrid.leverage,
+      trend: isTrend(preset.trend) ? preset.trend : base.futuresGrid.trend,
+    },
+    grid: {
+      ...base.grid,
+      bottom: preset.bottom ?? base.grid.bottom,
+      row: preset.row ?? base.grid.row,
+      top: preset.top ?? base.grid.top,
+    },
+    mode: type === "signal" ? "live" : "paper",
+  };
+};
+
+const BotForm = ({ fromId, preset, type }: BotFormProps) => {
+  const locale = useLocale();
   const { data: source, error } = useSWR<QuantBot>(
     fromId ? `${QUANT_BOTS_URL}/${fromId}` : null,
     fetcher,
@@ -413,20 +521,13 @@ const BotForm = ({ fromId, type }: BotFormProps) => {
 
   return source ? (
     <BotFormFields
-      initialValues={valuesFromBot(source)}
+      initialValues={valuesFromBot(source, locale)}
       key={source.id}
       type={source.type}
     />
   ) : (
     <BotFormFields
-      initialValues={{
-        ...defaultValues(
-          DEFAULT_QUANT_SYMBOLS[
-            type === "futures_grid" || type === "signal" ? "PERP" : "SPOT"
-          ],
-        ),
-        mode: type === "signal" ? "live" : "paper",
-      }}
+      initialValues={presetValues(type, locale, preset)}
       type={type}
     />
   );

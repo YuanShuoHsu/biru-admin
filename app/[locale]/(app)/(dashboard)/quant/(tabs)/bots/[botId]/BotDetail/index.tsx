@@ -15,12 +15,17 @@ import {
   useBotStream,
 } from "../../useQuantBots";
 import WebhookSetup from "../../WebhookSetup";
+import FuturesGridOperationDialog, {
+  FUTURES_GRID_OPERATION_FORM_ID,
+  type FuturesGridOperation,
+} from "./FuturesGridOperationDialog";
+import AiDecisions from "./AiDecisions";
 import SignalPanel from "./SignalPanel";
 
 import DataGrid from "@/components/DataGrid";
 
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
-import { quantPairOf } from "@/constants/quant";
+import { quantMarketTypeOf, quantPairOf } from "@/constants/quant";
 
 import { Link } from "@/i18n/navigation";
 
@@ -30,6 +35,7 @@ import {
   Key,
   PlayArrow,
   Stop,
+  Tune,
 } from "@mui/icons-material";
 import {
   Alert,
@@ -38,6 +44,8 @@ import {
   Chip,
   DialogContentText,
   Grid,
+  Menu,
+  MenuItem,
   Paper,
   Skeleton,
   Stack,
@@ -52,6 +60,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
   FuturesGridConfig,
+  FuturesPositionConfig,
   QuantBot,
   QuantBotEvent,
   QuantBotFill,
@@ -116,9 +125,7 @@ const BotDetail = ({ botId }: { botId: string }) => {
   const botUrl = `${QUANT_BOTS_URL}/${botId}`;
   const { data: bot, error } = useSWR<QuantBot>(botUrl, fetcher);
   const { data: markets } = useSWR<QuantMarket[]>(
-    bot
-      ? `/api/quant/markets?type=${bot.type === "futures_grid" || bot.type === "signal" ? "PERP" : "SPOT"}`
-      : null,
+    bot ? `/api/quant/markets?type=${quantMarketTypeOf(bot.symbol)}` : null,
     fetcher,
   );
   const { data: orders } = useSWR<QuantBotOrder[]>(`${botUrl}/orders`, fetcher);
@@ -126,6 +133,9 @@ const BotDetail = ({ botId }: { botId: string }) => {
   const { data: events } = useSWR<QuantBotEvent[]>(`${botUrl}/events`, fetcher);
 
   const [tab, setTab] = useState<DetailTab>("orders");
+  const [operationAnchor, setOperationAnchor] = useState<HTMLElement | null>(
+    null,
+  );
 
   if (error) return <Alert severity="error">{getErrorMessage(error)}</Alert>;
   if (!bot) return <Skeleton height={480} variant="rounded" />;
@@ -142,7 +152,8 @@ const BotDetail = ({ botId }: { botId: string }) => {
       bot.type === "signal");
   const futuresConfig =
     bot.type === "futures_grid" ? (bot.config as FuturesGridConfig) : null;
-  const isFutures = bot.type === "futures_grid" || bot.type === "signal";
+  const isFutures = quantMarketTypeOf(bot.symbol) === "PERP";
+  const position = (bot.config as { futures?: FuturesPositionConfig }).futures;
 
   const formatQuote = (value: number) =>
     `${format.number(value, { maximumFractionDigits: 2, minimumFractionDigits: 2, signDisplay: "negative" })} ${quote}`;
@@ -169,6 +180,40 @@ const BotDetail = ({ botId }: { botId: string }) => {
     } finally {
       void mutate(isQuantBotKey);
     }
+  };
+
+  const canOperate =
+    bot.type === "futures_grid" &&
+    bot.mode === "live" &&
+    bot.status === "running";
+  const isPaused = bot.summary.pionexStatus === "paused";
+  const operations: FuturesGridOperation[] = [
+    "invest",
+    "range",
+    "reduce",
+    isPaused ? "resume" : "pause",
+    "addMargin",
+    "reduceMargin",
+    "stops",
+  ];
+
+  const openOperation = (operation: FuturesGridOperation) => {
+    setOperationAnchor(null);
+    setDialog({
+      confirmText: tBots(
+        `futuresGridOperation.${operation === "stops" ? "execute" : "check"}`,
+      ),
+      content: (
+        <FuturesGridOperationDialog
+          bot={bot}
+          market={market}
+          operation={operation}
+        />
+      ),
+      formId: FUTURES_GRID_OPERATION_FORM_ID,
+      open: true,
+      title: tBots(`futuresGridOperation.operations.${operation}`),
+    });
   };
 
   const confirm = (action: "archive" | "stop") =>
@@ -356,6 +401,12 @@ const BotDetail = ({ botId }: { botId: string }) => {
             <Stack sx={{ flexDirection: "row", flexWrap: "wrap", gap: 1 }}>
               <Chip label={tBots(`types.${bot.type}`)} size="small" />
               <Chip label={quantPairOf(bot.symbol)} size="small" />
+              {position && (
+                <Chip
+                  label={`${tBots(`form.futures.directions.${position.direction}`)} ${position.leverage}x`}
+                  size="small"
+                />
+              )}
               {bot.type === "signal" && (
                 <Chip
                   label={`${(bot.config as SignalBotConfig).leverage}x`}
@@ -373,6 +424,13 @@ const BotDetail = ({ botId }: { botId: string }) => {
                 label={tBots(`modes.${bot.mode}`)}
                 size="small"
               />
+              {isPaused && (
+                <Chip
+                  color="warning"
+                  label={tBots("futuresGridOperation.paused")}
+                  size="small"
+                />
+              )}
               <Chip
                 color={STATUS_COLORS[bot.status]}
                 label={
@@ -405,6 +463,15 @@ const BotDetail = ({ botId }: { botId: string }) => {
                 {tBots("actions.stop.label")}
               </Button>
             )}
+            {canOperate && (
+              <Button
+                onClick={(event) => setOperationAnchor(event.currentTarget)}
+                startIcon={<Tune />}
+                variant="outlined"
+              >
+                {tBots("futuresGridOperation.label")}
+              </Button>
+            )}
             {bot.type === "webhook" && (
               <Button
                 onClick={regenerateToken}
@@ -433,6 +500,17 @@ const BotDetail = ({ botId }: { botId: string }) => {
             )}
           </Stack>
         </Stack>
+        <Menu
+          anchorEl={operationAnchor}
+          onClose={() => setOperationAnchor(null)}
+          open={!!operationAnchor}
+        >
+          {operations.map((operation) => (
+            <MenuItem key={operation} onClick={() => openOperation(operation)}>
+              {tBots(`futuresGridOperation.operations.${operation}`)}
+            </MenuItem>
+          ))}
+        </Menu>
         <Grid container spacing={2}>
           <Grid size={{ md: 2, sm: 4, xs: 6 }}>
             <Stat
@@ -504,6 +582,11 @@ const BotDetail = ({ botId }: { botId: string }) => {
           </Alert>
         )}
       </Panel>
+      {bot.type === "ai" && (
+        <Panel>
+          <AiDecisions bot={bot} events={events ?? []} />
+        </Panel>
+      )}
       {bot.type === "signal" && bot.startedAt && (
         <Panel>
           <SignalPanel bot={bot} />

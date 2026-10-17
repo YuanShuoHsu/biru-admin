@@ -62,6 +62,21 @@
         "title": "Stop all bots"
       }
     },
+    "ai": {
+      "confidence": "Confidence {value}",
+      "cost": "AI cost this month {cost} / limit {limit} USD",
+      "empty": "No decisions yet",
+      "executed": "Executed",
+      "skipped": "Not executed: {reason}",
+      "title": "AI decisions",
+      "actions": {
+        "close": "Close",
+        "hold": "Hold",
+        "open": "Open"
+      },
+      "refusal": "Model declined: {reason}",
+      "error": "Call failed: {message}"
+    },
     "backtest": {
       "candles": "Candles",
       "equity": "Equity",
@@ -112,6 +127,9 @@
     },
     "empty": "No bots yet",
     "events": {
+      "ai_decision": "AI decision",
+      "ai_error": "AI call failed",
+      "ai_refusal": "AI declined",
       "error": "Error",
       "exit": "Exit",
       "funding": "Funding",
@@ -124,6 +142,28 @@
       "webhook_signal": "Signal received"
     },
     "form": {
+      "ai": {
+        "effort": "Thinking depth",
+        "effortHelper": "Deeper is more accurate but costs more and takes longer",
+        "efforts": {
+          "high": "Deep",
+          "low": "Fast",
+          "medium": "Standard"
+        },
+        "guardHelper": "Optional; enforced by the system, not by the AI",
+        "guideline": "Trading guideline (optional)",
+        "guidelineHelper": "Tell the AI your style and risk tolerance, up to 2000 characters",
+        "guidelinePlaceholder": "For example: conservative, hold when the trend is unclear; exit when a trade loses more than 3%",
+        "hint": "At each candle close the system gives Claude multi-interval candles, indicators, the order book, the position and recent decisions; Claude can only return open, close or hold. Every order still passes the bot budget and risk checks. AI bots cannot be backtested: each candle needs a model call, so cost is unbounded, and historical prices may be in the model's training data.",
+        "interval": "Decision interval",
+        "intervalHelper": "Decides once per candle close; shorter intervals cost more",
+        "maxOrderAmount": "Max per order",
+        "maxOrderAmountHelper": "Most the AI can open in one order (notional)",
+        "monthlyCostLimit": "Monthly AI cost limit",
+        "monthlyCostLimitHelper": "Stops the bot once this month's (UTC) cost reaches it",
+        "stopLoss": "Stop loss (%)",
+        "takeProfit": "Take profit (%)"
+      },
       "basic": "Basics",
       "credential": "Trading account",
       "dca": {
@@ -136,6 +176,16 @@
         "stopLoss": "Stop loss (%, optional)",
         "takeProfit": "Take profit (%)",
         "volumeScale": "Volume scale"
+      },
+      "futures": {
+        "direction": "Direction",
+        "directions": {
+          "long": "Long",
+          "short": "Short"
+        },
+        "hint": "The futures version simulates isolated margin: the investment is margin, and order and safety amounts are position notional (up to investment × leverage). When short, the price direction of safety orders, take profit and stop loss is reversed.",
+        "leverage": "Leverage",
+        "leverageMax": "Up to {max}x for this symbol"
       },
       "futuresGrid": {
         "check": "Check with Pionex",
@@ -168,6 +218,7 @@
           "short": "Short"
         }
       },
+      "futuresStrategyPaperOnly": "Futures DCA / indicator / webhook bots are paper only for now; live opens once Pionex signal sizing is verified.",
       "grid": {
         "aiStrategy": "Apply AI suggestion",
         "aiStrategyApplied": "Applied the Pionex AI suggestion: {annualized} annualized, {drawdown} max drawdown",
@@ -261,6 +312,53 @@
         "orderAmount": "Buy amount when the signal has none"
       }
     },
+    "futuresGridOperation": {
+      "amount": "Amount",
+      "check": "Check",
+      "confirmHint": "Check passed. Press \"Execute\" again to send it to Pionex.",
+      "descriptions": {
+        "addMargin": "Move funds from the futures account into this bot as margin; pushes the liquidation price further away.",
+        "invest": "Add investment; Pionex tops up the position and orders at the current price.",
+        "pause": "Stops refilling orders but keeps the position; take profit and stop loss stay active.",
+        "range": "Change the range and grid count; the investment stays the same.",
+        "reduce": "Reduce the position in units of the per-grid size; the reduced part realizes PnL.",
+        "reduceMargin": "Move spare margin back to the futures account; brings the liquidation price closer.",
+        "resume": "Resume refilling orders; optionally only when the price reaches a level.",
+        "stops": "Change or clear take profit and stop loss; leave a field empty to clear it."
+      },
+      "execute": "Execute",
+      "label": "Adjust",
+      "liquidationDown": "Lower liquidation: {before} → {after}",
+      "liquidationUp": "Upper liquidation: {before} → {after}",
+      "lossStopHigh": "Upper stop loss (neutral grid)",
+      "maxAmount": "Up to {amount} {quote} can be removed",
+      "operations": {
+        "addMargin": "Add margin",
+        "invest": "Add investment",
+        "pause": "Pause",
+        "range": "Change range",
+        "reduce": "Reduce position",
+        "reduceMargin": "Remove margin",
+        "resume": "Resume",
+        "stops": "Change TP / SL"
+      },
+      "pauseMode": "Pause mode",
+      "pauseModes": {
+        "conditional": "When price reaches",
+        "immediate": "Immediately"
+      },
+      "paused": "Paused",
+      "reducePnl": "Est. realized PnL {pnl} {quote}",
+      "reduceNum": "Units to reduce",
+      "reduceNumHelper": "Check first to see the maximum",
+      "reduceNumMax": "Up to {max}",
+      "rejected": "Pionex rejected this adjustment: {reason}",
+      "stopClearHelper": "Leave empty to clear",
+      "success": "Adjustment sent; it updates once Pionex finishes",
+      "triggerDown": "Falls to",
+      "triggerOptional": "Optional; leave both empty for immediately",
+      "triggerUp": "Rises to"
+    },
     "label": "Bots",
     "modes": {
       "live": "Live",
@@ -273,6 +371,7 @@
       "title": "Create {type} bot"
     },
     "reasons": {
+      "ai_cost_limit": "Monthly AI cost limit reached",
       "create_failed": "Pionex failed to create it",
       "daily_loss_limit": "Daily loss limit reached",
       "dca_base_order_failed": "DCA base order failed",
@@ -320,7 +419,9 @@
       "insufficient_budget": "Not enough bot funds",
       "insufficient_margin": "Insufficient margin",
       "insufficient_position": "Not enough bot position",
-      "invalid_price": "Invalid price"
+      "invalid_price": "Invalid price",
+      "no_position": "No position to close",
+      "order_skipped": "Order skipped by risk checks"
     },
     "statuses": {
       "error": "Error",
@@ -334,7 +435,8 @@
       "indicator": "Buys and sells on technical indicator conditions.",
       "webhook": "Trades on external signals such as TradingView alerts.",
       "futures_grid": "Leveraged long, short or neutral grid within a price range. Live bots run on Pionex futures grid.",
-      "signal": "Pionex opens and closes positions from your TradingView strategy signals, with its own position and Pionex-run take profit / stop loss. Live only."
+      "signal": "Pionex opens and closes positions from your TradingView strategy signals, with its own position and Pionex-run take profit / stop loss. Live only.",
+      "ai": "Claude decides to open, close or hold at each candle close; orders still respect the bot budget, per-order cap, stop loss and take profit."
     },
     "types": {
       "dca": "DCA",
@@ -342,7 +444,8 @@
       "indicator": "Indicator",
       "webhook": "Webhook",
       "futures_grid": "Futures grid",
-      "signal": "Signal bot"
+      "signal": "Signal bot",
+      "ai": "AI trading"
     },
     "webhook": {
       "actionsHint": "Actions: buy, sell, close. Add amount to sell to sell only part.",
@@ -360,6 +463,28 @@
       "url": "Webhook URL"
     }
   },
+  "copy": {
+    "all": "All",
+    "apply": "Apply parameters",
+    "columns": {
+      "actions": "Actions",
+      "createTime": "Created",
+      "gridApr": "Grid APR",
+      "investment": "Investment",
+      "range": "Range",
+      "symbol": "Symbol",
+      "totalReturn": "Total return",
+      "trend": "Direction / leverage"
+    },
+    "empty": "This KOL has no matching copy-trade grids",
+    "hint": "Enter a KOL's Pionex share code to see their curated futures grids. \"Apply parameters\" fills the range, grid count, direction and leverage into a new futures grid form for you to confirm; it does not join the KOL's profit-sharing copy trade.",
+    "label": "KOL copy",
+    "pinned": "Pinned",
+    "rows": "{row} grids",
+    "search": "Search",
+    "shareCode": "KOL share code",
+    "shareCodeHelper": "Found on the KOL's page in the Pionex app"
+  },
   "futures": {
     "actions": {
       "buyLong": "Buy / Long",
@@ -370,8 +495,8 @@
       "sellShort": "Sell / Short"
     },
     "availableMargin": "Available margin",
-    "close": "Close",
     "closable": "Closable: long {long} / short {short}",
+    "close": "Close",
     "closePosition": {
       "confirm": "Close the <bold>{pair}</bold> {direction} position of {size} at market price?",
       "label": "Market close",
@@ -397,6 +522,26 @@
       "SHORT": "Short"
     },
     "fundingFees": "Funding fees",
+    "fundingHistory": {
+      "average": "Average of last 90: {rate}",
+      "note": "Positive rates mean longs pay shorts, negative the reverse; settled every 8 hours.",
+      "rate": "Funding rate",
+      "title": "Funding rate history"
+    },
+    "isolatedMargin": {
+      "amount": "Amount",
+      "directions": {
+        "IN": "Add",
+        "OUT": "Remove"
+      },
+      "helpers": {
+        "IN": "Moved in from cross available margin; pushes the liquidation price away",
+        "OUT": "Moved back to cross available margin; brings the liquidation price closer"
+      },
+      "label": "Margin",
+      "success": "Margin adjusted",
+      "title": "Adjust isolated margin: {pair}"
+    },
     "isolatedModes": {
       "CROSS": "Cross",
       "ISOLATED_BOTH": "Isolated",
@@ -408,6 +553,11 @@
     "leverageRiskLimit": "Limited to {max}x by your futures risk settings",
     "leverageWarning": "Higher leverage moves the liquidation price closer to the current price. Changes apply to new orders and the margin of current positions.",
     "liquidation": "Liquidation",
+    "liquidationEstimate": {
+      "long": "Est. liquidation if long {price} ({distance} from fill)",
+      "note": "Estimate only; cross margin ignores PnL changes of other positions, and the exchange's figure after the fill is final. Shown in red and blocked when below your minimum liquidation distance.",
+      "short": "Est. liquidation if short {price} ({distance} from fill)"
+    },
     "margin": "Required margin {margin} {quote}",
     "marginModeDescriptions": {
       "CROSS": "Cross: all cross positions share the futures account's available margin.",
@@ -535,6 +685,23 @@
     "add": {
       "label": "Add API key",
       "success": "API key added"
+    },
+    "ai": {
+      "apiKey": "Claude API key",
+      "bind": "Bind Claude API key",
+      "bound": "Bound ••••{last4} ({date})",
+      "description": "AI trading bots call the model with your own Claude API key, billed to your Anthropic account. The key is stored encrypted and only you can see it.",
+      "hint": "Create an API key in the Anthropic Console. The key is verified with Anthropic before binding.",
+      "notBound": "Not bound",
+      "remove": {
+        "confirm": "After unbinding, running AI bots fail at their next decision. Unbind?",
+        "label": "Unbind",
+        "success": "Unbound",
+        "title": "Unbind Claude API key"
+      },
+      "replace": "Replace",
+      "success": "Claude API key bound",
+      "title": "Claude API key"
     },
     "columns": {
       "actions": "Actions",

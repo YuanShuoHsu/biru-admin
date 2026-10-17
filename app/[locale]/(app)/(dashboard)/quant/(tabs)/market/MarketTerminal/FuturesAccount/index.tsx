@@ -11,6 +11,10 @@ import {
   quantAccountUrl,
 } from "../../../useQuantCredentials";
 
+import IsolatedMarginDialog, {
+  ISOLATED_MARGIN_FORM_ID,
+} from "./IsolatedMarginDialog";
+
 import DataGrid from "@/components/DataGrid";
 
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
@@ -181,6 +185,23 @@ const FuturesAccount = ({
       title: tQuant("futures.closePosition.title"),
     });
 
+  const adjustMargin = (position: QuantPosition) =>
+    setDialog({
+      content: (
+        <IsolatedMarginDialog
+          onSaved={() => void revalidate()}
+          position={position}
+          quote={marketOf(position.symbol).quoteCurrency}
+          url={url("/isolated-margin")}
+        />
+      ),
+      formId: ISOLATED_MARGIN_FORM_ID,
+      open: true,
+      title: tQuant("futures.isolatedMargin.title", {
+        pair: pairOf(position.symbol),
+      }),
+    });
+
   const handleCancel = async (order: QuantFuturesOrder) => {
     try {
       await fetcher(url(`/orders/${order.orderId}?symbol=${order.symbol}`), {
@@ -252,10 +273,20 @@ const FuturesAccount = ({
       field: "actions",
       filterable: false,
       headerName: tQuant("account.columns.actions"),
+      minWidth: 180,
       renderCell: ({ row }: GridRenderCellParams<QuantPosition>) => (
-        <Button color="error" onClick={() => closePosition(row)} size="small">
-          {tQuant("futures.closePosition.label")}
-        </Button>
+        <Stack
+          sx={{ alignItems: "center", flexDirection: "row", height: "100%" }}
+        >
+          <Button color="error" onClick={() => closePosition(row)} size="small">
+            {tQuant("futures.closePosition.label")}
+          </Button>
+          {row.isolatedMode !== "CROSS" && (
+            <Button onClick={() => adjustMargin(row)} size="small">
+              {tQuant("futures.isolatedMargin.label")}
+            </Button>
+          )}
+        </Stack>
       ),
       sortable: false,
     },

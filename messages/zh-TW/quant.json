@@ -62,6 +62,21 @@
         "title": "停止所有機器人"
       }
     },
+    "ai": {
+      "confidence": "信心 {value}",
+      "cost": "本月 AI 費用 {cost} / 上限 {limit} 美元",
+      "empty": "還沒有決策紀錄",
+      "executed": "已執行",
+      "skipped": "未執行：{reason}",
+      "title": "AI 決策紀錄",
+      "actions": {
+        "close": "平倉",
+        "hold": "觀望",
+        "open": "開倉"
+      },
+      "refusal": "模型拒答：{reason}",
+      "error": "呼叫失敗：{message}"
+    },
     "backtest": {
       "candles": "K 線數量",
       "equity": "權益",
@@ -112,6 +127,9 @@
     },
     "empty": "還沒有機器人",
     "events": {
+      "ai_decision": "AI 決策",
+      "ai_error": "AI 呼叫失敗",
+      "ai_refusal": "AI 拒答",
       "error": "錯誤",
       "exit": "出場",
       "funding": "資金費",
@@ -124,6 +142,28 @@
       "webhook_signal": "收到訊號"
     },
     "form": {
+      "ai": {
+        "effort": "思考深度",
+        "effortHelper": "越深越準確但越貴、越慢",
+        "efforts": {
+          "high": "深入",
+          "low": "快速",
+          "medium": "標準"
+        },
+        "guardHelper": "選填；由系統強制執行，不經過 AI",
+        "guideline": "交易方針（選填）",
+        "guidelineHelper": "告訴 AI 你的風格與能承受的風險，最多 2000 字",
+        "guidelinePlaceholder": "例如：偏保守，趨勢不明時觀望；單筆虧損超過 3% 就出場",
+        "hint": "每根 K 線收盤時，系統把多週期 K 線、指標、委託簿、持倉與近期決策交給 Claude，Claude 只能回傳開倉、平倉或觀望。實際下單一律經過機器人的資金與風控檢查。AI 機器人不提供回測：每根 K 線都要呼叫模型、成本不可控，而且歷史行情可能已在模型的訓練資料裡。",
+        "interval": "判斷週期",
+        "intervalHelper": "每根 K 線收盤時判斷一次；週期越短越花錢",
+        "maxOrderAmount": "單筆開倉上限",
+        "maxOrderAmountHelper": "AI 每次開倉最多動用的金額（名目）",
+        "monthlyCostLimit": "每月 AI 費用上限",
+        "monthlyCostLimitHelper": "本月（UTC）費用達到上限就停止機器人",
+        "stopLoss": "停損（%）",
+        "takeProfit": "停利（%）"
+      },
       "basic": "基本設定",
       "credential": "交易帳戶",
       "dca": {
@@ -136,6 +176,16 @@
         "stopLoss": "停損（%，選填）",
         "takeProfit": "停利（%）",
         "volumeScale": "金額倍率"
+      },
+      "futures": {
+        "direction": "方向",
+        "directions": {
+          "long": "做多",
+          "short": "做空"
+        },
+        "hint": "合約版本以逐倉保證金模擬：投入金額是保證金，下單與加碼金額是倉位名目價值（最多投入 × 槓桿）。做空時加碼、停利、停損的價格方向會反過來。",
+        "leverage": "槓桿",
+        "leverageMax": "此交易對最高 {max}x"
       },
       "futuresGrid": {
         "check": "向 Pionex 試算",
@@ -168,6 +218,7 @@
           "short": "做空"
         }
       },
+      "futuresStrategyPaperOnly": "合約的 DCA／指標／Webhook 目前只開放模擬盤；實盤要等 Pionex 訊號的下單量規則實測確認後開放。",
       "grid": {
         "aiStrategy": "套用 AI 推薦參數",
         "aiStrategyApplied": "已套用 Pionex AI 推薦：年化 {annualized}，最大回撤 {drawdown}",
@@ -261,6 +312,53 @@
         "orderAmount": "訊號未指定金額時的買入金額"
       }
     },
+    "futuresGridOperation": {
+      "amount": "金額",
+      "check": "試算",
+      "confirmHint": "試算通過，再按一次「確認執行」才會送到 Pionex。",
+      "descriptions": {
+        "addMargin": "把合約帳戶的資金轉進這個機器人當保證金，會拉遠強平價。",
+        "invest": "追加投入資金，Pionex 會依目前價格補上倉位與掛單。",
+        "pause": "暫停後不再補掛單，但保留倉位；停利停損仍會生效。",
+        "range": "修改上下界與格數，投入金額不變。",
+        "reduce": "以每格數量為單位減少倉位，減掉的部分會實現盈虧。",
+        "reduceMargin": "把多出來的保證金轉回合約帳戶，會讓強平價變近。",
+        "resume": "恢復補掛單；可設定價格觸及才恢復。",
+        "stops": "修改或清除停利停損；欄位留空代表清除。"
+      },
+      "execute": "確認執行",
+      "label": "調整",
+      "liquidationDown": "下方強平價：{before} → {after}",
+      "liquidationUp": "上方強平價：{before} → {after}",
+      "lossStopHigh": "上方停損價（中性網格）",
+      "maxAmount": "最多可減少 {amount} {quote}",
+      "operations": {
+        "addMargin": "追加保證金",
+        "invest": "追加投入",
+        "pause": "暫停",
+        "range": "修改區間",
+        "reduce": "減倉",
+        "reduceMargin": "減少保證金",
+        "resume": "恢復",
+        "stops": "修改停利停損"
+      },
+      "pauseMode": "暫停方式",
+      "pauseModes": {
+        "conditional": "價格觸及時暫停",
+        "immediate": "立即暫停"
+      },
+      "paused": "已暫停",
+      "reducePnl": "預估實現盈虧 {pnl} {quote}",
+      "reduceNum": "減倉份數",
+      "reduceNumHelper": "先試算可看到最多可減幾份",
+      "reduceNumMax": "最多 {max} 份",
+      "rejected": "Pionex 不接受這個調整：{reason}",
+      "stopClearHelper": "留空代表清除",
+      "success": "已送出調整，Pionex 處理完成後會更新",
+      "triggerDown": "跌到此價",
+      "triggerOptional": "選填；兩個都留空代表立即",
+      "triggerUp": "漲到此價"
+    },
     "label": "機器人",
     "modes": {
       "live": "實盤",
@@ -273,6 +371,7 @@
       "title": "建立機器人：{type}"
     },
     "reasons": {
+      "ai_cost_limit": "達到每月 AI 費用上限",
       "create_failed": "Pionex 建立失敗",
       "daily_loss_limit": "觸發每日虧損上限",
       "dca_base_order_failed": "DCA 首單失敗",
@@ -320,7 +419,9 @@
       "insufficient_budget": "機器人可用資金不足",
       "insufficient_margin": "保證金不足",
       "insufficient_position": "機器人持倉不足",
-      "invalid_price": "價格無效"
+      "invalid_price": "價格無效",
+      "no_position": "沒有可平的部位",
+      "order_skipped": "委託被風控略過"
     },
     "statuses": {
       "error": "錯誤",
@@ -334,7 +435,8 @@
       "indicator": "依技術指標的進出場條件自動買賣。",
       "webhook": "接收 TradingView alert 等外部訊號下單。",
       "futures_grid": "在價格區間內用槓桿做多、做空或中性網格。實盤交給 Pionex 合約網格執行。",
-      "signal": "由 Pionex 依你的 TradingView 策略訊號開平倉，倉位獨立、停利停損由 Pionex 執行。只能實盤。"
+      "signal": "由 Pionex 依你的 TradingView 策略訊號開平倉，倉位獨立、停利停損由 Pionex 執行。只能實盤。",
+      "ai": "由 Claude 在每根 K 線收盤時判斷開倉、平倉或觀望；下單仍受機器人的資金、單筆上限與停損停利限制。"
     },
     "types": {
       "dca": "DCA 定投",
@@ -342,7 +444,8 @@
       "indicator": "指標訊號",
       "webhook": "Webhook 訊號",
       "futures_grid": "合約網格",
-      "signal": "訊號機器人"
+      "signal": "訊號機器人",
+      "ai": "AI 交易"
     },
     "webhook": {
       "actionsHint": "可用的 action：buy、sell、close；sell 可加 amount 只賣出部分",
@@ -360,6 +463,28 @@
       "url": "Webhook 網址"
     }
   },
+  "copy": {
+    "all": "全部",
+    "apply": "套用參數",
+    "columns": {
+      "actions": "操作",
+      "createTime": "建立時間",
+      "gridApr": "網格年化",
+      "investment": "投入",
+      "range": "區間",
+      "symbol": "交易對",
+      "totalReturn": "總報酬",
+      "trend": "方向／槓桿"
+    },
+    "empty": "這位 KOL 沒有符合條件的跟單網格",
+    "hint": "輸入 KOL 在 Pionex 的分享碼，可以查看他精選的合約網格。「套用參數」會把區間、格數、方向與槓桿帶進新建合約網格的表單，由你確認後建立；不會綁定 KOL 的跟單分潤。",
+    "label": "KOL 跟單",
+    "pinned": "置頂",
+    "rows": "{row} 格",
+    "search": "查詢",
+    "shareCode": "KOL 分享碼",
+    "shareCodeHelper": "在 Pionex App 的 KOL 頁面可以找到"
+  },
   "futures": {
     "actions": {
       "buyLong": "買入／做多",
@@ -370,8 +495,8 @@
       "sellShort": "賣出／做空"
     },
     "availableMargin": "可用保證金",
-    "close": "平倉",
     "closable": "可平：多 {long}／空 {short}",
+    "close": "平倉",
     "closePosition": {
       "confirm": "確定要以市價平掉 <bold>{pair}</bold> 的{direction}倉 {size} 嗎？",
       "label": "市價平倉",
@@ -397,6 +522,26 @@
       "SHORT": "空"
     },
     "fundingFees": "資金費紀錄",
+    "fundingHistory": {
+      "average": "近 90 次平均 {rate}",
+      "note": "正費率代表多方付給空方，負費率反之；每 8 小時結算一次。",
+      "rate": "資金費率",
+      "title": "資金費率歷史"
+    },
+    "isolatedMargin": {
+      "amount": "金額",
+      "directions": {
+        "IN": "追加",
+        "OUT": "減少"
+      },
+      "helpers": {
+        "IN": "從全倉可用保證金轉入，會拉遠強平價",
+        "OUT": "轉回全倉可用保證金，會讓強平價變近"
+      },
+      "label": "保證金",
+      "success": "已調整保證金",
+      "title": "調整逐倉保證金：{pair}"
+    },
     "isolatedModes": {
       "CROSS": "全倉",
       "ISOLATED_BOTH": "逐倉",
@@ -408,6 +553,11 @@
     "leverageRiskLimit": "已依你的合約風控設定限制在 {max}x 以內",
     "leverageWarning": "槓桿越高，強平價離目前價格越近。調整只影響之後的委託與目前持倉的保證金。",
     "liquidation": "強平",
+    "liquidationEstimate": {
+      "long": "開多預估強平價 {price}（距成交價 {distance}）",
+      "note": "預估值；全倉不計其他部位的盈虧變動，實際以成交後交易所回報為準。低於你設定的最小強平距離時會顯示紅色並擋下開倉。",
+      "short": "開空預估強平價 {price}（距成交價 {distance}）"
+    },
     "margin": "所需保證金 {margin} {quote}",
     "marginModeDescriptions": {
       "CROSS": "全倉：合約帳戶的可用保證金共同承擔所有全倉部位的風險。",
@@ -535,6 +685,23 @@
     "add": {
       "label": "綁定 API key",
       "success": "已綁定 API key"
+    },
+    "ai": {
+      "apiKey": "Claude API key",
+      "bind": "綁定 Claude API key",
+      "bound": "已綁定 ••••{last4}（{date}）",
+      "description": "AI 交易機器人用你自己的 Claude API key 呼叫模型，費用由你的 Anthropic 帳戶支付；金鑰加密保存，只有你本人看得到。",
+      "hint": "在 Anthropic Console 建立 API key。綁定前會先向 Anthropic 驗證這把 key。",
+      "notBound": "尚未綁定",
+      "remove": {
+        "confirm": "解除綁定後，執行中的 AI 機器人下次判斷時會失敗。確定要解除嗎？",
+        "label": "解除綁定",
+        "success": "已解除綁定",
+        "title": "解除綁定 Claude API key"
+      },
+      "replace": "更換",
+      "success": "已綁定 Claude API key",
+      "title": "Claude API key"
     },
     "columns": {
       "actions": "操作",

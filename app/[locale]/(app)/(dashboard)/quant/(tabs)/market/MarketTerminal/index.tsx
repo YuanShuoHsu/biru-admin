@@ -8,6 +8,7 @@ import useSWR from "swr";
 
 import { useQuantCredentials } from "../../useQuantCredentials";
 import AccountOrders from "./AccountOrders";
+import FundingRates from "./FundingRates";
 import FuturesAccount from "./FuturesAccount";
 import FuturesTradePanel from "./FuturesTradePanel";
 import MarketHeader from "./MarketHeader";
@@ -143,6 +144,11 @@ const MarketTerminal = ({ interval, symbol }: MarketTerminalProps) => {
               symbol={symbol}
             />
           </Panel>
+          {market?.type === "PERP" && (
+            <Panel>
+              <FundingRates symbol={market.symbol} />
+            </Panel>
+          )}
           {market && credential && (
             <Panel>
               {market.type === "PERP" ? (

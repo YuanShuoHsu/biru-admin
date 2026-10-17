@@ -1,13 +1,17 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
+import { quantMarketTypeOf } from "@/constants/quant";
+
 import type {
+  AiConfig,
   DcaConfig,
   FuturesGridConfig,
   GridConfig,
   IndicatorCondition,
   IndicatorConfig,
   QuantBot,
+  FuturesPositionConfig,
   QuantBotMode,
   QuantBotType,
   QuantCandleInterval,
@@ -29,7 +33,19 @@ export interface ConditionValues {
 }
 
 export interface BotFormValues {
+  ai: {
+    effort: AiConfig["effort"];
+    guideline: string;
+    interval: QuantCandleInterval;
+    locale: AiConfig["locale"];
+    maxOrderAmount: string;
+    monthlyCostLimit: string;
+    stopLoss: string;
+    takeProfit: string;
+  };
   credentialId: string;
+  /** 合約交易對才用：DCA、指標、Webhook 的方向與槓桿 */
+  futures: { direction: "long" | "short"; leverage: string };
   dca: {
     baseOrderAmount: string;
     maxSafetyOrders: string;
@@ -98,8 +114,23 @@ export const emptyCondition = (
   value: group === "entry" ? "30" : "70",
 });
 
-export const defaultValues = (symbol: string): BotFormValues => ({
+export const defaultValues = (
+  symbol: string,
+  locale: AiConfig["locale"],
+): BotFormValues => ({
+  ai: {
+    // Anthropic 對這個模型的預設 effort
+    effort: "medium",
+    guideline: "",
+    interval: "15M",
+    locale,
+    maxOrderAmount: "",
+    monthlyCostLimit: "",
+    stopLoss: "",
+    takeProfit: "",
+  },
   credentialId: "",
+  futures: { direction: "long", leverage: "" },
   dca: {
     baseOrderAmount: "",
     maxSafetyOrders: "",
@@ -181,10 +212,17 @@ const conditionValues =
   });
 
 /** 「以此設定建立新機器人」：沿用來源機器人的設定，模式一律回到模擬盤讓使用者重新確認 */
-export const valuesFromBot = (bot: QuantBot): BotFormValues => {
-  const base = defaultValues(bot.symbol);
+export const valuesFromBot = (
+  bot: QuantBot,
+  locale: AiConfig["locale"],
+): BotFormValues => {
+  const base = defaultValues(bot.symbol, locale);
+  const position = (bot.config as { futures?: FuturesPositionConfig }).futures;
   const values: BotFormValues = {
     ...base,
+    futures: position
+      ? { direction: position.direction, leverage: text(position.leverage) }
+      : base.futures,
     investment: text(bot.investment),
     maxDailyLoss: text(bot.maxDailyLoss),
     name: bot.name,
@@ -243,6 +281,20 @@ export const valuesFromBot = (bot: QuantBot): BotFormValues => {
         orderAmount: text((bot.config as WebhookConfig).orderAmount),
       };
       break;
+    case "ai": {
+      const config = bot.config as AiConfig;
+      values.ai = {
+        effort: config.effort,
+        guideline: config.guideline ?? "",
+        interval: config.interval,
+        locale: config.locale,
+        maxOrderAmount: text(config.maxOrderAmount),
+        monthlyCostLimit: text(config.monthlyCostLimit),
+        stopLoss: text(config.stopLoss),
+        takeProfit: text(config.takeProfit),
+      };
+      break;
+    }
     case "signal": {
       const config = bot.config as SignalBotConfig;
       values.mode = "live";
@@ -332,6 +384,11 @@ export const futuresGridConfig = (values: BotFormValues): FuturesGridConfig => {
   };
 };
 
+const futuresPosition = ({ futures, symbol }: BotFormValues) =>
+  quantMarketTypeOf(symbol) === "PERP"
+    ? { direction: futures.direction, leverage: Number(futures.leverage) }
+    : undefined;
+
 export const toConfig = (type: QuantBotType, values: BotFormValues) => {
   switch (type) {
     case "grid":
@@ -351,6 +408,7 @@ export const toConfig = (type: QuantBotType, values: BotFormValues) => {
         safetyOrderAmount: Number(dca.safetyOrderAmount),
         stepScale: Number(dca.stepScale),
         stopLoss: optionalNumber(dca.stopLoss),
+        futures: futuresPosition(values),
         takeProfit: Number(dca.takeProfit),
         volumeScale: Number(dca.volumeScale),
       } satisfies DcaConfig;
@@ -361,6 +419,7 @@ export const toConfig = (type: QuantBotType, values: BotFormValues) => {
       return {
         entry: indicator.entry.map(toCondition),
         exit: indicator.exit.map(toCondition),
+        futures: futuresPosition(values),
         interval: indicator.interval,
         orderAmount: Number(indicator.orderAmount),
         stopLoss: optionalNumber(indicator.stopLoss),
@@ -369,8 +428,24 @@ export const toConfig = (type: QuantBotType, values: BotFormValues) => {
     }
     case "webhook":
       return {
+        futures: futuresPosition(values),
         orderAmount: Number(values.webhook.orderAmount),
       } satisfies WebhookConfig;
+    case "ai": {
+      const { ai } = values;
+
+      return {
+        effort: ai.effort,
+        futures: futuresPosition(values),
+        guideline: ai.guideline.trim() || undefined,
+        interval: ai.interval,
+        locale: ai.locale,
+        maxOrderAmount: Number(ai.maxOrderAmount),
+        monthlyCostLimit: Number(ai.monthlyCostLimit),
+        stopLoss: optionalNumber(ai.stopLoss),
+        takeProfit: optionalNumber(ai.takeProfit),
+      } satisfies AiConfig;
+    }
     case "signal":
       return {
         compound: values.signal.compound,
@@ -442,6 +517,19 @@ export const useBotFormSchema = (type: QuantBotType) => {
 
   return z
     .object({
+      ai:
+        type === "ai"
+          ? z.object({
+              effort: z.enum(["low", "medium", "high"]),
+              guideline: z.string().max(2000),
+              interval: z.string(),
+              locale: z.string(),
+              maxOrderAmount: positive,
+              monthlyCostLimit: positive,
+              stopLoss: optionalPositive,
+              takeProfit: optionalPositive,
+            })
+          : loose,
       credentialId: z.string(),
       dca:
         type === "dca"
@@ -456,6 +544,10 @@ export const useBotFormSchema = (type: QuantBotType) => {
               volumeScale: positive,
             })
           : loose,
+      futures: z.object({
+        direction: z.enum(["long", "short"]),
+        leverage: z.string(),
+      }),
       futuresGrid:
         type === "futures_grid"
           ? z.object({
@@ -510,6 +602,21 @@ export const useBotFormSchema = (type: QuantBotType) => {
       webhook: type === "webhook" ? z.object({ orderAmount: positive }) : loose,
     })
     .superRefine((values, ctx) => {
+      if (
+        (type === "dca" ||
+          type === "indicator" ||
+          type === "webhook" ||
+          type === "ai") &&
+        quantMarketTypeOf(values.symbol) === "PERP"
+      ) {
+        const leverage = Number(values.futures.leverage);
+        if (!Number.isInteger(leverage) || leverage < 1)
+          ctx.addIssue({
+            code: "custom",
+            message: tValidation("positiveInteger"),
+            path: ["futures", "leverage"],
+          });
+      }
       if (values.mode === "live" && !values.credentialId)
         ctx.addIssue({
           code: "custom",

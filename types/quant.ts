@@ -46,8 +46,14 @@ export type QuantPositionHistory =
 export type QuantFuturesOrder = components["schemas"]["QuantFuturesOrderDto"];
 export type QuantFuturesFill = components["schemas"]["QuantFuturesFillDto"];
 export type QuantFundingFee = components["schemas"]["QuantFundingFeeDto"];
+export type QuantFuturesOrderPreview =
+  components["schemas"]["QuantFuturesOrderPreviewDto"];
+export type PreviewFuturesOrderDto =
+  components["schemas"]["PreviewFuturesOrderDto"];
 export type PlaceFuturesOrderDto =
   components["schemas"]["PlaceFuturesOrderDto"];
+export type AdjustIsolatedMarginDto =
+  components["schemas"]["AdjustIsolatedMarginDto"];
 export type SetLeverageDto = components["schemas"]["SetLeverageDto"];
 export type SetMarginModeDto = components["schemas"]["SetMarginModeDto"];
 export type SetPositionModeDto = components["schemas"]["SetPositionModeDto"];
@@ -61,7 +67,18 @@ export type CreateQuantBotResponse =
   components["schemas"]["CreateQuantBotResponseDto"];
 export type GridConfig = components["schemas"]["GridConfigDto"];
 export type FuturesGridConfig = components["schemas"]["FuturesGridConfigDto"];
+export type FuturesGridOperationDto =
+  components["schemas"]["FuturesGridOperationDto"];
+export type FuturesGridOperationCheck =
+  components["schemas"]["FuturesGridOperationCheckDto"];
+export type QuantKol = components["schemas"]["QuantKolDto"];
+export type QuantKolOrder = components["schemas"]["QuantKolOrderDto"];
+export type AiConfig = components["schemas"]["AiConfigDto"];
+export type QuantAiKey = components["schemas"]["QuantAiKeyDto"];
+export type SetQuantAiKeyDto = components["schemas"]["SetQuantAiKeyDto"];
 export type SignalBotConfig = components["schemas"]["SignalBotConfigDto"];
+export type FuturesPositionConfig =
+  components["schemas"]["FuturesPositionConfigDto"];
 export type SignalSetup = components["schemas"]["SignalSetupDto"];
 export type SendSignalDto = components["schemas"]["SendSignalDto"];
 export type FuturesGridCheckDto = components["schemas"]["FuturesGridCheckDto"];

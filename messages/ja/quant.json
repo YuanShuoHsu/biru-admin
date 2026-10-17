@@ -62,6 +62,21 @@
         "title": "すべてのボットを停止"
       }
     },
+    "ai": {
+      "confidence": "確信度 {value}",
+      "cost": "今月の AI 費用 {cost} / 上限 {limit} USD",
+      "empty": "まだ判断記録がありません",
+      "executed": "実行済み",
+      "skipped": "未実行：{reason}",
+      "title": "AI 判断記録",
+      "actions": {
+        "close": "決済",
+        "hold": "様子見",
+        "open": "建玉"
+      },
+      "refusal": "モデルが回答を拒否：{reason}",
+      "error": "呼び出し失敗：{message}"
+    },
     "backtest": {
       "candles": "ローソク足の本数",
       "equity": "資産",
@@ -112,6 +127,9 @@
     },
     "empty": "まだボットがありません",
     "events": {
+      "ai_decision": "AI 判断",
+      "ai_error": "AI 呼び出し失敗",
+      "ai_refusal": "AI 拒否",
       "error": "エラー",
       "exit": "エグジット",
       "funding": "資金調達料",
@@ -124,6 +142,28 @@
       "webhook_signal": "シグナル受信"
     },
     "form": {
+      "ai": {
+        "effort": "思考の深さ",
+        "effortHelper": "深いほど正確ですが、費用と時間がかかります",
+        "efforts": {
+          "high": "深い",
+          "low": "速い",
+          "medium": "標準"
+        },
+        "guardHelper": "任意。AI ではなくシステムが強制します",
+        "guideline": "取引方針（任意）",
+        "guidelineHelper": "スタイルと許容リスクを AI に伝えます。最大 2000 文字",
+        "guidelinePlaceholder": "例：保守的に。トレンドが不明なら様子見、1 回の損失が 3% を超えたら決済",
+        "hint": "ローソク足の確定ごとに、複数時間足のローソク足・指標・板・ポジション・最近の判断を Claude に渡し、Claude は建玉・決済・様子見のいずれかだけを返します。実際の注文は必ずボットの資金とリスクチェックを通ります。AI ボットはバックテストできません。足ごとにモデルを呼ぶため費用が読めず、過去の相場がモデルの学習データに含まれている可能性もあります。",
+        "interval": "判断する時間足",
+        "intervalHelper": "ローソク足の確定ごとに 1 回判断します。短いほど費用がかかります",
+        "maxOrderAmount": "1 回の建玉上限",
+        "maxOrderAmountHelper": "AI が 1 回に建てられる最大金額（名目）",
+        "monthlyCostLimit": "月間 AI 費用上限",
+        "monthlyCostLimitHelper": "今月（UTC）の費用が上限に達するとボットを停止します",
+        "stopLoss": "損切り（%）",
+        "takeProfit": "利確（%）"
+      },
       "basic": "基本設定",
       "credential": "取引口座",
       "dca": {
@@ -136,6 +176,16 @@
         "stopLoss": "損切り（%、任意）",
         "takeProfit": "利確（%）",
         "volumeScale": "金額の倍率"
+      },
+      "futures": {
+        "direction": "方向",
+        "directions": {
+          "long": "ロング",
+          "short": "ショート"
+        },
+        "hint": "先物版は分離証拠金で模擬します。投資額は証拠金で、注文・追加購入の金額はポジションの名目価値です（最大で投資額 × レバレッジ）。ショートでは追加・利確・損切りの価格方向が逆になります。",
+        "leverage": "レバレッジ",
+        "leverageMax": "この銘柄は最大 {max}x"
       },
       "futuresGrid": {
         "check": "Pionex で試算",
@@ -168,6 +218,7 @@
           "short": "ショート"
         }
       },
+      "futuresStrategyPaperOnly": "先物の DCA／インジケーター／Webhook は現在模擬取引のみです。実運用は Pionex シグナルの注文数量ルールを実測で確認してから開放します。",
       "grid": {
         "aiStrategy": "AI 推奨パラメータを適用",
         "aiStrategyApplied": "Pionex AI 推奨を適用しました：年率 {annualized}、最大ドローダウン {drawdown}",
@@ -261,6 +312,53 @@
         "orderAmount": "シグナルに金額がない場合の購入額"
       }
     },
+    "futuresGridOperation": {
+      "amount": "金額",
+      "check": "試算",
+      "confirmHint": "試算に通りました。もう一度「実行」を押すと Pionex に送信します。",
+      "descriptions": {
+        "addMargin": "先物口座の資金をこのボットの証拠金に移し、清算価格を遠ざけます。",
+        "invest": "投資額を追加し、Pionex が現在価格でポジションと注文を補充します。",
+        "pause": "注文の補充を止めますがポジションは保持し、利確・損切りは有効のままです。",
+        "range": "上限・下限とグリッド数を変更します。投資額は変わりません。",
+        "reduce": "1 グリッドの数量を単位にポジションを減らし、減らした分の損益を確定します。",
+        "reduceMargin": "余分な証拠金を先物口座に戻します。清算価格が近づきます。",
+        "resume": "注文の補充を再開します。価格到達時のみ再開する設定も可能です。",
+        "stops": "利確・損切りを変更または解除します。空欄は解除です。"
+      },
+      "execute": "実行",
+      "label": "調整",
+      "liquidationDown": "下側清算価格：{before} → {after}",
+      "liquidationUp": "上側清算価格：{before} → {after}",
+      "lossStopHigh": "上側の損切り価格（ニュートラル）",
+      "maxAmount": "最大 {amount} {quote} まで減らせます",
+      "operations": {
+        "addMargin": "証拠金を追加",
+        "invest": "投資額を追加",
+        "pause": "一時停止",
+        "range": "レンジを変更",
+        "reduce": "ポジション削減",
+        "reduceMargin": "証拠金を減らす",
+        "resume": "再開",
+        "stops": "利確・損切りを変更"
+      },
+      "pauseMode": "停止方法",
+      "pauseModes": {
+        "conditional": "価格到達時に停止",
+        "immediate": "すぐに停止"
+      },
+      "paused": "一時停止中",
+      "reducePnl": "推定確定損益 {pnl} {quote}",
+      "reduceNum": "削減する単位数",
+      "reduceNumHelper": "試算すると最大値がわかります",
+      "reduceNumMax": "最大 {max}",
+      "rejected": "Pionex がこの調整を受け付けませんでした：{reason}",
+      "stopClearHelper": "空欄で解除",
+      "success": "調整を送信しました。Pionex の処理後に反映されます",
+      "triggerDown": "この価格まで下落",
+      "triggerOptional": "任意。両方空欄ならすぐに実行",
+      "triggerUp": "この価格まで上昇"
+    },
     "label": "ボット",
     "modes": {
       "live": "本番",
@@ -273,6 +371,7 @@
       "title": "{type}ボットを作成"
     },
     "reasons": {
+      "ai_cost_limit": "月間 AI 費用上限に達しました",
       "create_failed": "Pionex での作成に失敗",
       "daily_loss_limit": "1 日の損失上限に到達",
       "dca_base_order_failed": "DCA の初回注文に失敗",
@@ -316,11 +415,13 @@
     },
     "skipReasons": {
       "above_maximum": "取引所の最大注文量を超えています",
-      "below_minimum": "取引所の最小注文量未満です",
+      "below_minimum": "取引所の最小注文量未満",
       "insufficient_budget": "ボットの資金が不足しています",
       "insufficient_margin": "証拠金不足",
       "insufficient_position": "ボットの保有が不足しています",
-      "invalid_price": "価格が無効です"
+      "invalid_price": "価格が無効です",
+      "no_position": "決済するポジションがありません",
+      "order_skipped": "リスクチェックで注文がスキップされました"
     },
     "statuses": {
       "error": "エラー",
@@ -334,7 +435,8 @@
       "indicator": "テクニカル指標の条件で自動売買します。",
       "webhook": "TradingView のアラートなど外部シグナルで注文します。",
       "futures_grid": "価格レンジ内でレバレッジをかけたロング・ショート・ニュートラルのグリッド。実運用は Pionex の先物グリッドで実行します。",
-      "signal": "TradingView 戦略のシグナルに従って Pionex が建玉・決済します。ポジションは独立し、利確・損切りは Pionex が実行します。実運用のみ。"
+      "signal": "TradingView 戦略のシグナルに従って Pionex が建玉・決済します。ポジションは独立し、利確・損切りは Pionex が実行します。実運用のみ。",
+      "ai": "ローソク足の確定ごとに Claude が建玉・決済・様子見を判断します。注文はボットの資金・1 回の上限・損切り・利確に従います。"
     },
     "types": {
       "dca": "DCA",
@@ -342,7 +444,8 @@
       "indicator": "インジケーター",
       "webhook": "Webhook",
       "futures_grid": "先物グリッド",
-      "signal": "シグナルボット"
+      "signal": "シグナルボット",
+      "ai": "AI トレード"
     },
     "webhook": {
       "actionsHint": "action は buy、sell、close が使えます。sell に amount を付けると一部だけ売却します",
@@ -360,6 +463,28 @@
       "url": "Webhook URL"
     }
   },
+  "copy": {
+    "all": "すべて",
+    "apply": "パラメータを適用",
+    "columns": {
+      "actions": "操作",
+      "createTime": "作成日時",
+      "gridApr": "グリッド年率",
+      "investment": "投資額",
+      "range": "レンジ",
+      "symbol": "銘柄",
+      "totalReturn": "総リターン",
+      "trend": "方向／レバレッジ"
+    },
+    "empty": "条件に合うコピー用グリッドはありません",
+    "hint": "KOL の Pionex 共有コードを入力すると、選りすぐりの先物グリッドを確認できます。「パラメータを適用」はレンジ・グリッド数・方向・レバレッジを新しい先物グリッドのフォームに入れ、確認後に作成します。KOL のコピートレード利益分配には参加しません。",
+    "label": "KOL コピー",
+    "pinned": "固定",
+    "rows": "{row} グリッド",
+    "search": "検索",
+    "shareCode": "KOL 共有コード",
+    "shareCodeHelper": "Pionex アプリの KOL ページで確認できます"
+  },
   "futures": {
     "actions": {
       "buyLong": "買い／ロング",
@@ -370,8 +495,8 @@
       "sellShort": "売り／ショート"
     },
     "availableMargin": "利用可能証拠金",
-    "close": "決済",
     "closable": "決済可能：ロング {long}／ショート {short}",
+    "close": "決済",
     "closePosition": {
       "confirm": "<bold>{pair}</bold> の{direction}ポジション {size} を成行で決済しますか？",
       "label": "成行決済",
@@ -397,6 +522,26 @@
       "SHORT": "ショート"
     },
     "fundingFees": "資金調達料履歴",
+    "fundingHistory": {
+      "average": "直近 90 回の平均 {rate}",
+      "note": "正の料率はロングがショートに支払い、負はその逆です。8 時間ごとに精算されます。",
+      "rate": "資金調達率",
+      "title": "資金調達率の履歴"
+    },
+    "isolatedMargin": {
+      "amount": "金額",
+      "directions": {
+        "IN": "追加",
+        "OUT": "減らす"
+      },
+      "helpers": {
+        "IN": "クロスの利用可能証拠金から移し、清算価格を遠ざけます",
+        "OUT": "クロスの利用可能証拠金に戻し、清算価格が近づきます"
+      },
+      "label": "証拠金",
+      "success": "証拠金を調整しました",
+      "title": "分離証拠金の調整：{pair}"
+    },
     "isolatedModes": {
       "CROSS": "クロス",
       "ISOLATED_BOTH": "分離",
@@ -408,6 +553,11 @@
     "leverageRiskLimit": "先物リスク設定により {max}x までに制限されています",
     "leverageWarning": "レバレッジが高いほど清算価格が現在価格に近づきます。変更は今後の注文と現在のポジションの証拠金に適用されます。",
     "liquidation": "清算",
+    "liquidationEstimate": {
+      "long": "ロングの推定清算価格 {price}（約定価格から {distance}）",
+      "note": "推定値です。クロスでは他のポジションの損益変動を含みません。実際の値は約定後に取引所が返す値が基準です。設定した最小清算距離を下回ると赤く表示し、新規建てを止めます。",
+      "short": "ショートの推定清算価格 {price}（約定価格から {distance}）"
+    },
     "margin": "必要証拠金 {margin} {quote}",
     "marginModeDescriptions": {
       "CROSS": "クロス：先物口座の利用可能証拠金をすべてのクロスポジションで共有します。",
@@ -535,6 +685,23 @@
     "add": {
       "label": "API キーを登録",
       "success": "API キーを登録しました"
+    },
+    "ai": {
+      "apiKey": "Claude API キー",
+      "bind": "Claude API キーを連携",
+      "bound": "連携済み ••••{last4}（{date}）",
+      "description": "AI トレードボットはあなた自身の Claude API キーでモデルを呼び出し、費用はあなたの Anthropic アカウントに請求されます。キーは暗号化して保存され、本人だけが確認できます。",
+      "hint": "Anthropic Console で API キーを作成してください。連携前に Anthropic で検証します。",
+      "notBound": "未連携",
+      "remove": {
+        "confirm": "連携を解除すると、稼働中の AI ボットは次の判断で失敗します。解除しますか？",
+        "label": "連携解除",
+        "success": "連携を解除しました",
+        "title": "Claude API キーの連携解除"
+      },
+      "replace": "変更",
+      "success": "Claude API キーを連携しました",
+      "title": "Claude API キー"
     },
     "columns": {
       "actions": "操作",

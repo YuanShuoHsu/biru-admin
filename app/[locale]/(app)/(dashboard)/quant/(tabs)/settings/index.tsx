@@ -8,6 +8,7 @@ import {
   quantAccountUrl,
   useQuantCredentials,
 } from "../useQuantCredentials";
+import AiKeySettings from "./AiKeySettings";
 import CredentialDialog, { CREDENTIAL_FORM_ID } from "./CredentialDialog";
 import FuturesRiskDialog, { FUTURES_RISK_FORM_ID } from "./FuturesRiskDialog";
 
@@ -161,6 +162,7 @@ const CredentialSettings = () => {
         rows={credentials ?? []}
         showToolbar={false}
       />
+      <AiKeySettings />
     </Stack>
   );
 };

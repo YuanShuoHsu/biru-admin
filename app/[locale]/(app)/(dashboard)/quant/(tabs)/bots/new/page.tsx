@@ -10,7 +10,7 @@ import type { QuantBotType } from "@/types/quant";
 
 interface NewQuantBotPageProps {
   params: Promise<{ locale: Locale }>;
-  searchParams: Promise<{ from?: string; type?: string }>;
+  searchParams: Promise<Record<string, string | undefined>>;
 }
 
 export const generateMetadata = async ({
@@ -26,9 +26,16 @@ const isBotType = (value?: string): value is QuantBotType =>
   quantBotTypeValues.some((type) => type === value);
 
 const NewQuantBotPage = async ({ searchParams }: NewQuantBotPageProps) => {
-  const { from, type } = await searchParams;
+  const { bottom, from, leverage, row, symbol, top, trend, type } =
+    await searchParams;
 
-  return <BotForm fromId={from} type={isBotType(type) ? type : "grid"} />;
+  return (
+    <BotForm
+      fromId={from}
+      preset={{ bottom, leverage, row, symbol, top, trend }}
+      type={isBotType(type) ? type : "grid"}
+    />
+  );
 };
 
 export default NewQuantBotPage;

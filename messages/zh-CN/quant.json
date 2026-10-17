@@ -62,6 +62,21 @@
         "title": "停止所有机器人"
       }
     },
+    "ai": {
+      "confidence": "信心 {value}",
+      "cost": "本月 AI 费用 {cost} / 上限 {limit} 美元",
+      "empty": "还没有决策记录",
+      "executed": "已执行",
+      "skipped": "未执行：{reason}",
+      "title": "AI 决策记录",
+      "actions": {
+        "close": "平仓",
+        "hold": "观望",
+        "open": "开仓"
+      },
+      "refusal": "模型拒答：{reason}",
+      "error": "调用失败：{message}"
+    },
     "backtest": {
       "candles": "K 线数量",
       "equity": "权益",
@@ -112,6 +127,9 @@
     },
     "empty": "还没有机器人",
     "events": {
+      "ai_decision": "AI 决策",
+      "ai_error": "AI 调用失败",
+      "ai_refusal": "AI 拒答",
       "error": "错误",
       "exit": "出场",
       "funding": "资金费",
@@ -124,6 +142,28 @@
       "webhook_signal": "收到信号"
     },
     "form": {
+      "ai": {
+        "effort": "思考深度",
+        "effortHelper": "越深越准确但越贵、越慢",
+        "efforts": {
+          "high": "深入",
+          "low": "快速",
+          "medium": "标准"
+        },
+        "guardHelper": "选填；由系统强制执行，不经过 AI",
+        "guideline": "交易方针（选填）",
+        "guidelineHelper": "告诉 AI 你的风格与能承受的风险，最多 2000 字",
+        "guidelinePlaceholder": "例如：偏保守，趋势不明时观望；单笔亏损超过 3% 就出场",
+        "hint": "每根 K 线收盘时，系统把多周期 K 线、指标、委托簿、持仓与近期决策交给 Claude，Claude 只能回传开仓、平仓或观望。实际下单一律经过机器人的资金与风控检查。AI 机器人不提供回测：每根 K 线都要调用模型、成本不可控，而且历史行情可能已在模型的训练数据里。",
+        "interval": "判断周期",
+        "intervalHelper": "每根 K 线收盘时判断一次；周期越短越花钱",
+        "maxOrderAmount": "单笔开仓上限",
+        "maxOrderAmountHelper": "AI 每次开仓最多动用的金额（名义）",
+        "monthlyCostLimit": "每月 AI 费用上限",
+        "monthlyCostLimitHelper": "本月（UTC）费用达到上限就停止机器人",
+        "stopLoss": "止损（%）",
+        "takeProfit": "止盈（%）"
+      },
       "basic": "基本设置",
       "credential": "交易账户",
       "dca": {
@@ -136,6 +176,16 @@
         "stopLoss": "止损（%，选填）",
         "takeProfit": "止盈（%）",
         "volumeScale": "金额倍率"
+      },
+      "futures": {
+        "direction": "方向",
+        "directions": {
+          "long": "做多",
+          "short": "做空"
+        },
+        "hint": "合约版本以逐仓保证金模拟：投入金额是保证金，下单与加仓金额是仓位名义价值（最多投入 × 杠杆）。做空时加仓、止盈、止损的价格方向会反过来。",
+        "leverage": "杠杆",
+        "leverageMax": "此交易对最高 {max}x"
       },
       "futuresGrid": {
         "check": "向 Pionex 试算",
@@ -168,6 +218,7 @@
           "short": "做空"
         }
       },
+      "futuresStrategyPaperOnly": "合约的 DCA／指标／Webhook 目前只开放模拟盘；实盘要等 Pionex 信号的下单量规则实测确认后开放。",
       "grid": {
         "aiStrategy": "套用 AI 推荐参数",
         "aiStrategyApplied": "已套用 Pionex AI 推荐：年化 {annualized}，最大回撤 {drawdown}",
@@ -261,6 +312,53 @@
         "orderAmount": "信号未指定金额时的买入金额"
       }
     },
+    "futuresGridOperation": {
+      "amount": "金额",
+      "check": "试算",
+      "confirmHint": "试算通过，再按一次「确认执行」才会送到 Pionex。",
+      "descriptions": {
+        "addMargin": "把合约账户的资金转进这个机器人当保证金，会拉远强平价。",
+        "invest": "追加投入资金，Pionex 会依当前价格补上仓位与挂单。",
+        "pause": "暂停后不再补挂单，但保留仓位；止盈止损仍会生效。",
+        "range": "修改上下界与格数，投入金额不变。",
+        "reduce": "以每格数量为单位减少仓位，减掉的部分会实现盈亏。",
+        "reduceMargin": "把多出来的保证金转回合约账户，会让强平价变近。",
+        "resume": "恢复补挂单；可设置价格触及才恢复。",
+        "stops": "修改或清除止盈止损；字段留空表示清除。"
+      },
+      "execute": "确认执行",
+      "label": "调整",
+      "liquidationDown": "下方强平价：{before} → {after}",
+      "liquidationUp": "上方强平价：{before} → {after}",
+      "lossStopHigh": "上方止损价（中性网格）",
+      "maxAmount": "最多可减少 {amount} {quote}",
+      "operations": {
+        "addMargin": "追加保证金",
+        "invest": "追加投入",
+        "pause": "暂停",
+        "range": "修改区间",
+        "reduce": "减仓",
+        "reduceMargin": "减少保证金",
+        "resume": "恢复",
+        "stops": "修改止盈止损"
+      },
+      "pauseMode": "暂停方式",
+      "pauseModes": {
+        "conditional": "价格触及时暂停",
+        "immediate": "立即暂停"
+      },
+      "paused": "已暂停",
+      "reducePnl": "预估实现盈亏 {pnl} {quote}",
+      "reduceNum": "减仓份数",
+      "reduceNumHelper": "先试算可看到最多可减几份",
+      "reduceNumMax": "最多 {max} 份",
+      "rejected": "Pionex 不接受这个调整：{reason}",
+      "stopClearHelper": "留空表示清除",
+      "success": "已送出调整，Pionex 处理完成后会更新",
+      "triggerDown": "跌到此价",
+      "triggerOptional": "选填；两个都留空表示立即",
+      "triggerUp": "涨到此价"
+    },
     "label": "机器人",
     "modes": {
       "live": "实盘",
@@ -273,6 +371,7 @@
       "title": "创建机器人：{type}"
     },
     "reasons": {
+      "ai_cost_limit": "达到每月 AI 费用上限",
       "create_failed": "Pionex 创建失败",
       "daily_loss_limit": "触发每日亏损上限",
       "dca_base_order_failed": "DCA 首单失败",
@@ -320,7 +419,9 @@
       "insufficient_budget": "机器人可用资金不足",
       "insufficient_margin": "保证金不足",
       "insufficient_position": "机器人持仓不足",
-      "invalid_price": "价格无效"
+      "invalid_price": "价格无效",
+      "no_position": "没有可平的仓位",
+      "order_skipped": "委托被风控略过"
     },
     "statuses": {
       "error": "错误",
@@ -334,7 +435,8 @@
       "indicator": "依技术指标的进出场条件自动买卖。",
       "webhook": "接收 TradingView alert 等外部信号下单。",
       "futures_grid": "在价格区间内用杠杆做多、做空或中性网格。实盘交给 Pionex 合约网格执行。",
-      "signal": "由 Pionex 依你的 TradingView 策略信号开平仓，仓位独立、止盈止损由 Pionex 执行。只能实盘。"
+      "signal": "由 Pionex 依你的 TradingView 策略信号开平仓，仓位独立、止盈止损由 Pionex 执行。只能实盘。",
+      "ai": "由 Claude 在每根 K 线收盘时判断开仓、平仓或观望；下单仍受机器人的资金、单笔上限与止损止盈限制。"
     },
     "types": {
       "dca": "DCA 定投",
@@ -342,7 +444,8 @@
       "indicator": "指标信号",
       "webhook": "Webhook 信号",
       "futures_grid": "合约网格",
-      "signal": "信号机器人"
+      "signal": "信号机器人",
+      "ai": "AI 交易"
     },
     "webhook": {
       "actionsHint": "可用的 action：buy、sell、close；sell 可加 amount 只卖出部分",
@@ -360,6 +463,28 @@
       "url": "Webhook 网址"
     }
   },
+  "copy": {
+    "all": "全部",
+    "apply": "套用参数",
+    "columns": {
+      "actions": "操作",
+      "createTime": "创建时间",
+      "gridApr": "网格年化",
+      "investment": "投入",
+      "range": "区间",
+      "symbol": "交易对",
+      "totalReturn": "总收益",
+      "trend": "方向／杠杆"
+    },
+    "empty": "这位 KOL 没有符合条件的跟单网格",
+    "hint": "输入 KOL 在 Pionex 的分享码，可以查看他精选的合约网格。「套用参数」会把区间、格数、方向与杠杆带进新建合约网格的表单，由你确认后创建；不会绑定 KOL 的跟单分润。",
+    "label": "KOL 跟单",
+    "pinned": "置顶",
+    "rows": "{row} 格",
+    "search": "查询",
+    "shareCode": "KOL 分享码",
+    "shareCodeHelper": "在 Pionex App 的 KOL 页面可以找到"
+  },
   "futures": {
     "actions": {
       "buyLong": "买入／做多",
@@ -370,8 +495,8 @@
       "sellShort": "卖出／做空"
     },
     "availableMargin": "可用保证金",
-    "close": "平仓",
     "closable": "可平：多 {long}／空 {short}",
+    "close": "平仓",
     "closePosition": {
       "confirm": "确定要以市价平掉 <bold>{pair}</bold> 的{direction}仓 {size} 吗？",
       "label": "市价平仓",
@@ -397,6 +522,26 @@
       "SHORT": "空"
     },
     "fundingFees": "资金费记录",
+    "fundingHistory": {
+      "average": "近 90 次平均 {rate}",
+      "note": "正费率代表多方付给空方，负费率反之；每 8 小时结算一次。",
+      "rate": "资金费率",
+      "title": "资金费率历史"
+    },
+    "isolatedMargin": {
+      "amount": "金额",
+      "directions": {
+        "IN": "追加",
+        "OUT": "减少"
+      },
+      "helpers": {
+        "IN": "从全仓可用保证金转入，会拉远强平价",
+        "OUT": "转回全仓可用保证金，会让强平价变近"
+      },
+      "label": "保证金",
+      "success": "已调整保证金",
+      "title": "调整逐仓保证金：{pair}"
+    },
     "isolatedModes": {
       "CROSS": "全仓",
       "ISOLATED_BOTH": "逐仓",
@@ -408,6 +553,11 @@
     "leverageRiskLimit": "已依你的合约风控设置限制在 {max}x 以内",
     "leverageWarning": "杠杆越高，强平价离当前价格越近。调整只影响之后的委托与当前持仓的保证金。",
     "liquidation": "强平",
+    "liquidationEstimate": {
+      "long": "开多预估强平价 {price}（距成交价 {distance}）",
+      "note": "预估值；全仓不计其他仓位的盈亏变动，实际以成交后交易所回报为准。低于你设置的最小强平距离时会显示红色并拦下开仓。",
+      "short": "开空预估强平价 {price}（距成交价 {distance}）"
+    },
     "margin": "所需保证金 {margin} {quote}",
     "marginModeDescriptions": {
       "CROSS": "全仓：合约账户的可用保证金共同承担所有全仓仓位的风险。",
@@ -535,6 +685,23 @@
     "add": {
       "label": "绑定 API key",
       "success": "已绑定 API key"
+    },
+    "ai": {
+      "apiKey": "Claude API key",
+      "bind": "绑定 Claude API key",
+      "bound": "已绑定 ••••{last4}（{date}）",
+      "description": "AI 交易机器人用你自己的 Claude API key 调用模型，费用由你的 Anthropic 账户支付；密钥加密保存，只有你本人看得到。",
+      "hint": "在 Anthropic Console 创建 API key。绑定前会先向 Anthropic 验证这把 key。",
+      "notBound": "尚未绑定",
+      "remove": {
+        "confirm": "解除绑定后，运行中的 AI 机器人下次判断时会失败。确定要解除吗？",
+        "label": "解除绑定",
+        "success": "已解除绑定",
+        "title": "解除绑定 Claude API key"
+      },
+      "replace": "更换",
+      "success": "已绑定 Claude API key",
+      "title": "Claude API key"
     },
     "columns": {
       "actions": "操作",

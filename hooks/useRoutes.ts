@@ -679,6 +679,11 @@ const routes: Route[] = [
         segment: "bots",
       },
       {
+        icon: Groups,
+        label: "quant.copy.label",
+        segment: "copy",
+      },
+      {
         icon: VpnKey,
         label: "quant.settings.label",
         segment: "settings",

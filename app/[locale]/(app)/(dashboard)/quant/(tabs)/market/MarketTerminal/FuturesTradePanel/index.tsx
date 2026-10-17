@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
@@ -52,7 +52,9 @@ import type {
   PlaceFuturesOrderDto,
   PlaceQuantOrderResponse,
   QuantCredential,
+  PreviewFuturesOrderDto,
   QuantFuturesAccount,
+  QuantFuturesOrderPreview,
   QuantFuturesOrderType,
   QuantFuturesRisk,
   QuantFuturesSymbolSettings,
@@ -64,6 +66,8 @@ import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 const PERCENTAGES = [0.25, 0.5, 0.75, 1];
+const PREVIEW_DEBOUNCE_MS = 800;
+const DECIMAL_PATTERN = /^\d+(\.\d+)?$/;
 
 type HedgeTab = "close" | "open";
 type PriceType = "LIMIT" | "MARKET_QTY";
@@ -151,6 +155,40 @@ const FuturesTradePanel = ({
   });
 
   const [price, size] = useWatch({ control, name: ["price", "size"] });
+
+  // 每次試算要打好幾個交易所端點，停止輸入後才送
+  const previewBody = useMemo(() => {
+    const priced = type === "MARKET_QTY" || DECIMAL_PATTERN.test(price);
+    if (!DECIMAL_PATTERN.test(size) || Number(size) <= 0 || !priced)
+      return null;
+
+    return JSON.stringify({
+      price: type === "MARKET_QTY" ? undefined : price,
+      size,
+      symbol: market.symbol,
+      type,
+    } satisfies PreviewFuturesOrderDto);
+  }, [market.symbol, price, size, type]);
+  const [debouncedPreview, setDebouncedPreview] = useState<string | null>(null);
+  useEffect(() => {
+    const timer = setTimeout(
+      () => setDebouncedPreview(previewBody),
+      PREVIEW_DEBOUNCE_MS,
+    );
+
+    return () => clearTimeout(timer);
+  }, [previewBody]);
+  const previewUrl = url("/orders/preview");
+  const { data: preview } = useSWR<QuantFuturesOrderPreview>(
+    previewUrl && debouncedPreview ? [previewUrl, debouncedPreview] : null,
+    ([key, body]: [string, string]) =>
+      fetcher<QuantFuturesOrderPreview>(key, {
+        body,
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+      }),
+    { onError: () => {}, shouldRetryOnError: false },
+  );
 
   useEffect(() => {
     if (pickedPrice)
@@ -439,6 +477,45 @@ const FuturesTradePanel = ({
               quote: market.quoteCurrency,
             })}
       </Typography>
+      {!isClosing && preview && previewBody === debouncedPreview && (
+        <Stack sx={{ gap: 0.5 }}>
+          {(["long", "short"] as const).map((direction) => {
+            const { liquidationDistance, liquidationPrice } =
+              preview[direction];
+            const tooClose =
+              risk?.minLiquidationDistance != null &&
+              liquidationDistance !== undefined &&
+              liquidationDistance < risk.minLiquidationDistance;
+
+            return (
+              <Typography
+                color={tooClose ? "error" : "text.secondary"}
+                key={direction}
+                variant="body2"
+              >
+                {tQuant(`futures.liquidationEstimate.${direction}`, {
+                  distance:
+                    liquidationDistance === undefined
+                      ? "—"
+                      : format.number(liquidationDistance, {
+                          maximumFractionDigits: 2,
+                          style: "percent",
+                        }),
+                  price:
+                    liquidationPrice === undefined
+                      ? "—"
+                      : format.number(liquidationPrice, {
+                          maximumFractionDigits: market.pricePrecision,
+                        }),
+                })}
+              </Typography>
+            );
+          })}
+          <Typography color="text.secondary" variant="caption">
+            {tQuant("futures.liquidationEstimate.note")}
+          </Typography>
+        </Stack>
+      )}
       <Stack sx={{ flexDirection: "row", gap: 1 }}>
         {actions.map((action) => (
           <Button
