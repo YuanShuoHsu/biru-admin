@@ -92,6 +92,7 @@ import {
   Storefront,
   Stroller,
   SwapVert,
+  TableBar,
   Tune,
   ViewCarousel,
   ViewInAr,
@@ -566,6 +567,11 @@ const routes: Route[] = [
     children: [
       {
         children: [
+          {
+            icon: TableBar,
+            label: "organizations.dineIn.label",
+            segment: "dine-in",
+          },
           {
             icon: Mail,
             label: "organizations.invitations.label",

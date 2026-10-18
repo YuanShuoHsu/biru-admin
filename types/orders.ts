@@ -46,3 +46,5 @@ export type RefundStatus = components["schemas"]["RefundStatus"];
 
 export type OrderFilterField = (typeof orderFilterFieldValues)[number];
 export type OrderSortField = (typeof orderSortFieldValues)[number];
+export type DineInTableTokenResponse =
+  components["schemas"]["DineInTableTokenResponseDto"];

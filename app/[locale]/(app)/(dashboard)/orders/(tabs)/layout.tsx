@@ -44,6 +44,9 @@ const OrdersTabsLayout = ({ children }: { children: React.ReactNode }) => {
 
     return () => {
       menuSocket.off("orderUpdated", handleUpdate);
+      menuSocket.volatile.emit("leaveOrdersBoard", {
+        organizationId: organization.id,
+      });
     };
   }, [isConnected, mutate, organization]);
 

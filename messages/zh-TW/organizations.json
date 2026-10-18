@@ -81,6 +81,18 @@
     "label": "幣別",
     "placeholder": "請選擇您的幣別"
   },
+  "dineIn": {
+    "label": "內用",
+    "qrCode": {
+      "download": "下載",
+      "label": "桌面點餐 QR code"
+    },
+    "tableNumber": {
+      "helperText": "QR code 印出後長期有效，請貼在對應桌號的桌面上",
+      "label": "桌號",
+      "placeholder": "請輸入桌號"
+    }
+  },
   "invitations": {
     "actions": {
       "batchCancelInvitation": {

@@ -1,3 +1,4 @@
+import InvoiceAutoPrintSwitch from "@/components/InvoiceAutoPrintSwitch";
 import OrganizationSelect from "@/components/OrganizationSelect";
 
 import { listOrganizations } from "@/utils/session";
@@ -14,10 +15,13 @@ const ToolbarOrdersBoardPage = async ({
   const organizations = await listOrganizations();
 
   return (
-    <OrganizationSelect
-      organizations={organizations}
-      organizationSlug={organization}
-    />
+    <>
+      <InvoiceAutoPrintSwitch organizationSlug={organization} />
+      <OrganizationSelect
+        organizations={organizations}
+        organizationSlug={organization}
+      />
+    </>
   );
 };
 

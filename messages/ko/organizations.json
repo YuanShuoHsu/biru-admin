@@ -81,6 +81,18 @@
     "label": "통화",
     "placeholder": "귀하의 통화를 선택해 주세요"
   },
+  "dineIn": {
+    "label": "매장 식사",
+    "qrCode": {
+      "download": "다운로드",
+      "label": "테이블 주문 QR 코드"
+    },
+    "tableNumber": {
+      "helperText": "인쇄한 QR 코드는 계속 유효합니다. 번호가 맞는 테이블에 붙이세요",
+      "label": "테이블 번호",
+      "placeholder": "테이블 번호를 입력하세요"
+    }
+  },
   "invitations": {
     "actions": {
       "batchCancelInvitation": {

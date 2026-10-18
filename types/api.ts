@@ -2274,6 +2274,23 @@ export interface paths {
     patch: operations["SuppliersController_update"];
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/dine-in-tables/{tableNumber}/token": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 產生桌上 QR code 的桌號簽章 */
+    get: operations["DineInTablesController_findToken"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/menu-item-sales": {
     parameters: {
       query?: never;
@@ -7907,6 +7924,10 @@ export interface components {
       /** @description 由這家供應的食材；一個食材只屬於一家供應商，選入原本屬於別家的食材會改綁到這家 */
       ingredientIds?: string[];
     };
+    DineInTableTokenResponseDto: {
+      /** @description 印在桌上 QR code 的簽章；不會過期，換 BETTER_AUTH_SECRET 會讓已印的全部失效 */
+      token: string;
+    };
     MenuItemSalesResponseDto: {
       menuItemId: string;
       /** @description 最近一次的訂單品項名稱快照 */
@@ -8045,6 +8066,8 @@ export interface components {
       /** @example 2026-08-31T09:15:00+08:00 */
       pickupTime?: string;
       tableNumber?: number;
+      /** @description 桌上 QR code 帶的桌號簽章，內用必填 */
+      tableToken?: string;
     };
     OrderItemModifierSnapshotDto: {
       modifierGroupId: string;
@@ -16053,6 +16076,35 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["SupplierResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  DineInTablesController_findToken: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        tableNumber: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DineInTableTokenResponseDto"];
         };
       };
       /** @description Internal server error */

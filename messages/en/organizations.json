@@ -81,6 +81,18 @@
     "label": "Currency",
     "placeholder": "Please select your currency"
   },
+  "dineIn": {
+    "label": "Dine-in",
+    "qrCode": {
+      "download": "Download",
+      "label": "Table ordering QR code"
+    },
+    "tableNumber": {
+      "helperText": "Printed QR codes stay valid indefinitely. Place each one on the table with the matching number.",
+      "label": "Table number",
+      "placeholder": "Enter a table number"
+    }
+  },
   "invitations": {
     "actions": {
       "batchCancelInvitation": {

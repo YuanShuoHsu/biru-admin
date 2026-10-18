@@ -8,7 +8,6 @@ import useSWR from "swr";
 import { MODE_COLORS } from "@/constants/orderMode";
 import { STATUS_COLORS, STATUS_TEXT_COLORS } from "@/constants/orders";
 
-import useInvoiceAutoPrint from "@/hooks/useInvoiceAutoPrint";
 import {
   canIssueInvoice,
   canPrintInvoice,
@@ -17,10 +16,6 @@ import {
   useOrderActions,
 } from "@/hooks/useOrderActions";
 import { useOrderModeLabel } from "@/hooks/useOrderModeLabel";
-import { useSocketConnection } from "@/hooks/useSocketConnection";
-
-import { menuSocket } from "@/app/socket";
-
 import { Person, Schedule } from "@mui/icons-material";
 import {
   Button,
@@ -101,10 +96,6 @@ const OrdersBoard = ({
   >(`/api/organizations/${organizationSlug}/orders/board/admin`, {
     fallbackData: initialColumns,
   });
-
-  const { isConnected } = useSocketConnection(menuSocket);
-
-  useInvoiceAutoPrint(isConnected, organizationSlug);
 
   const {
     handleConfirmIssueInvoice,

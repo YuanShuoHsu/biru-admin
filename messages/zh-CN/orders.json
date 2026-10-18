@@ -90,6 +90,10 @@
       "refundUnconfirmed": "退刷结果未确认，可退数量被占住"
     }
   },
+  "autoPrint": {
+    "label": "此设备自动打印发票",
+    "replaced": "已由其他设备接手自动打印发票"
+  },
   "board": {
     "empty": "目前没有订单",
     "title": "订单看板"

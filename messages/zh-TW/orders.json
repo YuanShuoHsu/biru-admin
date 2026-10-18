@@ -90,6 +90,10 @@
       "refundUnconfirmed": "退刷結果未確認，可退數量被佔住"
     }
   },
+  "autoPrint": {
+    "label": "此裝置自動列印發票",
+    "replaced": "已由其他裝置接手自動列印發票"
+  },
   "board": {
     "empty": "目前沒有訂單",
     "title": "訂單看板"

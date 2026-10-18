@@ -90,6 +90,10 @@
       "refundUnconfirmed": "Refund result unconfirmed; the quantity stays reserved"
     }
   },
+  "autoPrint": {
+    "label": "Auto-print invoices on this device",
+    "replaced": "Another device has taken over invoice auto-printing"
+  },
   "board": {
     "empty": "No orders right now",
     "title": "Order Board"

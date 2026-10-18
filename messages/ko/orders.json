@@ -90,6 +90,10 @@
       "refundUnconfirmed": "환불 결과 미확인으로 환불 가능 수량이 묶여 있음"
     }
   },
+  "autoPrint": {
+    "label": "이 기기에서 영수증 자동 인쇄",
+    "replaced": "다른 기기가 영수증 자동 인쇄를 넘겨받았습니다"
+  },
   "board": {
     "empty": "현재 주문이 없습니다",
     "title": "주문 보드"
