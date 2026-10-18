@@ -114,7 +114,7 @@ const MarketTerminal = ({ interval, symbol }: MarketTerminalProps) => {
     return <Alert severity="error">{tQuant("market.notFound")}</Alert>;
 
   return (
-    <Stack sx={{ gap: 2 }}>
+    <>
       {!isConnected && (
         <Alert severity="warning">{tQuant("market.disconnected")}</Alert>
       )}
@@ -203,7 +203,7 @@ const MarketTerminal = ({ interval, symbol }: MarketTerminalProps) => {
           </Panel>
         </SidePanel>
       </Board>
-    </Stack>
+    </>
   );
 };
 

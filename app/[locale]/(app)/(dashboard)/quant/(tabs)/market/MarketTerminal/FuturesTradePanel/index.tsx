@@ -398,6 +398,7 @@ const FuturesTradePanel = ({
           required
           size="small"
           slotProps={{ htmlInput: { inputMode: "decimal" }, ...quoteAdornment }}
+          value={price}
         />
       )}
       <TextField
@@ -417,6 +418,7 @@ const FuturesTradePanel = ({
             ),
           },
         }}
+        value={size}
       />
       <ButtonGroup fullWidth size="small" variant="outlined">
         {PERCENTAGES.map((ratio) => (

@@ -47,8 +47,16 @@ const RecentTrades = ({ liveTrades, market, symbol }: RecentTradesProps) => {
     <Stack sx={{ gap: 0.5 }}>
       <Typography variant="subtitle2">{tQuant("trades.label")}</Typography>
       <Row sx={{ color: "text.secondary" }}>
-        <span>{tQuant("trades.price")}</span>
-        <span>{tQuant("trades.size")}</span>
+        <span>
+          {market
+            ? `${tQuant("trades.price")} (${market.quoteCurrency})`
+            : tQuant("trades.price")}
+        </span>
+        <span>
+          {market
+            ? `${tQuant("trades.size")} (${market.baseCurrency})`
+            : tQuant("trades.size")}
+        </span>
         <span>{tQuant("trades.time")}</span>
       </Row>
       {!market || !initialTrades ? (

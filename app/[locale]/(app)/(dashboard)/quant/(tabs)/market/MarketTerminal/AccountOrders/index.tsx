@@ -13,7 +13,7 @@ import {
 
 import DataGrid from "@/components/DataGrid";
 
-import { DATA_GRID_PROPS } from "@/constants/dataGrid";
+import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
 import { Close } from "@mui/icons-material";
 import {
@@ -27,7 +27,11 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import {
+  type GridColDef,
+  type GridRenderCellParams,
+  useGridApiRef,
+} from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -42,7 +46,6 @@ import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 const GRID_HEIGHT = 360;
-const TIME_COLUMN_MIN_WIDTH = 180;
 
 type AccountTab = "fills" | "openOrders" | "orders";
 
@@ -69,23 +72,34 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
 
   const [tab, setTab] = useState<AccountTab>("openOrders");
 
+  const apiRef = useGridApiRef();
+  const autosizeOnData = {
+    onSuccess: () => {
+      setTimeout(() => {
+        apiRef.current?.autosizeColumns(autosizeOptions);
+      }, 0);
+    },
+  };
+
   const symbolQuery = `?symbol=${market.symbol}`;
   const openOrdersUrl = `${quantAccountUrl(credential.id, "open-orders")}${symbolQuery}`;
 
   const { data: openOrders, isLoading: openOrdersLoading } = useSWR<
     QuantOrder[]
-  >(openOrdersUrl, fetcher);
+  >(openOrdersUrl, fetcher, autosizeOnData);
   const { data: orders, isLoading: ordersLoading } = useSWR<QuantOrder[]>(
     tab === "orders"
       ? `${quantAccountUrl(credential.id, "orders")}${symbolQuery}`
       : null,
     fetcher,
+    autosizeOnData,
   );
   const { data: fills, isLoading: fillsLoading } = useSWR<QuantFill[]>(
     tab === "fills"
       ? `${quantAccountUrl(credential.id, "fills")}${symbolQuery}`
       : null,
     fetcher,
+    autosizeOnData,
   );
 
   const revalidate = () => mutate(isQuantAccountKey(credential.id));
@@ -176,7 +190,6 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
     {
       field: "createTime",
       headerName: tQuant("account.columns.time"),
-      minWidth: TIME_COLUMN_MIN_WIDTH,
       valueFormatter: (value: number) => formatTime(value),
     },
     sideColumn,
@@ -201,6 +214,8 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
 
   const openOrderColumns: GridColDef[] = [
     {
+      disableColumnMenu: true,
+      disableExport: true,
       field: "actions",
       filterable: false,
       headerName: tQuant("account.columns.actions"),
@@ -208,13 +223,18 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
         <Tooltip title={tQuant("account.cancel.label")}>
           <IconButton
             color="error"
-            onClick={() => handleCancel(row)}
+            onClick={(event) => {
+              event.stopPropagation();
+
+              void handleCancel(row);
+            }}
             size="small"
           >
             <Close fontSize="small" />
           </IconButton>
         </Tooltip>
       ),
+      resizable: false,
       sortable: false,
     },
     ...orderColumns,
@@ -247,7 +267,6 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
     {
       field: "time",
       headerName: tQuant("account.columns.time"),
-      minWidth: TIME_COLUMN_MIN_WIDTH,
       valueFormatter: (value: number) => formatTime(value),
     },
     sideColumn,
@@ -311,21 +330,21 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
         {tab === "fills" ? (
           <DataGrid
             {...DATA_GRID_PROPS}
+            apiRef={apiRef}
             columns={fillColumns}
             getRowId={({ id }) => id}
             loading={fillsLoading}
             rows={fills ?? []}
-            showToolbar={false}
           />
         ) : (
           <DataGrid
             {...DATA_GRID_PROPS}
+            apiRef={apiRef}
             columns={tab === "orders" ? historyColumns : openOrderColumns}
             getRowId={({ orderId }) => orderId}
             key={tab}
             loading={tab === "orders" ? ordersLoading : openOrdersLoading}
             rows={(tab === "orders" ? orders : openOrders) ?? []}
-            showToolbar={false}
           />
         )}
       </Box>

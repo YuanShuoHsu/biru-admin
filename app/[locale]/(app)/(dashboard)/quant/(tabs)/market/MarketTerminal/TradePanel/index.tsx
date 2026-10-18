@@ -102,7 +102,10 @@ const TradePanel = ({
     resolver: zodResolver(schema),
   });
 
-  const [price, size] = useWatch({ control, name: ["price", "size"] });
+  const [amount, price, size] = useWatch({
+    control,
+    name: ["amount", "price", "size"],
+  });
 
   useEffect(() => {
     if (pickedPrice)
@@ -236,6 +239,7 @@ const TradePanel = ({
               ),
             },
           }}
+          value={price}
         />
       )}
       {isMarketBuy ? (
@@ -256,6 +260,7 @@ const TradePanel = ({
               ),
             },
           }}
+          value={amount}
         />
       ) : (
         <TextField
@@ -275,6 +280,7 @@ const TradePanel = ({
               ),
             },
           }}
+          value={size}
         />
       )}
       <ButtonGroup fullWidth size="small" variant="outlined">

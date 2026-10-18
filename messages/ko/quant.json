@@ -235,7 +235,9 @@
           "label": "간격"
         },
         "lossStop": "손절(선택)",
+        "lossStopType": "손절 방식",
         "profitStop": "익절(선택)",
+        "profitStopType": "익절 방식",
         "row": "그리드 수",
         "stopType": {
           "price": "가격",
@@ -245,7 +247,8 @@
         "trigger": "트리거 가격(선택)",
         "triggerDirection": {
           "above": "이 가격까지 오르면 시작",
-          "below": "이 가격까지 내리면 시작"
+          "below": "이 가격까지 내리면 시작",
+          "label": "트리거 방향"
         }
       },
       "indicator": {

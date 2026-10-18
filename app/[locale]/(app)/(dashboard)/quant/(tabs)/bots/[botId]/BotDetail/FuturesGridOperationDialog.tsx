@@ -202,7 +202,6 @@ const FuturesGridOperationDialog = ({
       helperText={helperText}
       label={label}
       onChange={(event) => update({ [name]: event.target.value })}
-      size="small"
       slotProps={{
         htmlInput: { inputMode: "decimal" },
         input: adornment
@@ -219,10 +218,9 @@ const FuturesGridOperationDialog = ({
 
   const stopTypeField = (name: "lossStopType" | "profitStopType") => (
     <TextField
-      label={tGrid(name === "lossStopType" ? "lossStop" : "profitStop")}
+      label={tGrid(name)}
       onChange={(event) => update({ [name]: event.target.value as StopType })}
       select
-      size="small"
       sx={{ minWidth: 120 }}
       value={fields[name]}
     >
@@ -268,7 +266,6 @@ const FuturesGridOperationDialog = ({
             })
           }
           select
-          size="small"
           value={fields.pauseMode}
         >
           {quantFuturesGridPauseModeValues.map((value) => (
@@ -297,7 +294,7 @@ const FuturesGridOperationDialog = ({
       )}
       {operation === "stops" && (
         <>
-          <Stack sx={{ flexDirection: "row", gap: 1 }}>
+          <Stack sx={{ flexDirection: "row", gap: 2 }}>
             {stopTypeField("lossStopType")}
             {numberField(
               "lossStop",
@@ -313,7 +310,7 @@ const FuturesGridOperationDialog = ({
               quote,
               tOperation("stopClearHelper"),
             )}
-          <Stack sx={{ flexDirection: "row", gap: 1 }}>
+          <Stack sx={{ flexDirection: "row", gap: 2 }}>
             {stopTypeField("profitStopType")}
             {numberField(
               "profitStop",

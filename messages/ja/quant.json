@@ -235,7 +235,9 @@
           "label": "間隔"
         },
         "lossStop": "損切り（任意）",
+        "lossStopType": "損切り方式",
         "profitStop": "利確（任意）",
+        "profitStopType": "利確方式",
         "row": "グリッド数",
         "stopType": {
           "price": "価格",
@@ -245,7 +247,8 @@
         "trigger": "トリガー価格（任意）",
         "triggerDirection": {
           "above": "この価格まで上昇で開始",
-          "below": "この価格まで下落で開始"
+          "below": "この価格まで下落で開始",
+          "label": "トリガー方向"
         }
       },
       "indicator": {

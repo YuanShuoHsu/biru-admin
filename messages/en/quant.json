@@ -235,7 +235,9 @@
           "label": "Spacing"
         },
         "lossStop": "Stop loss (optional)",
+        "lossStopType": "Stop loss by",
         "profitStop": "Take profit (optional)",
+        "profitStopType": "Take profit by",
         "row": "Grids",
         "stopType": {
           "price": "Price",
@@ -245,7 +247,8 @@
         "trigger": "Trigger price (optional)",
         "triggerDirection": {
           "above": "Start when price rises to",
-          "below": "Start when price drops to"
+          "below": "Start when price drops to",
+          "label": "Trigger direction"
         }
       },
       "indicator": {

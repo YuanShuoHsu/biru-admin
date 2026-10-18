@@ -235,7 +235,9 @@
           "label": "間距"
         },
         "lossStop": "停損（選填）",
+        "lossStopType": "停損方式",
         "profitStop": "停利（選填）",
+        "profitStopType": "停利方式",
         "row": "格數",
         "stopType": {
           "price": "價格",
@@ -245,7 +247,8 @@
         "trigger": "觸發價（選填）",
         "triggerDirection": {
           "above": "漲到此價開始",
-          "below": "跌到此價開始"
+          "below": "跌到此價開始",
+          "label": "觸發方向"
         }
       },
       "indicator": {

@@ -149,7 +149,7 @@ const GridFields = ({
       <Grid size={{ sm: 4, xs: 12 }}>
         <SelectField
           form={form}
-          label={tGrid("lossStop")}
+          label={tGrid("lossStopType")}
           name="grid.lossStopType"
           options={quantGridStopTypeValues.map((value) => ({
             label: tGrid(`stopType.${value}`),
@@ -169,7 +169,7 @@ const GridFields = ({
       <Grid size={{ sm: 4, xs: 12 }}>
         <SelectField
           form={form}
-          label={tGrid("profitStop")}
+          label={tGrid("profitStopType")}
           name="grid.profitStopType"
           options={quantGridStopTypeValues.map((value) => ({
             label: tGrid(`stopType.${value}`),
@@ -197,7 +197,7 @@ const GridFields = ({
       <Grid size={{ sm: 6, xs: 12 }}>
         <SelectField
           form={form}
-          label={tGrid("trigger")}
+          label={tGrid("triggerDirection.label")}
           name="grid.triggerDirection"
           options={quantTriggerDirectionValues.map((value) => ({
             label: tGrid(`triggerDirection.${value}`),

@@ -17,7 +17,7 @@ import IsolatedMarginDialog, {
 
 import DataGrid from "@/components/DataGrid";
 
-import { DATA_GRID_PROPS } from "@/constants/dataGrid";
+import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
 import { Close } from "@mui/icons-material";
 import {
@@ -30,7 +30,11 @@ import {
   Tabs,
   Tooltip,
 } from "@mui/material";
-import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import {
+  type GridColDef,
+  type GridRenderCellParams,
+  useGridApiRef,
+} from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -50,7 +54,6 @@ import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 const GRID_HEIGHT = 360;
-const TIME_COLUMN_MIN_WIDTH = 180;
 
 type FuturesTab =
   | "fills"
@@ -81,6 +84,15 @@ const FuturesAccount = ({
 
   const [tab, setTab] = useState<FuturesTab>("positions");
 
+  const apiRef = useGridApiRef();
+  const autosizeOnData = {
+    onSuccess: () => {
+      setTimeout(() => {
+        apiRef.current?.autosizeColumns(autosizeOptions);
+      }, 0);
+    },
+  };
+
   const url = (path: string) =>
     quantAccountUrl(credential.id, `futures${path}`);
   const symbolQuery = `?symbol=${market.symbol}`;
@@ -88,23 +100,32 @@ const FuturesAccount = ({
   const { data: account } = useSWR<QuantFuturesAccount>(url(""), fetcher);
   const { data: positions, isLoading: positionsLoading } = useSWR<
     QuantPosition[]
-  >(url("/positions"), fetcher);
+  >(url("/positions"), fetcher, autosizeOnData);
   const { data: openOrders, isLoading: openOrdersLoading } = useSWR<
     QuantFuturesOrder[]
-  >(url(`/open-orders${symbolQuery}`), fetcher);
+  >(url(`/open-orders${symbolQuery}`), fetcher, autosizeOnData);
   const { data: orders, isLoading: ordersLoading } = useSWR<
     QuantFuturesOrder[]
-  >(tab === "orders" ? url(`/orders${symbolQuery}`) : null, fetcher);
+  >(
+    tab === "orders" ? url(`/orders${symbolQuery}`) : null,
+    fetcher,
+    autosizeOnData,
+  );
   const { data: fills, isLoading: fillsLoading } = useSWR<QuantFuturesFill[]>(
     tab === "fills" ? url(`/fills${symbolQuery}`) : null,
     fetcher,
+    autosizeOnData,
   );
   const { data: positionHistory, isLoading: positionHistoryLoading } = useSWR<
     QuantPositionHistory[]
-  >(tab === "positionHistory" ? url("/position-history") : null, fetcher);
+  >(
+    tab === "positionHistory" ? url("/position-history") : null,
+    fetcher,
+    autosizeOnData,
+  );
   const { data: fundingFees, isLoading: fundingLoading } = useSWR<
     QuantFundingFee[]
-  >(tab === "funding" ? url("/funding-fees") : null, fetcher);
+  >(tab === "funding" ? url("/funding-fees") : null, fetcher, autosizeOnData);
 
   const revalidate = () => mutate(isQuantAccountKey(credential.id));
 
@@ -270,24 +291,41 @@ const FuturesAccount = ({
 
   const positionColumns: GridColDef[] = [
     {
+      disableColumnMenu: true,
+      disableExport: true,
       field: "actions",
       filterable: false,
       headerName: tQuant("account.columns.actions"),
-      minWidth: 180,
       renderCell: ({ row }: GridRenderCellParams<QuantPosition>) => (
         <Stack
           sx={{ alignItems: "center", flexDirection: "row", height: "100%" }}
         >
-          <Button color="error" onClick={() => closePosition(row)} size="small">
+          <Button
+            color="error"
+            onClick={(event) => {
+              event.stopPropagation();
+
+              closePosition(row);
+            }}
+            size="small"
+          >
             {tQuant("futures.closePosition.label")}
           </Button>
           {row.isolatedMode !== "CROSS" && (
-            <Button onClick={() => adjustMargin(row)} size="small">
+            <Button
+              onClick={(event) => {
+                event.stopPropagation();
+
+                adjustMargin(row);
+              }}
+              size="small"
+            >
               {tQuant("futures.isolatedMargin.label")}
             </Button>
           )}
         </Stack>
       ),
+      resizable: false,
       sortable: false,
     },
     symbolColumn,
@@ -348,7 +386,6 @@ const FuturesAccount = ({
     {
       field: "createTime",
       headerName: tQuant("account.columns.time"),
-      minWidth: TIME_COLUMN_MIN_WIDTH,
       valueFormatter: (value: number) => formatTime(value),
     },
     {
@@ -391,6 +428,8 @@ const FuturesAccount = ({
 
   const openOrderColumns: GridColDef[] = [
     {
+      disableColumnMenu: true,
+      disableExport: true,
       field: "actions",
       filterable: false,
       headerName: tQuant("account.columns.actions"),
@@ -398,13 +437,18 @@ const FuturesAccount = ({
         <Tooltip title={tQuant("account.cancel.label")}>
           <IconButton
             color="error"
-            onClick={() => handleCancel(row)}
+            onClick={(event) => {
+              event.stopPropagation();
+
+              void handleCancel(row);
+            }}
             size="small"
           >
             <Close fontSize="small" />
           </IconButton>
         </Tooltip>
       ),
+      resizable: false,
       sortable: false,
     },
     ...orderColumns,
@@ -446,7 +490,6 @@ const FuturesAccount = ({
     {
       field: "time",
       headerName: tQuant("account.columns.time"),
-      minWidth: TIME_COLUMN_MIN_WIDTH,
       valueFormatter: (value: number) => formatTime(value),
     },
     {
@@ -493,7 +536,6 @@ const FuturesAccount = ({
     {
       field: "closeTime",
       headerName: tQuant("futures.columns.closeTime"),
-      minWidth: TIME_COLUMN_MIN_WIDTH,
       valueFormatter: (value: number) => formatTime(value),
     },
     symbolColumn,
@@ -532,7 +574,6 @@ const FuturesAccount = ({
     {
       field: "time",
       headerName: tQuant("account.columns.time"),
-      minWidth: TIME_COLUMN_MIN_WIDTH,
       valueFormatter: (value: number) => formatTime(value),
     },
     symbolColumn,
@@ -637,11 +678,11 @@ const FuturesAccount = ({
       <Box sx={{ height: GRID_HEIGHT }}>
         <DataGrid
           {...DATA_GRID_PROPS}
+          apiRef={apiRef}
           columns={grid.columns}
           key={tab}
           loading={grid.loading}
           rows={grid.rows ?? []}
-          showToolbar={false}
         />
       </Box>
     </Stack>

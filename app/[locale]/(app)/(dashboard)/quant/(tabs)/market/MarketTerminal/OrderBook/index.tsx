@@ -9,6 +9,9 @@ import type { QuantDepth, QuantMarket } from "@/types/quant";
 
 const VISIBLE_LEVELS = 10;
 
+const withUnit = (label: string, unit?: string) =>
+  unit ? `${label} (${unit})` : label;
+
 const Row = styled(Box)(({ theme }) => ({
   display: "grid",
   fontVariantNumeric: "tabular-nums",
@@ -41,9 +44,9 @@ const OrderBook = ({ depth, market, onPriceClick }: OrderBookProps) => {
 
   const header = (
     <Row sx={{ color: "text.secondary" }}>
-      <span>{tQuant("orderBook.price")}</span>
-      <span>{tQuant("orderBook.size")}</span>
-      <span>{tQuant("orderBook.total")}</span>
+      <span>{withUnit(tQuant("orderBook.price"), market?.quoteCurrency)}</span>
+      <span>{withUnit(tQuant("orderBook.size"), market?.baseCurrency)}</span>
+      <span>{withUnit(tQuant("orderBook.total"), market?.baseCurrency)}</span>
     </Row>
   );
 
