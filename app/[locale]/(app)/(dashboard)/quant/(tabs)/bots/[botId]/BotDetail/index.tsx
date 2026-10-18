@@ -15,6 +15,7 @@ import {
   useBotStream,
 } from "../../useQuantBots";
 import WebhookSetup from "../../WebhookSetup";
+import { useBotFormDialog } from "../../BotForm";
 import FuturesGridOperationDialog, {
   FUTURES_GRID_OPERATION_FORM_ID,
   type FuturesGridOperation,
@@ -26,8 +27,6 @@ import DataGrid from "@/components/DataGrid";
 
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { quantMarketTypeOf, quantPairOf } from "@/constants/quant";
-
-import { Link } from "@/i18n/navigation";
 
 import {
   Archive,
@@ -119,6 +118,7 @@ const BotDetail = ({ botId }: { botId: string }) => {
   const { mutate } = useSWRConfig();
   const setDialog = useDialogStore((state) => state.setDialog);
   const labels = useBotLabels();
+  const openBotForm = useBotFormDialog();
 
   useBotStream();
 
@@ -482,8 +482,7 @@ const BotDetail = ({ botId }: { botId: string }) => {
               </Button>
             )}
             <Button
-              component={Link}
-              href={`/quant/bots/new?from=${bot.id}`}
+              onClick={() => openBotForm({ fromId: bot.id, type: bot.type })}
               startIcon={<ContentCopy />}
               variant="outlined"
             >

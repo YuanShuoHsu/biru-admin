@@ -475,13 +475,24 @@
       "totalReturn": "總報酬",
       "trend": "方向／槓桿"
     },
-    "hint": "輸入 KOL 在 Pionex 的分享碼，可以查看他精選的合約網格。「套用參數」會把區間、格數、方向與槓桿帶進新建合約網格的表單，由你確認後建立；不會綁定 KOL 的跟單分潤。",
+    "guide": {
+      "title": "怎麼取得 KOL 的分享碼",
+      "steps": {
+        "get": "向 KOL 索取他分享的 Pionex 機器人連結或邀請碼。KOL 通常會貼在社群貼文、社群群組或影片說明欄，機器人分享連結多半是 share.pionex.com 開頭。",
+        "find": "打開連結，頁面上「KOL 名稱的邀請碼」那串就是分享碼。也可以把整個連結貼到上方，連結裡帶有邀請碼時會自動取出。",
+        "apply": "查到後從列表挑一個合約網格，按「套用參數」，確認後建立你自己的機器人。"
+      },
+      "note": "分享碼就是 KOL 在 Pionex 的邀請碼。查詢只會讀取 KOL 公開的跟單網格，不會動用你的資金。"
+    },
+    "hint": "「套用參數」會把區間、格數、方向與槓桿帶進新建合約網格的表單，由你確認後建立；不會綁定 KOL 的跟單分潤。",
     "label": "KOL 跟單",
+    "linkWithoutCode": "這個連結裡沒有邀請碼。請打開連結，複製頁面上「KOL 名稱的邀請碼」那串貼到這裡",
     "pinned": "置頂",
+    "recent": "最近查過",
     "rows": "{row} 格",
     "search": "查詢",
-    "shareCode": "KOL 分享碼",
-    "shareCodeHelper": "在 Pionex App 的 KOL 頁面可以找到"
+    "shareCode": "KOL 邀請碼或分享連結",
+    "shareCodeHelper": "可直接貼上 KOL 給你的 Pionex 連結，連結裡有邀請碼時會自動取出"
   },
   "futures": {
     "actions": {
@@ -548,12 +559,11 @@
     },
     "leverage": "槓桿",
     "leverageMax": "此交易對最高 {max}x",
-    "leverageRiskLimit": "已依你的合約風控設定限制在 {max}x 以內",
     "leverageWarning": "槓桿越高，強平價離目前價格越近。調整只影響之後的委託與目前持倉的保證金。",
     "liquidation": "強平",
     "liquidationEstimate": {
       "long": "開多預估強平價 {price}（距成交價 {distance}）",
-      "note": "預估值；全倉不計其他部位的盈虧變動，實際以成交後交易所回報為準。低於你設定的最小強平距離時會顯示紅色並擋下開倉。",
+      "note": "預估值；全倉不計其他部位的盈虧變動，實際以成交後交易所回報為準。",
       "short": "開空預估強平價 {price}（距成交價 {distance}）"
     },
     "margin": "所需保證金 {margin} {quote}",
@@ -689,7 +699,7 @@
     "ai": {
       "apiKey": "Claude API key",
       "bind": "綁定 Claude API key",
-      "bound": "已綁定 ••••{last4}（{date}）",
+      "bound": "Claude API key ••••{last4}",
       "description": "AI 交易機器人用你自己的 Claude API key 呼叫模型，費用由你的 Anthropic 帳戶支付；金鑰加密保存，只有你本人看得到。",
       "hint": "在 Anthropic Console 建立 API key。綁定前會先向 Anthropic 驗證這把 key。",
       "notBound": "尚未綁定",
@@ -722,21 +732,7 @@
       "labelPlaceholder": "例如：主帳戶"
     },
     "hint": "在 Pionex 建立 API key 時只需開啟「讀取」與「交易」權限，並建議綁定伺服器的出口 IP 白名單。金鑰會加密保存，只有你本人看得到。",
-    "label": "API key",
-    "risk": {
-      "hint": "這組上限套用在這個 Pionex 帳戶。留空代表不限制；系統不會替你預設數值。",
-      "integer": "須為整數",
-      "label": "合約風控",
-      "maxDailyLoss": "合約機器人每日虧損上限",
-      "maxDailyLossHelper": "所有合約機器人當日虧損合計超過就全部停止；不限制手動下單",
-      "maxLeverage": "槓桿上限",
-      "maxLeverageHelper": "手動下單與合約機器人都不能超過",
-      "minLiquidationDistance": "最小強平距離",
-      "minLiquidationDistanceHelper": "合約機器人建立時與手動開倉前，預估強平價離成交價不得小於此比例",
-      "success": "已更新合約風控",
-      "title": "合約風控：{label}",
-      "unlimited": "不限制"
-    }
+    "label": "API key"
   },
   "trades": {
     "label": "最新成交",

@@ -56,7 +56,6 @@ import type {
   QuantFuturesAccount,
   QuantFuturesOrderPreview,
   QuantFuturesOrderType,
-  QuantFuturesRisk,
   QuantFuturesSymbolSettings,
   QuantMarket,
   QuantPosition,
@@ -135,7 +134,6 @@ const FuturesTradePanel = ({
     url(`/positions${symbolQuery}`),
     fetcher,
   );
-  const { data: risk } = useSWR<QuantFuturesRisk>(url("/risk"), fetcher);
 
   const type: QuantFuturesOrderType =
     priceType === "LIMIT" ? timeInForce : "MARKET_QTY";
@@ -239,7 +237,6 @@ const FuturesTradePanel = ({
             leverage={settings.leverage}
             maxLeverage={market.perp?.maxLeverage ?? settings.leverage}
             onSaved={revalidate}
-            riskLimit={risk?.maxLeverage ?? null}
             symbol={market.symbol}
             url={url("/leverage")!}
           />
@@ -478,14 +475,9 @@ const FuturesTradePanel = ({
           {(["long", "short"] as const).map((direction) => {
             const { liquidationDistance, liquidationPrice } =
               preview[direction];
-            const tooClose =
-              risk?.minLiquidationDistance != null &&
-              liquidationDistance !== undefined &&
-              liquidationDistance < risk.minLiquidationDistance;
-
             return (
               <Typography
-                color={tooClose ? "error" : "text.secondary"}
+                color="text.secondary"
                 key={direction}
                 variant="body2"
               >

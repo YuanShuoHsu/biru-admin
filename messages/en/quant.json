@@ -475,13 +475,24 @@
       "totalReturn": "Total return",
       "trend": "Direction / leverage"
     },
-    "hint": "Enter a KOL's Pionex share code to see their curated futures grids. \"Apply parameters\" fills the range, grid count, direction and leverage into a new futures grid form for you to confirm; it does not join the KOL's profit-sharing copy trade.",
+    "guide": {
+      "title": "How to get a KOL's share code",
+      "steps": {
+        "get": "Ask the KOL for their shared Pionex bot link or invitation code. KOLs usually post it in social media posts, community groups or video descriptions; bot share links mostly start with share.pionex.com.",
+        "find": "Open the link; the \"KOL name's Invitation Code\" shown on the page is the share code. You can also paste the whole link above, and the code is picked out when the link contains it.",
+        "apply": "Pick a futures grid from the list, press \"Apply parameters\", then confirm to create your own bot."
+      },
+      "note": "The share code is the KOL's Pionex invitation code. Looking it up only reads the KOL's public copy-trade grids and never touches your funds."
+    },
+    "hint": "\"Apply parameters\" fills the range, grid count, direction and leverage into a new futures grid form for you to confirm; it does not join the KOL's profit-sharing copy trade.",
     "label": "KOL copy",
+    "linkWithoutCode": "This link has no invitation code. Open it and copy the \"KOL name's Invitation Code\" shown on the page",
     "pinned": "Pinned",
+    "recent": "Recently viewed",
     "rows": "{row} grids",
     "search": "Search",
-    "shareCode": "KOL share code",
-    "shareCodeHelper": "Found on the KOL's page in the Pionex app"
+    "shareCode": "KOL invitation code or share link",
+    "shareCodeHelper": "You can paste the Pionex link the KOL gave you; the code is picked out automatically when the link contains it"
   },
   "futures": {
     "actions": {
@@ -548,12 +559,11 @@
     },
     "leverage": "Leverage",
     "leverageMax": "Up to {max}x for this symbol",
-    "leverageRiskLimit": "Limited to {max}x by your futures risk settings",
     "leverageWarning": "Higher leverage moves the liquidation price closer to the current price. Changes apply to new orders and the margin of current positions.",
     "liquidation": "Liquidation",
     "liquidationEstimate": {
       "long": "Est. liquidation if long {price} ({distance} from fill)",
-      "note": "Estimate only; cross margin ignores PnL changes of other positions, and the exchange's figure after the fill is final. Shown in red and blocked when below your minimum liquidation distance.",
+      "note": "Estimate only; cross margin ignores PnL changes of other positions, and the exchange's figure after the fill is final.",
       "short": "Est. liquidation if short {price} ({distance} from fill)"
     },
     "margin": "Required margin {margin} {quote}",
@@ -689,7 +699,7 @@
     "ai": {
       "apiKey": "Claude API key",
       "bind": "Bind Claude API key",
-      "bound": "Bound ••••{last4} ({date})",
+      "bound": "Claude API key ••••{last4}",
       "description": "AI trading bots call the model with your own Claude API key, billed to your Anthropic account. The key is stored encrypted and only you can see it.",
       "hint": "Create an API key in the Anthropic Console. The key is verified with Anthropic before binding.",
       "notBound": "Not bound",
@@ -722,21 +732,7 @@
       "labelPlaceholder": "e.g. Main account"
     },
     "hint": "When creating the key on Pionex, enable only the Read and Trade permissions, and restrict it to the server’s outbound IPs. Keys are stored encrypted and only you can see them.",
-    "label": "API keys",
-    "risk": {
-      "hint": "These limits apply to this Pionex account. Leave a field empty for no limit; the system never fills in values for you.",
-      "integer": "Must be a whole number",
-      "label": "Futures risk",
-      "maxDailyLoss": "Futures bots daily loss limit",
-      "maxDailyLossHelper": "Stops every futures bot once their combined loss for the day exceeds this; manual orders are not limited",
-      "maxLeverage": "Leverage limit",
-      "maxLeverageHelper": "Applies to manual orders and futures bots",
-      "minLiquidationDistance": "Minimum liquidation distance",
-      "minLiquidationDistanceHelper": "When creating a futures bot or before a manual opening order, the estimated liquidation price must be at least this far from the fill price",
-      "success": "Futures risk updated",
-      "title": "Futures risk: {label}",
-      "unlimited": "No limit"
-    }
+    "label": "API keys"
   },
   "trades": {
     "label": "Recent Trades",

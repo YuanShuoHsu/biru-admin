@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 
-import { useBotLabels } from "../../useQuantBots";
+import { useBotLabels } from "../useQuantBots";
 import { toConfig } from "./definitions";
 import type { BotForm } from "./fields";
 

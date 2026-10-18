@@ -61,6 +61,7 @@ const CustomizedDialogs = () => {
     content,
     contentText,
     formId,
+    maxWidth,
     onCancel,
     onConfirm,
     onExited,
@@ -124,6 +125,7 @@ const CustomizedDialogs = () => {
       }
       container={container}
       fullWidth
+      maxWidth={maxWidth}
       onClose={handleClose}
       open={open}
       scroll="body"

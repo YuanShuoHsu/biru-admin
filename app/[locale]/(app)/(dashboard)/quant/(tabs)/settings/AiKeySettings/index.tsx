@@ -2,22 +2,21 @@
 
 import { type BaseSyntheticEvent, useState } from "react";
 
-import { useFormatter, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import useSWR from "swr";
 
 import FormBox from "@/components/FormBox";
 
-import { LinkOff, Psychology } from "@mui/icons-material";
+import { Psychology } from "@mui/icons-material";
 import {
   Alert,
   Button,
+  Chip,
   DialogContentText,
-  Paper,
   Skeleton,
-  Stack,
   TextField,
-  Typography,
+  Tooltip,
 } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -62,7 +61,11 @@ const AiKeyDialog = ({ onSaved }: { onSaved: () => void }) => {
       noValidate
       onSubmit={onSubmit}
     >
-      <Alert severity="info">{tAi("hint")}</Alert>
+      <Alert severity="info">
+        {tAi("description")}
+        <br />
+        {tAi("hint")}
+      </Alert>
       <TextField
         fullWidth
         label={tAi("apiKey")}
@@ -78,7 +81,6 @@ const AiKeyDialog = ({ onSaved }: { onSaved: () => void }) => {
 
 const AiKeySettings = () => {
   const tAi = useTranslations("quant.settings.ai");
-  const format = useFormatter();
   const setDialog = useDialogStore((state) => state.setDialog);
 
   const {
@@ -112,52 +114,27 @@ const AiKeySettings = () => {
       title: tAi("remove.title"),
     });
 
-  return (
-    <Paper sx={{ display: "flex", flexDirection: "column", gap: 1.5, p: 2 }}>
-      <Typography variant="h6">{tAi("title")}</Typography>
-      <Typography color="text.secondary" variant="body2">
-        {tAi("description")}
-      </Typography>
-      {isLoading ? (
-        <Skeleton height={36} variant="rounded" />
-      ) : (
-        <Stack
-          sx={{
-            alignItems: "center",
-            flexDirection: "row",
-            flexWrap: "wrap",
-            gap: 1,
-          }}
-        >
-          <Typography variant="body2">
-            {aiKey?.configured && aiKey.createdAt
-              ? tAi("bound", {
-                  date: format.dateTime(new Date(aiKey.createdAt), "dateTime"),
-                  last4: aiKey.apiKeyLast4 ?? "",
-                })
-              : tAi("notBound")}
-          </Typography>
-          <Button
-            onClick={handleSet}
-            size="small"
-            startIcon={<Psychology />}
-            variant={aiKey?.configured ? "outlined" : "contained"}
-          >
-            {tAi(aiKey?.configured ? "replace" : "bind")}
-          </Button>
-          {aiKey?.configured && (
-            <Button
-              color="error"
-              onClick={handleRemove}
-              size="small"
-              startIcon={<LinkOff />}
-            >
-              {tAi("remove.label")}
-            </Button>
-          )}
-        </Stack>
-      )}
-    </Paper>
+  if (isLoading) return <Skeleton height={30} variant="rounded" width={180} />;
+
+  return aiKey?.configured ? (
+    <Tooltip title={tAi("replace")}>
+      <Chip
+        icon={<Psychology />}
+        label={tAi("bound", { last4: aiKey.apiKeyLast4 ?? "" })}
+        onClick={handleSet}
+        onDelete={handleRemove}
+        variant="outlined"
+      />
+    </Tooltip>
+  ) : (
+    <Button
+      onClick={handleSet}
+      size="small"
+      startIcon={<Psychology />}
+      variant="outlined"
+    >
+      {tAi("bind")}
+    </Button>
   );
 };
 

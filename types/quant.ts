@@ -37,9 +37,6 @@ export type QuantFuturesBalance =
   components["schemas"]["QuantFuturesBalanceDto"];
 export type QuantFuturesSymbolSettings =
   components["schemas"]["QuantFuturesSymbolSettingsDto"];
-export type QuantFuturesRisk = components["schemas"]["QuantFuturesRiskDto"];
-export type UpdateQuantFuturesRiskDto =
-  components["schemas"]["UpdateQuantFuturesRiskDto"];
 export type QuantPosition = components["schemas"]["QuantPositionDto"];
 export type QuantPositionHistory =
   components["schemas"]["QuantPositionHistoryDto"];

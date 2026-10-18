@@ -11,6 +11,7 @@ type DialogState = {
   content?: React.ReactNode;
   contentText?: string;
   formId?: string;
+  maxWidth?: DialogProps["maxWidth"];
   onCancel?: () => Promise<void>;
   onConfirm?: () => Promise<void>;
   onExited?: () => void;
@@ -37,6 +38,7 @@ export const defaultInitState: DialogState = {
   content: null,
   contentText: "",
   formId: undefined,
+  maxWidth: undefined,
   onCancel: undefined,
   onConfirm: undefined,
   onExited: undefined,

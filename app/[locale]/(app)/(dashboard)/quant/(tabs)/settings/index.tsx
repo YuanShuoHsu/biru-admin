@@ -5,20 +5,17 @@ import { enqueueSnackbar } from "notistack";
 
 import {
   QUANT_CREDENTIALS_URL,
-  quantAccountUrl,
   useQuantCredentials,
 } from "../useQuantCredentials";
 import AiKeySettings from "./AiKeySettings";
 import CredentialDialog, { CREDENTIAL_FORM_ID } from "./CredentialDialog";
-import FuturesRiskDialog, { FUTURES_RISK_FORM_ID } from "./FuturesRiskDialog";
 
 import DataGrid from "@/components/DataGrid";
 
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
 
-import { Add, LinkOff, Shield } from "@mui/icons-material";
+import { Add, LinkOff } from "@mui/icons-material";
 import {
-  Box,
   Button,
   DialogContentText,
   IconButton,
@@ -29,7 +26,7 @@ import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { QuantCredential, QuantFuturesRisk } from "@/types/quant";
+import type { QuantCredential } from "@/types/quant";
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
@@ -57,22 +54,6 @@ const CredentialSettings = () => {
       open: true,
       title: tQuant("settings.add.label"),
     });
-
-  const handleRisk = async (credential: QuantCredential) => {
-    try {
-      const risk = await fetcher<QuantFuturesRisk>(
-        quantAccountUrl(credential.id, "futures/risk"),
-      );
-      setDialog({
-        content: <FuturesRiskDialog credential={credential} risk={risk} />,
-        formId: FUTURES_RISK_FORM_ID,
-        open: true,
-        title: tQuant("settings.risk.title", { label: credential.label }),
-      });
-    } catch (error) {
-      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
-    }
-  };
 
   const handleDelete = ({ id, label }: QuantCredential) =>
     setDialog({
@@ -108,22 +89,15 @@ const CredentialSettings = () => {
       filterable: false,
       headerName: tQuant("settings.columns.actions"),
       renderCell: ({ row }: GridRenderCellParams<QuantCredential>) => (
-        <>
-          <Tooltip title={tQuant("settings.risk.label")}>
-            <IconButton onClick={() => void handleRisk(row)} size="small">
-              <Shield fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title={tQuant("settings.delete.label")}>
-            <IconButton
-              color="error"
-              onClick={() => handleDelete(row)}
-              size="small"
-            >
-              <LinkOff fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        </>
+        <Tooltip title={tQuant("settings.delete.label")}>
+          <IconButton
+            color="error"
+            onClick={() => handleDelete(row)}
+            size="small"
+          >
+            <LinkOff fontSize="small" />
+          </IconButton>
+        </Tooltip>
       ),
       sortable: false,
     },
@@ -144,7 +118,14 @@ const CredentialSettings = () => {
 
   return (
     <Stack sx={{ gap: 2 }}>
-      <Box>
+      <Stack
+        sx={{
+          alignItems: "center",
+          flexDirection: "row",
+          flexWrap: "wrap",
+          gap: 1,
+        }}
+      >
         <Button
           onClick={handleAdd}
           size="small"
@@ -153,7 +134,8 @@ const CredentialSettings = () => {
         >
           {tQuant("settings.add.label")}
         </Button>
-      </Box>
+        <AiKeySettings />
+      </Stack>
       <DataGrid
         {...DATA_GRID_PROPS}
         columns={columns}
@@ -161,7 +143,6 @@ const CredentialSettings = () => {
         rows={credentials ?? []}
         showToolbar={false}
       />
-      <AiKeySettings />
     </Stack>
   );
 };

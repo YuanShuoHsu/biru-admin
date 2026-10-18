@@ -61,7 +61,6 @@ interface LeverageDialogProps {
   leverage: number;
   maxLeverage: number;
   onSaved: () => void;
-  riskLimit: number | null;
   symbol: string;
   url: string;
 }
@@ -70,13 +69,12 @@ export const LeverageDialog = ({
   leverage,
   maxLeverage,
   onSaved,
-  riskLimit,
   symbol,
   url,
 }: LeverageDialogProps) => {
   const tQuant = useTranslations("quant");
   const submit = useSubmit(url, onSaved);
-  const max = Math.min(maxLeverage, riskLimit ?? maxLeverage);
+  const max = maxLeverage;
   const [value, setValue] = useState(Math.min(leverage, max));
 
   const onSubmit = (event: BaseSyntheticEvent) => {
@@ -112,9 +110,7 @@ export const LeverageDialog = ({
         />
       </Stack>
       <Typography color="text.secondary" variant="body2">
-        {riskLimit !== null && riskLimit < maxLeverage
-          ? tQuant("futures.leverageRiskLimit", { max: riskLimit })
-          : tQuant("futures.leverageMax", { max: maxLeverage })}
+        {tQuant("futures.leverageMax", { max: maxLeverage })}
       </Typography>
       <Alert severity="warning">{tQuant("futures.leverageWarning")}</Alert>
     </FormBox>

@@ -28,7 +28,6 @@ import {
   AccountBalance,
   AccountBalanceWallet,
   AccountCircle,
-  Add,
   AddCard,
   AdminPanelSettings,
   Apartment,
@@ -677,10 +676,7 @@ const routes: Route[] = [
         segment: "market",
       },
       {
-        children: [
-          { icon: Add, label: "quant.bots.new.label", segment: "new" },
-          { icon: SmartToy, segment: "[botId]" },
-        ],
+        children: [{ icon: SmartToy, segment: "[botId]" }],
         icon: SmartToy,
         label: "quant.bots.label",
         segment: "bots",

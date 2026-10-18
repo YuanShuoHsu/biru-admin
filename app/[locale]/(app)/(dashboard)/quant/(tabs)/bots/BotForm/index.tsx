@@ -7,9 +7,9 @@ import { enqueueSnackbar } from "notistack";
 import { useForm, useWatch } from "react-hook-form";
 import useSWR, { useSWRConfig } from "swr";
 
-import { useQuantCredentials } from "../../../useQuantCredentials";
-import { QUANT_BOTS_URL, isQuantBotKey } from "../../useQuantBots";
-import WebhookSetup from "../../WebhookSetup";
+import { useQuantCredentials } from "../../useQuantCredentials";
+import { QUANT_BOTS_URL, isQuantBotKey } from "../useQuantBots";
+import WebhookSetup from "../WebhookSetup";
 import AiFields from "./AiFields";
 import BacktestPanel from "./BacktestPanel";
 import DcaFields from "./DcaFields";
@@ -48,6 +48,7 @@ import {
   Grid,
   Link as MuiLink,
   Paper,
+  type PaperProps,
   Skeleton,
   Stack,
   TextField,
@@ -84,7 +85,9 @@ const Layout = styled(Stack)(({ theme }) => ({
   },
 }));
 
-const Section = styled(Paper)(({ theme }) => ({
+const Section = styled((props: PaperProps) => (
+  <Paper variant="outlined" {...props} />
+))(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   gap: theme.spacing(2),
@@ -92,12 +95,7 @@ const Section = styled(Paper)(({ theme }) => ({
 }));
 
 const BacktestSection = styled(Section)(({ theme }) => ({
-  [theme.breakpoints.up("lg")]: {
-    flexShrink: 0,
-    position: "sticky",
-    top: theme.spacing(2),
-    width: 420,
-  },
+  [theme.breakpoints.up("lg")]: { flexShrink: 0, width: 400 },
 }));
 
 const BOT_FORM_ID = "quant-bot-form";
@@ -114,7 +112,7 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
   const tQuant = useTranslations("quant");
   const router = useRouter();
   const { mutate } = useSWRConfig();
-  const setDialog = useDialogStore((state) => state.setDialog);
+  const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const isSignal = type === "signal";
   const isFutures = type === "futures_grid" || isSignal;
@@ -132,7 +130,7 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
   });
   const {
     control,
-    formState: { errors, isSubmitted, isSubmitting },
+    formState: { errors, isSubmitted },
     handleSubmit,
     register,
     setValue,
@@ -158,6 +156,7 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
   const isLiveFuturesGrid = mode === "live" && type === "futures_grid";
 
   const onSubmitHandler = async (values: BotFormValues) => {
+    setDialog({ confirmLoading: true });
     try {
       const created = await fetcher<CreateQuantBotResponse>(
         `${QUANT_BOTS_URL}/${type}`,
@@ -188,17 +187,23 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
       void mutate(isQuantBotKey);
       router.push(`/quant/bots/${created.id}`);
 
+      // token 只回傳這一次，直接在同一個對話框換成 Webhook 設定；先關再開會被關閉動畫的重設清掉
       if (created.webhookToken)
         setDialog({
+          confirmLoading: false,
+          confirmText: "",
           content: (
             <WebhookSetup botId={created.id} token={created.webhookToken} />
           ),
-          open: true,
+          formId: undefined,
+          maxWidth: undefined,
           showCancel: false,
           title: tBots("webhook.title"),
         });
+      else closeDialog();
     } catch (error) {
       enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+      setDialog({ confirmLoading: false });
     }
   };
 
@@ -209,14 +214,9 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
 
   return (
     <Stack sx={{ gap: 2 }}>
-      <Stack>
-        <Typography variant="h5">
-          {tBots("new.title", { type: tBots(`types.${type}`) })}
-        </Typography>
-        <Typography color="text.secondary" variant="body2">
-          {tBots(`typeDescriptions.${type}`)}
-        </Typography>
-      </Stack>
+      <Typography color="text.secondary" variant="body2">
+        {tBots(`typeDescriptions.${type}`)}
+      </Typography>
       <Layout>
         <FormBox
           id={BOT_FORM_ID}
@@ -339,6 +339,7 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
                         <Button
                           component={Link}
                           href="/quant/settings"
+                          onClick={closeDialog}
                           size="small"
                         >
                           {tQuant("account.goToSettings")}
@@ -442,15 +443,6 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
               />
             )}
           </Section>
-          <Button
-            loading={isSubmitting}
-            size="large"
-            sx={{ alignSelf: "flex-start" }}
-            type="submit"
-            variant="contained"
-          >
-            {tBots("new.submit")}
-          </Button>
         </FormBox>
         {type !== "webhook" && type !== "signal" && type !== "ai" && (
           <BacktestSection>
@@ -534,3 +526,19 @@ const BotForm = ({ fromId, preset, type }: BotFormProps) => {
 };
 
 export default BotForm;
+
+/** 建立、複製、套用 KOL 參數都在同一個大對話框裡填，填完導到新機器人的詳情頁 */
+export const useBotFormDialog = () => {
+  const tBots = useTranslations("quant.bots");
+  const setDialog = useDialogStore((state) => state.setDialog);
+
+  return (props: BotFormProps) =>
+    setDialog({
+      confirmText: tBots("new.submit"),
+      content: <BotForm {...props} />,
+      formId: BOT_FORM_ID,
+      maxWidth: "lg",
+      open: true,
+      title: tBots("new.title", { type: tBots(`types.${props.type}`) }),
+    });
+};

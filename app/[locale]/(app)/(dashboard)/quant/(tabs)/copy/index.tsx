@@ -1,12 +1,26 @@
 "use client";
 
-import { type BaseSyntheticEvent, useState } from "react";
+import {
+  type BaseSyntheticEvent,
+  useEffect,
+  useState,
+  useSyncExternalStore,
+} from "react";
 
 import { useFormatter, useTranslations } from "next-intl";
 import useSWR from "swr";
 
+import { useBotFormDialog } from "../bots/BotForm";
 import { NoCredential } from "../market/MarketTerminal/CredentialSelect";
 import { quantAccountUrl, useQuantCredentials } from "../useQuantCredentials";
+import {
+  forgetKol,
+  parseShareCodeInput,
+  readRecentKols,
+  rememberKol,
+  serverRecentKols,
+  subscribeRecentKols,
+} from "./definitions";
 
 import DataGrid from "@/components/DataGrid";
 import FormBox from "@/components/FormBox";
@@ -24,6 +38,7 @@ import {
   Button,
   Chip,
   MenuItem,
+  Paper,
   Stack,
   TextField,
   Typography,
@@ -47,9 +62,16 @@ const KolCopy = ({ shareCode }: { shareCode: string }) => {
   const tFutures = useTranslations("quant.bots.form.futuresGrid");
   const format = useFormatter();
   const router = useRouter();
+  const openBotForm = useBotFormDialog();
 
   const { credential, credentials } = useQuantCredentials();
+  const recentKols = useSyncExternalStore(
+    subscribeRecentKols,
+    readRecentKols,
+    serverRecentKols,
+  );
   const [code, setCode] = useState(shareCode);
+  const [inputError, setInputError] = useState(false);
   const [symbol, setSymbol] = useState("");
   const [trend, setTrend] = useState<Trend | "">("");
   const [pagination, setPagination] = useState<GridPaginationModel>({
@@ -71,16 +93,37 @@ const KolCopy = ({ shareCode }: { shareCode: string }) => {
     fetcher,
   );
 
+  useEffect(() => {
+    if (data)
+      rememberKol({
+        avatar: data.avatar,
+        code: shareCode,
+        nickname: data.nickname,
+      });
+  }, [data, shareCode]);
+
   if (credentials && !credential) return <NoCredential />;
+
+  const search = (value: string) => {
+    setPagination((current) => ({ ...current, page: 0 }));
+    router.replace(
+      value
+        ? `/quant/copy?${new URLSearchParams({ code: value })}`
+        : "/quant/copy",
+    );
+  };
 
   const onSearch = (event: BaseSyntheticEvent) => {
     event.preventDefault();
-    setPagination((current) => ({ ...current, page: 0 }));
-    router.replace(
-      code.trim()
-        ? `/quant/copy?${new URLSearchParams({ code: code.trim() })}`
-        : "/quant/copy",
-    );
+    const parsed = parseShareCodeInput(code);
+    if (parsed?.kind === "linkWithoutCode") {
+      setInputError(true);
+      return;
+    }
+
+    setInputError(false);
+    if (parsed?.kind === "link") setCode(parsed.code);
+    search(parsed?.code ?? "");
   };
 
   const percent = (value?: number) =>
@@ -95,19 +138,18 @@ const KolCopy = ({ shareCode }: { shareCode: string }) => {
     value === undefined ? "—" : format.number(value);
 
   const applyParams = (order: QuantKolOrder) =>
-    router.push(
-      `/quant/bots/new?${new URLSearchParams({
-        type: "futures_grid",
+    openBotForm({
+      preset: {
+        bottom: order.bottom === undefined ? undefined : String(order.bottom),
+        leverage:
+          order.leverage === undefined ? undefined : String(order.leverage),
+        row: order.row === undefined ? undefined : String(order.row),
         symbol: order.symbol,
-        ...(order.top !== undefined && { top: String(order.top) }),
-        ...(order.bottom !== undefined && { bottom: String(order.bottom) }),
-        ...(order.row !== undefined && { row: String(order.row) }),
-        ...(order.trend && { trend: order.trend }),
-        ...(order.leverage !== undefined && {
-          leverage: String(order.leverage),
-        }),
-      })}`,
-    );
+        top: order.top === undefined ? undefined : String(order.top),
+        trend: order.trend,
+      },
+      type: "futures_grid",
+    });
 
   const columns: GridColDef[] = [
     {
@@ -186,10 +228,15 @@ const KolCopy = ({ shareCode }: { shareCode: string }) => {
     <Stack sx={{ gap: 2 }}>
       <FormBox noValidate onSubmit={onSearch} sx={{ flexDirection: "row" }}>
         <TextField
-          helperText={tCopy("shareCodeHelper")}
+          error={inputError}
+          helperText={tCopy(inputError ? "linkWithoutCode" : "shareCodeHelper")}
           label={tCopy("shareCode")}
-          onChange={(event) => setCode(event.target.value)}
+          onChange={(event) => {
+            setCode(event.target.value);
+            setInputError(false);
+          }}
           size="small"
+          sx={{ maxWidth: 420, width: "100%" }}
           value={code}
         />
         <Button
@@ -202,8 +249,52 @@ const KolCopy = ({ shareCode }: { shareCode: string }) => {
           {tCopy("search")}
         </Button>
       </FormBox>
-      <Alert severity="info">{tCopy("hint")}</Alert>
+      {!!recentKols.length && (
+        <Stack
+          sx={{
+            alignItems: "center",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            gap: 1,
+          }}
+        >
+          <Typography color="text.secondary" variant="body2">
+            {tCopy("recent")}
+          </Typography>
+          {recentKols.map((kol) => (
+            <Chip
+              avatar={<Avatar src={kol.avatar} />}
+              color={kol.code === shareCode ? "primary" : "default"}
+              key={kol.code}
+              label={kol.nickname}
+              onClick={() => {
+                setCode(kol.code);
+                setInputError(false);
+                search(kol.code);
+              }}
+              onDelete={() => forgetKol(kol.code)}
+              variant={kol.code === shareCode ? "filled" : "outlined"}
+            />
+          ))}
+        </Stack>
+      )}
+      {(!shareCode || error) && (
+        <Paper sx={{ display: "flex", flexDirection: "column", gap: 1, p: 2 }}>
+          <Typography variant="subtitle1">{tCopy("guide.title")}</Typography>
+          <Stack component="ol" sx={{ gap: 0.5, m: 0, pl: 2.5 }}>
+            {(["get", "find", "apply"] as const).map((step) => (
+              <Typography component="li" key={step} variant="body2">
+                {tCopy(`guide.steps.${step}`)}
+              </Typography>
+            ))}
+          </Stack>
+          <Typography color="text.secondary" variant="caption">
+            {tCopy("guide.note")}
+          </Typography>
+        </Paper>
+      )}
       {error && <Alert severity="error">{getErrorMessage(error)}</Alert>}
+      {data && <Alert severity="info">{tCopy("hint")}</Alert>}
       {data && (
         <Stack
           sx={{

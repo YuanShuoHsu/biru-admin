@@ -6,6 +6,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useSWRConfig } from "swr";
 
+import { useBotFormDialog } from "../BotForm";
 import {
   QUANT_BOTS_URL,
   isQuantBotKey,
@@ -20,7 +21,7 @@ import DataGrid from "@/components/DataGrid";
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { quantPairOf } from "@/constants/quant";
 
-import { Link, useRouter } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 
 import {
   Add,
@@ -64,10 +65,10 @@ const STATUS_COLORS = {
 const BotList = () => {
   const tBots = useTranslations("quant.bots");
   const format = useFormatter();
-  const router = useRouter();
   const { mutate } = useSWRConfig();
   const setDialog = useDialogStore((state) => state.setDialog);
   const labels = useBotLabels();
+  const openBotForm = useBotFormDialog();
 
   useBotStream();
   const { data: bots, isLoading } = useQuantBots();
@@ -162,7 +163,7 @@ const BotList = () => {
           )}
           <Tooltip title={tBots("actions.duplicate")}>
             <IconButton
-              onClick={() => router.push(`/quant/bots/new?from=${row.id}`)}
+              onClick={() => openBotForm({ fromId: row.id, type: row.type })}
               size="small"
             >
               <ContentCopy fontSize="small" />
@@ -288,10 +289,11 @@ const BotList = () => {
       >
         {quantBotTypeValues.map((type) => (
           <MenuItem
-            component={Link}
-            href={`/quant/bots/new?type=${type}`}
             key={type}
-            onClick={() => setMenuAnchor(null)}
+            onClick={() => {
+              setMenuAnchor(null);
+              openBotForm({ type });
+            }}
             sx={{ maxWidth: 360, whiteSpace: "normal" }}
           >
             <ListItemText
