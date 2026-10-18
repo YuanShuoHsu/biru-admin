@@ -3304,7 +3304,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 查詢組織 */
+    /** 查詢組織；舊 slug 也查得到，回傳的 slug 為現行值 */
     get: operations["OrganizationsController_findOne"];
     put?: never;
     post?: never;

@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { useEffect, useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 
 import { useSocketConnection } from "@/hooks/useSocketConnection";
 
@@ -21,6 +21,24 @@ interface InvoicePrintReadyPayload {
 }
 
 const listeners = new Set<() => void>();
+
+const DEVICE_ID_KEY = "invoicePrinterDeviceId";
+
+let fallbackDeviceId: string | undefined;
+
+const getDeviceId = () => {
+  try {
+    const stored = localStorage.getItem(DEVICE_ID_KEY);
+    if (stored) return stored;
+
+    const deviceId = crypto.randomUUID();
+    localStorage.setItem(DEVICE_ID_KEY, deviceId);
+
+    return deviceId;
+  } catch {
+    return (fallbackDeviceId ??= crypto.randomUUID());
+  }
+};
 
 const storageKey = (organizationId: string) =>
   `invoicePrinter:${organizationId}`;
@@ -58,6 +76,8 @@ const useInvoiceAutoPrint = ({
 
   const { isConnected } = useSocketConnection(menuSocket);
 
+  const takeoverRef = useRef(false);
+
   const enabled = useSyncExternalStore(
     subscribe,
     () => readPrinter(organizationId),
@@ -67,9 +87,22 @@ const useInvoiceAutoPrint = ({
   useEffect(() => {
     if (!enabled || !isConnected) return;
 
+    const handleReplaced = () => {
+      writePrinter(organizationId, false);
+      enqueueSnackbar(tOrders("autoPrint.replaced"), { variant: "info" });
+    };
+
     menuSocket
       .timeout(5000)
-      .emitWithAck("joinInvoicePrinter", { organizationId })
+      .emitWithAck("joinInvoicePrinter", {
+        deviceId: getDeviceId(),
+        organizationId,
+        takeover: takeoverRef.current,
+      })
+      .then((isPrinter: boolean) => {
+        if (isPrinter) takeoverRef.current = false;
+        else handleReplaced();
+      })
       .catch((error) => {
         writePrinter(organizationId, false);
         enqueueSnackbar(getErrorMessage(error), { variant: "error" });
@@ -88,11 +121,6 @@ const useInvoiceAutoPrint = ({
       }
     };
 
-    const handleReplaced = () => {
-      writePrinter(organizationId, false);
-      enqueueSnackbar(tOrders("autoPrint.replaced"), { variant: "info" });
-    };
-
     menuSocket.on("invoicePrintReady", print);
     menuSocket.on("invoicePrinterReplaced", handleReplaced);
 
@@ -105,7 +133,10 @@ const useInvoiceAutoPrint = ({
 
   return [
     enabled,
-    (value: boolean) => writePrinter(organizationId, value),
+    (value: boolean) => {
+      takeoverRef.current = value;
+      writePrinter(organizationId, value);
+    },
   ] as const;
 };
 
