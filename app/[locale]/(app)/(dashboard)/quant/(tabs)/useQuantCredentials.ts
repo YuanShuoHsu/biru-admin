@@ -2,7 +2,7 @@
 
 import { useCallback, useSyncExternalStore } from "react";
 
-import useSWR from "swr";
+import useSWR, { type SWRConfiguration } from "swr";
 
 import type { QuantCredential } from "@/types/quant";
 
@@ -38,10 +38,13 @@ const readSelected = () => {
   }
 };
 
-export const useQuantCredentials = () => {
+export const useQuantCredentials = (
+  config?: SWRConfiguration<QuantCredential[]>,
+) => {
   const { data: credentials, mutate } = useSWR<QuantCredential[]>(
     QUANT_CREDENTIALS_URL,
     fetcher,
+    config,
   );
 
   const selectedId = useSyncExternalStore(subscribe, readSelected, () => null);

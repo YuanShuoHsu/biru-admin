@@ -31,6 +31,12 @@ const HeaderPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
 }));
 
+const StatGroup = styled("div")(({ theme }) => ({
+  display: "flex",
+  flexWrap: "wrap",
+  gap: theme.spacing(3),
+}));
+
 const Stat = ({ label, value }: { label: string; value: React.ReactNode }) => (
   <Stack>
     <Typography color="text.secondary" variant="caption">
@@ -190,30 +196,32 @@ const MarketHeader = ({
           />
         </>
       )}
-      <Stat
-        label={tQuant("market.change")}
-        value={
-          <Box component="span" sx={{ color: changeColor(change) }}>
-            {formatPercent(change)}
-          </Box>
-        }
-      />
-      <Stat
-        label={tQuant("market.high")}
-        value={formatPrice(market.high, market)}
-      />
-      <Stat
-        label={tQuant("market.low")}
-        value={formatPrice(market.low, market)}
-      />
-      <Stat
-        label={`${tQuant("market.volume")} (${market.baseCurrency})`}
-        value={format.number(market.volume, { notation: "compact" })}
-      />
-      <Stat
-        label={`${tQuant("market.quoteVolume")} (${market.quoteCurrency})`}
-        value={format.number(market.quoteVolume, { notation: "compact" })}
-      />
+      <StatGroup>
+        <Stat
+          label={tQuant("market.change")}
+          value={
+            <Box component="span" sx={{ color: changeColor(change) }}>
+              {formatPercent(change)}
+            </Box>
+          }
+        />
+        <Stat
+          label={tQuant("market.high")}
+          value={formatPrice(market.high, market)}
+        />
+        <Stat
+          label={tQuant("market.low")}
+          value={formatPrice(market.low, market)}
+        />
+        <Stat
+          label={`${tQuant("market.volume")} (${market.baseCurrency})`}
+          value={format.number(market.volume, { notation: "compact" })}
+        />
+        <Stat
+          label={`${tQuant("market.quoteVolume")} (${market.quoteCurrency})`}
+          value={format.number(market.quoteVolume, { notation: "compact" })}
+        />
+      </StatGroup>
       {openInterest !== undefined && (
         <Stat
           label={`${tQuant("market.openInterest")} (${market.baseCurrency})`}

@@ -60,7 +60,8 @@
         "label": "모두 중지",
         "success": "모든 봇을 중지했습니다",
         "title": "모든 봇 중지"
-      }
+      },
+      "view": "상세 보기"
     },
     "ai": {
       "confidence": "확신도 {value}",
@@ -366,8 +367,7 @@
     "new": {
       "label": "봇 만들기",
       "submit": "만들기",
-      "success": "봇을 만들었습니다",
-      "title": "{type} 봇 만들기"
+      "success": "봇을 만들었습니다"
     },
     "reasons": {
       "ai_cost_limit": "월간 AI 비용 한도 도달",

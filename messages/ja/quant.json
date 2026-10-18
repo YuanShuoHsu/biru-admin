@@ -60,7 +60,8 @@
         "label": "すべて停止",
         "success": "すべてのボットを停止しました",
         "title": "すべてのボットを停止"
-      }
+      },
+      "view": "詳細を表示"
     },
     "ai": {
       "confidence": "確信度 {value}",
@@ -366,8 +367,7 @@
     "new": {
       "label": "ボットを作成",
       "submit": "作成",
-      "success": "ボットを作成しました",
-      "title": "{type}ボットを作成"
+      "success": "ボットを作成しました"
     },
     "reasons": {
       "ai_cost_limit": "月間 AI 費用上限に達しました",

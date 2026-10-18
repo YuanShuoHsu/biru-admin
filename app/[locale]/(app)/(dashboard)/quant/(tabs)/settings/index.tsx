@@ -1,5 +1,7 @@
 "use client";
 
+import { useCallback, useMemo } from "react";
+
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 
@@ -12,7 +14,7 @@ import CredentialDialog, { CREDENTIAL_FORM_ID } from "./CredentialDialog";
 
 import DataGrid from "@/components/DataGrid";
 
-import { DATA_GRID_PROPS } from "@/constants/dataGrid";
+import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
 import { Add, LinkOff } from "@mui/icons-material";
 import {
@@ -22,7 +24,9 @@ import {
   Stack,
   Tooltip,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -31,14 +35,26 @@ import type { QuantCredential } from "@/types/quant";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
-const TIME_COLUMN_MIN_WIDTH = 180;
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
 
 const CredentialSettings = () => {
   const tQuant = useTranslations("quant");
   const format = useFormatter();
   const setDialog = useDialogStore((state) => state.setDialog);
 
-  const { credentials, mutate, selectCredential } = useQuantCredentials();
+  const apiRef = useGridApiRef();
+
+  const { credentials, mutate, selectCredential } = useQuantCredentials({
+    onSuccess: () => {
+      setTimeout(() => {
+        apiRef.current?.autosizeColumns(autosizeOptions);
+      }, 0);
+    },
+  });
 
   const handleAdd = () =>
     setDialog({
@@ -55,77 +71,82 @@ const CredentialSettings = () => {
       title: tQuant("settings.add.label"),
     });
 
-  const handleDelete = ({ id, label }: QuantCredential) =>
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tQuant.rich("settings.delete.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-            label,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        try {
-          await fetcher(`${QUANT_CREDENTIALS_URL}/${id}`, {
-            method: "DELETE",
-          });
-          enqueueSnackbar(tQuant("settings.delete.success"), {
-            variant: "success",
-          });
-        } catch (error) {
-          enqueueSnackbar(getErrorMessage(error), { variant: "error" });
-        } finally {
-          void mutate();
-        }
-      },
-      open: true,
-      title: tQuant("settings.delete.title"),
-    });
+  const handleDelete = useCallback(
+    ({ id, label }: QuantCredential) =>
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tQuant.rich("settings.delete.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              label,
+            })}
+          </DialogContentText>
+        ),
+        onConfirm: async () => {
+          try {
+            await fetcher(`${QUANT_CREDENTIALS_URL}/${id}`, {
+              method: "DELETE",
+            });
+            enqueueSnackbar(tQuant("settings.delete.success"), {
+              variant: "success",
+            });
+          } catch (error) {
+            enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+          } finally {
+            void mutate();
+          }
+        },
+        open: true,
+        title: tQuant("settings.delete.title"),
+      }),
+    [mutate, setDialog, tQuant],
+  );
 
-  const columns: GridColDef[] = [
-    {
-      field: "actions",
-      filterable: false,
-      headerName: tQuant("settings.columns.actions"),
-      renderCell: ({ row }: GridRenderCellParams<QuantCredential>) => (
-        <Tooltip title={tQuant("settings.delete.label")}>
-          <IconButton
-            color="error"
-            onClick={() => handleDelete(row)}
-            size="small"
-          >
-            <LinkOff fontSize="small" />
-          </IconButton>
-        </Tooltip>
-      ),
-      sortable: false,
-    },
-    { field: "label", headerName: tQuant("settings.columns.label") },
-    {
-      field: "apiKeyLast4",
-      headerName: tQuant("settings.columns.apiKey"),
-      valueFormatter: (value: string) => `••••${value}`,
-    },
-    {
-      field: "createdAt",
-      headerName: tQuant("settings.columns.createdAt"),
-      minWidth: TIME_COLUMN_MIN_WIDTH,
-      valueFormatter: (value: string) =>
-        format.dateTime(new Date(value), "dateTime"),
-    },
-  ];
+  const columns = useMemo<GridColDef[]>(
+    () => [
+      {
+        disableColumnMenu: true,
+        disableExport: true,
+        field: "actions",
+        filterable: false,
+        headerName: tQuant("settings.columns.actions"),
+        renderCell: ({ row }: GridRenderCellParams<QuantCredential>) => (
+          <Tooltip title={tQuant("settings.delete.label")}>
+            <IconButton
+              color="error"
+              onClick={(event) => {
+                event.stopPropagation();
+
+                handleDelete(row);
+              }}
+              size="small"
+            >
+              <LinkOff fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        ),
+        resizable: false,
+        sortable: false,
+      },
+      { field: "label", headerName: tQuant("settings.columns.label") },
+      {
+        field: "apiKeyLast4",
+        headerName: tQuant("settings.columns.apiKey"),
+        valueFormatter: (value: string) => `••••${value}`,
+      },
+      {
+        field: "createdAt",
+        headerName: tQuant("settings.columns.createdAt"),
+        valueFormatter: (value: string) =>
+          format.dateTime(new Date(value), "short"),
+      },
+    ],
+    [format, handleDelete, tQuant],
+  );
 
   return (
     <>
-      <Stack
-        sx={{
-          alignItems: "center",
-          flexDirection: "row",
-          flexWrap: "wrap",
-          gap: 1,
-        }}
-      >
+      <ToolbarStack direction="row">
         <Button
           onClick={handleAdd}
           size="small"
@@ -135,13 +156,13 @@ const CredentialSettings = () => {
           {tQuant("settings.add.label")}
         </Button>
         <AiKeySettings />
-      </Stack>
+      </ToolbarStack>
       <DataGrid
         {...DATA_GRID_PROPS}
+        apiRef={apiRef}
         columns={columns}
         loading={!credentials}
         rows={credentials ?? []}
-        showToolbar={false}
       />
     </>
   );

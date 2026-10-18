@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 import { useMessages, useTranslations } from "next-intl";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR, { type SWRConfiguration, useSWRConfig } from "swr";
 
 import { useSocketConnection } from "@/hooks/useSocketConnection";
 
@@ -50,28 +50,32 @@ export const useBotStream = () => {
   }, [isConnected, mutate]);
 };
 
-export const useQuantBots = () => useSWR<QuantBot[]>(QUANT_BOTS_URL, fetcher);
+export const useQuantBots = (config?: SWRConfiguration<QuantBot[]>) =>
+  useSWR<QuantBot[]>(QUANT_BOTS_URL, fetcher, config);
 
 /** 代碼有翻譯就顯示翻譯，未知的（例如 Pionex 新增的停止原因）原樣顯示 */
 export const useBotLabels = () => {
   const tBots = useTranslations("quant.bots");
   const { events, reasons, skipReasons } = useMessages().quant.bots;
 
-  return {
-    // 新建立的機器人資料庫狀態是 stopped，但對使用者來說是「還沒啟動」
-    status: ({ startedAt, status }: Pick<QuantBot, "startedAt" | "status">) =>
-      tBots(startedAt ? `statuses.${status}` : "statuses.notStarted"),
-    event: (kind: string) =>
-      kind in events ? tBots(`events.${kind as keyof typeof events}`) : kind,
-    reason: (reason?: string) =>
-      reason && reason in reasons
-        ? tBots(`reasons.${reason as keyof typeof reasons}`)
-        : reason,
-    skipReason: (reason: string) =>
-      reason in skipReasons
-        ? tBots(`skipReasons.${reason as keyof typeof skipReasons}`)
-        : reason,
-  };
+  return useMemo(
+    () => ({
+      // 新建立的機器人資料庫狀態是 stopped，但對使用者來說是「還沒啟動」
+      status: ({ startedAt, status }: Pick<QuantBot, "startedAt" | "status">) =>
+        tBots(startedAt ? `statuses.${status}` : "statuses.notStarted"),
+      event: (kind: string) =>
+        kind in events ? tBots(`events.${kind as keyof typeof events}`) : kind,
+      reason: (reason?: string) =>
+        reason && reason in reasons
+          ? tBots(`reasons.${reason as keyof typeof reasons}`)
+          : reason,
+      skipReason: (reason: string) =>
+        reason in skipReasons
+          ? tBots(`skipReasons.${reason as keyof typeof skipReasons}`)
+          : reason,
+    }),
+    [events, reasons, skipReasons, tBots],
+  );
 };
 
 // 依顯示的兩位小數判斷，避免 0.00 因為極小的正負值被染色

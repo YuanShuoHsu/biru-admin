@@ -1,6 +1,6 @@
 "use client";
 
-import type { BaseSyntheticEvent } from "react";
+import { type BaseSyntheticEvent, useCallback, useState } from "react";
 
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
@@ -47,6 +47,7 @@ import {
   Button,
   Grid,
   Link as MuiLink,
+  MenuItem,
   Paper,
   type PaperProps,
   Skeleton,
@@ -60,7 +61,7 @@ import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { quantMarketTypeValues } from "@/types/api";
+import { quantBotTypeValues, quantMarketTypeValues } from "@/types/api";
 import type {
   CreateQuantBotResponse,
   QuantBot,
@@ -99,10 +100,15 @@ const PIONEX_FEES_URL = "https://www.pionex.com/en/fees";
 
 interface BotFormFieldsProps {
   initialValues: BotFormValues;
+  onTypeChange?: (type: QuantBotType) => void;
   type: QuantBotType;
 }
 
-const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
+const BotFormFields = ({
+  initialValues,
+  onTypeChange,
+  type,
+}: BotFormFieldsProps) => {
   const tBots = useTranslations("quant.bots");
   const tForm = useTranslations("quant.bots.form");
   const tQuant = useTranslations("quant");
@@ -209,250 +215,260 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
   const setOptions = { shouldValidate: isSubmitted };
 
   return (
-    <Stack sx={{ gap: 2 }}>
-      <Typography color="text.secondary" variant="body2">
-        {tBots(`typeDescriptions.${type}`)}
-      </Typography>
-      <Layout>
-        <FormBox
-          id={BOT_FORM_ID}
-          noValidate
-          onSubmit={onSubmit}
-          sx={{ flex: 1, minWidth: 0 }}
-        >
-          <Section>
-            <Typography variant="h6">{tForm("basic")}</Typography>
-            <Grid container spacing={2}>
-              <Grid size={{ sm: 6, xs: 12 }}>
-                <TextField
-                  {...register("name")}
-                  error={!!errors.name}
-                  fullWidth
-                  helperText={errors.name?.message}
-                  label={tForm("name")}
-                  required
-                  size="small"
-                />
-              </Grid>
-              <Grid size={{ sm: 6, xs: 12 }}>
-                <Autocomplete
-                  disableClearable
-                  getOptionLabel={quantPairOf}
-                  onChange={(_, value) => setValue("symbol", value, setOptions)}
-                  options={(markets ?? [])
-                    .toSorted((a, b) => b.quoteVolume - a.quoteVolume)
-                    .map((item) => item.symbol)}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      error={!!errors.symbol}
-                      helperText={errors.symbol?.message}
-                      label={tForm("symbol")}
-                      required
-                      size="small"
-                    />
-                  )}
-                  value={symbol}
-                />
-              </Grid>
-              {canChooseMarket && (
-                <Grid size={12}>
-                  <ToggleButtonGroup
-                    aria-label={tQuant("market.marketType")}
-                    exclusive
-                    onChange={(_, value: QuantMarketType | null) => {
-                      if (!value) return;
-                      setValue(
-                        "symbol",
-                        DEFAULT_QUANT_SYMBOLS[value],
-                        setOptions,
-                      );
-                      if (value === "PERP")
-                        setValue("mode", "paper", setOptions);
-                    }}
-                    size="small"
-                    value={marketType}
-                  >
-                    {quantMarketTypeValues.map((value) => (
-                      <ToggleButton key={value} value={value}>
-                        {tQuant(`market.types.${value}`)}
-                      </ToggleButton>
-                    ))}
-                  </ToggleButtonGroup>
-                </Grid>
-              )}
-              {!isSignal && (
-                <Grid size={12}>
-                  <ToggleButtonGroup
-                    aria-label={tForm("mode")}
-                    exclusive
-                    onChange={(_, value: QuantBotMode | null) =>
-                      value && setValue("mode", value, setOptions)
-                    }
-                    size="small"
-                    value={mode}
-                  >
-                    <ToggleButton value="paper">
-                      {tBots("modes.paper")}
-                    </ToggleButton>
-                    <ToggleButton
-                      color="warning"
-                      disabled={isFuturesStrategy}
-                      value="live"
-                    >
-                      {tBots("modes.live")}
-                    </ToggleButton>
-                  </ToggleButtonGroup>
-                </Grid>
-              )}
-              {isFuturesStrategy && (
-                <Grid size={12}>
-                  <Alert severity="info">
-                    {tForm("futuresStrategyPaperOnly")}
-                  </Alert>
-                </Grid>
-              )}
-              {mode === "live" &&
-                (credentials?.length ? (
-                  <Grid size={12}>
-                    <SelectField
-                      form={form}
-                      label={tForm("credential")}
-                      name="credentialId"
-                      options={credentials.map(
-                        ({ apiKeyLast4, id, label }) => ({
-                          label: `${label} (…${apiKeyLast4})`,
-                          value: id,
-                        }),
-                      )}
-                      required
-                    />
-                  </Grid>
-                ) : (
-                  <Grid size={12}>
-                    <Alert
-                      action={
-                        <Button
-                          component={Link}
-                          href="/quant/settings"
-                          onClick={closeDialog}
-                          size="small"
-                        >
-                          {tQuant("account.goToSettings")}
-                        </Button>
-                      }
-                      severity="info"
-                    >
-                      {tQuant("account.noCredential")}
-                    </Alert>
-                  </Grid>
+    <Layout>
+      <FormBox
+        id={BOT_FORM_ID}
+        noValidate
+        onSubmit={onSubmit}
+        sx={{ flex: 1, minWidth: 0 }}
+      >
+        <Section>
+          <Typography variant="h6">{tForm("basic")}</Typography>
+          <Grid container spacing={2}>
+            <Grid size={12}>
+              <TextField
+                disabled={!onTypeChange}
+                fullWidth
+                helperText={tBots(`typeDescriptions.${type}`)}
+                label={tBots("columns.type")}
+                onChange={(event) =>
+                  onTypeChange?.(event.target.value as QuantBotType)
+                }
+                required
+                select
+                size="small"
+                value={type}
+              >
+                {quantBotTypeValues.map((value) => (
+                  <MenuItem key={value} value={value}>
+                    {tBots(`types.${value}`)}
+                  </MenuItem>
                 ))}
-              {(isLiveGrid || isLiveFuturesGrid) && (
+              </TextField>
+            </Grid>
+            <Grid size={{ sm: 6, xs: 12 }}>
+              <TextField
+                {...register("name")}
+                error={!!errors.name}
+                fullWidth
+                helperText={errors.name?.message}
+                label={tForm("name")}
+                required
+                size="small"
+              />
+            </Grid>
+            <Grid size={{ sm: 6, xs: 12 }}>
+              <Autocomplete
+                disableClearable
+                getOptionLabel={quantPairOf}
+                onChange={(_, value) => setValue("symbol", value, setOptions)}
+                options={(markets ?? [])
+                  .toSorted((a, b) => b.quoteVolume - a.quoteVolume)
+                  .map((item) => item.symbol)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    error={!!errors.symbol}
+                    helperText={errors.symbol?.message}
+                    label={tForm("symbol")}
+                    required
+                    size="small"
+                  />
+                )}
+                value={symbol}
+              />
+            </Grid>
+            {canChooseMarket && (
+              <Grid size={12}>
+                <ToggleButtonGroup
+                  aria-label={tQuant("market.marketType")}
+                  exclusive
+                  onChange={(_, value: QuantMarketType | null) => {
+                    if (!value) return;
+                    setValue(
+                      "symbol",
+                      DEFAULT_QUANT_SYMBOLS[value],
+                      setOptions,
+                    );
+                    if (value === "PERP") setValue("mode", "paper", setOptions);
+                  }}
+                  size="small"
+                  value={marketType}
+                >
+                  {quantMarketTypeValues.map((value) => (
+                    <ToggleButton key={value} value={value}>
+                      {tQuant(`market.types.${value}`)}
+                    </ToggleButton>
+                  ))}
+                </ToggleButtonGroup>
+              </Grid>
+            )}
+            {!isSignal && (
+              <Grid size={12}>
+                <ToggleButtonGroup
+                  aria-label={tForm("mode")}
+                  exclusive
+                  onChange={(_, value: QuantBotMode | null) =>
+                    value && setValue("mode", value, setOptions)
+                  }
+                  size="small"
+                  value={mode}
+                >
+                  <ToggleButton value="paper">
+                    {tBots("modes.paper")}
+                  </ToggleButton>
+                  <ToggleButton
+                    color="warning"
+                    disabled={isFuturesStrategy}
+                    value="live"
+                  >
+                    {tBots("modes.live")}
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </Grid>
+            )}
+            {isFuturesStrategy && (
+              <Grid size={12}>
+                <Alert severity="info">
+                  {tForm("futuresStrategyPaperOnly")}
+                </Alert>
+              </Grid>
+            )}
+            {mode === "live" &&
+              (credentials?.length ? (
                 <Grid size={12}>
-                  <Alert severity="info">
-                    {tForm(
-                      isLiveFuturesGrid
-                        ? "liveFuturesGridNote"
-                        : "liveGridNote",
-                    )}
+                  <SelectField
+                    form={form}
+                    label={tForm("credential")}
+                    name="credentialId"
+                    options={credentials.map(({ apiKeyLast4, id, label }) => ({
+                      label: `${label} (…${apiKeyLast4})`,
+                      value: id,
+                    }))}
+                    required
+                  />
+                </Grid>
+              ) : (
+                <Grid size={12}>
+                  <Alert
+                    action={
+                      <Button
+                        component={Link}
+                        href="/quant/settings"
+                        onClick={closeDialog}
+                        size="small"
+                      >
+                        {tQuant("account.goToSettings")}
+                      </Button>
+                    }
+                    severity="info"
+                  >
+                    {tQuant("account.noCredential")}
                   </Alert>
                 </Grid>
-              )}
+              ))}
+            {(isLiveGrid || isLiveFuturesGrid) && (
+              <Grid size={12}>
+                <Alert severity="info">
+                  {tForm(
+                    isLiveFuturesGrid ? "liveFuturesGridNote" : "liveGridNote",
+                  )}
+                </Alert>
+              </Grid>
+            )}
+            <Grid size={{ sm: 6, xs: 12 }}>
+              <NumberField
+                adornment={quote}
+                form={form}
+                helperText={tForm("investmentHelper")}
+                label={tForm("investment")}
+                name="investment"
+                required
+              />
+            </Grid>
+            {!isSignal && (
+              <Grid size={{ sm: 6, xs: 12 }}>
+                <NumberField
+                  adornment="%"
+                  form={form}
+                  helperText={tForm.rich("paperFeeRateHelper", {
+                    link: (chunks) => (
+                      <MuiLink
+                        href={PIONEX_FEES_URL}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        {chunks}
+                      </MuiLink>
+                    ),
+                  })}
+                  label={tForm("paperFeeRate")}
+                  name="paperFeeRate"
+                  required={mode === "paper"}
+                />
+              </Grid>
+            )}
+            {!isLiveGrid && (
               <Grid size={{ sm: 6, xs: 12 }}>
                 <NumberField
                   adornment={quote}
                   form={form}
-                  helperText={tForm("investmentHelper")}
-                  label={tForm("investment")}
-                  name="investment"
-                  required
+                  helperText={tForm("maxDailyLossHelper")}
+                  label={tForm("maxDailyLoss")}
+                  name="maxDailyLoss"
                 />
               </Grid>
-              {!isSignal && (
-                <Grid size={{ sm: 6, xs: 12 }}>
-                  <NumberField
-                    adornment="%"
-                    form={form}
-                    helperText={tForm.rich("paperFeeRateHelper", {
-                      link: (chunks) => (
-                        <MuiLink
-                          href={PIONEX_FEES_URL}
-                          rel="noopener noreferrer"
-                          target="_blank"
-                        >
-                          {chunks}
-                        </MuiLink>
-                      ),
-                    })}
-                    label={tForm("paperFeeRate")}
-                    name="paperFeeRate"
-                    required={mode === "paper"}
-                  />
-                </Grid>
-              )}
-              {!isLiveGrid && (
-                <Grid size={{ sm: 6, xs: 12 }}>
-                  <NumberField
-                    adornment={quote}
-                    form={form}
-                    helperText={tForm("maxDailyLossHelper")}
-                    label={tForm("maxDailyLoss")}
-                    name="maxDailyLoss"
-                  />
-                </Grid>
-              )}
-            </Grid>
-          </Section>
-          <Section>
-            <Typography variant="h6">{tForm("strategy")}</Typography>
-            {type === "grid" && (
-              <GridFields
-                aiCredentialId={credentialId || credentials?.[0]?.id}
-                form={form}
-                market={market}
-              />
             )}
-            {isSignal && <SignalFields form={form} market={market} />}
-            {type === "ai" && <AiFields form={form} quote={quote} />}
-            {isFuturesStrategy && (
-              <FuturesPositionFields form={form} market={market} />
-            )}
-            {type === "futures_grid" && (
-              <FuturesGridFields
-                checkCredentialId={credentialId || credentials?.[0]?.id}
-                form={form}
-                lastPrice={market?.close}
-                market={market}
-              />
-            )}
-            {type === "dca" && <DcaFields form={form} quote={quote} />}
-            {type === "indicator" && (
-              <IndicatorFields form={form} quote={quote} />
-            )}
-            {type === "webhook" && (
-              <NumberField
-                adornment={quote}
-                form={form}
-                label={tForm("webhook.orderAmount")}
-                name="webhook.orderAmount"
-                required
-              />
-            )}
-          </Section>
-        </FormBox>
-        {type !== "webhook" && type !== "signal" && type !== "ai" && (
-          <BacktestSection>
-            <BacktestPanel form={form} market={market} type={type} />
-          </BacktestSection>
-        )}
-      </Layout>
-    </Stack>
+          </Grid>
+        </Section>
+        <Section>
+          <Typography variant="h6">{tForm("strategy")}</Typography>
+          {type === "grid" && (
+            <GridFields
+              aiCredentialId={credentialId || credentials?.[0]?.id}
+              form={form}
+              market={market}
+            />
+          )}
+          {isSignal && <SignalFields form={form} market={market} />}
+          {type === "ai" && <AiFields form={form} quote={quote} />}
+          {isFuturesStrategy && (
+            <FuturesPositionFields form={form} market={market} />
+          )}
+          {type === "futures_grid" && (
+            <FuturesGridFields
+              checkCredentialId={credentialId || credentials?.[0]?.id}
+              form={form}
+              lastPrice={market?.close}
+              market={market}
+            />
+          )}
+          {type === "dca" && <DcaFields form={form} quote={quote} />}
+          {type === "indicator" && (
+            <IndicatorFields form={form} quote={quote} />
+          )}
+          {type === "webhook" && (
+            <NumberField
+              adornment={quote}
+              form={form}
+              label={tForm("webhook.orderAmount")}
+              name="webhook.orderAmount"
+              required
+            />
+          )}
+        </Section>
+      </FormBox>
+      {type !== "webhook" && type !== "signal" && type !== "ai" && (
+        <BacktestSection>
+          <BacktestPanel form={form} market={market} type={type} />
+        </BacktestSection>
+      )}
+    </Layout>
   );
 };
 
 interface BotFormProps {
   fromId?: string;
-  type: QuantBotType;
 }
 
 const newBotValues = (type: QuantBotType, locale: Locale): BotFormValues => ({
@@ -465,8 +481,9 @@ const newBotValues = (type: QuantBotType, locale: Locale): BotFormValues => ({
   mode: type === "signal" ? "live" : "paper",
 });
 
-const BotForm = ({ fromId, type }: BotFormProps) => {
+const BotForm = ({ fromId }: BotFormProps) => {
   const locale = useLocale();
+  const [type, setType] = useState<QuantBotType>(quantBotTypeValues[0]);
   const { data: source, error } = useSWR<QuantBot>(
     fromId ? `${QUANT_BOTS_URL}/${fromId}` : null,
     fetcher,
@@ -482,7 +499,12 @@ const BotForm = ({ fromId, type }: BotFormProps) => {
       type={source.type}
     />
   ) : (
-    <BotFormFields initialValues={newBotValues(type, locale)} type={type} />
+    <BotFormFields
+      initialValues={newBotValues(type, locale)}
+      key={type}
+      onTypeChange={setType}
+      type={type}
+    />
   );
 };
 
@@ -493,13 +515,16 @@ export const useBotFormDialog = () => {
   const tBots = useTranslations("quant.bots");
   const setDialog = useDialogStore((state) => state.setDialog);
 
-  return (props: BotFormProps) =>
-    setDialog({
-      confirmText: tBots("new.submit"),
-      content: <BotForm {...props} />,
-      formId: BOT_FORM_ID,
-      maxWidth: "lg",
-      open: true,
-      title: tBots("new.title", { type: tBots(`types.${props.type}`) }),
-    });
+  return useCallback(
+    (props: BotFormProps) =>
+      setDialog({
+        confirmText: tBots("new.submit"),
+        content: <BotForm {...props} />,
+        formId: BOT_FORM_ID,
+        maxWidth: "lg",
+        open: true,
+        title: tBots("new.label"),
+      }),
+    [setDialog, tBots],
+  );
 };

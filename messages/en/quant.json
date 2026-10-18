@@ -60,7 +60,8 @@
         "label": "Stop all",
         "success": "All bots stopped",
         "title": "Stop all bots"
-      }
+      },
+      "view": "View details"
     },
     "ai": {
       "confidence": "Confidence {value}",
@@ -366,8 +367,7 @@
     "new": {
       "label": "Create bot",
       "submit": "Create",
-      "success": "Bot created",
-      "title": "Create {type} bot"
+      "success": "Bot created"
     },
     "reasons": {
       "ai_cost_limit": "Monthly AI cost limit reached",

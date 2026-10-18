@@ -60,7 +60,8 @@
         "label": "全部停止",
         "success": "已停止全部机器人",
         "title": "停止所有机器人"
-      }
+      },
+      "view": "查看详情"
     },
     "ai": {
       "confidence": "信心 {value}",
@@ -366,8 +367,7 @@
     "new": {
       "label": "创建机器人",
       "submit": "创建",
-      "success": "已创建机器人",
-      "title": "创建机器人：{type}"
+      "success": "已创建机器人"
     },
     "reasons": {
       "ai_cost_limit": "达到每月 AI 费用上限",

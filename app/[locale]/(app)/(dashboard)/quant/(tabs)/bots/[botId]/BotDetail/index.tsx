@@ -482,7 +482,7 @@ const BotDetail = ({ botId }: { botId: string }) => {
               </Button>
             )}
             <Button
-              onClick={() => openBotForm({ fromId: bot.id, type: bot.type })}
+              onClick={() => openBotForm({ fromId: bot.id })}
               startIcon={<ContentCopy />}
               variant="outlined"
             >
