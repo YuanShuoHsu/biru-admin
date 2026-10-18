@@ -482,10 +482,7 @@ const BotForm = ({ fromId, type }: BotFormProps) => {
       type={source.type}
     />
   ) : (
-    <BotFormFields
-      initialValues={newBotValues(type, locale)}
-      type={type}
-    />
+    <BotFormFields initialValues={newBotValues(type, locale)} type={type} />
   );
 };
 

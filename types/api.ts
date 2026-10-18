@@ -3796,23 +3796,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/quant/credentials/{id}/kol": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** KOL 精選的跟單合約網格（依分享碼查詢） */
-    get: operations["QuantBotsController_findKol"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   "/api/quant/credentials/{id}/grid-ai-strategy": {
     parameters: {
       query?: never;
@@ -10142,41 +10125,6 @@ export interface components {
       };
       /** Format: date-time */
       createdAt: string;
-    };
-    QuantKolOrderDto: {
-      id: string;
-      /** @description Pionex 的機器人類型，例如 futures_grid */
-      type: string;
-      /** @description 對應行情的交易對，例如 BTC_USDT_PERP */
-      symbol: string;
-      status: string;
-      /** @description 是否為 KOL 置頂的單 */
-      pinned: boolean;
-      trend?: components["schemas"]["QuantFuturesGridTrend"];
-      leverage?: number;
-      top?: number;
-      bottom?: number;
-      row?: number;
-      /** @description KOL 未公開投入金額時不回傳 */
-      investment?: number;
-      /** @description 網格年化（0.1 = 10%） */
-      gridApr?: number;
-      /** @description 總報酬率（0.1 = 10%） */
-      totalReturn?: number;
-      /** @description 建立時價格 */
-      initPrice?: number;
-      currentPrice?: number;
-      /** @description 建立時間（毫秒） */
-      createTime: number;
-    };
-    QuantKolDto: {
-      nickname: string;
-      avatar?: string;
-      total: number;
-      hasMore: boolean;
-      orders: components["schemas"]["QuantKolOrderDto"][];
-      /** @description 可篩選的交易對 */
-      symbols: string[];
     };
     GridAiStrategyDto: {
       /** @description 建議上界 */
@@ -19781,41 +19729,6 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["QuantBotEventDto"][];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  QuantBotsController_findKol: {
-    parameters: {
-      query: {
-        /** @description KOL 的分享碼 */
-        shareCode: string;
-        symbol?: string;
-        trend?: components["schemas"]["QuantFuturesGridTrend"];
-        page?: number;
-        limit?: number;
-      };
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["QuantKolDto"];
         };
       };
       /** @description Internal server error */
