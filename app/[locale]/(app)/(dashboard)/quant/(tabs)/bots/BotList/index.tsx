@@ -261,7 +261,7 @@ const BotList = () => {
   ];
 
   return (
-    <Stack sx={{ gap: 2 }}>
+    <>
       <Stack sx={{ flexDirection: "row", gap: 1 }}>
         <Button
           onClick={(event) => setMenuAnchor(event.currentTarget)}
@@ -310,7 +310,7 @@ const BotList = () => {
         rows={bots ?? []}
         showToolbar={false}
       />
-    </Stack>
+    </>
   );
 };
 

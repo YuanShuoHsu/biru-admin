@@ -117,7 +117,7 @@ const CredentialSettings = () => {
   ];
 
   return (
-    <Stack sx={{ gap: 2 }}>
+    <>
       <Stack
         sx={{
           alignItems: "center",
@@ -143,7 +143,7 @@ const CredentialSettings = () => {
         rows={credentials ?? []}
         showToolbar={false}
       />
-    </Stack>
+    </>
   );
 };
 
