@@ -38,7 +38,7 @@ import { fetcher } from "@/utils/fetcher";
 const ToolbarStack = styled(Stack)(({ theme }) => ({
   flexWrap: "wrap",
   alignItems: "center",
-  gap: theme.spacing(1),
+  gap: theme.spacing(2),
 }));
 
 const CredentialSettings = () => {
@@ -137,8 +137,9 @@ const CredentialSettings = () => {
       {
         field: "createdAt",
         headerName: tQuant("settings.columns.createdAt"),
-        valueFormatter: (value: string) =>
-          format.dateTime(new Date(value), "short"),
+        type: "date",
+        valueFormatter: (value: Date) => format.dateTime(value, "short"),
+        valueGetter: (value: string) => new Date(value),
       },
     ],
     [format, handleDelete, tQuant],

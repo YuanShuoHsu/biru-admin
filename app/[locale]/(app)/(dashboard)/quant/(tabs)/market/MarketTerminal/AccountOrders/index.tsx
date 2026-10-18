@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
@@ -104,34 +104,6 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
 
   const revalidate = () => mutate(isQuantAccountKey(credential.id));
 
-  const formatPrice = (value?: number) =>
-    value === undefined
-      ? "—"
-      : format.number(value, {
-          maximumFractionDigits: market.pricePrecision,
-          minimumFractionDigits: market.pricePrecision,
-        });
-  const formatSize = (value: number) =>
-    format.number(value, { maximumFractionDigits: market.sizePrecision });
-  const formatTime = (value: number) =>
-    format.dateTime(new Date(value), "short");
-
-  const handleCancel = async (order: QuantOrder) => {
-    try {
-      await fetcher(
-        `${quantAccountUrl(credential.id, `orders/${order.orderId}`)}${symbolQuery}`,
-        { method: "DELETE" },
-      );
-      enqueueSnackbar(tQuant("account.cancel.success"), {
-        variant: "success",
-      });
-    } catch (error) {
-      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
-    } finally {
-      void revalidate();
-    }
-  };
-
   const handleCancelAll = () =>
     setDialog({
       content: (
@@ -162,137 +134,179 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
       title: tQuant("account.cancelAll.title"),
     });
 
-  const sideColumn: GridColDef = {
-    field: "side",
-    headerName: tQuant("account.columns.side"),
-    renderCell: ({ row }: GridRenderCellParams<QuantFill | QuantOrder>) => (
-      <Box
-        component="span"
-        sx={{ color: row.side === "BUY" ? "success.main" : "error.main" }}
-      >
-        {tQuant(`order.side.${row.side}`)}
-      </Box>
-    ),
-  };
+  const { fillColumns, historyColumns, openOrderColumns } = useMemo(() => {
+    const formatPrice = (value?: number) =>
+      value === undefined
+        ? "—"
+        : format.number(value, {
+            maximumFractionDigits: market.pricePrecision,
+            minimumFractionDigits: market.pricePrecision,
+          });
+    const formatSize = (value: number) =>
+      format.number(value, { maximumFractionDigits: market.sizePrecision });
+    const formatTime = (value: number) =>
+      format.dateTime(new Date(value), "short");
 
-  const orderSizeColumn: GridColDef = {
-    field: "size",
-    headerName: tQuant("account.columns.size"),
-    valueGetter: (_, { amount, size }: QuantOrder) =>
-      size !== undefined
-        ? `${formatSize(size)} ${market.baseCurrency}`
-        : amount !== undefined
-          ? `${formatPrice(amount)} ${market.quoteCurrency}`
-          : "—",
-  };
+    const handleCancel = async (order: QuantOrder) => {
+      try {
+        await fetcher(
+          `${quantAccountUrl(credential.id, `orders/${order.orderId}`)}${symbolQuery}`,
+          { method: "DELETE" },
+        );
+        enqueueSnackbar(tQuant("account.cancel.success"), {
+          variant: "success",
+        });
+      } catch (error) {
+        enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+      } finally {
+        void mutate(isQuantAccountKey(credential.id));
+      }
+    };
 
-  const orderColumns: GridColDef[] = [
-    {
-      field: "createTime",
-      headerName: tQuant("account.columns.time"),
-      valueFormatter: (value: number) => formatTime(value),
-    },
-    sideColumn,
-    {
-      field: "type",
-      headerName: tQuant("account.columns.type"),
-      valueFormatter: (value: QuantOrder["type"]) =>
-        tQuant(`order.type.${value}`),
-    },
-    {
-      field: "price",
-      headerName: tQuant("account.columns.price"),
-      valueFormatter: (value?: number) => formatPrice(value),
-    },
-    orderSizeColumn,
-    {
-      field: "filledSize",
-      headerName: tQuant("account.columns.filled"),
-      valueFormatter: (value: number) => formatSize(value),
-    },
-  ];
-
-  const openOrderColumns: GridColDef[] = [
-    {
-      disableColumnMenu: true,
-      disableExport: true,
-      field: "actions",
-      filterable: false,
-      headerName: tQuant("account.columns.actions"),
-      renderCell: ({ row }: GridRenderCellParams<QuantOrder>) => (
-        <Tooltip title={tQuant("account.cancel.label")}>
-          <IconButton
-            color="error"
-            onClick={(event) => {
-              event.stopPropagation();
-
-              void handleCancel(row);
-            }}
-            size="small"
-          >
-            <Close fontSize="small" />
-          </IconButton>
-        </Tooltip>
+    const sideColumn: GridColDef = {
+      field: "side",
+      headerName: tQuant("account.columns.side"),
+      renderCell: ({ row }: GridRenderCellParams<QuantFill | QuantOrder>) => (
+        <Box
+          component="span"
+          sx={{ color: row.side === "BUY" ? "success.main" : "error.main" }}
+        >
+          {tQuant(`order.side.${row.side}`)}
+        </Box>
       ),
-      resizable: false,
-      sortable: false,
-    },
-    ...orderColumns,
-  ];
+    };
 
-  const historyColumns: GridColDef[] = [
-    ...orderColumns,
-    {
-      field: "averagePrice",
-      headerName: tQuant("account.columns.averagePrice"),
-      valueGetter: (_, { filledAmount, filledSize }: QuantOrder) =>
-        filledSize > 0 ? filledAmount / filledSize : undefined,
-      valueFormatter: (value?: number) => formatPrice(value),
-    },
-    {
-      field: "fee",
-      headerName: tQuant("account.columns.fee"),
-      valueGetter: (_, { fee, feeCoin }: QuantOrder) =>
-        fee > 0 ? `${format.number(fee, "precise")} ${feeCoin}` : "—",
-    },
-    {
-      field: "status",
-      headerName: tQuant("account.columns.status"),
-      valueGetter: (_, row: QuantOrder) =>
-        tQuant(`account.status.${orderStatus(row)}`),
-    },
-  ];
-
-  const fillColumns: GridColDef[] = [
-    {
-      field: "time",
-      headerName: tQuant("account.columns.time"),
-      valueFormatter: (value: number) => formatTime(value),
-    },
-    sideColumn,
-    {
-      field: "role",
-      headerName: tQuant("account.columns.role"),
-      valueFormatter: (value: QuantFill["role"]) =>
-        tQuant(`order.role.${value}`),
-    },
-    {
-      field: "price",
-      headerName: tQuant("account.columns.price"),
-      valueFormatter: (value: number) => formatPrice(value),
-    },
-    {
+    const orderSizeColumn: GridColDef = {
       field: "size",
       headerName: tQuant("account.columns.size"),
-      valueFormatter: (value: number) => formatSize(value),
-    },
-    {
-      field: "fee",
-      headerName: tQuant("account.columns.fee"),
-      valueGetter: (_, { fee, feeCoin }: QuantFill) =>
-        `${format.number(fee, "precise")} ${feeCoin}`,
-    },
-  ];
+      valueGetter: (_, { amount, size }: QuantOrder) =>
+        size !== undefined
+          ? `${formatSize(size)} ${market.baseCurrency}`
+          : amount !== undefined
+            ? `${formatPrice(amount)} ${market.quoteCurrency}`
+            : "—",
+    };
+
+    const orderColumns: GridColDef[] = [
+      {
+        field: "createTime",
+        headerName: tQuant("account.columns.time"),
+        valueFormatter: (value: number) => formatTime(value),
+      },
+      sideColumn,
+      {
+        field: "type",
+        headerName: tQuant("account.columns.type"),
+        valueFormatter: (value: QuantOrder["type"]) =>
+          tQuant(`order.type.${value}`),
+      },
+      {
+        field: "price",
+        headerName: tQuant("account.columns.price"),
+        valueFormatter: (value?: number) => formatPrice(value),
+      },
+      orderSizeColumn,
+      {
+        field: "filledSize",
+        headerName: tQuant("account.columns.filled"),
+        valueFormatter: (value: number) => formatSize(value),
+      },
+    ];
+
+    const openOrderColumns: GridColDef[] = [
+      {
+        disableColumnMenu: true,
+        disableExport: true,
+        field: "actions",
+        filterable: false,
+        headerName: tQuant("account.columns.actions"),
+        renderCell: ({ row }: GridRenderCellParams<QuantOrder>) => (
+          <Tooltip title={tQuant("account.cancel.label")}>
+            <IconButton
+              color="error"
+              onClick={(event) => {
+                event.stopPropagation();
+
+                void handleCancel(row);
+              }}
+              size="small"
+            >
+              <Close fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        ),
+        resizable: false,
+        sortable: false,
+      },
+      ...orderColumns,
+    ];
+
+    const historyColumns: GridColDef[] = [
+      ...orderColumns,
+      {
+        field: "averagePrice",
+        headerName: tQuant("account.columns.averagePrice"),
+        valueGetter: (_, { filledAmount, filledSize }: QuantOrder) =>
+          filledSize > 0 ? filledAmount / filledSize : undefined,
+        valueFormatter: (value?: number) => formatPrice(value),
+      },
+      {
+        field: "fee",
+        headerName: tQuant("account.columns.fee"),
+        valueGetter: (_, { fee, feeCoin }: QuantOrder) =>
+          fee > 0 ? `${format.number(fee, "precise")} ${feeCoin}` : "—",
+      },
+      {
+        field: "status",
+        headerName: tQuant("account.columns.status"),
+        valueGetter: (_, row: QuantOrder) =>
+          tQuant(`account.status.${orderStatus(row)}`),
+      },
+    ];
+
+    const fillColumns: GridColDef[] = [
+      {
+        field: "time",
+        headerName: tQuant("account.columns.time"),
+        valueFormatter: (value: number) => formatTime(value),
+      },
+      sideColumn,
+      {
+        field: "role",
+        headerName: tQuant("account.columns.role"),
+        valueFormatter: (value: QuantFill["role"]) =>
+          tQuant(`order.role.${value}`),
+      },
+      {
+        field: "price",
+        headerName: tQuant("account.columns.price"),
+        valueFormatter: (value: number) => formatPrice(value),
+      },
+      {
+        field: "size",
+        headerName: tQuant("account.columns.size"),
+        valueFormatter: (value: number) => formatSize(value),
+      },
+      {
+        field: "fee",
+        headerName: tQuant("account.columns.fee"),
+        valueGetter: (_, { fee, feeCoin }: QuantFill) =>
+          `${format.number(fee, "precise")} ${feeCoin}`,
+      },
+    ];
+
+    return { fillColumns, historyColumns, openOrderColumns };
+  }, [
+    credential.id,
+    format,
+    market.baseCurrency,
+    market.pricePrecision,
+    market.quoteCurrency,
+    market.sizePrecision,
+    mutate,
+    symbolQuery,
+    tQuant,
+  ]);
 
   return (
     <Stack sx={{ gap: 1 }}>

@@ -17,6 +17,7 @@ import {
 } from "../useQuantBots";
 
 import DataGrid from "@/components/DataGrid";
+import { renderEmptyableCell } from "@/components/EmptyCell";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { quantPairOf } from "@/constants/quant";
@@ -47,6 +48,11 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
+import {
+  quantBotModeValues,
+  quantBotStatusValues,
+  quantBotTypeValues,
+} from "@/types/api";
 import type { QuantBot } from "@/types/quant";
 
 import { getErrorMessage } from "@/utils/errors";
@@ -67,7 +73,7 @@ const StyledIconButton = styled(IconButton, {
 const ToolbarStack = styled(Stack)(({ theme }) => ({
   flexWrap: "wrap",
   alignItems: "center",
-  gap: theme.spacing(1),
+  gap: theme.spacing(2),
 }));
 
 const STATUS_COLORS = {
@@ -244,7 +250,9 @@ const BotList = () => {
       {
         field: "type",
         headerName: tBots("columns.type"),
+        type: "singleSelect",
         valueGetter: (value: QuantBot["type"]) => tBots(`types.${value}`),
+        valueOptions: quantBotTypeValues.map((type) => tBots(`types.${type}`)),
       },
       {
         field: "symbol",
@@ -262,9 +270,12 @@ const BotList = () => {
             color={row.mode === "live" ? "warning" : "default"}
             label={value}
             size="small"
+            variant="outlined"
           />
         ),
+        type: "singleSelect",
         valueGetter: (value: QuantBot["mode"]) => tBots(`modes.${value}`),
+        valueOptions: quantBotModeValues.map((mode) => tBots(`modes.${mode}`)),
       },
       {
         field: "status",
@@ -278,10 +289,16 @@ const BotList = () => {
               color={STATUS_COLORS[row.status]}
               label={value}
               size="small"
+              variant="outlined"
             />
           </Tooltip>
         ),
+        type: "singleSelect",
         valueGetter: (_, row: QuantBot) => labels.status(row),
+        valueOptions: [
+          tBots("statuses.notStarted"),
+          ...quantBotStatusValues.map((status) => tBots(`statuses.${status}`)),
+        ],
       },
       {
         field: "investment",
@@ -316,8 +333,11 @@ const BotList = () => {
       {
         field: "startedAt",
         headerName: tBots("columns.startedAt"),
-        valueFormatter: (value?: string) =>
-          value ? format.dateTime(new Date(value), "short") : "—",
+        renderCell: renderEmptyableCell,
+        type: "date",
+        valueFormatter: (value: Date | null) =>
+          value ? format.dateTime(value, "short") : "",
+        valueGetter: (value?: string) => (value ? new Date(value) : null),
       },
     ],
     [confirm, format, formatQuote, labels, openBotForm, request, router, tBots],
