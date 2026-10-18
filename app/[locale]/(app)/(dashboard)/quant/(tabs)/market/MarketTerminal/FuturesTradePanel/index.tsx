@@ -372,7 +372,6 @@ const FuturesTradePanel = ({
             )
           }
           select
-          size="small"
           value={timeInForce}
         >
           {LIMIT_TIME_IN_FORCE.map((value) => (
@@ -396,7 +395,6 @@ const FuturesTradePanel = ({
           helperText={errors.price?.message}
           label={tQuant("order.price")}
           required
-          size="small"
           slotProps={{ htmlInput: { inputMode: "decimal" }, ...quoteAdornment }}
           value={price}
         />
@@ -407,7 +405,6 @@ const FuturesTradePanel = ({
         helperText={errors.size?.message}
         label={tQuant("order.size")}
         required
-        size="small"
         slotProps={{
           htmlInput: { inputMode: "decimal" },
           input: {

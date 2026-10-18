@@ -228,7 +228,6 @@ const TradePanel = ({
           helperText={errors.price?.message}
           label={tQuant("order.price")}
           required
-          size="small"
           slotProps={{
             htmlInput: { inputMode: "decimal" },
             input: {
@@ -249,7 +248,6 @@ const TradePanel = ({
           helperText={errors.amount?.message}
           label={tQuant("order.amount")}
           required
-          size="small"
           slotProps={{
             htmlInput: { inputMode: "decimal" },
             input: {
@@ -269,7 +267,6 @@ const TradePanel = ({
           helperText={errors.size?.message}
           label={tQuant("order.size")}
           required
-          size="small"
           slotProps={{
             htmlInput: { inputMode: "decimal" },
             input: {

@@ -102,7 +102,6 @@ export const LeverageDialog = ({
               ),
             )
           }
-          size="small"
           slotProps={{ htmlInput: { inputMode: "numeric", max, min: 1 } }}
           sx={{ width: 100 }}
           type="number"

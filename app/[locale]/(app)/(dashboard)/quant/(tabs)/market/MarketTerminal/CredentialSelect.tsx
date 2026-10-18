@@ -41,7 +41,6 @@ const CredentialSelect = ({
         label={tQuant("order.credential")}
         onChange={(event) => onChange(event.target.value)}
         select
-        size="small"
         value={credential.id}
       >
         {credentials.map(({ apiKeyLast4, id, label }) => (
