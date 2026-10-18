@@ -14,7 +14,6 @@ const QuantTabsLayout = ({ children }: { children: React.ReactNode }) => {
         tabs={[
           { path: "/quant/market" },
           { path: "/quant/bots" },
-          { path: "/quant/copy" },
           { path: "/quant/settings" },
         ]}
       />

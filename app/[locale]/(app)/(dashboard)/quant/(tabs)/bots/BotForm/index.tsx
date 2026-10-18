@@ -60,13 +60,9 @@ import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import {
-  quantFuturesGridTrendValues,
-  quantMarketTypeValues,
-} from "@/types/api";
+import { quantMarketTypeValues } from "@/types/api";
 import type {
   CreateQuantBotResponse,
-  FuturesGridConfig,
   QuantBot,
   QuantBotMode,
   QuantBotType,
@@ -454,54 +450,22 @@ const BotFormFields = ({ initialValues, type }: BotFormFieldsProps) => {
   );
 };
 
-/** 從 KOL 跟單「套用參數」帶進來的合約網格參數 */
-export interface BotFormPreset {
-  bottom?: string;
-  leverage?: string;
-  row?: string;
-  symbol?: string;
-  top?: string;
-  trend?: string;
-}
-
 interface BotFormProps {
   fromId?: string;
-  preset?: BotFormPreset;
   type: QuantBotType;
 }
 
-const isTrend = (value?: string): value is FuturesGridConfig["trend"] =>
-  quantFuturesGridTrendValues.some((trend) => trend === value);
-
-const presetValues = (
-  type: QuantBotType,
-  locale: Locale,
-  preset: BotFormPreset = {},
-): BotFormValues => {
-  const isPerpType = type === "futures_grid" || type === "signal";
-  const base = defaultValues(
-    preset.symbol ?? DEFAULT_QUANT_SYMBOLS[isPerpType ? "PERP" : "SPOT"],
+const newBotValues = (type: QuantBotType, locale: Locale): BotFormValues => ({
+  ...defaultValues(
+    DEFAULT_QUANT_SYMBOLS[
+      type === "futures_grid" || type === "signal" ? "PERP" : "SPOT"
+    ],
     locale,
-  );
+  ),
+  mode: type === "signal" ? "live" : "paper",
+});
 
-  return {
-    ...base,
-    futuresGrid: {
-      ...base.futuresGrid,
-      leverage: preset.leverage ?? base.futuresGrid.leverage,
-      trend: isTrend(preset.trend) ? preset.trend : base.futuresGrid.trend,
-    },
-    grid: {
-      ...base.grid,
-      bottom: preset.bottom ?? base.grid.bottom,
-      row: preset.row ?? base.grid.row,
-      top: preset.top ?? base.grid.top,
-    },
-    mode: type === "signal" ? "live" : "paper",
-  };
-};
-
-const BotForm = ({ fromId, preset, type }: BotFormProps) => {
+const BotForm = ({ fromId, type }: BotFormProps) => {
   const locale = useLocale();
   const { data: source, error } = useSWR<QuantBot>(
     fromId ? `${QUANT_BOTS_URL}/${fromId}` : null,
@@ -519,7 +483,7 @@ const BotForm = ({ fromId, preset, type }: BotFormProps) => {
     />
   ) : (
     <BotFormFields
-      initialValues={presetValues(type, locale, preset)}
+      initialValues={newBotValues(type, locale)}
       type={type}
     />
   );
@@ -527,7 +491,7 @@ const BotForm = ({ fromId, preset, type }: BotFormProps) => {
 
 export default BotForm;
 
-/** 建立、複製、套用 KOL 參數都在同一個大對話框裡填，填完導到新機器人的詳情頁 */
+/** 建立、複製都在同一個大對話框裡填，填完導到新機器人的詳情頁 */
 export const useBotFormDialog = () => {
   const tBots = useTranslations("quant.bots");
   const setDialog = useDialogStore((state) => state.setDialog);

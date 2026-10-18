@@ -68,8 +68,6 @@ export type FuturesGridOperationDto =
   components["schemas"]["FuturesGridOperationDto"];
 export type FuturesGridOperationCheck =
   components["schemas"]["FuturesGridOperationCheckDto"];
-export type QuantKol = components["schemas"]["QuantKolDto"];
-export type QuantKolOrder = components["schemas"]["QuantKolOrderDto"];
 export type AiConfig = components["schemas"]["AiConfigDto"];
 export type QuantAiKey = components["schemas"]["QuantAiKeyDto"];
 export type SetQuantAiKeyDto = components["schemas"]["SetQuantAiKeyDto"];

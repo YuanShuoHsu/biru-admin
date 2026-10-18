@@ -462,38 +462,6 @@
       "url": "Webhook 網址"
     }
   },
-  "copy": {
-    "all": "全部",
-    "apply": "套用參數",
-    "columns": {
-      "actions": "操作",
-      "createTime": "建立時間",
-      "gridApr": "網格年化",
-      "investment": "投入",
-      "range": "區間",
-      "symbol": "交易對",
-      "totalReturn": "總報酬",
-      "trend": "方向／槓桿"
-    },
-    "guide": {
-      "title": "怎麼取得 KOL 的分享碼",
-      "steps": {
-        "get": "向 KOL 索取他分享的 Pionex 機器人連結或邀請碼。KOL 通常會貼在社群貼文、社群群組或影片說明欄，機器人分享連結多半是 share.pionex.com 開頭。",
-        "find": "打開連結，頁面上「KOL 名稱的邀請碼」那串就是分享碼。也可以把整個連結貼到上方，連結裡帶有邀請碼時會自動取出。",
-        "apply": "查到後從列表挑一個合約網格，按「套用參數」，確認後建立你自己的機器人。"
-      },
-      "note": "分享碼就是 KOL 在 Pionex 的邀請碼。查詢只會讀取 KOL 公開的跟單網格，不會動用你的資金。"
-    },
-    "hint": "「套用參數」會把區間、格數、方向與槓桿帶進新建合約網格的表單，由你確認後建立；不會綁定 KOL 的跟單分潤。",
-    "label": "KOL 跟單",
-    "linkWithoutCode": "這個連結裡沒有邀請碼。請打開連結，複製頁面上「KOL 名稱的邀請碼」那串貼到這裡",
-    "pinned": "置頂",
-    "recent": "最近查過",
-    "rows": "{row} 格",
-    "search": "查詢",
-    "shareCode": "KOL 邀請碼或分享連結",
-    "shareCodeHelper": "可直接貼上 KOL 給你的 Pionex 連結，連結裡有邀請碼時會自動取出"
-  },
   "futures": {
     "actions": {
       "buyLong": "買入／做多",
