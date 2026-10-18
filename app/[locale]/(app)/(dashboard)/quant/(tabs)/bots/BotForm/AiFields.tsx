@@ -95,7 +95,6 @@ const AiFields = ({ form, quote }: AiFieldsProps) => {
           minRows={3}
           multiline
           placeholder={tAi("guidelinePlaceholder")}
-          size="small"
         />
       </Grid>
     </Grid>

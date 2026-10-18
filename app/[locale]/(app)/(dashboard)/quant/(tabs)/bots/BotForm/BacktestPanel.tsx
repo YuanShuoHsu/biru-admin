@@ -132,7 +132,6 @@ const BacktestPanel = ({ form, market, type }: BacktestPanelProps) => {
                 setCandleInterval(event.target.value as QuantCandleInterval)
               }
               select
-              size="small"
               value={interval}
             >
               {quantCandleIntervalValues.map((value) => (
@@ -149,7 +148,6 @@ const BacktestPanel = ({ form, market, type }: BacktestPanelProps) => {
             label={tBacktest("candles")}
             onChange={(event) => setCandleCount(Number(event.target.value))}
             select
-            size="small"
             value={candleCount}
           >
             {CANDLE_COUNTS.map((value) => (

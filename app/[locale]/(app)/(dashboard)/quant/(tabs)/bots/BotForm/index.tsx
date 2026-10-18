@@ -236,7 +236,6 @@ const BotFormFields = ({
                 }
                 required
                 select
-                size="small"
                 value={type}
               >
                 {quantBotTypeValues.map((value) => (
@@ -254,7 +253,6 @@ const BotFormFields = ({
                 helperText={errors.name?.message}
                 label={tForm("name")}
                 required
-                size="small"
               />
             </Grid>
             <Grid size={{ sm: 6, xs: 12 }}>
@@ -272,7 +270,6 @@ const BotFormFields = ({
                     helperText={errors.symbol?.message}
                     label={tForm("symbol")}
                     required
-                    size="small"
                   />
                 )}
                 value={symbol}

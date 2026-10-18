@@ -45,7 +45,7 @@ const ConditionRow = ({ form, group, index, onRemove }: ConditionRowProps) => {
 
   return (
     <Paper sx={{ p: 1.5 }} variant="outlined">
-      <Grid container spacing={1.5} sx={{ alignItems: "center" }}>
+      <Grid container spacing={2} sx={{ alignItems: "center" }}>
         <Grid size={{ sm: 4, xs: 12 }}>
           <TextField
             fullWidth
@@ -57,7 +57,6 @@ const ConditionRow = ({ form, group, index, onRemove }: ConditionRowProps) => {
               )
             }
             select
-            size="small"
             value={kind}
           >
             {quantIndicatorKindValues.map((value) => (

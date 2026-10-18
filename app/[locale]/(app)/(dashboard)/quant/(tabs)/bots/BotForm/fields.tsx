@@ -34,6 +34,7 @@ export const NumberField = ({
   name,
   required = false,
 }: FieldProps) => {
+  const value = useWatch({ control: form.control, name }) as string | undefined;
   const error = errorOf(form, name);
 
   return (
@@ -44,7 +45,6 @@ export const NumberField = ({
       helperText={error?.message ?? helperText}
       label={label}
       required={required}
-      size="small"
       slotProps={{
         htmlInput: { inputMode: "decimal" },
         input: adornment
@@ -55,6 +55,7 @@ export const NumberField = ({
             }
           : undefined,
       }}
+      value={value ?? ""}
     />
   );
 };
@@ -83,7 +84,6 @@ export const SelectField = ({
       label={label}
       required={required}
       select
-      size="small"
       value={value}
     >
       {options.map((option) => (
