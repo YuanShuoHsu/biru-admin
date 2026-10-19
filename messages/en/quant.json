@@ -29,6 +29,12 @@
     "noCredential": "No exchange API key yet. Add one to place orders and see your orders.",
     "openOrders": "Open orders",
     "orders": "Order history",
+    "range": {
+      "all": "All",
+      "7d": "7D",
+      "30d": "30D",
+      "90d": "3M"
+    },
     "status": {
       "canceled": "Canceled",
       "filled": "Filled",
@@ -721,7 +727,7 @@
     "ai": {
       "apiKey": "Claude API key",
       "bind": "Bind Claude API key",
-      "bound": "Claude API key ••••{last4}",
+      "bound": "Claude API key ••••{last4} · {cost} USD this month",
       "description": "AI trading bots call the model with your own Claude API key, billed to your Anthropic account. The key is stored encrypted and only you can see it.",
       "hint": "Create an API key in the Anthropic Console. The key is verified with Anthropic before binding.",
       "notBound": "Not bound",

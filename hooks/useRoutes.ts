@@ -351,7 +351,7 @@ const routes: Route[] = [
     icon: Assignment,
     label: "orders.label",
     segment: "orders",
-    to: "/orders/board",
+    to: null,
   },
   {
     children: [
@@ -555,7 +555,7 @@ const routes: Route[] = [
     icon: Inventory,
     label: "inventory.label",
     segment: "inventory",
-    to: "/inventory/ingredients",
+    to: null,
   },
   {
     icon: History,
@@ -685,6 +685,7 @@ const routes: Route[] = [
         children: [{ icon: SmartToy, segment: "[botId]" }],
         icon: SmartToy,
         label: "quant.bots.label",
+        query: ["page", "pageSize"],
         segment: "bots",
       },
       {
@@ -696,7 +697,7 @@ const routes: Route[] = [
     icon: CandlestickChart,
     label: "quant.label",
     segment: "quant",
-    to: "/quant/market",
+    to: null,
   },
   {
     icon: ViewInAr,
@@ -737,7 +738,7 @@ const routes: Route[] = [
     icon: HourglassTop,
     label: "waitlist.label",
     segment: "waitlist",
-    to: "/waitlist/board",
+    to: null,
   },
   {
     children: [

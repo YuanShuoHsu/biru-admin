@@ -2,7 +2,7 @@
 
 import { type BaseSyntheticEvent, useState } from "react";
 
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import useSWR from "swr";
 
@@ -81,6 +81,7 @@ const AiKeyDialog = ({ onSaved }: { onSaved: () => void }) => {
 
 const AiKeySettings = () => {
   const tAi = useTranslations("quant.settings.ai");
+  const format = useFormatter();
   const setDialog = useDialogStore((state) => state.setDialog);
 
   const {
@@ -120,7 +121,13 @@ const AiKeySettings = () => {
     <Tooltip title={tAi("replace")}>
       <Chip
         icon={<Psychology />}
-        label={tAi("bound", { last4: aiKey.apiKeyLast4 ?? "" })}
+        label={tAi("bound", {
+          cost: format.number(aiKey.monthCost, {
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2,
+          }),
+          last4: aiKey.apiKeyLast4 ?? "",
+        })}
         onClick={handleSet}
         onDelete={handleRemove}
         variant="outlined"

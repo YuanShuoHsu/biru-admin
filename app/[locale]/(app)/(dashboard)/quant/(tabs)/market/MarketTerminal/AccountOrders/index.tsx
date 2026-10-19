@@ -10,6 +10,8 @@ import {
   isQuantAccountKey,
   quantAccountUrl,
 } from "../../../useQuantCredentials";
+import HistoryRangeToggle from "../HistoryRangeToggle";
+import { useAccountHistory } from "../useAccountHistory";
 
 import DataGrid from "@/components/DataGrid";
 
@@ -87,20 +89,20 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
   const { data: openOrders, isLoading: openOrdersLoading } = useSWR<
     QuantOrder[]
   >(openOrdersUrl, fetcher, autosizeOnData);
-  const { data: orders, isLoading: ordersLoading } = useSWR<QuantOrder[]>(
+  const ordersHistory = useAccountHistory<QuantOrder>(
     tab === "orders"
       ? `${quantAccountUrl(credential.id, "orders")}${symbolQuery}`
       : null,
-    fetcher,
-    autosizeOnData,
+    autosizeOnData.onSuccess,
   );
-  const { data: fills, isLoading: fillsLoading } = useSWR<QuantFill[]>(
+  const fillsHistory = useAccountHistory<QuantFill>(
     tab === "fills"
       ? `${quantAccountUrl(credential.id, "fills")}${symbolQuery}`
       : null,
-    fetcher,
-    autosizeOnData,
+    autosizeOnData.onSuccess,
   );
+  const history =
+    tab === "orders" ? ordersHistory : tab === "fills" ? fillsHistory : null;
 
   const revalidate = () => mutate(isQuantAccountKey(credential.id));
 
@@ -336,29 +338,44 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
             {tQuant("account.cancelAll.label")}
           </Button>
         )}
+        {history && (
+          <HistoryRangeToggle
+            onChange={history.onRangeChange}
+            value={history.range}
+          />
+        )}
       </Stack>
       <Typography color="text.secondary" variant="caption">
         {tQuant("account.botOrdersHint")}
       </Typography>
       <Box sx={{ height: GRID_HEIGHT }}>
-        {tab === "fills" ? (
+        {tab === "openOrders" ? (
           <DataGrid
             {...DATA_GRID_PROPS}
             apiRef={apiRef}
-            columns={fillColumns}
-            getRowId={({ id }) => id}
-            loading={fillsLoading}
-            rows={fills ?? []}
+            columns={openOrderColumns}
+            getRowId={({ orderId }) => orderId}
+            key={tab}
+            loading={openOrdersLoading}
+            rows={openOrders ?? []}
+          />
+        ) : tab === "orders" ? (
+          <DataGrid
+            {...DATA_GRID_PROPS}
+            {...ordersHistory.gridProps}
+            apiRef={apiRef}
+            columns={historyColumns}
+            getRowId={({ orderId }) => orderId}
+            key={tab}
           />
         ) : (
           <DataGrid
             {...DATA_GRID_PROPS}
+            {...fillsHistory.gridProps}
             apiRef={apiRef}
-            columns={tab === "orders" ? historyColumns : openOrderColumns}
-            getRowId={({ orderId }) => orderId}
+            columns={fillColumns}
+            getRowId={({ id }) => id}
             key={tab}
-            loading={tab === "orders" ? ordersLoading : openOrdersLoading}
-            rows={(tab === "orders" ? orders : openOrders) ?? []}
           />
         )}
       </Box>

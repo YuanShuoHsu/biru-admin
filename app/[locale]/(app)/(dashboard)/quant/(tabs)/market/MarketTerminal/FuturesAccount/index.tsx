@@ -10,6 +10,8 @@ import {
   isQuantAccountKey,
   quantAccountUrl,
 } from "../../../useQuantCredentials";
+import HistoryRangeToggle from "../HistoryRangeToggle";
+import { useAccountHistory } from "../useAccountHistory";
 
 import IsolatedMarginDialog, {
   ISOLATED_MARGIN_FORM_ID,
@@ -113,18 +115,16 @@ const FuturesAccount = ({
   const { data: openOrders, isLoading: openOrdersLoading } = useSWR<
     QuantFuturesOrder[]
   >(url(`/open-orders${symbolQuery}`), fetcher, autosizeOnData);
-  const { data: orders, isLoading: ordersLoading } = useSWR<
-    QuantFuturesOrder[]
-  >(
+  const ordersHistory = useAccountHistory<QuantFuturesOrder>(
     tab === "orders" ? url(`/orders${symbolQuery}`) : null,
-    fetcher,
-    autosizeOnData,
+    autosizeOnData.onSuccess,
   );
-  const { data: fills, isLoading: fillsLoading } = useSWR<QuantFuturesFill[]>(
+  const fillsHistory = useAccountHistory<QuantFuturesFill>(
     tab === "fills" ? url(`/fills${symbolQuery}`) : null,
-    fetcher,
-    autosizeOnData,
+    autosizeOnData.onSuccess,
   );
+  const history =
+    tab === "orders" ? ordersHistory : tab === "fills" ? fillsHistory : null;
   const { data: positionHistory, isLoading: positionHistoryLoading } = useSWR<
     QuantPositionHistory[]
   >(
@@ -664,7 +664,7 @@ const FuturesAccount = ({
   ]);
 
   const grids = {
-    fills: { columns: fillColumns, loading: fillsLoading, rows: fills },
+    fills: { ...fillsHistory.gridProps, columns: fillColumns },
     funding: {
       columns: fundingColumns,
       loading: fundingLoading,
@@ -679,9 +679,12 @@ const FuturesAccount = ({
       rows: openOrders?.map((order) => ({ ...order, id: order.orderId })),
     },
     orders: {
+      ...ordersHistory.gridProps,
       columns: historyColumns,
-      loading: ordersLoading,
-      rows: orders?.map((order) => ({ ...order, id: order.orderId })),
+      rows: ordersHistory.gridProps.rows.map((order) => ({
+        ...order,
+        id: order.orderId,
+      })),
     },
     positionHistory: {
       columns: positionHistoryColumns,
@@ -739,14 +742,19 @@ const FuturesAccount = ({
             {tQuant("account.cancelAll.label")}
           </Button>
         )}
+        {history && (
+          <HistoryRangeToggle
+            onChange={history.onRangeChange}
+            value={history.range}
+          />
+        )}
       </Stack>
       <Box sx={{ height: GRID_HEIGHT }}>
         <DataGrid
           {...DATA_GRID_PROPS}
+          {...grid}
           apiRef={apiRef}
-          columns={grid.columns}
           key={tab}
-          loading={grid.loading}
           rows={grid.rows ?? []}
         />
       </Box>

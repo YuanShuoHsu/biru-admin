@@ -29,6 +29,8 @@ export type CreateQuantCredentialDto =
 export type QuantBalance = components["schemas"]["QuantBalanceDto"];
 export type QuantOrder = components["schemas"]["QuantOrderDto"];
 export type QuantFill = components["schemas"]["QuantFillDto"];
+export type QuantOrderPage = components["schemas"]["QuantOrderPageDto"];
+export type QuantFillPage = components["schemas"]["QuantFillPageDto"];
 export type PlaceQuantOrderDto = components["schemas"]["PlaceQuantOrderDto"];
 export type PlaceQuantOrderResponse =
   components["schemas"]["PlaceQuantOrderResponseDto"];
@@ -44,6 +46,10 @@ export type QuantPositionHistory =
   components["schemas"]["QuantPositionHistoryDto"];
 export type QuantFuturesOrder = components["schemas"]["QuantFuturesOrderDto"];
 export type QuantFuturesFill = components["schemas"]["QuantFuturesFillDto"];
+export type QuantFuturesOrderPage =
+  components["schemas"]["QuantFuturesOrderPageDto"];
+export type QuantFuturesFillPage =
+  components["schemas"]["QuantFuturesFillPageDto"];
 export type QuantFundingFee = components["schemas"]["QuantFundingFeeDto"];
 export type QuantFuturesOrderPreview =
   components["schemas"]["QuantFuturesOrderPreviewDto"];

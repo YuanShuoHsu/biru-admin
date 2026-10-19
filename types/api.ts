@@ -3408,7 +3408,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 取得交易對最近的委託紀錄 */
+    /** 取得交易對的手動委託紀錄（依時間由新到舊分頁） */
     get: operations["QuantAccountController_findOrders"];
     put?: never;
     /** 下單（實盤） */
@@ -3443,7 +3443,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 取得交易對最近的成交紀錄 */
+    /** 取得交易對的手動成交紀錄（依時間由新到舊分頁） */
     get: operations["QuantAccountController_findFills"];
     put?: never;
     post?: never;
@@ -3460,7 +3460,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 取得自己綁定的 Claude API key（只回末 4 碼） */
+    /** 取得自己綁定的 Claude API key（只回末 4 碼）與本月費用 */
     get: operations["QuantAiController_find"];
     /** 綁定或更換 Claude API key（會先向 Anthropic 驗證） */
     put: operations["QuantAiController_set"];
@@ -3619,6 +3619,23 @@ export interface paths {
     put?: never;
     /** 建立 TradingView Webhook 機器人 */
     post: operations["QuantBotsController_createWebhook"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/bots/ai": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 建立 AI 交易機器人 */
+    post: operations["QuantBotsController_createAi"];
     delete?: never;
     options?: never;
     head?: never;
@@ -4212,7 +4229,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 取得已結束的合約委託 */
+    /** 取得已結束的合約委託（依時間由新到舊分頁） */
     get: operations["QuantFuturesController_findOrders"];
     put?: never;
     /** 合約下單（實盤） */
@@ -4264,7 +4281,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 取得合約成交紀錄 */
+    /** 取得合約成交紀錄（依時間由新到舊分頁） */
     get: operations["QuantFuturesController_findFills"];
     put?: never;
     post?: never;
@@ -9655,6 +9672,11 @@ export interface components {
       /** @description 最後更新時間（毫秒） */
       updateTime: number;
     };
+    QuantOrderPageDto: {
+      data: components["schemas"]["QuantOrderDto"][];
+      /** @description 下一頁要帶的 endTime；null 表示沒有更早的紀錄 */
+      nextEndTime: number | null;
+    };
     PlaceQuantOrderDto: {
       /** @example BTC_USDT */
       symbol: string;
@@ -9693,12 +9715,19 @@ export interface components {
       /** @description 成交時間（毫秒） */
       time: number;
     };
+    QuantFillPageDto: {
+      data: components["schemas"]["QuantFillDto"][];
+      /** @description 下一頁要帶的 endTime；null 表示沒有更早的紀錄 */
+      nextEndTime: number | null;
+    };
     QuantAiKeyDto: {
       configured: boolean;
       /** @description Claude API key 末 4 碼 */
       apiKeyLast4?: string;
       /** Format: date-time */
       createdAt?: string;
+      /** @description 本月（UTC）所有 AI 機器人的費用（美元） */
+      monthCost: number;
     };
     SetQuantAiKeyDto: {
       apiKey: string;
@@ -10183,6 +10212,23 @@ export interface components {
       maxOrderAmount?: number;
       config: components["schemas"]["WebhookConfigDto"];
     };
+    CreateAiBotDto: {
+      name: string;
+      /** @example BTC_USDT */
+      symbol: string;
+      mode: components["schemas"]["QuantBotMode"];
+      /** @description 實盤必填 */
+      credentialId?: string;
+      /** @description 投入金額（計價幣），也是機器人可動用資金的上限 */
+      investment: number;
+      /** @description 模擬盤必填：手續費率（例如 0.0005） */
+      paperFeeRate?: number;
+      /** @description 每日最大虧損（計價幣），觸發即停止 */
+      maxDailyLoss?: number;
+      /** @description DCA／指標／Webhook：開倉單的單筆金額上限（計價幣），超過就略過；平倉不受限 */
+      maxOrderAmount?: number;
+      config: components["schemas"]["AiConfigDto"];
+    };
     QuantBotDto: {
       id: string;
       name: string;
@@ -10645,6 +10691,11 @@ export interface components {
       /** @description 最後更新時間（毫秒） */
       updateTime: number;
     };
+    QuantFuturesOrderPageDto: {
+      data: components["schemas"]["QuantFuturesOrderDto"][];
+      /** @description 下一頁要帶的 endTime；null 表示沒有更早的紀錄 */
+      nextEndTime: number | null;
+    };
     PlaceFuturesOrderDto: {
       /** @example BTC_USDT_PERP */
       symbol: string;
@@ -10706,6 +10757,11 @@ export interface components {
       feeType: components["schemas"]["QuantFeeType"];
       /** @description 成交時間（毫秒） */
       time: number;
+    };
+    QuantFuturesFillPageDto: {
+      data: components["schemas"]["QuantFuturesFillDto"][];
+      /** @description 下一頁要帶的 endTime；null 表示沒有更早的紀錄 */
+      nextEndTime: number | null;
     };
     QuantFundingFeeDto: {
       symbol: string;
@@ -19176,6 +19232,11 @@ export interface operations {
     parameters: {
       query: {
         symbol: string;
+        limit?: number;
+        /** @description 起始時間（毫秒） */
+        startTime?: number;
+        /** @description 只回傳此時間（含）以前的紀錄（毫秒）；換頁時帶上一頁的 nextEndTime */
+        endTime?: number;
       };
       header?: never;
       path: {
@@ -19190,7 +19251,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["QuantOrderDto"][];
+          "application/json": components["schemas"]["QuantOrderPageDto"];
         };
       };
       /** @description Internal server error */
@@ -19267,6 +19328,11 @@ export interface operations {
     parameters: {
       query: {
         symbol: string;
+        limit?: number;
+        /** @description 起始時間（毫秒） */
+        startTime?: number;
+        /** @description 只回傳此時間（含）以前的紀錄（毫秒）；換頁時帶上一頁的 nextEndTime */
+        endTime?: number;
       };
       header?: never;
       path: {
@@ -19281,7 +19347,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["QuantFillDto"][];
+          "application/json": components["schemas"]["QuantFillPageDto"];
         };
       };
       /** @description Internal server error */
@@ -19628,6 +19694,36 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": components["schemas"]["CreateWebhookBotDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CreateQuantBotResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantBotsController_createAi: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateAiBotDto"];
       };
     };
     responses: {
@@ -20719,6 +20815,11 @@ export interface operations {
       query?: {
         /** @description 不帶則回傳全部交易對 */
         symbol?: string;
+        limit?: number;
+        /** @description 起始時間（毫秒） */
+        startTime?: number;
+        /** @description 只回傳此時間（含）以前的紀錄（毫秒）；換頁時帶上一頁的 nextEndTime */
+        endTime?: number;
       };
       header?: never;
       path: {
@@ -20733,7 +20834,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["QuantFuturesOrderDto"][];
+          "application/json": components["schemas"]["QuantFuturesOrderPageDto"];
         };
       };
       /** @description Internal server error */
@@ -20842,6 +20943,11 @@ export interface operations {
     parameters: {
       query: {
         symbol: string;
+        limit?: number;
+        /** @description 起始時間（毫秒） */
+        startTime?: number;
+        /** @description 只回傳此時間（含）以前的紀錄（毫秒）；換頁時帶上一頁的 nextEndTime */
+        endTime?: number;
       };
       header?: never;
       path: {
@@ -20856,7 +20962,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["QuantFuturesFillDto"][];
+          "application/json": components["schemas"]["QuantFuturesFillPageDto"];
         };
       };
       /** @description Internal server error */

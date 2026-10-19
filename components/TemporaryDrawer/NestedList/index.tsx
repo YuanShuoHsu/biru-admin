@@ -82,7 +82,7 @@ const useNavItems = (): NavItem[][] => {
             navItem("/banners"),
             navItem("/admins"),
             navItem("/deleted-records"),
-            navItem("/quant"),
+            { ...navItem("/quant"), children: navChildren["/quant"] },
           ],
         ]
       : []),

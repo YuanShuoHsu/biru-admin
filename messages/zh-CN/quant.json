@@ -29,6 +29,12 @@
     "noCredential": "尚未绑定交易所 API key，绑定后才能下单与查看委托。",
     "openOrders": "未完成委托",
     "orders": "委托记录",
+    "range": {
+      "all": "全部",
+      "7d": "近 7 日",
+      "30d": "近 30 日",
+      "90d": "近 3 个月"
+    },
     "status": {
       "canceled": "已撤销",
       "filled": "已成交",
@@ -721,7 +727,7 @@
     "ai": {
       "apiKey": "Claude API key",
       "bind": "绑定 Claude API key",
-      "bound": "Claude API key ••••{last4}",
+      "bound": "Claude API key ••••{last4}・本月 {cost} 美元",
       "description": "AI 交易机器人用你自己的 Claude API key 调用模型，费用由你的 Anthropic 账户支付；密钥加密保存，只有你本人看得到。",
       "hint": "在 Anthropic Console 创建 API key。绑定前会先向 Anthropic 验证这把 key。",
       "notBound": "尚未绑定",

@@ -29,6 +29,12 @@
     "noCredential": "取引所の API キーが未登録です。登録すると注文と注文履歴を利用できます。",
     "openOrders": "未約定注文",
     "orders": "注文履歴",
+    "range": {
+      "all": "すべて",
+      "7d": "7日間",
+      "30d": "30日間",
+      "90d": "3か月"
+    },
     "status": {
       "canceled": "取消済",
       "filled": "約定済",
@@ -721,7 +727,7 @@
     "ai": {
       "apiKey": "Claude API キー",
       "bind": "Claude API キーを連携",
-      "bound": "Claude API キー ••••{last4}",
+      "bound": "Claude API キー ••••{last4}・今月 {cost} USD",
       "description": "AI トレードボットはあなた自身の Claude API キーでモデルを呼び出し、費用はあなたの Anthropic アカウントに請求されます。キーは暗号化して保存され、本人だけが確認できます。",
       "hint": "Anthropic Console で API キーを作成してください。連携前に Anthropic で検証します。",
       "notBound": "未連携",
