@@ -24,7 +24,11 @@ interface OrderFillsProps {
   url: string;
 }
 
-const OrderFills = ({ pricePrecision, sizePrecision, url }: OrderFillsProps) => {
+const OrderFills = ({
+  pricePrecision,
+  sizePrecision,
+  url,
+}: OrderFillsProps) => {
   const tQuant = useTranslations("quant");
   const format = useFormatter();
 

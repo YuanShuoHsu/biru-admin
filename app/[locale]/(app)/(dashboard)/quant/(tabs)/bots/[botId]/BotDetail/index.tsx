@@ -609,7 +609,9 @@ const BotDetail = ({ botId }: { botId: string }) => {
             <Stat
               color={pnlColor(summary.realizedPnl)}
               label={tBots(
-                isGrid ? "detail.summary.gridProfit" : "detail.summary.realizedPnl",
+                isGrid
+                  ? "detail.summary.gridProfit"
+                  : "detail.summary.realizedPnl",
               )}
               value={formatQuote(summary.realizedPnl)}
             />
