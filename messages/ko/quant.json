@@ -97,6 +97,7 @@
     },
     "columns": {
       "actions": "작업",
+      "executor": "실행 주체",
       "investment": "투자금",
       "mode": "모드",
       "name": "이름",
@@ -110,6 +111,8 @@
       "type": "전략"
     },
     "detail": {
+      "equityCurve": "자산 곡선",
+      "equityCurveEmpty": "시작 후 5분마다 자산을 기록하며, 두 건 이상 쌓이면 곡선이 표시됩니다.",
       "events": "이벤트",
       "fills": "체결",
       "orders": "주문",
@@ -140,6 +143,16 @@
       "stopped": "중지",
       "triggered": "트리거 가격 도달",
       "webhook_signal": "신호 수신"
+    },
+    "executors": {
+      "engine": {
+        "description": "이 시스템의 서버가 실행·모의합니다. 서버가 멈추면 봇도 멈춥니다",
+        "label": "이 시스템"
+      },
+      "pionex": {
+        "description": "Pionex가 거래소에서 24시간 실행하며 Pionex 앱에서 확인·관리할 수 있습니다",
+        "label": "Pionex"
+      }
     },
     "form": {
       "ai": {
@@ -301,6 +314,8 @@
       "liveGridNote": "실거래 그리드는 Pionex에 내장 그리드 봇을 만들며 Pionex 앱에서도 확인하고 관리할 수 있습니다.",
       "maxDailyLoss": "일일 최대 손실(선택)",
       "maxDailyLossHelper": "당일 손실이 이 금액에 도달하면 자동으로 중지됩니다",
+      "maxOrderAmount": "건당 금액 상한(선택)",
+      "maxOrderAmountHelper": "이 금액을 넘는 진입 주문은 건너뜁니다. 청산 주문은 제한하지 않습니다",
       "mode": "모드",
       "name": "이름",
       "paperFeeRate": "수수료율(%)",
@@ -317,6 +332,10 @@
       },
       "strategy": "전략 설정",
       "symbol": "거래쌍",
+      "typeGroups": {
+        "engine": "자체 전략(이 시스템에서 실행)",
+        "pionex": "Pionex 공식 봇"
+      },
       "webhook": {
         "orderAmount": "신호에 금액이 없을 때 매수 금액"
       }
@@ -440,6 +459,7 @@
     },
     "skipReasons": {
       "above_maximum": "거래소 최대 주문량 초과",
+      "above_order_limit": "건당 금액 상한 초과",
       "below_minimum": "거래소 최소 주문량 미만",
       "insufficient_budget": "봇 사용 가능 자금 부족",
       "insufficient_margin": "증거금 부족",

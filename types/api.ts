@@ -3847,6 +3847,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/quant/bots/{id}/equity": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 機器人的權益曲線（每 5 分鐘取樣） */
+    get: operations["QuantBotsController_findEquity"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/quant/bots/{id}/events": {
     parameters: {
       query?: never;
@@ -9729,6 +9746,7 @@ export interface components {
       | "name"
       | "symbol"
       | "type"
+      | "executor"
       | "mode"
       | "status"
       | "investment"
@@ -9738,6 +9756,7 @@ export interface components {
       | "name"
       | "symbol"
       | "type"
+      | "executor"
       | "mode"
       | "status"
       | "investment"
@@ -9792,6 +9811,8 @@ export interface components {
       paperFeeRate?: number;
       /** @description 每日最大虧損（計價幣），觸發即停止 */
       maxDailyLoss?: number;
+      /** @description DCA／指標／Webhook：開倉單的單筆金額上限（計價幣），超過就略過；平倉不受限 */
+      maxOrderAmount?: number;
       config: components["schemas"]["GridConfigDto"];
     };
     /**
@@ -9963,6 +9984,11 @@ export interface components {
       | "ai";
     /** @enum {string} */
     QuantBotStatus: "running" | "stopped" | "error";
+    /**
+     * @description pionex：交給 Pionex 執行；engine：由本系統執行
+     * @enum {string}
+     */
+    QuantBotExecutor: "pionex" | "engine";
     QuantBotSummaryDto: {
       /** @description 目前權益（計價幣） */
       equity: number;
@@ -10008,6 +10034,9 @@ export interface components {
       investment: number;
       paperFeeRate?: number;
       maxDailyLoss?: number;
+      maxOrderAmount?: number;
+      /** @description pionex：交給 Pionex 執行；engine：由本系統執行 */
+      executor: components["schemas"]["QuantBotExecutor"];
       /** @description Pionex 內建機器人 id */
       pionexBotId?: string;
       summary: components["schemas"]["QuantBotSummaryDto"];
@@ -10048,6 +10077,8 @@ export interface components {
       paperFeeRate?: number;
       /** @description 每日最大虧損（計價幣），觸發即停止 */
       maxDailyLoss?: number;
+      /** @description DCA／指標／Webhook：開倉單的單筆金額上限（計價幣），超過就略過；平倉不受限 */
+      maxOrderAmount?: number;
       config: components["schemas"]["FuturesGridConfigDto"];
     };
     FuturesGridCheckDto: {
@@ -10082,6 +10113,8 @@ export interface components {
       paperFeeRate?: number;
       /** @description 每日最大虧損（計價幣），觸發即停止 */
       maxDailyLoss?: number;
+      /** @description DCA／指標／Webhook：開倉單的單筆金額上限（計價幣），超過就略過；平倉不受限 */
+      maxOrderAmount?: number;
       config: components["schemas"]["SignalBotConfigDto"];
     };
     CreateDcaBotDto: {
@@ -10097,6 +10130,8 @@ export interface components {
       paperFeeRate?: number;
       /** @description 每日最大虧損（計價幣），觸發即停止 */
       maxDailyLoss?: number;
+      /** @description DCA／指標／Webhook：開倉單的單筆金額上限（計價幣），超過就略過；平倉不受限 */
+      maxOrderAmount?: number;
       config: components["schemas"]["DcaConfigDto"];
     };
     CreateIndicatorBotDto: {
@@ -10112,6 +10147,8 @@ export interface components {
       paperFeeRate?: number;
       /** @description 每日最大虧損（計價幣），觸發即停止 */
       maxDailyLoss?: number;
+      /** @description DCA／指標／Webhook：開倉單的單筆金額上限（計價幣），超過就略過；平倉不受限 */
+      maxOrderAmount?: number;
       config: components["schemas"]["IndicatorConfigDto"];
     };
     CreateWebhookBotDto: {
@@ -10127,6 +10164,8 @@ export interface components {
       paperFeeRate?: number;
       /** @description 每日最大虧損（計價幣），觸發即停止 */
       maxDailyLoss?: number;
+      /** @description DCA／指標／Webhook：開倉單的單筆金額上限（計價幣），超過就略過；平倉不受限 */
+      maxOrderAmount?: number;
       config: components["schemas"]["WebhookConfigDto"];
     };
     QuantBotDto: {
@@ -10150,6 +10189,9 @@ export interface components {
       investment: number;
       paperFeeRate?: number;
       maxDailyLoss?: number;
+      maxOrderAmount?: number;
+      /** @description pionex：交給 Pionex 執行；engine：由本系統執行 */
+      executor: components["schemas"]["QuantBotExecutor"];
       /** @description Pionex 內建機器人 id */
       pionexBotId?: string;
       summary: components["schemas"]["QuantBotSummaryDto"];
@@ -10264,6 +10306,14 @@ export interface components {
       price: number;
       /** Format: date-time */
       filledAt: string;
+    };
+    QuantBotEquityPointDto: {
+      /** Format: date-time */
+      time: string;
+      /** @description 權益（計價幣） */
+      equity: number;
+      /** @description 總損益（計價幣） */
+      pnl: number;
     };
     /** @enum {string} */
     QuantBotEventSortField: "createdAt" | "kind";
@@ -19988,6 +20038,34 @@ export interface operations {
       };
     };
   };
+  QuantBotsController_findEquity: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantBotEquityPointDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   QuantBotsController_findEvents: {
     parameters: {
       query?: {
@@ -22498,10 +22576,28 @@ export const quantBotOrderStatusValues: ReadonlyArray<
 > = ["open", "filled", "canceled", "rejected"];
 export const quantBotFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantBotFilterField"]
-> = ["name", "symbol", "type", "mode", "status", "investment", "startedAt"];
+> = [
+  "name",
+  "symbol",
+  "type",
+  "executor",
+  "mode",
+  "status",
+  "investment",
+  "startedAt",
+];
 export const quantBotSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantBotSortField"]
-> = ["name", "symbol", "type", "mode", "status", "investment", "startedAt"];
+> = [
+  "name",
+  "symbol",
+  "type",
+  "executor",
+  "mode",
+  "status",
+  "investment",
+  "startedAt",
+];
 export const quantBotModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantBotMode"]
 > = ["paper", "live"];
@@ -22550,6 +22646,9 @@ export const quantBotTypeValues: ReadonlyArray<
 export const quantBotStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantBotStatus"]
 > = ["running", "stopped", "error"];
+export const quantBotExecutorValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantBotExecutor"]
+> = ["pionex", "engine"];
 export const quantSignalActionValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantSignalAction"]
 > = ["buy", "sell"];

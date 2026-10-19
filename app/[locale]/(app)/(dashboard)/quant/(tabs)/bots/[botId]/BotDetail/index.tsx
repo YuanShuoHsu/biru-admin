@@ -25,6 +25,7 @@ import GridOperationDialog, {
   type GridOperation,
 } from "./GridOperationDialog";
 import AiDecisions from "./AiDecisions";
+import EquityChart from "./EquityChart";
 import SignalPanel from "./SignalPanel";
 
 import DataGrid from "@/components/DataGrid";
@@ -55,6 +56,7 @@ import {
   Stack,
   Tab,
   Tabs,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -179,11 +181,7 @@ const BotDetail = ({ botId }: { botId: string }) => {
   const sizePrecision = market?.sizePrecision ?? 6;
   const quote = market?.quoteCurrency ?? "";
   const base = market?.baseCurrency ?? "";
-  const isPionexGrid =
-    bot.mode === "live" &&
-    (bot.type === "grid" ||
-      bot.type === "futures_grid" ||
-      bot.type === "signal");
+  const isPionexGrid = bot.executor === "pionex";
   const futuresConfig =
     bot.type === "futures_grid" ? (bot.config as FuturesGridConfig) : null;
   const isFutures = quantMarketTypeOf(bot.symbol) === "PERP";
@@ -450,6 +448,14 @@ const BotDetail = ({ botId }: { botId: string }) => {
             <Typography variant="h5">{bot.name}</Typography>
             <Stack sx={{ flexDirection: "row", flexWrap: "wrap", gap: 1 }}>
               <Chip label={tBots(`types.${bot.type}`)} size="small" />
+              <Tooltip title={tBots(`executors.${bot.executor}.description`)}>
+                <Chip
+                  color={isPionexGrid ? "info" : "default"}
+                  label={tBots(`executors.${bot.executor}.label`)}
+                  size="small"
+                  variant="outlined"
+                />
+              </Tooltip>
               <Chip label={quantPairOf(bot.symbol)} size="small" />
               {position && (
                 <Chip
@@ -666,6 +672,11 @@ const BotDetail = ({ botId }: { botId: string }) => {
       <Panel>
         <BotChart bot={bot} pricePrecision={pricePrecision} />
       </Panel>
+      {bot.startedAt && (
+        <Panel>
+          <EquityChart bot={bot} quote={quote} />
+        </Panel>
+      )}
       {!isPionexGrid && (
         <Panel>
           <Tabs

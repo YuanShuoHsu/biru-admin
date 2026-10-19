@@ -97,6 +97,7 @@
     },
     "columns": {
       "actions": "操作",
+      "executor": "実行元",
       "investment": "投資額",
       "mode": "モード",
       "name": "名前",
@@ -110,6 +111,8 @@
       "type": "戦略"
     },
     "detail": {
+      "equityCurve": "資産推移",
+      "equityCurveEmpty": "起動後 5 分ごとに資産を記録します。2 件以上たまると曲線を表示します。",
       "events": "イベント",
       "fills": "約定",
       "orders": "注文",
@@ -140,6 +143,16 @@
       "stopped": "停止",
       "triggered": "トリガー価格に到達",
       "webhook_signal": "シグナル受信"
+    },
+    "executors": {
+      "engine": {
+        "description": "このシステムのサーバーが実行・シミュレーションします。サーバーが止まるとボットも止まります",
+        "label": "このシステム"
+      },
+      "pionex": {
+        "description": "Pionex が取引所で 24 時間実行します。Pionex アプリで確認・管理できます",
+        "label": "Pionex"
+      }
     },
     "form": {
       "ai": {
@@ -301,6 +314,8 @@
       "liveGridNote": "本番グリッドは Pionex に内蔵グリッドボットを作成し、Pionex アプリでも確認・管理できます。",
       "maxDailyLoss": "1 日の最大損失（任意）",
       "maxDailyLossHelper": "当日の損失がこの金額に達すると自動で停止します",
+      "maxOrderAmount": "1 注文あたりの上限（任意）",
+      "maxOrderAmountHelper": "この金額を超える新規注文はスキップします。決済注文は制限しません",
       "mode": "モード",
       "name": "名前",
       "paperFeeRate": "手数料率（%）",
@@ -317,6 +332,10 @@
       },
       "strategy": "戦略パラメータ",
       "symbol": "取引ペア",
+      "typeGroups": {
+        "engine": "自作ストラテジー（このシステムで実行）",
+        "pionex": "Pionex 公式ボット"
+      },
       "webhook": {
         "orderAmount": "シグナルに金額がない場合の購入額"
       }
@@ -440,6 +459,7 @@
     },
     "skipReasons": {
       "above_maximum": "取引所の最大注文量を超えています",
+      "above_order_limit": "1 注文あたりの上限を超過",
       "below_minimum": "取引所の最小注文量未満",
       "insufficient_budget": "ボットの資金が不足しています",
       "insufficient_margin": "証拠金不足",

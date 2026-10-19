@@ -97,6 +97,7 @@
     },
     "columns": {
       "actions": "操作",
+      "executor": "执行",
       "investment": "投入",
       "mode": "模式",
       "name": "名称",
@@ -110,6 +111,8 @@
       "type": "策略"
     },
     "detail": {
+      "equityCurve": "权益曲线",
+      "equityCurveEmpty": "启动后每 5 分钟记录一次权益，累积两笔以上才会画出曲线。",
       "events": "事件",
       "fills": "成交",
       "orders": "委托",
@@ -140,6 +143,16 @@
       "stopped": "已停止",
       "triggered": "触发价已到",
       "webhook_signal": "收到信号"
+    },
+    "executors": {
+      "engine": {
+        "description": "由本系统的服务器执行与模拟，服务器停止时机器人也会停止",
+        "label": "本系统执行"
+      },
+      "pionex": {
+        "description": "由 Pionex 在交易所 24 小时执行，可在 Pionex App 查看与管理",
+        "label": "Pionex 执行"
+      }
     },
     "form": {
       "ai": {
@@ -301,6 +314,8 @@
       "liveGridNote": "实盘网格会在 Pionex 创建内置网格机器人，可在 Pionex App 中查看与管理。",
       "maxDailyLoss": "每日最大亏损（选填）",
       "maxDailyLossHelper": "当日亏损达到此金额就自动停止",
+      "maxOrderAmount": "单笔金额上限（选填）",
+      "maxOrderAmountHelper": "开仓单超过此金额就略过；平仓不受限",
       "mode": "模式",
       "name": "名称",
       "paperFeeRate": "手续费率（%）",
@@ -317,6 +332,10 @@
       },
       "strategy": "策略参数",
       "symbol": "交易对",
+      "typeGroups": {
+        "engine": "自建策略（本系统执行）",
+        "pionex": "Pionex 官方机器人"
+      },
       "webhook": {
         "orderAmount": "信号未指定金额时的买入金额"
       }
@@ -440,6 +459,7 @@
     },
     "skipReasons": {
       "above_maximum": "高于交易所最大下单量",
+      "above_order_limit": "超过单笔金额上限",
       "below_minimum": "低于交易所最小下单量",
       "insufficient_budget": "机器人可用资金不足",
       "insufficient_margin": "保证金不足",

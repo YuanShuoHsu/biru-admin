@@ -26,6 +26,7 @@ import {
   orderResponseDtoPaymentMethodValues,
   payrollEarningCategoryValues,
   payrollStatementStatusValues,
+  quantBotExecutorValues,
   quantBotModeValues,
   quantBotStatusValues,
   quantBotTypeValues,
@@ -300,6 +301,10 @@ export const getPayrollStatementEnumOptions = (
 export const getQuantBotEnumOptions = (
   tBots: ReturnType<typeof useTranslations<"quant.bots">>,
 ) => ({
+  executor: quantBotExecutorValues.map((value) => ({
+    label: tBots(`executors.${value}.label`),
+    value,
+  })),
   mode: quantBotModeValues.map((value) => ({
     label: tBots(`modes.${value}`),
     value,

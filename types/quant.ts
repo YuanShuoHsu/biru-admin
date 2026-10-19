@@ -98,6 +98,8 @@ export type GridCheckDto = components["schemas"]["GridCheckDto"];
 export type GridCheckResult = components["schemas"]["GridCheckResultDto"];
 export type GridOperationDto = components["schemas"]["GridOperationDto"];
 export type QuantBotFillMarker = components["schemas"]["QuantBotFillMarkerDto"];
+export type QuantBotEquityPoint =
+  components["schemas"]["QuantBotEquityPointDto"];
 export type QuantBotFilterField = components["schemas"]["QuantBotFilterField"];
 export type QuantBotSortField = components["schemas"]["QuantBotSortField"];
 export type QuantBotOrderSortField =

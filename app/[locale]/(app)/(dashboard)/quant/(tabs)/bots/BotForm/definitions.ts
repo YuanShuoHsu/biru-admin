@@ -85,6 +85,7 @@ export interface BotFormValues {
   };
   investment: string;
   maxDailyLoss: string;
+  maxOrderAmount: string;
   mode: QuantBotMode;
   name: string;
   paperFeeRate: string;
@@ -170,6 +171,7 @@ export const defaultValues = (
   },
   investment: "",
   maxDailyLoss: "",
+  maxOrderAmount: "",
   mode: "paper",
   name: "",
   paperFeeRate: "",
@@ -225,6 +227,7 @@ export const valuesFromBot = (
       : base.futures,
     investment: text(bot.investment),
     maxDailyLoss: text(bot.maxDailyLoss),
+    maxOrderAmount: text(bot.maxOrderAmount),
     name: bot.name,
     paperFeeRate:
       bot.paperFeeRate === undefined ? "" : text(bot.paperFeeRate * 100),
@@ -588,6 +591,7 @@ export const useBotFormSchema = (type: QuantBotType) => {
           : loose,
       investment: positive,
       maxDailyLoss: optionalPositive,
+      maxOrderAmount: optionalPositive,
       mode: z.enum(["paper", "live"]),
       name: required.max(50),
       paperFeeRate: z.string(),

@@ -47,6 +47,7 @@ import {
   Button,
   Grid,
   Link as MuiLink,
+  ListSubheader,
   MenuItem,
   Paper,
   type PaperProps,
@@ -96,6 +97,27 @@ const BacktestSection = styled(Section)(({ theme }) => ({
 }));
 
 const BOT_FORM_ID = "quant-bot-form";
+
+// 實盤交給 Pionex 官方機器人執行；模擬盤一樣由本系統模擬
+const PIONEX_BOT_TYPES: readonly QuantBotType[] = [
+  "grid",
+  "futures_grid",
+  "signal",
+];
+const BOT_TYPE_GROUPS = [
+  {
+    group: "pionex",
+    types: quantBotTypeValues.filter((value) =>
+      PIONEX_BOT_TYPES.includes(value),
+    ),
+  },
+  {
+    group: "engine",
+    types: quantBotTypeValues.filter(
+      (value) => !PIONEX_BOT_TYPES.includes(value),
+    ),
+  },
+] as const;
 const PIONEX_FEES_URL = "https://www.pionex.com/en/fees";
 
 interface BotFormFieldsProps {
@@ -156,6 +178,8 @@ const BotFormFields = ({
   const quote = market?.quoteCurrency ?? "";
   const isLiveGrid = mode === "live" && type === "grid";
   const isLiveFuturesGrid = mode === "live" && type === "futures_grid";
+  const hasOrderLimit =
+    type === "dca" || type === "indicator" || type === "webhook";
 
   const onSubmitHandler = async (values: BotFormValues) => {
     setDialog({ confirmLoading: true });
@@ -172,6 +196,10 @@ const BotFormFields = ({
               isLiveGrid || values.maxDailyLoss.trim() === ""
                 ? undefined
                 : Number(values.maxDailyLoss),
+            maxOrderAmount:
+              !hasOrderLimit || values.maxOrderAmount.trim() === ""
+                ? undefined
+                : Number(values.maxOrderAmount),
             mode: values.mode,
             name: values.name,
             paperFeeRate:
@@ -238,11 +266,16 @@ const BotFormFields = ({
                 select
                 value={type}
               >
-                {quantBotTypeValues.map((value) => (
-                  <MenuItem key={value} value={value}>
-                    {tBots(`types.${value}`)}
-                  </MenuItem>
-                ))}
+                {BOT_TYPE_GROUPS.flatMap(({ group, types }) => [
+                  <ListSubheader key={group}>
+                    {tForm(`typeGroups.${group}`)}
+                  </ListSubheader>,
+                  ...types.map((value) => (
+                    <MenuItem key={value} value={value}>
+                      {tBots(`types.${value}`)}
+                    </MenuItem>
+                  )),
+                ])}
               </TextField>
             </Grid>
             <Grid size={{ sm: 6, xs: 12 }}>
@@ -413,6 +446,17 @@ const BotFormFields = ({
                   helperText={tForm("maxDailyLossHelper")}
                   label={tForm("maxDailyLoss")}
                   name="maxDailyLoss"
+                />
+              </Grid>
+            )}
+            {hasOrderLimit && (
+              <Grid size={{ sm: 6, xs: 12 }}>
+                <NumberField
+                  adornment={quote}
+                  form={form}
+                  helperText={tForm("maxOrderAmountHelper")}
+                  label={tForm("maxOrderAmount")}
+                  name="maxOrderAmount"
                 />
               </Grid>
             )}

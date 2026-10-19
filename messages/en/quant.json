@@ -97,6 +97,7 @@
     },
     "columns": {
       "actions": "Actions",
+      "executor": "Runs on",
       "investment": "Investment",
       "mode": "Mode",
       "name": "Name",
@@ -110,6 +111,8 @@
       "type": "Strategy"
     },
     "detail": {
+      "equityCurve": "Equity curve",
+      "equityCurveEmpty": "Equity is recorded every 5 minutes after the bot starts; the curve appears once there are at least two points.",
       "events": "Events",
       "fills": "Fills",
       "orders": "Orders",
@@ -140,6 +143,16 @@
       "stopped": "Stopped",
       "triggered": "Trigger reached",
       "webhook_signal": "Signal received"
+    },
+    "executors": {
+      "engine": {
+        "description": "Run and simulated by this system's server; the bot stops if the server stops",
+        "label": "This system"
+      },
+      "pionex": {
+        "description": "Run by Pionex on the exchange 24/7; visible and manageable in the Pionex app",
+        "label": "Pionex"
+      }
     },
     "form": {
       "ai": {
@@ -301,6 +314,8 @@
       "liveGridNote": "A live grid creates a Pionex grid bot, which you can also view and manage in the Pionex app.",
       "maxDailyLoss": "Max daily loss (optional)",
       "maxDailyLossHelper": "The bot stops when the day's loss reaches this amount",
+      "maxOrderAmount": "Per-order limit (optional)",
+      "maxOrderAmountHelper": "Opening orders above this amount are skipped; closing orders are not limited",
       "mode": "Mode",
       "name": "Name",
       "paperFeeRate": "Fee rate (%)",
@@ -317,6 +332,10 @@
       },
       "strategy": "Strategy",
       "symbol": "Symbol",
+      "typeGroups": {
+        "engine": "Custom strategies (run by this system)",
+        "pionex": "Official Pionex bots"
+      },
       "webhook": {
         "orderAmount": "Buy amount when the signal has none"
       }
@@ -440,6 +459,7 @@
     },
     "skipReasons": {
       "above_maximum": "Above the exchange maximum",
+      "above_order_limit": "Above the per-order limit",
       "below_minimum": "Below the exchange minimum",
       "insufficient_budget": "Not enough bot funds",
       "insufficient_margin": "Insufficient margin",

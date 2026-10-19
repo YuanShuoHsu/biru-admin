@@ -97,6 +97,7 @@
     },
     "columns": {
       "actions": "操作",
+      "executor": "執行",
       "investment": "投入",
       "mode": "模式",
       "name": "名稱",
@@ -110,6 +111,8 @@
       "type": "策略"
     },
     "detail": {
+      "equityCurve": "權益曲線",
+      "equityCurveEmpty": "啟動後每 5 分鐘記錄一次權益，累積兩筆以上才會畫出曲線。",
       "events": "事件",
       "fills": "成交",
       "orders": "委託",
@@ -140,6 +143,16 @@
       "stopped": "已停止",
       "triggered": "觸發價已到",
       "webhook_signal": "收到訊號"
+    },
+    "executors": {
+      "engine": {
+        "description": "由本系統的伺服器執行與模擬，伺服器停止時機器人也會停止",
+        "label": "本系統執行"
+      },
+      "pionex": {
+        "description": "由 Pionex 在交易所 24 小時執行，可在 Pionex App 查看與管理",
+        "label": "Pionex 執行"
+      }
     },
     "form": {
       "ai": {
@@ -301,6 +314,8 @@
       "liveGridNote": "實盤網格會在 Pionex 建立內建網格機器人，可在 Pionex App 中查看與管理。",
       "maxDailyLoss": "每日最大虧損（選填）",
       "maxDailyLossHelper": "當日虧損達到此金額就自動停止",
+      "maxOrderAmount": "單筆金額上限（選填）",
+      "maxOrderAmountHelper": "開倉單超過此金額就略過；平倉不受限",
       "mode": "模式",
       "name": "名稱",
       "paperFeeRate": "手續費率（%）",
@@ -317,6 +332,10 @@
       },
       "strategy": "策略參數",
       "symbol": "交易對",
+      "typeGroups": {
+        "engine": "自建策略（本系統執行）",
+        "pionex": "Pionex 官方機器人"
+      },
       "webhook": {
         "orderAmount": "訊號未指定金額時的買入金額"
       }
@@ -440,6 +459,7 @@
     },
     "skipReasons": {
       "above_maximum": "高於交易所最大下單量",
+      "above_order_limit": "超過單筆金額上限",
       "below_minimum": "低於交易所最小下單量",
       "insufficient_budget": "機器人可用資金不足",
       "insufficient_margin": "保證金不足",

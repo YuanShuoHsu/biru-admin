@@ -418,6 +418,23 @@ const BotList = ({
         valueOptions: enumOptions.type,
       },
       {
+        field: "executor",
+        filterOperators: enumFilterOperators,
+        headerName: tBots("columns.executor"),
+        renderCell: ({ row }: GridRenderCellParams<QuantBot>) => (
+          <Tooltip title={tBots(`executors.${row.executor}.description`)}>
+            <Chip
+              color={row.executor === "pionex" ? "info" : "default"}
+              label={tBots(`executors.${row.executor}.label`)}
+              size="small"
+              variant="outlined"
+            />
+          </Tooltip>
+        ),
+        type: "singleSelect",
+        valueOptions: enumOptions.executor,
+      },
+      {
         field: "symbol",
         filterOperators: stringFilterOperators,
         headerName: tBots("columns.symbol"),
