@@ -299,7 +299,7 @@ const FuturesGridOperationDialog = ({
             {numberField(
               "lossStop",
               tGrid("lossStop"),
-              quote,
+              fields.lossStopType === "profit_ratio" ? "%" : quote,
               tOperation("stopClearHelper"),
             )}
           </Stack>
@@ -315,7 +315,7 @@ const FuturesGridOperationDialog = ({
             {numberField(
               "profitStop",
               tGrid("profitStop"),
-              quote,
+              fields.profitStopType === "profit_ratio" ? "%" : quote,
               tOperation("stopClearHelper"),
             )}
           </Stack>

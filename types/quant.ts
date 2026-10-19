@@ -4,6 +4,7 @@ import {
   quantBotStatusValues,
   quantBotTypeValues,
   quantCandleIntervalValues,
+  quantGridStopTypeValues,
   quantFuturesOrderTypeValues,
   quantIndicatorKindValues,
   quantMarketTypeValues,
@@ -114,6 +115,7 @@ export type QuantBotType = (typeof quantBotTypeValues)[number];
 export type QuantBotMode = (typeof quantBotModeValues)[number];
 export type QuantBotStatus = (typeof quantBotStatusValues)[number];
 export type QuantIndicatorKind = (typeof quantIndicatorKindValues)[number];
+export type GridStopType = (typeof quantGridStopTypeValues)[number];
 export type QuantMarketType = (typeof quantMarketTypeValues)[number];
 export type QuantCandleInterval = (typeof quantCandleIntervalValues)[number];
 export type QuantOrderSide = (typeof quantOrderSideValues)[number];

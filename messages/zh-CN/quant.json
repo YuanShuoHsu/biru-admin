@@ -213,16 +213,16 @@
         "leverage": "杠杆",
         "leverageMax": "此交易对最高 {max}x",
         "lossStopHelper": {
-          "long": "价格跌到此价停止并平仓；金额为亏损达此金额",
-          "no_trend": "下方止损：价格跌到此价停止并平仓；金额为亏损达此金额",
-          "short": "价格涨到此价停止并平仓；金额为亏损达此金额"
+          "long": "价格跌到此价停止并平仓；金额为亏损达此金额，比例为亏损达投入的此百分比",
+          "no_trend": "下方止损：价格跌到此价停止并平仓；金额为亏损达此金额，比例为亏损达投入的此百分比",
+          "short": "价格涨到此价停止并平仓；金额为亏损达此金额，比例为亏损达投入的此百分比"
         },
         "lossStopHigh": "上方止损价（选填）",
         "lossStopHighHelper": "中性网格的价格涨到此价停止并平仓",
         "profitStopHelper": {
-          "long": "价格涨到此价停止并平仓；金额为盈利达此金额",
-          "no_trend": "中性网格只能用金额止盈",
-          "short": "价格跌到此价停止并平仓；金额为盈利达此金额"
+          "long": "价格涨到此价停止并平仓；金额为盈利达此金额，比例为盈利达投入的此百分比",
+          "no_trend": "中性网格只能用金额或比例止盈",
+          "short": "价格跌到此价停止并平仓；金额为盈利达此金额，比例为盈利达投入的此百分比"
         },
         "trend": "方向",
         "trends": {
@@ -260,7 +260,8 @@
         "row": "格数",
         "stopType": {
           "price": "价格",
-          "profit_amount": "金额"
+          "profit_amount": "金额",
+          "profit_ratio": "比例"
         },
         "top": "上界",
         "trigger": "触发价（选填）",
@@ -690,7 +691,7 @@
       "maxSize": "最大数量为 {max}",
       "minAmount": "最小下单金额为 {min} {coin}",
       "minSize": "最小数量为 {min}",
-      "neutralProfitStop": "中性网格只能用金额止盈",
+      "neutralProfitStop": "中性网格只能用金额或比例止盈",
       "positive": "须大于 0",
       "positiveInteger": "须为正整数",
       "range": "需介于 {min} 到 {max}",

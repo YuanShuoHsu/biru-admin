@@ -213,16 +213,16 @@
         "leverage": "槓桿",
         "leverageMax": "此交易對最高 {max}x",
         "lossStopHelper": {
-          "long": "價格跌到此價停止並平倉；金額為虧損達此金額",
-          "no_trend": "下方停損：價格跌到此價停止並平倉；金額為虧損達此金額",
-          "short": "價格漲到此價停止並平倉；金額為虧損達此金額"
+          "long": "價格跌到此價停止並平倉；金額為虧損達此金額，比例為虧損達投入的此百分比",
+          "no_trend": "下方停損：價格跌到此價停止並平倉；金額為虧損達此金額，比例為虧損達投入的此百分比",
+          "short": "價格漲到此價停止並平倉；金額為虧損達此金額，比例為虧損達投入的此百分比"
         },
         "lossStopHigh": "上方停損價（選填）",
         "lossStopHighHelper": "中性網格的價格漲到此價停止並平倉",
         "profitStopHelper": {
-          "long": "價格漲到此價停止並平倉；金額為獲利達此金額",
-          "no_trend": "中性網格只能用金額停利",
-          "short": "價格跌到此價停止並平倉；金額為獲利達此金額"
+          "long": "價格漲到此價停止並平倉；金額為獲利達此金額，比例為獲利達投入的此百分比",
+          "no_trend": "中性網格只能用金額或比例停利",
+          "short": "價格跌到此價停止並平倉；金額為獲利達此金額，比例為獲利達投入的此百分比"
         },
         "trend": "方向",
         "trends": {
@@ -260,7 +260,8 @@
         "row": "格數",
         "stopType": {
           "price": "價格",
-          "profit_amount": "金額"
+          "profit_amount": "金額",
+          "profit_ratio": "比例"
         },
         "top": "上界",
         "trigger": "觸發價（選填）",
@@ -690,7 +691,7 @@
       "maxSize": "最大數量為 {max}",
       "minAmount": "最小下單金額為 {min} {coin}",
       "minSize": "最小數量為 {min}",
-      "neutralProfitStop": "中性網格只能用金額停利",
+      "neutralProfitStop": "中性網格只能用金額或比例停利",
       "positive": "須大於 0",
       "positiveInteger": "須為正整數",
       "range": "需介於 {min} 到 {max}",

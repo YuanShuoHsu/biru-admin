@@ -59,6 +59,10 @@ const GridFields = ({
   const [checking, setChecking] = useState(false);
 
   const symbol = useWatch({ control: form.control, name: "symbol" });
+  const [lossStopType, profitStopType] = useWatch({
+    control: form.control,
+    name: ["grid.lossStopType", "grid.profitStopType"],
+  });
 
   const quote = market?.quoteCurrency ?? "";
   const percent = (value: number) =>
@@ -207,7 +211,7 @@ const GridFields = ({
       </Grid>
       <Grid size={{ sm: 8, xs: 12 }}>
         <NumberField
-          adornment={quote}
+          adornment={lossStopType === "profit_ratio" ? "%" : quote}
           form={form}
           helperText={stopHelpers?.loss}
           label={tGrid("lossStop")}
@@ -227,7 +231,7 @@ const GridFields = ({
       </Grid>
       <Grid size={{ sm: 8, xs: 12 }}>
         <NumberField
-          adornment={quote}
+          adornment={profitStopType === "profit_ratio" ? "%" : quote}
           form={form}
           helperText={stopHelpers?.profit}
           label={tGrid("profitStop")}

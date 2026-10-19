@@ -213,16 +213,16 @@
         "leverage": "Leverage",
         "leverageMax": "Up to {max}x for this symbol",
         "lossStopHelper": {
-          "long": "Stops and closes when the price falls to this; by amount, when the loss reaches it",
-          "no_trend": "Lower stop loss: stops and closes when the price falls to this; by amount, when the loss reaches it",
-          "short": "Stops and closes when the price rises to this; by amount, when the loss reaches it"
+          "long": "Stops and closes when the price falls to this; by amount, when the loss reaches it; by ratio, when the loss reaches this percent of the investment",
+          "no_trend": "Lower stop loss: stops and closes when the price falls to this; by amount, when the loss reaches it; by ratio, when the loss reaches this percent of the investment",
+          "short": "Stops and closes when the price rises to this; by amount, when the loss reaches it; by ratio, when the loss reaches this percent of the investment"
         },
         "lossStopHigh": "Upper stop loss price (optional)",
         "lossStopHighHelper": "Stops the neutral grid and closes when the price rises to this",
         "profitStopHelper": {
-          "long": "Stops and closes when the price rises to this; by amount, when the profit reaches it",
-          "no_trend": "Neutral grids can only take profit by amount",
-          "short": "Stops and closes when the price falls to this; by amount, when the profit reaches it"
+          "long": "Stops and closes when the price rises to this; by amount, when the profit reaches it; by ratio, when the profit reaches this percent of the investment",
+          "no_trend": "Neutral grids can only take profit by amount or ratio",
+          "short": "Stops and closes when the price falls to this; by amount, when the profit reaches it; by ratio, when the profit reaches this percent of the investment"
         },
         "trend": "Direction",
         "trends": {
@@ -260,7 +260,8 @@
         "row": "Grids",
         "stopType": {
           "price": "Price",
-          "profit_amount": "Amount"
+          "profit_amount": "Amount",
+          "profit_ratio": "Ratio"
         },
         "top": "Upper price",
         "trigger": "Trigger price (optional)",
@@ -690,7 +691,7 @@
       "maxSize": "Maximum size is {max}",
       "minAmount": "Minimum order is {min} {coin}",
       "minSize": "Minimum size is {min}",
-      "neutralProfitStop": "Neutral grids can only take profit by amount",
+      "neutralProfitStop": "Neutral grids can only take profit by amount or ratio",
       "positive": "Must be greater than 0",
       "positiveInteger": "Must be a positive whole number",
       "range": "Must be between {min} and {max}",

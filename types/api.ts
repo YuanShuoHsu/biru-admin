@@ -9766,10 +9766,10 @@ export interface components {
     /** @enum {string} */
     QuantGridType: "arithmetic" | "geometric";
     /** @enum {string} */
-    QuantGridStopType: "price" | "profit_amount";
+    QuantGridStopType: "price" | "profit_amount" | "profit_ratio";
     GridStopDto: {
       type: components["schemas"]["QuantGridStopType"];
-      /** @description price：觸發價；profit_amount：金額（計價幣） */
+      /** @description price：觸發價；profit_amount：金額（計價幣）；profit_ratio：相對投入的 %。停損也填正數 */
       value: number;
     };
     /** @enum {string} */
@@ -22606,7 +22606,7 @@ export const quantGridTypeValues: ReadonlyArray<
 > = ["arithmetic", "geometric"];
 export const quantGridStopTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantGridStopType"]
-> = ["price", "profit_amount"];
+> = ["price", "profit_amount", "profit_ratio"];
 export const quantTriggerDirectionValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantTriggerDirection"]
 > = ["above", "below"];

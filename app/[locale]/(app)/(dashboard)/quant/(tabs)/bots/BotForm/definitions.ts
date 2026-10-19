@@ -8,6 +8,7 @@ import type {
   DcaConfig,
   FuturesGridConfig,
   GridConfig,
+  GridStopType,
   IndicatorCondition,
   IndicatorConfig,
   QuantBot,
@@ -61,9 +62,9 @@ export interface BotFormValues {
     closeModel: GridConfig["closeModel"];
     gridType: GridConfig["gridType"];
     lossStop: string;
-    lossStopType: "price" | "profit_amount";
+    lossStopType: GridStopType;
     profitStop: string;
-    profitStopType: "price" | "profit_amount";
+    profitStopType: GridStopType;
     row: string;
     top: string;
     triggerDirection: "above" | "below";
@@ -352,7 +353,7 @@ const toCondition = (condition: ConditionValues): IndicatorCondition => {
 };
 
 const gridConfig = ({ grid }: BotFormValues) => {
-  const stop = (stopType: "price" | "profit_amount", value: string) =>
+  const stop = (stopType: GridStopType, value: string) =>
     value.trim() === "" ? undefined : { type: stopType, value: Number(value) };
 
   return {
@@ -569,9 +570,13 @@ export const useBotFormSchema = (type: QuantBotType) => {
               closeModel: z.enum(["NOT_SELL", "TO_QUOTE"]),
               gridType: z.enum(["arithmetic", "geometric"]),
               lossStop: optionalPositive,
-              lossStopType: z.enum(["price", "profit_amount"]),
+              lossStopType: z.enum(["price", "profit_amount", "profit_ratio"]),
               profitStop: optionalPositive,
-              profitStopType: z.enum(["price", "profit_amount"]),
+              profitStopType: z.enum([
+                "price",
+                "profit_amount",
+                "profit_ratio",
+              ]),
               row: type === "grid" ? integer(2, 200) : integer(2, 500),
               top: positive,
               triggerDirection: z.enum(["above", "below"]),
