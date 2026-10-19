@@ -131,7 +131,8 @@
         "gridProfit": "グリッド利益",
         "floatingPnl": "含み損益",
         "annualizedReturn": "年利",
-        "gridAnnualizedReturn": "グリッド年利"
+        "gridAnnualizedReturn": "グリッド年利",
+        "trendPnl": "トレンド損益"
       }
     },
     "events": {

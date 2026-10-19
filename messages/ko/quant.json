@@ -131,7 +131,8 @@
         "gridProfit": "그리드 수익",
         "floatingPnl": "미실현 손익",
         "annualizedReturn": "연환산 수익률",
-        "gridAnnualizedReturn": "그리드 연환산"
+        "gridAnnualizedReturn": "그리드 연환산",
+        "trendPnl": "추세 손익"
       }
     },
     "events": {

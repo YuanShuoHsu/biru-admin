@@ -203,11 +203,12 @@ const BotDetail = ({ botId }: { botId: string }) => {
       : format.number(value, { maximumFractionDigits: sizePrecision });
   const formatTime = (value: string) =>
     format.dateTime(new Date(value), "short");
-  const formatPercent = (value?: number) =>
+  const formatAnnualized = (value?: number) =>
     value === undefined
       ? "—"
       : format.number(value, {
           maximumFractionDigits: 2,
+          roundingMode: "trunc",
           signDisplay: "exceptZero",
           style: "percent",
         });
@@ -619,7 +620,11 @@ const BotDetail = ({ botId }: { botId: string }) => {
           <Grid size={{ md: 2, sm: 4, xs: 6 }}>
             <Stat
               color={pnlColor(summary.floatingPnl)}
-              label={tBots("detail.summary.floatingPnl")}
+              label={tBots(
+                isPionexGrid && bot.type === "futures_grid"
+                  ? "detail.summary.trendPnl"
+                  : "detail.summary.floatingPnl",
+              )}
               value={formatQuote(summary.floatingPnl)}
             />
           </Grid>
@@ -627,7 +632,7 @@ const BotDetail = ({ botId }: { botId: string }) => {
             <Stat
               color={pnlColor(summary.annualizedReturn ?? 0)}
               label={tBots("detail.summary.annualizedReturn")}
-              value={formatPercent(summary.annualizedReturn)}
+              value={formatAnnualized(summary.annualizedReturn)}
             />
           </Grid>
           {isGrid && (
@@ -635,7 +640,7 @@ const BotDetail = ({ botId }: { botId: string }) => {
               <Stat
                 color={pnlColor(summary.gridAnnualizedReturn ?? 0)}
                 label={tBots("detail.summary.gridAnnualizedReturn")}
-                value={formatPercent(summary.gridAnnualizedReturn)}
+                value={formatAnnualized(summary.gridAnnualizedReturn)}
               />
             </Grid>
           )}

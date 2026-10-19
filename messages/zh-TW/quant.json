@@ -131,7 +131,8 @@
         "gridProfit": "網格利潤",
         "floatingPnl": "浮動盈虧",
         "annualizedReturn": "年化報酬",
-        "gridAnnualizedReturn": "網格年化"
+        "gridAnnualizedReturn": "網格年化",
+        "trendPnl": "趨勢盈虧"
       }
     },
     "events": {
@@ -414,7 +415,7 @@
         "profit": "提取利潤",
         "range": "修改區間"
       },
-      "profitHelper": "累積網格利潤 {profit} {quote}，已提取 {withdrawn} {quote}",
+      "profitHelper": "網格利潤 {profit} {quote}，已提取 {withdrawn} {quote}",
       "success": "已送出調整，Pionex 處理完成後會更新"
     },
     "label": "機器人",

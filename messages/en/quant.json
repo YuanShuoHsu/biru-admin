@@ -131,7 +131,8 @@
         "gridProfit": "Grid profit",
         "floatingPnl": "Floating PnL",
         "annualizedReturn": "APR",
-        "gridAnnualizedReturn": "Grid APR"
+        "gridAnnualizedReturn": "Grid APR",
+        "trendPnl": "Trend PnL"
       }
     },
     "events": {

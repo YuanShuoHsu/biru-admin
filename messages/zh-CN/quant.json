@@ -131,7 +131,8 @@
         "gridProfit": "网格利润",
         "floatingPnl": "浮动盈亏",
         "annualizedReturn": "年化收益",
-        "gridAnnualizedReturn": "网格年化"
+        "gridAnnualizedReturn": "网格年化",
+        "trendPnl": "趋势盈亏"
       }
     },
     "events": {
@@ -414,7 +415,7 @@
         "profit": "提取利润",
         "range": "修改区间"
       },
-      "profitHelper": "累积网格利润 {profit} {quote}，已提取 {withdrawn} {quote}",
+      "profitHelper": "网格利润 {profit} {quote}，已提取 {withdrawn} {quote}",
       "success": "已送出调整，Pionex 处理完成后会更新"
     },
     "label": "机器人",
