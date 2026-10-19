@@ -3506,6 +3506,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/quant/bots/grid/check": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 向 Pionex 試算網格的投入範圍與每格數量（不會下單） */
+    post: operations["QuantBotsController_checkGrid"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/quant/bots/futures_grid": {
     parameters: {
       query?: never;
@@ -3711,6 +3728,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/quant/bots/{id}/grid/operate": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 調整執行中的 Pionex 現貨網格：追加投入、改區間、提取利潤 */
+    post: operations["QuantBotsController_operateGrid"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/quant/bots/{id}/futures-grid/check": {
     parameters: {
       query?: never;
@@ -3796,6 +3830,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/quant/bots/{id}/fill-markers": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 機器人在一段時間內的成交，供 K 線圖標記 */
+    get: operations["QuantBotsController_findFillMarkers"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/quant/bots/{id}/events": {
     parameters: {
       query?: never;
@@ -3803,7 +3854,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 機器人最近的事件紀錄 */
+    /** 機器人的事件紀錄 */
     get: operations["QuantBotsController_findEvents"];
     put?: never;
     post?: never;
@@ -9635,6 +9686,114 @@ export interface components {
     SetQuantAiKeyDto: {
       apiKey: string;
     };
+    QuantBotEventDto: {
+      id: string;
+      /** @description 事件種類，例如 started、stopped、risk_blocked */
+      kind: string;
+      payload?: {
+        [key: string]: unknown;
+      };
+      /** Format: date-time */
+      createdAt: string;
+    };
+    QuantBotFillDto: {
+      id: string;
+      orderId: string;
+      side: components["schemas"]["QuantOrderSide"];
+      price: number;
+      size: number;
+      fee: number;
+      feeCoin: string;
+      /** Format: date-time */
+      filledAt: string;
+    };
+    /** @enum {string} */
+    QuantBotOrderStatus: "open" | "filled" | "canceled" | "rejected";
+    QuantBotOrderDto: {
+      id: string;
+      side: components["schemas"]["QuantOrderSide"];
+      type: components["schemas"]["QuantOrderType"];
+      price?: number;
+      size?: number;
+      amount?: number;
+      filledSize: number;
+      filledAmount: number;
+      fee: number;
+      status: components["schemas"]["QuantBotOrderStatus"];
+      tag?: string;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    /** @enum {string} */
+    QuantBotFilterField:
+      | "name"
+      | "symbol"
+      | "type"
+      | "mode"
+      | "status"
+      | "investment"
+      | "startedAt";
+    /** @enum {string} */
+    QuantBotSortField:
+      | "name"
+      | "symbol"
+      | "type"
+      | "mode"
+      | "status"
+      | "investment"
+      | "startedAt";
+    /** @enum {string} */
+    QuantBotMode: "paper" | "live";
+    /** @enum {string} */
+    QuantGridType: "arithmetic" | "geometric";
+    /** @enum {string} */
+    QuantGridStopType: "price" | "profit_amount";
+    GridStopDto: {
+      type: components["schemas"]["QuantGridStopType"];
+      /** @description price：觸發價；profit_amount：金額（計價幣） */
+      value: number;
+    };
+    /** @enum {string} */
+    QuantTriggerDirection: "above" | "below";
+    TriggerDto: {
+      price: number;
+      direction: components["schemas"]["QuantTriggerDirection"];
+    };
+    /**
+     * @description 停止時是否把持有的基礎幣賣回計價幣
+     * @enum {string}
+     */
+    QuantGridCloseModel: "NOT_SELL" | "TO_QUOTE";
+    GridConfigDto: {
+      /** @description 上界 */
+      top: number;
+      /** @description 下界 */
+      bottom: number;
+      /** @description 格數 */
+      row: number;
+      gridType: components["schemas"]["QuantGridType"];
+      lossStop?: components["schemas"]["GridStopDto"];
+      profitStop?: components["schemas"]["GridStopDto"];
+      /** @description 價格觸及才開始 */
+      trigger?: components["schemas"]["TriggerDto"];
+      /** @description 停止時是否把持有的基礎幣賣回計價幣 */
+      closeModel: components["schemas"]["QuantGridCloseModel"];
+    };
+    CreateGridBotDto: {
+      name: string;
+      /** @example BTC_USDT */
+      symbol: string;
+      mode: components["schemas"]["QuantBotMode"];
+      /** @description 實盤必填 */
+      credentialId?: string;
+      /** @description 投入金額（計價幣），也是機器人可動用資金的上限 */
+      investment: number;
+      /** @description 模擬盤必填：手續費率（例如 0.0005） */
+      paperFeeRate?: number;
+      /** @description 每日最大虧損（計價幣），觸發即停止 */
+      maxDailyLoss?: number;
+      config: components["schemas"]["GridConfigDto"];
+    };
     /**
      * @description 每根 K 線收盤時請 AI 判斷一次
      * @enum {string}
@@ -9683,26 +9842,11 @@ export interface components {
       /** @description 合約交易對必填，現貨不可填 */
       futures?: components["schemas"]["FuturesPositionConfigDto"];
     };
-    /** @enum {string} */
-    QuantGridType: "arithmetic" | "geometric";
     /**
      * @description long 做多、short 做空、no_trend 中性
      * @enum {string}
      */
     QuantFuturesGridTrend: "long" | "short" | "no_trend";
-    /** @enum {string} */
-    QuantGridStopType: "price" | "profit_amount";
-    GridStopDto: {
-      type: components["schemas"]["QuantGridStopType"];
-      /** @description price：觸發價；profit_amount：金額（計價幣） */
-      value: number;
-    };
-    /** @enum {string} */
-    QuantTriggerDirection: "above" | "below";
-    TriggerDto: {
-      price: number;
-      direction: components["schemas"]["QuantTriggerDirection"];
-    };
     FuturesGridConfigDto: {
       /** @description 上界 */
       top: number;
@@ -9733,26 +9877,6 @@ export interface components {
       stopLoss?: number;
       /** @description 獲利是否滾入下一筆的本金 */
       compound: boolean;
-    };
-    /**
-     * @description 停止時是否把持有的基礎幣賣回計價幣
-     * @enum {string}
-     */
-    QuantGridCloseModel: "NOT_SELL" | "TO_QUOTE";
-    GridConfigDto: {
-      /** @description 上界 */
-      top: number;
-      /** @description 下界 */
-      bottom: number;
-      /** @description 格數 */
-      row: number;
-      gridType: components["schemas"]["QuantGridType"];
-      lossStop?: components["schemas"]["GridStopDto"];
-      profitStop?: components["schemas"]["GridStopDto"];
-      /** @description 價格觸及才開始 */
-      trigger?: components["schemas"]["TriggerDto"];
-      /** @description 停止時是否把持有的基礎幣賣回計價幣 */
-      closeModel: components["schemas"]["QuantGridCloseModel"];
     };
     DcaConfigDto: {
       /** @description 首單金額（計價幣） */
@@ -9838,8 +9962,6 @@ export interface components {
       | "signal"
       | "ai";
     /** @enum {string} */
-    QuantBotMode: "paper" | "live";
-    /** @enum {string} */
     QuantBotStatus: "running" | "stopped" | "error";
     QuantBotSummaryDto: {
       /** @description 目前權益（計價幣） */
@@ -9862,52 +9984,8 @@ export interface components {
       pionexStatus?: string;
       /** @description AI：本月（UTC）已花費的費用（美元） */
       aiMonthCost?: number;
-    };
-    QuantBotDto: {
-      id: string;
-      name: string;
-      type: components["schemas"]["QuantBotType"];
-      mode: components["schemas"]["QuantBotMode"];
-      symbol: string;
-      status: components["schemas"]["QuantBotStatus"];
-      /** @description 停止或錯誤的原因 */
-      statusReason?: string;
-      credentialId?: string;
-      config:
-        | components["schemas"]["GridConfigDto"]
-        | components["schemas"]["DcaConfigDto"]
-        | components["schemas"]["IndicatorConfigDto"]
-        | components["schemas"]["WebhookConfigDto"]
-        | components["schemas"]["FuturesGridConfigDto"]
-        | components["schemas"]["SignalBotConfigDto"]
-        | components["schemas"]["AiConfigDto"];
-      investment: number;
-      paperFeeRate?: number;
-      maxDailyLoss?: number;
-      /** @description Pionex 內建機器人 id */
-      pionexBotId?: string;
-      summary: components["schemas"]["QuantBotSummaryDto"];
-      /** Format: date-time */
-      startedAt?: string;
-      /** Format: date-time */
-      stoppedAt?: string;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    CreateGridBotDto: {
-      name: string;
-      /** @example BTC_USDT */
-      symbol: string;
-      mode: components["schemas"]["QuantBotMode"];
-      /** @description 實盤必填 */
-      credentialId?: string;
-      /** @description 投入金額（計價幣），也是機器人可動用資金的上限 */
-      investment: number;
-      /** @description 模擬盤必填：手續費率（例如 0.0005） */
-      paperFeeRate?: number;
-      /** @description 每日最大虧損（計價幣），觸發即停止 */
-      maxDailyLoss?: number;
-      config: components["schemas"]["GridConfigDto"];
+      /** @description Pionex 現貨網格：已提取的利潤 */
+      profitWithdrawn?: number;
     };
     CreateQuantBotResponseDto: {
       id: string;
@@ -9941,6 +10019,21 @@ export interface components {
       createdAt: string;
       /** @description Webhook 機器人的 token，只在建立時回傳這一次 */
       webhookToken?: string;
+    };
+    GridCheckDto: {
+      credentialId: string;
+      /** @example BTC_USDT */
+      symbol: string;
+      investment: number;
+      config: components["schemas"]["GridConfigDto"];
+    };
+    GridCheckResultDto: {
+      minInvestment?: number;
+      maxInvestment?: number;
+      /** @description 每格數量（基礎幣） */
+      perVolume?: number;
+      /** @description 預估開倉手續費（計價幣） */
+      fee?: number;
     };
     CreateFuturesGridBotDto: {
       name: string;
@@ -10036,6 +10129,37 @@ export interface components {
       maxDailyLoss?: number;
       config: components["schemas"]["WebhookConfigDto"];
     };
+    QuantBotDto: {
+      id: string;
+      name: string;
+      type: components["schemas"]["QuantBotType"];
+      mode: components["schemas"]["QuantBotMode"];
+      symbol: string;
+      status: components["schemas"]["QuantBotStatus"];
+      /** @description 停止或錯誤的原因 */
+      statusReason?: string;
+      credentialId?: string;
+      config:
+        | components["schemas"]["GridConfigDto"]
+        | components["schemas"]["DcaConfigDto"]
+        | components["schemas"]["IndicatorConfigDto"]
+        | components["schemas"]["WebhookConfigDto"]
+        | components["schemas"]["FuturesGridConfigDto"]
+        | components["schemas"]["SignalBotConfigDto"]
+        | components["schemas"]["AiConfigDto"];
+      investment: number;
+      paperFeeRate?: number;
+      maxDailyLoss?: number;
+      /** @description Pionex 內建機器人 id */
+      pionexBotId?: string;
+      summary: components["schemas"]["QuantBotSummaryDto"];
+      /** Format: date-time */
+      startedAt?: string;
+      /** Format: date-time */
+      stoppedAt?: string;
+      /** Format: date-time */
+      createdAt: string;
+    };
     WebhookTokenDto: {
       /** @description 新的 token，只在這次回傳；舊 token 立即失效 */
       webhookToken: string;
@@ -10054,6 +10178,19 @@ export interface components {
       contracts: number;
       /** @description 訊號送出後的目標部位，對應 TradingView 的 position_size：正數做多、負數做空、0 平倉 */
       positionSize: number;
+    };
+    /** @enum {string} */
+    QuantGridOperation: "invest" | "range" | "profit";
+    GridOperationDto: {
+      operation: components["schemas"]["QuantGridOperation"];
+      /** @description invest：追加投入；profit：提取的利潤（計價幣） */
+      amount?: number;
+      /** @description range：新上界 */
+      top?: number;
+      /** @description range：新下界 */
+      bottom?: number;
+      /** @description range：新格數 */
+      row?: number;
     };
     /** @enum {string} */
     QuantFuturesGridOperation:
@@ -10112,43 +10249,24 @@ export interface components {
       liquidationPriceDownAfter?: number;
     };
     /** @enum {string} */
-    QuantBotOrderStatus: "open" | "filled" | "canceled" | "rejected";
-    QuantBotOrderDto: {
-      id: string;
-      side: components["schemas"]["QuantOrderSide"];
-      type: components["schemas"]["QuantOrderType"];
-      price?: number;
-      size?: number;
-      amount?: number;
-      filledSize: number;
-      filledAmount: number;
-      fee: number;
-      status: components["schemas"]["QuantBotOrderStatus"];
-      tag?: string;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    QuantBotFillDto: {
-      id: string;
-      orderId: string;
+    QuantBotOrderSortField:
+      | "createdAt"
+      | "side"
+      | "type"
+      | "price"
+      | "filledSize"
+      | "status"
+      | "tag";
+    /** @enum {string} */
+    QuantBotFillSortField: "filledAt" | "side" | "price" | "size" | "fee";
+    QuantBotFillMarkerDto: {
       side: components["schemas"]["QuantOrderSide"];
       price: number;
-      size: number;
-      fee: number;
-      feeCoin: string;
       /** Format: date-time */
       filledAt: string;
     };
-    QuantBotEventDto: {
-      id: string;
-      /** @description 事件種類，例如 started、stopped、risk_blocked */
-      kind: string;
-      payload?: {
-        [key: string]: unknown;
-      };
-      /** Format: date-time */
-      createdAt: string;
-    };
+    /** @enum {string} */
+    QuantBotEventSortField: "createdAt" | "kind";
     GridAiStrategyDto: {
       /** @description 建議上界 */
       top: number;
@@ -19190,7 +19308,18 @@ export interface operations {
   };
   QuantBotsController_findAll: {
     parameters: {
-      query?: never;
+      query?: {
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["QuantBotFilterField"];
+        sortBy?: components["schemas"]["QuantBotSortField"];
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+      };
       header?: never;
       path?: never;
       cookie?: never;
@@ -19201,9 +19330,7 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content: {
-          "application/json": components["schemas"]["QuantBotDto"][];
-        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {
@@ -19233,6 +19360,36 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["CreateQuantBotResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantBotsController_checkGrid: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["GridCheckDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["GridCheckResultDto"];
         };
       };
       /** @description Internal server error */
@@ -19618,6 +19775,36 @@ export interface operations {
       };
     };
   };
+  QuantBotsController_operateGrid: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["GridOperationDto"];
+      };
+    };
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   QuantBotsController_checkFuturesGridOperation: {
     parameters: {
       query?: never;
@@ -19710,7 +19897,12 @@ export interface operations {
   };
   QuantBotsController_findOrders: {
     parameters: {
-      query?: never;
+      query?: {
+        sortDirection?: components["schemas"]["SortDirection"];
+        sortBy?: components["schemas"]["QuantBotOrderSortField"];
+        limit?: number;
+        offset?: number;
+      };
       header?: never;
       path: {
         id: string;
@@ -19723,9 +19915,7 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content: {
-          "application/json": components["schemas"]["QuantBotOrderDto"][];
-        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {
@@ -19738,7 +19928,41 @@ export interface operations {
   };
   QuantBotsController_findFills: {
     parameters: {
-      query?: never;
+      query?: {
+        sortDirection?: components["schemas"]["SortDirection"];
+        sortBy?: components["schemas"]["QuantBotFillSortField"];
+        limit?: number;
+        offset?: number;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantBotsController_findFillMarkers: {
+    parameters: {
+      query: {
+        /** @description 只回傳此時間之後的成交 */
+        since: string;
+      };
       header?: never;
       path: {
         id: string;
@@ -19752,7 +19976,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["QuantBotFillDto"][];
+          "application/json": components["schemas"]["QuantBotFillMarkerDto"][];
         };
       };
       /** @description Internal server error */
@@ -19766,7 +19990,14 @@ export interface operations {
   };
   QuantBotsController_findEvents: {
     parameters: {
-      query?: never;
+      query?: {
+        sortDirection?: components["schemas"]["SortDirection"];
+        sortBy?: components["schemas"]["QuantBotEventSortField"];
+        /** @description 只列這些種類的事件，例如 AI 決策紀錄 */
+        kinds?: string[];
+        limit?: number;
+        offset?: number;
+      };
       header?: never;
       path: {
         id: string;
@@ -19779,9 +20010,7 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content: {
-          "application/json": components["schemas"]["QuantBotEventDto"][];
-        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {
@@ -22264,6 +22493,30 @@ export const quantOrderStatusValues: ReadonlyArray<
 export const quantFillRoleValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantFillRole"]
 > = ["MAKER", "TAKER"];
+export const quantBotOrderStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantBotOrderStatus"]
+> = ["open", "filled", "canceled", "rejected"];
+export const quantBotFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantBotFilterField"]
+> = ["name", "symbol", "type", "mode", "status", "investment", "startedAt"];
+export const quantBotSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantBotSortField"]
+> = ["name", "symbol", "type", "mode", "status", "investment", "startedAt"];
+export const quantBotModeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantBotMode"]
+> = ["paper", "live"];
+export const quantGridTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantGridType"]
+> = ["arithmetic", "geometric"];
+export const quantGridStopTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantGridStopType"]
+> = ["price", "profit_amount"];
+export const quantTriggerDirectionValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantTriggerDirection"]
+> = ["above", "below"];
+export const quantGridCloseModelValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantGridCloseModel"]
+> = ["NOT_SELL", "TO_QUOTE"];
 export const quantCandleIntervalValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantCandleInterval"]
 > = ["1M", "5M", "15M", "30M", "60M", "4H", "8H", "12H", "1D", "1W", "1m"];
@@ -22276,21 +22529,9 @@ export const quantAiLocaleValues: ReadonlyArray<
 export const quantFuturesDirectionValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantFuturesDirection"]
 > = ["long", "short"];
-export const quantGridTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["QuantGridType"]
-> = ["arithmetic", "geometric"];
 export const quantFuturesGridTrendValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantFuturesGridTrend"]
 > = ["long", "short", "no_trend"];
-export const quantGridStopTypeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["QuantGridStopType"]
-> = ["price", "profit_amount"];
-export const quantTriggerDirectionValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["QuantTriggerDirection"]
-> = ["above", "below"];
-export const quantGridCloseModelValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["QuantGridCloseModel"]
-> = ["NOT_SELL", "TO_QUOTE"];
 export const quantIndicatorKindValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantIndicatorKind"]
 > = ["rsi", "maCross", "emaCross", "macdCross", "bollinger"];
@@ -22306,15 +22547,15 @@ export const quantBollingerBandValues: ReadonlyArray<
 export const quantBotTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantBotType"]
 > = ["grid", "dca", "indicator", "webhook", "futures_grid", "signal", "ai"];
-export const quantBotModeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["QuantBotMode"]
-> = ["paper", "live"];
 export const quantBotStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantBotStatus"]
 > = ["running", "stopped", "error"];
 export const quantSignalActionValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantSignalAction"]
 > = ["buy", "sell"];
+export const quantGridOperationValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantGridOperation"]
+> = ["invest", "range", "profit"];
 export const quantFuturesGridOperationValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantFuturesGridOperation"]
 > = [
@@ -22330,9 +22571,15 @@ export const quantFuturesGridOperationValues: ReadonlyArray<
 export const quantFuturesGridPauseModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantFuturesGridPauseMode"]
 > = ["immediate", "conditional"];
-export const quantBotOrderStatusValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["QuantBotOrderStatus"]
-> = ["open", "filled", "canceled", "rejected"];
+export const quantBotOrderSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantBotOrderSortField"]
+> = ["createdAt", "side", "type", "price", "filledSize", "status", "tag"];
+export const quantBotFillSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantBotFillSortField"]
+> = ["filledAt", "side", "price", "size", "fee"];
+export const quantBotEventSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantBotEventSortField"]
+> = ["createdAt", "kind"];
 export const quantMarketTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantMarketType"]
 > = ["SPOT", "PERP"];

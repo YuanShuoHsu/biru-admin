@@ -21,6 +21,7 @@ import { useFormatter } from "next-intl";
 import useSWR from "swr";
 
 import { useChartPalette } from "../../../useChartPalette";
+import { QUANT_BOTS_URL } from "../../useQuantBots";
 
 import { isIntradayInterval } from "@/constants/quant";
 
@@ -31,7 +32,7 @@ import type {
   GridConfig,
   IndicatorConfig,
   QuantBot,
-  QuantBotFill,
+  QuantBotFillMarker,
   QuantCandle,
   QuantCandleInterval,
 } from "@/types/quant";
@@ -60,11 +61,10 @@ const chartInterval = (bot: QuantBot): QuantCandleInterval =>
 
 interface BotChartProps {
   bot: QuantBot;
-  fills: QuantBotFill[];
   pricePrecision: number;
 }
 
-const BotChart = ({ bot, fills, pricePrecision }: BotChartProps) => {
+const BotChart = ({ bot, pricePrecision }: BotChartProps) => {
   const format = useFormatter();
   const palette = useChartPalette();
   const interval = chartInterval(bot);
@@ -79,6 +79,16 @@ const BotChart = ({ bot, fills, pricePrecision }: BotChartProps) => {
     `/api/quant/markets/${bot.symbol}/candles?interval=${interval}&limit=${CHART_CANDLES}`,
     fetcher,
     { refreshInterval: 60_000 },
+  );
+  const since = candles?.length
+    ? new Date(candles[0].time).toISOString()
+    : null;
+  const { data: fills = [] } = useSWR<QuantBotFillMarker[]>(
+    since
+      ? `${QUANT_BOTS_URL}/${bot.id}/fill-markers?since=${encodeURIComponent(since)}`
+      : null,
+    fetcher,
+    { keepPreviousData: true },
   );
 
   useEffect(() => {
@@ -163,7 +173,6 @@ const BotChart = ({ bot, fills, pricePrecision }: BotChartProps) => {
           time: Date.parse(filledAt),
         }))
         .filter(({ time }) => time >= first)
-        .sort((a, b) => a.time - b.time)
         .map(({ side, time }) => ({
           color: side === "BUY" ? palette.up : palette.down,
           position:

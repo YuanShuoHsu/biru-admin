@@ -94,6 +94,18 @@ export type DcaBacktestDto = components["schemas"]["DcaBacktestDto"];
 export type IndicatorBacktestDto =
   components["schemas"]["IndicatorBacktestDto"];
 export type GridAiStrategy = components["schemas"]["GridAiStrategyDto"];
+export type GridCheckDto = components["schemas"]["GridCheckDto"];
+export type GridCheckResult = components["schemas"]["GridCheckResultDto"];
+export type GridOperationDto = components["schemas"]["GridOperationDto"];
+export type QuantBotFillMarker = components["schemas"]["QuantBotFillMarkerDto"];
+export type QuantBotFilterField = components["schemas"]["QuantBotFilterField"];
+export type QuantBotSortField = components["schemas"]["QuantBotSortField"];
+export type QuantBotOrderSortField =
+  components["schemas"]["QuantBotOrderSortField"];
+export type QuantBotFillSortField =
+  components["schemas"]["QuantBotFillSortField"];
+export type QuantBotEventSortField =
+  components["schemas"]["QuantBotEventSortField"];
 export type WebhookToken = components["schemas"]["WebhookTokenDto"];
 
 export type QuantBotType = (typeof quantBotTypeValues)[number];

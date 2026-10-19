@@ -1,8 +1,11 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
+import useSWR from "swr";
 
-import { useBotLabels } from "../../useQuantBots";
+import { QUANT_BOTS_URL, useBotLabels } from "../../useQuantBots";
+
+import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import {
   Chip,
@@ -14,7 +17,9 @@ import {
 
 import type { AiConfig, QuantBot, QuantBotEvent } from "@/types/quant";
 
-const AI_EVENT_KINDS = new Set(["ai_decision", "ai_error", "ai_refusal"]);
+import { fetcher } from "@/utils/fetcher";
+
+const AI_EVENT_KINDS = ["ai_decision", "ai_error", "ai_refusal"];
 
 const ACTION_COLORS = {
   close: "error",
@@ -22,19 +27,19 @@ const ACTION_COLORS = {
   open: "success",
 } as const;
 
-interface AiDecisionsProps {
-  bot: QuantBot;
-  events: QuantBotEvent[];
-}
-
-const AiDecisions = ({ bot, events }: AiDecisionsProps) => {
+const AiDecisions = ({ bot }: { bot: QuantBot }) => {
   const tAi = useTranslations("quant.bots.ai");
   const format = useFormatter();
   const labels = useBotLabels();
 
+  const params = new URLSearchParams({ limit: String(MAX_PAGE_SIZE) });
+  for (const kind of AI_EVENT_KINDS) params.append("kinds", kind);
+  const { data: { data: decisions } = { data: [] } } = useSWR<{
+    data: QuantBotEvent[];
+  }>(`${QUANT_BOTS_URL}/${bot.id}/events?${params}`, fetcher);
+
   const config = bot.config as AiConfig;
   const spent = bot.summary.aiMonthCost ?? 0;
-  const decisions = events.filter(({ kind }) => AI_EVENT_KINDS.has(kind));
   const usd = (value: number) =>
     format.number(value, {
       maximumFractionDigits: 2,

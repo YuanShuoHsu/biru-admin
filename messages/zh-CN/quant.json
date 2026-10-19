@@ -224,6 +224,12 @@
         "aiStrategyApplied": "已套用 Pionex AI 推荐：年化 {annualized}，最大回撤 {drawdown}",
         "aiStrategyNeedsCredential": "需要先绑定 API key",
         "bottom": "下界",
+        "check": "向 Pionex 试算",
+        "checkFee": "预估开单手续费 {fee} {quote}",
+        "checkInvestment": "投入范围：{min} – {max} {quote}",
+        "checkNeedsCredential": "需要先绑定 API key",
+        "checkNote": "Pionex 官方试算，不会下单。",
+        "checkPerVolume": "每格数量 {volume} {base}",
         "closeModel": {
           "NOT_SELL": "保留持有的币",
           "TO_QUOTE": "卖回 {quote}",
@@ -361,6 +367,23 @@
       "triggerDown": "跌到此价",
       "triggerOptional": "选填；两个都留空表示立即",
       "triggerUp": "涨到此价"
+    },
+    "gridOperation": {
+      "amount": "金额",
+      "descriptions": {
+        "invest": "追加投入资金，Pionex 会依当前价格补上挂单。",
+        "profit": "把累积的网格利润转回现货账户，机器人继续运行。",
+        "range": "修改上下界与格数，Pionex 会依新区间重新挂单。"
+      },
+      "execute": "确认执行",
+      "label": "调整",
+      "operations": {
+        "invest": "追加投入",
+        "profit": "提取利润",
+        "range": "修改区间"
+      },
+      "profitHelper": "累积网格利润 {profit} {quote}，已提取 {withdrawn} {quote}",
+      "success": "已送出调整，Pionex 处理完成后会更新"
     },
     "label": "机器人",
     "modes": {

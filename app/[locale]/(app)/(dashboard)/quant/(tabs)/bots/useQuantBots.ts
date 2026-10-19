@@ -3,7 +3,7 @@
 import { useEffect, useMemo } from "react";
 
 import { useMessages, useTranslations } from "next-intl";
-import useSWR, { type SWRConfiguration, useSWRConfig } from "swr";
+import { useSWRConfig } from "swr";
 
 import { useSocketConnection } from "@/hooks/useSocketConnection";
 
@@ -11,14 +11,15 @@ import { quantSocket } from "@/app/socket";
 
 import type { QuantBot } from "@/types/quant";
 
-import { fetcher } from "@/utils/fetcher";
-
 export const QUANT_BOTS_URL = "/api/quant/bots";
 
 const REVALIDATE_DELAY_MS = 500;
 
-export const isQuantBotKey = (key: unknown) =>
-  typeof key === "string" && key.startsWith(QUANT_BOTS_URL);
+export const isQuantBotKey = (key: unknown) => {
+  const url = Array.isArray(key) ? key[0] : key;
+
+  return typeof url === "string" && url.startsWith(QUANT_BOTS_URL);
+};
 
 // 成交推播可能一秒好幾筆，合併成一次重新抓取
 export const useBotStream = () => {
@@ -49,9 +50,6 @@ export const useBotStream = () => {
     };
   }, [isConnected, mutate]);
 };
-
-export const useQuantBots = (config?: SWRConfiguration<QuantBot[]>) =>
-  useSWR<QuantBot[]>(QUANT_BOTS_URL, fetcher, config);
 
 /** 代碼有翻譯就顯示翻譯，未知的（例如 Pionex 新增的停止原因）原樣顯示 */
 export const useBotLabels = () => {

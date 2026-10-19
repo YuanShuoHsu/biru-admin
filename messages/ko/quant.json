@@ -224,6 +224,12 @@
         "aiStrategyApplied": "Pionex AI 추천을 적용했습니다: 연환산 {annualized}, 최대 낙폭 {drawdown}",
         "aiStrategyNeedsCredential": "먼저 API 키를 등록하세요",
         "bottom": "하단 가격",
+        "check": "Pionex로 시산",
+        "checkFee": "예상 개시 수수료 {fee} {quote}",
+        "checkInvestment": "투자 범위: {min} – {max} {quote}",
+        "checkNeedsCredential": "먼저 API 키를 연결하세요",
+        "checkNote": "Pionex 공식 시산이며 주문은 넣지 않습니다.",
+        "checkPerVolume": "그리드당 수량 {volume} {base}",
         "closeModel": {
           "NOT_SELL": "보유 코인 유지",
           "TO_QUOTE": "{quote}로 매도",
@@ -361,6 +367,23 @@
       "triggerDown": "이 가격까지 하락",
       "triggerOptional": "선택. 둘 다 비우면 즉시",
       "triggerUp": "이 가격까지 상승"
+    },
+    "gridOperation": {
+      "amount": "금액",
+      "descriptions": {
+        "invest": "투자 금액을 추가하면 Pionex가 현재가로 주문을 보충합니다.",
+        "profit": "누적된 그리드 수익을 현물 계정으로 옮깁니다. 봇은 계속 실행됩니다.",
+        "range": "상한·하한과 그리드 수를 바꾸면 Pionex가 새 범위로 주문을 다시 넣습니다."
+      },
+      "execute": "실행",
+      "label": "조정",
+      "operations": {
+        "invest": "투자 추가",
+        "profit": "수익 인출",
+        "range": "범위 변경"
+      },
+      "profitHelper": "그리드 수익 {profit} {quote}, 인출됨 {withdrawn} {quote}",
+      "success": "조정을 보냈습니다. Pionex 처리 후 반영됩니다"
     },
     "label": "봇",
     "modes": {

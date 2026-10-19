@@ -369,6 +369,11 @@ const gridConfig = ({ grid }: BotFormValues) => {
   };
 };
 
+export const spotGridConfig = (values: BotFormValues): GridConfig => ({
+  ...gridConfig(values),
+  closeModel: values.grid.closeModel,
+});
+
 export const futuresGridConfig = (values: BotFormValues): FuturesGridConfig => {
   const { futuresGrid } = values;
 
@@ -392,10 +397,7 @@ const futuresPosition = ({ futures, symbol }: BotFormValues) =>
 export const toConfig = (type: QuantBotType, values: BotFormValues) => {
   switch (type) {
     case "grid":
-      return {
-        ...gridConfig(values),
-        closeModel: values.grid.closeModel,
-      } satisfies GridConfig;
+      return spotGridConfig(values);
     case "futures_grid":
       return futuresGridConfig(values);
     case "dca": {

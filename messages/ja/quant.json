@@ -224,6 +224,12 @@
         "aiStrategyApplied": "Pionex AI 推奨を適用しました：年率 {annualized}、最大ドローダウン {drawdown}",
         "aiStrategyNeedsCredential": "先に API キーを登録してください",
         "bottom": "下限価格",
+        "check": "Pionex で試算",
+        "checkFee": "予想される開始手数料 {fee} {quote}",
+        "checkInvestment": "投資範囲：{min} – {max} {quote}",
+        "checkNeedsCredential": "先に API キーを連携してください",
+        "checkNote": "Pionex 公式の試算で、注文は出しません。",
+        "checkPerVolume": "1 グリッドあたり {volume} {base}",
         "closeModel": {
           "NOT_SELL": "保有コインを残す",
           "TO_QUOTE": "{quote} に売却",
@@ -361,6 +367,23 @@
       "triggerDown": "この価格まで下落",
       "triggerOptional": "任意。両方空欄ならすぐに実行",
       "triggerUp": "この価格まで上昇"
+    },
+    "gridOperation": {
+      "amount": "金額",
+      "descriptions": {
+        "invest": "投資額を追加し、Pionex が現在価格で注文を補充します。",
+        "profit": "累積したグリッド利益を現物口座に戻します。ボットは稼働を続けます。",
+        "range": "上限・下限とグリッド数を変更し、Pionex が新しいレンジで注文を出し直します。"
+      },
+      "execute": "実行",
+      "label": "調整",
+      "operations": {
+        "invest": "投資額を追加",
+        "profit": "利益を引き出す",
+        "range": "レンジを変更"
+      },
+      "profitHelper": "グリッド利益 {profit} {quote}、引き出し済み {withdrawn} {quote}",
+      "success": "調整を送信しました。Pionex の処理後に反映されます"
     },
     "label": "ボット",
     "modes": {

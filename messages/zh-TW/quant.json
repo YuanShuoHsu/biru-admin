@@ -224,6 +224,12 @@
         "aiStrategyApplied": "已套用 Pionex AI 推薦：年化 {annualized}，最大回撤 {drawdown}",
         "aiStrategyNeedsCredential": "需要先綁定 API key",
         "bottom": "下界",
+        "check": "向 Pionex 試算",
+        "checkFee": "預估開單手續費 {fee} {quote}",
+        "checkInvestment": "投入範圍：{min} – {max} {quote}",
+        "checkNeedsCredential": "需要先綁定 API key",
+        "checkNote": "Pionex 官方試算，不會下單。",
+        "checkPerVolume": "每格數量 {volume} {base}",
         "closeModel": {
           "NOT_SELL": "保留持有的幣",
           "TO_QUOTE": "賣回 {quote}",
@@ -361,6 +367,23 @@
       "triggerDown": "跌到此價",
       "triggerOptional": "選填；兩個都留空代表立即",
       "triggerUp": "漲到此價"
+    },
+    "gridOperation": {
+      "amount": "金額",
+      "descriptions": {
+        "invest": "追加投入資金，Pionex 會依目前價格補上掛單。",
+        "profit": "把累積的網格利潤轉回現貨帳戶，機器人繼續運作。",
+        "range": "修改上下界與格數，Pionex 會依新區間重新掛單。"
+      },
+      "execute": "確認執行",
+      "label": "調整",
+      "operations": {
+        "invest": "追加投入",
+        "profit": "提取利潤",
+        "range": "修改區間"
+      },
+      "profitHelper": "累積網格利潤 {profit} {quote}，已提取 {withdrawn} {quote}",
+      "success": "已送出調整，Pionex 處理完成後會更新"
     },
     "label": "機器人",
     "modes": {

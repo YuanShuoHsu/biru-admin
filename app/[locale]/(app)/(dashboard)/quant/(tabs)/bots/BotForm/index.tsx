@@ -422,7 +422,7 @@ const BotFormFields = ({
           <Typography variant="h6">{tForm("strategy")}</Typography>
           {type === "grid" && (
             <GridFields
-              aiCredentialId={credentialId || credentials?.[0]?.id}
+              credentialId={credentialId || credentials?.[0]?.id}
               form={form}
               market={market}
             />

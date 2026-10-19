@@ -224,6 +224,12 @@
         "aiStrategyApplied": "Applied the Pionex AI suggestion: {annualized} annualized, {drawdown} max drawdown",
         "aiStrategyNeedsCredential": "Add an API key first",
         "bottom": "Lower price",
+        "check": "Check with Pionex",
+        "checkFee": "Estimated opening fee {fee} {quote}",
+        "checkInvestment": "Investment range: {min} – {max} {quote}",
+        "checkNeedsCredential": "Bind an API key first",
+        "checkNote": "Official Pionex estimate; no order is placed.",
+        "checkPerVolume": "Size per grid {volume} {base}",
         "closeModel": {
           "NOT_SELL": "Keep the coins",
           "TO_QUOTE": "Sell to {quote}",
@@ -361,6 +367,23 @@
       "triggerDown": "Falls to",
       "triggerOptional": "Optional; leave both empty for immediately",
       "triggerUp": "Rises to"
+    },
+    "gridOperation": {
+      "amount": "Amount",
+      "descriptions": {
+        "invest": "Add investment; Pionex tops up the orders at the current price.",
+        "profit": "Move accumulated grid profit back to the spot account; the bot keeps running.",
+        "range": "Change the range and grid count; Pionex re-places orders for the new range."
+      },
+      "execute": "Execute",
+      "label": "Adjust",
+      "operations": {
+        "invest": "Add investment",
+        "profit": "Withdraw profit",
+        "range": "Change range"
+      },
+      "profitHelper": "Grid profit {profit} {quote}, withdrawn {withdrawn} {quote}",
+      "success": "Adjustment sent; it updates once Pionex finishes"
     },
     "label": "Bots",
     "modes": {

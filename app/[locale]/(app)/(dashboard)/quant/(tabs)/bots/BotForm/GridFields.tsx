@@ -6,10 +6,19 @@ import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useWatch } from "react-hook-form";
 
+import { spotGridConfig } from "./definitions";
 import { type BotForm, NumberField, SelectField } from "./fields";
 
-import { AutoAwesome } from "@mui/icons-material";
-import { Alert, Box, Button, Grid, Tooltip } from "@mui/material";
+import { AutoAwesome, Calculate } from "@mui/icons-material";
+import {
+  Alert,
+  Box,
+  Button,
+  Grid,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 
 import {
   quantGridCloseModelValues,
@@ -17,21 +26,26 @@ import {
   quantGridTypeValues,
   quantTriggerDirectionValues,
 } from "@/types/api";
-import type { GridAiStrategy, QuantMarket } from "@/types/quant";
+import type {
+  GridAiStrategy,
+  GridCheckDto,
+  GridCheckResult,
+  QuantMarket,
+} from "@/types/quant";
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 interface GridFieldsProps {
-  aiCredentialId?: string;
+  credentialId?: string;
   form: BotForm;
   market?: QuantMarket;
-  /** 合約網格：沒有 AI 推薦與平倉方式，停損停利的方向依多空而定 */
+  /** 合約網格：沒有 AI 推薦、試算與平倉方式，停損停利的方向依多空而定 */
   stopHelpers?: { loss: string; profit: string };
 }
 
 const GridFields = ({
-  aiCredentialId,
+  credentialId,
   form,
   market,
   stopHelpers,
@@ -41,6 +55,8 @@ const GridFields = ({
 
   const [suggestion, setSuggestion] = useState<GridAiStrategy | null>(null);
   const [loading, setLoading] = useState(false);
+  const [check, setCheck] = useState<GridCheckResult | null>(null);
+  const [checking, setChecking] = useState(false);
 
   const symbol = useWatch({ control: form.control, name: "symbol" });
 
@@ -48,13 +64,45 @@ const GridFields = ({
   const percent = (value: number) =>
     format.number(value, { maximumFractionDigits: 2, style: "percent" });
 
+  const formatQuote = (value: number) =>
+    format.number(value, {
+      maximumFractionDigits: market?.pricePrecision ?? 2,
+    });
+
+  const runCheck = async () => {
+    if (!credentialId || !market) return;
+    if (!(await form.trigger(["grid", "investment"]))) return;
+
+    const values = form.getValues();
+    setChecking(true);
+    try {
+      setCheck(
+        await fetcher<GridCheckResult>("/api/quant/bots/grid/check", {
+          body: JSON.stringify({
+            config: spotGridConfig(values),
+            credentialId,
+            investment: Number(values.investment),
+            symbol: values.symbol,
+          } satisfies GridCheckDto),
+          headers: { "Content-Type": "application/json" },
+          method: "POST",
+        }),
+      );
+    } catch (error) {
+      setCheck(null);
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+    } finally {
+      setChecking(false);
+    }
+  };
+
   const applySuggestion = async () => {
-    if (!aiCredentialId || !market) return;
+    if (!credentialId || !market) return;
 
     setLoading(true);
     try {
       const strategy = await fetcher<GridAiStrategy>(
-        `/api/quant/credentials/${aiCredentialId}/grid-ai-strategy?symbol=${symbol}`,
+        `/api/quant/credentials/${credentialId}/grid-ai-strategy?symbol=${symbol}`,
       );
       const options = { shouldValidate: form.formState.isSubmitted };
       form.setValue(
@@ -83,11 +131,11 @@ const GridFields = ({
       {!isFutures && (
         <Grid size={12}>
           <Tooltip
-            title={aiCredentialId ? "" : tGrid("aiStrategyNeedsCredential")}
+            title={credentialId ? "" : tGrid("aiStrategyNeedsCredential")}
           >
             <Box component="span">
               <Button
-                disabled={!aiCredentialId || !market}
+                disabled={!credentialId || !market}
                 loading={loading}
                 onClick={applySuggestion}
                 startIcon={<AutoAwesome />}
@@ -216,6 +264,61 @@ const GridFields = ({
               value,
             }))}
           />
+        </Grid>
+      )}
+      {!isFutures && (
+        <Grid size={12}>
+          <Tooltip title={credentialId ? "" : tGrid("checkNeedsCredential")}>
+            <Box component="span">
+              <Button
+                disabled={!credentialId || !market}
+                loading={checking}
+                onClick={runCheck}
+                startIcon={<Calculate />}
+                variant="outlined"
+              >
+                {tGrid("check")}
+              </Button>
+            </Box>
+          </Tooltip>
+        </Grid>
+      )}
+      {check && (
+        <Grid size={12}>
+          <Alert severity="info">
+            <Stack sx={{ gap: 0.5 }}>
+              {check.minInvestment !== undefined && (
+                <Typography variant="body2">
+                  {tGrid("checkInvestment", {
+                    max:
+                      check.maxInvestment === undefined
+                        ? "—"
+                        : formatQuote(check.maxInvestment),
+                    min: formatQuote(check.minInvestment),
+                    quote,
+                  })}
+                </Typography>
+              )}
+              {check.perVolume !== undefined && (
+                <Typography variant="body2">
+                  {tGrid("checkPerVolume", {
+                    base: market?.baseCurrency ?? "",
+                    volume: format.number(check.perVolume, {
+                      maximumFractionDigits: market?.sizePrecision ?? 8,
+                    }),
+                  })}
+                </Typography>
+              )}
+              {check.fee !== undefined && (
+                <Typography variant="body2">
+                  {tGrid("checkFee", { fee: formatQuote(check.fee), quote })}
+                </Typography>
+              )}
+              <Typography color="text.secondary" variant="caption">
+                {tGrid("checkNote")}
+              </Typography>
+            </Stack>
+          </Alert>
         </Grid>
       )}
     </Grid>

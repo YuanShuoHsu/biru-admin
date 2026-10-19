@@ -1,10 +1,10 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { useSWRConfig } from "swr";
+import useSWR, { useSWRConfig } from "swr";
 
 import { useBotFormDialog } from "../BotForm";
 import {
@@ -13,14 +13,26 @@ import {
   pnlColor,
   useBotLabels,
   useBotStream,
-  useQuantBots,
 } from "../useQuantBots";
 
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
-import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+import {
+  autosizeOptions,
+  DATA_GRID_PROPS,
+  NO_VALUE_FILTER_OPERATORS,
+} from "@/constants/dataGrid";
+import { getPageSizeOptions } from "@/constants/pagination";
 import { quantPairOf } from "@/constants/quant";
+
+import {
+  useDateFilterOperators,
+  useEnumFilterOperators,
+  useNumberFilterOperators,
+  useStringFilterOperators,
+} from "@/hooks/useFilterOperators";
+import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -43,18 +55,26 @@ import {
   Tooltip,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import type {
+  GridColDef,
+  GridFilterModel,
+  GridPaginationModel,
+  GridRenderCellParams,
+  GridSortModel,
+} from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import {
-  quantBotModeValues,
-  quantBotStatusValues,
-  quantBotTypeValues,
-} from "@/types/api";
-import type { QuantBot } from "@/types/quant";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  QuantBot,
+  QuantBotFilterField,
+  QuantBotSortField,
+} from "@/types/quant";
 
+import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
+import { getQuantBotEnumOptions } from "@/utils/enumOptions";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
@@ -82,7 +102,61 @@ const STATUS_COLORS = {
   stopped: "default",
 } as const;
 
-const BotList = () => {
+// 「全部停止」要算所有頁的執行中機器人，不能只看目前這一頁
+const RUNNING_COUNT_URL = `${QUANT_BOTS_URL}?filterField=status&filterOperator=is&filterValue=running&limit=1`;
+
+interface BotListProps {
+  filterField?: QuantBotFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  rowCount: number;
+  rows: QuantBot[];
+  sortBy?: QuantBotSortField;
+  sortDirection?: SortDirection;
+}
+
+const BotList = ({
+  filterField: initialFilterField,
+  filterOperator: initialFilterOperator,
+  filterValue: initialFilterValue,
+  page,
+  pageSize,
+  quickFilterValue: initialQuickFilterValue,
+  rowCount: initialRowCount,
+  rows: initialRows,
+  sortBy,
+  sortDirection,
+}: BotListProps) => {
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    page: page - 1,
+    pageSize,
+  });
+  const [sortModel, setSortModel] = useState<GridSortModel>(
+    sortBy && sortDirection ? [{ field: sortBy, sort: sortDirection }] : [],
+  );
+  const [filterModel, setFilterModel] = useState<GridFilterModel>({
+    items:
+      initialFilterField &&
+      initialFilterOperator &&
+      (initialFilterValue ||
+        NO_VALUE_FILTER_OPERATORS.includes(initialFilterOperator))
+        ? [
+            {
+              field: initialFilterField,
+              operator: initialFilterOperator,
+              value:
+                initialFilterOperator === "isAnyOf"
+                  ? initialFilterValue?.split(",")
+                  : initialFilterValue,
+            },
+          ]
+        : [],
+    quickFilterValues: initialQuickFilterValue ? [initialQuickFilterValue] : [],
+  });
+
   const tBots = useTranslations("quant.bots");
   const format = useFormatter();
   const router = useRouter();
@@ -92,17 +166,102 @@ const BotList = () => {
   const labels = useBotLabels();
   const openBotForm = useBotFormDialog();
 
-  useBotStream();
-  const { data: bots, isLoading } = useQuantBots({
-    onSuccess: () => {
-      setTimeout(() => {
-        apiRef.current?.autosizeColumns(autosizeOptions);
-      }, 0);
-    },
-  });
+  const stringFilterOperators = useStringFilterOperators();
+  const enumFilterOperators = useEnumFilterOperators();
+  const dateFilterOperators = useDateFilterOperators();
+  const numberFilterOperators = useNumberFilterOperators();
 
-  const runningCount =
-    bots?.filter(({ status }) => status === "running").length ?? 0;
+  const updateQuery = useUpdateQuery();
+
+  const enumOptions = useMemo(() => getQuantBotEnumOptions(tBots), [tBots]);
+
+  useBotStream();
+  const {
+    data: { data: rows, total: rowCount } = {
+      data: initialRows,
+      total: initialRowCount,
+    },
+    isLoading: loading,
+  } = useSWR(
+    [
+      QUANT_BOTS_URL,
+      filterModel.items[0]?.field,
+      filterModel.items[0]?.operator,
+      filterModel.items[0]?.value,
+      filterModel.quickFilterValues,
+      paginationModel.page,
+      paginationModel.pageSize,
+      sortModel,
+    ],
+    async ([url]) =>
+      fetcher<{ data: QuantBot[]; total: number }>(
+        `${url}?${getDataGridSearchParams(
+          paginationModel,
+          filterModel,
+          sortModel,
+          enumOptions,
+        )}`,
+      ),
+    {
+      fallbackData: { data: initialRows, total: initialRowCount },
+      onSuccess: () => {
+        setTimeout(() => {
+          apiRef.current?.autosizeColumns(autosizeOptions);
+        }, 0);
+      },
+    },
+  );
+  const { data: { total: runningCount } = { total: 0 } } = useSWR<{
+    total: number;
+  }>(RUNNING_COUNT_URL, fetcher);
+
+  const handlePaginationModelChange = useCallback(
+    (newModel: GridPaginationModel) => {
+      setPaginationModel(newModel);
+
+      updateQuery({
+        page: String(newModel.page + 1),
+        pageSize: String(newModel.pageSize),
+      });
+    },
+    [updateQuery],
+  );
+
+  const handleSortModelChange = useCallback(
+    (newModel: GridSortModel) => {
+      setSortModel(newModel);
+      setPaginationModel((previous) => ({ ...previous, page: 0 }));
+
+      updateQuery({
+        page: "1",
+        sortBy: newModel[0]?.field ?? "",
+        sortDirection: newModel[0]?.sort ?? "",
+      });
+    },
+    [updateQuery],
+  );
+
+  const handleFilterModelChange = useCallback(
+    (newModel: GridFilterModel) => {
+      setFilterModel(newModel);
+      setPaginationModel((previous) => ({ ...previous, page: 0 }));
+
+      const {
+        filterField = "",
+        filterOperator = "",
+        filterValue = "",
+      } = getFilterItemParams(newModel.items[0]);
+
+      updateQuery({
+        filterField,
+        filterOperator,
+        filterValue,
+        page: "1",
+        quickFilterValue: (newModel.quickFilterValues ?? []).join(" ").trim(),
+      });
+    },
+    [updateQuery],
+  );
 
   const formatQuote = useCallback(
     (value: number) =>
@@ -246,68 +405,68 @@ const BotList = () => {
         resizable: false,
         sortable: false,
       },
-      { field: "name", headerName: tBots("columns.name") },
+      {
+        field: "name",
+        filterOperators: stringFilterOperators,
+        headerName: tBots("columns.name"),
+      },
       {
         field: "type",
+        filterOperators: enumFilterOperators,
         headerName: tBots("columns.type"),
         type: "singleSelect",
-        valueGetter: (value: QuantBot["type"]) => tBots(`types.${value}`),
-        valueOptions: quantBotTypeValues.map((type) => tBots(`types.${type}`)),
+        valueOptions: enumOptions.type,
       },
       {
         field: "symbol",
+        filterOperators: stringFilterOperators,
         headerName: tBots("columns.symbol"),
         valueGetter: (value: string) => quantPairOf(value),
       },
       {
         field: "mode",
+        filterOperators: enumFilterOperators,
         headerName: tBots("columns.mode"),
-        renderCell: ({
-          row,
-          value,
-        }: GridRenderCellParams<QuantBot, string>) => (
+        renderCell: ({ row }: GridRenderCellParams<QuantBot>) => (
           <Chip
             color={row.mode === "live" ? "warning" : "default"}
-            label={value}
+            label={tBots(`modes.${row.mode}`)}
             size="small"
             variant="outlined"
           />
         ),
         type: "singleSelect",
-        valueGetter: (value: QuantBot["mode"]) => tBots(`modes.${value}`),
-        valueOptions: quantBotModeValues.map((mode) => tBots(`modes.${mode}`)),
+        valueOptions: enumOptions.mode,
       },
       {
         field: "status",
+        filterOperators: enumFilterOperators,
         headerName: tBots("columns.status"),
-        renderCell: ({
-          row,
-          value,
-        }: GridRenderCellParams<QuantBot, string>) => (
+        renderCell: ({ row }: GridRenderCellParams<QuantBot>) => (
           <Tooltip title={labels.reason(row.statusReason) ?? ""}>
             <Chip
               color={STATUS_COLORS[row.status]}
-              label={value}
+              label={labels.status(row)}
               size="small"
               variant="outlined"
             />
           </Tooltip>
         ),
         type: "singleSelect",
-        valueGetter: (_, row: QuantBot) => labels.status(row),
-        valueOptions: [
-          tBots("statuses.notStarted"),
-          ...quantBotStatusValues.map((status) => tBots(`statuses.${status}`)),
-        ],
+        valueGetter: (_, row: QuantBot) =>
+          row.startedAt ? row.status : "notStarted",
+        valueOptions: enumOptions.status,
       },
       {
         field: "investment",
+        filterOperators: numberFilterOperators,
         headerName: tBots("columns.investment"),
         type: "number",
         valueFormatter: (value: number) => formatQuote(value),
       },
       {
         field: "pnl",
+        filterable: false,
         headerName: tBots("columns.pnl"),
         renderCell: ({ row }: GridRenderCellParams<QuantBot>) => (
           <Box component="span" sx={{ color: pnlColor(row.summary.pnl) }}>
@@ -320,27 +479,43 @@ const BotList = () => {
             )
           </Box>
         ),
+        sortable: false,
         type: "number",
         valueGetter: (_, row: QuantBot) => row.summary.pnl,
       },
       {
         field: "realizedPnl",
+        filterable: false,
         headerName: tBots("columns.realizedPnl"),
+        sortable: false,
         type: "number",
         valueFormatter: (value: number) => formatQuote(value),
         valueGetter: (_, row: QuantBot) => row.summary.realizedPnl,
       },
       {
         field: "startedAt",
+        filterOperators: dateFilterOperators,
         headerName: tBots("columns.startedAt"),
         renderCell: renderEmptyableCell,
-        type: "date",
-        valueFormatter: (value: Date | null) =>
-          value ? format.dateTime(value, "short") : "",
-        valueGetter: (value?: string) => (value ? new Date(value) : null),
+        valueFormatter: (value?: string) =>
+          value ? format.dateTime(new Date(value), "short") : "",
       },
     ],
-    [confirm, format, formatQuote, labels, openBotForm, request, router, tBots],
+    [
+      confirm,
+      dateFilterOperators,
+      enumFilterOperators,
+      enumOptions,
+      format,
+      formatQuote,
+      labels,
+      numberFilterOperators,
+      openBotForm,
+      request,
+      router,
+      stringFilterOperators,
+      tBots,
+    ],
   );
 
   return (
@@ -369,8 +544,19 @@ const BotList = () => {
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
         columns={columns}
-        loading={isLoading}
-        rows={bots ?? []}
+        filterMode="server"
+        filterModel={filterModel}
+        loading={loading}
+        onFilterModelChange={handleFilterModelChange}
+        onPaginationModelChange={handlePaginationModelChange}
+        onSortModelChange={handleSortModelChange}
+        pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
+        paginationMode="server"
+        paginationModel={paginationModel}
+        rowCount={rowCount}
+        rows={rows}
+        sortingMode="server"
+        sortModel={sortModel}
       />
     </>
   );

@@ -20,12 +20,17 @@ import FuturesGridOperationDialog, {
   FUTURES_GRID_OPERATION_FORM_ID,
   type FuturesGridOperation,
 } from "./FuturesGridOperationDialog";
+import GridOperationDialog, {
+  GRID_OPERATION_FORM_ID,
+  type GridOperation,
+} from "./GridOperationDialog";
 import AiDecisions from "./AiDecisions";
 import SignalPanel from "./SignalPanel";
 
 import DataGrid from "@/components/DataGrid";
 
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 import { quantMarketTypeOf, quantPairOf } from "@/constants/quant";
 
 import {
@@ -53,7 +58,12 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import type {
+  GridColDef,
+  GridPaginationModel,
+  GridRenderCellParams,
+  GridSortModel,
+} from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -69,6 +79,7 @@ import type {
   WebhookToken,
 } from "@/types/quant";
 
+import { getDataGridSearchParams } from "@/utils/dataGrid";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
@@ -91,6 +102,13 @@ const Panel = styled(Paper)(({ theme }) => ({
 }));
 
 type DetailTab = "events" | "fills" | "orders";
+
+type DetailRow = QuantBotEvent | QuantBotFill | QuantBotOrder;
+
+const FIRST_PAGE: GridPaginationModel = {
+  page: 0,
+  pageSize: DEFAULT_PAGE_SIZE,
+};
 
 const Stat = ({
   color,
@@ -128,13 +146,29 @@ const BotDetail = ({ botId }: { botId: string }) => {
     bot ? `/api/quant/markets?type=${quantMarketTypeOf(bot.symbol)}` : null,
     fetcher,
   );
-  const { data: orders } = useSWR<QuantBotOrder[]>(`${botUrl}/orders`, fetcher);
-  const { data: fills } = useSWR<QuantBotFill[]>(`${botUrl}/fills`, fetcher);
-  const { data: events } = useSWR<QuantBotEvent[]>(`${botUrl}/events`, fetcher);
 
   const [tab, setTab] = useState<DetailTab>("orders");
+  const [paginationModel, setPaginationModel] =
+    useState<GridPaginationModel>(FIRST_PAGE);
+  const [sortModel, setSortModel] = useState<GridSortModel>([]);
   const [operationAnchor, setOperationAnchor] = useState<HTMLElement | null>(
     null,
+  );
+
+  const {
+    data: { data: rows, total: rowCount } = { data: [], total: 0 },
+    isLoading: rowsLoading,
+  } = useSWR(
+    [
+      `${botUrl}/${tab}`,
+      paginationModel.page,
+      paginationModel.pageSize,
+      sortModel,
+    ],
+    async ([url]) =>
+      fetcher<{ data: DetailRow[]; total: number }>(
+        `${url}?${getDataGridSearchParams(paginationModel, { items: [] }, sortModel)}`,
+      ),
   );
 
   if (error) return <Alert severity="error">{getErrorMessage(error)}</Alert>;
@@ -183,11 +217,11 @@ const BotDetail = ({ botId }: { botId: string }) => {
   };
 
   const canOperate =
-    bot.type === "futures_grid" &&
+    (bot.type === "grid" || bot.type === "futures_grid") &&
     bot.mode === "live" &&
     bot.status === "running";
   const isPaused = bot.summary.pionexStatus === "paused";
-  const operations: FuturesGridOperation[] = [
+  const futuresOperations: FuturesGridOperation[] = [
     "invest",
     "range",
     "reduce",
@@ -196,6 +230,20 @@ const BotDetail = ({ botId }: { botId: string }) => {
     "reduceMargin",
     "stops",
   ];
+  const gridOperations: GridOperation[] = ["invest", "range", "profit"];
+
+  const openGridOperation = (operation: GridOperation) => {
+    setOperationAnchor(null);
+    setDialog({
+      confirmText: tBots("gridOperation.execute"),
+      content: (
+        <GridOperationDialog bot={bot} market={market} operation={operation} />
+      ),
+      formId: GRID_OPERATION_FORM_ID,
+      open: true,
+      title: tBots(`gridOperation.operations.${operation}`),
+    });
+  };
 
   const openOperation = (operation: FuturesGridOperation) => {
     setOperationAnchor(null);
@@ -301,6 +349,7 @@ const BotDetail = ({ botId }: { botId: string }) => {
       field: "size",
       headerName: tQuant("account.columns.size"),
       minWidth: 140,
+      sortable: false,
       valueGetter: (_, { amount, size }: QuantBotOrder) =>
         size !== undefined
           ? `${formatSize(size)} ${base}`
@@ -381,6 +430,7 @@ const BotDetail = ({ botId }: { botId: string }) => {
       field: "payload",
       flex: 1,
       headerName: "",
+      sortable: false,
       valueGetter: (_, row: QuantBotEvent) => describeEvent(row),
     },
   ];
@@ -469,7 +519,11 @@ const BotDetail = ({ botId }: { botId: string }) => {
                 startIcon={<Tune />}
                 variant="outlined"
               >
-                {tBots("futuresGridOperation.label")}
+                {tBots(
+                  bot.type === "grid"
+                    ? "gridOperation.label"
+                    : "futuresGridOperation.label",
+                )}
               </Button>
             )}
             {bot.type === "webhook" && (
@@ -504,11 +558,23 @@ const BotDetail = ({ botId }: { botId: string }) => {
           onClose={() => setOperationAnchor(null)}
           open={!!operationAnchor}
         >
-          {operations.map((operation) => (
-            <MenuItem key={operation} onClick={() => openOperation(operation)}>
-              {tBots(`futuresGridOperation.operations.${operation}`)}
-            </MenuItem>
-          ))}
+          {bot.type === "grid"
+            ? gridOperations.map((operation) => (
+                <MenuItem
+                  key={operation}
+                  onClick={() => openGridOperation(operation)}
+                >
+                  {tBots(`gridOperation.operations.${operation}`)}
+                </MenuItem>
+              ))
+            : futuresOperations.map((operation) => (
+                <MenuItem
+                  key={operation}
+                  onClick={() => openOperation(operation)}
+                >
+                  {tBots(`futuresGridOperation.operations.${operation}`)}
+                </MenuItem>
+              ))}
         </Menu>
         <Grid container spacing={2}>
           <Grid size={{ md: 2, sm: 4, xs: 6 }}>
@@ -583,7 +649,7 @@ const BotDetail = ({ botId }: { botId: string }) => {
       </Panel>
       {bot.type === "ai" && (
         <Panel>
-          <AiDecisions bot={bot} events={events ?? []} />
+          <AiDecisions bot={bot} />
         </Panel>
       )}
       {bot.type === "signal" && bot.startedAt && (
@@ -598,15 +664,18 @@ const BotDetail = ({ botId }: { botId: string }) => {
         </Panel>
       )}
       <Panel>
-        <BotChart
-          bot={bot}
-          fills={fills ?? []}
-          pricePrecision={pricePrecision}
-        />
+        <BotChart bot={bot} pricePrecision={pricePrecision} />
       </Panel>
       {!isPionexGrid && (
         <Panel>
-          <Tabs onChange={(_, value: DetailTab) => setTab(value)} value={tab}>
+          <Tabs
+            onChange={(_, value: DetailTab) => {
+              setTab(value);
+              setPaginationModel(FIRST_PAGE);
+              setSortModel([]);
+            }}
+            value={tab}
+          >
             <Tab label={tBots("detail.orders")} value="orders" />
             <Tab label={tBots("detail.fills")} value="fills" />
             <Tab label={tBots("detail.events")} value="events" />
@@ -621,18 +690,22 @@ const BotDetail = ({ botId }: { botId: string }) => {
                     ? fillColumns
                     : eventColumns
               }
+              disableColumnFilter
               key={tab}
-              loading={
-                tab === "orders" ? !orders : tab === "fills" ? !fills : !events
-              }
-              rows={
-                (tab === "orders"
-                  ? orders
-                  : tab === "fills"
-                    ? fills
-                    : events) ?? []
-              }
+              loading={rowsLoading}
+              onPaginationModelChange={setPaginationModel}
+              onSortModelChange={(newModel) => {
+                setSortModel(newModel);
+                setPaginationModel((previous) => ({ ...previous, page: 0 }));
+              }}
+              pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
+              paginationMode="server"
+              paginationModel={paginationModel}
+              rowCount={rowCount}
+              rows={rows}
               showToolbar={false}
+              sortingMode="server"
+              sortModel={sortModel}
             />
           </Box>
         </Panel>

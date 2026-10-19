@@ -26,6 +26,9 @@ import {
   orderResponseDtoPaymentMethodValues,
   payrollEarningCategoryValues,
   payrollStatementStatusValues,
+  quantBotModeValues,
+  quantBotStatusValues,
+  quantBotTypeValues,
   servingTemperatureValues,
   sweetnessValues,
   statutoryLeaveKindValues,
@@ -290,6 +293,24 @@ export const getPayrollStatementEnumOptions = (
 ) => ({
   status: payrollStatementStatusValues.map((value) => ({
     label: tAttendance(`payrollStatus.options.${value}`),
+    value,
+  })),
+});
+
+export const getQuantBotEnumOptions = (
+  tBots: ReturnType<typeof useTranslations<"quant.bots">>,
+) => ({
+  mode: quantBotModeValues.map((value) => ({
+    label: tBots(`modes.${value}`),
+    value,
+  })),
+  // 建立後尚未啟動的機器人由後端回報為 notStarted
+  status: (["notStarted", ...quantBotStatusValues] as const).map((value) => ({
+    label: tBots(`statuses.${value}`),
+    value,
+  })),
+  type: quantBotTypeValues.map((value) => ({
+    label: tBots(`types.${value}`),
     value,
   })),
 });
