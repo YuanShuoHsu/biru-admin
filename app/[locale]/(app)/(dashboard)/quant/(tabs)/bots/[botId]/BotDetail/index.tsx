@@ -14,6 +14,7 @@ import {
   useBotLabels,
   useBotStream,
 } from "../../useQuantBots";
+import StopBotConfirm from "../../StopBotConfirm";
 import WebhookSetup from "../../WebhookSetup";
 import { useBotFormDialog } from "../../BotForm";
 import FuturesGridOperationDialog, {
@@ -274,14 +275,17 @@ const BotDetail = ({ botId }: { botId: string }) => {
 
   const confirm = (action: "archive" | "stop") =>
     setDialog({
-      content: (
-        <DialogContentText>
-          {tBots.rich(`actions.${action}.confirm`, {
-            bold: (chunks) => <strong>{chunks}</strong>,
-            name: bot.name,
-          })}
-        </DialogContentText>
-      ),
+      content:
+        action === "stop" ? (
+          <StopBotConfirm bot={bot} />
+        ) : (
+          <DialogContentText>
+            {tBots.rich("actions.archive.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name: bot.name,
+            })}
+          </DialogContentText>
+        ),
       onConfirm: () => request(action, tBots(`actions.${action}.success`)),
       open: true,
       title: tBots(`actions.${action}.title`),

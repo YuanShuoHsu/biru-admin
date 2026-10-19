@@ -57,7 +57,15 @@
         "success": "시작했습니다"
       },
       "stop": {
-        "confirm": "<bold>{name}</bold>을(를) 중지할까요? 모든 주문이 취소되며 중지 후에는 다시 시작할 수 없습니다.",
+        "confirm": "<bold>{name}</bold>({pair} {type})을(를) 중지할까요? 중지 후에는 다시 시작할 수 없습니다.",
+        "consequences": {
+          "cancelOrders": "모든 주문을 취소합니다.",
+          "futuresGrid": "모든 그리드 주문을 취소하고 시장 최우선 가격으로 포지션을 청산합니다.",
+          "gridKeep": "모든 그리드 주문을 취소합니다. 보유한 {base}은(는) 계정에 남습니다.",
+          "gridSell": "모든 그리드 주문을 취소하고 보유한 {base}을(를) 시장가로 {quote}(으)로 매도합니다.",
+          "keepPosition": "모든 주문을 취소합니다. 포지션은 계정에 남습니다."
+        },
+        "currentPnl": "현재 총수익",
         "label": "중지",
         "success": "중지했습니다",
         "title": "봇 중지"

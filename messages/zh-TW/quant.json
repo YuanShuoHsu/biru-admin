@@ -57,7 +57,15 @@
         "success": "已啟動"
       },
       "stop": {
-        "confirm": "確定要停止 <bold>{name}</bold> 嗎？會撤銷所有掛單，停止後不能再啟動。",
+        "confirm": "確定要停止 <bold>{name}</bold>（{pair} {type}）嗎？停止後不能再啟動。",
+        "consequences": {
+          "cancelOrders": "停止後將取消所有掛單。",
+          "futuresGrid": "停止後將取消所有網格掛單，並以市場最優價格平掉持倉。",
+          "gridKeep": "停止後將取消所有網格掛單，持有的 {base} 會保留在帳戶中。",
+          "gridSell": "停止後將取消所有網格掛單，並以市價賣出持有的 {base} 換回 {quote}。",
+          "keepPosition": "停止後將取消所有掛單，持倉會保留在帳戶中。"
+        },
+        "currentPnl": "當前總利潤",
         "label": "停止",
         "success": "已停止",
         "title": "停止機器人"

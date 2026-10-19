@@ -57,7 +57,15 @@
         "success": "已启动"
       },
       "stop": {
-        "confirm": "确定要停止 <bold>{name}</bold> 吗？会撤销所有挂单，停止后不能再启动。",
+        "confirm": "确定要停止 <bold>{name}</bold>（{pair} {type}）吗？停止后不能再启动。",
+        "consequences": {
+          "cancelOrders": "停止后将取消所有挂单。",
+          "futuresGrid": "停止后将取消所有网格挂单，并以市场最优价格平掉持仓。",
+          "gridKeep": "停止后将取消所有网格挂单，持有的 {base} 会保留在账户中。",
+          "gridSell": "停止后将取消所有网格挂单，并以市价卖出持有的 {base} 换回 {quote}。",
+          "keepPosition": "停止后将取消所有挂单，持仓会保留在账户中。"
+        },
+        "currentPnl": "当前总利润",
         "label": "停止",
         "success": "已停止",
         "title": "停止机器人"

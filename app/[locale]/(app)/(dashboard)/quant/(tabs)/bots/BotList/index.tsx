@@ -7,6 +7,7 @@ import { enqueueSnackbar } from "notistack";
 import useSWR, { useSWRConfig } from "swr";
 
 import { useBotFormDialog } from "../BotForm";
+import StopBotConfirm from "../StopBotConfirm";
 import {
   QUANT_BOTS_URL,
   isQuantBotKey,
@@ -281,19 +282,22 @@ const BotList = ({
   );
 
   const confirm = useCallback(
-    (action: "archive" | "stop", { id, name }: QuantBot) =>
+    (action: "archive" | "stop", bot: QuantBot) =>
       setDialog({
-        content: (
-          <DialogContentText>
-            {tBots.rich(`actions.${action}.confirm`, {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              name,
-            })}
-          </DialogContentText>
-        ),
+        content:
+          action === "stop" ? (
+            <StopBotConfirm bot={bot} />
+          ) : (
+            <DialogContentText>
+              {tBots.rich("actions.archive.confirm", {
+                bold: (chunks) => <strong>{chunks}</strong>,
+                name: bot.name,
+              })}
+            </DialogContentText>
+          ),
         onConfirm: () =>
           request(
-            `${QUANT_BOTS_URL}/${id}/${action}`,
+            `${QUANT_BOTS_URL}/${bot.id}/${action}`,
             tBots(`actions.${action}.success`),
           ),
         open: true,

@@ -57,7 +57,15 @@
         "success": "Started"
       },
       "stop": {
-        "confirm": "Stop <bold>{name}</bold>? All open orders will be canceled and it cannot be started again.",
+        "confirm": "Stop <bold>{name}</bold> ({pair} {type})? It cannot be restarted.",
+        "consequences": {
+          "cancelOrders": "All open orders will be canceled.",
+          "futuresGrid": "All grid orders will be canceled and the position closed at the best market price.",
+          "gridKeep": "All grid orders will be canceled; the {base} held stays in your account.",
+          "gridSell": "All grid orders will be canceled and the {base} held will be sold for {quote} at market price.",
+          "keepPosition": "All open orders will be canceled; the position stays in your account."
+        },
+        "currentPnl": "Current total profit",
         "label": "Stop",
         "success": "Stopped",
         "title": "Stop bot"

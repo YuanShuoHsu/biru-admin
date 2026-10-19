@@ -57,7 +57,15 @@
         "success": "開始しました"
       },
       "stop": {
-        "confirm": "<bold>{name}</bold> を停止しますか？すべての注文を取り消し、停止後は再開できません。",
+        "confirm": "<bold>{name}</bold>（{pair} {type}）を停止しますか？停止後は再開できません。",
+        "consequences": {
+          "cancelOrders": "すべての注文を取り消します。",
+          "futuresGrid": "すべてのグリッド注文を取り消し、市場の最良価格でポジションを決済します。",
+          "gridKeep": "すべてのグリッド注文を取り消します。保有している {base} は口座に残ります。",
+          "gridSell": "すべてのグリッド注文を取り消し、保有している {base} を成行で {quote} に売却します。",
+          "keepPosition": "すべての注文を取り消します。ポジションは口座に残ります。"
+        },
+        "currentPnl": "現在の総利益",
         "label": "停止",
         "success": "停止しました",
         "title": "ボットを停止"
