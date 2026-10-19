@@ -10,6 +10,7 @@ import {
   useQuantCredentials,
 } from "../useQuantCredentials";
 import AiKeySettings from "./AiKeySettings";
+import CredentialAssets from "./CredentialAssets";
 import CredentialDialog, { CREDENTIAL_FORM_ID } from "./CredentialDialog";
 
 import DataGrid from "@/components/DataGrid";
@@ -34,6 +35,8 @@ import type { QuantCredential } from "@/types/quant";
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
+
+const ASSETS_COLUMN_MIN_WIDTH = 160;
 
 const ToolbarStack = styled(Stack)(({ theme }) => ({
   flexWrap: "wrap",
@@ -133,6 +136,16 @@ const CredentialSettings = () => {
         field: "apiKeyLast4",
         headerName: tQuant("settings.columns.apiKey"),
         valueFormatter: (value: string) => `••••${value}`,
+      },
+      {
+        field: "assets",
+        filterable: false,
+        headerName: tQuant("settings.columns.assets"),
+        minWidth: ASSETS_COLUMN_MIN_WIDTH,
+        renderCell: ({ row }: GridRenderCellParams<QuantCredential>) => (
+          <CredentialAssets credentialId={row.id} />
+        ),
+        sortable: false,
       },
       {
         field: "createdAt",

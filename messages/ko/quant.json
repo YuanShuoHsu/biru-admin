@@ -40,7 +40,8 @@
       "filled": "체결됨",
       "open": "미체결",
       "partiallyCanceled": "일부 체결 후 취소"
-    }
+    },
+    "fillDetails": "체결 내역"
   },
   "bots": {
     "actions": {
@@ -60,12 +61,6 @@
         "label": "중지",
         "success": "중지했습니다",
         "title": "봇 중지"
-      },
-      "stopAll": {
-        "confirm": "실행 중인 봇 {count}개를 모두 중지할까요? Pionex 그리드를 포함해 모든 주문이 취소됩니다.",
-        "label": "모두 중지",
-        "success": "모든 봇을 중지했습니다",
-        "title": "모든 봇 중지"
       },
       "view": "상세 보기"
     },
@@ -132,7 +127,11 @@
         "liquidationPrice": "예상 강제청산가",
         "pnl": "총 손익",
         "position": "보유량",
-        "realizedPnl": "실현 손익"
+        "realizedPnl": "실현 손익",
+        "gridProfit": "그리드 수익",
+        "floatingPnl": "미실현 손익",
+        "annualizedReturn": "연환산 수익률",
+        "gridAnnualizedReturn": "그리드 연환산"
       }
     },
     "events": {
@@ -745,7 +744,8 @@
       "actions": "작업",
       "apiKey": "API 키",
       "createdAt": "등록 시간",
-      "label": "이름"
+      "label": "이름",
+      "assets": "총자산"
     },
     "delete": {
       "confirm": "<bold>{label}</bold> 등록을 해제할까요? 다시 사용하려면 키를 다시 입력해야 합니다.",
@@ -760,12 +760,38 @@
       "labelPlaceholder": "예: 메인 계정"
     },
     "hint": "Pionex에서 API 키를 만들 때는 「읽기」와 「거래」 권한만 켜고, 서버의 아웃바운드 IP로 제한하는 것을 권장합니다. 키는 암호화되어 저장되며 본인만 볼 수 있습니다.",
-    "label": "API 키"
+    "label": "API 키",
+    "assets": {
+      "inBtc": "≈ {amount} BTC",
+      "title": "총자산"
+    }
   },
   "trades": {
     "label": "최근 체결",
     "price": "가격",
     "size": "수량",
     "time": "시간"
+  },
+  "transfer": {
+    "accounts": {
+      "MAIN": "현물 계정",
+      "TRADE": "선물 계정"
+    },
+    "amount": "수량",
+    "available": "이체 가능 {amount} {currency}",
+    "direction": "방향",
+    "from": "보내는 계정",
+    "history": "이체 내역",
+    "label": "이체",
+    "max": "전액",
+    "statuses": {
+      "COMPLETED": "완료",
+      "FAILED": "실패",
+      "PROCESSING": "처리 중"
+    },
+    "success": "이체했습니다",
+    "swap": "방향 바꾸기",
+    "title": "자금 이체",
+    "to": "받는 계정"
   }
 }

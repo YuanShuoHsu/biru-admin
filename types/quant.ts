@@ -14,6 +14,7 @@ import {
   quantOrderTypeValues,
   quantPositionModeValues,
   quantPositionSideValues,
+  quantTransferAccountValues,
 } from "@/types/api";
 
 export type QuantMarket = components["schemas"]["QuantMarketDto"];
@@ -34,6 +35,10 @@ export type QuantFillPage = components["schemas"]["QuantFillPageDto"];
 export type PlaceQuantOrderDto = components["schemas"]["PlaceQuantOrderDto"];
 export type PlaceQuantOrderResponse =
   components["schemas"]["PlaceQuantOrderResponseDto"];
+export type QuantTransfer = components["schemas"]["QuantTransferDto"];
+export type CreateQuantTransferDto =
+  components["schemas"]["CreateQuantTransferDto"];
+export type QuantAssets = components["schemas"]["QuantAssetsDto"];
 
 export type QuantFuturesAccount =
   components["schemas"]["QuantFuturesAccountDto"];
@@ -134,6 +139,7 @@ export type QuantFuturesOrderType =
 export type QuantMarginMode = (typeof quantMarginModeValues)[number];
 export type QuantPositionMode = (typeof quantPositionModeValues)[number];
 export type QuantPositionSide = (typeof quantPositionSideValues)[number];
+export type QuantTransferAccount = (typeof quantTransferAccountValues)[number];
 
 export interface QuantDepth {
   asks: [price: number, size: number][];

@@ -13,6 +13,7 @@ import {
 } from "../../../useQuantCredentials";
 import CredentialSelect, { NoCredential } from "../CredentialSelect";
 import { floorToPrecision } from "../TradePanel/definitions";
+import TransferDialog, { TRANSFER_FORM_ID } from "../TransferDialog";
 import {
   type FuturesOrderAction,
   type FuturesOrderForm,
@@ -259,6 +260,20 @@ const FuturesTradePanel = ({
       title: tQuant(`futures.settings.${kind}`),
     });
 
+  const openTransfer = () =>
+    setDialog({
+      content: (
+        <TransferDialog
+          credentialId={credential.id}
+          currency={market.quoteCurrency}
+          onSaved={revalidate}
+        />
+      ),
+      formId: TRANSFER_FORM_ID,
+      open: true,
+      title: tQuant("transfer.title"),
+    });
+
   const setOptions = { shouldValidate: isSubmitted };
 
   const fillPercentage = (ratio: number) => {
@@ -381,13 +396,24 @@ const FuturesTradePanel = ({
           ))}
         </TextField>
       )}
-      <Typography color="text.secondary" variant="body2">
-        {tQuant("futures.availableMargin")}{" "}
-        {format.number(available, {
-          maximumFractionDigits: market.pricePrecision,
-        })}{" "}
-        {market.quoteCurrency}
-      </Typography>
+      <Stack
+        sx={{
+          alignItems: "center",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <Typography color="text.secondary" variant="body2">
+          {tQuant("futures.availableMargin")}{" "}
+          {format.number(available, {
+            maximumFractionDigits: market.pricePrecision,
+          })}{" "}
+          {market.quoteCurrency}
+        </Typography>
+        <Button onClick={openTransfer} size="small">
+          {tQuant("transfer.label")}
+        </Button>
+      </Stack>
       {priceType === "LIMIT" && (
         <TextField
           {...register("price")}

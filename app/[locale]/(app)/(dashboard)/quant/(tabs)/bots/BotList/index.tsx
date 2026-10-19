@@ -43,7 +43,6 @@ import {
   Insights,
   PlayArrow,
   Stop,
-  StopCircle,
 } from "@mui/icons-material";
 import {
   Box,
@@ -101,9 +100,6 @@ const STATUS_COLORS = {
   running: "success",
   stopped: "default",
 } as const;
-
-// 「全部停止」要算所有頁的執行中機器人，不能只看目前這一頁
-const RUNNING_COUNT_URL = `${QUANT_BOTS_URL}?filterField=status&filterOperator=is&filterValue=running&limit=1`;
 
 interface BotListProps {
   filterField?: QuantBotFilterField;
@@ -211,9 +207,6 @@ const BotList = ({
       },
     },
   );
-  const { data: { total: runningCount } = { total: 0 } } = useSWR<{
-    total: number;
-  }>(RUNNING_COUNT_URL, fetcher);
 
   const handlePaginationModelChange = useCallback(
     (newModel: GridPaginationModel) => {
@@ -308,19 +301,6 @@ const BotList = ({
       }),
     [request, setDialog, tBots],
   );
-
-  const handleStopAll = () =>
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tBots("actions.stopAll.confirm", { count: runningCount })}
-        </DialogContentText>
-      ),
-      onConfirm: () =>
-        request(`${QUANT_BOTS_URL}/stop-all`, tBots("actions.stopAll.success")),
-      open: true,
-      title: tBots("actions.stopAll.title"),
-    });
 
   const columns = useMemo<GridColDef[]>(
     () => [
@@ -545,16 +525,6 @@ const BotList = ({
           variant="contained"
         >
           {tBots("new.label")}
-        </Button>
-        <Button
-          color="error"
-          disabled={!runningCount}
-          onClick={handleStopAll}
-          size="small"
-          startIcon={<StopCircle />}
-          variant="outlined"
-        >
-          {tBots("actions.stopAll.label")}
         </Button>
       </ToolbarStack>
       <DataGrid

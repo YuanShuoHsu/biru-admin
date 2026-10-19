@@ -182,6 +182,7 @@ const BotDetail = ({ botId }: { botId: string }) => {
   const quote = market?.quoteCurrency ?? "";
   const base = market?.baseCurrency ?? "";
   const isPionexGrid = bot.executor === "pionex";
+  const isGrid = bot.type === "grid" || bot.type === "futures_grid";
   const futuresConfig =
     bot.type === "futures_grid" ? (bot.config as FuturesGridConfig) : null;
   const isFutures = quantMarketTypeOf(bot.symbol) === "PERP";
@@ -202,6 +203,14 @@ const BotDetail = ({ botId }: { botId: string }) => {
       : format.number(value, { maximumFractionDigits: sizePrecision });
   const formatTime = (value: string) =>
     format.dateTime(new Date(value), "short");
+  const formatPercent = (value?: number) =>
+    value === undefined
+      ? "—"
+      : format.number(value, {
+          maximumFractionDigits: 2,
+          signDisplay: "exceptZero",
+          style: "percent",
+        });
 
   const request = async (path: string, success: string) => {
     try {
@@ -599,10 +608,35 @@ const BotDetail = ({ botId }: { botId: string }) => {
           <Grid size={{ md: 2, sm: 4, xs: 6 }}>
             <Stat
               color={pnlColor(summary.realizedPnl)}
-              label={tBots("detail.summary.realizedPnl")}
+              label={tBots(
+                isGrid ? "detail.summary.gridProfit" : "detail.summary.realizedPnl",
+              )}
               value={formatQuote(summary.realizedPnl)}
             />
           </Grid>
+          <Grid size={{ md: 2, sm: 4, xs: 6 }}>
+            <Stat
+              color={pnlColor(summary.floatingPnl)}
+              label={tBots("detail.summary.floatingPnl")}
+              value={formatQuote(summary.floatingPnl)}
+            />
+          </Grid>
+          <Grid size={{ md: 2, sm: 4, xs: 6 }}>
+            <Stat
+              color={pnlColor(summary.annualizedReturn ?? 0)}
+              label={tBots("detail.summary.annualizedReturn")}
+              value={formatPercent(summary.annualizedReturn)}
+            />
+          </Grid>
+          {isGrid && (
+            <Grid size={{ md: 2, sm: 4, xs: 6 }}>
+              <Stat
+                color={pnlColor(summary.gridAnnualizedReturn ?? 0)}
+                label={tBots("detail.summary.gridAnnualizedReturn")}
+                value={formatPercent(summary.gridAnnualizedReturn)}
+              />
+            </Grid>
+          )}
           <Grid size={{ md: 2, sm: 4, xs: 6 }}>
             <Stat
               label={tBots("detail.summary.position")}

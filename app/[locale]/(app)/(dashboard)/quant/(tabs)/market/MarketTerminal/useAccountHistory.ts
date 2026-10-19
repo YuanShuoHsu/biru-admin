@@ -64,7 +64,7 @@ export const useAccountHistory = <Row>(
     ...(endTime !== undefined && { endTime: String(endTime) }),
   });
   const { data, isLoading } = useSWR<HistoryPage<Row>>(
-    url && `${url}&${params.toString()}`,
+    url && `${url}${url.includes("?") ? "&" : "?"}${params.toString()}`,
     fetcher,
     { onSuccess },
   );

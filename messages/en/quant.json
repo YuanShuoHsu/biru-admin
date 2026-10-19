@@ -40,7 +40,8 @@
       "filled": "Filled",
       "open": "Open",
       "partiallyCanceled": "Partially filled, canceled"
-    }
+    },
+    "fillDetails": "Fill details"
   },
   "bots": {
     "actions": {
@@ -60,12 +61,6 @@
         "label": "Stop",
         "success": "Stopped",
         "title": "Stop bot"
-      },
-      "stopAll": {
-        "confirm": "Stop all {count} running bots? All open orders will be canceled, including Pionex grids.",
-        "label": "Stop all",
-        "success": "All bots stopped",
-        "title": "Stop all bots"
       },
       "view": "View details"
     },
@@ -132,7 +127,11 @@
         "liquidationPrice": "Est. liquidation price",
         "pnl": "Total P&L",
         "position": "Position",
-        "realizedPnl": "Realized P&L"
+        "realizedPnl": "Realized P&L",
+        "gridProfit": "Grid profit",
+        "floatingPnl": "Floating PnL",
+        "annualizedReturn": "APR",
+        "gridAnnualizedReturn": "Grid APR"
       }
     },
     "events": {
@@ -745,7 +744,8 @@
       "actions": "Actions",
       "apiKey": "API key",
       "createdAt": "Added",
-      "label": "Name"
+      "label": "Name",
+      "assets": "Total assets"
     },
     "delete": {
       "confirm": "Remove <bold>{label}</bold>? You will need to enter the key again to use it.",
@@ -760,12 +760,38 @@
       "labelPlaceholder": "e.g. Main account"
     },
     "hint": "When creating the key on Pionex, enable only the Read and Trade permissions, and restrict it to the server’s outbound IPs. Keys are stored encrypted and only you can see them.",
-    "label": "API keys"
+    "label": "API keys",
+    "assets": {
+      "inBtc": "≈ {amount} BTC",
+      "title": "Total assets"
+    }
   },
   "trades": {
     "label": "Recent Trades",
     "price": "Price",
     "size": "Size",
     "time": "Time"
+  },
+  "transfer": {
+    "accounts": {
+      "MAIN": "Spot account",
+      "TRADE": "Futures account"
+    },
+    "amount": "Amount",
+    "available": "Transferable: {amount} {currency}",
+    "direction": "Direction",
+    "from": "From",
+    "history": "Transfers",
+    "label": "Transfer",
+    "max": "Max",
+    "statuses": {
+      "COMPLETED": "Completed",
+      "FAILED": "Failed",
+      "PROCESSING": "Processing"
+    },
+    "success": "Transfer submitted",
+    "swap": "Swap direction",
+    "title": "Transfer funds",
+    "to": "To"
   }
 }

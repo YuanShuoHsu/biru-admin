@@ -40,7 +40,8 @@
       "filled": "約定済",
       "open": "未約定",
       "partiallyCanceled": "一部約定後取消"
-    }
+    },
+    "fillDetails": "約定明細"
   },
   "bots": {
     "actions": {
@@ -60,12 +61,6 @@
         "label": "停止",
         "success": "停止しました",
         "title": "ボットを停止"
-      },
-      "stopAll": {
-        "confirm": "実行中の {count} 個のボットをすべて停止しますか？Pionex のグリッドも含めて注文を取り消します。",
-        "label": "すべて停止",
-        "success": "すべてのボットを停止しました",
-        "title": "すべてのボットを停止"
       },
       "view": "詳細を表示"
     },
@@ -132,7 +127,11 @@
         "liquidationPrice": "推定清算価格",
         "pnl": "総損益",
         "position": "保有",
-        "realizedPnl": "確定損益"
+        "realizedPnl": "確定損益",
+        "gridProfit": "グリッド利益",
+        "floatingPnl": "含み損益",
+        "annualizedReturn": "年利",
+        "gridAnnualizedReturn": "グリッド年利"
       }
     },
     "events": {
@@ -745,7 +744,8 @@
       "actions": "操作",
       "apiKey": "API キー",
       "createdAt": "登録日時",
-      "label": "名前"
+      "label": "名前",
+      "assets": "総資産"
     },
     "delete": {
       "confirm": "<bold>{label}</bold> の登録を解除しますか？再度使うにはキーを入力し直す必要があります。",
@@ -760,12 +760,38 @@
       "labelPlaceholder": "例：メイン口座"
     },
     "hint": "Pionex で API キーを作成する際は「読み取り」と「取引」の権限のみを有効にし、サーバーの送信元 IP で制限することをおすすめします。キーは暗号化して保存され、本人以外は閲覧できません。",
-    "label": "API キー"
+    "label": "API キー",
+    "assets": {
+      "inBtc": "≈ {amount} BTC",
+      "title": "総資産"
+    }
   },
   "trades": {
     "label": "約定履歴",
     "price": "価格",
     "size": "数量",
     "time": "時刻"
+  },
+  "transfer": {
+    "accounts": {
+      "MAIN": "現物口座",
+      "TRADE": "先物口座"
+    },
+    "amount": "数量",
+    "available": "振替可能 {amount} {currency}",
+    "direction": "方向",
+    "from": "振替元",
+    "history": "振替履歴",
+    "label": "振替",
+    "max": "全額",
+    "statuses": {
+      "COMPLETED": "完了",
+      "FAILED": "失敗",
+      "PROCESSING": "処理中"
+    },
+    "success": "振替しました",
+    "swap": "方向を入れ替え",
+    "title": "資金振替",
+    "to": "振替先"
   }
 }

@@ -11,6 +11,7 @@ import {
   quantAccountUrl,
 } from "../../../useQuantCredentials";
 import HistoryRangeToggle from "../HistoryRangeToggle";
+import OrderFills from "../OrderFills";
 import { useAccountHistory } from "../useAccountHistory";
 
 import IsolatedMarginDialog, {
@@ -21,7 +22,7 @@ import DataGrid from "@/components/DataGrid";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
-import { Close } from "@mui/icons-material";
+import { Close, ReceiptLong } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -50,6 +51,7 @@ import type {
   QuantMarket,
   QuantPosition,
   QuantPositionHistory,
+  QuantTransfer,
 } from "@/types/quant";
 
 import { getErrorMessage } from "@/utils/errors";
@@ -63,7 +65,8 @@ type FuturesTab =
   | "openOrders"
   | "orders"
   | "positionHistory"
-  | "positions";
+  | "positions"
+  | "transfers";
 
 type MarketSpec = Pick<
   QuantMarket,
@@ -121,6 +124,10 @@ const FuturesAccount = ({
   );
   const fillsHistory = useAccountHistory<QuantFuturesFill>(
     tab === "fills" ? url(`/fills${symbolQuery}`) : null,
+    autosizeOnData.onSuccess,
+  );
+  const transfersHistory = useAccountHistory<QuantTransfer>(
+    tab === "transfers" ? quantAccountUrl(credential.id, "transfers") : null,
     autosizeOnData.onSuccess,
   );
   const history =
@@ -198,6 +205,7 @@ const FuturesAccount = ({
     openOrderColumns,
     positionColumns,
     positionHistoryColumns,
+    transferColumns,
   } = useMemo(() => {
     const accountUrl = (path: string) =>
       quantAccountUrl(credential.id, `futures${path}`);
@@ -500,7 +508,48 @@ const FuturesAccount = ({
       ...orderColumns,
     ];
 
+    const showFills = (order: QuantFuturesOrder) =>
+      setDialog({
+        content: (
+          <OrderFills
+            pricePrecision={marketOf(order.symbol).pricePrecision}
+            sizePrecision={marketOf(order.symbol).sizePrecision}
+            url={accountUrl(
+              `/orders/${order.orderId}/fills?symbol=${order.symbol}`,
+            )}
+          />
+        ),
+        maxWidth: "md",
+        open: true,
+        showCancel: false,
+        title: tQuant("account.fillDetails"),
+      });
+
     const historyColumns: GridColDef[] = [
+      {
+        disableColumnMenu: true,
+        disableExport: true,
+        field: "actions",
+        filterable: false,
+        headerName: tQuant("account.columns.actions"),
+        renderCell: ({ row }: GridRenderCellParams<QuantFuturesOrder>) =>
+          row.filledSize > 0 && (
+            <Tooltip title={tQuant("account.fillDetails")}>
+              <IconButton
+                onClick={(event) => {
+                  event.stopPropagation();
+
+                  showFills(row);
+                }}
+                size="small"
+              >
+                <ReceiptLong fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          ),
+        resizable: false,
+        sortable: false,
+      },
       ...orderColumns,
       {
         field: "averagePrice",
@@ -644,6 +693,32 @@ const FuturesAccount = ({
       },
     ];
 
+    const transferColumns: GridColDef[] = [
+      {
+        field: "time",
+        headerName: tQuant("account.columns.time"),
+        valueFormatter: (value: number) => formatTime(value),
+      },
+      {
+        field: "fromAccount",
+        headerName: tQuant("transfer.direction"),
+        valueGetter: (_, { fromAccount, toAccount }: QuantTransfer) =>
+          `${tQuant(`transfer.accounts.${fromAccount}`)} → ${tQuant(`transfer.accounts.${toAccount}`)}`,
+      },
+      {
+        field: "amount",
+        headerName: tQuant("transfer.amount"),
+        valueGetter: (_, { amount, currency }: QuantTransfer) =>
+          `${format.number(amount, "precise")} ${currency}`,
+      },
+      {
+        field: "status",
+        headerName: tQuant("account.columns.status"),
+        valueFormatter: (value: QuantTransfer["status"]) =>
+          tQuant(`transfer.statuses.${value}`),
+      },
+    ];
+
     return {
       fillColumns,
       fundingColumns,
@@ -651,6 +726,7 @@ const FuturesAccount = ({
       openOrderColumns,
       positionColumns,
       positionHistoryColumns,
+      transferColumns,
     };
   }, [
     credential.id,
@@ -702,6 +778,14 @@ const FuturesAccount = ({
         id: position.positionId,
       })),
     },
+    transfers: {
+      ...transfersHistory.gridProps,
+      columns: transferColumns,
+      rows: transfersHistory.gridProps.rows.map((transfer) => ({
+        ...transfer,
+        id: transfer.transferId,
+      })),
+    },
   };
   const grid = grids[tab];
 
@@ -736,6 +820,7 @@ const FuturesAccount = ({
             value="positionHistory"
           />
           <Tab label={tQuant("futures.fundingFees")} value="funding" />
+          <Tab label={tQuant("transfer.history")} value="transfers" />
         </Tabs>
         {tab === "openOrders" && !!openOrders?.length && (
           <Button color="error" onClick={handleCancelAll} size="small">

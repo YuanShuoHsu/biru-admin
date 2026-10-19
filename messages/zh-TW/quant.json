@@ -40,7 +40,8 @@
       "filled": "已成交",
       "open": "未完成",
       "partiallyCanceled": "部分成交後撤銷"
-    }
+    },
+    "fillDetails": "成交明細"
   },
   "bots": {
     "actions": {
@@ -60,12 +61,6 @@
         "label": "停止",
         "success": "已停止",
         "title": "停止機器人"
-      },
-      "stopAll": {
-        "confirm": "確定要停止全部 {count} 個執行中的機器人嗎？會撤銷所有掛單，Pionex 網格也會一併停止。",
-        "label": "全部停止",
-        "success": "已停止全部機器人",
-        "title": "停止所有機器人"
       },
       "view": "查看詳情"
     },
@@ -132,7 +127,11 @@
         "liquidationPrice": "預估強平價",
         "pnl": "總損益",
         "position": "持倉",
-        "realizedPnl": "已實現損益"
+        "realizedPnl": "已實現損益",
+        "gridProfit": "網格利潤",
+        "floatingPnl": "浮動盈虧",
+        "annualizedReturn": "年化報酬",
+        "gridAnnualizedReturn": "網格年化"
       }
     },
     "events": {
@@ -745,7 +744,8 @@
       "actions": "操作",
       "apiKey": "API key",
       "createdAt": "綁定時間",
-      "label": "名稱"
+      "label": "名稱",
+      "assets": "總資產"
     },
     "delete": {
       "confirm": "確定要解除綁定 <bold>{label}</bold> 嗎？之後要再使用必須重新輸入金鑰。",
@@ -760,12 +760,38 @@
       "labelPlaceholder": "例如：主帳戶"
     },
     "hint": "在 Pionex 建立 API key 時只需開啟「讀取」與「交易」權限，並建議綁定伺服器的出口 IP 白名單。金鑰會加密保存，只有你本人看得到。",
-    "label": "API key"
+    "label": "API key",
+    "assets": {
+      "inBtc": "≈ {amount} BTC",
+      "title": "總資產"
+    }
   },
   "trades": {
     "label": "最新成交",
     "price": "價格",
     "size": "數量",
     "time": "時間"
+  },
+  "transfer": {
+    "accounts": {
+      "MAIN": "現貨帳戶",
+      "TRADE": "合約帳戶"
+    },
+    "amount": "數量",
+    "available": "可劃轉 {amount} {currency}",
+    "direction": "方向",
+    "from": "從",
+    "history": "劃轉紀錄",
+    "label": "劃轉",
+    "max": "全部",
+    "statuses": {
+      "COMPLETED": "已完成",
+      "FAILED": "失敗",
+      "PROCESSING": "處理中"
+    },
+    "success": "已劃轉",
+    "swap": "交換方向",
+    "title": "資金劃轉",
+    "to": "到"
   }
 }

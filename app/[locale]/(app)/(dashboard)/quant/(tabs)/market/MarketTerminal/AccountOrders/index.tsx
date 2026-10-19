@@ -11,13 +11,14 @@ import {
   quantAccountUrl,
 } from "../../../useQuantCredentials";
 import HistoryRangeToggle from "../HistoryRangeToggle";
+import OrderFills from "../OrderFills";
 import { useAccountHistory } from "../useAccountHistory";
 
 import DataGrid from "@/components/DataGrid";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
-import { Close } from "@mui/icons-material";
+import { Close, ReceiptLong } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -243,7 +244,46 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
       ...orderColumns,
     ];
 
+    const showFills = (order: QuantOrder) =>
+      setDialog({
+        content: (
+          <OrderFills
+            pricePrecision={market.pricePrecision}
+            sizePrecision={market.sizePrecision}
+            url={`${quantAccountUrl(credential.id, `orders/${order.orderId}/fills`)}${symbolQuery}`}
+          />
+        ),
+        maxWidth: "md",
+        open: true,
+        showCancel: false,
+        title: tQuant("account.fillDetails"),
+      });
+
     const historyColumns: GridColDef[] = [
+      {
+        disableColumnMenu: true,
+        disableExport: true,
+        field: "actions",
+        filterable: false,
+        headerName: tQuant("account.columns.actions"),
+        renderCell: ({ row }: GridRenderCellParams<QuantOrder>) =>
+          row.filledSize > 0 && (
+            <Tooltip title={tQuant("account.fillDetails")}>
+              <IconButton
+                onClick={(event) => {
+                  event.stopPropagation();
+
+                  showFills(row);
+                }}
+                size="small"
+              >
+                <ReceiptLong fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          ),
+        resizable: false,
+        sortable: false,
+      },
       ...orderColumns,
       {
         field: "averagePrice",
@@ -306,6 +346,7 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
     market.quoteCurrency,
     market.sizePrecision,
     mutate,
+    setDialog,
     symbolQuery,
     tQuant,
   ]);
