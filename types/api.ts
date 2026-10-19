@@ -3436,6 +3436,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/quant/credentials/{id}/orders/{orderId}/fills": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得一筆委託的成交明細 */
+    get: operations["QuantAccountController_findOrderFills"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/quant/credentials/{id}/fills": {
     parameters: {
       query?: never;
@@ -3447,6 +3464,41 @@ export interface paths {
     get: operations["QuantAccountController_findFills"];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/credentials/{id}/assets": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得現貨與合約帳戶的總資產估值 */
+    get: operations["QuantAccountController_findAssets"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/credentials/{id}/transfers": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得現貨與合約帳戶間的劃轉紀錄（依時間由新到舊分頁） */
+    get: operations["QuantAccountController_findTransfers"];
+    put?: never;
+    /** 在現貨與合約帳戶間劃轉資金 */
+    post: operations["QuantAccountController_createTransfer"];
     delete?: never;
     options?: never;
     head?: never;
@@ -3636,23 +3688,6 @@ export interface paths {
     put?: never;
     /** 建立 AI 交易機器人 */
     post: operations["QuantBotsController_createAi"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/quant/bots/stop-all": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** 一鍵停止自己所有執行中的機器人 */
-    post: operations["QuantBotsController_stopAll"];
     delete?: never;
     options?: never;
     head?: never;
@@ -4269,6 +4304,23 @@ export interface paths {
     post?: never;
     /** 撤銷合約委託 */
     delete: operations["QuantFuturesController_cancelOrder"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/credentials/{id}/futures/orders/{orderId}/fills": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得一筆合約委託的成交明細 */
+    get: operations["QuantFuturesController_findOrderFills"];
+    put?: never;
+    post?: never;
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -9720,6 +9772,58 @@ export interface components {
       /** @description 下一頁要帶的 endTime；null 表示沒有更早的紀錄 */
       nextEndTime: number | null;
     };
+    /**
+     * @description MAIN 現貨帳戶、TRADE 合約帳戶
+     * @enum {string}
+     */
+    QuantTransferAccount: "MAIN" | "TRADE";
+    QuantAssetCategoryDto: {
+      /** @description Pionex 的分類代碼 */
+      type: string;
+      /** @description Pionex 依語系翻譯的分類名稱 */
+      title: string;
+      totalInUsdt: number;
+    };
+    QuantAssetAccountDto: {
+      /** @description MAIN 現貨帳戶、TRADE 合約帳戶 */
+      account: components["schemas"]["QuantTransferAccount"];
+      totalInUsdt: number;
+      categories: components["schemas"]["QuantAssetCategoryDto"][];
+    };
+    QuantAssetsDto: {
+      /** @description 所有帳戶的 USDT 估值 */
+      totalInUsdt: number;
+      /** @description 所有帳戶的 BTC 估值 */
+      totalInBtc: number;
+      accounts: components["schemas"]["QuantAssetAccountDto"][];
+    };
+    /** @enum {string} */
+    QuantTransferStatus: "COMPLETED" | "PROCESSING" | "FAILED";
+    QuantTransferDto: {
+      transferId: string;
+      /** @description MAIN 現貨帳戶、TRADE 合約帳戶 */
+      fromAccount: components["schemas"]["QuantTransferAccount"];
+      /** @description MAIN 現貨帳戶、TRADE 合約帳戶 */
+      toAccount: components["schemas"]["QuantTransferAccount"];
+      currency: string;
+      amount: number;
+      status: components["schemas"]["QuantTransferStatus"];
+      /** @description 劃轉時間（毫秒） */
+      time: number;
+    };
+    QuantTransferPageDto: {
+      data: components["schemas"]["QuantTransferDto"][];
+      /** @description 下一頁要帶的 endTime；null 表示沒有更早的紀錄 */
+      nextEndTime: number | null;
+    };
+    CreateQuantTransferDto: {
+      /** @description 轉出帳戶，轉入另一個；MAIN 現貨帳戶、TRADE 合約帳戶 */
+      fromAccount: components["schemas"]["QuantTransferAccount"];
+      /** @example USDT */
+      currency: string;
+      /** @example 100 */
+      amount: string;
+    };
     QuantAiKeyDto: {
       configured: boolean;
       /** @description Claude API key 末 4 碼 */
@@ -10038,8 +10142,14 @@ export interface components {
       equity: number;
       /** @description 總損益（計價幣） */
       pnl: number;
-      /** @description 已實現損益（計價幣） */
+      /** @description 已實現損益（計價幣）；網格機器人即網格利潤 */
       realizedPnl: number;
+      /** @description 浮動盈虧＝持倉 ×（現價 − 持倉均價） */
+      floatingPnl: number;
+      /** @description 總損益相對投入的年化報酬率（比例）；尚未啟動時不回傳 */
+      annualizedReturn?: number;
+      /** @description 網格：網格利潤相對投入的年化報酬率（比例）；尚未啟動時不回傳 */
+      gridAnnualizedReturn?: number;
       /** @description 持有基礎幣數量；合約做空為負數 */
       position: number;
       /** @description 持倉均價 */
@@ -19324,6 +19434,37 @@ export interface operations {
       };
     };
   };
+  QuantAccountController_findOrderFills: {
+    parameters: {
+      query: {
+        symbol: string;
+      };
+      header?: never;
+      path: {
+        id: string;
+        orderId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantFillDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   QuantAccountController_findFills: {
     parameters: {
       query: {
@@ -19349,6 +19490,96 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["QuantFillPageDto"];
         };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAccountController_findAssets: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantAssetsDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAccountController_findTransfers: {
+    parameters: {
+      query?: {
+        limit?: number;
+        /** @description 只回傳此時間（含）以前的紀錄（毫秒）；換頁時帶上一頁的 nextEndTime */
+        endTime?: number;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantTransferPageDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAccountController_createTransfer: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateQuantTransferDto"];
+      };
+    };
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {
@@ -19734,30 +19965,6 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["CreateQuantBotResponseDto"];
         };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  QuantBotsController_stopAll: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
       };
       /** @description Internal server error */
       500: {
@@ -20929,6 +21136,37 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantFuturesController_findOrderFills: {
+    parameters: {
+      query: {
+        symbol: string;
+      };
+      header?: never;
+      path: {
+        id: string;
+        orderId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantFuturesFillDto"][];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -22694,6 +22932,12 @@ export const quantOrderStatusValues: ReadonlyArray<
 export const quantFillRoleValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantFillRole"]
 > = ["MAKER", "TAKER"];
+export const quantTransferAccountValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantTransferAccount"]
+> = ["MAIN", "TRADE"];
+export const quantTransferStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantTransferStatus"]
+> = ["COMPLETED", "PROCESSING", "FAILED"];
 export const quantBotOrderStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantBotOrderStatus"]
 > = ["open", "filled", "canceled", "rejected"];
