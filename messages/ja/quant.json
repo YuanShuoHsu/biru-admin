@@ -219,6 +219,8 @@
         },
         "lossStopHigh": "上側の損切り価格（任意）",
         "lossStopHighHelper": "ニュートラルグリッドで価格がこの値まで上がると停止して決済します",
+        "lossStopLimitHigh": "上側の損切り指値",
+        "lossStopLimitHighHelper": "ニュートラルグリッドが上側の損切り価格に達したら、この価格で指値決済します",
         "profitStopHelper": {
           "long": "価格がこの値まで上がると停止して決済します。金額の場合は利益がこの額に達したとき、比率の場合は利益が投資額のこの割合に達したとき",
           "no_trend": "ニュートラルグリッドの利確は金額か比率でのみ設定できます",
@@ -254,12 +256,16 @@
           "label": "間隔"
         },
         "lossStop": "損切り（任意）",
+        "lossStopLimit": "損切り指値",
         "lossStopType": "損切り方式",
         "profitStop": "利確（任意）",
+        "profitStopLimit": "利確指値",
         "profitStopType": "利確方式",
         "row": "グリッド数",
+        "stopLimitHelper": "発動後この価格で指値注文を出して決済します。価格が届くまで約定しません",
         "stopType": {
           "price": "価格",
+          "price_limit": "指値",
           "profit_amount": "金額",
           "profit_ratio": "比率"
         },
@@ -360,6 +366,7 @@
       "liquidationDown": "下側清算価格：{before} → {after}",
       "liquidationUp": "上側清算価格：{before} → {after}",
       "lossStopHigh": "上側の損切り価格（ニュートラル）",
+      "lossStopLimitHigh": "上側の損切り指値（ニュートラル）",
       "maxAmount": "最大 {amount} {quote} まで減らせます",
       "operations": {
         "addMargin": "証拠金を追加",

@@ -3,12 +3,16 @@ import * as z from "zod";
 
 import { quantMarketTypeOf } from "@/constants/quant";
 
+import {
+  quantFuturesGridStopTypeValues,
+  quantGridStopTypeValues,
+} from "@/types/api";
 import type {
   AiConfig,
   DcaConfig,
   FuturesGridConfig,
   GridConfig,
-  GridStopType,
+  FuturesGridStopType,
   IndicatorCondition,
   IndicatorConfig,
   QuantBot,
@@ -62,9 +66,11 @@ export interface BotFormValues {
     closeModel: GridConfig["closeModel"];
     gridType: GridConfig["gridType"];
     lossStop: string;
-    lossStopType: GridStopType;
+    lossStopLimit: string;
+    lossStopType: FuturesGridStopType;
     profitStop: string;
-    profitStopType: GridStopType;
+    profitStopLimit: string;
+    profitStopType: FuturesGridStopType;
     row: string;
     top: string;
     triggerDirection: "above" | "below";
@@ -82,6 +88,7 @@ export interface BotFormValues {
     extraMargin: string;
     leverage: string;
     lossStopHigh: string;
+    lossStopLimitHigh: string;
     trend: FuturesGridConfig["trend"];
   };
   investment: string;
@@ -148,8 +155,10 @@ export const defaultValues = (
     closeModel: "NOT_SELL",
     gridType: "arithmetic",
     lossStop: "",
+    lossStopLimit: "",
     lossStopType: "price",
     profitStop: "",
+    profitStopLimit: "",
     profitStopType: "price",
     row: "",
     top: "",
@@ -160,6 +169,7 @@ export const defaultValues = (
     extraMargin: "",
     leverage: "",
     lossStopHigh: "",
+    lossStopLimitHigh: "",
     trend: "long",
   },
   indicator: {
@@ -245,11 +255,16 @@ export const valuesFromBot = (
     }
     case "futures_grid": {
       const config = bot.config as FuturesGridConfig;
-      values.grid = gridValues(base.grid, config);
+      values.grid = {
+        ...gridValues(base.grid, config),
+        lossStopLimit: text(config.lossStop?.limitPrice),
+        profitStopLimit: text(config.profitStop?.limitPrice),
+      };
       values.futuresGrid = {
         extraMargin: text(config.extraMargin),
         leverage: text(config.leverage),
         lossStopHigh: text(config.lossStopHigh),
+        lossStopLimitHigh: text(config.lossStopLimitHigh),
         trend: config.trend,
       };
       break;
@@ -353,14 +368,25 @@ const toCondition = (condition: ConditionValues): IndicatorCondition => {
 };
 
 const gridConfig = ({ grid }: BotFormValues) => {
-  const stop = (stopType: GridStopType, value: string) =>
-    value.trim() === "" ? undefined : { type: stopType, value: Number(value) };
+  const stop = (stopType: FuturesGridStopType, value: string, limit: string) =>
+    value.trim() === ""
+      ? undefined
+      : {
+          limitPrice:
+            stopType === "price_limit" ? optionalNumber(limit) : undefined,
+          type: stopType,
+          value: Number(value),
+        };
 
   return {
     bottom: Number(grid.bottom),
     gridType: grid.gridType,
-    lossStop: stop(grid.lossStopType, grid.lossStop),
-    profitStop: stop(grid.profitStopType, grid.profitStop),
+    lossStop: stop(grid.lossStopType, grid.lossStop, grid.lossStopLimit),
+    profitStop: stop(
+      grid.profitStopType,
+      grid.profitStop,
+      grid.profitStopLimit,
+    ),
     row: Number(grid.row),
     top: Number(grid.top),
     trigger:
@@ -373,10 +399,22 @@ const gridConfig = ({ grid }: BotFormValues) => {
   };
 };
 
-export const spotGridConfig = (values: BotFormValues): GridConfig => ({
-  ...gridConfig(values),
-  closeModel: values.grid.closeModel,
-});
+// 現貨網格沒有 price_limit，表單也不提供這個選項
+const spotStop = (stop?: FuturesGridConfig["lossStop"]) =>
+  stop && stop.type !== "price_limit"
+    ? { type: stop.type, value: stop.value }
+    : undefined;
+
+export const spotGridConfig = (values: BotFormValues): GridConfig => {
+  const config = gridConfig(values);
+
+  return {
+    ...config,
+    closeModel: values.grid.closeModel,
+    lossStop: spotStop(config.lossStop),
+    profitStop: spotStop(config.profitStop),
+  };
+};
 
 export const futuresGridConfig = (values: BotFormValues): FuturesGridConfig => {
   const { futuresGrid } = values;
@@ -388,6 +426,11 @@ export const futuresGridConfig = (values: BotFormValues): FuturesGridConfig => {
     lossStopHigh:
       futuresGrid.trend === "no_trend"
         ? optionalNumber(futuresGrid.lossStopHigh)
+        : undefined,
+    lossStopLimitHigh:
+      futuresGrid.trend === "no_trend" &&
+      values.grid.lossStopType === "price_limit"
+        ? optionalNumber(futuresGrid.lossStopLimitHigh)
         : undefined,
     trend: futuresGrid.trend,
   };
@@ -520,6 +563,10 @@ export const useBotFormSchema = (type: QuantBotType) => {
   });
 
   const loose = z.any();
+  const stopTypes =
+    type === "futures_grid"
+      ? quantFuturesGridStopTypeValues
+      : quantGridStopTypeValues;
 
   return z
     .object({
@@ -560,6 +607,7 @@ export const useBotFormSchema = (type: QuantBotType) => {
               extraMargin: optionalPositive,
               leverage: positiveInteger,
               lossStopHigh: optionalPositive,
+              lossStopLimitHigh: optionalPositive,
               trend: z.enum(["long", "short", "no_trend"]),
             })
           : loose,
@@ -570,13 +618,11 @@ export const useBotFormSchema = (type: QuantBotType) => {
               closeModel: z.enum(["NOT_SELL", "TO_QUOTE"]),
               gridType: z.enum(["arithmetic", "geometric"]),
               lossStop: optionalPositive,
-              lossStopType: z.enum(["price", "profit_amount", "profit_ratio"]),
+              lossStopLimit: optionalPositive,
+              lossStopType: z.enum(stopTypes),
               profitStop: optionalPositive,
-              profitStopType: z.enum([
-                "price",
-                "profit_amount",
-                "profit_ratio",
-              ]),
+              profitStopLimit: optionalPositive,
+              profitStopType: z.enum(stopTypes),
               row: type === "grid" ? integer(2, 200) : integer(2, 500),
               top: positive,
               triggerDirection: z.enum(["above", "below"]),
@@ -661,12 +707,51 @@ export const useBotFormSchema = (type: QuantBotType) => {
         type === "futures_grid" &&
         values.futuresGrid.trend === "no_trend" &&
         values.grid.profitStop.trim() !== "" &&
-        values.grid.profitStopType === "price"
+        (values.grid.profitStopType === "price" ||
+          values.grid.profitStopType === "price_limit")
       )
         ctx.addIssue({
           code: "custom",
           message: tValidation("neutralProfitStop"),
           path: ["grid", "profitStop"],
         });
+      if (type === "futures_grid") {
+        const { futuresGrid, grid } = values;
+        const requireLimit = (
+          stopType: FuturesGridStopType,
+          trigger: string,
+          limit: string,
+          path: string[],
+        ) => {
+          if (
+            stopType === "price_limit" &&
+            trigger.trim() !== "" &&
+            limit.trim() === ""
+          )
+            ctx.addIssue({
+              code: "custom",
+              message: tValidation("required"),
+              path,
+            });
+        };
+
+        requireLimit(grid.lossStopType, grid.lossStop, grid.lossStopLimit, [
+          "grid",
+          "lossStopLimit",
+        ]);
+        requireLimit(
+          grid.profitStopType,
+          grid.profitStop,
+          grid.profitStopLimit,
+          ["grid", "profitStopLimit"],
+        );
+        if (futuresGrid.trend === "no_trend")
+          requireLimit(
+            grid.lossStopType,
+            futuresGrid.lossStopHigh,
+            futuresGrid.lossStopLimitHigh,
+            ["futuresGrid", "lossStopLimitHigh"],
+          );
+      }
     });
 };

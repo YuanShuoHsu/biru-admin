@@ -50,7 +50,10 @@ const FuturesGridFields = ({
   const [check, setCheck] = useState<FuturesGridCheckResult | null>(null);
   const [checking, setChecking] = useState(false);
 
-  const trend = useWatch({ control: form.control, name: "futuresGrid.trend" });
+  const [trend, lossStopType] = useWatch({
+    control: form.control,
+    name: ["futuresGrid.trend", "grid.lossStopType"],
+  });
 
   const quote = market?.quoteCurrency ?? "";
   const formatPrice = (value: number) =>
@@ -147,6 +150,15 @@ const FuturesGridFields = ({
           helperText={tFutures("lossStopHighHelper")}
           label={tFutures("lossStopHigh")}
           name="futuresGrid.lossStopHigh"
+        />
+      )}
+      {trend === "no_trend" && lossStopType === "price_limit" && (
+        <NumberField
+          adornment={quote}
+          form={form}
+          helperText={tFutures("lossStopLimitHighHelper")}
+          label={tFutures("lossStopLimitHigh")}
+          name="futuresGrid.lossStopLimitHigh"
         />
       )}
       <Box>

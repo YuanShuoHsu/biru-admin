@@ -23,12 +23,13 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import {
   quantFuturesGridPauseModeValues,
-  quantGridStopTypeValues,
+  quantFuturesGridStopTypeValues,
 } from "@/types/api";
 import type {
   FuturesGridConfig,
   FuturesGridOperationCheck,
   FuturesGridOperationDto,
+  FuturesGridStopType,
   QuantBot,
   QuantMarket,
 } from "@/types/quant";
@@ -40,17 +41,18 @@ export const FUTURES_GRID_OPERATION_FORM_ID = "quant-futures-grid-operation";
 
 export type FuturesGridOperation = FuturesGridOperationDto["operation"];
 
-type StopType = (typeof quantGridStopTypeValues)[number];
-
 interface Fields {
   amount: string;
   bottom: string;
   lossStop: string;
   lossStopHigh: string;
-  lossStopType: StopType;
+  lossStopLimit: string;
+  lossStopLimitHigh: string;
+  lossStopType: FuturesGridStopType;
   pauseMode: "conditional" | "immediate";
   profitStop: string;
-  profitStopType: StopType;
+  profitStopLimit: string;
+  profitStopType: FuturesGridStopType;
   reduceNum: string;
   row: string;
   top: string;
@@ -94,14 +96,32 @@ const toDto = (
         triggerUp: optional(fields.triggerUp),
       };
     case "stops": {
-      const stop = (type: StopType, value: string) =>
-        value.trim() === "" ? null : { type, value: Number(value) };
+      const stop = (type: FuturesGridStopType, value: string, limit: string) =>
+        value.trim() === ""
+          ? null
+          : {
+              limitPrice: type === "price_limit" ? optional(limit) : undefined,
+              type,
+              value: Number(value),
+            };
 
       return {
-        lossStop: stop(fields.lossStopType, fields.lossStop),
+        lossStop: stop(
+          fields.lossStopType,
+          fields.lossStop,
+          fields.lossStopLimit,
+        ),
         lossStopHigh: optional(fields.lossStopHigh) ?? null,
+        lossStopLimitHigh:
+          fields.lossStopType === "price_limit"
+            ? (optional(fields.lossStopLimitHigh) ?? null)
+            : null,
         operation,
-        profitStop: stop(fields.profitStopType, fields.profitStop),
+        profitStop: stop(
+          fields.profitStopType,
+          fields.profitStop,
+          fields.profitStopLimit,
+        ),
       };
     }
   }
@@ -130,9 +150,12 @@ const FuturesGridOperationDialog = ({
     bottom: text(config.bottom),
     lossStop: text(config.lossStop?.value),
     lossStopHigh: text(config.lossStopHigh),
+    lossStopLimit: text(config.lossStop?.limitPrice),
+    lossStopLimitHigh: text(config.lossStopLimitHigh),
     lossStopType: config.lossStop?.type ?? "price",
     pauseMode: "immediate",
     profitStop: text(config.profitStop?.value),
+    profitStopLimit: text(config.profitStop?.limitPrice),
     profitStopType: config.profitStop?.type ?? "price",
     reduceNum: "",
     row: text(config.row),
@@ -219,12 +242,14 @@ const FuturesGridOperationDialog = ({
   const stopTypeField = (name: "lossStopType" | "profitStopType") => (
     <TextField
       label={tGrid(name)}
-      onChange={(event) => update({ [name]: event.target.value as StopType })}
+      onChange={(event) =>
+        update({ [name]: event.target.value as FuturesGridStopType })
+      }
       select
       sx={{ minWidth: 120 }}
       value={fields[name]}
     >
-      {quantGridStopTypeValues.map((value) => (
+      {quantFuturesGridStopTypeValues.map((value) => (
         <MenuItem key={value} value={value}>
           {tGrid(`stopType.${value}`)}
         </MenuItem>
@@ -303,12 +328,27 @@ const FuturesGridOperationDialog = ({
               tOperation("stopClearHelper"),
             )}
           </Stack>
+          {fields.lossStopType === "price_limit" &&
+            numberField(
+              "lossStopLimit",
+              tGrid("lossStopLimit"),
+              quote,
+              tGrid("stopLimitHelper"),
+            )}
           {config.trend === "no_trend" &&
             numberField(
               "lossStopHigh",
               tOperation("lossStopHigh"),
               quote,
               tOperation("stopClearHelper"),
+            )}
+          {config.trend === "no_trend" &&
+            fields.lossStopType === "price_limit" &&
+            numberField(
+              "lossStopLimitHigh",
+              tOperation("lossStopLimitHigh"),
+              quote,
+              tGrid("stopLimitHelper"),
             )}
           <Stack sx={{ flexDirection: "row", gap: 2 }}>
             {stopTypeField("profitStopType")}
@@ -319,6 +359,13 @@ const FuturesGridOperationDialog = ({
               tOperation("stopClearHelper"),
             )}
           </Stack>
+          {fields.profitStopType === "price_limit" &&
+            numberField(
+              "profitStopLimit",
+              tGrid("profitStopLimit"),
+              quote,
+              tGrid("stopLimitHelper"),
+            )}
         </>
       )}
       {check && (

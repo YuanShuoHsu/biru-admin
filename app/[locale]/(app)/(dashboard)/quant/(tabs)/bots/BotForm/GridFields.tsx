@@ -22,6 +22,7 @@ import {
 
 import {
   quantGridCloseModelValues,
+  quantFuturesGridStopTypeValues,
   quantGridStopTypeValues,
   quantGridTypeValues,
   quantTriggerDirectionValues,
@@ -129,6 +130,9 @@ const GridFields = ({
   };
 
   const isFutures = !!stopHelpers;
+  const stopTypeOptions = (
+    isFutures ? quantFuturesGridStopTypeValues : quantGridStopTypeValues
+  ).map((value) => ({ label: tGrid(`stopType.${value}`), value }));
 
   return (
     <Grid container spacing={2}>
@@ -203,13 +207,10 @@ const GridFields = ({
           form={form}
           label={tGrid("lossStopType")}
           name="grid.lossStopType"
-          options={quantGridStopTypeValues.map((value) => ({
-            label: tGrid(`stopType.${value}`),
-            value,
-          }))}
+          options={stopTypeOptions}
         />
       </Grid>
-      <Grid size={{ sm: 8, xs: 12 }}>
+      <Grid size={{ sm: lossStopType === "price_limit" ? 4 : 8, xs: 12 }}>
         <NumberField
           adornment={lossStopType === "profit_ratio" ? "%" : quote}
           form={form}
@@ -218,18 +219,26 @@ const GridFields = ({
           name="grid.lossStop"
         />
       </Grid>
+      {lossStopType === "price_limit" && (
+        <Grid size={{ sm: 4, xs: 12 }}>
+          <NumberField
+            adornment={quote}
+            form={form}
+            helperText={tGrid("stopLimitHelper")}
+            label={tGrid("lossStopLimit")}
+            name="grid.lossStopLimit"
+          />
+        </Grid>
+      )}
       <Grid size={{ sm: 4, xs: 12 }}>
         <SelectField
           form={form}
           label={tGrid("profitStopType")}
           name="grid.profitStopType"
-          options={quantGridStopTypeValues.map((value) => ({
-            label: tGrid(`stopType.${value}`),
-            value,
-          }))}
+          options={stopTypeOptions}
         />
       </Grid>
-      <Grid size={{ sm: 8, xs: 12 }}>
+      <Grid size={{ sm: profitStopType === "price_limit" ? 4 : 8, xs: 12 }}>
         <NumberField
           adornment={profitStopType === "profit_ratio" ? "%" : quote}
           form={form}
@@ -238,6 +247,17 @@ const GridFields = ({
           name="grid.profitStop"
         />
       </Grid>
+      {profitStopType === "price_limit" && (
+        <Grid size={{ sm: 4, xs: 12 }}>
+          <NumberField
+            adornment={quote}
+            form={form}
+            helperText={tGrid("stopLimitHelper")}
+            label={tGrid("profitStopLimit")}
+            name="grid.profitStopLimit"
+          />
+        </Grid>
+      )}
       <Grid size={{ sm: 6, xs: 12 }}>
         <NumberField
           adornment={quote}

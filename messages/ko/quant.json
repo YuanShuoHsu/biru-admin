@@ -219,6 +219,8 @@
         },
         "lossStopHigh": "상단 손절가(선택)",
         "lossStopHighHelper": "중립 그리드에서 가격이 이 값까지 오르면 중지하고 청산합니다",
+        "lossStopLimitHigh": "상단 손절 지정가",
+        "lossStopLimitHighHelper": "중립 그리드가 상단 손절가에 도달하면 이 가격으로 지정가 청산합니다",
         "profitStopHelper": {
           "long": "가격이 이 값까지 오르면 중지하고 청산합니다. 금액은 수익이 이 금액에, 비율은 수익이 투자금의 이 비율에 도달할 때",
           "no_trend": "중립 그리드의 익절은 금액 또는 비율로만 설정할 수 있습니다",
@@ -254,12 +256,16 @@
           "label": "간격"
         },
         "lossStop": "손절(선택)",
+        "lossStopLimit": "손절 지정가",
         "lossStopType": "손절 방식",
         "profitStop": "익절(선택)",
+        "profitStopLimit": "익절 지정가",
         "profitStopType": "익절 방식",
         "row": "그리드 수",
+        "stopLimitHelper": "발동되면 이 가격으로 지정가 주문을 넣어 청산합니다. 가격이 닿기 전에는 체결되지 않습니다",
         "stopType": {
           "price": "가격",
+          "price_limit": "지정가",
           "profit_amount": "금액",
           "profit_ratio": "비율"
         },
@@ -360,6 +366,7 @@
       "liquidationDown": "하단 강제청산가: {before} → {after}",
       "liquidationUp": "상단 강제청산가: {before} → {after}",
       "lossStopHigh": "상단 손절가(중립 그리드)",
+      "lossStopLimitHigh": "상단 손절 지정가(중립 그리드)",
       "maxAmount": "최대 {amount} {quote}까지 줄일 수 있습니다",
       "operations": {
         "addMargin": "증거금 추가",

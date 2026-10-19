@@ -219,6 +219,8 @@
         },
         "lossStopHigh": "上方止损价（选填）",
         "lossStopHighHelper": "中性网格的价格涨到此价停止并平仓",
+        "lossStopLimitHigh": "上方止损限价",
+        "lossStopLimitHighHelper": "中性网格涨到上方止损价后，以此价挂限价单平仓",
         "profitStopHelper": {
           "long": "价格涨到此价停止并平仓；金额为盈利达此金额，比例为盈利达投入的此百分比",
           "no_trend": "中性网格只能用金额或比例止盈",
@@ -254,12 +256,16 @@
           "label": "间距"
         },
         "lossStop": "止损（选填）",
+        "lossStopLimit": "止损限价",
         "lossStopType": "止损方式",
         "profitStop": "止盈（选填）",
+        "profitStopLimit": "止盈限价",
         "profitStopType": "止盈方式",
         "row": "格数",
+        "stopLimitHelper": "触发后以此价挂限价单平仓，价格没到不会成交",
         "stopType": {
           "price": "价格",
+          "price_limit": "限价",
           "profit_amount": "金额",
           "profit_ratio": "比例"
         },
@@ -360,6 +366,7 @@
       "liquidationDown": "下方强平价：{before} → {after}",
       "liquidationUp": "上方强平价：{before} → {after}",
       "lossStopHigh": "上方止损价（中性网格）",
+      "lossStopLimitHigh": "上方止损限价（中性网格）",
       "maxAmount": "最多可减少 {amount} {quote}",
       "operations": {
         "addMargin": "追加保证金",

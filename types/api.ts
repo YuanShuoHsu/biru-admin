@@ -9868,6 +9868,19 @@ export interface components {
      * @enum {string}
      */
     QuantFuturesGridTrend: "long" | "short" | "no_trend";
+    /** @enum {string} */
+    QuantFuturesGridStopType:
+      | "price"
+      | "profit_amount"
+      | "profit_ratio"
+      | "price_limit";
+    FuturesGridStopDto: {
+      type: components["schemas"]["QuantFuturesGridStopType"];
+      /** @description price、price_limit：觸發價；profit_amount：金額（計價幣）；profit_ratio：相對投入的 %。停損也填正數 */
+      value: number;
+      /** @description price_limit：觸發後掛限價單平倉的價格 */
+      limitPrice?: number;
+    };
     FuturesGridConfigDto: {
       /** @description 上界 */
       top: number;
@@ -9882,11 +9895,13 @@ export interface components {
       /** @description 額外保證金（計價幣），不參與網格交易、只用來拉遠強平價 */
       extraMargin?: number;
       /** @description price：做多與中性為下方停損價、做空為上方停損價 */
-      lossStop?: components["schemas"]["GridStopDto"];
+      lossStop?: components["schemas"]["FuturesGridStopDto"];
       /** @description 中性網格的上方停損價 */
       lossStopHigh?: number;
-      /** @description price：做多為上方停利價、做空為下方停利價；中性只能用金額 */
-      profitStop?: components["schemas"]["GridStopDto"];
+      /** @description 中性網格的上方停損限價，停損方式為 price_limit 時使用 */
+      lossStopLimitHigh?: number;
+      /** @description price：做多為上方停利價、做空為下方停利價；中性只能用金額或比例 */
+      profitStop?: components["schemas"]["FuturesGridStopDto"];
       /** @description 價格觸及才開始 */
       trigger?: components["schemas"]["TriggerDto"];
     };
@@ -10264,11 +10279,13 @@ export interface components {
       /** @description pause／resume：價格跌到此價才暫停或恢復，須低於現價 */
       triggerDown?: number;
       /** @description stops：停損，null 代表清除 */
-      lossStop?: components["schemas"]["GridStopDto"] | null;
+      lossStop?: components["schemas"]["FuturesGridStopDto"] | null;
       /** @description stops：中性網格的上方停損價，null 代表清除 */
       lossStopHigh?: number | null;
+      /** @description stops：中性網格的上方停損限價，null 代表清除 */
+      lossStopLimitHigh?: number | null;
       /** @description stops：停利，null 代表清除 */
-      profitStop?: components["schemas"]["GridStopDto"] | null;
+      profitStop?: components["schemas"]["FuturesGridStopDto"] | null;
     };
     FuturesGridOperationCheckDto: {
       ok: boolean;
@@ -22628,6 +22645,9 @@ export const quantFuturesDirectionValues: ReadonlyArray<
 export const quantFuturesGridTrendValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantFuturesGridTrend"]
 > = ["long", "short", "no_trend"];
+export const quantFuturesGridStopTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantFuturesGridStopType"]
+> = ["price", "profit_amount", "profit_ratio", "price_limit"];
 export const quantIndicatorKindValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantIndicatorKind"]
 > = ["rsi", "maCross", "emaCross", "macdCross", "bollinger"];

@@ -219,6 +219,8 @@
         },
         "lossStopHigh": "Upper stop loss price (optional)",
         "lossStopHighHelper": "Stops the neutral grid and closes when the price rises to this",
+        "lossStopLimitHigh": "Upper stop loss limit price",
+        "lossStopLimitHighHelper": "When a neutral grid rises to the upper stop loss, closes with a limit order at this price",
         "profitStopHelper": {
           "long": "Stops and closes when the price rises to this; by amount, when the profit reaches it; by ratio, when the profit reaches this percent of the investment",
           "no_trend": "Neutral grids can only take profit by amount or ratio",
@@ -254,12 +256,16 @@
           "label": "Spacing"
         },
         "lossStop": "Stop loss (optional)",
+        "lossStopLimit": "Stop loss limit price",
         "lossStopType": "Stop loss by",
         "profitStop": "Take profit (optional)",
+        "profitStopLimit": "Take profit limit price",
         "profitStopType": "Take profit by",
         "row": "Grids",
+        "stopLimitHelper": "Once triggered, closes with a limit order at this price; it won’t fill until the price gets there",
         "stopType": {
           "price": "Price",
+          "price_limit": "Limit",
           "profit_amount": "Amount",
           "profit_ratio": "Ratio"
         },
@@ -360,6 +366,7 @@
       "liquidationDown": "Lower liquidation: {before} → {after}",
       "liquidationUp": "Upper liquidation: {before} → {after}",
       "lossStopHigh": "Upper stop loss (neutral grid)",
+      "lossStopLimitHigh": "Upper stop loss limit (neutral grid)",
       "maxAmount": "Up to {amount} {quote} can be removed",
       "operations": {
         "addMargin": "Add margin",
