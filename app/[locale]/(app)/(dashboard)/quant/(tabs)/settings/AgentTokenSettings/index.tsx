@@ -1,5 +1,9 @@
 "use client";
 
+import { useEffect, useRef } from "react";
+
+import { useSearchParams } from "next/navigation";
+
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import useSWR from "swr";
@@ -8,7 +12,6 @@ import { CopyField } from "../../bots/WebhookSetup";
 
 import { Terminal } from "@mui/icons-material";
 import {
-  Alert,
   Button,
   Chip,
   DialogContentText,
@@ -18,28 +21,28 @@ import {
   Typography,
 } from "@mui/material";
 
+import { usePathname, useRouter } from "@/i18n/navigation";
+
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { QuantAgentToken, QuantAgentTokenCreated } from "@/types/quant";
+import type { QuantAgentToken } from "@/types/quant";
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 const AGENT_TOKEN_URL = "/api/quant/agent-token";
 
-const TokenCreated = ({ token }: { token: string }) => {
+const AgentSetup = () => {
   const tAgent = useTranslations("quant.settings.agent");
 
   return (
     <Stack sx={{ gap: 2 }}>
-      <Alert severity="warning">{tAgent("tokenOnce")}</Alert>
-      <CopyField label={tAgent("token")} value={token} />
-      <Typography variant="body2">{tAgent("setup.test")}</Typography>
+      <Typography variant="body2">{tAgent("setup.start")}</Typography>
       <CopyField
-        label={tAgent("setup.testCommand")}
-        value={`cd biru-api && QUANT_AGENT_TOKEN=${token} node scripts/quant-claude-agent.mjs`}
+        label={tAgent("setup.startCommand")}
+        value="cd biru-api && node scripts/quant-claude-agent.mjs --watch"
       />
-      <Typography variant="body2">{tAgent("setup.schedule")}</Typography>
+      <Typography variant="body2">{tAgent("setup.connect")}</Typography>
       <Typography color="text.secondary" variant="caption">
         {tAgent("setup.safety")}
       </Typography>
@@ -58,43 +61,43 @@ const AgentTokenSettings = () => {
     mutate,
   } = useSWR<QuantAgentToken>(AGENT_TOKEN_URL, fetcher);
 
-  const create = () =>
-    fetcher<QuantAgentTokenCreated>(AGENT_TOKEN_URL, { method: "POST" });
+  // 本機代理沒有可用的 token 時會開瀏覽器帶 ?agentCode= 到這頁，等使用者核准
+  const agentCode = useSearchParams().get("agentCode");
+  const router = useRouter();
+  const pathname = usePathname();
+  const handledCode = useRef<string | null>(null);
+  useEffect(() => {
+    if (!agentCode || handledCode.current === agentCode) return;
+    handledCode.current = agentCode;
 
-  const showToken = (created: QuantAgentTokenCreated) => {
-    void mutate(created, { revalidate: false });
-    setDialog({
-      content: <TokenCreated token={created.token} />,
-      open: true,
-      showCancel: false,
-      title: tAgent("created"),
-    });
-  };
-
-  const handleGenerate = () => {
-    if (!agentToken?.configured)
-      return void create()
-        .then(showToken)
-        .catch((error: unknown) =>
-          enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
-        );
-
-    let created: QuantAgentTokenCreated | undefined;
     setDialog({
       content: (
-        <DialogContentText>{tAgent("regenerate.confirm")}</DialogContentText>
+        <DialogContentText>
+          {tAgent("approve.confirm", { code: agentCode })}
+        </DialogContentText>
       ),
       onConfirm: async () => {
-        created = await create();
+        await fetcher(`${AGENT_TOKEN_URL}/approve`, {
+          body: JSON.stringify({ code: agentCode }),
+          headers: { "Content-Type": "application/json" },
+          method: "POST",
+        });
+        enqueueSnackbar(tAgent("approve.success"), { variant: "success" });
+        void mutate();
       },
-      // 確認視窗關閉後才能開新視窗，否則新 token 一出現就被關掉
-      onExited: () => {
-        if (created) showToken(created);
-      },
+      onExited: () => router.replace(pathname),
       open: true,
-      title: tAgent("regenerate.title"),
+      title: tAgent("approve.title"),
     });
-  };
+  }, [agentCode, mutate, pathname, router, setDialog, tAgent]);
+
+  const showSetup = () =>
+    setDialog({
+      content: <AgentSetup />,
+      open: true,
+      showCancel: false,
+      title: tAgent("setup.title"),
+    });
 
   const handleRemove = () =>
     setDialog({
@@ -117,8 +120,19 @@ const AgentTokenSettings = () => {
 
   if (isLoading) return <Skeleton height={30} variant="rounded" width={180} />;
 
+  if (agentToken?.claudeCodeLocal)
+    return (
+      <Tooltip title={tAgent("local.description")}>
+        <Chip
+          icon={<Terminal />}
+          label={tAgent("local.label")}
+          variant="outlined"
+        />
+      </Tooltip>
+    );
+
   return agentToken?.configured ? (
-    <Tooltip title={tAgent("regenerate.title")}>
+    <Tooltip title={tAgent("setup.title")}>
       <Chip
         icon={<Terminal />}
         label={tAgent("bound", {
@@ -127,14 +141,14 @@ const AgentTokenSettings = () => {
             ? format.dateTime(new Date(agentToken.lastUsedAt), "dateTime")
             : tAgent("neverUsed"),
         })}
-        onClick={handleGenerate}
+        onClick={showSetup}
         onDelete={handleRemove}
         variant="outlined"
       />
     </Tooltip>
   ) : (
     <Button
-      onClick={handleGenerate}
+      onClick={showSetup}
       size="small"
       startIcon={<Terminal />}
       variant="outlined"

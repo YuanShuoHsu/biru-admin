@@ -98,7 +98,7 @@
       "request": {
         "title": "Claude Code 判斷",
         "pending": "等待本機 Claude Code 判斷，{time} 前沒有回應就作廢。",
-        "noResponse": "Claude Code 沒有在時限內回應，這一根沒有動作。請確認電腦開著、本機代理在執行。",
+        "noResponse": "Claude Code 沒有在時限內回應，這一根沒有動作。請確認 biru-api 在執行、Claude Code 已登入。",
         "empty": "還沒有判斷請求，下一根 K 線收盤時會送出第一筆。",
         "open": "開倉 {amount} {quote}",
         "close": "平倉 {ratio}",
@@ -233,7 +233,7 @@
           },
           "claude_code": {
             "label": "Claude Code（訂閱額度）",
-            "description": "由你電腦上的 Claude Code 代理用訂閱額度判斷，不另外付費。模擬盤直接套用；實盤每筆建議都要你在後台確認才下單。電腦或代理沒在執行時，機器人只會觀望。"
+            "description": "由你電腦上已登入的 Claude Code 用訂閱額度判斷，不另外付費。模擬盤直接套用；實盤每筆建議都要你在後台確認才下單。電腦關機或 Claude Code 無法使用時，機器人只會觀望。"
           }
         },
         "stopLoss": "停損（%，選填）",
@@ -858,26 +858,29 @@
       "title": "總資產"
     },
     "agent": {
+      "approve": {
+        "title": "允許 Claude Code 連線",
+        "confirm": "要允許這台電腦上的 Claude Code 代理連線嗎？請確認代碼和終端機顯示的一致：{code}。允許後會產生新的連線 token，原本的會失效。",
+        "success": "已允許連線，終端機的代理會自動開始運作"
+      },
       "bind": "連接 Claude Code",
       "bound": "Claude Code ••••{last4}・最後連線 {lastUsed}",
+      "local": {
+        "label": "Claude Code：本機直接判斷",
+        "description": "biru-api 和 Claude Code 在同一台電腦，啟動 Claude Code 機器人就會自動判斷，不需要另外執行代理。"
+      },
       "neverUsed": "尚未連線",
-      "created": "Claude Code 連線 token",
-      "token": "連線 token",
-      "tokenOnce": "這個 token 只會顯示這一次，請現在複製。",
-      "setup": {
-        "test": "先在終端機手動跑一次，確認能連上後台：",
-        "testCommand": "測試指令",
-        "schedule": "確認可用後，依 biru-api/scripts/quant-claude-agent.plist 的說明填入 token 並用 launchctl 載入，之後每分鐘自動檢查一次，沒有待判斷的請求就不會呼叫 Claude。",
-        "safety": "代理只能回傳判斷：模擬盤由後台套用，實盤一律要你在後台確認才下單。代理停止時機器人只會觀望，不會平倉或停止，停損停利仍由後台執行。"
-      },
-      "regenerate": {
-        "title": "重新產生 Claude Code 連線 token",
-        "confirm": "確定要重新產生嗎？舊的 token 會立即失效，本機代理要換成新的 token 才能繼續運作。"
-      },
       "remove": {
         "title": "撤銷 Claude Code 連線 token",
         "confirm": "確定要撤銷嗎？本機代理會立即無法連線，Claude Code 機器人在重新連接前只會觀望。",
         "success": "已撤銷 Claude Code 連線 token"
+      },
+      "setup": {
+        "connect": "第一次執行時會自動打開這個後台頁面，確認代碼後按「確認」就完成連線，之後不用再處理。連線失效時也會用同樣方式自動重新連線。",
+        "safety": "代理只能回傳判斷：模擬盤由後台套用，實盤一律要你在後台確認才下單。代理停止時機器人只會觀望，不會平倉或停止，停損停利仍由後台執行。",
+        "start": "在 biru-api 目錄的終端機執行這行。畫面每分鐘顯示一次狀態，按 Ctrl+C 停止；關掉終端機分頁也會停止：",
+        "startCommand": "啟動監看模式",
+        "title": "用 Claude Code 判斷"
       }
     }
   },

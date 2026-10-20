@@ -3549,10 +3549,26 @@ export interface paths {
     /** 取得 Claude Code 連線 token 的狀態（只回末 4 碼） */
     get: operations["QuantAiAdminController_findToken"];
     put?: never;
-    /** 產生新的 Claude Code 連線 token，舊的立即失效 */
-    post: operations["QuantAiAdminController_regenerateToken"];
+    post?: never;
     /** 撤銷 Claude Code 連線 token */
     delete: operations["QuantAiAdminController_removeToken"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/agent-token/approve": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 核准本機 Claude Code 代理的連線代碼 */
+    post: operations["QuantAiAdminController_approveConnect"];
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -3656,6 +3672,40 @@ export interface paths {
     put?: never;
     /** 停止進行中的 AI 回測 */
     post: operations["QuantAiAdminController_cancelBacktest"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/agent/connect": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 代理沒有可用 token 時發起連線，使用者在後台核准代碼後取得 token */
+    post: operations["QuantAiAgentController_connect"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/agent/connect/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 代理輪詢連線是否已核准；核准後回傳 token 一次 */
+    get: operations["QuantAiAgentController_pollConnect"];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -10026,6 +10076,8 @@ export interface components {
       amount: string;
     };
     QuantAgentTokenDto: {
+      /** @description 後端直接用本機 Claude Code 判斷（QUANT_CLAUDE_CODE=local），不需要代理 */
+      claudeCodeLocal: boolean;
       configured: boolean;
       tokenLast4?: string;
       /**
@@ -10036,18 +10088,9 @@ export interface components {
       /** Format: date-time */
       createdAt?: string;
     };
-    QuantAgentTokenCreatedDto: {
-      configured: boolean;
-      tokenLast4?: string;
-      /**
-       * Format: date-time
-       * @description 代理最後一次取請求的時間
-       */
-      lastUsedAt?: string;
-      /** Format: date-time */
-      createdAt?: string;
-      /** @description 新的 token，只在這次回傳；舊 token 立即失效 */
-      token: string;
+    ApproveAgentConnectDto: {
+      /** @example K7Q2-M9XA */
+      code: string;
     };
     /** @enum {string} */
     QuantAiRequestStatus:
@@ -10215,6 +10258,21 @@ export interface components {
       /** @description 手續費率（例如 0.0005） */
       feeRate: number;
       config: components["schemas"]["AiConfigDto"];
+    };
+    QuantAgentConnectDto: {
+      /** @description 代理輪詢用的識別碼，只有代理知道 */
+      id: string;
+      /** @description 使用者在後台核准時看到的代碼 */
+      code: string;
+      /** Format: date-time */
+      expiresAt: string;
+    };
+    /** @enum {string} */
+    QuantAgentConnectStatus: "pending" | "approved" | "expired";
+    QuantAgentConnectStatusDto: {
+      status: components["schemas"]["QuantAgentConnectStatus"];
+      /** @description 核准後只回傳這一次 */
+      token?: string;
     };
     /** @enum {string} */
     QuantAgentRequestKind: "bot" | "backtest";
@@ -20023,7 +20081,7 @@ export interface operations {
       };
     };
   };
-  QuantAiAdminController_regenerateToken: {
+  QuantAiAdminController_removeToken: {
     parameters: {
       query?: never;
       header?: never;
@@ -20032,13 +20090,11 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      201: {
+      204: {
         headers: {
           [name: string]: unknown;
         };
-        content: {
-          "application/json": components["schemas"]["QuantAgentTokenCreatedDto"];
-        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {
@@ -20049,14 +20105,18 @@ export interface operations {
       };
     };
   };
-  QuantAiAdminController_removeToken: {
+  QuantAiAdminController_approveConnect: {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ApproveAgentConnectDto"];
+      };
+    };
     responses: {
       204: {
         headers: {
@@ -20282,6 +20342,60 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["QuantAiBacktestDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAiAgentController_connect: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantAgentConnectDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAiAgentController_pollConnect: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantAgentConnectStatusDto"];
         };
       };
       /** @description Internal server error */
@@ -23736,6 +23850,9 @@ export const quantAiLocaleValues: ReadonlyArray<
 export const quantFuturesDirectionValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantFuturesDirection"]
 > = ["long", "short"];
+export const quantAgentConnectStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantAgentConnectStatus"]
+> = ["pending", "approved", "expired"];
 export const quantAgentRequestKindValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantAgentRequestKind"]
 > = ["bot", "backtest"];

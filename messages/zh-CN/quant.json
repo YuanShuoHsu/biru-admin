@@ -98,7 +98,7 @@
       "request": {
         "title": "Claude Code 判断",
         "pending": "等待本机 Claude Code 判断，{time} 前没有响应就作废。",
-        "noResponse": "Claude Code 没有在时限内响应，这一根没有动作。请确认电脑开着、本机代理在运行。",
+        "noResponse": "Claude Code 没有在时限内响应，这一根没有动作。请确认 biru-api 在运行、Claude Code 已登录。",
         "empty": "还没有判断请求，下一根 K 线收盘时会发出第一笔。",
         "open": "开仓 {amount} {quote}",
         "close": "平仓 {ratio}",
@@ -233,7 +233,7 @@
           },
           "claude_code": {
             "label": "Claude Code（订阅额度）",
-            "description": "由你电脑上的 Claude Code 代理用订阅额度判断，不另外付费。模拟盘直接套用；实盘每笔建议都要你在后台确认才下单。电脑或代理没有运行时，机器人只会观望。"
+            "description": "由你电脑上已登录的 Claude Code 用订阅额度判断，不另外付费。模拟盘直接套用；实盘每笔建议都要你在后台确认才下单。电脑关机或 Claude Code 无法使用时，机器人只会观望。"
           }
         },
         "stopLoss": "止损（%，选填）",
@@ -858,26 +858,29 @@
       "title": "总资产"
     },
     "agent": {
+      "approve": {
+        "title": "允许 Claude Code 连接",
+        "confirm": "要允许这台电脑上的 Claude Code 代理连接吗？请确认代码和终端显示的一致：{code}。允许后会生成新的连接 token，原来的会失效。",
+        "success": "已允许连接，终端里的代理会自动开始运行"
+      },
       "bind": "连接 Claude Code",
       "bound": "Claude Code ••••{last4}・最后连接 {lastUsed}",
+      "local": {
+        "label": "Claude Code：本机直接判断",
+        "description": "biru-api 和 Claude Code 在同一台电脑，启动 Claude Code 机器人就会自动判断，不需要另外运行代理。"
+      },
       "neverUsed": "尚未连接",
-      "created": "Claude Code 连接 token",
-      "token": "连接 token",
-      "tokenOnce": "这个 token 只会显示这一次，请现在复制。",
-      "setup": {
-        "test": "先在终端手动运行一次，确认能连上后台：",
-        "testCommand": "测试命令",
-        "schedule": "确认可用后，按 biru-api/scripts/quant-claude-agent.plist 的说明填入 token 并用 launchctl 加载，之后每分钟自动检查一次，没有待判断的请求就不会调用 Claude。",
-        "safety": "代理只能返回判断：模拟盘由后台套用，实盘一律要你在后台确认才下单。代理停止时机器人只会观望，不会平仓或停止，止损止盈仍由后台执行。"
-      },
-      "regenerate": {
-        "title": "重新生成 Claude Code 连接 token",
-        "confirm": "确定要重新生成吗？旧的 token 会立即失效，本机代理要换成新的 token 才能继续运行。"
-      },
       "remove": {
         "title": "撤销 Claude Code 连接 token",
         "confirm": "确定要撤销吗？本机代理会立即无法连接，Claude Code 机器人在重新连接前只会观望。",
         "success": "已撤销 Claude Code 连接 token"
+      },
+      "setup": {
+        "connect": "第一次运行时会自动打开这个后台页面，确认代码后按「确认」就完成连接，之后不用再处理。连接失效时也会用同样方式自动重新连接。",
+        "safety": "代理只能返回判断：模拟盘由后台套用，实盘一律要你在后台确认才下单。代理停止时机器人只会观望，不会平仓或停止，止损止盈仍由后台执行。",
+        "start": "在 biru-api 目录的终端运行这行。画面每分钟显示一次状态，按 Ctrl+C 停止；关闭终端标签页也会停止：",
+        "startCommand": "启动监看模式",
+        "title": "用 Claude Code 判断"
       }
     }
   },
