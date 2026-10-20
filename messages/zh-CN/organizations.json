@@ -81,17 +81,23 @@
     "label": "币别",
     "placeholder": "请选择您的币别"
   },
-  "dineIn": {
-    "label": "堂食",
-    "qrCode": {
-      "download": "下载",
-      "label": "桌面点餐二维码"
+  "inStore": {
+    "counter": {
+      "label": "柜台点餐二维码"
     },
-    "tableNumber": {
-      "helperText": "二维码打印后长期有效，请贴在对应桌号的桌面上",
-      "label": "桌号",
-      "placeholder": "请输入桌号"
-    }
+    "dineIn": {
+      "label": "桌面点餐二维码",
+      "tableNumber": {
+        "helperText": "二维码打印后长期有效，请贴在对应桌号的桌面上",
+        "label": "桌号",
+        "placeholder": "请输入桌号"
+      }
+    },
+    "download": "下载",
+    "driveThru": {
+      "label": "得来速点餐二维码"
+    },
+    "label": "现场点餐"
   },
   "invitations": {
     "actions": {

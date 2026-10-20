@@ -1,5 +1,7 @@
 import { DashboardStack, HeaderStack } from "./styled";
 
+import InvoiceAutoPrinter from "@/components/InvoiceAutoPrinter";
+
 interface DashboardLayoutProps extends LayoutProps<"/[locale]"> {
   breadcrumb: React.ReactNode;
   subheader: React.ReactNode;
@@ -19,6 +21,7 @@ const DashboardLayout = ({
     </HeaderStack>
     {subheader}
     {children}
+    <InvoiceAutoPrinter />
   </DashboardStack>
 );
 

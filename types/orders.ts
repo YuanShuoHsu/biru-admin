@@ -22,6 +22,7 @@ export type OrderInvoice = components["schemas"]["OrderInvoiceDto"];
 export type OrderInvoicePrint = components["schemas"]["OrderInvoicePrintDto"];
 export type OrderInvoiceVerification =
   components["schemas"]["OrderInvoiceVerificationDto"];
+export type UnprintedInvoice = components["schemas"]["UnprintedInvoiceDto"];
 export type ResetInvoicePrintDto =
   components["schemas"]["ResetInvoicePrintDto"];
 export type VoidInvoiceDto = components["schemas"]["VoidInvoiceDto"];
@@ -48,3 +49,5 @@ export type OrderFilterField = (typeof orderFilterFieldValues)[number];
 export type OrderSortField = (typeof orderSortFieldValues)[number];
 export type DineInTableTokenResponse =
   components["schemas"]["DineInTableTokenResponseDto"];
+export type OrderModeTokenResponse =
+  components["schemas"]["OrderModeTokenResponseDto"];

@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-import OrganizationsSlugDineIn from ".";
+import OrganizationsSlugInStore from ".";
 
 import type { Locale } from "@/i18n/routing";
 
@@ -12,25 +12,25 @@ import { authClient } from "@/lib/auth-client";
 import { hasRolePermission } from "@/utils/organizations";
 import { getSession } from "@/utils/session";
 
-interface OrganizationsSlugDineInPageProps {
+interface OrganizationsSlugInStorePageProps {
   params: Promise<{ locale: Locale; slug: string }>;
 }
 
 export const generateMetadata = async ({
   params,
-}: OrganizationsSlugDineInPageProps): Promise<Metadata> => {
+}: OrganizationsSlugInStorePageProps): Promise<Metadata> => {
   const { locale } = await params;
   const tOrganizations = await getTranslations({
     locale,
     namespace: "organizations",
   });
 
-  return { title: tOrganizations("dineIn.label") };
+  return { title: tOrganizations("inStore.label") };
 };
 
-const OrganizationsSlugDineInPage = async ({
+const OrganizationsSlugInStorePage = async ({
   params,
-}: OrganizationsSlugDineInPageProps) => {
+}: OrganizationsSlugInStorePageProps) => {
   const [cookieStore, { slug }] = await Promise.all([cookies(), params]);
 
   const organizationSlug = decodeURIComponent(slug);
@@ -52,7 +52,7 @@ const OrganizationsSlugDineInPage = async ({
   if (!hasRolePermission(currentUserRole, { organization: ["update"] }))
     notFound();
 
-  return <OrganizationsSlugDineIn organizationSlug={organizationSlug} />;
+  return <OrganizationsSlugInStore organizationSlug={organizationSlug} />;
 };
 
-export default OrganizationsSlugDineInPage;
+export default OrganizationsSlugInStorePage;

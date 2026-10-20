@@ -569,8 +569,8 @@ const routes: Route[] = [
         children: [
           {
             icon: TableBar,
-            label: "organizations.dineIn.label",
-            segment: "dine-in",
+            label: "organizations.inStore.label",
+            segment: "in-store",
           },
           {
             icon: Mail,

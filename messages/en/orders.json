@@ -91,8 +91,9 @@
     }
   },
   "autoPrint": {
-    "label": "Auto-print invoices on this device",
-    "replaced": "Another device has taken over invoice auto-printing"
+    "interrupted": "Printing interrupted, reconnecting",
+    "label": "Auto-print invoices in this tab",
+    "replaced": "Another tab has taken over invoice auto-printing"
   },
   "board": {
     "empty": "No orders right now",

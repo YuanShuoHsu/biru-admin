@@ -81,17 +81,23 @@
     "label": "通貨",
     "placeholder": "あなたの通貨を選択してください"
   },
-  "dineIn": {
-    "label": "店内",
-    "qrCode": {
-      "download": "ダウンロード",
-      "label": "テーブル注文 QR コード"
+  "inStore": {
+    "counter": {
+      "label": "カウンター注文 QR コード"
     },
-    "tableNumber": {
-      "helperText": "印刷した QR コードは長期間有効です。該当する番号のテーブルに貼ってください",
-      "label": "テーブル番号",
-      "placeholder": "テーブル番号を入力してください"
-    }
+    "dineIn": {
+      "label": "テーブル注文 QR コード",
+      "tableNumber": {
+        "helperText": "印刷した QR コードは長期間有効です。該当する番号のテーブルに貼ってください",
+        "label": "テーブル番号",
+        "placeholder": "テーブル番号を入力してください"
+      }
+    },
+    "download": "ダウンロード",
+    "driveThru": {
+      "label": "ドライブスルー注文 QR コード"
+    },
+    "label": "店頭注文"
   },
   "invitations": {
     "actions": {

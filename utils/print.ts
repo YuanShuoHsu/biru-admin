@@ -15,6 +15,9 @@ export const printDocument = (html: string) => {
   frame.style.right = "0";
   frame.style.width = "0";
 
+  // 與後台同源，加 allow-scripts 等於讓綠界的 HTML 在後台網域執行腳本
+  frame.sandbox.add("allow-same-origin", "allow-modals");
+
   // srcdoc 要在掛上去之前設好，否則會先觸發一次 about:blank 的 load 印出空白
   frame.onload = () => frame.contentWindow?.print();
   frame.srcdoc = html;

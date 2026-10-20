@@ -91,8 +91,9 @@
     }
   },
   "autoPrint": {
-    "label": "此裝置自動列印發票",
-    "replaced": "已由其他裝置接手自動列印發票"
+    "interrupted": "列印中斷，重新連線中",
+    "label": "此分頁自動列印發票",
+    "replaced": "已由其他分頁接手自動列印發票"
   },
   "board": {
     "empty": "目前沒有訂單",

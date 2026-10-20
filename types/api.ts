@@ -2056,6 +2056,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/invoices/unprinted": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 今天開立、可列印但尚未印過的發票（自動列印補印用） */
+    get: operations["EcpayOrganizationInvoiceController_listUnprinted"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/ingredients": {
     parameters: {
       query?: never;
@@ -2300,6 +2317,23 @@ export interface paths {
     };
     /** 查詢品項銷量 */
     get: operations["MenuItemSalesController_findAll"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/order-modes/{mode}/token": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 產生櫃台／得來速 QR code 的點餐方式簽章 */
+    get: operations["OrderModesController_findToken"];
     put?: never;
     post?: never;
     delete?: never;
@@ -7665,6 +7699,10 @@ export interface components {
       /** @description 退款說明，會作為發票作廢／折讓原因送至綠界；原因分類為 other 時必填 */
       reason?: string;
     };
+    UnprintedInvoiceDto: {
+      /** @description 訂單 ID */
+      orderId: string;
+    };
     /** @enum {string} */
     IngredientFilterField:
       | "name"
@@ -8072,6 +8110,10 @@ export interface components {
       /** @description 視窗內售出數量，含被加購的次數 */
       sold: number;
     };
+    OrderModeTokenResponseDto: {
+      /** @description 印在櫃台／得來速 QR code 的簽章；不會過期，換 BETTER_AUTH_SECRET 會讓已印的全部失效 */
+      token: string;
+    };
     OrderStatsBucketDto: {
       orders: number;
       /** @description 淨營收：銷售減去該區間內確認的退款（退款依退款日歸期）；需 revenue:read */
@@ -8205,6 +8247,8 @@ export interface components {
       tableNumber?: number;
       /** @description 桌上 QR code 帶的桌號簽章，內用必填 */
       tableToken?: string;
+      /** @description 櫃台／得來速 QR code 帶的點餐方式簽章，這兩種方式付現金時必填 */
+      modeToken?: string;
     };
     OrderItemModifierSnapshotDto: {
       modifierGroupId: string;
@@ -15648,6 +15692,34 @@ export interface operations {
       };
     };
   };
+  EcpayOrganizationInvoiceController_listUnprinted: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UnprintedInvoiceDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   OrganizationInventoryController_findAllIngredients: {
     parameters: {
       query?: {
@@ -16506,6 +16578,35 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["MenuItemSalesResponseDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrderModesController_findToken: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        mode: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderModeTokenResponseDto"];
         };
       };
       /** @description Internal server error */
