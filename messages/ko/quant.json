@@ -71,12 +71,18 @@
           "futuresGridClosing": "지정가 익절/손절이 발동했지만 청산 주문이 아직 체결되지 않았습니다. 중지하면 지정가 청산 주문을 취소하고 시장가로 청산하며, 체결 가격이 지정가보다 불리할 수 있습니다.",
           "gridKeep": "모든 그리드 주문을 취소합니다. 보유한 {base}은(는) 계정에 남습니다.",
           "gridSell": "모든 그리드 주문을 취소하고 보유한 {base}을(를) 시장가로 {quote}(으)로 매도합니다.",
-          "keepPosition": "모든 주문을 취소합니다. 포지션은 계정에 남습니다."
+          "keepPosition": "중지하면 모든 미체결 주문을 취소하며, 포지션은 계정에 남고 이후 익절/손절 보호가 없습니다.",
+          "closePosition": "중지하면 모든 미체결 주문을 취소하고 포지션을 시장가로 청산합니다."
         },
         "currentPnl": "현재 총수익",
         "label": "중지",
         "success": "중지했습니다",
-        "title": "봇 중지"
+        "title": "봇 중지",
+        "position": {
+          "label": "포지션",
+          "NOT_SELL": "포지션 유지",
+          "TO_QUOTE": "시장가 청산"
+        }
       },
       "view": "상세 보기"
     },
@@ -177,7 +183,8 @@
       "order_skipped": "주문 건너뜀",
       "stopped": "중지",
       "triggered": "트리거 가격 도달",
-      "webhook_signal": "신호 수신"
+      "webhook_signal": "신호 수신",
+      "position_mismatch": "거래소 포지션 불일치"
     },
     "executors": {
       "engine": {
@@ -365,8 +372,6 @@
       "investmentHelper": "봇은 이 금액만 사용합니다",
       "liveFuturesGridNote": "실전 선물 그리드는 Pionex에 포지션과 증거금이 독립된 선물 그리드 봇을 만들며 Pionex 앱에서 확인하고 관리할 수 있습니다. 선물 계정에 USDT가 충분해야 합니다.",
       "liveGridNote": "실거래 그리드는 Pionex에 내장 그리드 봇을 만들며 Pionex 앱에서도 확인하고 관리할 수 있습니다.",
-      "maxDailyLoss": "일일 최대 손실(선택)",
-      "maxDailyLossHelper": "당일 손실이 이 금액에 도달하면 자동으로 중지됩니다",
       "maxOrderAmount": "건당 금액 상한(선택)",
       "maxOrderAmountHelper": "이 금액을 넘는 진입 주문은 건너뜁니다. 청산 주문은 제한하지 않습니다",
       "mode": "모드",
@@ -584,6 +589,9 @@
       "failed": "AI 백테스트 실패: {reason}",
       "costLimit": "월 비용 상한에 도달했습니다",
       "canceled": "이 AI 백테스트는 중지되었습니다"
+    },
+    "pauses": {
+      "ai_cost_limit": "Claude API 비용이 이번 달 한도에 도달: 다음 달까지 판단 중지, 기존 포지션은 익절/손절을 따릅니다"
     }
   },
   "futures": {

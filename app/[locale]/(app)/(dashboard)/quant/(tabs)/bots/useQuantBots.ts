@@ -54,7 +54,7 @@ export const useBotStream = () => {
 /** 代碼有翻譯就顯示翻譯，未知的（例如 Pionex 新增的停止原因）原樣顯示 */
 export const useBotLabels = () => {
   const tBots = useTranslations("quant.bots");
-  const { events, reasons, skipReasons } = useMessages().quant.bots;
+  const { events, pauses, reasons, skipReasons } = useMessages().quant.bots;
 
   return useMemo(
     () => ({
@@ -67,12 +67,17 @@ export const useBotLabels = () => {
         reason && reason in reasons
           ? tBots(`reasons.${reason as keyof typeof reasons}`)
           : reason,
+      /** 執行中但暫停開新倉的原因；不是暫停原因時回傳 undefined */
+      pause: (reason?: string) =>
+        reason && reason in pauses
+          ? tBots(`pauses.${reason as keyof typeof pauses}`)
+          : undefined,
       skipReason: (reason: string) =>
         reason in skipReasons
           ? tBots(`skipReasons.${reason as keyof typeof skipReasons}`)
           : reason,
     }),
-    [events, reasons, skipReasons, tBots],
+    [events, pauses, reasons, skipReasons, tBots],
   );
 };
 

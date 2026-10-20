@@ -643,6 +643,9 @@ const BotDetail = ({ botId }: { botId: string }) => {
             {tBots("pionexError", { error: summary.pionexError })}
           </Alert>
         )}
+        {bot.status === "running" && labels.pause(bot.statusReason) && (
+          <Alert severity="warning">{labels.pause(bot.statusReason)}</Alert>
+        )}
         <Grid
           container
           spacing={2}

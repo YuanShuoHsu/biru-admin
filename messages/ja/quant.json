@@ -71,12 +71,18 @@
           "futuresGridClosing": "指値の利確・損切りが発動しましたが、決済注文はまだ約定していません。停止すると指値決済注文を取り消し、成行で決済します。約定価格が指値より不利になる場合があります。",
           "gridKeep": "すべてのグリッド注文を取り消します。保有している {base} は口座に残ります。",
           "gridSell": "すべてのグリッド注文を取り消し、保有している {base} を成行で {quote} に売却します。",
-          "keepPosition": "すべての注文を取り消します。ポジションは口座に残ります。"
+          "keepPosition": "停止するとすべての注文を取り消し、ポジションは口座に残り、以後は利確／損切りで保護されません。",
+          "closePosition": "停止するとすべての注文を取り消し、ポジションを成行で決済します。"
         },
         "currentPnl": "現在の総利益",
         "label": "停止",
         "success": "停止しました",
-        "title": "ボットを停止"
+        "title": "ボットを停止",
+        "position": {
+          "label": "ポジション",
+          "NOT_SELL": "ポジションを保持",
+          "TO_QUOTE": "成行で決済"
+        }
       },
       "view": "詳細を表示"
     },
@@ -177,7 +183,8 @@
       "order_skipped": "注文スキップ",
       "stopped": "停止",
       "triggered": "トリガー価格に到達",
-      "webhook_signal": "シグナル受信"
+      "webhook_signal": "シグナル受信",
+      "position_mismatch": "取引所のポジションが一致しません"
     },
     "executors": {
       "engine": {
@@ -365,8 +372,6 @@
       "investmentHelper": "ボットはこの金額だけを使います",
       "liveFuturesGridNote": "実運用の先物グリッドは Pionex に独立したポジションと証拠金を持つ先物グリッドボットを作成し、Pionex アプリで確認・管理できます。先物口座に十分な USDT が必要です。",
       "liveGridNote": "本番グリッドは Pionex に内蔵グリッドボットを作成し、Pionex アプリでも確認・管理できます。",
-      "maxDailyLoss": "1 日の最大損失（任意）",
-      "maxDailyLossHelper": "当日の損失がこの金額に達すると自動で停止します",
       "maxOrderAmount": "1 注文あたりの上限（任意）",
       "maxOrderAmountHelper": "この金額を超える新規注文はスキップします。決済注文は制限しません",
       "mode": "モード",
@@ -584,6 +589,9 @@
       "failed": "AI バックテストに失敗しました：{reason}",
       "costLimit": "月間費用上限に達しました",
       "canceled": "この AI バックテストは停止されました"
+    },
+    "pauses": {
+      "ai_cost_limit": "Claude API の費用が今月の上限に到達：来月まで判断を停止し、既存ポジションは利確／損切りに従います"
     }
   },
   "futures": {

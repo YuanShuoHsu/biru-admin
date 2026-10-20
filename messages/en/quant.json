@@ -71,12 +71,18 @@
           "futuresGridClosing": "The limit take-profit/stop-loss has triggered but its closing order has not filled. Stopping cancels that limit order and closes the position at market price, which may be worse than the limit price.",
           "gridKeep": "All grid orders will be canceled; the {base} held stays in your account.",
           "gridSell": "All grid orders will be canceled and the {base} held will be sold for {quote} at market price.",
-          "keepPosition": "All open orders will be canceled; the position stays in your account."
+          "keepPosition": "Stopping cancels all open orders; the position stays in your account with no take-profit / stop-loss protection.",
+          "closePosition": "Stopping cancels all open orders and closes the position at market."
         },
         "currentPnl": "Current total profit",
         "label": "Stop",
         "success": "Stopped",
-        "title": "Stop bot"
+        "title": "Stop bot",
+        "position": {
+          "label": "Position",
+          "NOT_SELL": "Keep position",
+          "TO_QUOTE": "Close at market"
+        }
       },
       "view": "View details"
     },
@@ -177,7 +183,8 @@
       "order_skipped": "Order skipped",
       "stopped": "Stopped",
       "triggered": "Trigger reached",
-      "webhook_signal": "Signal received"
+      "webhook_signal": "Signal received",
+      "position_mismatch": "Exchange position mismatch"
     },
     "executors": {
       "engine": {
@@ -365,8 +372,6 @@
       "investmentHelper": "The bot can only use this amount",
       "liveFuturesGridNote": "A live futures grid creates a Pionex futures grid bot with its own position and margin, visible and manageable in the Pionex app. Your futures account needs enough USDT.",
       "liveGridNote": "A live grid creates a Pionex grid bot, which you can also view and manage in the Pionex app.",
-      "maxDailyLoss": "Max daily loss (optional)",
-      "maxDailyLossHelper": "The bot stops when the day's loss reaches this amount",
       "maxOrderAmount": "Per-order limit (optional)",
       "maxOrderAmountHelper": "Opening orders above this amount are skipped; closing orders are not limited",
       "mode": "Mode",
@@ -584,6 +589,9 @@
       "failed": "AI backtest failed: {reason}",
       "costLimit": "the monthly cost limit was reached",
       "canceled": "This AI backtest was stopped"
+    },
+    "pauses": {
+      "ai_cost_limit": "Claude API cost reached this month's limit: decisions paused until next month; existing positions follow take-profit / stop-loss"
     }
   },
   "futures": {

@@ -98,7 +98,6 @@ export interface BotFormValues {
     trend: FuturesGridConfig["trend"];
   };
   investment: string;
-  maxDailyLoss: string;
   maxOrderAmount: string;
   mode: QuantBotMode;
   name: string;
@@ -189,7 +188,6 @@ export const defaultValues = (
     takeProfit: "",
   },
   investment: "",
-  maxDailyLoss: "",
   maxOrderAmount: "",
   mode: "paper",
   name: "",
@@ -245,7 +243,6 @@ export const valuesFromBot = (
       ? { direction: position.direction, leverage: text(position.leverage) }
       : base.futures,
     investment: text(bot.investment),
-    maxDailyLoss: text(bot.maxDailyLoss),
     maxOrderAmount: text(bot.maxOrderAmount),
     name: bot.name,
   };
@@ -670,7 +667,6 @@ export const useBotFormSchema = (type: QuantBotType) => {
             })
           : loose,
       investment: positive,
-      maxDailyLoss: optionalPositive,
       maxOrderAmount: optionalPositive,
       mode: z.enum(["paper", "live"]),
       name: required.max(50),

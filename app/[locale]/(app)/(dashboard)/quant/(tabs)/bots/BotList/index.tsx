@@ -468,7 +468,13 @@ const BotList = ({
         filterOperators: enumFilterOperators,
         headerName: tBots("columns.status"),
         renderCell: ({ row }: GridRenderCellParams<QuantBot>) => (
-          <Tooltip title={labels.reason(row.statusReason) ?? ""}>
+          <Tooltip
+            title={
+              (row.status === "running"
+                ? labels.pause(row.statusReason)
+                : labels.reason(row.statusReason)) ?? ""
+            }
+          >
             <Chip
               color={STATUS_COLORS[row.status]}
               label={labels.status(row)}

@@ -198,10 +198,6 @@ const BotFormFields = ({
             credentialId:
               values.mode === "live" ? values.credentialId : undefined,
             investment: Number(values.investment),
-            maxDailyLoss:
-              isLiveGrid || values.maxDailyLoss.trim() === ""
-                ? undefined
-                : Number(values.maxDailyLoss),
             maxOrderAmount:
               !hasOrderLimit || values.maxOrderAmount.trim() === ""
                 ? undefined
@@ -428,17 +424,6 @@ const BotFormFields = ({
                 required
               />
             </Grid>
-            {!isLiveGrid && (
-              <Grid size={{ sm: 6, xs: 12 }}>
-                <NumberField
-                  adornment={quote}
-                  form={form}
-                  helperText={tForm("maxDailyLossHelper")}
-                  label={tForm("maxDailyLoss")}
-                  name="maxDailyLoss"
-                />
-              </Grid>
-            )}
             {hasOrderLimit && (
               <Grid size={{ sm: 6, xs: 12 }}>
                 <NumberField

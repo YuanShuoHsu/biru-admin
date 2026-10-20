@@ -71,12 +71,18 @@
           "futuresGridClosing": "限价止盈止损已触发，平仓单尚未成交。停止后将撤销限价平仓单，改以市价平仓，成交价可能比限价差。",
           "gridKeep": "停止后将取消所有网格挂单，持有的 {base} 会保留在账户中。",
           "gridSell": "停止后将取消所有网格挂单，并以市价卖出持有的 {base} 换回 {quote}。",
-          "keepPosition": "停止后将取消所有挂单，持仓会保留在账户中。"
+          "keepPosition": "停止后将取消所有挂单，持仓会保留在账户中，之后不再有止盈止损保护。",
+          "closePosition": "停止后将取消所有挂单，并以市价平掉持仓。"
         },
         "currentPnl": "当前总利润",
         "label": "停止",
         "success": "已停止",
-        "title": "停止机器人"
+        "title": "停止机器人",
+        "position": {
+          "label": "持仓处理",
+          "NOT_SELL": "保留仓位",
+          "TO_QUOTE": "市价平仓"
+        }
       },
       "view": "查看详情"
     },
@@ -177,7 +183,8 @@
       "order_skipped": "委托跳过",
       "stopped": "已停止",
       "triggered": "触发价已到",
-      "webhook_signal": "收到信号"
+      "webhook_signal": "收到信号",
+      "position_mismatch": "交易所仓位对不上"
     },
     "executors": {
       "engine": {
@@ -365,8 +372,6 @@
       "investmentHelper": "机器人只能动用这笔资金",
       "liveFuturesGridNote": "实盘合约网格会在 Pionex 创建合约网格机器人，仓位和保证金独立，可在 Pionex App 中查看与管理。合约账户要先有足够的 USDT。",
       "liveGridNote": "实盘网格会在 Pionex 创建内置网格机器人，可在 Pionex App 中查看与管理。",
-      "maxDailyLoss": "每日最大亏损（选填）",
-      "maxDailyLossHelper": "当日亏损达到此金额就自动停止",
       "maxOrderAmount": "单笔金额上限（选填）",
       "maxOrderAmountHelper": "开仓单超过此金额就略过；平仓不受限",
       "mode": "模式",
@@ -584,6 +589,9 @@
       "failed": "AI 回测失败：{reason}",
       "costLimit": "费用达到每月费用上限",
       "canceled": "这次 AI 回测已停止"
+    },
+    "pauses": {
+      "ai_cost_limit": "Claude API 费用已达本月上限：暂停判断到下个月，持仓照止盈止损处理"
     }
   },
   "futures": {

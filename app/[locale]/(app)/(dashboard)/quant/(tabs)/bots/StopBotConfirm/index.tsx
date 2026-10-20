@@ -6,7 +6,7 @@ import { useFormatter, useTranslations } from "next-intl";
 
 import { pnlColor } from "../useQuantBots";
 
-import { quantPairOf } from "@/constants/quant";
+import { quantMarketTypeOf, quantPairOf } from "@/constants/quant";
 
 import {
   DialogContentText,
@@ -26,8 +26,11 @@ import type { GridConfig, QuantBot, StopQuantBotDto } from "@/types/quant";
 
 type CloseModel = GridConfig["closeModel"];
 
+const POSITION_BOT_TYPES = new Set(["ai", "dca", "indicator", "webhook"]);
+
 const consequenceOf = (
   { summary, type }: QuantBot,
+  isFutures: boolean,
   closeModel?: CloseModel,
 ) => {
   if (type === "futures_grid")
@@ -37,8 +40,9 @@ const consequenceOf = (
   if (type === "grid")
     return closeModel === "TO_QUOTE" ? "gridSell" : "gridKeep";
   if (type === "signal") return "cancelOrders";
+  if (isFutures) return "closePosition";
 
-  return "keepPosition";
+  return closeModel === "TO_QUOTE" ? "closePosition" : "keepPosition";
 };
 
 interface StopBotConfirmProps {
@@ -51,8 +55,16 @@ const StopBotConfirm = ({ bot, onStop }: StopBotConfirmProps) => {
   const format = useFormatter();
   const setDialog = useDialogStore((state) => state.setDialog);
 
-  const [closeModel, setCloseModel] = useState(
-    bot.type === "grid" ? (bot.config as GridConfig).closeModel : undefined,
+  const isGrid = bot.type === "grid";
+  // 合約一律平倉，對齊 Pionex 合約網格與合約馬丁格爾
+  const isFutures = quantMarketTypeOf(bot.symbol) === "PERP";
+  // 預設保留倉位，和不帶參數停止時的後端行為一致
+  const [closeModel, setCloseModel] = useState<CloseModel | undefined>(
+    isGrid
+      ? (bot.config as GridConfig).closeModel
+      : POSITION_BOT_TYPES.has(bot.type) && !isFutures
+        ? "NOT_SELL"
+        : undefined,
   );
 
   const pair = quantPairOf(bot.symbol);
@@ -73,14 +85,23 @@ const StopBotConfirm = ({ bot, onStop }: StopBotConfirmProps) => {
           type: tBots(`types.${bot.type}`),
         })}
         <br />
-        {tBots(`actions.stop.consequences.${consequenceOf(bot, closeModel)}`, {
-          base,
-          quote,
-        })}
+        {tBots(
+          `actions.stop.consequences.${consequenceOf(bot, isFutures, closeModel)}`,
+          {
+            base,
+            quote,
+          },
+        )}
       </DialogContentText>
       {closeModel && (
         <FormControl>
-          <FormLabel>{tBots("form.grid.closeModel.label")}</FormLabel>
+          <FormLabel>
+            {tBots(
+              isGrid
+                ? "form.grid.closeModel.label"
+                : "actions.stop.position.label",
+            )}
+          </FormLabel>
           <RadioGroup
             onChange={(_, value) => changeCloseModel(value as CloseModel)}
             row
@@ -90,7 +111,11 @@ const StopBotConfirm = ({ bot, onStop }: StopBotConfirmProps) => {
               <FormControlLabel
                 control={<Radio />}
                 key={value}
-                label={tBots(`form.grid.closeModel.${value}`, { quote })}
+                label={
+                  isGrid
+                    ? tBots(`form.grid.closeModel.${value}`, { quote })
+                    : tBots(`actions.stop.position.${value}`)
+                }
                 value={value}
               />
             ))}

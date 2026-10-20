@@ -71,12 +71,18 @@
           "futuresGridClosing": "限價停利停損已觸發，平倉單尚未成交。停止後將撤銷限價平倉單，改以市價平倉，成交價可能比限價差。",
           "gridKeep": "停止後將取消所有網格掛單，持有的 {base} 會保留在帳戶中。",
           "gridSell": "停止後將取消所有網格掛單，並以市價賣出持有的 {base} 換回 {quote}。",
-          "keepPosition": "停止後將取消所有掛單，持倉會保留在帳戶中。"
+          "keepPosition": "停止後將取消所有掛單，持倉會保留在帳戶中，之後不再有停利停損保護。",
+          "closePosition": "停止後將取消所有掛單，並以市價平掉持倉。"
         },
         "currentPnl": "當前總利潤",
         "label": "停止",
         "success": "已停止",
-        "title": "停止機器人"
+        "title": "停止機器人",
+        "position": {
+          "label": "持倉處理",
+          "NOT_SELL": "保留倉位",
+          "TO_QUOTE": "市價平倉"
+        }
       },
       "view": "查看詳情"
     },
@@ -177,7 +183,8 @@
       "order_skipped": "委託略過",
       "stopped": "已停止",
       "triggered": "觸發價已到",
-      "webhook_signal": "收到訊號"
+      "webhook_signal": "收到訊號",
+      "position_mismatch": "交易所倉位對不上"
     },
     "executors": {
       "engine": {
@@ -365,8 +372,6 @@
       "investmentHelper": "機器人只能動用這筆資金",
       "liveFuturesGridNote": "實盤合約網格會在 Pionex 建立合約網格機器人，倉位和保證金獨立，可在 Pionex App 中查看與管理。合約帳戶要先有足夠的 USDT。",
       "liveGridNote": "實盤網格會在 Pionex 建立內建網格機器人，可在 Pionex App 中查看與管理。",
-      "maxDailyLoss": "每日最大虧損（選填）",
-      "maxDailyLossHelper": "當日虧損達到此金額就自動停止",
       "maxOrderAmount": "單筆金額上限（選填）",
       "maxOrderAmountHelper": "開倉單超過此金額就略過；平倉不受限",
       "mode": "模式",
@@ -584,6 +589,9 @@
       "failed": "AI 回測失敗：{reason}",
       "costLimit": "費用達到每月費用上限",
       "canceled": "這次 AI 回測已停止"
+    },
+    "pauses": {
+      "ai_cost_limit": "Claude API 費用已達本月上限：暫停判斷到下個月，持倉照停利停損處理"
     }
   },
   "futures": {
