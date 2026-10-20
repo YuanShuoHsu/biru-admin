@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
@@ -13,15 +13,12 @@ import type { BotForm } from "./fields";
 import {
   Alert,
   Button,
-  DialogContentText,
   LinearProgress,
   MenuItem,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
-
-import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
   AiConfig,
@@ -46,11 +43,12 @@ const AiBacktestPanel = ({ form, market }: AiBacktestPanelProps) => {
   const tBacktest = useTranslations("quant.bots.backtest");
   const tAiBacktest = useTranslations("quant.bots.aiBacktest");
   const format = useFormatter();
-  const setDialog = useDialogStore((state) => state.setDialog);
 
   const [candleCount, setCandleCount] = useState(CANDLE_COUNTS[0]);
   const [runId, setRunId] = useState<string | null>(null);
   const [starting, setStarting] = useState(false);
+  const [confirmingCancel, setConfirmingCancel] = useState(false);
+  const [canceling, setCanceling] = useState(false);
 
   const { data: run, mutate } = useSWR<QuantAiBacktest>(
     runId ? `${AI_BACKTESTS_URL}/${runId}` : null,
@@ -92,27 +90,38 @@ const AiBacktestPanel = ({ form, market }: AiBacktestPanelProps) => {
     }
   };
 
-  const cancel = () =>
-    setDialog({
-      content: (
-        <DialogContentText>{tAiBacktest("cancel.confirm")}</DialogContentText>
-      ),
-      onConfirm: async () => {
-        if (!run) return;
+  // 這個面板在建立機器人的對話框裡，改用共用對話框確認會蓋掉整張表單
+  const cancel = async () => {
+    if (!run) return;
 
-        await mutate(
-          await fetcher<QuantAiBacktest>(
-            `${AI_BACKTESTS_URL}/${run.id}/cancel`,
-            { method: "POST" },
-          ),
-          { revalidate: false },
-        );
-      },
-      open: true,
-      title: tAiBacktest("cancel.title"),
-    });
+    setCanceling(true);
+    try {
+      await mutate(
+        await fetcher<QuantAiBacktest>(`${AI_BACKTESTS_URL}/${run.id}/cancel`, {
+          method: "POST",
+        }),
+        { revalidate: false },
+      );
+      setConfirmingCancel(false);
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+    } finally {
+      setCanceling(false);
+    }
+  };
 
   const isRunning = run?.status === "running";
+
+  // 進度只在這個面板看得到；關掉表單就停止，免得本機代理或 API 在背後繼續消耗額度
+  const runningId = isRunning ? run.id : null;
+  useEffect(() => {
+    if (!runningId) return;
+
+    return () =>
+      void fetcher(`${AI_BACKTESTS_URL}/${runningId}/cancel`, {
+        method: "POST",
+      }).catch(() => undefined);
+  }, [runningId]);
 
   return (
     <Stack sx={{ gap: 2 }}>
@@ -133,8 +142,38 @@ const AiBacktestPanel = ({ form, market }: AiBacktestPanelProps) => {
           </MenuItem>
         ))}
       </TextField>
-      {isRunning ? (
-        <Button color="error" onClick={cancel} variant="outlined">
+      {isRunning && confirmingCancel ? (
+        <Alert
+          action={
+            <Stack sx={{ flexDirection: "row", gap: 1 }}>
+              <Button
+                color="inherit"
+                onClick={() => setConfirmingCancel(false)}
+                size="small"
+              >
+                {tAiBacktest("cancel.keep")}
+              </Button>
+              <Button
+                color="inherit"
+                loading={canceling}
+                onClick={cancel}
+                size="small"
+                variant="outlined"
+              >
+                {tAiBacktest("cancel.label")}
+              </Button>
+            </Stack>
+          }
+          severity="warning"
+        >
+          {tAiBacktest("cancel.confirm")}
+        </Alert>
+      ) : isRunning ? (
+        <Button
+          color="error"
+          onClick={() => setConfirmingCancel(true)}
+          variant="outlined"
+        >
           {tAiBacktest("cancel.label")}
         </Button>
       ) : (
