@@ -123,7 +123,6 @@
       "interval": "撮合週期",
       "label": "回測",
       "maxDrawdown": "最大回撤",
-      "needsFee": "請先填寫手續費率",
       "note": "回測假設每根 K 線內的價格依序走過開、高、低、收，結果僅供比較參數，不代表未來報酬。",
       "period": "{from} ～ {to}",
       "pnl": "損益",
@@ -392,8 +391,6 @@
       "maxOrderAmountHelper": "開倉單超過此金額就略過；平倉不受限",
       "mode": "模式",
       "name": "名稱",
-      "paperFeeRate": "手續費率（%）",
-      "paperFeeRateHelper": "模擬成交時扣的手續費，可參考 <link>Pionex 費率</link>",
       "signal": {
         "compound": "獲利滾入本金",
         "hint": "啟動時會在 Pionex 建立專屬的自訂訊號與跟單機器人。TradingView 的 alert 直接送到 Pionex，不經過本系統，伺服器停機也不影響。",

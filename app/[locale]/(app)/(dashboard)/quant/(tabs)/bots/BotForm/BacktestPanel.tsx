@@ -52,11 +52,6 @@ const BacktestPanel = ({ form, market, type }: BacktestPanelProps) => {
     if (!(await form.trigger())) return;
 
     const values = form.getValues();
-    const feePercent = Number(values.paperFeeRate);
-    if (values.paperFeeRate.trim() === "" || !Number.isFinite(feePercent)) {
-      enqueueSnackbar(tBacktest("needsFee"), { variant: "warning" });
-      return;
-    }
 
     setLoading(true);
     try {
@@ -65,7 +60,6 @@ const BacktestPanel = ({ form, market, type }: BacktestPanelProps) => {
           body: JSON.stringify({
             candleCount,
             config: toConfig(type, values),
-            feeRate: feePercent / 100,
             interval,
             investment: Number(values.investment),
             symbol: values.symbol,

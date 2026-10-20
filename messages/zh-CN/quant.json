@@ -123,7 +123,6 @@
       "interval": "撮合周期",
       "label": "回测",
       "maxDrawdown": "最大回撤",
-      "needsFee": "请先填写手续费率",
       "note": "回测假设每根 K 线内的价格依次走过开、高、低、收，结果仅供比较参数，不代表未来收益。",
       "period": "{from} ～ {to}",
       "pnl": "盈亏",
@@ -392,8 +391,6 @@
       "maxOrderAmountHelper": "开仓单超过此金额就略过；平仓不受限",
       "mode": "模式",
       "name": "名称",
-      "paperFeeRate": "手续费率（%）",
-      "paperFeeRateHelper": "模拟成交时扣的手续费，可参考 <link>Pionex 费率</link>",
       "signal": {
         "compound": "盈利滚入本金",
         "hint": "启动时会在 Pionex 创建专属的自定义信号与跟单机器人。TradingView 的 alert 直接送到 Pionex，不经过本系统，服务器停机也不影响。",

@@ -99,7 +99,6 @@ export interface BotFormValues {
   maxOrderAmount: string;
   mode: QuantBotMode;
   name: string;
-  paperFeeRate: string;
   signal: {
     compound: boolean;
     leverage: string;
@@ -190,7 +189,6 @@ export const defaultValues = (
   maxOrderAmount: "",
   mode: "paper",
   name: "",
-  paperFeeRate: "",
   signal: { compound: false, leverage: "", stopLoss: "", takeProfit: "" },
   symbol,
   webhook: { orderAmount: "" },
@@ -246,8 +244,6 @@ export const valuesFromBot = (
     maxDailyLoss: text(bot.maxDailyLoss),
     maxOrderAmount: text(bot.maxOrderAmount),
     name: bot.name,
-    paperFeeRate:
-      bot.paperFeeRate === undefined ? "" : text(bot.paperFeeRate * 100),
   };
 
   switch (bot.type) {
@@ -671,7 +667,6 @@ export const useBotFormSchema = (type: QuantBotType) => {
       maxOrderAmount: optionalPositive,
       mode: z.enum(["paper", "live"]),
       name: required.max(50),
-      paperFeeRate: z.string(),
       signal:
         type === "signal"
           ? z.object({
@@ -706,20 +701,6 @@ export const useBotFormSchema = (type: QuantBotType) => {
           message: tValidation("required"),
           path: ["credentialId"],
         });
-      if (values.mode === "paper" && type !== "signal") {
-        const fee = Number(values.paperFeeRate);
-        if (
-          values.paperFeeRate.trim() === "" ||
-          !Number.isFinite(fee) ||
-          fee < 0 ||
-          fee > 1
-        )
-          ctx.addIssue({
-            code: "custom",
-            message: tValidation("required"),
-            path: ["paperFeeRate"],
-          });
-      }
       if (
         (type === "grid" || type === "futures_grid") &&
         Number(values.grid.top) <= Number(values.grid.bottom)

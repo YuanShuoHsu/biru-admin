@@ -47,7 +47,6 @@ import {
   Autocomplete,
   Button,
   Grid,
-  Link as MuiLink,
   ListSubheader,
   MenuItem,
   Paper,
@@ -119,7 +118,6 @@ const BOT_TYPE_GROUPS = [
     ),
   },
 ] as const;
-const PIONEX_FEES_URL = "https://www.pionex.com/en/fees";
 
 interface BotFormFieldsProps {
   initialValues: BotFormValues;
@@ -203,10 +201,6 @@ const BotFormFields = ({
                 : Number(values.maxOrderAmount),
             mode: values.mode,
             name: values.name,
-            paperFeeRate:
-              values.mode === "paper"
-                ? Number(values.paperFeeRate) / 100
-                : undefined,
             symbol: values.symbol,
           }),
           headers: { "Content-Type": "application/json" },
@@ -421,28 +415,6 @@ const BotFormFields = ({
                 required
               />
             </Grid>
-            {!isSignal && (
-              <Grid size={{ sm: 6, xs: 12 }}>
-                <NumberField
-                  adornment="%"
-                  form={form}
-                  helperText={tForm.rich("paperFeeRateHelper", {
-                    link: (chunks) => (
-                      <MuiLink
-                        href={PIONEX_FEES_URL}
-                        rel="noopener noreferrer"
-                        target="_blank"
-                      >
-                        {chunks}
-                      </MuiLink>
-                    ),
-                  })}
-                  label={tForm("paperFeeRate")}
-                  name="paperFeeRate"
-                  required={mode === "paper"}
-                />
-              </Grid>
-            )}
             {!isLiveGrid && (
               <Grid size={{ sm: 6, xs: 12 }}>
                 <NumberField

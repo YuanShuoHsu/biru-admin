@@ -123,7 +123,6 @@
       "interval": "Fill interval",
       "label": "Backtest",
       "maxDrawdown": "Max drawdown",
-      "needsFee": "Enter a fee rate first",
       "note": "The backtest assumes each candle moves through open, high, low and close in order. Use it to compare settings; it does not predict future returns.",
       "period": "{from} – {to}",
       "pnl": "P&L",
@@ -392,8 +391,6 @@
       "maxOrderAmountHelper": "Opening orders above this amount are skipped; closing orders are not limited",
       "mode": "Mode",
       "name": "Name",
-      "paperFeeRate": "Fee rate (%)",
-      "paperFeeRateHelper": "Charged on simulated fills. See <link>Pionex fees</link>",
       "signal": {
         "compound": "Reinvest profits",
         "hint": "Starting the bot creates a dedicated Pionex custom signal and copy bot. TradingView alerts go straight to Pionex, not through this system, so server downtime doesn't affect it.",

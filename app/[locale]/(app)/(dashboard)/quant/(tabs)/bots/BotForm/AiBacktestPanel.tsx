@@ -62,11 +62,6 @@ const AiBacktestPanel = ({ form, market }: AiBacktestPanelProps) => {
     if (!(await form.trigger())) return;
 
     const values = form.getValues();
-    const feePercent = Number(values.paperFeeRate);
-    if (values.paperFeeRate.trim() === "" || !Number.isFinite(feePercent)) {
-      enqueueSnackbar(tBacktest("needsFee"), { variant: "warning" });
-      return;
-    }
 
     setStarting(true);
     try {
@@ -74,7 +69,6 @@ const AiBacktestPanel = ({ form, market }: AiBacktestPanelProps) => {
         body: JSON.stringify({
           candleCount,
           config: toConfig("ai", values) as AiConfig,
-          feeRate: feePercent / 100,
           investment: Number(values.investment),
           symbol: values.symbol,
         } satisfies CreateAiBacktestDto),

@@ -123,7 +123,6 @@
       "interval": "체결 판정 주기",
       "label": "백테스트",
       "maxDrawdown": "최대 낙폭",
-      "needsFee": "먼저 수수료율을 입력하세요",
       "note": "각 캔들 안에서 가격이 시가, 고가, 저가, 종가 순으로 움직인다고 가정합니다. 설정 비교용이며 미래 수익을 의미하지 않습니다.",
       "period": "{from} ~ {to}",
       "pnl": "손익",
@@ -392,8 +391,6 @@
       "maxOrderAmountHelper": "이 금액을 넘는 진입 주문은 건너뜁니다. 청산 주문은 제한하지 않습니다",
       "mode": "모드",
       "name": "이름",
-      "paperFeeRate": "수수료율(%)",
-      "paperFeeRateHelper": "모의 체결 시 차감하는 수수료입니다. <link>Pionex 수수료</link>를 참고하세요",
       "signal": {
         "compound": "수익을 원금에 재투자",
         "hint": "시작하면 Pionex에 전용 사용자 신호와 카피 봇을 만듭니다. TradingView 알림은 이 시스템을 거치지 않고 바로 Pionex로 가므로 서버가 멈춰도 영향이 없습니다.",

@@ -10076,7 +10076,7 @@ export interface components {
       amount: string;
     };
     QuantAgentTokenDto: {
-      /** @description 後端直接用本機 Claude Code 判斷（QUANT_CLAUDE_CODE=local），不需要代理 */
+      /** @description 後端跑在本機時直接用本機 Claude Code 判斷，不需要代理 */
       claudeCodeLocal: boolean;
       configured: boolean;
       tokenLast4?: string;
@@ -10233,7 +10233,6 @@ export interface components {
       status: components["schemas"]["QuantAiBacktestStatus"];
       config: components["schemas"]["AiConfigDto"];
       investment: number;
-      feeRate: number;
       /** @description 已取得判斷的 K 線數 */
       decidedCount: number;
       /** @description 回測的 K 線總數 */
@@ -10255,8 +10254,6 @@ export interface components {
       /** @description 回測 K 線數量（交易所最多往回 10000 根） */
       candleCount: number;
       investment: number;
-      /** @description 手續費率（例如 0.0005） */
-      feeRate: number;
       config: components["schemas"]["AiConfigDto"];
     };
     QuantAgentConnectDto: {
@@ -10410,8 +10407,6 @@ export interface components {
       credentialId?: string;
       /** @description 投入金額（計價幣），也是機器人可動用資金的上限 */
       investment: number;
-      /** @description 模擬盤必填：手續費率（例如 0.0005） */
-      paperFeeRate?: number;
       /** @description 每日最大虧損（計價幣），觸發即停止 */
       maxDailyLoss?: number;
       /** @description DCA／指標／Webhook：開倉單的單筆金額上限（計價幣），超過就略過；平倉不受限 */
@@ -10616,7 +10611,6 @@ export interface components {
         | components["schemas"]["SignalBotConfigDto"]
         | components["schemas"]["AiConfigDto"];
       investment: number;
-      paperFeeRate?: number;
       maxDailyLoss?: number;
       maxOrderAmount?: number;
       /** @description pionex：交給 Pionex 執行；engine：由本系統執行 */
@@ -10657,8 +10651,6 @@ export interface components {
       credentialId?: string;
       /** @description 投入金額（計價幣），也是機器人可動用資金的上限 */
       investment: number;
-      /** @description 模擬盤必填：手續費率（例如 0.0005） */
-      paperFeeRate?: number;
       /** @description 每日最大虧損（計價幣），觸發即停止 */
       maxDailyLoss?: number;
       /** @description DCA／指標／Webhook：開倉單的單筆金額上限（計價幣），超過就略過；平倉不受限 */
@@ -10693,8 +10685,6 @@ export interface components {
       credentialId?: string;
       /** @description 投入金額（計價幣），也是機器人可動用資金的上限 */
       investment: number;
-      /** @description 模擬盤必填：手續費率（例如 0.0005） */
-      paperFeeRate?: number;
       /** @description 每日最大虧損（計價幣），觸發即停止 */
       maxDailyLoss?: number;
       /** @description DCA／指標／Webhook：開倉單的單筆金額上限（計價幣），超過就略過；平倉不受限 */
@@ -10710,8 +10700,6 @@ export interface components {
       credentialId?: string;
       /** @description 投入金額（計價幣），也是機器人可動用資金的上限 */
       investment: number;
-      /** @description 模擬盤必填：手續費率（例如 0.0005） */
-      paperFeeRate?: number;
       /** @description 每日最大虧損（計價幣），觸發即停止 */
       maxDailyLoss?: number;
       /** @description DCA／指標／Webhook：開倉單的單筆金額上限（計價幣），超過就略過；平倉不受限 */
@@ -10727,8 +10715,6 @@ export interface components {
       credentialId?: string;
       /** @description 投入金額（計價幣），也是機器人可動用資金的上限 */
       investment: number;
-      /** @description 模擬盤必填：手續費率（例如 0.0005） */
-      paperFeeRate?: number;
       /** @description 每日最大虧損（計價幣），觸發即停止 */
       maxDailyLoss?: number;
       /** @description DCA／指標／Webhook：開倉單的單筆金額上限（計價幣），超過就略過；平倉不受限 */
@@ -10744,8 +10730,6 @@ export interface components {
       credentialId?: string;
       /** @description 投入金額（計價幣），也是機器人可動用資金的上限 */
       investment: number;
-      /** @description 模擬盤必填：手續費率（例如 0.0005） */
-      paperFeeRate?: number;
       /** @description 每日最大虧損（計價幣），觸發即停止 */
       maxDailyLoss?: number;
       /** @description DCA／指標／Webhook：開倉單的單筆金額上限（計價幣），超過就略過；平倉不受限 */
@@ -10761,8 +10745,6 @@ export interface components {
       credentialId?: string;
       /** @description 投入金額（計價幣），也是機器人可動用資金的上限 */
       investment: number;
-      /** @description 模擬盤必填：手續費率（例如 0.0005） */
-      paperFeeRate?: number;
       /** @description 每日最大虧損（計價幣），觸發即停止 */
       maxDailyLoss?: number;
       /** @description DCA／指標／Webhook：開倉單的單筆金額上限（計價幣），超過就略過；平倉不受限 */
@@ -10788,7 +10770,6 @@ export interface components {
         | components["schemas"]["SignalBotConfigDto"]
         | components["schemas"]["AiConfigDto"];
       investment: number;
-      paperFeeRate?: number;
       maxDailyLoss?: number;
       maxOrderAmount?: number;
       /** @description pionex：交給 Pionex 執行；engine：由本系統執行 */
@@ -10949,8 +10930,6 @@ export interface components {
       /** @description 回測 K 線數量（交易所最多往回 10000 根） */
       candleCount: number;
       investment: number;
-      /** @description 手續費率（例如 0.0005） */
-      feeRate: number;
       config: components["schemas"]["GridConfigDto"];
     };
     FuturesGridBacktestDto: {
@@ -10961,8 +10940,6 @@ export interface components {
       /** @description 回測 K 線數量（交易所最多往回 10000 根） */
       candleCount: number;
       investment: number;
-      /** @description 手續費率（例如 0.0005） */
-      feeRate: number;
       config: components["schemas"]["FuturesGridConfigDto"];
     };
     DcaBacktestDto: {
@@ -10973,8 +10950,6 @@ export interface components {
       /** @description 回測 K 線數量（交易所最多往回 10000 根） */
       candleCount: number;
       investment: number;
-      /** @description 手續費率（例如 0.0005） */
-      feeRate: number;
       config: components["schemas"]["DcaConfigDto"];
     };
     IndicatorBacktestDto: {
@@ -10985,8 +10960,6 @@ export interface components {
       /** @description 回測 K 線數量（交易所最多往回 10000 根） */
       candleCount: number;
       investment: number;
-      /** @description 手續費率（例如 0.0005） */
-      feeRate: number;
       config: components["schemas"]["IndicatorConfigDto"];
     };
     /** @enum {string} */
