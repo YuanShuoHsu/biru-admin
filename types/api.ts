@@ -10118,10 +10118,15 @@ export interface components {
       | "1W"
       | "1m";
     /**
-     * @description claude_api 必填
+     * @description 省略時用 medium
      * @enum {string}
      */
-    QuantAiEffort: "low" | "medium" | "high";
+    QuantAiEffort: "low" | "medium" | "high" | "xhigh" | "max";
+    /**
+     * @description 省略時用 claude-opus-5-5
+     * @enum {string}
+     */
+    QuantAiModel: "claude-opus-5-5" | "claude-sonnet-5-5" | "claude-haiku-5-5";
     /**
      * @description AI 寫判斷理由用的語言
      * @enum {string}
@@ -10144,8 +10149,10 @@ export interface components {
       maxOrderAmount: number;
       /** @description claude_api 必填：每月 AI 費用上限（美元），超過就停止機器人 */
       monthlyCostLimit?: number;
-      /** @description claude_api 必填 */
+      /** @description 省略時用 medium */
       effort?: components["schemas"]["QuantAiEffort"];
+      /** @description 省略時用 claude-opus-5-5 */
+      model?: components["schemas"]["QuantAiModel"];
       /** @description AI 寫判斷理由用的語言 */
       locale: components["schemas"]["QuantAiLocale"];
       /** @description 停利（%，相對持倉均價），由系統強制 */
@@ -10238,6 +10245,9 @@ export interface components {
       kind: components["schemas"]["QuantAgentRequestKind"];
       /** @description 交給 Claude 的系統指示 */
       instructions: string;
+      /** @description 傳給 claude --model */
+      model: string;
+      effort: components["schemas"]["QuantAiEffort"];
       /** @description 判斷用的市場與部位快照 */
       snapshot: {
         [key: string]: unknown;
@@ -23715,7 +23725,10 @@ export const quantCandleIntervalValues: ReadonlyArray<
 > = ["1M", "5M", "15M", "30M", "60M", "4H", "8H", "12H", "1D", "1W", "1m"];
 export const quantAiEffortValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantAiEffort"]
-> = ["low", "medium", "high"];
+> = ["low", "medium", "high", "xhigh", "max"];
+export const quantAiModelValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantAiModel"]
+> = ["claude-opus-5-5", "claude-sonnet-5-5", "claude-haiku-5-5"];
 export const quantAiLocaleValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantAiLocale"]
 > = ["zh-TW", "zh-CN", "en", "ja", "ko"];

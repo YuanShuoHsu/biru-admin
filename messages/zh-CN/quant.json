@@ -192,12 +192,7 @@
     "form": {
       "ai": {
         "effort": "思考深度",
-        "effortHelper": "越深越准确但越贵、越慢",
-        "efforts": {
-          "high": "深入",
-          "low": "快速",
-          "medium": "标准"
-        },
+        "effortHelper": "越深越准确，但越慢、越耗费用或订阅额度",
         "guardHelper": "由系统强制执行，不经过 AI",
         "guideline": "交易方针（选填）",
         "guidelineHelper": "告诉 AI 你的风格与能承受的风险，最多 2000 字",
@@ -221,7 +216,8 @@
           }
         },
         "stopLoss": "止损（%，选填）",
-        "takeProfit": "止盈（%，选填）"
+        "takeProfit": "止盈（%，选填）",
+        "model": "模型"
       },
       "basic": "基本设置",
       "credential": "交易账户",

@@ -192,12 +192,7 @@
     "form": {
       "ai": {
         "effort": "思考の深さ",
-        "effortHelper": "深いほど正確ですが、費用と時間がかかります",
-        "efforts": {
-          "high": "深い",
-          "low": "速い",
-          "medium": "標準"
-        },
+        "effortHelper": "深いほど正確ですが、時間がかかり、費用やサブスクリプション枠を多く使います",
         "guardHelper": "AI ではなくシステムが強制します",
         "guideline": "取引方針（任意）",
         "guidelineHelper": "スタイルと許容リスクを AI に伝えます。最大 2000 文字",
@@ -221,7 +216,8 @@
           }
         },
         "stopLoss": "損切り（%、任意）",
-        "takeProfit": "利確（%、任意）"
+        "takeProfit": "利確（%、任意）",
+        "model": "モデル"
       },
       "basic": "基本設定",
       "credential": "取引口座",

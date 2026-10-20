@@ -192,12 +192,7 @@
     "form": {
       "ai": {
         "effort": "Thinking depth",
-        "effortHelper": "Deeper is more accurate but costs more and takes longer",
-        "efforts": {
-          "high": "Deep",
-          "low": "Fast",
-          "medium": "Standard"
-        },
+        "effortHelper": "Deeper is more accurate but slower and uses more cost or subscription quota",
         "guardHelper": "Enforced by the system, not by the AI",
         "guideline": "Trading guideline (optional)",
         "guidelineHelper": "Tell the AI your style and risk tolerance, up to 2000 characters",
@@ -221,7 +216,8 @@
           }
         },
         "stopLoss": "Stop loss (%, optional)",
-        "takeProfit": "Take profit (%, optional)"
+        "takeProfit": "Take profit (%, optional)",
+        "model": "Model"
       },
       "basic": "Basics",
       "credential": "Trading account",

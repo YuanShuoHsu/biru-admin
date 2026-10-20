@@ -192,12 +192,7 @@
     "form": {
       "ai": {
         "effort": "사고 깊이",
-        "effortHelper": "깊을수록 정확하지만 비용과 시간이 더 듭니다",
-        "efforts": {
-          "high": "깊게",
-          "low": "빠르게",
-          "medium": "표준"
-        },
+        "effortHelper": "깊을수록 정확하지만 더 느리고 비용이나 구독 한도를 더 씁니다",
         "guardHelper": "AI가 아닌 시스템이 강제합니다",
         "guideline": "거래 방침(선택)",
         "guidelineHelper": "스타일과 감당할 수 있는 위험을 AI에게 알려 주세요. 최대 2000자",
@@ -221,7 +216,8 @@
           }
         },
         "stopLoss": "손절(%, 선택)",
-        "takeProfit": "익절(%, 선택)"
+        "takeProfit": "익절(%, 선택)",
+        "model": "모델"
       },
       "basic": "기본 설정",
       "credential": "거래 계정",

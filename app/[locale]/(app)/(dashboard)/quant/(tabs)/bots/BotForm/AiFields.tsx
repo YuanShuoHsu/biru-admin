@@ -8,11 +8,20 @@ import { type BotForm, NumberField, SelectField } from "./fields";
 
 import { Alert, Grid, TextField } from "@mui/material";
 
+import type { QuantAiModel } from "@/types/quant";
+
 import {
   quantAiEffortValues,
+  quantAiModelValues,
   quantAiSourceValues,
   quantCandleIntervalValues,
 } from "@/types/api";
+
+const MODEL_LABELS: Record<QuantAiModel, string> = {
+  "claude-haiku-5-5": "Claude Haiku 5.5",
+  "claude-opus-5-5": "Claude Opus 5.5",
+  "claude-sonnet-5-5": "Claude Sonnet 5.5",
+};
 
 interface AiFieldsProps {
   form: BotForm;
@@ -55,20 +64,29 @@ const AiFields = ({ form, quote }: AiFieldsProps) => {
           }))}
         />
       </Grid>
-      {isApi && (
-        <Grid size={{ sm: 6, xs: 12 }}>
-          <SelectField
-            form={form}
-            helperText={tAi("effortHelper")}
-            label={tAi("effort")}
-            name="ai.effort"
-            options={quantAiEffortValues.map((value) => ({
-              label: tAi(`efforts.${value}`),
-              value,
-            }))}
-          />
-        </Grid>
-      )}
+      <Grid size={{ sm: 6, xs: 12 }}>
+        <SelectField
+          form={form}
+          label={tAi("model")}
+          name="ai.model"
+          options={quantAiModelValues.map((value) => ({
+            label: MODEL_LABELS[value],
+            value,
+          }))}
+        />
+      </Grid>
+      <Grid size={{ sm: 6, xs: 12 }}>
+        <SelectField
+          form={form}
+          helperText={tAi("effortHelper")}
+          label={tAi("effort")}
+          name="ai.effort"
+          options={quantAiEffortValues.map((value) => ({
+            label: value,
+            value,
+          }))}
+        />
+      </Grid>
       <Grid size={{ sm: 6, xs: 12 }}>
         <NumberField
           adornment={quote}

@@ -4,6 +4,8 @@ import * as z from "zod";
 import { quantMarketTypeOf } from "@/constants/quant";
 
 import {
+  quantAiEffortValues,
+  quantAiModelValues,
   quantFuturesGridStopTypeValues,
   quantGridStopTypeValues,
 } from "@/types/api";
@@ -45,6 +47,7 @@ export interface BotFormValues {
     interval: QuantCandleInterval;
     locale: AiConfig["locale"];
     maxOrderAmount: string;
+    model: NonNullable<AiConfig["model"]>;
     monthlyCostLimit: string;
     source: QuantAiSource;
     stopLoss: string;
@@ -130,12 +133,13 @@ export const defaultValues = (
   locale: AiConfig["locale"],
 ): BotFormValues => ({
   ai: {
-    // Anthropic 對這個模型的預設 effort
+    // Anthropic 對預設模型的預設 effort
     effort: "medium",
     guideline: "",
     interval: "15M",
     locale,
     maxOrderAmount: "",
+    model: "claude-opus-5-5",
     monthlyCostLimit: "",
     source: "claude_code",
     stopLoss: "",
@@ -310,6 +314,7 @@ export const valuesFromBot = (
         interval: config.interval,
         locale: config.locale,
         maxOrderAmount: text(config.maxOrderAmount),
+        model: config.model ?? base.ai.model,
         monthlyCostLimit: text(config.monthlyCostLimit),
         source: config.source ?? "claude_api",
         stopLoss: text(config.stopLoss),
@@ -491,12 +496,13 @@ export const toConfig = (type: QuantBotType, values: BotFormValues) => {
       const isApi = ai.source === "claude_api";
 
       return {
-        effort: isApi ? ai.effort : undefined,
+        effort: ai.effort,
         futures: futuresPosition(values),
         guideline: ai.guideline.trim() || undefined,
         interval: ai.interval,
         locale: ai.locale,
         maxOrderAmount: Number(ai.maxOrderAmount),
+        model: ai.model,
         monthlyCostLimit: isApi ? Number(ai.monthlyCostLimit) : undefined,
         source: ai.source,
         stopLoss: optionalNumber(ai.stopLoss),
@@ -582,11 +588,12 @@ export const useBotFormSchema = (type: QuantBotType) => {
         type === "ai"
           ? z
               .object({
-                effort: z.enum(["low", "medium", "high"]),
+                effort: z.enum(quantAiEffortValues),
                 guideline: z.string().max(2000),
                 interval: z.string(),
                 locale: z.string(),
                 maxOrderAmount: positive,
+                model: z.enum(quantAiModelValues),
                 monthlyCostLimit: z.string(),
                 source: z.enum(["claude_api", "claude_code"]),
                 stopLoss: optionalPositive,
