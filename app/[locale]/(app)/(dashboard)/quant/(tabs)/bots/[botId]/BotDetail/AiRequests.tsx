@@ -47,6 +47,8 @@ const AiRequests = ({ bot }: { bot: QuantBot }) => {
 
   const quote = quantPairOf(bot.symbol).split("/")[1];
   const latest = requests[0];
+  // 下一根收盤會立刻開新的請求，所以看的是最近一筆已結束的請求有沒有被回應
+  const lastResolved = requests.find(({ status }) => status !== "pending");
   const awaiting = requests.filter(
     ({ status }) => status === "awaiting_approval",
   );
@@ -99,7 +101,7 @@ const AiRequests = ({ bot }: { bot: QuantBot }) => {
           })}
         </Alert>
       )}
-      {latest?.status === "expired" && !latest.answeredAt && (
+      {lastResolved?.status === "expired" && !lastResolved.answeredAt && (
         <Alert severity="warning">{tAi("request.noResponse")}</Alert>
       )}
       {!requests.length && (
