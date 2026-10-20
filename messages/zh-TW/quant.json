@@ -141,7 +141,8 @@
         "floatingPnl": "浮動盈虧",
         "annualizedReturn": "年化報酬",
         "gridAnnualizedReturn": "網格年化",
-        "trendPnl": "趨勢盈虧"
+        "trendPnl": "趨勢盈虧",
+        "openPrice": "開單時價格"
       }
     },
     "events": {
@@ -378,6 +379,7 @@
         "range": "修改上下界與格數，投入金額不變。",
         "reduce": "以每格數量為單位減少倉位，減掉的部分會實現盈虧。",
         "reduceMargin": "把多出來的保證金轉回合約帳戶，會讓強平價變近。",
+        "reinvest": "把目前的浮動盈利併入投資額繼續運行，不投入新資金，價格區間與格數不變。浮動盈利須大於 0。",
         "resume": "恢復補掛單；可設定價格觸及才恢復。",
         "stops": "修改或清除停利停損；欄位留空代表清除。"
       },
@@ -395,6 +397,7 @@
         "range": "修改區間",
         "reduce": "減倉",
         "reduceMargin": "減少保證金",
+        "reinvest": "複投",
         "resume": "恢復",
         "stops": "修改停利停損"
       },

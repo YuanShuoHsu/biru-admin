@@ -80,6 +80,8 @@ const toDto = (
         row: optional(fields.row),
         top: optional(fields.top),
       };
+    case "reinvest":
+      return { operation };
     case "reduce":
       return { operation, reduceNum: optional(fields.reduceNum) };
     case "pause":

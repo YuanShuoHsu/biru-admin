@@ -141,7 +141,8 @@
         "floatingPnl": "浮动盈亏",
         "annualizedReturn": "年化收益",
         "gridAnnualizedReturn": "网格年化",
-        "trendPnl": "趋势盈亏"
+        "trendPnl": "趋势盈亏",
+        "openPrice": "开单时价格"
       }
     },
     "events": {
@@ -378,6 +379,7 @@
         "range": "修改上下界与格数，投入金额不变。",
         "reduce": "以每格数量为单位减少仓位，减掉的部分会实现盈亏。",
         "reduceMargin": "把多出来的保证金转回合约账户，会让强平价变近。",
+        "reinvest": "把当前的浮动盈利并入投资额继续运行，不投入新资金，价格区间与格数不变。浮动盈利须大于 0。",
         "resume": "恢复补挂单；可设置价格触及才恢复。",
         "stops": "修改或清除止盈止损；字段留空表示清除。"
       },
@@ -395,6 +397,7 @@
         "range": "修改区间",
         "reduce": "减仓",
         "reduceMargin": "减少保证金",
+        "reinvest": "复投",
         "resume": "恢复",
         "stops": "修改止盈止损"
       },

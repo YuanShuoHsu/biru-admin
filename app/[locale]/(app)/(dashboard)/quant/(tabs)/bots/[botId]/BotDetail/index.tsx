@@ -192,6 +192,8 @@ const BotDetail = ({ botId }: { botId: string }) => {
 
   const formatQuote = (value: number) =>
     `${format.number(value, { maximumFractionDigits: 2, minimumFractionDigits: 2, signDisplay: "negative" })} ${quote}`;
+  const formatQuoteWithRatio = (value: number) =>
+    `${formatQuote(value)} (${format.number(value / bot.investment, { maximumFractionDigits: 2, signDisplay: "exceptZero", style: "percent" })})`;
   const formatPrice = (value?: number) =>
     value === undefined
       ? "—"
@@ -243,6 +245,7 @@ const BotDetail = ({ botId }: { botId: string }) => {
   const futuresOperations: FuturesGridOperation[] = [
     "invest",
     "range",
+    "reinvest",
     "reduce",
     isPaused ? "resume" : "pause",
     "addMargin",
@@ -638,7 +641,7 @@ const BotDetail = ({ botId }: { botId: string }) => {
             <Stat
               color={pnlColor(summary.pnl)}
               label={tBots("detail.summary.pnl")}
-              value={`${formatQuote(summary.pnl)} (${format.number(summary.pnl / bot.investment, { maximumFractionDigits: 2, signDisplay: "exceptZero", style: "percent" })})`}
+              value={formatQuoteWithRatio(summary.pnl)}
             />
           </Grid>
           <Grid size={{ md: 2, sm: 4, xs: 6 }}>
@@ -649,7 +652,7 @@ const BotDetail = ({ botId }: { botId: string }) => {
                   ? "detail.summary.gridProfit"
                   : "detail.summary.realizedPnl",
               )}
-              value={formatQuote(summary.realizedPnl)}
+              value={formatQuoteWithRatio(summary.realizedPnl)}
             />
           </Grid>
           <Grid size={{ md: 2, sm: 4, xs: 6 }}>
@@ -660,7 +663,7 @@ const BotDetail = ({ botId }: { botId: string }) => {
                   ? "detail.summary.trendPnl"
                   : "detail.summary.floatingPnl",
               )}
-              value={formatQuote(summary.floatingPnl)}
+              value={formatQuoteWithRatio(summary.floatingPnl)}
             />
           </Grid>
           <Grid size={{ md: 2, sm: 4, xs: 6 }}>
@@ -685,6 +688,14 @@ const BotDetail = ({ botId }: { botId: string }) => {
               value={`${formatSize(summary.position)} ${base}`}
             />
           </Grid>
+          {summary.openPrice !== undefined && (
+            <Grid size={{ md: 2, sm: 4, xs: 6 }}>
+              <Stat
+                label={tBots("detail.summary.openPrice")}
+                value={formatPrice(summary.openPrice)}
+              />
+            </Grid>
+          )}
           <Grid size={{ md: 2, sm: 4, xs: 6 }}>
             <Stat
               label={tBots("detail.summary.averageCost")}
@@ -698,7 +709,11 @@ const BotDetail = ({ botId }: { botId: string }) => {
               <Grid size={{ md: 2, sm: 4, xs: 6 }}>
                 <Stat
                   label={tBots("detail.summary.liquidationPrice")}
-                  value={formatPrice(summary.liquidationPrice)}
+                  value={
+                    summary.liquidationDistance === undefined
+                      ? formatPrice(summary.liquidationPrice)
+                      : `${formatPrice(summary.liquidationPrice)} (${format.number(summary.liquidationDistance, { maximumFractionDigits: 2, style: "percent" })})`
+                  }
                 />
               </Grid>
               <Grid size={{ md: 2, sm: 4, xs: 6 }}>

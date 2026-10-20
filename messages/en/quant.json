@@ -141,7 +141,8 @@
         "floatingPnl": "Floating PnL",
         "annualizedReturn": "APR",
         "gridAnnualizedReturn": "Grid APR",
-        "trendPnl": "Trend PnL"
+        "trendPnl": "Trend PnL",
+        "openPrice": "Price at creation"
       }
     },
     "events": {
@@ -378,6 +379,7 @@
         "range": "Change the range and grid count; the investment stays the same.",
         "reduce": "Reduce the position in units of the per-grid size; the reduced part realizes PnL.",
         "reduceMargin": "Move spare margin back to the futures account; brings the liquidation price closer.",
+        "reinvest": "Folds the current floating profit into the investment and keeps running. No new funds are added; the price range and grid count stay the same. Floating profit must be above 0.",
         "resume": "Resume refilling orders; optionally only when the price reaches a level.",
         "stops": "Change or clear take profit and stop loss; leave a field empty to clear it."
       },
@@ -395,6 +397,7 @@
         "range": "Change range",
         "reduce": "Reduce position",
         "reduceMargin": "Remove margin",
+        "reinvest": "Reinvest",
         "resume": "Resume",
         "stops": "Change TP / SL"
       },

@@ -10160,6 +10160,10 @@ export interface components {
       fillCount: number;
       /** @description 合約：預估強平價 */
       liquidationPrice?: number;
+      /** @description 合約：預估強平價與現價的距離（比例） */
+      liquidationDistance?: number;
+      /** @description Pionex 網格：建立時的市價 */
+      openPrice?: number;
       /** @description 合約：累計資金費（正數為收入） */
       fundingFee?: number;
       /** @description Pionex 機器人目前的狀態，例如 running、paused */
@@ -10417,6 +10421,7 @@ export interface components {
     QuantFuturesGridOperation:
       | "invest"
       | "range"
+      | "reinvest"
       | "reduce"
       | "pause"
       | "resume"
@@ -23042,6 +23047,7 @@ export const quantFuturesGridOperationValues: ReadonlyArray<
 > = [
   "invest",
   "range",
+  "reinvest",
   "reduce",
   "pause",
   "resume",
