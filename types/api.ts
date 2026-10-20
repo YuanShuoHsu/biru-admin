@@ -3539,6 +3539,163 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/quant/agent-token": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得 Claude Code 連線 token 的狀態（只回末 4 碼） */
+    get: operations["QuantAiAdminController_findToken"];
+    put?: never;
+    /** 產生新的 Claude Code 連線 token，舊的立即失效 */
+    post: operations["QuantAiAdminController_regenerateToken"];
+    /** 撤銷 Claude Code 連線 token */
+    delete: operations["QuantAiAdminController_removeToken"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/bots/{id}/ai-requests": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Claude Code 機器人最近的判斷請求與待確認建議 */
+    get: operations["QuantAiAdminController_listRequests"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/bots/{id}/ai-requests/{requestId}/approve": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 確認 AI 建議並實際下單 */
+    post: operations["QuantAiAdminController_approve"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/bots/{id}/ai-requests/{requestId}/reject": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 略過 AI 建議，不下單 */
+    post: operations["QuantAiAdminController_reject"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/ai-backtests": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 最近的 AI 回測 */
+    get: operations["QuantAiAdminController_listBacktests"];
+    put?: never;
+    /** 建立 AI 回測：K 線固定後逐根取得判斷（Claude Code 或 Claude API） */
+    post: operations["QuantAiAdminController_createBacktest"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/ai-backtests/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得 AI 回測進度與結果 */
+    get: operations["QuantAiAdminController_findBacktest"];
+    put?: never;
+    post?: never;
+    /** 刪除 AI 回測 */
+    delete: operations["QuantAiAdminController_removeBacktest"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/ai-backtests/{id}/cancel": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 停止進行中的 AI 回測 */
+    post: operations["QuantAiAdminController_cancelBacktest"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/agent/requests": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得等待 Claude Code 判斷的請求 */
+    get: operations["QuantAiAgentController_pending"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/quant/agent/requests/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 回傳判斷；模擬盤與回測直接套用，實盤等使用者在後台確認 */
+    post: operations["QuantAiAgentController_submit"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/quant/ai-key": {
     parameters: {
       query?: never;
@@ -9868,6 +10025,215 @@ export interface components {
       /** @example 100 */
       amount: string;
     };
+    QuantAgentTokenDto: {
+      configured: boolean;
+      tokenLast4?: string;
+      /**
+       * Format: date-time
+       * @description 代理最後一次取請求的時間
+       */
+      lastUsedAt?: string;
+      /** Format: date-time */
+      createdAt?: string;
+    };
+    QuantAgentTokenCreatedDto: {
+      configured: boolean;
+      tokenLast4?: string;
+      /**
+       * Format: date-time
+       * @description 代理最後一次取請求的時間
+       */
+      lastUsedAt?: string;
+      /** Format: date-time */
+      createdAt?: string;
+      /** @description 新的 token，只在這次回傳；舊 token 立即失效 */
+      token: string;
+    };
+    /** @enum {string} */
+    QuantAiRequestStatus:
+      | "pending"
+      | "awaiting_approval"
+      | "executed"
+      | "rejected"
+      | "expired"
+      | "answered";
+    /**
+     * @description open：依機器人方向加倉；close：減倉或平倉；hold：不動作
+     * @enum {string}
+     */
+    QuantAiDecisionAction: "open" | "close" | "hold";
+    AiDecisionDto: {
+      /** @description open：依機器人方向加倉；close：減倉或平倉；hold：不動作 */
+      action: components["schemas"]["QuantAiDecisionAction"];
+      /** @description open 時加倉的名目金額（計價幣），其他填 0 */
+      amount: number;
+      /** @description close 時要平掉的持倉比例（0–1），其他填 0 */
+      closeRatio: number;
+      /** @description 信心（0–1） */
+      confidence: number;
+      reasoning: string;
+    };
+    QuantAiRequestDto: {
+      id: string;
+      status: components["schemas"]["QuantAiRequestStatus"];
+      /**
+       * Format: date-time
+       * @description 判斷依據的 K 線開盤時間
+       */
+      candleTime: string;
+      /** @description 送出請求時的價格 */
+      price: number;
+      decision?: components["schemas"]["AiDecisionDto"];
+      /**
+       * Format: date-time
+       * @description 超過就作廢，不會再執行
+       */
+      expiresAt?: string;
+      /** Format: date-time */
+      answeredAt?: string;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    /** @enum {string} */
+    QuantAiSource: "claude_api" | "claude_code";
+    /** @enum {string} */
+    QuantAiBacktestStatus: "running" | "completed" | "failed" | "canceled";
+    /**
+     * @description 每根 K 線收盤時請 AI 判斷一次
+     * @enum {string}
+     */
+    QuantCandleInterval:
+      | "1M"
+      | "5M"
+      | "15M"
+      | "30M"
+      | "60M"
+      | "4H"
+      | "8H"
+      | "12H"
+      | "1D"
+      | "1W"
+      | "1m";
+    /**
+     * @description claude_api 必填
+     * @enum {string}
+     */
+    QuantAiEffort: "low" | "medium" | "high";
+    /**
+     * @description AI 寫判斷理由用的語言
+     * @enum {string}
+     */
+    QuantAiLocale: "zh-TW" | "zh-CN" | "en" | "ja" | "ko";
+    /** @enum {string} */
+    QuantFuturesDirection: "long" | "short";
+    FuturesPositionConfigDto: {
+      direction: components["schemas"]["QuantFuturesDirection"];
+      leverage: number;
+    };
+    AiConfigDto: {
+      /** @description claude_api：伺服器用 Claude API key 呼叫；claude_code：本機 Claude Code 代理用訂閱額度判斷，實盤需人工確認才下單 */
+      source: components["schemas"]["QuantAiSource"];
+      /** @description 每根 K 線收盤時請 AI 判斷一次 */
+      interval: components["schemas"]["QuantCandleInterval"];
+      /** @description 交易方針（風格、可承受的風險等），會放進給 AI 的指示 */
+      guideline?: string;
+      /** @description 每次開倉的金額上限（計價幣名目） */
+      maxOrderAmount: number;
+      /** @description claude_api 必填：每月 AI 費用上限（美元），超過就停止機器人 */
+      monthlyCostLimit?: number;
+      /** @description claude_api 必填 */
+      effort?: components["schemas"]["QuantAiEffort"];
+      /** @description AI 寫判斷理由用的語言 */
+      locale: components["schemas"]["QuantAiLocale"];
+      /** @description 停利（%，相對持倉均價），由系統強制 */
+      takeProfit?: number;
+      /** @description 停損（%，相對持倉均價），由系統強制 */
+      stopLoss?: number;
+      /** @description 合約交易對必填，現貨不可填 */
+      futures?: components["schemas"]["FuturesPositionConfigDto"];
+    };
+    BacktestPointDto: {
+      time: number;
+      value: number;
+    };
+    BacktestTradeDto: {
+      side: components["schemas"]["QuantOrderSide"];
+      price: number;
+      size: number;
+      time: number;
+    };
+    BacktestResultDto: {
+      equity: components["schemas"]["BacktestPointDto"][];
+      trades: components["schemas"]["BacktestTradeDto"][];
+      /** @description 總損益（計價幣） */
+      pnl: number;
+      /** @description 報酬率（0.1 = 10%） */
+      returnRate: number;
+      /** @description 最大回撤（0.1 = 10%） */
+      maxDrawdown: number;
+      /** @description 年化夏普值 */
+      sharpe?: number;
+      /** @description 勝率（賣出成交中獲利的比例） */
+      winRate?: number;
+      tradeCount: number;
+      /** @description 提前停止的原因，例如觸發停損 */
+      stoppedReason?: string;
+      /** @description 回測區間起點（毫秒） */
+      from: number;
+      /** @description 回測區間終點（毫秒） */
+      to: number;
+    };
+    QuantAiBacktestDto: {
+      id: string;
+      symbol: string;
+      source: components["schemas"]["QuantAiSource"];
+      status: components["schemas"]["QuantAiBacktestStatus"];
+      config: components["schemas"]["AiConfigDto"];
+      investment: number;
+      feeRate: number;
+      /** @description 已取得判斷的 K 線數 */
+      decidedCount: number;
+      /** @description 回測的 K 線總數 */
+      candleCount: number;
+      /** @description claude_api 這次回測已花的費用（美元） */
+      cost: number;
+      /** @description 回測區間起點（毫秒） */
+      from: number;
+      /** @description 回測區間終點（毫秒） */
+      to: number;
+      result?: components["schemas"]["BacktestResultDto"];
+      error?: string;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    CreateAiBacktestDto: {
+      /** @example BTC_USDT */
+      symbol: string;
+      /** @description 回測 K 線數量（交易所最多往回 10000 根） */
+      candleCount: number;
+      investment: number;
+      /** @description 手續費率（例如 0.0005） */
+      feeRate: number;
+      config: components["schemas"]["AiConfigDto"];
+    };
+    /** @enum {string} */
+    QuantAgentRequestKind: "bot" | "backtest";
+    QuantAgentRequestDto: {
+      id: string;
+      kind: components["schemas"]["QuantAgentRequestKind"];
+      /** @description 交給 Claude 的系統指示 */
+      instructions: string;
+      /** @description 判斷用的市場與部位快照 */
+      snapshot: {
+        [key: string]: unknown;
+      };
+      /** @description 回應必須符合的 JSON Schema */
+      schema: {
+        [key: string]: unknown;
+      };
+      /** Format: date-time */
+      expiresAt?: string;
+    };
     QuantAiKeyDto: {
       configured: boolean;
       /** @description Claude API key 末 4 碼 */
@@ -9993,54 +10359,6 @@ export interface components {
       /** @description DCA／指標／Webhook：開倉單的單筆金額上限（計價幣），超過就略過；平倉不受限 */
       maxOrderAmount?: number;
       config: components["schemas"]["GridConfigDto"];
-    };
-    /**
-     * @description 每根 K 線收盤時請 AI 判斷一次
-     * @enum {string}
-     */
-    QuantCandleInterval:
-      | "1M"
-      | "5M"
-      | "15M"
-      | "30M"
-      | "60M"
-      | "4H"
-      | "8H"
-      | "12H"
-      | "1D"
-      | "1W"
-      | "1m";
-    /** @enum {string} */
-    QuantAiEffort: "low" | "medium" | "high";
-    /**
-     * @description AI 寫判斷理由用的語言
-     * @enum {string}
-     */
-    QuantAiLocale: "zh-TW" | "zh-CN" | "en" | "ja" | "ko";
-    /** @enum {string} */
-    QuantFuturesDirection: "long" | "short";
-    FuturesPositionConfigDto: {
-      direction: components["schemas"]["QuantFuturesDirection"];
-      leverage: number;
-    };
-    AiConfigDto: {
-      /** @description 每根 K 線收盤時請 AI 判斷一次 */
-      interval: components["schemas"]["QuantCandleInterval"];
-      /** @description 交易方針（風格、可承受的風險等），會放進給 AI 的指示 */
-      guideline?: string;
-      /** @description 每次開倉的金額上限（計價幣名目） */
-      maxOrderAmount: number;
-      /** @description 每月 AI 費用上限（美元），超過就停止機器人 */
-      monthlyCostLimit: number;
-      effort: components["schemas"]["QuantAiEffort"];
-      /** @description AI 寫判斷理由用的語言 */
-      locale: components["schemas"]["QuantAiLocale"];
-      /** @description 停利（%，相對持倉均價），由系統強制 */
-      takeProfit?: number;
-      /** @description 停損（%，相對持倉均價），由系統強制 */
-      stopLoss?: number;
-      /** @description 合約交易對必填，現貨不可填 */
-      futures?: components["schemas"]["FuturesPositionConfigDto"];
     };
     /**
      * @description long 做多、short 做空、no_trend 中性
@@ -10576,37 +10894,6 @@ export interface components {
       /** @description 手續費率（例如 0.0005） */
       feeRate: number;
       config: components["schemas"]["GridConfigDto"];
-    };
-    BacktestPointDto: {
-      time: number;
-      value: number;
-    };
-    BacktestTradeDto: {
-      side: components["schemas"]["QuantOrderSide"];
-      price: number;
-      size: number;
-      time: number;
-    };
-    BacktestResultDto: {
-      equity: components["schemas"]["BacktestPointDto"][];
-      trades: components["schemas"]["BacktestTradeDto"][];
-      /** @description 總損益（計價幣） */
-      pnl: number;
-      /** @description 報酬率（0.1 = 10%） */
-      returnRate: number;
-      /** @description 最大回撤（0.1 = 10%） */
-      maxDrawdown: number;
-      /** @description 年化夏普值 */
-      sharpe?: number;
-      /** @description 勝率（賣出成交中獲利的比例） */
-      winRate?: number;
-      tradeCount: number;
-      /** @description 提前停止的原因，例如觸發停損 */
-      stoppedReason?: string;
-      /** @description 回測區間起點（毫秒） */
-      from: number;
-      /** @description 回測區間終點（毫秒） */
-      to: number;
     };
     FuturesGridBacktestDto: {
       /** @example BTC_USDT */
@@ -19710,6 +19997,362 @@ export interface operations {
       };
     };
   };
+  QuantAiAdminController_findToken: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantAgentTokenDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAiAdminController_regenerateToken: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantAgentTokenCreatedDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAiAdminController_removeToken: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAiAdminController_listRequests: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantAiRequestDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAiAdminController_approve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+        requestId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAiAdminController_reject: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+        requestId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAiAdminController_listBacktests: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantAiBacktestDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAiAdminController_createBacktest: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateAiBacktestDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantAiBacktestDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAiAdminController_findBacktest: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantAiBacktestDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAiAdminController_removeBacktest: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAiAdminController_cancelBacktest: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantAiBacktestDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAiAgentController_pending: {
+    parameters: {
+      query?: never;
+      header: {
+        authorization: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantAgentRequestDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAiAgentController_submit: {
+    parameters: {
+      query?: never;
+      header: {
+        authorization: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AiDecisionDto"];
+      };
+    };
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   QuantAiController_find: {
     parameters: {
       query?: never;
@@ -23062,6 +23705,40 @@ export const quantTransferAccountValues: ReadonlyArray<
 export const quantTransferStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantTransferStatus"]
 > = ["COMPLETED", "PROCESSING", "FAILED"];
+export const quantAiRequestStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantAiRequestStatus"]
+> = [
+  "pending",
+  "awaiting_approval",
+  "executed",
+  "rejected",
+  "expired",
+  "answered",
+];
+export const quantAiDecisionActionValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantAiDecisionAction"]
+> = ["open", "close", "hold"];
+export const quantAiSourceValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantAiSource"]
+> = ["claude_api", "claude_code"];
+export const quantAiBacktestStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantAiBacktestStatus"]
+> = ["running", "completed", "failed", "canceled"];
+export const quantCandleIntervalValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantCandleInterval"]
+> = ["1M", "5M", "15M", "30M", "60M", "4H", "8H", "12H", "1D", "1W", "1m"];
+export const quantAiEffortValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantAiEffort"]
+> = ["low", "medium", "high"];
+export const quantAiLocaleValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantAiLocale"]
+> = ["zh-TW", "zh-CN", "en", "ja", "ko"];
+export const quantFuturesDirectionValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantFuturesDirection"]
+> = ["long", "short"];
+export const quantAgentRequestKindValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QuantAgentRequestKind"]
+> = ["bot", "backtest"];
 export const quantBotOrderStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantBotOrderStatus"]
 > = ["open", "filled", "canceled", "rejected"];
@@ -23104,18 +23781,6 @@ export const quantTriggerDirectionValues: ReadonlyArray<
 export const quantGridCloseModelValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantGridCloseModel"]
 > = ["NOT_SELL", "TO_QUOTE"];
-export const quantCandleIntervalValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["QuantCandleInterval"]
-> = ["1M", "5M", "15M", "30M", "60M", "4H", "8H", "12H", "1D", "1W", "1m"];
-export const quantAiEffortValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["QuantAiEffort"]
-> = ["low", "medium", "high"];
-export const quantAiLocaleValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["QuantAiLocale"]
-> = ["zh-TW", "zh-CN", "en", "ja", "ko"];
-export const quantFuturesDirectionValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["QuantFuturesDirection"]
-> = ["long", "short"];
 export const quantFuturesGridTrendValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantFuturesGridTrend"]
 > = ["long", "short", "no_trend"];

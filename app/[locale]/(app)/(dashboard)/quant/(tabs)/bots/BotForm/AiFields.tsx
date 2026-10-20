@@ -2,11 +2,17 @@
 
 import { useTranslations } from "next-intl";
 
+import { useWatch } from "react-hook-form";
+
 import { type BotForm, NumberField, SelectField } from "./fields";
 
 import { Alert, Grid, TextField } from "@mui/material";
 
-import { quantAiEffortValues, quantCandleIntervalValues } from "@/types/api";
+import {
+  quantAiEffortValues,
+  quantAiSourceValues,
+  quantCandleIntervalValues,
+} from "@/types/api";
 
 interface AiFieldsProps {
   form: BotForm;
@@ -17,11 +23,25 @@ const AiFields = ({ form, quote }: AiFieldsProps) => {
   const tAi = useTranslations("quant.bots.form.ai");
   const tQuant = useTranslations("quant");
   const guidelineError = form.formState.errors.ai?.guideline;
+  const source = useWatch({ control: form.control, name: "ai.source" });
+  const isApi = source === "claude_api";
 
   return (
     <Grid container spacing={2}>
       <Grid size={12}>
         <Alert severity="info">{tAi("hint")}</Alert>
+      </Grid>
+      <Grid size={12}>
+        <SelectField
+          form={form}
+          helperText={tAi(`sources.${source}.description`)}
+          label={tAi("source")}
+          name="ai.source"
+          options={quantAiSourceValues.map((value) => ({
+            label: tAi(`sources.${value}.label`),
+            value,
+          }))}
+        />
       </Grid>
       <Grid size={{ sm: 6, xs: 12 }}>
         <SelectField
@@ -35,18 +55,20 @@ const AiFields = ({ form, quote }: AiFieldsProps) => {
           }))}
         />
       </Grid>
-      <Grid size={{ sm: 6, xs: 12 }}>
-        <SelectField
-          form={form}
-          helperText={tAi("effortHelper")}
-          label={tAi("effort")}
-          name="ai.effort"
-          options={quantAiEffortValues.map((value) => ({
-            label: tAi(`efforts.${value}`),
-            value,
-          }))}
-        />
-      </Grid>
+      {isApi && (
+        <Grid size={{ sm: 6, xs: 12 }}>
+          <SelectField
+            form={form}
+            helperText={tAi("effortHelper")}
+            label={tAi("effort")}
+            name="ai.effort"
+            options={quantAiEffortValues.map((value) => ({
+              label: tAi(`efforts.${value}`),
+              value,
+            }))}
+          />
+        </Grid>
+      )}
       <Grid size={{ sm: 6, xs: 12 }}>
         <NumberField
           adornment={quote}
@@ -57,16 +79,18 @@ const AiFields = ({ form, quote }: AiFieldsProps) => {
           required
         />
       </Grid>
-      <Grid size={{ sm: 6, xs: 12 }}>
-        <NumberField
-          adornment="USD"
-          form={form}
-          helperText={tAi("monthlyCostLimitHelper")}
-          label={tAi("monthlyCostLimit")}
-          name="ai.monthlyCostLimit"
-          required
-        />
-      </Grid>
+      {isApi && (
+        <Grid size={{ sm: 6, xs: 12 }}>
+          <NumberField
+            adornment="USD"
+            form={form}
+            helperText={tAi("monthlyCostLimitHelper")}
+            label={tAi("monthlyCostLimit")}
+            name="ai.monthlyCostLimit"
+            required
+          />
+        </Grid>
+      )}
       <Grid size={{ sm: 6, xs: 12 }}>
         <NumberField
           adornment="%"

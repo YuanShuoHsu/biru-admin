@@ -93,7 +93,29 @@
         "open": "建玉"
       },
       "refusal": "モデルが回答を拒否：{reason}",
-      "error": "呼び出し失敗：{message}"
+      "error": "呼び出し失敗：{message}",
+      "subscription": "Claude Code のサブスクリプション枠で判断し、追加費用はかかりません。",
+      "request": {
+        "title": "Claude Code の判断",
+        "pending": "ローカルの Claude Code の判断待ちです。{time} までに応答がなければ無効になります。",
+        "noResponse": "Claude Code が時間内に応答しなかったため、この足では何もしていません。パソコンが起動していて、ローカルのエージェントが動いているか確認してください。",
+        "empty": "まだリクエストはありません。次のローソク足の確定時に最初のリクエストを送ります。",
+        "open": "建玉 {amount} {quote}",
+        "close": "決済 {ratio}",
+        "meta": "送信時の価格 {price}・{expires} まで有効",
+        "approve": {
+          "label": "発注する",
+          "title": "AI の提案を確認",
+          "confirm": "この AI の提案（{decision}）どおりに発注しますか？成行で約定します。",
+          "success": "提案どおり発注しました"
+        },
+        "reject": {
+          "label": "見送る",
+          "title": "AI の提案を見送る",
+          "confirm": "この AI の提案（{decision}）を見送りますか？この足では発注しません。",
+          "success": "提案を見送りました"
+        }
+      }
     },
     "backtest": {
       "candles": "ローソク足の本数",
@@ -196,13 +218,24 @@
         "guideline": "取引方針（任意）",
         "guidelineHelper": "スタイルと許容リスクを AI に伝えます。最大 2000 文字",
         "guidelinePlaceholder": "例：保守的に。トレンドが不明なら様子見、1 回の損失が 3% を超えたら決済",
-        "hint": "ローソク足の確定ごとに、複数時間足のローソク足・指標・板・ポジション・最近の判断を Claude に渡し、Claude は建玉・決済・様子見のいずれかだけを返します。実際の注文は必ずボットの資金とリスクチェックを通ります。AI ボットはバックテストできません。足ごとにモデルを呼ぶため費用が読めず、過去の相場がモデルの学習データに含まれている可能性もあります。",
+        "hint": "各ローソク足の確定時に、複数時間足のローソク足、指標、板、ポジション、直近の判断を Claude に渡します。Claude が返せるのは建玉・決済・様子見のみです。実際の発注は必ずボットの資金とリスクのチェックを通ります。",
         "interval": "判断する時間足",
         "intervalHelper": "ローソク足の確定ごとに 1 回判断します。短いほど費用がかかります",
         "maxOrderAmount": "1 回の建玉上限",
         "maxOrderAmountHelper": "AI が 1 回に建てられる最大金額（名目）",
         "monthlyCostLimit": "月間 AI 費用上限",
         "monthlyCostLimitHelper": "今月（UTC）の費用が上限に達するとボットを停止します",
+        "source": "判断元",
+        "sources": {
+          "claude_api": {
+            "label": "Claude API（API キー課金）",
+            "description": "サーバーが登録済みの Claude API キーで呼び出します。使用量に応じて課金され、月間費用上限で保護されます。"
+          },
+          "claude_code": {
+            "label": "Claude Code（サブスクリプション）",
+            "description": "お使いのパソコンの Claude Code エージェントがサブスクリプション枠で判断し、追加費用はかかりません。ペーパートレードはそのまま適用し、実取引はすべての提案を管理画面で確認してから発注します。パソコンやエージェントが停止中は様子見のみです。"
+          }
+        },
         "stopLoss": "損切り（%、任意）",
         "takeProfit": "利確（%、任意）"
       },
@@ -555,6 +588,22 @@
       "title": "Webhook 設定",
       "tokenOnce": "トークンはこの 1 回しか表示されません。すぐにコピーしてください。紛失した場合は再発行できます。",
       "url": "Webhook URL"
+    },
+    "aiBacktest": {
+      "hint": "ローソク足の確定ごとに AI が 1 回判断するため、本数が多いほど枠や費用を使います。期間がモデルの知識カットオフより前だと、モデルがその相場を見ている可能性があり、結果が楽観的になります。バックテストでは判断時間足のローソク足と指標のみを使い、板や他の時間足はありません。",
+      "candlesHelper": "Claude Code を選ぶと、ローカルのエージェントが 1 本ずつ判断し、サブスクリプション枠を使います",
+      "cancel": {
+        "label": "バックテストを停止",
+        "title": "AI バックテストを停止",
+        "confirm": "この AI バックテストを停止しますか？取得済みの判断は残りますが、続行はできません。"
+      },
+      "progress": {
+        "claude_code": "ローカルの Claude Code の判断待ち：{decided} / {total} 本",
+        "claude_api": "Claude API で判断中：{decided} / {total} 本、{cost} ドル使用"
+      },
+      "failed": "AI バックテストに失敗しました：{reason}",
+      "costLimit": "月間費用上限に達しました",
+      "canceled": "この AI バックテストは停止されました"
     }
   },
   "futures": {
@@ -807,6 +856,29 @@
     "assets": {
       "inBtc": "≈ {amount} BTC",
       "title": "総資産"
+    },
+    "agent": {
+      "bind": "Claude Code を接続",
+      "bound": "Claude Code ••••{last4}・最終接続 {lastUsed}",
+      "neverUsed": "未接続",
+      "created": "Claude Code 接続トークン",
+      "token": "接続トークン",
+      "tokenOnce": "このトークンは一度だけ表示されます。今コピーしてください。",
+      "setup": {
+        "test": "まずターミナルで一度実行し、バックエンドに接続できるか確認します：",
+        "testCommand": "テストコマンド",
+        "schedule": "動作を確認したら、biru-api/scripts/quant-claude-agent.plist の説明に従ってトークンを入力し、launchctl で読み込みます。以後 1 分ごとに確認し、判断待ちのリクエストがないときは Claude を呼び出しません。",
+        "safety": "エージェントは判断を返すだけです。ペーパートレードは管理画面側で適用し、実取引の発注には必ず管理画面での確認が必要です。エージェントが止まってもボットは様子見になるだけで、決済や停止はせず、損切り・利確はバックエンドが引き続き実行します。"
+      },
+      "regenerate": {
+        "title": "Claude Code 接続トークンを再発行",
+        "confirm": "再発行しますか？古いトークンはすぐに無効になり、ローカルのエージェントは新しいトークンに切り替える必要があります。"
+      },
+      "remove": {
+        "title": "Claude Code 接続トークンを取り消す",
+        "confirm": "取り消しますか？ローカルのエージェントはすぐに接続できなくなり、再接続するまで Claude Code ボットは様子見のみになります。",
+        "success": "Claude Code 接続トークンを取り消しました"
+      }
     }
   },
   "trades": {

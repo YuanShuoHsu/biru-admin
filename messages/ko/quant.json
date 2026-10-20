@@ -93,7 +93,29 @@
         "open": "진입"
       },
       "refusal": "모델이 답변을 거부함: {reason}",
-      "error": "호출 실패: {message}"
+      "error": "호출 실패: {message}",
+      "subscription": "Claude Code 구독 한도로 판단하며 추가 비용이 없습니다.",
+      "request": {
+        "title": "Claude Code 판단",
+        "pending": "로컬 Claude Code의 판단을 기다리는 중입니다. {time}까지 응답이 없으면 무효가 됩니다.",
+        "noResponse": "Claude Code가 제시간에 응답하지 않아 이번 캔들에서는 아무것도 하지 않았습니다. 컴퓨터가 켜져 있고 로컬 에이전트가 실행 중인지 확인하세요.",
+        "empty": "아직 요청이 없습니다. 다음 캔들 마감 때 첫 요청을 보냅니다.",
+        "open": "진입 {amount} {quote}",
+        "close": "청산 {ratio}",
+        "meta": "요청 시 가격 {price}・{expires}까지 유효",
+        "approve": {
+          "label": "주문하기",
+          "title": "AI 제안 확인",
+          "confirm": "이 AI 제안({decision})대로 주문하시겠습니까? 시장가로 체결됩니다.",
+          "success": "제안대로 주문했습니다"
+        },
+        "reject": {
+          "label": "건너뛰기",
+          "title": "AI 제안 건너뛰기",
+          "confirm": "이 AI 제안({decision})을 건너뛰시겠습니까? 이번 캔들에서는 주문하지 않습니다.",
+          "success": "제안을 건너뛰었습니다"
+        }
+      }
     },
     "backtest": {
       "candles": "캔들 수",
@@ -196,13 +218,24 @@
         "guideline": "거래 방침(선택)",
         "guidelineHelper": "스타일과 감당할 수 있는 위험을 AI에게 알려 주세요. 최대 2000자",
         "guidelinePlaceholder": "예: 보수적으로, 추세가 불분명하면 관망하고 한 번 손실이 3%를 넘으면 청산",
-        "hint": "캔들이 마감될 때마다 여러 시간대의 캔들, 지표, 호가창, 포지션, 최근 판단을 Claude에게 전달하며 Claude는 진입·청산·관망 중 하나만 돌려줍니다. 실제 주문은 항상 봇의 자금과 위험 검사를 거칩니다. AI 봇은 백테스트를 제공하지 않습니다. 캔들마다 모델을 호출해야 해 비용을 예측할 수 없고, 과거 시세가 모델 학습 데이터에 들어 있을 수 있기 때문입니다.",
+        "hint": "캔들 마감마다 여러 주기의 캔들, 지표, 호가창, 포지션, 최근 판단을 Claude에 전달합니다. Claude는 진입, 청산, 관망 중 하나만 반환할 수 있습니다. 실제 주문은 항상 봇의 자금과 리스크 검사를 거칩니다.",
         "interval": "판단 주기",
         "intervalHelper": "캔들 마감마다 한 번 판단하며 주기가 짧을수록 비용이 큽니다",
         "maxOrderAmount": "1회 진입 한도",
         "maxOrderAmountHelper": "AI가 한 번에 진입할 수 있는 최대 금액(명목)",
         "monthlyCostLimit": "월간 AI 비용 한도",
         "monthlyCostLimitHelper": "이번 달(UTC) 비용이 한도에 도달하면 봇을 중지합니다",
+        "source": "판단 출처",
+        "sources": {
+          "claude_api": {
+            "label": "Claude API (API 키 과금)",
+            "description": "서버가 등록한 Claude API 키로 호출합니다. 사용량에 따라 과금되며 월 비용 상한으로 보호됩니다."
+          },
+          "claude_code": {
+            "label": "Claude Code (구독)",
+            "description": "내 컴퓨터의 Claude Code 에이전트가 구독 한도로 판단하며 추가 비용이 없습니다. 모의 거래는 바로 적용하고, 실거래는 모든 제안을 관리 화면에서 확인해야 주문합니다. 컴퓨터나 에이전트가 꺼져 있으면 봇은 관망만 합니다."
+          }
+        },
         "stopLoss": "손절(%, 선택)",
         "takeProfit": "익절(%, 선택)"
       },
@@ -555,6 +588,22 @@
       "title": "Webhook 설정",
       "tokenOnce": "토큰은 이번 한 번만 표시됩니다. 지금 복사하세요. 잃어버리면 재발급할 수 있습니다.",
       "url": "Webhook URL"
+    },
+    "aiBacktest": {
+      "hint": "캔들 마감마다 AI가 한 번 판단하므로 캔들 수가 많을수록 한도나 비용을 더 씁니다. 기간이 모델의 지식 기준일보다 이르면 모델이 해당 시세를 이미 봤을 수 있어 결과가 낙관적으로 나옵니다. 백테스트는 판단 주기의 캔들과 지표만 제공하며 호가창과 다른 주기는 없습니다.",
+      "candlesHelper": "Claude Code를 선택하면 로컬 에이전트가 캔들마다 판단하며 구독 한도를 사용합니다",
+      "cancel": {
+        "label": "백테스트 중지",
+        "title": "AI 백테스트 중지",
+        "confirm": "이 AI 백테스트를 중지하시겠습니까? 받은 판단은 유지되지만 계속할 수 없습니다."
+      },
+      "progress": {
+        "claude_code": "로컬 Claude Code 판단 대기: {decided} / {total} 캔들",
+        "claude_api": "Claude API 판단 중: {decided} / {total} 캔들, {cost}달러 사용"
+      },
+      "failed": "AI 백테스트 실패: {reason}",
+      "costLimit": "월 비용 상한에 도달했습니다",
+      "canceled": "이 AI 백테스트는 중지되었습니다"
     }
   },
   "futures": {
@@ -807,6 +856,29 @@
     "assets": {
       "inBtc": "≈ {amount} BTC",
       "title": "총자산"
+    },
+    "agent": {
+      "bind": "Claude Code 연결",
+      "bound": "Claude Code ••••{last4}・마지막 연결 {lastUsed}",
+      "neverUsed": "연결 안 됨",
+      "created": "Claude Code 연결 토큰",
+      "token": "연결 토큰",
+      "tokenOnce": "이 토큰은 한 번만 표시됩니다. 지금 복사하세요.",
+      "setup": {
+        "test": "먼저 터미널에서 한 번 실행해 백엔드에 연결되는지 확인하세요:",
+        "testCommand": "테스트 명령",
+        "schedule": "동작을 확인하면 biru-api/scripts/quant-claude-agent.plist 안내대로 토큰을 입력하고 launchctl로 불러오세요. 이후 1분마다 확인하며, 판단할 요청이 없으면 Claude를 호출하지 않습니다.",
+        "safety": "에이전트는 판단만 반환합니다. 모의 거래는 백엔드가 적용하고, 실거래 주문은 반드시 관리 화면에서 확인해야 합니다. 에이전트가 멈추면 봇은 관망만 하며 청산하거나 중지하지 않고, 손절·익절은 백엔드가 계속 실행합니다."
+      },
+      "regenerate": {
+        "title": "Claude Code 연결 토큰 재발급",
+        "confirm": "재발급하시겠습니까? 기존 토큰은 즉시 무효가 되며 로컬 에이전트는 새 토큰으로 바꿔야 계속 동작합니다."
+      },
+      "remove": {
+        "title": "Claude Code 연결 토큰 취소",
+        "confirm": "취소하시겠습니까? 로컬 에이전트는 즉시 연결할 수 없게 되고, 다시 연결할 때까지 Claude Code 봇은 관망만 합니다.",
+        "success": "Claude Code 연결 토큰을 취소했습니다"
+      }
     }
   },
   "trades": {

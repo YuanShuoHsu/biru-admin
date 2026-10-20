@@ -93,7 +93,29 @@
         "open": "Open"
       },
       "refusal": "Model declined: {reason}",
-      "error": "Call failed: {message}"
+      "error": "Call failed: {message}",
+      "subscription": "Decisions use your Claude Code subscription at no extra cost.",
+      "request": {
+        "title": "Claude Code decisions",
+        "pending": "Waiting for local Claude Code; voided if there is no reply by {time}.",
+        "noResponse": "Claude Code did not reply in time, so nothing was done on this candle. Check that your computer is on and the local agent is running.",
+        "empty": "No requests yet. The first one is sent at the next candle close.",
+        "open": "Open {amount} {quote}",
+        "close": "Close {ratio}",
+        "meta": "Price when sent {price} · valid until {expires}",
+        "approve": {
+          "label": "Place order",
+          "title": "Confirm AI suggestion",
+          "confirm": "Place an order following this AI suggestion ({decision})? It fills at market price.",
+          "success": "Order placed as suggested"
+        },
+        "reject": {
+          "label": "Skip",
+          "title": "Skip AI suggestion",
+          "confirm": "Skip this AI suggestion ({decision})? No order is placed on this candle.",
+          "success": "Suggestion skipped"
+        }
+      }
     },
     "backtest": {
       "candles": "Candles",
@@ -196,13 +218,24 @@
         "guideline": "Trading guideline (optional)",
         "guidelineHelper": "Tell the AI your style and risk tolerance, up to 2000 characters",
         "guidelinePlaceholder": "For example: conservative, hold when the trend is unclear; exit when a trade loses more than 3%",
-        "hint": "At each candle close the system gives Claude multi-interval candles, indicators, the order book, the position and recent decisions; Claude can only return open, close or hold. Every order still passes the bot budget and risk checks. AI bots cannot be backtested: each candle needs a model call, so cost is unbounded, and historical prices may be in the model's training data.",
+        "hint": "At each candle close the system gives Claude multi-interval candles, indicators, the order book, the position and recent decisions; Claude can only return open, close or hold. Every order still passes the bot budget and risk checks.",
         "interval": "Decision interval",
         "intervalHelper": "Decides once per candle close; shorter intervals cost more",
         "maxOrderAmount": "Max per order",
         "maxOrderAmountHelper": "Most the AI can open in one order (notional)",
         "monthlyCostLimit": "Monthly AI cost limit",
         "monthlyCostLimitHelper": "Stops the bot once this month's (UTC) cost reaches it",
+        "source": "Decision source",
+        "sources": {
+          "claude_api": {
+            "label": "Claude API (billed per API key)",
+            "description": "The server calls Claude with your bound API key, billed by usage and capped by the monthly cost limit."
+          },
+          "claude_code": {
+            "label": "Claude Code (subscription)",
+            "description": "Claude Code on your computer decides using your subscription, at no extra cost. Paper bots apply decisions directly; for live bots every suggestion needs your confirmation here before an order is placed. When your computer or the agent is off, the bot only holds."
+          }
+        },
         "stopLoss": "Stop loss (%, optional)",
         "takeProfit": "Take profit (%, optional)"
       },
@@ -555,6 +588,22 @@
       "title": "Webhook settings",
       "tokenOnce": "The token is shown only once. Copy it now; you can regenerate it if lost.",
       "url": "Webhook URL"
+    },
+    "aiBacktest": {
+      "hint": "AI decides once per candle close, so more candles use more quota or cost. If the period is before the model knowledge cutoff, the model may have seen these prices and results will look too good. Backtests only provide decision-interval candles and indicators, without the order book or other intervals.",
+      "candlesHelper": "With Claude Code, your local agent decides candle by candle using your subscription",
+      "cancel": {
+        "label": "Stop backtest",
+        "title": "Stop AI backtest",
+        "confirm": "Stop this AI backtest? Decisions so far are kept, but it cannot continue."
+      },
+      "progress": {
+        "claude_code": "Waiting for local Claude Code: {decided} / {total} candles",
+        "claude_api": "Claude API deciding: {decided} / {total} candles, {cost} USD spent"
+      },
+      "failed": "AI backtest failed: {reason}",
+      "costLimit": "the monthly cost limit was reached",
+      "canceled": "This AI backtest was stopped"
     }
   },
   "futures": {
@@ -807,6 +856,29 @@
     "assets": {
       "inBtc": "≈ {amount} BTC",
       "title": "Total assets"
+    },
+    "agent": {
+      "bind": "Connect Claude Code",
+      "bound": "Claude Code ••••{last4} · last seen {lastUsed}",
+      "neverUsed": "never",
+      "created": "Claude Code connection token",
+      "token": "Connection token",
+      "tokenOnce": "This token is shown only once. Copy it now.",
+      "setup": {
+        "test": "Run it once in a terminal to confirm it can reach the backend:",
+        "testCommand": "Test command",
+        "schedule": "Once it works, fill in the token as described in biru-api/scripts/quant-claude-agent.plist and load it with launchctl. It then checks every minute and only calls Claude when there is a pending request.",
+        "safety": "The agent can only return decisions: paper bots apply them here, and live orders always need your confirmation in the admin. If the agent stops, bots just hold; they do not close positions or stop, and stop loss and take profit are still enforced by the backend."
+      },
+      "regenerate": {
+        "title": "Regenerate Claude Code connection token",
+        "confirm": "Regenerate? The old token stops working immediately; the local agent needs the new token to keep running."
+      },
+      "remove": {
+        "title": "Revoke Claude Code connection token",
+        "confirm": "Revoke? The local agent loses access immediately, and Claude Code bots only hold until you reconnect.",
+        "success": "Claude Code connection token revoked"
+      }
     }
   },
   "trades": {

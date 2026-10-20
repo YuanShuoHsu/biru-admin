@@ -10,6 +10,7 @@ import useSWR, { useSWRConfig } from "swr";
 import { useQuantCredentials } from "../../useQuantCredentials";
 import { QUANT_BOTS_URL, isQuantBotKey } from "../useQuantBots";
 import WebhookSetup from "../WebhookSetup";
+import AiBacktestPanel from "./AiBacktestPanel";
 import AiFields from "./AiFields";
 import BacktestPanel from "./BacktestPanel";
 import DcaFields from "./DcaFields";
@@ -503,6 +504,11 @@ const BotFormFields = ({
           )}
         </Section>
       </FormBox>
+      {type === "ai" && (
+        <BacktestSection>
+          <AiBacktestPanel form={form} market={market} />
+        </BacktestSection>
+      )}
       {type !== "webhook" && type !== "signal" && type !== "ai" && (
         <BacktestSection>
           <BacktestPanel form={form} market={market} type={type} />

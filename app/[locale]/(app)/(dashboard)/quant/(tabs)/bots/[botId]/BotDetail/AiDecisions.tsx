@@ -38,7 +38,7 @@ const AiDecisions = ({ bot }: { bot: QuantBot }) => {
     data: QuantBotEvent[];
   }>(`${QUANT_BOTS_URL}/${bot.id}/events?${params}`, fetcher);
 
-  const config = bot.config as AiConfig;
+  const limit = (bot.config as AiConfig).monthlyCostLimit;
   const spent = bot.summary.aiMonthCost ?? 0;
   const usd = (value: number) =>
     format.number(value, {
@@ -49,19 +49,22 @@ const AiDecisions = ({ bot }: { bot: QuantBot }) => {
   return (
     <Stack sx={{ gap: 1.5 }}>
       <Typography variant="h6">{tAi("title")}</Typography>
-      <Stack sx={{ gap: 0.5 }}>
+      {limit === undefined ? (
         <Typography color="text.secondary" variant="body2">
-          {tAi("cost", {
-            cost: usd(spent),
-            limit: usd(config.monthlyCostLimit),
-          })}
+          {tAi("subscription")}
         </Typography>
-        <LinearProgress
-          color={spent >= config.monthlyCostLimit ? "error" : "primary"}
-          value={Math.min(100, (spent / config.monthlyCostLimit) * 100)}
-          variant="determinate"
-        />
-      </Stack>
+      ) : (
+        <Stack sx={{ gap: 0.5 }}>
+          <Typography color="text.secondary" variant="body2">
+            {tAi("cost", { cost: usd(spent), limit: usd(limit) })}
+          </Typography>
+          <LinearProgress
+            color={spent >= limit ? "error" : "primary"}
+            value={Math.min(100, (spent / limit) * 100)}
+            variant="determinate"
+          />
+        </Stack>
+      )}
       {!decisions.length && (
         <Typography color="text.secondary" variant="body2">
           {tAi("empty")}
@@ -115,7 +118,7 @@ const AiDecisions = ({ bot }: { bot: QuantBot }) => {
                       })}
                 </Typography>
               )}
-              {typeof payload.cost === "number" && (
+              {typeof payload.cost === "number" && payload.cost > 0 && (
                 <Typography color="text.secondary" variant="caption">
                   ${usd(payload.cost)}
                 </Typography>

@@ -18,6 +18,7 @@ import type {
   QuantBot,
   FuturesPositionConfig,
   QuantBotMode,
+  QuantAiSource,
   QuantBotType,
   QuantCandleInterval,
   QuantIndicatorKind,
@@ -39,12 +40,13 @@ export interface ConditionValues {
 
 export interface BotFormValues {
   ai: {
-    effort: AiConfig["effort"];
+    effort: NonNullable<AiConfig["effort"]>;
     guideline: string;
     interval: QuantCandleInterval;
     locale: AiConfig["locale"];
     maxOrderAmount: string;
     monthlyCostLimit: string;
+    source: QuantAiSource;
     stopLoss: string;
     takeProfit: string;
   };
@@ -136,6 +138,7 @@ export const defaultValues = (
     locale,
     maxOrderAmount: "",
     monthlyCostLimit: "",
+    source: "claude_code",
     stopLoss: "",
     takeProfit: "",
   },
@@ -306,12 +309,13 @@ export const valuesFromBot = (
     case "ai": {
       const config = bot.config as AiConfig;
       values.ai = {
-        effort: config.effort,
+        effort: config.effort ?? base.ai.effort,
         guideline: config.guideline ?? "",
         interval: config.interval,
         locale: config.locale,
         maxOrderAmount: text(config.maxOrderAmount),
         monthlyCostLimit: text(config.monthlyCostLimit),
+        source: config.source ?? "claude_api",
         stopLoss: text(config.stopLoss),
         takeProfit: text(config.takeProfit),
       };
@@ -488,15 +492,17 @@ export const toConfig = (type: QuantBotType, values: BotFormValues) => {
       } satisfies WebhookConfig;
     case "ai": {
       const { ai } = values;
+      const isApi = ai.source === "claude_api";
 
       return {
-        effort: ai.effort,
+        effort: isApi ? ai.effort : undefined,
         futures: futuresPosition(values),
         guideline: ai.guideline.trim() || undefined,
         interval: ai.interval,
         locale: ai.locale,
         maxOrderAmount: Number(ai.maxOrderAmount),
-        monthlyCostLimit: Number(ai.monthlyCostLimit),
+        monthlyCostLimit: isApi ? Number(ai.monthlyCostLimit) : undefined,
+        source: ai.source,
         stopLoss: optionalNumber(ai.stopLoss),
         takeProfit: optionalNumber(ai.takeProfit),
       } satisfies AiConfig;
@@ -578,16 +584,29 @@ export const useBotFormSchema = (type: QuantBotType) => {
     .object({
       ai:
         type === "ai"
-          ? z.object({
-              effort: z.enum(["low", "medium", "high"]),
-              guideline: z.string().max(2000),
-              interval: z.string(),
-              locale: z.string(),
-              maxOrderAmount: positive,
-              monthlyCostLimit: positive,
-              stopLoss: optionalPositive,
-              takeProfit: optionalPositive,
-            })
+          ? z
+              .object({
+                effort: z.enum(["low", "medium", "high"]),
+                guideline: z.string().max(2000),
+                interval: z.string(),
+                locale: z.string(),
+                maxOrderAmount: positive,
+                monthlyCostLimit: z.string(),
+                source: z.enum(["claude_api", "claude_code"]),
+                stopLoss: optionalPositive,
+                takeProfit: optionalPositive,
+              })
+              .superRefine(({ monthlyCostLimit, source }, context) => {
+                if (source !== "claude_api") return;
+
+                const result = positive.safeParse(monthlyCostLimit);
+                if (!result.success)
+                  context.addIssue({
+                    code: "custom",
+                    message: result.error.issues[0]?.message,
+                    path: ["monthlyCostLimit"],
+                  });
+              })
           : loose,
       credentialId: z.string(),
       dca:

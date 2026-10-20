@@ -5,13 +5,11 @@ import { useState } from "react";
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 
-import { useBotLabels } from "../useQuantBots";
+import BacktestResultView from "./BacktestResultView";
 import { toConfig } from "./definitions";
 import type { BotForm } from "./fields";
 
 import {
-  Alert,
-  Box,
   Button,
   Grid,
   MenuItem,
@@ -19,8 +17,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import { LineChart } from "@mui/x-charts/LineChart";
 
 import { quantCandleIntervalValues } from "@/types/api";
 import type {
@@ -36,25 +32,6 @@ import { fetcher } from "@/utils/fetcher";
 // 交易所最多只能往回取 10000 根
 const CANDLE_COUNTS = [500, 2000, 5000, 10000];
 
-const Metric = ({
-  color,
-  label,
-  value,
-}: {
-  color?: string;
-  label: string;
-  value: string;
-}) => (
-  <Stack>
-    <Typography color="text.secondary" variant="caption">
-      {label}
-    </Typography>
-    <Typography sx={{ color }} variant="subtitle1">
-      {value}
-    </Typography>
-  </Stack>
-);
-
 interface BacktestPanelProps {
   form: BotForm;
   market?: QuantMarket;
@@ -65,24 +42,11 @@ const BacktestPanel = ({ form, market, type }: BacktestPanelProps) => {
   const tBacktest = useTranslations("quant.bots.backtest");
   const tQuant = useTranslations("quant");
   const format = useFormatter();
-  const labels = useBotLabels();
-  const theme = useTheme();
 
   const [interval, setCandleInterval] = useState<QuantCandleInterval>("15M");
   const [candleCount, setCandleCount] = useState(2000);
   const [result, setResult] = useState<BacktestResult | null>(null);
   const [loading, setLoading] = useState(false);
-
-  const percent = (value?: number, signed = false) =>
-    value === undefined
-      ? "—"
-      : format.number(value, {
-          maximumFractionDigits: 2,
-          signDisplay: signed ? "exceptZero" : "auto",
-          style: "percent",
-        });
-  const signColor = (value: number) =>
-    value > 0 ? "success.main" : value < 0 ? "error.main" : undefined;
 
   const run = async () => {
     if (!(await form.trigger())) return;
@@ -161,99 +125,7 @@ const BacktestPanel = ({ form, market, type }: BacktestPanelProps) => {
       <Button loading={loading} onClick={run} variant="outlined">
         {tBacktest("run")}
       </Button>
-      {result && (
-        <Stack sx={{ gap: 2 }}>
-          <Typography color="text.secondary" variant="body2">
-            {tBacktest("period", {
-              from: format.dateTime(new Date(result.from), "dateTime"),
-              to: format.dateTime(new Date(result.to), "dateTime"),
-            })}
-          </Typography>
-          {result.stoppedReason && (
-            <Alert severity="warning">
-              {tBacktest("stoppedEarly", {
-                reason: labels.reason(result.stoppedReason) ?? "",
-              })}
-            </Alert>
-          )}
-          <Grid container spacing={2}>
-            <Grid size={4}>
-              <Metric
-                color={signColor(result.pnl)}
-                label={tBacktest("pnl")}
-                value={`${format.number(result.pnl, { maximumFractionDigits: 2, signDisplay: "negative" })} ${quote}`}
-              />
-            </Grid>
-            <Grid size={4}>
-              <Metric
-                color={signColor(result.returnRate)}
-                label={tBacktest("returnRate")}
-                value={percent(result.returnRate, true)}
-              />
-            </Grid>
-            <Grid size={4}>
-              <Metric
-                label={tBacktest("maxDrawdown")}
-                value={percent(result.maxDrawdown)}
-              />
-            </Grid>
-            <Grid size={4}>
-              <Metric
-                label={tBacktest("winRate")}
-                value={percent(result.winRate)}
-              />
-            </Grid>
-            <Grid size={4}>
-              <Metric
-                label={tBacktest("sharpe")}
-                value={
-                  result.sharpe === undefined
-                    ? "—"
-                    : format.number(result.sharpe, { maximumFractionDigits: 2 })
-                }
-              />
-            </Grid>
-            <Grid size={4}>
-              <Metric
-                label={tBacktest("trades")}
-                value={format.number(result.tradeCount)}
-              />
-            </Grid>
-          </Grid>
-          <Box sx={{ height: 240 }}>
-            <LineChart
-              grid={{ horizontal: true }}
-              hideLegend
-              margin={{ bottom: 0, left: 0 }}
-              series={[
-                {
-                  color:
-                    result.pnl >= 0
-                      ? theme.vars.palette.success.main
-                      : theme.vars.palette.error.main,
-                  curve: "linear",
-                  data: result.equity.map(({ value }) => value),
-                  label: tBacktest("equity"),
-                  showMark: false,
-                  valueFormatter: (value) =>
-                    `${format.number(value ?? 0, { maximumFractionDigits: 2 })} ${quote}`,
-                },
-              ]}
-              xAxis={[
-                {
-                  data: result.equity.map(({ time }) => new Date(time)),
-                  scaleType: "time",
-                  valueFormatter: (value: Date) =>
-                    format.dateTime(value, "monthDay"),
-                },
-              ]}
-            />
-          </Box>
-          <Typography color="text.secondary" variant="caption">
-            {tBacktest("note")}
-          </Typography>
-        </Stack>
-      )}
+      {result && <BacktestResultView quote={quote} result={result} />}
     </Stack>
   );
 };

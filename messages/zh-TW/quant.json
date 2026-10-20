@@ -93,7 +93,29 @@
         "open": "開倉"
       },
       "refusal": "模型拒答：{reason}",
-      "error": "呼叫失敗：{message}"
+      "error": "呼叫失敗：{message}",
+      "subscription": "使用 Claude Code 訂閱額度判斷，不另外計費。",
+      "request": {
+        "title": "Claude Code 判斷",
+        "pending": "等待本機 Claude Code 判斷，{time} 前沒有回應就作廢。",
+        "noResponse": "Claude Code 沒有在時限內回應，這一根沒有動作。請確認電腦開著、本機代理在執行。",
+        "empty": "還沒有判斷請求，下一根 K 線收盤時會送出第一筆。",
+        "open": "開倉 {amount} {quote}",
+        "close": "平倉 {ratio}",
+        "meta": "送出時價格 {price}・{expires} 前有效",
+        "approve": {
+          "label": "確認下單",
+          "title": "確認 AI 建議",
+          "confirm": "確定要依這筆 AI 建議下單（{decision}）嗎？會以市價實際成交。",
+          "success": "已依建議下單"
+        },
+        "reject": {
+          "label": "略過",
+          "title": "略過 AI 建議",
+          "confirm": "確定要略過這筆 AI 建議（{decision}）嗎？這一根不會下單。",
+          "success": "已略過這筆建議"
+        }
+      }
     },
     "backtest": {
       "candles": "K 線數量",
@@ -196,13 +218,24 @@
         "guideline": "交易方針（選填）",
         "guidelineHelper": "告訴 AI 你的風格與能承受的風險，最多 2000 字",
         "guidelinePlaceholder": "例如：偏保守，趨勢不明時觀望；單筆虧損超過 3% 就出場",
-        "hint": "每根 K 線收盤時，系統把多週期 K 線、指標、委託簿、持倉與近期決策交給 Claude，Claude 只能回傳開倉、平倉或觀望。實際下單一律經過機器人的資金與風控檢查。AI 機器人不提供回測：每根 K 線都要呼叫模型、成本不可控，而且歷史行情可能已在模型的訓練資料裡。",
+        "hint": "每根 K 線收盤時，系統把多週期 K 線、指標、委託簿、持倉與近期決策交給 Claude，Claude 只能回傳開倉、平倉或觀望。實際下單一律經過機器人的資金與風控檢查。",
         "interval": "判斷週期",
         "intervalHelper": "每根 K 線收盤時判斷一次；週期越短越花錢",
         "maxOrderAmount": "單筆開倉上限",
         "maxOrderAmountHelper": "AI 每次開倉最多動用的金額（名目）",
         "monthlyCostLimit": "每月 AI 費用上限",
         "monthlyCostLimitHelper": "本月（UTC）費用達到上限就停止機器人",
+        "source": "判斷來源",
+        "sources": {
+          "claude_api": {
+            "label": "Claude API（API key 計費）",
+            "description": "由伺服器用你綁定的 Claude API key 呼叫，依用量付費，受每月費用上限保護。"
+          },
+          "claude_code": {
+            "label": "Claude Code（訂閱額度）",
+            "description": "由你電腦上的 Claude Code 代理用訂閱額度判斷，不另外付費。模擬盤直接套用；實盤每筆建議都要你在後台確認才下單。電腦或代理沒在執行時，機器人只會觀望。"
+          }
+        },
         "stopLoss": "停損（%，選填）",
         "takeProfit": "停利（%，選填）"
       },
@@ -555,6 +588,22 @@
       "title": "Webhook 設定",
       "tokenOnce": "token 只會顯示這一次，請立即複製保存；遺失可以重新產生。",
       "url": "Webhook 網址"
+    },
+    "aiBacktest": {
+      "hint": "每根 K 線收盤都要 AI 判斷一次，K 線數越多越花額度或費用。回測區間若早於模型的知識截止日，模型可能已看過這段行情，結果會偏樂觀。回測只提供決策週期的 K 線與指標，沒有委託簿與其他週期。",
+      "candlesHelper": "選 Claude Code 時由本機代理逐根判斷，會用到訂閱額度",
+      "cancel": {
+        "label": "停止回測",
+        "title": "停止 AI 回測",
+        "confirm": "確定要停止這次 AI 回測嗎？已取得的判斷會保留，但無法再繼續。"
+      },
+      "progress": {
+        "claude_code": "等待本機 Claude Code 判斷：{decided} / {total} 根",
+        "claude_api": "Claude API 判斷中：{decided} / {total} 根，已花 {cost} 美元"
+      },
+      "failed": "AI 回測失敗：{reason}",
+      "costLimit": "費用達到每月費用上限",
+      "canceled": "這次 AI 回測已停止"
     }
   },
   "futures": {
@@ -807,6 +856,29 @@
     "assets": {
       "inBtc": "≈ {amount} BTC",
       "title": "總資產"
+    },
+    "agent": {
+      "bind": "連接 Claude Code",
+      "bound": "Claude Code ••••{last4}・最後連線 {lastUsed}",
+      "neverUsed": "尚未連線",
+      "created": "Claude Code 連線 token",
+      "token": "連線 token",
+      "tokenOnce": "這個 token 只會顯示這一次，請現在複製。",
+      "setup": {
+        "test": "先在終端機手動跑一次，確認能連上後台：",
+        "testCommand": "測試指令",
+        "schedule": "確認可用後，依 biru-api/scripts/quant-claude-agent.plist 的說明填入 token 並用 launchctl 載入，之後每分鐘自動檢查一次，沒有待判斷的請求就不會呼叫 Claude。",
+        "safety": "代理只能回傳判斷：模擬盤由後台套用，實盤一律要你在後台確認才下單。代理停止時機器人只會觀望，不會平倉或停止，停損停利仍由後台執行。"
+      },
+      "regenerate": {
+        "title": "重新產生 Claude Code 連線 token",
+        "confirm": "確定要重新產生嗎？舊的 token 會立即失效，本機代理要換成新的 token 才能繼續運作。"
+      },
+      "remove": {
+        "title": "撤銷 Claude Code 連線 token",
+        "confirm": "確定要撤銷嗎？本機代理會立即無法連線，Claude Code 機器人在重新連接前只會觀望。",
+        "success": "已撤銷 Claude Code 連線 token"
+      }
     }
   },
   "trades": {

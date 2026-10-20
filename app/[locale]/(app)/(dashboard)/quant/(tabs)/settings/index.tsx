@@ -9,6 +9,7 @@ import {
   QUANT_CREDENTIALS_URL,
   useQuantCredentials,
 } from "../useQuantCredentials";
+import AgentTokenSettings from "./AgentTokenSettings";
 import AiKeySettings from "./AiKeySettings";
 import CredentialAssets from "./CredentialAssets";
 import CredentialDialog, { CREDENTIAL_FORM_ID } from "./CredentialDialog";
@@ -170,6 +171,7 @@ const CredentialSettings = () => {
           {tQuant("settings.add.label")}
         </Button>
         <AiKeySettings />
+        <AgentTokenSettings />
       </ToolbarStack>
       <DataGrid
         {...DATA_GRID_PROPS}

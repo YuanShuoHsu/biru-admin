@@ -27,6 +27,7 @@ import GridOperationDialog, {
   type GridOperation,
 } from "./GridOperationDialog";
 import AiDecisions from "./AiDecisions";
+import AiRequests from "./AiRequests";
 import EquityChart from "./EquityChart";
 import SignalPanel from "./SignalPanel";
 
@@ -72,6 +73,7 @@ import type {
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
+  AiConfig,
   FuturesGridConfig,
   FuturesPositionConfig,
   QuantBot,
@@ -795,6 +797,13 @@ const BotDetail = ({ botId }: { botId: string }) => {
           </Alert>
         )}
       </Panel>
+      {bot.type === "ai" &&
+        (bot.config as AiConfig).source === "claude_code" &&
+        bot.status === "running" && (
+          <Panel>
+            <AiRequests bot={bot} />
+          </Panel>
+        )}
       {bot.type === "ai" && (
         <Panel>
           <AiDecisions bot={bot} />
