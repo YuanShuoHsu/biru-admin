@@ -119,6 +119,11 @@ const BOT_TYPE_GROUPS = [
   },
 ] as const;
 
+const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "[::1]"]);
+const isLocalBackend = LOCAL_HOSTS.has(
+  new URL(process.env.NEXT_PUBLIC_NEST_URL ?? "http://localhost").hostname,
+);
+
 interface BotFormFieldsProps {
   initialValues: BotFormValues;
   onTypeChange?: (type: QuantBotType) => void;
@@ -177,6 +182,8 @@ const BotFormFields = ({
   const quote = market?.quoteCurrency ?? "";
   const isLiveGrid = mode === "live" && type === "grid";
   const isLiveFuturesGrid = mode === "live" && type === "futures_grid";
+  const isLocalEngineLive =
+    isLocalBackend && mode === "live" && canChooseMarket;
   const hasOrderLimit =
     type === "dca" || type === "indicator" || type === "webhook";
 
@@ -396,6 +403,11 @@ const BotFormFields = ({
                   </Alert>
                 </Grid>
               ))}
+            {isLocalEngineLive && (
+              <Grid size={12}>
+                <Alert severity="warning">{tForm("localLiveNote")}</Alert>
+              </Grid>
+            )}
             {(isLiveGrid || isLiveFuturesGrid) && (
               <Grid size={12}>
                 <Alert severity="info">

@@ -99,22 +99,7 @@
         "title": "Claude Code 判断",
         "pending": "等待本机 Claude Code 判断，{time} 前没有响应就作废。",
         "noResponse": "Claude Code 没有在时限内响应，这一根没有动作。请确认 biru-api 在运行、Claude Code 已登录。",
-        "empty": "还没有判断请求，下一根 K 线收盘时会发出第一笔。",
-        "open": "开仓 {amount} {quote}",
-        "close": "平仓 {ratio}",
-        "meta": "发出时价格 {price}・{expires} 前有效",
-        "approve": {
-          "label": "确认下单",
-          "title": "确认 AI 建议",
-          "confirm": "确定要按这笔 AI 建议下单（{decision}）吗？会以市价实际成交。",
-          "success": "已按建议下单"
-        },
-        "reject": {
-          "label": "略过",
-          "title": "略过 AI 建议",
-          "confirm": "确定要略过这笔 AI 建议（{decision}）吗？这一根不会下单。",
-          "success": "已略过这笔建议"
-        }
+        "empty": "还没有判断请求，下一根 K 线收盘时会发出第一笔。"
       }
     },
     "backtest": {
@@ -232,7 +217,7 @@
           },
           "claude_code": {
             "label": "Claude Code（订阅额度）",
-            "description": "由你电脑上已登录的 Claude Code 用订阅额度判断，不另外付费。模拟盘直接套用；实盘每笔建议都要你在后台确认才下单。电脑关机或 Claude Code 无法使用时，机器人只会观望。"
+            "description": "由你电脑上已登录的 Claude Code 用订阅额度判断，不另外付费，判断后自动下单。电脑关机或 Claude Code 无法使用时，机器人只会观望。"
           }
         },
         "stopLoss": "止损（%，选填）",
@@ -409,7 +394,8 @@
       },
       "webhook": {
         "orderAmount": "信号未指定金额时的买入金额"
-      }
+      },
+      "localLiveNote": "这个机器人由本机的 biru-api 执行：关掉 biru-api 或电脑睡眠时不会判断，也不会检查止损止盈，要等重新开启后才以当下市价补执行。需要随时保护的实盘请在正式环境创建。"
     },
     "futuresGridOperation": {
       "amount": "金额",
@@ -874,7 +860,7 @@
       },
       "setup": {
         "connect": "第一次运行时会自动打开这个后台页面，确认代码后按「确认」就完成连接，之后不用再处理。连接失效时也会用同样方式自动重新连接。",
-        "safety": "代理只能返回判断：模拟盘由后台套用，实盘一律要你在后台确认才下单。代理停止时机器人只会观望，不会平仓或停止，止损止盈仍由后台执行。",
+        "safety": "代理只回传判断，下单由后台依判断执行，并受单笔金额上限、止损止盈与每日最大亏损限制。代理停止时机器人只会观望，不会平仓或停止，止损止盈仍由后台执行。",
         "start": "在 biru-api 目录的终端运行这行。画面每分钟显示一次状态，按 Ctrl+C 停止；关闭终端标签页也会停止：",
         "startCommand": "启动监看模式",
         "title": "用 Claude Code 判断"

@@ -3581,44 +3581,10 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** Claude Code 機器人最近的判斷請求與待確認建議 */
+    /** Claude Code 機器人最近的判斷請求 */
     get: operations["QuantAiAdminController_listRequests"];
     put?: never;
     post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/quant/bots/{id}/ai-requests/{requestId}/approve": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** 確認 AI 建議並實際下單 */
-    post: operations["QuantAiAdminController_approve"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/quant/bots/{id}/ai-requests/{requestId}/reject": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** 略過 AI 建議，不下單 */
-    post: operations["QuantAiAdminController_reject"];
     delete?: never;
     options?: never;
     head?: never;
@@ -3738,7 +3704,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** 回傳判斷；模擬盤與回測直接套用，實盤等使用者在後台確認 */
+    /** 回傳判斷，後台依判斷下單或推進回測 */
     post: operations["QuantAiAgentController_submit"];
     delete?: never;
     options?: never;
@@ -10093,13 +10059,7 @@ export interface components {
       code: string;
     };
     /** @enum {string} */
-    QuantAiRequestStatus:
-      | "pending"
-      | "awaiting_approval"
-      | "executed"
-      | "rejected"
-      | "expired"
-      | "answered";
+    QuantAiRequestStatus: "pending" | "executed" | "expired" | "answered";
     /**
      * @description open：依機器人方向加倉；close：減倉或平倉；hold：不動作
      * @enum {string}
@@ -10174,7 +10134,7 @@ export interface components {
       leverage: number;
     };
     AiConfigDto: {
-      /** @description claude_api：伺服器用 Claude API key 呼叫；claude_code：本機 Claude Code 代理用訂閱額度判斷，實盤需人工確認才下單 */
+      /** @description claude_api：伺服器用 Claude API key 呼叫；claude_code：用 Claude Code 訂閱額度判斷 */
       source: components["schemas"]["QuantAiSource"];
       /** @description 每根 K 線收盤時請 AI 判斷一次 */
       interval: components["schemas"]["QuantCandleInterval"];
@@ -20134,60 +20094,6 @@ export interface operations {
       };
     };
   };
-  QuantAiAdminController_approve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-        requestId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  QuantAiAdminController_reject: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-        requestId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
   QuantAiAdminController_listBacktests: {
     parameters: {
       query?: never;
@@ -23794,14 +23700,7 @@ export const quantTransferStatusValues: ReadonlyArray<
 > = ["COMPLETED", "PROCESSING", "FAILED"];
 export const quantAiRequestStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantAiRequestStatus"]
-> = [
-  "pending",
-  "awaiting_approval",
-  "executed",
-  "rejected",
-  "expired",
-  "answered",
-];
+> = ["pending", "executed", "expired", "answered"];
 export const quantAiDecisionActionValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantAiDecisionAction"]
 > = ["open", "close", "hold"];

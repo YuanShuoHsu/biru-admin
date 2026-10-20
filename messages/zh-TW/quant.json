@@ -99,22 +99,7 @@
         "title": "Claude Code 判斷",
         "pending": "等待本機 Claude Code 判斷，{time} 前沒有回應就作廢。",
         "noResponse": "Claude Code 沒有在時限內回應，這一根沒有動作。請確認 biru-api 在執行、Claude Code 已登入。",
-        "empty": "還沒有判斷請求，下一根 K 線收盤時會送出第一筆。",
-        "open": "開倉 {amount} {quote}",
-        "close": "平倉 {ratio}",
-        "meta": "送出時價格 {price}・{expires} 前有效",
-        "approve": {
-          "label": "確認下單",
-          "title": "確認 AI 建議",
-          "confirm": "確定要依這筆 AI 建議下單（{decision}）嗎？會以市價實際成交。",
-          "success": "已依建議下單"
-        },
-        "reject": {
-          "label": "略過",
-          "title": "略過 AI 建議",
-          "confirm": "確定要略過這筆 AI 建議（{decision}）嗎？這一根不會下單。",
-          "success": "已略過這筆建議"
-        }
+        "empty": "還沒有判斷請求，下一根 K 線收盤時會送出第一筆。"
       }
     },
     "backtest": {
@@ -232,7 +217,7 @@
           },
           "claude_code": {
             "label": "Claude Code（訂閱額度）",
-            "description": "由你電腦上已登入的 Claude Code 用訂閱額度判斷，不另外付費。模擬盤直接套用；實盤每筆建議都要你在後台確認才下單。電腦關機或 Claude Code 無法使用時，機器人只會觀望。"
+            "description": "由你電腦上已登入的 Claude Code 用訂閱額度判斷，不另外付費，判斷後自動下單。電腦關機或 Claude Code 無法使用時，機器人只會觀望。"
           }
         },
         "stopLoss": "停損（%，選填）",
@@ -409,7 +394,8 @@
       },
       "webhook": {
         "orderAmount": "訊號未指定金額時的買入金額"
-      }
+      },
+      "localLiveNote": "這個機器人由本機的 biru-api 執行：關掉 biru-api 或電腦睡眠時不會判斷，也不會檢查停損停利，要等重新開啟後才以當下市價補執行。需要隨時保護的實盤請在正式環境建立。"
     },
     "futuresGridOperation": {
       "amount": "金額",
@@ -874,7 +860,7 @@
       },
       "setup": {
         "connect": "第一次執行時會自動打開這個後台頁面，確認代碼後按「確認」就完成連線，之後不用再處理。連線失效時也會用同樣方式自動重新連線。",
-        "safety": "代理只能回傳判斷：模擬盤由後台套用，實盤一律要你在後台確認才下單。代理停止時機器人只會觀望，不會平倉或停止，停損停利仍由後台執行。",
+        "safety": "代理只回傳判斷，下單由後台依判斷執行，並受單筆金額上限、停損停利與每日最大虧損限制。代理停止時機器人只會觀望，不會平倉或停止，停損停利仍由後台執行。",
         "start": "在 biru-api 目錄的終端機執行這行。畫面每分鐘顯示一次狀態，按 Ctrl+C 停止；關掉終端機分頁也會停止：",
         "startCommand": "啟動監看模式",
         "title": "用 Claude Code 判斷"
