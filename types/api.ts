@@ -10377,8 +10377,6 @@ export interface components {
       credentialId?: string;
       /** @description 投入金額（計價幣），也是機器人可動用資金的上限 */
       investment: number;
-      /** @description 每日最大虧損（計價幣），觸發即停止 */
-      maxDailyLoss?: number;
       /** @description DCA／指標／Webhook：開倉單的單筆金額上限（計價幣），超過就略過；平倉不受限 */
       maxOrderAmount?: number;
       config: components["schemas"]["GridConfigDto"];
@@ -10581,7 +10579,6 @@ export interface components {
         | components["schemas"]["SignalBotConfigDto"]
         | components["schemas"]["AiConfigDto"];
       investment: number;
-      maxDailyLoss?: number;
       maxOrderAmount?: number;
       /** @description pionex：交給 Pionex 執行；engine：由本系統執行 */
       executor: components["schemas"]["QuantBotExecutor"];
@@ -10621,8 +10618,6 @@ export interface components {
       credentialId?: string;
       /** @description 投入金額（計價幣），也是機器人可動用資金的上限 */
       investment: number;
-      /** @description 每日最大虧損（計價幣），觸發即停止 */
-      maxDailyLoss?: number;
       /** @description DCA／指標／Webhook：開倉單的單筆金額上限（計價幣），超過就略過；平倉不受限 */
       maxOrderAmount?: number;
       config: components["schemas"]["FuturesGridConfigDto"];
@@ -10655,8 +10650,6 @@ export interface components {
       credentialId?: string;
       /** @description 投入金額（計價幣），也是機器人可動用資金的上限 */
       investment: number;
-      /** @description 每日最大虧損（計價幣），觸發即停止 */
-      maxDailyLoss?: number;
       /** @description DCA／指標／Webhook：開倉單的單筆金額上限（計價幣），超過就略過；平倉不受限 */
       maxOrderAmount?: number;
       config: components["schemas"]["SignalBotConfigDto"];
@@ -10670,8 +10663,6 @@ export interface components {
       credentialId?: string;
       /** @description 投入金額（計價幣），也是機器人可動用資金的上限 */
       investment: number;
-      /** @description 每日最大虧損（計價幣），觸發即停止 */
-      maxDailyLoss?: number;
       /** @description DCA／指標／Webhook：開倉單的單筆金額上限（計價幣），超過就略過；平倉不受限 */
       maxOrderAmount?: number;
       config: components["schemas"]["DcaConfigDto"];
@@ -10685,8 +10676,6 @@ export interface components {
       credentialId?: string;
       /** @description 投入金額（計價幣），也是機器人可動用資金的上限 */
       investment: number;
-      /** @description 每日最大虧損（計價幣），觸發即停止 */
-      maxDailyLoss?: number;
       /** @description DCA／指標／Webhook：開倉單的單筆金額上限（計價幣），超過就略過；平倉不受限 */
       maxOrderAmount?: number;
       config: components["schemas"]["IndicatorConfigDto"];
@@ -10700,8 +10689,6 @@ export interface components {
       credentialId?: string;
       /** @description 投入金額（計價幣），也是機器人可動用資金的上限 */
       investment: number;
-      /** @description 每日最大虧損（計價幣），觸發即停止 */
-      maxDailyLoss?: number;
       /** @description DCA／指標／Webhook：開倉單的單筆金額上限（計價幣），超過就略過；平倉不受限 */
       maxOrderAmount?: number;
       config: components["schemas"]["WebhookConfigDto"];
@@ -10715,8 +10702,6 @@ export interface components {
       credentialId?: string;
       /** @description 投入金額（計價幣），也是機器人可動用資金的上限 */
       investment: number;
-      /** @description 每日最大虧損（計價幣），觸發即停止 */
-      maxDailyLoss?: number;
       /** @description DCA／指標／Webhook：開倉單的單筆金額上限（計價幣），超過就略過；平倉不受限 */
       maxOrderAmount?: number;
       config: components["schemas"]["AiConfigDto"];
@@ -10740,7 +10725,6 @@ export interface components {
         | components["schemas"]["SignalBotConfigDto"]
         | components["schemas"]["AiConfigDto"];
       investment: number;
-      maxDailyLoss?: number;
       maxOrderAmount?: number;
       /** @description pionex：交給 Pionex 執行；engine：由本系統執行 */
       executor: components["schemas"]["QuantBotExecutor"];
@@ -10755,7 +10739,7 @@ export interface components {
       createdAt: string;
     };
     StopQuantBotDto: {
-      /** @description 只用於現貨網格；省略時依建立時的設定 */
+      /** @description 現貨網格省略時依建立時的設定；現貨 DCA／指標／Webhook／AI 傳 TO_QUOTE 會市價平倉，省略時保留倉位；合約一律平倉 */
       closeModel?: components["schemas"]["QuantGridCloseModel"];
     };
     WebhookTokenDto: {
