@@ -573,7 +573,7 @@
       "url": "Webhook URL"
     },
     "aiBacktest": {
-      "hint": "AI decides once per candle close, so more candles use more quota or cost. If the period is before the model knowledge cutoff, the model may have seen these prices and results will look too good. Backtests only provide decision-interval candles and indicators, without the order book or other intervals. Closing this form stops any AI backtest in progress.",
+      "hint": "AI decides once per candle close, so more candles use more quota or cost. If the period is before the model knowledge cutoff, the model may have seen these prices and results will look too good. Backtests provide historical candles and indicators on several intervals, but no historical order book. Closing this form stops any AI backtest in progress.",
       "candlesHelper": "With Claude Code, your local agent decides candle by candle using your subscription",
       "cancel": {
         "confirm": "Stop this AI backtest? Decisions so far are kept, but it cannot continue.",
