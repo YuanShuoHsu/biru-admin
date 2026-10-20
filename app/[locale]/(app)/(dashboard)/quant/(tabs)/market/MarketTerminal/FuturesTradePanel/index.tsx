@@ -12,6 +12,7 @@ import {
   quantAccountUrl,
 } from "../../../useQuantCredentials";
 import CredentialSelect, { NoCredential } from "../CredentialSelect";
+import OrderConfirm from "../OrderConfirm";
 import { floorToPrecision } from "../TradePanel/definitions";
 import TransferDialog, { TRANSFER_FORM_ID } from "../TransferDialog";
 import {
@@ -304,28 +305,67 @@ const FuturesTradePanel = ({
           message: tQuant("order.validation.insufficient"),
         });
 
-      setSubmittingKey(actionKey(action));
-      try {
-        await fetcher<PlaceQuantOrderResponse>(url("/orders")!, {
-          body: JSON.stringify({
-            ...action,
-            size,
-            symbol: market.symbol,
-            type,
-            ...(type === "MARKET_QTY" ? {} : { price }),
-          } satisfies PlaceFuturesOrderDto),
-          headers: { "Content-Type": "application/json" },
-          method: "POST",
-        });
+      setDialog({
+        content: (
+          <OrderConfirm
+            rows={[
+              {
+                label: tQuant("order.confirm.pair"),
+                value: `${market.baseCurrency}/${market.quoteCurrency}`,
+              },
+              {
+                label: tQuant("order.confirm.side"),
+                value: actionLabel(action),
+              },
+              {
+                label: tQuant("order.confirm.type"),
+                value: tQuant(`futures.orderTypes.${type}`),
+              },
+              {
+                label: tQuant("order.price"),
+                value:
+                  type === "MARKET_QTY"
+                    ? tQuant("futures.orderTypes.MARKET_QTY")
+                    : `${price} ${market.quoteCurrency}`,
+              },
+              {
+                label: tQuant("order.size"),
+                value: `${size} ${market.baseCurrency}`,
+              },
+              {
+                label: tQuant("futures.leverage"),
+                value: `${settings.leverage}x`,
+              },
+            ]}
+          />
+        ),
+        onConfirm: async () => {
+          setSubmittingKey(actionKey(action));
+          try {
+            await fetcher<PlaceQuantOrderResponse>(url("/orders")!, {
+              body: JSON.stringify({
+                ...action,
+                size,
+                symbol: market.symbol,
+                type,
+                ...(type === "MARKET_QTY" ? {} : { price }),
+              } satisfies PlaceFuturesOrderDto),
+              headers: { "Content-Type": "application/json" },
+              method: "POST",
+            });
 
-        enqueueSnackbar(tQuant("order.success"), { variant: "success" });
-        reset({ price, size: "" });
-      } catch (error) {
-        enqueueSnackbar(getErrorMessage(error), { variant: "error" });
-      } finally {
-        setSubmittingKey(null);
-        void revalidate();
-      }
+            enqueueSnackbar(tQuant("order.success"), { variant: "success" });
+            reset({ price, size: "" });
+          } catch (error) {
+            enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+          } finally {
+            setSubmittingKey(null);
+            void revalidate();
+          }
+        },
+        open: true,
+        title: tQuant("order.confirm.title"),
+      });
     })();
 
   const quoteAdornment = {

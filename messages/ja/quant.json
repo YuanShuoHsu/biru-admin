@@ -53,8 +53,15 @@
       },
       "duplicate": "この設定で新しいボットを作成",
       "start": {
+        "confirm": "<bold>{name}</bold>（{pair} {type}）を起動しますか？",
+        "consequences": {
+          "engine": "起動すると本システムが実資金 {investment} {quote} で自動発注します。",
+          "paper": "ペーパートレードのため、実資金は使用しません。",
+          "pionex": "起動すると Pionex にボットが作成され、{investment} {quote} が投資されます。Pionex アプリで確認・管理できます。"
+        },
         "label": "開始",
-        "success": "開始しました"
+        "success": "開始しました",
+        "title": "ボットを起動"
       },
       "stop": {
         "confirm": "<bold>{name}</bold>（{pair} {type}）を停止しますか？停止後は再開できません。",
@@ -222,6 +229,7 @@
         "leverage": "レバレッジ",
         "leverageMax": "この銘柄は最大 {max}x"
       },
+      "futuresAiLivePending": "先物の AI トレードは現在模擬取引のみです。実運用は Pionex シグナルの注文数量ルールを実測で確認してから開放します。",
       "futuresGrid": {
         "check": "Pionex で試算",
         "checkInvestment": "投資範囲：{min} – {max} {quote}",
@@ -255,7 +263,7 @@
           "short": "ショート"
         }
       },
-      "futuresStrategyPaperOnly": "先物の DCA／インジケーター／Webhook は現在模擬取引のみです。実運用は Pionex シグナルの注文数量ルールを実測で確認してから開放します。",
+      "futuresStrategyPaperOnly": "先物の DCA／インジケーター／Webhook は模擬取引のみです。実運用は「シグナルボット」で TradingView から Pionex を直接動かすか、Pionex アプリで公式の先物ボットを作成してください。",
       "grid": {
         "aiStrategy": "AI 推奨パラメータを適用",
         "aiStrategyApplied": "Pionex AI 推奨を適用しました：年率 {annualized}、最大ドローダウン {drawdown}",
@@ -706,6 +714,13 @@
   "order": {
     "amount": "金額",
     "available": "利用可能",
+    "confirm": {
+      "message": "この注文を送信しますか？送信すると Pionex にすぐ発注されます。",
+      "pair": "取引ペア",
+      "side": "方向",
+      "title": "注文の確認",
+      "type": "注文タイプ"
+    },
     "credential": "取引口座",
     "live": "本番",
     "price": "価格",

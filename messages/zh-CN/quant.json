@@ -53,8 +53,15 @@
       },
       "duplicate": "以此设置创建新机器人",
       "start": {
+        "confirm": "确定要启动 <bold>{name}</bold>（{pair} {type}）吗？",
+        "consequences": {
+          "engine": "启动后会以实盘资金 {investment} {quote} 由本系统自动下单。",
+          "paper": "这是模拟盘，不会动用真实资金。",
+          "pionex": "启动后会在 Pionex 创建机器人并投入 {investment} {quote}，可在 Pionex App 查看与管理。"
+        },
         "label": "启动",
-        "success": "已启动"
+        "success": "已启动",
+        "title": "启动机器人"
       },
       "stop": {
         "confirm": "确定要停止 <bold>{name}</bold>（{pair} {type}）吗？停止后不能再启动。",
@@ -222,6 +229,7 @@
         "leverage": "杠杆",
         "leverageMax": "此交易对最高 {max}x"
       },
+      "futuresAiLivePending": "合约的 AI 交易目前只开放模拟盘；实盘要等 Pionex 信号的下单量规则实测确认后开放。",
       "futuresGrid": {
         "check": "向 Pionex 试算",
         "checkInvestment": "投入范围：{min} – {max} {quote}",
@@ -255,7 +263,7 @@
           "short": "做空"
         }
       },
-      "futuresStrategyPaperOnly": "合约的 DCA／指标／Webhook 目前只开放模拟盘；实盘要等 Pionex 信号的下单量规则实测确认后开放。",
+      "futuresStrategyPaperOnly": "合约的 DCA／指标／Webhook 只提供模拟盘。实盘请改用「信号机器人」让 TradingView 直接触发 Pionex，或在 Pionex App 创建官方合约机器人。",
       "grid": {
         "aiStrategy": "套用 AI 推荐参数",
         "aiStrategyApplied": "已套用 Pionex AI 推荐：年化 {annualized}，最大回撤 {drawdown}",
@@ -706,6 +714,13 @@
   "order": {
     "amount": "金额",
     "available": "可用",
+    "confirm": {
+      "message": "确定要提交这笔委托吗？提交后会直接在 Pionex 下单。",
+      "pair": "交易对",
+      "side": "方向",
+      "title": "确认下单",
+      "type": "委托类型"
+    },
     "credential": "交易账户",
     "live": "实盘",
     "price": "价格",

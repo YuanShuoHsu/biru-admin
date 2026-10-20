@@ -360,7 +360,11 @@ const BotFormFields = ({
             {isFuturesStrategy && (
               <Grid size={12}>
                 <Alert severity="info">
-                  {tForm("futuresStrategyPaperOnly")}
+                  {tForm(
+                    type === "ai"
+                      ? "futuresAiLivePending"
+                      : "futuresStrategyPaperOnly",
+                  )}
                 </Alert>
               </Grid>
             )}

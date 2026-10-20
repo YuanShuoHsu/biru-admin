@@ -53,8 +53,15 @@
       },
       "duplicate": "Create a new bot with these settings",
       "start": {
+        "confirm": "Start <bold>{name}</bold> ({pair} {type})?",
+        "consequences": {
+          "engine": "This system will place live orders with {investment} {quote} of real funds.",
+          "paper": "This is a paper bot; no real funds are used.",
+          "pionex": "A bot will be created on Pionex with {investment} {quote} invested. You can view and manage it in the Pionex app."
+        },
         "label": "Start",
-        "success": "Started"
+        "success": "Started",
+        "title": "Start bot"
       },
       "stop": {
         "confirm": "Stop <bold>{name}</bold> ({pair} {type})? It cannot be restarted.",
@@ -222,6 +229,7 @@
         "leverage": "Leverage",
         "leverageMax": "Up to {max}x for this symbol"
       },
+      "futuresAiLivePending": "Futures AI trading is paper only for now; live opens once Pionex signal sizing is verified.",
       "futuresGrid": {
         "check": "Check with Pionex",
         "checkInvestment": "Investment range: {min} – {max} {quote}",
@@ -255,7 +263,7 @@
           "short": "Short"
         }
       },
-      "futuresStrategyPaperOnly": "Futures DCA / indicator / webhook bots are paper only for now; live opens once Pionex signal sizing is verified.",
+      "futuresStrategyPaperOnly": "Futures DCA / indicator / webhook bots are paper only. For live trading, use a Signal bot so TradingView triggers Pionex directly, or create an official futures bot in the Pionex app.",
       "grid": {
         "aiStrategy": "Apply AI suggestion",
         "aiStrategyApplied": "Applied the Pionex AI suggestion: {annualized} annualized, {drawdown} max drawdown",
@@ -706,6 +714,13 @@
   "order": {
     "amount": "Amount",
     "available": "Available",
+    "confirm": {
+      "message": "Submit this order? It will be placed on Pionex right away.",
+      "pair": "Pair",
+      "side": "Side",
+      "title": "Confirm order",
+      "type": "Order type"
+    },
     "credential": "Trading account",
     "live": "Live",
     "price": "Price",

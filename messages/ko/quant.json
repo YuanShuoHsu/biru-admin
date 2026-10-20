@@ -53,8 +53,15 @@
       },
       "duplicate": "이 설정으로 새 봇 만들기",
       "start": {
+        "confirm": "<bold>{name}</bold>({pair} {type})을(를) 시작하시겠습니까?",
+        "consequences": {
+          "engine": "시작하면 이 시스템이 실제 자금 {investment} {quote}으로 자동 주문합니다.",
+          "paper": "모의 거래이므로 실제 자금은 사용되지 않습니다.",
+          "pionex": "시작하면 Pionex에 봇이 생성되고 {investment} {quote}이(가) 투자됩니다. Pionex 앱에서 확인하고 관리할 수 있습니다."
+        },
         "label": "시작",
-        "success": "시작했습니다"
+        "success": "시작했습니다",
+        "title": "봇 시작"
       },
       "stop": {
         "confirm": "<bold>{name}</bold>({pair} {type})을(를) 중지할까요? 중지 후에는 다시 시작할 수 없습니다.",
@@ -222,6 +229,7 @@
         "leverage": "레버리지",
         "leverageMax": "이 종목은 최대 {max}x"
       },
+      "futuresAiLivePending": "선물 AI 트레이딩은 현재 모의 거래만 가능합니다. 실전은 Pionex 신호 주문 수량 규칙을 실측으로 확인한 뒤 열립니다.",
       "futuresGrid": {
         "check": "Pionex로 시산",
         "checkInvestment": "투자 범위: {min} – {max} {quote}",
@@ -255,7 +263,7 @@
           "short": "숏"
         }
       },
-      "futuresStrategyPaperOnly": "선물 DCA／지표／Webhook은 현재 모의 거래만 가능합니다. 실전은 Pionex 신호 주문 수량 규칙을 실측으로 확인한 뒤 열립니다.",
+      "futuresStrategyPaperOnly": "선물 DCA／지표／Webhook은 모의 거래만 제공합니다. 실전은 「신호 봇」으로 TradingView가 Pionex를 직접 실행하게 하거나 Pionex 앱에서 공식 선물 봇을 만드세요.",
       "grid": {
         "aiStrategy": "AI 추천 값 적용",
         "aiStrategyApplied": "Pionex AI 추천을 적용했습니다: 연환산 {annualized}, 최대 낙폭 {drawdown}",
@@ -706,6 +714,13 @@
   "order": {
     "amount": "금액",
     "available": "사용 가능",
+    "confirm": {
+      "message": "이 주문을 제출하시겠습니까? 제출하면 Pionex에 바로 주문됩니다.",
+      "pair": "거래쌍",
+      "side": "방향",
+      "title": "주문 확인",
+      "type": "주문 유형"
+    },
     "credential": "거래 계정",
     "live": "실거래",
     "price": "가격",

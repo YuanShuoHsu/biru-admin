@@ -53,8 +53,15 @@
       },
       "duplicate": "以此設定建立新機器人",
       "start": {
+        "confirm": "確定要啟動 <bold>{name}</bold>（{pair} {type}）嗎？",
+        "consequences": {
+          "engine": "啟動後會以實盤資金 {investment} {quote} 由本系統自動下單。",
+          "paper": "這是模擬盤，不會動用真實資金。",
+          "pionex": "啟動後會在 Pionex 建立機器人並投入 {investment} {quote}，可在 Pionex App 查看與管理。"
+        },
         "label": "啟動",
-        "success": "已啟動"
+        "success": "已啟動",
+        "title": "啟動機器人"
       },
       "stop": {
         "confirm": "確定要停止 <bold>{name}</bold>（{pair} {type}）嗎？停止後不能再啟動。",
@@ -222,6 +229,7 @@
         "leverage": "槓桿",
         "leverageMax": "此交易對最高 {max}x"
       },
+      "futuresAiLivePending": "合約的 AI 交易目前只開放模擬盤；實盤要等 Pionex 訊號的下單量規則實測確認後開放。",
       "futuresGrid": {
         "check": "向 Pionex 試算",
         "checkInvestment": "投入範圍：{min} – {max} {quote}",
@@ -255,7 +263,7 @@
           "short": "做空"
         }
       },
-      "futuresStrategyPaperOnly": "合約的 DCA／指標／Webhook 目前只開放模擬盤；實盤要等 Pionex 訊號的下單量規則實測確認後開放。",
+      "futuresStrategyPaperOnly": "合約的 DCA／指標／Webhook 只提供模擬盤。實盤請改用「訊號機器人」讓 TradingView 直接觸發 Pionex，或在 Pionex App 建立官方合約機器人。",
       "grid": {
         "aiStrategy": "套用 AI 推薦參數",
         "aiStrategyApplied": "已套用 Pionex AI 推薦：年化 {annualized}，最大回撤 {drawdown}",
@@ -706,6 +714,13 @@
   "order": {
     "amount": "金額",
     "available": "可用",
+    "confirm": {
+      "message": "確定要送出這筆委託嗎？送出後會直接在 Pionex 下單。",
+      "pair": "交易對",
+      "side": "方向",
+      "title": "確認下單",
+      "type": "委託類型"
+    },
     "credential": "交易帳戶",
     "live": "實盤",
     "price": "價格",

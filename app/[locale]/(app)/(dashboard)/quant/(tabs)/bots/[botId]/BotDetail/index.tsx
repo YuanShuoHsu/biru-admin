@@ -14,6 +14,7 @@ import {
   useBotLabels,
   useBotStream,
 } from "../../useQuantBots";
+import StartBotConfirm from "../../StartBotConfirm";
 import StopBotConfirm from "../../StopBotConfirm";
 import WebhookSetup from "../../WebhookSetup";
 import { useBotFormDialog } from "../../BotForm";
@@ -298,7 +299,7 @@ const BotDetail = ({ botId }: { botId: string }) => {
     });
   };
 
-  const confirm = (action: "archive" | "stop") =>
+  const confirm = (action: "archive" | "start" | "stop") =>
     setDialog({
       content:
         action === "stop" ? (
@@ -308,6 +309,8 @@ const BotDetail = ({ botId }: { botId: string }) => {
               request("stop", tBots("actions.stop.success"), dto)
             }
           />
+        ) : action === "start" ? (
+          <StartBotConfirm bot={bot} />
         ) : (
           <DialogContentText>
             {tBots.rich("actions.archive.confirm", {
@@ -553,7 +556,7 @@ const BotDetail = ({ botId }: { botId: string }) => {
             {!bot.startedAt && (
               <Button
                 color="success"
-                onClick={() => request("start", tBots("actions.start.success"))}
+                onClick={() => confirm("start")}
                 startIcon={<PlayArrow />}
                 variant="contained"
               >

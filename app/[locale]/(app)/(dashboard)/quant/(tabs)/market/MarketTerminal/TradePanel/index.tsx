@@ -12,6 +12,7 @@ import {
   quantAccountUrl,
 } from "../../../useQuantCredentials";
 import CredentialSelect, { NoCredential } from "../CredentialSelect";
+import OrderConfirm from "../OrderConfirm";
 import {
   type OrderForm,
   floorToPrecision,
@@ -33,6 +34,8 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
+
+import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
   PlaceQuantOrderDto,
@@ -69,6 +72,7 @@ const TradePanel = ({
   const tQuant = useTranslations("quant");
   const format = useFormatter();
   const { mutate } = useSWRConfig();
+  const setDialog = useDialogStore((state) => state.setDialog);
 
   const [side, setSide] = useState<QuantOrderSide>("BUY");
   const [type, setType] = useState<QuantOrderType>("LIMIT");
@@ -141,7 +145,7 @@ const TradePanel = ({
     );
   };
 
-  const onSubmitHandler = async ({ amount, price, size }: OrderForm) => {
+  const placeOrder = async ({ amount, price, size }: OrderForm) => {
     try {
       await fetcher<PlaceQuantOrderResponse>(
         quantAccountUrl(credential.id, "orders"),
@@ -169,8 +173,53 @@ const TradePanel = ({
     }
   };
 
+  const confirmOrder = ({ amount, price, size }: OrderForm) => {
+    const { baseCurrency, quoteCurrency } = market;
+    const isMarketBuy = type === "MARKET" && side === "BUY";
+
+    setDialog({
+      content: (
+        <OrderConfirm
+          rows={[
+            {
+              label: tQuant("order.confirm.pair"),
+              value: `${baseCurrency}/${quoteCurrency}`,
+            },
+            {
+              label: tQuant("order.confirm.side"),
+              value: tQuant(`order.side.${side}`),
+            },
+            {
+              label: tQuant("order.confirm.type"),
+              value: tQuant(`order.type.${type}`),
+            },
+            {
+              label: tQuant("order.price"),
+              value:
+                type === "LIMIT"
+                  ? `${price} ${quoteCurrency}`
+                  : tQuant("order.type.MARKET"),
+            },
+            isMarketBuy
+              ? {
+                  label: tQuant("order.amount"),
+                  value: `${amount} ${quoteCurrency}`,
+                }
+              : {
+                  label: tQuant("order.size"),
+                  value: `${size} ${baseCurrency}`,
+                },
+          ]}
+        />
+      ),
+      onConfirm: () => placeOrder({ amount, price, size }),
+      open: true,
+      title: tQuant("order.confirm.title"),
+    });
+  };
+
   const onSubmit = (event: BaseSyntheticEvent) =>
-    handleSubmit(onSubmitHandler)(event);
+    handleSubmit(confirmOrder)(event);
 
   const isMarketBuy = type === "MARKET" && side === "BUY";
   const availableCoin =
