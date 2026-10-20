@@ -242,7 +242,6 @@
         "leverage": "槓桿",
         "leverageMax": "此交易對最高 {max}x"
       },
-      "futuresAiLivePending": "合約的 AI 交易目前只開放模擬盤；實盤要等 Pionex 訊號的下單量規則實測確認後開放。",
       "futuresGrid": {
         "check": "向 Pionex 試算",
         "checkInvestment": "投入範圍：{min} – {max} {quote}",
@@ -391,7 +390,8 @@
       "webhook": {
         "orderAmount": "訊號未指定金額時的買入金額"
       },
-      "localLiveNote": "這個機器人由本機的 biru-api 執行：關掉 biru-api 或電腦睡眠時不會判斷，也不會檢查停損停利，要等重新開啟後才以當下市價補執行。需要隨時保護的實盤請在正式環境建立。"
+      "localLiveNote": "這個機器人由本機的 biru-api 執行：關掉 biru-api 或電腦睡眠時不會判斷，也不會檢查停損停利，要等重新開啟後才以當下市價補執行。需要隨時保護的實盤請在正式環境建立。",
+      "futuresAiLiveNote": "實盤會用你的 Pionex 合約帳戶下單：啟動前這個交易對不能有倉位或掛單，啟動時會把它設成逐倉與機器人的槓桿。執行期間請不要在 Pionex 手動交易這個交易對，倉位對不上時機器人會停止。"
     },
     "futuresGridOperation": {
       "amount": "金額",
@@ -493,7 +493,8 @@
       "stop_loss": "觸發停損",
       "stopped_all": "一鍵全停",
       "stopped_by_user": "手動停止",
-      "user_cancel": "在 Pionex 手動停止"
+      "user_cancel": "在 Pionex 手動停止",
+      "futures_position_mismatch": "交易所倉位和機器人的帳對不上（可能被強平，或在 Pionex 手動調整過）"
     },
     "signal": {
       "action": "方向",

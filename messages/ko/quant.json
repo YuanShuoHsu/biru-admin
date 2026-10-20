@@ -242,7 +242,6 @@
         "leverage": "레버리지",
         "leverageMax": "이 종목은 최대 {max}x"
       },
-      "futuresAiLivePending": "선물 AI 트레이딩은 현재 모의 거래만 가능합니다. 실전은 Pionex 신호 주문 수량 규칙을 실측으로 확인한 뒤 열립니다.",
       "futuresGrid": {
         "check": "Pionex로 시산",
         "checkInvestment": "투자 범위: {min} – {max} {quote}",
@@ -391,7 +390,8 @@
       "webhook": {
         "orderAmount": "신호에 금액이 없을 때 매수 금액"
       },
-      "localLiveNote": "이 봇은 로컬 biru-api에서 실행됩니다. biru-api를 끄거나 컴퓨터가 절전 상태이면 판단하지 않고 손절/익절도 확인하지 않으며, 다시 켠 뒤에야 그때의 시장가로 실행됩니다. 항상 보호가 필요한 실거래 봇은 운영 환경에서 만드세요."
+      "localLiveNote": "이 봇은 로컬 biru-api에서 실행됩니다. biru-api를 끄거나 컴퓨터가 절전 상태이면 판단하지 않고 손절/익절도 확인하지 않으며, 다시 켠 뒤에야 그때의 시장가로 실행됩니다. 항상 보호가 필요한 실거래 봇은 운영 환경에서 만드세요.",
+      "futuresAiLiveNote": "실전은 내 Pionex 선물 계정에서 주문합니다. 시작 전 이 종목에 포지션이나 미체결 주문이 없어야 하며, 시작 시 격리 마진과 봇의 레버리지로 설정합니다. 실행 중에는 Pionex에서 이 종목을 수동으로 거래하지 마세요. 포지션이 맞지 않으면 봇이 중지됩니다."
     },
     "futuresGridOperation": {
       "amount": "금액",
@@ -493,7 +493,8 @@
       "stop_loss": "손절 도달",
       "stopped_all": "모두 중지",
       "stopped_by_user": "수동 중지",
-      "user_cancel": "Pionex에서 수동 중지"
+      "user_cancel": "Pionex에서 수동 중지",
+      "futures_position_mismatch": "거래소 포지션이 봇의 기록과 맞지 않습니다(강제 청산되었거나 Pionex에서 수동으로 변경되었을 수 있음)"
     },
     "signal": {
       "action": "방향",

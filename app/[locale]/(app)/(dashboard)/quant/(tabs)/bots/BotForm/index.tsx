@@ -351,7 +351,7 @@ const BotFormFields = ({
                   </ToggleButton>
                   <ToggleButton
                     color="warning"
-                    disabled={isFuturesStrategy}
+                    disabled={isFuturesStrategy && type !== "ai"}
                     value="live"
                   >
                     {tBots("modes.live")}
@@ -359,15 +359,16 @@ const BotFormFields = ({
                 </ToggleButtonGroup>
               </Grid>
             )}
-            {isFuturesStrategy && (
+            {isFuturesStrategy && type !== "ai" && (
               <Grid size={12}>
                 <Alert severity="info">
-                  {tForm(
-                    type === "ai"
-                      ? "futuresAiLivePending"
-                      : "futuresStrategyPaperOnly",
-                  )}
+                  {tForm("futuresStrategyPaperOnly")}
                 </Alert>
+              </Grid>
+            )}
+            {isFuturesStrategy && type === "ai" && mode === "live" && (
+              <Grid size={12}>
+                <Alert severity="warning">{tForm("futuresAiLiveNote")}</Alert>
               </Grid>
             )}
             {mode === "live" &&

@@ -242,7 +242,6 @@
         "leverage": "Leverage",
         "leverageMax": "Up to {max}x for this symbol"
       },
-      "futuresAiLivePending": "Futures AI trading is paper only for now; live opens once Pionex signal sizing is verified.",
       "futuresGrid": {
         "check": "Check with Pionex",
         "checkInvestment": "Investment range: {min} – {max} {quote}",
@@ -391,7 +390,8 @@
       "webhook": {
         "orderAmount": "Buy amount when the signal has none"
       },
-      "localLiveNote": "This bot runs on your local biru-api: while biru-api is off or your computer sleeps it makes no decisions and does not check stop-loss / take-profit, which only run at the market price once it restarts. Create live bots that need constant protection in production."
+      "localLiveNote": "This bot runs on your local biru-api: while biru-api is off or your computer sleeps it makes no decisions and does not check stop-loss / take-profit, which only run at the market price once it restarts. Create live bots that need constant protection in production.",
+      "futuresAiLiveNote": "Live trading places orders in your Pionex futures account. The pair must have no position or open orders before starting, and starting sets it to isolated margin with the bot's leverage. Don't trade this pair manually on Pionex while the bot runs; it stops if the position no longer matches."
     },
     "futuresGridOperation": {
       "amount": "Amount",
@@ -493,7 +493,8 @@
       "stop_loss": "Stop loss triggered",
       "stopped_all": "Stop all",
       "stopped_by_user": "Stopped manually",
-      "user_cancel": "Stopped in Pionex"
+      "user_cancel": "Stopped in Pionex",
+      "futures_position_mismatch": "The exchange position no longer matches the bot's records (possibly liquidated, or changed manually on Pionex)"
     },
     "signal": {
       "action": "Action",

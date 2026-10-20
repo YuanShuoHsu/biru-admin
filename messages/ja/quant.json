@@ -242,7 +242,6 @@
         "leverage": "レバレッジ",
         "leverageMax": "この銘柄は最大 {max}x"
       },
-      "futuresAiLivePending": "先物の AI トレードは現在模擬取引のみです。実運用は Pionex シグナルの注文数量ルールを実測で確認してから開放します。",
       "futuresGrid": {
         "check": "Pionex で試算",
         "checkInvestment": "投資範囲：{min} – {max} {quote}",
@@ -391,7 +390,8 @@
       "webhook": {
         "orderAmount": "シグナルに金額がない場合の購入額"
       },
-      "localLiveNote": "このボットはローカルの biru-api で動きます。biru-api を止めたりパソコンがスリープしたりしている間は判断せず、損切り／利確も確認されず、再起動後にその時点の成行価格で実行されます。常に保護が必要な実取引ボットは本番環境で作成してください。"
+      "localLiveNote": "このボットはローカルの biru-api で動きます。biru-api を止めたりパソコンがスリープしたりしている間は判断せず、損切り／利確も確認されず、再起動後にその時点の成行価格で実行されます。常に保護が必要な実取引ボットは本番環境で作成してください。",
+      "futuresAiLiveNote": "実運用はあなたの Pionex 先物口座で発注します。開始前にこの銘柄のポジションや注文があってはならず、開始時に分離マージンとボットのレバレッジに設定します。実行中は Pionex でこの銘柄を手動で取引しないでください。ポジションが合わなくなるとボットは停止します。"
     },
     "futuresGridOperation": {
       "amount": "金額",
@@ -493,7 +493,8 @@
       "stop_loss": "損切りに到達",
       "stopped_all": "一括停止",
       "stopped_by_user": "手動で停止",
-      "user_cancel": "Pionex で手動停止"
+      "user_cancel": "Pionex で手動停止",
+      "futures_position_mismatch": "取引所のポジションがボットの記録と合いません（強制決済された、または Pionex で手動変更された可能性があります）"
     },
     "signal": {
       "action": "方向",
