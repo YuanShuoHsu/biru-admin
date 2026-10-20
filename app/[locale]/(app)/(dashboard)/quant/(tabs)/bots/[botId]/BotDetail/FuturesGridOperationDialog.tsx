@@ -12,9 +12,11 @@ import FormBox from "@/components/FormBox";
 
 import {
   Alert,
+  FormControlLabel,
   InputAdornment,
   MenuItem,
   Stack,
+  Switch,
   TextField,
   Typography,
 } from "@mui/material";
@@ -55,6 +57,8 @@ interface Fields {
   profitStopType: FuturesGridStopType;
   reduceNum: string;
   row: string;
+  stopLossEnabled: boolean;
+  stopProfitEnabled: boolean;
   top: string;
   triggerDown: string;
   triggerUp: string;
@@ -88,6 +92,8 @@ const toDto = (
       return {
         operation,
         pauseMode: fields.pauseMode,
+        stopLossEnabled: fields.stopLossEnabled,
+        stopProfitEnabled: fields.stopProfitEnabled,
         triggerDown: optional(fields.triggerDown),
         triggerUp: optional(fields.triggerUp),
       };
@@ -161,6 +167,8 @@ const FuturesGridOperationDialog = ({
     profitStopType: config.profitStop?.type ?? "price",
     reduceNum: "",
     row: text(config.row),
+    stopLossEnabled: !!config.lossStop,
+    stopProfitEnabled: !!config.profitStop,
     top: text(config.top),
     triggerDown: "",
     triggerUp: "",
@@ -241,6 +249,40 @@ const FuturesGridOperationDialog = ({
     />
   );
 
+  const describeStop = (stop?: FuturesGridConfig["lossStop"]) => {
+    if (!stop) return tOperation("stopNotSet");
+
+    const value =
+      stop.type === "profit_ratio"
+        ? `${stop.value}%`
+        : `${formatPrice(stop.value)} ${quote}`;
+    return `${tGrid(`stopType.${stop.type}`)} ${value}`;
+  };
+
+  const pauseStopSwitch = (name: "stopLossEnabled" | "stopProfitEnabled") => (
+    <Stack>
+      <FormControlLabel
+        control={
+          <Switch
+            checked={fields[name]}
+            onChange={(event) =>
+              setFields((current) => ({
+                ...current,
+                [name]: event.target.checked,
+              }))
+            }
+          />
+        }
+        label={tOperation(name)}
+      />
+      <Typography color="text.secondary" variant="caption">
+        {describeStop(
+          name === "stopLossEnabled" ? config.lossStop : config.profitStop,
+        )}
+      </Typography>
+    </Stack>
+  );
+
   const stopTypeField = (name: "lossStopType" | "profitStopType") => (
     <TextField
       label={tGrid(name)}
@@ -317,6 +359,12 @@ const FuturesGridOperationDialog = ({
             quote,
             tOperation("triggerOptional"),
           )}
+        </>
+      )}
+      {operation === "pause" && (
+        <>
+          {pauseStopSwitch("stopProfitEnabled")}
+          {pauseStopSwitch("stopLossEnabled")}
         </>
       )}
       {operation === "stops" && (

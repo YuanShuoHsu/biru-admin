@@ -287,7 +287,7 @@
         "profitStopType": "停利方式",
         "row": "格數",
         "slippage": "滑點上限（選填）",
-        "slippageHelper": "初始買入價格最多比下單時高出的比例；留空依 Pionex 預設",
+        "slippageHelper": "開倉成交價最多偏離下單時價格的比例；留空依 Pionex 預設",
         "stopLimitHelper": "觸發後以此價掛限價單平倉，價格沒到不會成交",
         "stopType": {
           "price": "價格",
@@ -381,7 +381,7 @@
       "descriptions": {
         "addMargin": "把合約帳戶的資金轉進這個機器人當保證金，會拉遠強平價。",
         "invest": "追加投入資金，Pionex 會依目前價格補上倉位與掛單。",
-        "pause": "暫停後不再補掛單，但保留倉位；停利停損仍會生效。",
+        "pause": "暫停後，機器人會撤銷所有掛單、停止進一步交易，但保留倉位，預估強平價會因此改變。",
         "range": "修改上下界與格數，投入金額不變。",
         "reduce": "以每格數量為單位減少倉位，減掉的部分會實現盈虧。",
         "reduceMargin": "把多出來的保證金轉回合約帳戶，會讓強平價變近。",
@@ -422,7 +422,10 @@
       "success": "已送出調整，Pionex 處理完成後會更新",
       "triggerDown": "跌到此價",
       "triggerOptional": "選填；兩個都留空代表立即",
-      "triggerUp": "漲到此價"
+      "triggerUp": "漲到此價",
+      "stopProfitEnabled": "暫停期間允許觸發停利",
+      "stopLossEnabled": "暫停期間允許觸發停損",
+      "stopNotSet": "未設定"
     },
     "gridOperation": {
       "amount": "金額",

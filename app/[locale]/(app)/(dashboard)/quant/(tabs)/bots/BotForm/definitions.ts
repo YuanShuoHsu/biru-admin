@@ -207,6 +207,7 @@ const gridValues = (
   profitStop: text(config.profitStop?.value),
   profitStopType: config.profitStop?.type ?? "price",
   row: text(config.row),
+  slippage: text(config.slippage),
   top: text(config.top),
   triggerDirection: config.trigger?.direction ?? "below",
   triggerPrice: text(config.trigger?.price),
@@ -252,7 +253,6 @@ export const valuesFromBot = (
       values.grid = {
         ...gridValues(base.grid, config),
         closeModel: config.closeModel,
-        slippage: text(config.slippage),
       };
       break;
     }
@@ -370,7 +370,8 @@ const toCondition = (condition: ConditionValues): IndicatorCondition => {
   }
 };
 
-const gridConfig = ({ grid }: BotFormValues) => {
+const gridConfig = (values: BotFormValues) => {
+  const { grid } = values;
   const stop = (stopType: FuturesGridStopType, value: string, limit: string) =>
     value.trim() === ""
       ? undefined
@@ -391,6 +392,8 @@ const gridConfig = ({ grid }: BotFormValues) => {
       grid.profitStopLimit,
     ),
     row: Number(grid.row),
+    slippage:
+      values.mode === "live" ? optionalNumber(grid.slippage) : undefined,
     top: Number(grid.top),
     trigger:
       grid.triggerPrice.trim() === ""
@@ -416,8 +419,6 @@ export const spotGridConfig = (values: BotFormValues): GridConfig => {
     closeModel: values.grid.closeModel,
     lossStop: spotStop(config.lossStop),
     profitStop: spotStop(config.profitStop),
-    slippage:
-      values.mode === "live" ? optionalNumber(values.grid.slippage) : undefined,
   };
 };
 

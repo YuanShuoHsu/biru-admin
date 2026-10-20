@@ -287,7 +287,7 @@
         "profitStopType": "止盈方式",
         "row": "格数",
         "slippage": "滑点上限（选填）",
-        "slippageHelper": "初始买入价格最多比下单时高出的比例；留空按 Pionex 默认",
+        "slippageHelper": "开仓成交价最多偏离下单时价格的比例；留空按 Pionex 默认",
         "stopLimitHelper": "触发后以此价挂限价单平仓，价格没到不会成交",
         "stopType": {
           "price": "价格",
@@ -381,7 +381,7 @@
       "descriptions": {
         "addMargin": "把合约账户的资金转进这个机器人当保证金，会拉远强平价。",
         "invest": "追加投入资金，Pionex 会依当前价格补上仓位与挂单。",
-        "pause": "暂停后不再补挂单，但保留仓位；止盈止损仍会生效。",
+        "pause": "暂停后，机器人会撤销所有挂单、停止进一步交易，但保留仓位，预估强平价会因此改变。",
         "range": "修改上下界与格数，投入金额不变。",
         "reduce": "以每格数量为单位减少仓位，减掉的部分会实现盈亏。",
         "reduceMargin": "把多出来的保证金转回合约账户，会让强平价变近。",
@@ -422,7 +422,10 @@
       "success": "已送出调整，Pionex 处理完成后会更新",
       "triggerDown": "跌到此价",
       "triggerOptional": "选填；两个都留空表示立即",
-      "triggerUp": "涨到此价"
+      "triggerUp": "涨到此价",
+      "stopProfitEnabled": "暂停期间允许触发止盈",
+      "stopLossEnabled": "暂停期间允许触发止损",
+      "stopNotSet": "未设置"
     },
     "gridOperation": {
       "amount": "金额",

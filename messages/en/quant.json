@@ -287,7 +287,7 @@
         "profitStopType": "Take profit by",
         "row": "Grids",
         "slippage": "Max slippage (optional)",
-        "slippageHelper": "How far above the order-time price the initial purchase may fill; leave blank to use the Pionex default",
+        "slippageHelper": "How far the opening fill may deviate from the order-time price; leave blank to use the Pionex default",
         "stopLimitHelper": "Once triggered, closes with a limit order at this price; it won’t fill until the price gets there",
         "stopType": {
           "price": "Price",
@@ -381,7 +381,7 @@
       "descriptions": {
         "addMargin": "Move funds from the futures account into this bot as margin; pushes the liquidation price further away.",
         "invest": "Add investment; Pionex tops up the position and orders at the current price.",
-        "pause": "Stops refilling orders but keeps the position; take profit and stop loss stay active.",
+        "pause": "Once paused, the bot cancels all open orders and stops trading but keeps its position, so the estimated liquidation price will change.",
         "range": "Change the range and grid count; the investment stays the same.",
         "reduce": "Reduce the position in units of the per-grid size; the reduced part realizes PnL.",
         "reduceMargin": "Move spare margin back to the futures account; brings the liquidation price closer.",
@@ -422,7 +422,10 @@
       "success": "Adjustment sent; it updates once Pionex finishes",
       "triggerDown": "Falls to",
       "triggerOptional": "Optional; leave both empty for immediately",
-      "triggerUp": "Rises to"
+      "triggerUp": "Rises to",
+      "stopProfitEnabled": "Allow take-profit to trigger while paused",
+      "stopLossEnabled": "Allow stop-loss to trigger while paused",
+      "stopNotSet": "Not set"
     },
     "gridOperation": {
       "amount": "Amount",

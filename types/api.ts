@@ -10039,6 +10039,8 @@ export interface components {
       profitStop?: components["schemas"]["FuturesGridStopDto"];
       /** @description 價格觸及才開始 */
       trigger?: components["schemas"]["TriggerDto"];
+      /** @description 實盤：開倉成交價最多偏離下單時價格的 %；省略時依 Pionex 預設，模擬盤與回測不使用 */
+      slippage?: number;
     };
     SignalBotConfigDto: {
       leverage: number;
@@ -10443,6 +10445,10 @@ export interface components {
       /** @description reduce：減倉份數，以每格數量為單位，上限見試算的 maxReduceNum */
       reduceNum?: number;
       pauseMode?: components["schemas"]["QuantFuturesGridPauseMode"];
+      /** @description pause：暫停期間是否仍允許觸發停利，預設 true */
+      stopProfitEnabled?: boolean;
+      /** @description pause：暫停期間是否仍允許觸發停損，預設 true */
+      stopLossEnabled?: boolean;
       /** @description pause／resume：價格漲到此價才暫停或恢復，須高於現價 */
       triggerUp?: number;
       /** @description pause／resume：價格跌到此價才暫停或恢復，須低於現價 */

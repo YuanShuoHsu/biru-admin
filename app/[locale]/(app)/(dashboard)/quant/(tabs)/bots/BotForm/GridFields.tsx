@@ -206,7 +206,7 @@ const GridFields = ({
       <Grid size={{ sm: 6, xs: 12 }}>
         <NumberField
           form={form}
-          helperText={isFutures ? undefined : profitPerGrid}
+          helperText={profitPerGrid}
           label={tGrid("row")}
           name="grid.row"
           required
@@ -298,7 +298,7 @@ const GridFields = ({
           }))}
         />
       </Grid>
-      {!isFutures && mode === "live" && (
+      {mode === "live" && (
         <Grid size={12}>
           <NumberField
             adornment="%"
