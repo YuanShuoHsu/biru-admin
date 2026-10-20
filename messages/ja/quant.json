@@ -61,6 +61,7 @@
         "consequences": {
           "cancelOrders": "すべての注文を取り消します。",
           "futuresGrid": "すべてのグリッド注文を取り消し、市場の最良価格でポジションを決済します。",
+          "futuresGridClosing": "指値の利確・損切りが発動しましたが、決済注文はまだ約定していません。停止すると指値決済注文を取り消し、成行で決済します。約定価格が指値より不利になる場合があります。",
           "gridKeep": "すべてのグリッド注文を取り消します。保有している {base} は口座に残ります。",
           "gridSell": "すべてのグリッド注文を取り消し、保有している {base} を成行で {quote} に売却します。",
           "keepPosition": "すべての注文を取り消します。ポジションは口座に残ります。"
@@ -272,10 +273,14 @@
         "lossStop": "損切り（任意）",
         "lossStopLimit": "損切り指値",
         "lossStopType": "損切り方式",
+        "profitPerGrid": "1グリッドあたりの利益 {min}–{max}（手数料控除前）",
+        "profitPerGridFixed": "1グリッドあたりの利益 {value}（手数料控除前）",
         "profitStop": "利確（任意）",
         "profitStopLimit": "利確指値",
         "profitStopType": "利確方式",
         "row": "グリッド数",
+        "slippage": "最大スリッページ（任意）",
+        "slippageHelper": "初回購入の約定価格が発注時の価格をどこまで上回ってよいか。空欄の場合は Pionex の既定値",
         "stopLimitHelper": "発動後この価格で指値注文を出して決済します。価格が届くまで約定しません",
         "stopType": {
           "price": "価格",
@@ -364,6 +369,7 @@
     "futuresGridOperation": {
       "amount": "金額",
       "check": "試算",
+      "closing": "決済中",
       "confirmHint": "試算に通りました。もう一度「実行」を押すと Pionex に送信します。",
       "descriptions": {
         "addMargin": "先物口座の資金をこのボットの証拠金に移し、清算価格を遠ざけます。",
@@ -436,6 +442,7 @@
       "submit": "作成",
       "success": "ボットを作成しました"
     },
+    "pionexError": "Pionex からデータを取得できません（{error}）。API KEY ページで、キーが有効であること、IP ホワイトリストに現在の送信元 IP が含まれていることを確認してください。",
     "reasons": {
       "ai_cost_limit": "月間 AI 費用上限に達しました",
       "create_failed": "Pionex での作成に失敗",

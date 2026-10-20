@@ -72,6 +72,7 @@ export interface BotFormValues {
     profitStopLimit: string;
     profitStopType: FuturesGridStopType;
     row: string;
+    slippage: string;
     top: string;
     triggerDirection: "above" | "below";
     triggerPrice: string;
@@ -161,6 +162,7 @@ export const defaultValues = (
     profitStopLimit: "",
     profitStopType: "price",
     row: "",
+    slippage: "",
     top: "",
     triggerDirection: "below",
     triggerPrice: "",
@@ -250,6 +252,7 @@ export const valuesFromBot = (
       values.grid = {
         ...gridValues(base.grid, config),
         closeModel: config.closeModel,
+        slippage: text(config.slippage),
       };
       break;
     }
@@ -413,6 +416,8 @@ export const spotGridConfig = (values: BotFormValues): GridConfig => {
     closeModel: values.grid.closeModel,
     lossStop: spotStop(config.lossStop),
     profitStop: spotStop(config.profitStop),
+    slippage:
+      values.mode === "live" ? optionalNumber(values.grid.slippage) : undefined,
   };
 };
 
@@ -624,6 +629,7 @@ export const useBotFormSchema = (type: QuantBotType) => {
               profitStopLimit: optionalPositive,
               profitStopType: z.enum(stopTypes),
               row: type === "grid" ? integer(2, 200) : integer(2, 500),
+              slippage: optionalPositive,
               top: positive,
               triggerDirection: z.enum(["above", "below"]),
               triggerPrice: optionalPositive,

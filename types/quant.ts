@@ -110,6 +110,7 @@ export type GridAiStrategy = components["schemas"]["GridAiStrategyDto"];
 export type GridCheckDto = components["schemas"]["GridCheckDto"];
 export type GridCheckResult = components["schemas"]["GridCheckResultDto"];
 export type GridOperationDto = components["schemas"]["GridOperationDto"];
+export type StopQuantBotDto = components["schemas"]["StopQuantBotDto"];
 export type QuantBotFillMarker = components["schemas"]["QuantBotFillMarkerDto"];
 export type QuantBotEquityPoint =
   components["schemas"]["QuantBotEquityPointDto"];

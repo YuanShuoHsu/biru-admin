@@ -17,7 +17,7 @@ import {
 } from "../useQuantBots";
 
 import DataGrid from "@/components/DataGrid";
-import { renderEmptyableCell } from "@/components/EmptyCell";
+import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 
 import {
   autosizeOptions,
@@ -71,6 +71,7 @@ import type {
   QuantBot,
   QuantBotFilterField,
   QuantBotSortField,
+  StopQuantBotDto,
 } from "@/types/quant";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
@@ -268,9 +269,13 @@ const BotList = ({
   );
 
   const request = useCallback(
-    async (url: string, success: string) => {
+    async (url: string, success: string, body?: StopQuantBotDto) => {
       try {
-        await fetcher(url, { method: "POST" });
+        await fetcher(url, {
+          body: JSON.stringify(body ?? {}),
+          headers: { "Content-Type": "application/json" },
+          method: "POST",
+        });
         enqueueSnackbar(success, { variant: "success" });
       } catch (error) {
         enqueueSnackbar(getErrorMessage(error), { variant: "error" });
@@ -286,7 +291,16 @@ const BotList = ({
       setDialog({
         content:
           action === "stop" ? (
-            <StopBotConfirm bot={bot} />
+            <StopBotConfirm
+              bot={bot}
+              onStop={(dto) =>
+                request(
+                  `${QUANT_BOTS_URL}/${bot.id}/stop`,
+                  tBots("actions.stop.success"),
+                  dto,
+                )
+              }
+            />
           ) : (
             <DialogContentText>
               {tBots.rich("actions.archive.confirm", {
@@ -469,17 +483,26 @@ const BotList = ({
         field: "pnl",
         filterable: false,
         headerName: tBots("columns.pnl"),
-        renderCell: ({ row }: GridRenderCellParams<QuantBot>) => (
-          <Box component="span" sx={{ color: pnlColor(row.summary.pnl) }}>
-            {formatQuote(row.summary.pnl)} (
-            {format.number(row.summary.pnl / row.investment, {
-              maximumFractionDigits: 2,
-              signDisplay: "exceptZero",
-              style: "percent",
-            })}
-            )
-          </Box>
-        ),
+        renderCell: ({ row }: GridRenderCellParams<QuantBot>) =>
+          row.summary.pionexError ? (
+            <Tooltip
+              title={tBots("pionexError", { error: row.summary.pionexError })}
+            >
+              <Box component="span">
+                <EmptyCell />
+              </Box>
+            </Tooltip>
+          ) : (
+            <Box component="span" sx={{ color: pnlColor(row.summary.pnl) }}>
+              {formatQuote(row.summary.pnl)} (
+              {format.number(row.summary.pnl / row.investment, {
+                maximumFractionDigits: 2,
+                signDisplay: "exceptZero",
+                style: "percent",
+              })}
+              )
+            </Box>
+          ),
         sortable: false,
         type: "number",
         valueGetter: (_, row: QuantBot) => row.summary.pnl,
@@ -490,8 +513,11 @@ const BotList = ({
         headerName: tBots("columns.realizedPnl"),
         sortable: false,
         type: "number",
-        valueFormatter: (value: number) => formatQuote(value),
-        valueGetter: (_, row: QuantBot) => row.summary.realizedPnl,
+        renderCell: renderEmptyableCell,
+        valueFormatter: (value?: number) =>
+          value === undefined ? "" : formatQuote(value),
+        valueGetter: (_, row: QuantBot) =>
+          row.summary.pionexError ? undefined : row.summary.realizedPnl,
       },
       {
         field: "startedAt",

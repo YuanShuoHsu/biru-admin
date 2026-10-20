@@ -9930,6 +9930,8 @@ export interface components {
       trigger?: components["schemas"]["TriggerDto"];
       /** @description 停止時是否把持有的基礎幣賣回計價幣 */
       closeModel: components["schemas"]["QuantGridCloseModel"];
+      /** @description 實盤：初始買入價格最多高於下單時價格的 %；省略時依 Pionex 預設，模擬盤與回測不使用 */
+      slippage?: number;
     };
     CreateGridBotDto: {
       name: string;
@@ -10166,6 +10168,8 @@ export interface components {
       aiMonthCost?: number;
       /** @description Pionex 網格：已提取的利潤 */
       profitWithdrawn?: number;
+      /** @description 向 Pionex 查詢失敗的原因；有值時其他數字都不是實際狀態 */
+      pionexError?: string;
     };
     CreateQuantBotResponseDto: {
       id: string;
@@ -10372,6 +10376,10 @@ export interface components {
       stoppedAt?: string;
       /** Format: date-time */
       createdAt: string;
+    };
+    StopQuantBotDto: {
+      /** @description 只用於現貨網格；省略時依建立時的設定 */
+      closeModel?: components["schemas"]["QuantGridCloseModel"];
     };
     WebhookTokenDto: {
       /** @description 新的 token，只在這次回傳；舊 token 立即失效 */
@@ -20040,7 +20048,11 @@ export interface operations {
       };
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["StopQuantBotDto"];
+      };
+    };
     responses: {
       201: {
         headers: {

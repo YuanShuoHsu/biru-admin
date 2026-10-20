@@ -61,6 +61,7 @@
         "consequences": {
           "cancelOrders": "All open orders will be canceled.",
           "futuresGrid": "All grid orders will be canceled and the position closed at the best market price.",
+          "futuresGridClosing": "The limit take-profit/stop-loss has triggered but its closing order has not filled. Stopping cancels that limit order and closes the position at market price, which may be worse than the limit price.",
           "gridKeep": "All grid orders will be canceled; the {base} held stays in your account.",
           "gridSell": "All grid orders will be canceled and the {base} held will be sold for {quote} at market price.",
           "keepPosition": "All open orders will be canceled; the position stays in your account."
@@ -272,10 +273,14 @@
         "lossStop": "Stop loss (optional)",
         "lossStopLimit": "Stop loss limit price",
         "lossStopType": "Stop loss by",
+        "profitPerGrid": "Profit per grid {min}–{max} (before fees)",
+        "profitPerGridFixed": "Profit per grid {value} (before fees)",
         "profitStop": "Take profit (optional)",
         "profitStopLimit": "Take profit limit price",
         "profitStopType": "Take profit by",
         "row": "Grids",
+        "slippage": "Max slippage (optional)",
+        "slippageHelper": "How far above the order-time price the initial purchase may fill; leave blank to use the Pionex default",
         "stopLimitHelper": "Once triggered, closes with a limit order at this price; it won’t fill until the price gets there",
         "stopType": {
           "price": "Price",
@@ -364,6 +369,7 @@
     "futuresGridOperation": {
       "amount": "Amount",
       "check": "Check",
+      "closing": "Closing",
       "confirmHint": "Check passed. Press \"Execute\" again to send it to Pionex.",
       "descriptions": {
         "addMargin": "Move funds from the futures account into this bot as margin; pushes the liquidation price further away.",
@@ -436,6 +442,7 @@
       "submit": "Create",
       "success": "Bot created"
     },
+    "pionexError": "Could not load data from Pionex ({error}). On the API KEY page, check that the key is still valid and its IP whitelist includes the current outbound IP.",
     "reasons": {
       "ai_cost_limit": "Monthly AI cost limit reached",
       "create_failed": "Pionex failed to create it",

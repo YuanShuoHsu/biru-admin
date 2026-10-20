@@ -61,6 +61,7 @@
         "consequences": {
           "cancelOrders": "停止後將取消所有掛單。",
           "futuresGrid": "停止後將取消所有網格掛單，並以市場最優價格平掉持倉。",
+          "futuresGridClosing": "限價停利停損已觸發，平倉單尚未成交。停止後將撤銷限價平倉單，改以市價平倉，成交價可能比限價差。",
           "gridKeep": "停止後將取消所有網格掛單，持有的 {base} 會保留在帳戶中。",
           "gridSell": "停止後將取消所有網格掛單，並以市價賣出持有的 {base} 換回 {quote}。",
           "keepPosition": "停止後將取消所有掛單，持倉會保留在帳戶中。"
@@ -272,10 +273,14 @@
         "lossStop": "停損（選填）",
         "lossStopLimit": "停損限價",
         "lossStopType": "停損方式",
+        "profitPerGrid": "每格利潤 {min}–{max}（未扣手續費）",
+        "profitPerGridFixed": "每格利潤 {value}（未扣手續費）",
         "profitStop": "停利（選填）",
         "profitStopLimit": "停利限價",
         "profitStopType": "停利方式",
         "row": "格數",
+        "slippage": "滑點上限（選填）",
+        "slippageHelper": "初始買入價格最多比下單時高出的比例；留空依 Pionex 預設",
         "stopLimitHelper": "觸發後以此價掛限價單平倉，價格沒到不會成交",
         "stopType": {
           "price": "價格",
@@ -364,6 +369,7 @@
     "futuresGridOperation": {
       "amount": "金額",
       "check": "試算",
+      "closing": "平倉中",
       "confirmHint": "試算通過，再按一次「確認執行」才會送到 Pionex。",
       "descriptions": {
         "addMargin": "把合約帳戶的資金轉進這個機器人當保證金，會拉遠強平價。",
@@ -436,6 +442,7 @@
       "submit": "建立",
       "success": "已建立機器人"
     },
+    "pionexError": "無法從 Pionex 取得資料（{error}）。請到 API KEY 頁確認金鑰仍有效、IP 白名單包含目前的出口 IP。",
     "reasons": {
       "ai_cost_limit": "達到每月 AI 費用上限",
       "create_failed": "Pionex 建立失敗",

@@ -64,6 +64,10 @@ const GridFields = ({
     control: form.control,
     name: ["grid.lossStopType", "grid.profitStopType"],
   });
+  const [top, bottom, row, gridType, mode] = useWatch({
+    control: form.control,
+    name: ["grid.top", "grid.bottom", "grid.row", "grid.gridType", "mode"],
+  });
 
   const quote = market?.quoteCurrency ?? "";
   const percent = (value: number) =>
@@ -130,6 +134,22 @@ const GridFields = ({
   };
 
   const isFutures = !!stopHelpers;
+
+  const profitPerGrid = (() => {
+    const [high, low, rows] = [Number(top), Number(bottom), Number(row)];
+    if (!(low > 0 && high > low && Number.isInteger(rows) && rows >= 2))
+      return undefined;
+    if (gridType === "geometric")
+      return tGrid("profitPerGridFixed", {
+        value: percent((high / low) ** (1 / rows) - 1),
+      });
+
+    const step = (high - low) / rows;
+    return tGrid("profitPerGrid", {
+      max: percent(step / low),
+      min: percent(step / (high - step)),
+    });
+  })();
   const stopTypeOptions = (
     isFutures ? quantFuturesGridStopTypeValues : quantGridStopTypeValues
   ).map((value) => ({ label: tGrid(`stopType.${value}`), value }));
@@ -186,6 +206,7 @@ const GridFields = ({
       <Grid size={{ sm: 6, xs: 12 }}>
         <NumberField
           form={form}
+          helperText={isFutures ? undefined : profitPerGrid}
           label={tGrid("row")}
           name="grid.row"
           required
@@ -277,6 +298,17 @@ const GridFields = ({
           }))}
         />
       </Grid>
+      {!isFutures && mode === "live" && (
+        <Grid size={12}>
+          <NumberField
+            adornment="%"
+            form={form}
+            helperText={tGrid("slippageHelper")}
+            label={tGrid("slippage")}
+            name="grid.slippage"
+          />
+        </Grid>
+      )}
       {!isFutures && (
         <Grid size={12}>
           <SelectField

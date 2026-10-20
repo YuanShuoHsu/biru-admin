@@ -79,6 +79,7 @@ import type {
   QuantBotOrder,
   QuantMarket,
   SignalBotConfig,
+  StopQuantBotDto,
   WebhookToken,
 } from "@/types/quant";
 
@@ -214,9 +215,17 @@ const BotDetail = ({ botId }: { botId: string }) => {
           style: "percent",
         });
 
-  const request = async (path: string, success: string) => {
+  const request = async (
+    path: string,
+    success: string,
+    body?: StopQuantBotDto,
+  ) => {
     try {
-      await fetcher(`${botUrl}/${path}`, { method: "POST" });
+      await fetcher(`${botUrl}/${path}`, {
+        body: JSON.stringify(body ?? {}),
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+      });
       enqueueSnackbar(success, { variant: "success" });
     } catch (requestError) {
       enqueueSnackbar(getErrorMessage(requestError), { variant: "error" });
@@ -230,6 +239,7 @@ const BotDetail = ({ botId }: { botId: string }) => {
     bot.mode === "live" &&
     bot.status === "running";
   const isPaused = bot.summary.pionexStatus === "paused";
+  const isClosing = bot.summary.pionexStatus === "close_position";
   const futuresOperations: FuturesGridOperation[] = [
     "invest",
     "range",
@@ -277,7 +287,12 @@ const BotDetail = ({ botId }: { botId: string }) => {
     setDialog({
       content:
         action === "stop" ? (
-          <StopBotConfirm bot={bot} />
+          <StopBotConfirm
+            bot={bot}
+            onStop={(dto) =>
+              request("stop", tBots("actions.stop.success"), dto)
+            }
+          />
         ) : (
           <DialogContentText>
             {tBots.rich("actions.archive.confirm", {
@@ -501,6 +516,13 @@ const BotDetail = ({ botId }: { botId: string }) => {
                   size="small"
                 />
               )}
+              {isClosing && (
+                <Chip
+                  color="warning"
+                  label={tBots("futuresGridOperation.closing")}
+                  size="small"
+                />
+              )}
               <Chip
                 color={STATUS_COLORS[bot.status]}
                 label={
@@ -596,7 +618,16 @@ const BotDetail = ({ botId }: { botId: string }) => {
                 </MenuItem>
               ))}
         </Menu>
-        <Grid container spacing={2}>
+        {summary.pionexError && (
+          <Alert severity="error">
+            {tBots("pionexError", { error: summary.pionexError })}
+          </Alert>
+        )}
+        <Grid
+          container
+          spacing={2}
+          sx={{ display: summary.pionexError ? "none" : undefined }}
+        >
           <Grid size={{ md: 2, sm: 4, xs: 6 }}>
             <Stat
               label={tBots("detail.summary.equity")}

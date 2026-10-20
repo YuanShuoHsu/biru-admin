@@ -61,6 +61,7 @@
         "consequences": {
           "cancelOrders": "모든 주문을 취소합니다.",
           "futuresGrid": "모든 그리드 주문을 취소하고 시장 최우선 가격으로 포지션을 청산합니다.",
+          "futuresGridClosing": "지정가 익절/손절이 발동했지만 청산 주문이 아직 체결되지 않았습니다. 중지하면 지정가 청산 주문을 취소하고 시장가로 청산하며, 체결 가격이 지정가보다 불리할 수 있습니다.",
           "gridKeep": "모든 그리드 주문을 취소합니다. 보유한 {base}은(는) 계정에 남습니다.",
           "gridSell": "모든 그리드 주문을 취소하고 보유한 {base}을(를) 시장가로 {quote}(으)로 매도합니다.",
           "keepPosition": "모든 주문을 취소합니다. 포지션은 계정에 남습니다."
@@ -272,10 +273,14 @@
         "lossStop": "손절(선택)",
         "lossStopLimit": "손절 지정가",
         "lossStopType": "손절 방식",
+        "profitPerGrid": "그리드당 수익 {min}–{max} (수수료 차감 전)",
+        "profitPerGridFixed": "그리드당 수익 {value} (수수료 차감 전)",
         "profitStop": "익절(선택)",
         "profitStopLimit": "익절 지정가",
         "profitStopType": "익절 방식",
         "row": "그리드 수",
+        "slippage": "최대 슬리피지(선택)",
+        "slippageHelper": "최초 매수 체결가가 주문 시점 가격보다 최대 얼마나 높아도 되는지의 비율. 비워 두면 Pionex 기본값",
         "stopLimitHelper": "발동되면 이 가격으로 지정가 주문을 넣어 청산합니다. 가격이 닿기 전에는 체결되지 않습니다",
         "stopType": {
           "price": "가격",
@@ -364,6 +369,7 @@
     "futuresGridOperation": {
       "amount": "금액",
       "check": "시산",
+      "closing": "청산 중",
       "confirmHint": "시산을 통과했습니다. \"실행\"을 한 번 더 누르면 Pionex로 보냅니다.",
       "descriptions": {
         "addMargin": "선물 계정의 자금을 이 봇의 증거금으로 옮겨 강제청산가를 멀리 둡니다.",
@@ -436,6 +442,7 @@
       "submit": "만들기",
       "success": "봇을 만들었습니다"
     },
+    "pionexError": "Pionex에서 데이터를 가져올 수 없습니다({error}). API KEY 페이지에서 키가 유효한지, IP 화이트리스트에 현재 발신 IP가 포함되어 있는지 확인하세요.",
     "reasons": {
       "ai_cost_limit": "월간 AI 비용 한도 도달",
       "create_failed": "Pionex 생성 실패",
