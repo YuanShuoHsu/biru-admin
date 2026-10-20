@@ -108,10 +108,10 @@
     "columns": {
       "actions": "操作",
       "executor": "执行",
-      "investment": "投入",
+      "investment": "投资额",
       "mode": "模式",
       "name": "名称",
-      "pnl": "盈亏",
+      "pnl": "总利润",
       "position": "持仓",
       "realizedPnl": "已实现",
       "startedAt": "启动时间",
@@ -130,19 +130,25 @@
       "pionexSignal": "这是 Pionex 智能跟单机器人，逐笔成交请在 Pionex App 查看。",
       "summary": {
         "averageCost": "持仓均价",
-        "equity": "权益",
         "fills": "成交笔数",
         "fundingFee": "资金费",
         "liquidationPrice": "预估强平价",
-        "pnl": "总盈亏",
-        "position": "持仓",
+        "pnl": "总利润",
+        "position": "当前持仓",
         "realizedPnl": "已实现盈亏",
         "gridProfit": "网格利润",
         "floatingPnl": "浮动盈亏",
-        "annualizedReturn": "年化收益",
+        "annualizedReturn": "总年化",
         "gridAnnualizedReturn": "网格年化",
         "trendPnl": "趋势盈亏",
-        "openPrice": "开单时价格"
+        "openPrice": "开单时价格",
+        "investment": "投资额",
+        "actualInvestment": "实际投资额",
+        "extraMargin": "额外保证金",
+        "equity": "权益",
+        "priceRange": "价格区间",
+        "priceRangeValue": "{bottom} - {top}（{row} 格）",
+        "stops": "止盈/止损"
       }
     },
     "events": {

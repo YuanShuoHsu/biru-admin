@@ -108,10 +108,10 @@
     "columns": {
       "actions": "操作",
       "executor": "執行",
-      "investment": "投入",
+      "investment": "投資額",
       "mode": "模式",
       "name": "名稱",
-      "pnl": "損益",
+      "pnl": "總利潤",
       "position": "持倉",
       "realizedPnl": "已實現",
       "startedAt": "啟動時間",
@@ -130,19 +130,25 @@
       "pionexSignal": "這是 Pionex 智慧跟單機器人，逐筆成交請在 Pionex App 查看。",
       "summary": {
         "averageCost": "持倉均價",
-        "equity": "權益",
         "fills": "成交筆數",
         "fundingFee": "資金費",
         "liquidationPrice": "預估強平價",
-        "pnl": "總損益",
-        "position": "持倉",
+        "pnl": "總利潤",
+        "position": "當前持倉",
         "realizedPnl": "已實現損益",
         "gridProfit": "網格利潤",
         "floatingPnl": "浮動盈虧",
-        "annualizedReturn": "年化報酬",
+        "annualizedReturn": "總年化",
         "gridAnnualizedReturn": "網格年化",
         "trendPnl": "趨勢盈虧",
-        "openPrice": "開單時價格"
+        "openPrice": "開單時價格",
+        "investment": "投資額",
+        "actualInvestment": "實際投資額",
+        "extraMargin": "額外保證金",
+        "equity": "權益",
+        "priceRange": "價格區間",
+        "priceRangeValue": "{bottom} - {top}（{row} 格）",
+        "stops": "停利/停損"
       }
     },
     "events": {

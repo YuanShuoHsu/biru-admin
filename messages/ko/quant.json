@@ -108,10 +108,10 @@
     "columns": {
       "actions": "작업",
       "executor": "실행 주체",
-      "investment": "투자금",
+      "investment": "투자액",
       "mode": "모드",
       "name": "이름",
-      "pnl": "손익",
+      "pnl": "총 수익",
       "position": "보유량",
       "realizedPnl": "실현 손익",
       "startedAt": "시작 시간",
@@ -130,19 +130,25 @@
       "pionexSignal": "Pionex 스마트 카피 봇입니다. 개별 체결은 Pionex 앱에서 확인하세요.",
       "summary": {
         "averageCost": "평균 단가",
-        "equity": "자산",
         "fills": "체결 수",
         "fundingFee": "펀딩비",
         "liquidationPrice": "예상 강제청산가",
-        "pnl": "총 손익",
-        "position": "보유량",
+        "pnl": "총 수익",
+        "position": "현재 포지션",
         "realizedPnl": "실현 손익",
         "gridProfit": "그리드 수익",
         "floatingPnl": "미실현 손익",
-        "annualizedReturn": "연환산 수익률",
+        "annualizedReturn": "총 연환산",
         "gridAnnualizedReturn": "그리드 연환산",
         "trendPnl": "추세 손익",
-        "openPrice": "생성 시 가격"
+        "openPrice": "생성 시 가격",
+        "investment": "투자액",
+        "actualInvestment": "실제 투자액",
+        "extraMargin": "추가 증거금",
+        "equity": "자산",
+        "priceRange": "가격 구간",
+        "priceRangeValue": "{bottom} - {top} ({row}개 그리드)",
+        "stops": "익절/손절"
       }
     },
     "events": {

@@ -10162,7 +10162,7 @@ export interface components {
       liquidationPrice?: number;
       /** @description 合約：預估強平價與現價的距離（比例） */
       liquidationDistance?: number;
-      /** @description Pionex 網格：建立時的市價 */
+      /** @description Pionex 現貨網格：建立時的市價 */
       openPrice?: number;
       /** @description 合約：累計資金費（正數為收入） */
       fundingFee?: number;

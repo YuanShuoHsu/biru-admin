@@ -320,6 +320,10 @@ const BotList = ({
     [request, setDialog, tBots],
   );
 
+  const hasUnstarted = rows.some(({ startedAt }) => !startedAt);
+  const hasRunning = rows.some(({ status }) => status === "running");
+  const hasStopped = rows.some(({ status }) => status !== "running");
+
   const columns = useMemo<GridColDef[]>(
     () => [
       {
@@ -342,37 +346,41 @@ const BotList = ({
                 <Insights fontSize="small" />
               </IconButton>
             </Tooltip>
-            <Tooltip title={tBots("actions.start.label")}>
-              <StyledIconButton
-                color="success"
-                onClick={(event) => {
-                  event.stopPropagation();
+            {hasUnstarted && (
+              <Tooltip title={tBots("actions.start.label")}>
+                <StyledIconButton
+                  color="success"
+                  onClick={(event) => {
+                    event.stopPropagation();
 
-                  void request(
-                    `${QUANT_BOTS_URL}/${row.id}/start`,
-                    tBots("actions.start.success"),
-                  );
-                }}
-                size="small"
-                visible={!row.startedAt}
-              >
-                <PlayArrow fontSize="small" />
-              </StyledIconButton>
-            </Tooltip>
-            <Tooltip title={tBots("actions.stop.label")}>
-              <StyledIconButton
-                color="error"
-                onClick={(event) => {
-                  event.stopPropagation();
+                    void request(
+                      `${QUANT_BOTS_URL}/${row.id}/start`,
+                      tBots("actions.start.success"),
+                    );
+                  }}
+                  size="small"
+                  visible={!row.startedAt}
+                >
+                  <PlayArrow fontSize="small" />
+                </StyledIconButton>
+              </Tooltip>
+            )}
+            {hasRunning && (
+              <Tooltip title={tBots("actions.stop.label")}>
+                <StyledIconButton
+                  color="error"
+                  onClick={(event) => {
+                    event.stopPropagation();
 
-                  confirm("stop", row);
-                }}
-                size="small"
-                visible={row.status === "running"}
-              >
-                <Stop fontSize="small" />
-              </StyledIconButton>
-            </Tooltip>
+                    confirm("stop", row);
+                  }}
+                  size="small"
+                  visible={row.status === "running"}
+                >
+                  <Stop fontSize="small" />
+                </StyledIconButton>
+              </Tooltip>
+            )}
             <Tooltip title={tBots("actions.duplicate")}>
               <IconButton
                 onClick={(event) => {
@@ -385,19 +393,21 @@ const BotList = ({
                 <ContentCopy fontSize="small" />
               </IconButton>
             </Tooltip>
-            <Tooltip title={tBots("actions.archive.label")}>
-              <StyledIconButton
-                onClick={(event) => {
-                  event.stopPropagation();
+            {hasStopped && (
+              <Tooltip title={tBots("actions.archive.label")}>
+                <StyledIconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
 
-                  confirm("archive", row);
-                }}
-                size="small"
-                visible={row.status !== "running"}
-              >
-                <Archive fontSize="small" />
-              </StyledIconButton>
-            </Tooltip>
+                    confirm("archive", row);
+                  }}
+                  size="small"
+                  visible={row.status !== "running"}
+                >
+                  <Archive fontSize="small" />
+                </StyledIconButton>
+              </Tooltip>
+            )}
           </ActionsStack>
         ),
         resizable: false,
@@ -535,6 +545,9 @@ const BotList = ({
       enumOptions,
       format,
       formatQuote,
+      hasRunning,
+      hasStopped,
+      hasUnstarted,
       labels,
       numberFilterOperators,
       openBotForm,

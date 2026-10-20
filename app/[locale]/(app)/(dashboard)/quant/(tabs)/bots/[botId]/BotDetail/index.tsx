@@ -187,11 +187,23 @@ const BotDetail = ({ botId }: { botId: string }) => {
   const isGrid = bot.type === "grid" || bot.type === "futures_grid";
   const futuresConfig =
     bot.type === "futures_grid" ? (bot.config as FuturesGridConfig) : null;
+  const gridConfig = isGrid ? (bot.config as FuturesGridConfig) : null;
   const isFutures = quantMarketTypeOf(bot.symbol) === "PERP";
   const position = (bot.config as { futures?: FuturesPositionConfig }).futures;
 
   const formatQuote = (value: number) =>
     `${format.number(value, { maximumFractionDigits: 2, minimumFractionDigits: 2, signDisplay: "negative" })} ${quote}`;
+  const formatStop = (stop?: FuturesGridConfig["lossStop"]) => {
+    if (!stop) return "—";
+    if (stop.type === "profit_amount") return formatQuote(stop.value);
+    if (stop.type === "profit_ratio")
+      return format.number(stop.value / 100, {
+        maximumFractionDigits: 2,
+        style: "percent",
+      });
+
+    return format.number(stop.value, { maximumFractionDigits: pricePrecision });
+  };
   const formatQuoteWithRatio = (value: number) =>
     `${formatQuote(value)} (${format.number(value / bot.investment, { maximumFractionDigits: 2, signDisplay: "exceptZero", style: "percent" })})`;
   const formatPrice = (value?: number) =>
@@ -633,8 +645,12 @@ const BotDetail = ({ botId }: { botId: string }) => {
         >
           <Grid size={{ md: 2, sm: 4, xs: 6 }}>
             <Stat
-              label={tBots("detail.summary.equity")}
-              value={formatQuote(summary.equity)}
+              label={tBots(
+                futuresConfig
+                  ? "detail.summary.actualInvestment"
+                  : "detail.summary.investment",
+              )}
+              value={formatQuote(bot.investment)}
             />
           </Grid>
           <Grid size={{ md: 2, sm: 4, xs: 6 }}>
@@ -682,6 +698,22 @@ const BotDetail = ({ botId }: { botId: string }) => {
               />
             </Grid>
           )}
+          {gridConfig && (
+            <Grid size={{ md: 4, sm: 8, xs: 12 }}>
+              <Stat
+                label={tBots("detail.summary.priceRange")}
+                value={tBots("detail.summary.priceRangeValue", {
+                  bottom: format.number(gridConfig.bottom, {
+                    maximumFractionDigits: pricePrecision,
+                  }),
+                  row: gridConfig.row,
+                  top: format.number(gridConfig.top, {
+                    maximumFractionDigits: pricePrecision,
+                  }),
+                })}
+              />
+            </Grid>
+          )}
           <Grid size={{ md: 2, sm: 4, xs: 6 }}>
             <Stat
               label={tBots("detail.summary.position")}
@@ -704,6 +736,14 @@ const BotDetail = ({ botId }: { botId: string }) => {
               }
             />
           </Grid>
+          {futuresConfig?.extraMargin !== undefined && (
+            <Grid size={{ md: 2, sm: 4, xs: 6 }}>
+              <Stat
+                label={tBots("detail.summary.extraMargin")}
+                value={formatQuote(futuresConfig.extraMargin)}
+              />
+            </Grid>
+          )}
           {isFutures && (
             <>
               <Grid size={{ md: 2, sm: 4, xs: 6 }}>
@@ -724,6 +764,14 @@ const BotDetail = ({ botId }: { botId: string }) => {
                 />
               </Grid>
             </>
+          )}
+          {gridConfig && (
+            <Grid size={{ md: 2, sm: 4, xs: 6 }}>
+              <Stat
+                label={tBots("detail.summary.stops")}
+                value={`${formatStop(gridConfig.profitStop)} / ${formatStop(gridConfig.lossStop)}`}
+              />
+            </Grid>
           )}
           {!isPionexGrid && (
             <Grid size={{ md: 2, sm: 4, xs: 6 }}>
