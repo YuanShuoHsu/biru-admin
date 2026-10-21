@@ -578,7 +578,7 @@
       "hint": "캔들 마감마다 AI가 한 번 판단하므로 캔들 수가 많을수록 한도나 비용을 더 씁니다. 기간이 모델의 지식 기준일보다 이르면 모델이 해당 시세를 이미 봤을 수 있어 결과가 낙관적으로 나옵니다. 백테스트는 여러 주기의 과거 캔들과 지표를 제공하지만 과거 호가창은 없습니다. 이 양식을 닫으면 진행 중인 AI 백테스트도 중지됩니다.",
       "candlesHelper": "Claude Code를 선택하면 Claude Code가 캔들마다 판단하며 구독 한도를 사용합니다",
       "cancel": {
-        "confirm": "이 AI 백테스트를 중지하시겠습니까? 받은 판단은 유지되지만 계속할 수 없습니다.",
+        "confirm": "이 AI 백테스트를 중지하시겠습니까? 받은 판단은 유지되며, 나중에 멈춘 지점부터 이어서 실행할 수 있습니다.",
         "keep": "계속하기",
         "label": "백테스트 중지"
       },
@@ -586,9 +586,25 @@
         "claude_code": "로컬 Claude Code 판단 대기: {decided} / {total} 캔들",
         "claude_api": "Claude API 판단 중: {decided} / {total} 캔들, {cost}달러 사용"
       },
+      "partial": "현재 결과는 판단이 끝난 캔들만 반영합니다",
       "failed": "AI 백테스트 실패: {reason}",
       "costLimit": "월 비용 상한에 도달했습니다",
-      "canceled": "이 AI 백테스트는 중지되었습니다"
+      "canceled": "이 AI 백테스트는 중지되었습니다",
+      "resume": {
+        "label": "멈춘 지점부터 이어서 실행 (판단 완료 {decided} / {total}개)",
+        "costLimit": "이번 백테스트 비용 상한 (USD)",
+        "costHelper": "지금까지 {cost} USD를 사용했습니다. 상한에 도달했다면 올려야 이어서 실행할 수 있습니다"
+      },
+      "history": {
+        "label": "백테스트 기록",
+        "summary": "{status} · 판단 완료 {decided} / {total}개"
+      },
+      "status": {
+        "running": "실행 중",
+        "completed": "완료",
+        "failed": "실패",
+        "canceled": "중지됨"
+      }
     },
     "pauses": {
       "ai_cost_limit": "Claude API 비용이 이번 달 한도에 도달: 다음 달까지 판단 중지, 기존 포지션은 익절/손절을 따릅니다"

@@ -578,7 +578,7 @@
       "hint": "AI decides once per candle close, so more candles use more quota or cost. If the period is before the model knowledge cutoff, the model may have seen these prices and results will look too good. Backtests provide historical candles and indicators on several intervals, but no historical order book. Closing this form stops any AI backtest in progress.",
       "candlesHelper": "With Claude Code, Claude Code decides candle by candle using your subscription",
       "cancel": {
-        "confirm": "Stop this AI backtest? Decisions so far are kept, but it cannot continue.",
+        "confirm": "Stop this AI backtest? Decisions so far are kept, and you can resume from where it stopped later.",
         "keep": "Keep running",
         "label": "Stop backtest"
       },
@@ -586,9 +586,25 @@
         "claude_code": "Waiting for local Claude Code: {decided} / {total} candles",
         "claude_api": "Claude API deciding: {decided} / {total} candles, {cost} USD spent"
       },
+      "partial": "Results so far cover only the candles already judged",
       "failed": "AI backtest failed: {reason}",
       "costLimit": "the monthly cost limit was reached",
-      "canceled": "This AI backtest was stopped"
+      "canceled": "This AI backtest was stopped",
+      "resume": {
+        "label": "Resume from where it stopped ({decided} / {total} candles judged)",
+        "costLimit": "Cost limit for this backtest (USD)",
+        "costHelper": "{cost} USD spent so far. Raise the limit to resume once it is reached"
+      },
+      "history": {
+        "label": "Backtest history",
+        "summary": "{status} · {decided} / {total} candles judged"
+      },
+      "status": {
+        "running": "Running",
+        "completed": "Completed",
+        "failed": "Failed",
+        "canceled": "Stopped"
+      }
     },
     "pauses": {
       "ai_cost_limit": "Claude API cost reached this month's limit: decisions paused until next month; existing positions follow take-profit / stop-loss"

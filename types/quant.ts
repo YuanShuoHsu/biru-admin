@@ -116,6 +116,7 @@ export type QuantAiRequest = components["schemas"]["QuantAiRequestDto"];
 export type QuantAgentToken = components["schemas"]["QuantAgentTokenDto"];
 export type QuantAiBacktest = components["schemas"]["QuantAiBacktestDto"];
 export type CreateAiBacktestDto = components["schemas"]["CreateAiBacktestDto"];
+export type ResumeAiBacktestDto = components["schemas"]["ResumeAiBacktestDto"];
 export type QuantAiSource = components["schemas"]["QuantAiSource"];
 export type QuantAiModel = components["schemas"]["QuantAiModel"];
 export type QuantBotFillMarker = components["schemas"]["QuantBotFillMarkerDto"];

@@ -578,7 +578,7 @@
       "hint": "ローソク足の確定ごとに AI が 1 回判断するため、本数が多いほど枠や費用を使います。期間がモデルの知識カットオフより前だと、モデルがその相場を見ている可能性があり、結果が楽観的になります。バックテストでは複数の時間足の過去ローソク足と指標を使いますが、過去の板はありません。このフォームを閉じると、実行中の AI バックテストも停止します。",
       "candlesHelper": "Claude Code を選ぶと、Claude Code が 1 本ずつ判断し、サブスクリプション枠を使います",
       "cancel": {
-        "confirm": "この AI バックテストを停止しますか？取得済みの判断は残りますが、続行はできません。",
+        "confirm": "この AI バックテストを停止しますか？取得済みの判断は残り、後で停止した位置から再開できます。",
         "keep": "続行する",
         "label": "バックテストを停止"
       },
@@ -586,9 +586,25 @@
         "claude_code": "ローカルの Claude Code の判断待ち：{decided} / {total} 本",
         "claude_api": "Claude API で判断中：{decided} / {total} 本、{cost} ドル使用"
       },
+      "partial": "現在の結果は判断済みのローソク足のみが対象です",
       "failed": "AI バックテストに失敗しました：{reason}",
       "costLimit": "月間費用上限に達しました",
-      "canceled": "この AI バックテストは停止されました"
+      "canceled": "この AI バックテストは停止されました",
+      "resume": {
+        "label": "停止した位置から再開（判断済み {decided} / {total} 本）",
+        "costLimit": "このバックテストの費用上限（米ドル）",
+        "costHelper": "これまでの費用は {cost} 米ドルです。上限に達した場合は引き上げてから再開してください"
+      },
+      "history": {
+        "label": "バックテスト履歴",
+        "summary": "{status}・判断済み {decided} / {total} 本"
+      },
+      "status": {
+        "running": "実行中",
+        "completed": "完了",
+        "failed": "失敗",
+        "canceled": "停止済み"
+      }
     },
     "pauses": {
       "ai_cost_limit": "Claude API の費用が今月の上限に到達：来月まで判断を停止し、既存ポジションは利確／損切りに従います"

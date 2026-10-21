@@ -578,7 +578,7 @@
       "hint": "每根 K 线收盘都要 AI 判断一次，K 线数越多越耗额度或费用。回测区间若早于模型的知识截止日，模型可能已看过这段行情，结果会偏乐观。回测会提供各周期的历史 K 线与指标，但没有历史委托簿。关闭这个表单时，进行中的 AI 回测会一并停止。",
       "candlesHelper": "选 Claude Code 时逐根交给 Claude Code 判断，会用到订阅额度",
       "cancel": {
-        "confirm": "确定要停止这次 AI 回测吗？已取得的判断会保留，但无法再继续。",
+        "confirm": "确定要停止这次 AI 回测吗？已取得的判断会保留，之后可以从停下的地方继续。",
         "keep": "继续回测",
         "label": "停止回测"
       },
@@ -586,9 +586,25 @@
         "claude_code": "等待本机 Claude Code 判断：{decided} / {total} 根",
         "claude_api": "Claude API 判断中：{decided} / {total} 根，已花 {cost} 美元"
       },
+      "partial": "当前结果只涵盖已判断的 K 线",
       "failed": "AI 回测失败：{reason}",
       "costLimit": "费用达到每月费用上限",
-      "canceled": "这次 AI 回测已停止"
+      "canceled": "这次 AI 回测已停止",
+      "resume": {
+        "label": "从停下的地方继续（已判断 {decided} / {total} 根）",
+        "costLimit": "这次回测的费用上限（美元）",
+        "costHelper": "已花 {cost} 美元，达到上限时要调高才能继续"
+      },
+      "history": {
+        "label": "回测记录",
+        "summary": "{status}・已判断 {decided} / {total} 根"
+      },
+      "status": {
+        "running": "执行中",
+        "completed": "已完成",
+        "failed": "失败",
+        "canceled": "已停止"
+      }
     },
     "pauses": {
       "ai_cost_limit": "Claude API 费用已达本月上限：暂停判断到下个月，持仓照止盈止损处理"

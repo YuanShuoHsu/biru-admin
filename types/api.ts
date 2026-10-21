@@ -3696,6 +3696,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/quant/ai-backtests/{id}/resume": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 從停下的那根 K 線繼續已停止或失敗的 AI 回測 */
+    post: operations["QuantAiAdminController_resumeBacktest"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/quant/agent/connect": {
     parameters: {
       query?: never;
@@ -10363,6 +10380,10 @@ export interface components {
       candleCount: number;
       investment: number;
       config: components["schemas"]["AiConfigDto"];
+    };
+    ResumeAiBacktestDto: {
+      /** @description claude_api：調整這次回測的費用上限（美元），已花費用達到上限時必須調高 */
+      monthlyCostLimit?: number;
     };
     QuantAgentConnectDto: {
       /** @description 代理輪詢用的識別碼，只有代理知道 */
@@ -20466,6 +20487,38 @@ export interface operations {
       cookie?: never;
     };
     requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuantAiBacktestDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  QuantAiAdminController_resumeBacktest: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ResumeAiBacktestDto"];
+      };
+    };
     responses: {
       201: {
         headers: {

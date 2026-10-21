@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
+import { useWatch } from "react-hook-form";
 import useSWR from "swr";
 
 import BacktestResultView from "./BacktestResultView";
@@ -14,6 +15,9 @@ import {
   Alert,
   Button,
   LinearProgress,
+  List,
+  ListItemButton,
+  ListItemText,
   MenuItem,
   Stack,
   TextField,
@@ -25,6 +29,7 @@ import type {
   CreateAiBacktestDto,
   QuantAiBacktest,
   QuantMarket,
+  ResumeAiBacktestDto,
 } from "@/types/quant";
 
 import { getErrorMessage } from "@/utils/errors";
@@ -49,6 +54,10 @@ const AiBacktestPanel = ({ form, market }: AiBacktestPanelProps) => {
   const [starting, setStarting] = useState(false);
   const [confirmingCancel, setConfirmingCancel] = useState(false);
   const [canceling, setCanceling] = useState(false);
+  const [resuming, setResuming] = useState(false);
+  const [costLimit, setCostLimit] = useState("");
+
+  const symbol = useWatch({ control: form.control, name: "symbol" });
 
   const { data: run, mutate } = useSWR<QuantAiBacktest>(
     runId ? `${AI_BACKTESTS_URL}/${runId}` : null,
@@ -57,6 +66,22 @@ const AiBacktestPanel = ({ form, market }: AiBacktestPanelProps) => {
       refreshInterval: (latest) => (latest?.status === "running" ? POLL_MS : 0),
     },
   );
+  const { data: history, mutate: mutateHistory } = useSWR<QuantAiBacktest[]>(
+    AI_BACKTESTS_URL,
+    fetcher,
+    {
+      refreshInterval: (rows) =>
+        rows?.some(({ status }) => status === "running") ? POLL_MS : 0,
+    },
+  );
+  const runs = history?.filter((item) => item.symbol === symbol) ?? [];
+
+  const select = (item: QuantAiBacktest) => {
+    setRunId(item.id);
+    setConfirmingCancel(false);
+    setCostLimit(String(item.config.monthlyCostLimit ?? ""));
+    void mutate(item, { revalidate: false });
+  };
 
   const start = async () => {
     if (!(await form.trigger())) return;
@@ -75,8 +100,8 @@ const AiBacktestPanel = ({ form, market }: AiBacktestPanelProps) => {
         headers: { "Content-Type": "application/json" },
         method: "POST",
       });
-      setRunId(created.id);
-      void mutate(created, { revalidate: false });
+      select(created);
+      void mutateHistory();
     } catch (error) {
       enqueueSnackbar(getErrorMessage(error), { variant: "error" });
     } finally {
@@ -97,6 +122,7 @@ const AiBacktestPanel = ({ form, market }: AiBacktestPanelProps) => {
         { revalidate: false },
       );
       setConfirmingCancel(false);
+      void mutateHistory();
     } catch (error) {
       enqueueSnackbar(getErrorMessage(error), { variant: "error" });
     } finally {
@@ -104,7 +130,32 @@ const AiBacktestPanel = ({ form, market }: AiBacktestPanelProps) => {
     }
   };
 
+  const resume = async () => {
+    if (!run) return;
+
+    setResuming(true);
+    try {
+      await mutate(
+        await fetcher<QuantAiBacktest>(`${AI_BACKTESTS_URL}/${run.id}/resume`, {
+          body: JSON.stringify({
+            ...(run.source === "claude_api" &&
+              costLimit !== "" && { monthlyCostLimit: Number(costLimit) }),
+          } satisfies ResumeAiBacktestDto),
+          headers: { "Content-Type": "application/json" },
+          method: "POST",
+        }),
+        { revalidate: false },
+      );
+      void mutateHistory();
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+    } finally {
+      setResuming(false);
+    }
+  };
+
   const isRunning = run?.status === "running";
+  const canResume = run?.status === "canceled" || run?.status === "failed";
 
   // 進度只在這個面板看得到；關掉表單就停止，免得本機代理或 API 在背後繼續消耗額度
   const runningId = isRunning ? run.id : null;
@@ -211,13 +262,69 @@ const AiBacktestPanel = ({ form, market }: AiBacktestPanelProps) => {
           {run.status === "canceled" && (
             <Alert severity="warning">{tAiBacktest("canceled")}</Alert>
           )}
+          {canResume && run.source === "claude_api" && (
+            <TextField
+              fullWidth
+              helperText={tAiBacktest("resume.costHelper", {
+                cost: format.number(run.cost, { maximumFractionDigits: 2 }),
+              })}
+              label={tAiBacktest("resume.costLimit")}
+              onChange={(event) => setCostLimit(event.target.value)}
+              type="number"
+              value={costLimit}
+            />
+          )}
+          {canResume && (
+            <Button loading={resuming} onClick={resume} variant="outlined">
+              {tAiBacktest("resume.label", {
+                decided: run.decidedCount,
+                total: run.candleCount,
+              })}
+            </Button>
+          )}
         </Stack>
       )}
-      {run?.status === "completed" && run.result && (
-        <BacktestResultView
-          quote={market?.quoteCurrency ?? ""}
-          result={run.result}
-        />
+      {run?.result && (
+        <>
+          {run.status !== "completed" && (
+            <Typography color="text.secondary" variant="caption">
+              {tAiBacktest("partial")}
+            </Typography>
+          )}
+          <BacktestResultView
+            quote={market?.quoteCurrency ?? ""}
+            result={run.result}
+          />
+        </>
+      )}
+      {runs.length > 0 && (
+        <Stack sx={{ gap: 1 }}>
+          <Typography variant="subtitle1">
+            {tAiBacktest("history.label")}
+          </Typography>
+          <List disablePadding>
+            {runs.map((item) => (
+              <ListItemButton
+                disabled={isRunning && item.id !== run?.id}
+                key={item.id}
+                onClick={() => select(item)}
+                selected={item.id === runId}
+              >
+                <ListItemText
+                  primary={format.dateTime(
+                    new Date(item.createdAt),
+                    "dateTime",
+                  )}
+                  secondary={tAiBacktest("history.summary", {
+                    decided: item.decidedCount,
+                    status: tAiBacktest(`status.${item.status}`),
+                    total: item.candleCount,
+                  })}
+                />
+              </ListItemButton>
+            ))}
+          </List>
+        </Stack>
       )}
     </Stack>
   );
