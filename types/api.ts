@@ -5324,6 +5324,8 @@ export interface components {
       skipped: components["schemas"]["AttendanceSkippedShiftResponseDto"][];
     };
     UpdateAttendanceShiftDto: {
+      startsAt: string;
+      endsAt: string;
       /**
        * Format: uuid
        * @description 改排給其他員工，省略則沿用原員工
@@ -5335,8 +5337,6 @@ export interface components {
       teamId?: string | null;
       /** @description 只檢查能否排入，不寫入 */
       dryRun?: boolean;
-      startsAt: string;
-      endsAt: string;
     };
     CancelAttendanceShiftDto: {
       /** @description 確認班次已不符排班規則、取消後無法復原；未帶時遇到此情況回 cancelIrreversible */
@@ -5575,11 +5575,11 @@ export interface components {
       leaveCase?: components["schemas"]["ReviewLeaveCaseDto"];
       /** @description 駁回時必填 */
       reason?: string;
-      startsAt: string;
-      endsAt: string;
       emergency?: components["schemas"]["EmergencyWorkDto"];
       /** @enum {string} */
       status: "approved" | "rejected";
+      startsAt: string;
+      endsAt: string;
     };
     /** @enum {string} */
     AttendanceLeaveCaseFilterField:
@@ -6905,13 +6905,13 @@ export interface components {
     PayrollTermsValuesDto: {
       monthlyProration?: components["schemas"]["PayrollMonthlyProration"];
       salaryType: components["schemas"]["PayrollSalaryType"];
-      insurance?: components["schemas"]["TaiwanInsuranceDto"];
       salaryCents: string;
       allowanceCents: string;
       attendanceBonusCents?: string;
       mealAllowanceCents?: string;
       otherDeductionCents: string;
       sourceNote?: string;
+      insurance?: components["schemas"]["TaiwanInsuranceDto"];
     };
     PayrollTermsResponseDto: {
       id: string;
@@ -6930,12 +6930,12 @@ export interface components {
       employmentInsuranceExemption?: components["schemas"]["PayrollEmploymentInsuranceExemption"];
       healthSupplementExemption?: components["schemas"]["PayrollHealthSupplementExemption"];
       taxMethod: components["schemas"]["PayrollTaxMethod"];
-      /** @description 每週工時未達法定投保門檻時仍在本店投保健保；達門檻者一律投保 */
-      voluntaryHealthInsurance: boolean;
       healthDependents: number;
       voluntaryPercent: number;
       employerPercent: number;
       withholdingDependents: number;
+      /** @description 每週工時未達法定投保門檻時仍在本店投保健保；達門檻者一律投保 */
+      voluntaryHealthInsurance: boolean;
     };
     PayrollTermsDto: {
       monthlyProration?: components["schemas"]["PayrollMonthlyProration"];
@@ -16222,14 +16222,6 @@ export interface operations {
           "application/json": components["schemas"]["OrderRefundPreviewDto"];
         };
       };
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["OrderRefundPreviewDto"];
-        };
-      };
       /** @description Internal server error */
       500: {
         headers: {
@@ -17142,7 +17134,7 @@ export interface operations {
       header?: never;
       path: {
         organizationSlug: string;
-        mode: string;
+        mode: "counter" | "driveThru";
       };
       cookie?: never;
     };
@@ -17399,7 +17391,14 @@ export interface operations {
       header?: never;
       path: {
         organizationSlug: string;
-        toStatus: string;
+        toStatus:
+          | "OrderPaymentDue"
+          | "OrderProcessing"
+          | "OrderPickupAvailable"
+          | "OrderDelivered"
+          | "OrderCancelled"
+          | "OrderProblem"
+          | "OrderReturned";
       };
       cookie?: never;
     };
@@ -19325,7 +19324,7 @@ export interface operations {
       path: {
         organizationSlug: string;
         ticketId: string;
-        status: string;
+        status: "called" | "cancelled" | "waiting" | "seated" | "noShow";
       };
       cookie?: never;
     };
@@ -19700,14 +19699,6 @@ export interface operations {
           "application/json": components["schemas"]["OrganizationResponseDto"];
         };
       };
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["OrganizationResponseDto"];
-        };
-      };
       /** @description Internal server error */
       500: {
         headers: {
@@ -19729,14 +19720,6 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["OrganizationResponseDto"];
-        };
-      };
-      201: {
         headers: {
           [name: string]: unknown;
         };
@@ -21298,9 +21281,9 @@ export interface operations {
     parameters: {
       query?: {
         sortDirection?: components["schemas"]["SortDirection"];
-        sortBy?: components["schemas"]["QuantBotOrderSortField"];
         limit?: number;
         offset?: number;
+        sortBy?: components["schemas"]["QuantBotOrderSortField"];
       };
       header?: never;
       path: {
@@ -21329,9 +21312,9 @@ export interface operations {
     parameters: {
       query?: {
         sortDirection?: components["schemas"]["SortDirection"];
-        sortBy?: components["schemas"]["QuantBotFillSortField"];
         limit?: number;
         offset?: number;
+        sortBy?: components["schemas"]["QuantBotFillSortField"];
       };
       header?: never;
       path: {
@@ -21419,11 +21402,11 @@ export interface operations {
     parameters: {
       query?: {
         sortDirection?: components["schemas"]["SortDirection"];
+        limit?: number;
+        offset?: number;
         sortBy?: components["schemas"]["QuantBotEventSortField"];
         /** @description 只列這些種類的事件，例如 AI 決策紀錄 */
         kinds?: string[];
-        limit?: number;
-        offset?: number;
       };
       header?: never;
       path: {
@@ -22331,6 +22314,20 @@ export const pathsApiCouponsGetParametersQueryLangValues: ReadonlyArray<
 export const pathsApiOrganizationsOrganizationSlugCouponsGetParametersQueryLangValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/organizations/{organizationSlug}/coupons"]["get"]["parameters"]["query"]["lang"]
 > = ["en", "ja", "ko", "zh-CN", "zh-TW"];
+export const pathsApiOrganizationsOrganizationSlugOrderModesModeTokenGetParametersPathModeValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/organizations/{organizationSlug}/order-modes/{mode}/token"]["get"]["parameters"]["path"]["mode"]
+> = ["counter", "driveThru"];
+export const pathsApiOrganizationsOrganizationSlugOrdersTransitionsToStatusPatchParametersPathToStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/organizations/{organizationSlug}/orders/transitions/{toStatus}"]["patch"]["parameters"]["path"]["toStatus"]
+> = [
+  "OrderPaymentDue",
+  "OrderProcessing",
+  "OrderPickupAvailable",
+  "OrderDelivered",
+  "OrderCancelled",
+  "OrderProblem",
+  "OrderReturned",
+];
 export const pathsApiMenusMenuIdMenuSectionsGetParametersQuerySearchFieldValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/menus/{menuId}/menu-sections"]["get"]["parameters"]["query"]["searchField"]
 > = ["name", "description"];
@@ -22346,6 +22343,9 @@ export const pathsApiMenuSectionsSectionIdMenuItemsGetParametersQuerySearchOpera
 export const pathsApiOrganizationsOrganizationIdOrderMenuGetParametersQueryLangValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/organizations/{organizationId}/order-menu"]["get"]["parameters"]["query"]["lang"]
 > = ["en", "ja", "ko", "zh-CN", "zh-TW"];
+export const pathsApiOrganizationsOrganizationSlugWaitlistTicketsTicketIdTransitionsStatusPatchParametersPathStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/organizations/{organizationSlug}/waitlist/tickets/{ticketId}/transitions/{status}"]["patch"]["parameters"]["path"]["status"]
+> = ["called", "cancelled", "waiting", "seated", "noShow"];
 export const attendanceErrorCodeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceErrorCode"]
 > = [
