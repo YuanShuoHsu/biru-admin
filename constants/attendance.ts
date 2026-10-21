@@ -23,8 +23,8 @@ export const ATTENDANCE_NAV_GROUPS: {
     children: [
       { path: "/attendance/mine/shifts" },
       { path: "/attendance/mine/requests" },
+      { path: "/attendance/mine/leave" },
       { path: "/attendance/mine/payslips" },
-      { path: "/attendance/mine/withholding" },
     ],
     path: "/attendance/mine",
   },
@@ -34,29 +34,37 @@ export const ATTENDANCE_NAV_GROUPS: {
         path: "/attendance/schedule/calendar",
         permission: { shift: ["read"] },
       },
+      { path: "/attendance/schedule/shifts", permission: { shift: ["read"] } },
+      {
+        path: "/attendance/schedule/reviews",
+        permission: { attendanceRequest: ["read"] },
+      },
       {
         path: "/attendance/schedule/holiday-substitutes",
         permission: { shift: ["read"] },
+      },
+      {
+        path: "/attendance/schedule/shift-types",
+        permission: { shiftType: ["create"] },
       },
     ],
     path: "/attendance/schedule",
   },
   {
     children: [
-      { path: "/attendance/records/shifts", permission: { shift: ["read"] } },
       {
-        path: "/attendance/records/reviews",
-        permission: { attendanceRequest: ["read"] },
+        path: "/attendance/leave/balances",
+        permission: { leaveBalance: ["read"] },
       },
-    ],
-    path: "/attendance/records",
-  },
-  {
-    children: [
-      { path: "/attendance/leave/balances" },
-      { path: "/attendance/leave/cases" },
-      { path: "/attendance/leave/parental-children" },
-      { path: "/attendance/leave/parental-returns" },
+      { path: "/attendance/leave/cases", permission: { leaveCase: ["read"] } },
+      {
+        path: "/attendance/leave/parental-returns",
+        permission: { parentalReturn: ["read"] },
+      },
+      {
+        path: "/attendance/leave/leave-types",
+        permission: { leaveType: ["update"] },
+      },
     ],
     path: "/attendance/leave",
   },
@@ -70,6 +78,10 @@ export const ATTENDANCE_NAV_GROUPS: {
         path: "/attendance/payroll/withholding",
         permission: { payrollTerm: ["read"], payslip: ["read"] },
       },
+      {
+        path: "/attendance/payroll/earning-types",
+        permission: { payrollTerm: ["create"] },
+      },
     ],
     path: "/attendance/payroll",
   },
@@ -82,18 +94,6 @@ export const ATTENDANCE_NAV_GROUPS: {
       {
         path: "/attendance/settings/employees",
         permission: { employee: ["read"] },
-      },
-      {
-        path: "/attendance/settings/shift-types",
-        permission: { shiftType: ["create"] },
-      },
-      {
-        path: "/attendance/settings/leave-types",
-        permission: { leaveType: ["update"] },
-      },
-      {
-        path: "/attendance/settings/earning-types",
-        permission: { payrollTerm: ["create"] },
       },
     ],
     path: "/attendance/settings",
@@ -133,7 +133,7 @@ const GENERAL_SETTINGS: PayrollBlockerPage = {
 
 const SHIFTS: PayrollBlockerPage = {
   byEmployee: true,
-  path: "/attendance/records/shifts",
+  path: "/attendance/schedule/shifts",
 };
 
 const UNREVIEWED_OVERTIME: PayrollBlockerPage = {
@@ -143,7 +143,7 @@ const UNREVIEWED_OVERTIME: PayrollBlockerPage = {
 
 const PENDING_REQUESTS: PayrollBlockerPage = {
   byEmployee: true,
-  path: "/attendance/records/reviews",
+  path: "/attendance/schedule/reviews",
   query: {
     filterField: "status",
     filterOperator: "isAnyOf",
@@ -187,7 +187,7 @@ export const PAYROLL_BLOCKER_TARGETS: Record<
   insuranceTermsRequired: "terms",
   laborInsuranceExemptionInvalid: "terms",
   laborInsuranceRequired: "terms",
-  leavePolicyRequired: { path: "/attendance/settings/leave-types" },
+  leavePolicyRequired: { path: "/attendance/leave/leave-types" },
   legacySeniorityUnsupported: null,
   maternalNightWork: SHIFTS,
   minimumWageUnconfirmed: null,

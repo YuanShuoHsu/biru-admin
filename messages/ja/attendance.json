@@ -10,6 +10,18 @@
     "label": "固定グローバル IP",
     "placeholder": "あなたの固定グローバルIPを入力してください"
   },
+  "annualLeaveNotices": {
+    "label": "年次有給休暇の通知",
+    "hint": "労働基準法第 38 条第 5 項に基づき、雇主は毎年、特別休暇の取得日と未消化日数の賃金を書面で通知します。このページでいつでも確認・印刷できます。",
+    "period": "休暇年度",
+    "carriedIn": "前年度からの繰越",
+    "dates": "取得日",
+    "unused": "未消化",
+    "settlement": "未消化分の扱い",
+    "paid": "{amount}（{month} の給与明細）",
+    "deferred": "合意により翌年度へ繰越",
+    "pending": "精算待ち"
+  },
   "approve": "承認",
   "approveCancellation": "取消を承認",
   "assignParentalChild": "子どもを関連付ける",
@@ -239,7 +251,6 @@
   "groups": {
     "leave": "休暇",
     "mine": "自分",
-    "records": "勤怠記録",
     "schedule": "シフト作成",
     "settings": "設定",
     "payroll": "給与"
@@ -332,7 +343,9 @@
   },
   "leaveType": {
     "label": "休暇種類",
-    "placeholder": "あなたの休暇種類を選択してください"
+    "placeholder": "あなたの休暇種類を選択してください",
+    "remaining": "残り {duration}",
+    "remainingUntil": "残り {duration}（{date} まで）"
   },
   "leaveTypeGroups": {
     "custom": "カスタム",
@@ -443,12 +456,20 @@
   "paidPercent": "有給割合（%）",
   "parentalChild": "子ども",
   "parentalChildHint": "証明を確認して固定の識別番号を入力し、個人番号全体は入力しないでください",
+  "parentalChildMissing": "この従業員には子どもの情報がありません。先に「従業員管理」で追加してください。",
   "parentalChildren": {
     "actions": {
-      "create": "子どもの情報を追加"
+      "create": "子どもの情報を追加",
+      "delete": "子どもの情報を削除",
+      "update": "子どもの情報を編集",
+      "cancelEdit": "編集をキャンセル"
     },
     "label": "子どもの情報",
-    "created": "{name} の子どもの情報を追加しました"
+    "created": "{name} の子どもの情報を追加しました",
+    "updated": "{name} の子どもの情報を更新しました",
+    "title": "{name} さんの子どもの情報",
+    "deleted": "子どもの情報「{label}」を削除しました",
+    "undo": "元に戻す"
   },
   "parentalContinuous": "連続期間で申請",
   "parentalDaily": "日単位で申請",
@@ -477,6 +498,7 @@
   "payrollLine": {
     "options": {
       "absenceDeduction": "欠勤控除",
+      "childcareReductionDeduction": "育児短時間勤務控除",
       "allowance": "固定手当",
       "annualLeavePay": "未消化有給休暇精算",
       "basePay": "基本給",
@@ -631,7 +653,7 @@
       "rejectSelectedExtraWork": "選択したシフト外の時間を却下（{count}）"
     },
     "incompleteAttendance": "打刻未完了",
-    "label": "シフト管理",
+    "label": "勤怠記録",
     "unreviewedOvertime": "未審査のシフト外時間"
   },
   "sourceNote": "保険・税・調整の根拠",
@@ -753,6 +775,12 @@
     "from": "開始日",
     "label": "妊娠期間",
     "to": "終了日"
+  },
+  "childcareReductionPeriods": {
+    "label": "育児短時間勤務の期間",
+    "from": "開始日",
+    "to": "終了日",
+    "hint": "性別平等工作法第 19 条：3 歳未満の子を養育するため、1 日 1 時間勤務時間を短縮します。短縮した時間は無給ですが、第 21 条により欠勤とみなして皆勤手当に影響させてはいけません。期間は登録済みの子どもが 3 歳になる前である必要があります。"
   },
   "nursingPeriods": {
     "from": "開始日",
@@ -905,7 +933,6 @@
   },
   "withholding": {
     "label": "源泉徴収票",
-    "mine": "自分の源泉徴収票",
     "year": "所得年度",
     "download": "申告ファイルをダウンロード",
     "unitRequired": "先に申告単位情報を入力してください",

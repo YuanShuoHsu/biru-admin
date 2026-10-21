@@ -10,6 +10,18 @@
     "label": "Public IPs",
     "placeholder": "Please enter your static public IP"
   },
+  "annualLeaveNotices": {
+    "label": "Annual leave notices",
+    "hint": "Under Article 38(5) of the Labor Standards Act, the employer gives a written notice each year of your annual leave dates and pay for unused days. You can view and print it here at any time.",
+    "period": "Leave year",
+    "carriedIn": "Carried over",
+    "dates": "Leave dates",
+    "unused": "Unused",
+    "settlement": "Unused leave",
+    "paid": "{amount} ({month} payslip)",
+    "deferred": "Carried over to next year by agreement",
+    "pending": "Pending settlement"
+  },
   "approve": "Approve",
   "approveCancellation": "Approve cancellation",
   "assignParentalChild": "Assign child",
@@ -239,7 +251,6 @@
   "groups": {
     "leave": "Leave",
     "mine": "Mine",
-    "records": "Attendance",
     "schedule": "Scheduling",
     "settings": "Settings",
     "payroll": "Payroll"
@@ -332,7 +343,9 @@
   },
   "leaveType": {
     "label": "Leave type",
-    "placeholder": "Please select your leave type"
+    "placeholder": "Please select your leave type",
+    "remaining": "{duration} left",
+    "remainingUntil": "{duration} left (until {date})"
   },
   "leaveTypeGroups": {
     "custom": "Custom",
@@ -443,12 +456,20 @@
   "paidPercent": "Paid percentage (%)",
   "parentalChild": "Child",
   "parentalChildHint": "Use a stable reference from verified evidence; do not enter full national ID numbers",
+  "parentalChildMissing": "This employee has no children on file. Add one in Employees first.",
   "parentalChildren": {
     "actions": {
-      "create": "Add child"
+      "create": "Add child",
+      "delete": "Delete child",
+      "update": "Edit child",
+      "cancelEdit": "Cancel editing"
     },
     "label": "Children",
-    "created": "Added {name}'s child"
+    "created": "Added {name}'s child",
+    "updated": "Updated {name}'s child",
+    "title": "Children of {name}",
+    "deleted": "Deleted child {label}",
+    "undo": "Undo"
   },
   "parentalContinuous": "Continuous period",
   "parentalDaily": "Daily requests",
@@ -477,6 +498,7 @@
   "payrollLine": {
     "options": {
       "absenceDeduction": "Absence deduction",
+      "childcareReductionDeduction": "Reduced childcare hours",
       "allowance": "Fixed allowance",
       "annualLeavePay": "Unused annual leave pay",
       "basePay": "Base pay",
@@ -631,7 +653,7 @@
       "rejectSelectedExtraWork": "Reject selected time outside schedule ({count})"
     },
     "incompleteAttendance": "Incomplete attendance",
-    "label": "Schedules",
+    "label": "Attendance records",
     "unreviewedOvertime": "Time outside schedule to review"
   },
   "sourceNote": "Insurance, tax and adjustment evidence",
@@ -753,6 +775,12 @@
     "from": "Start date",
     "label": "Pregnancy periods",
     "to": "End date"
+  },
+  "childcareReductionPeriods": {
+    "label": "Reduced childcare hours",
+    "from": "Start date",
+    "to": "End date",
+    "hint": "Gender Equality in Employment Act Art. 19: to raise a child under three, the employee works one hour less each day. The reduced hour is unpaid, but under Art. 21 it may not count as absence or affect the attendance bonus. The period must end before a registered child's third birthday."
   },
   "nursingPeriods": {
     "from": "Start date",
@@ -905,7 +933,6 @@
   },
   "withholding": {
     "label": "Withholding statements",
-    "mine": "My withholding statements",
     "year": "Income year",
     "download": "Download filing file",
     "unitRequired": "Fill in the withholding unit details first",

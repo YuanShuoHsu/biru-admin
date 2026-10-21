@@ -384,7 +384,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** 打卡（上下班、休息起迄） */
+    /** 打卡（上下班） */
     post: operations["AttendanceShiftsController_punch"];
     delete?: never;
     options?: never;
@@ -660,6 +660,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/attendance/me/annual-leave-notices": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 我的特休年度書面通知（勞基法 §38 V：特休日期與未休日數工資） */
+    get: operations["AttendanceLeavesController_myAnnualLeaveNotices"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/attendance/leave-balances": {
     parameters: {
       query?: never;
@@ -782,6 +799,24 @@ export interface paths {
     options?: never;
     head?: never;
     patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/attendance/children/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 刪除尚未被請假案件使用的子女資料 */
+    delete: operations["AttendanceParentalController_deleteChild"];
+    options?: never;
+    head?: never;
+    /** 更正子女資料，已有育嬰案件時一併重驗期間 */
+    patch: operations["AttendanceParentalController_updateChild"];
     trace?: never;
   };
   "/api/organizations/{organizationSlug}/attendance/leave-cases/{id}/child": {
@@ -4629,6 +4664,7 @@ export interface components {
       | "implausibleMinimumWage"
       | "inconsistentDayKind"
       | "indigenousHolidayInUse"
+      | "childcareReductionInvalid"
       | "indigenousHolidayInvalid"
       | "insufficientLeaveBalance"
       | "invalidBusinessNumber"
@@ -4670,6 +4706,7 @@ export interface components {
       | "overlappingShift"
       | "overtimeAgreementRequired"
       | "parentalChildExists"
+      | "parentalChildInUse"
       | "parentalChildMismatch"
       | "parentalChildRequired"
       | "parentalChildUnassigned"
@@ -4768,6 +4805,7 @@ export interface components {
       workPermits: components["schemas"]["DatePeriodDto"][];
       pregnancyPeriods: components["schemas"]["DatePeriodDto"][];
       nursingPeriods: components["schemas"]["DatePeriodDto"][];
+      childcareReductionPeriods: components["schemas"]["DatePeriodDto"][];
       indigenousHolidays: string[];
       regularLeaveWeekday?: number | null;
       restDayWeekday?: number | null;
@@ -4861,6 +4899,7 @@ export interface components {
       workPermits: components["schemas"]["DatePeriodDto"][];
       pregnancyPeriods: components["schemas"]["DatePeriodDto"][];
       nursingPeriods: components["schemas"]["DatePeriodDto"][];
+      childcareReductionPeriods: components["schemas"]["DatePeriodDto"][];
       indigenousHolidays: string[];
       regularLeaveWeekday?: number | null;
       restDayWeekday?: number | null;
@@ -4926,6 +4965,8 @@ export interface components {
       workPermits: components["schemas"]["DatePeriodDto"][];
       pregnancyPeriods: components["schemas"]["DatePeriodDto"][];
       nursingPeriods: components["schemas"]["DatePeriodDto"][];
+      /** @description 性平法 §19 每日減少工作時間一小時的期間，須在已登記子女滿三歲前 */
+      childcareReductionPeriods: components["schemas"]["DatePeriodDto"][];
       indigenousHolidays: string[];
       terminationReason?: components["schemas"]["AttendanceTerminationReason"];
       userId: string;
@@ -5693,6 +5734,34 @@ export interface components {
       data: components["schemas"]["AttendanceLeaveBalanceResponseDto"][];
       total: number;
     };
+    AttendanceAnnualLeaveNoticeLeaveDto: {
+      /** Format: date-time */
+      startsAt: string;
+      /** Format: date-time */
+      endsAt: string;
+      leaveMinutes: number;
+    };
+    AttendanceAnnualLeaveNoticePayoutDto: {
+      month: string;
+      /** @description 舊薪資單只記錄當月特休未休工資合計，沒有逐年度時數 */
+      unusedMinutes?: number | null;
+      amountCents: string;
+      paidOn?: string | null;
+    };
+    AttendanceAnnualLeaveNoticeResponseDto: {
+      /** Format: date-time */
+      periodStart: string;
+      /** Format: date-time */
+      periodEnd: string;
+      grantedMinutes: number;
+      carriedInMinutes: number;
+      usedMinutes: number;
+      expiredMinutes: number;
+      unusedMinutes: number;
+      deferred: boolean;
+      leaves: components["schemas"]["AttendanceAnnualLeaveNoticeLeaveDto"][];
+      payouts: components["schemas"]["AttendanceAnnualLeaveNoticePayoutDto"][];
+    };
     SaveAttendanceLeaveBalanceDto: {
       /** Format: uuid */
       employeeId: string;
@@ -5779,6 +5848,7 @@ export interface components {
       birthDate: string;
       /** Format: date-time */
       createdAt: string;
+      deletable: boolean;
     };
     AttendanceParentalChildrenResponseDto: {
       data: components["schemas"]["AttendanceParentalChildResponseDto"][];
@@ -5800,6 +5870,11 @@ export interface components {
       birthDate: string;
       /** Format: date-time */
       createdAt: string;
+    };
+    UpdateAttendanceParentalChildDto: {
+      reference: string;
+      label: string;
+      birthDate: string;
     };
     AssignAttendanceParentalChildDto: {
       /** Format: uuid */
@@ -6613,6 +6688,7 @@ export interface components {
       | "attendance_shift_type"
       | "attendance_leave_type"
       | "attendance_leave_case"
+      | "attendance_parental_child"
       | "attendance_annual_leave_deferral"
       | "attendance_holiday_substitute"
       | "payroll_earning_type";
@@ -6851,6 +6927,7 @@ export interface components {
     PayrollDeductionLineCode:
       | "leaveDeduction"
       | "absenceDeduction"
+      | "childcareReductionDeduction"
       | "laborInsurance"
       | "healthInsurance"
       | "healthSupplement"
@@ -12806,6 +12883,32 @@ export interface operations {
       };
     };
   };
+  AttendanceLeavesController_myAnnualLeaveNotices: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceAnnualLeaveNoticeResponseDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   AttendanceLeavesController_leaveBalances: {
     parameters: {
       query?: {
@@ -13176,6 +13279,66 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["AttendanceParentalChildrenResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceParentalController_deleteChild: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceIdResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceParentalController_updateChild: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateAttendanceParentalChildDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceParentalChildRecordResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -22113,6 +22276,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "implausibleMinimumWage",
   "inconsistentDayKind",
   "indigenousHolidayInUse",
+  "childcareReductionInvalid",
   "indigenousHolidayInvalid",
   "insufficientLeaveBalance",
   "invalidBusinessNumber",
@@ -22154,6 +22318,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "overlappingShift",
   "overtimeAgreementRequired",
   "parentalChildExists",
+  "parentalChildInUse",
   "parentalChildMismatch",
   "parentalChildRequired",
   "parentalChildUnassigned",
@@ -22749,6 +22914,7 @@ export const deletedRecordTableValues: ReadonlyArray<
   "attendance_shift_type",
   "attendance_leave_type",
   "attendance_leave_case",
+  "attendance_parental_child",
   "attendance_annual_leave_deferral",
   "attendance_holiday_substitute",
   "payroll_earning_type",
@@ -22820,6 +22986,7 @@ export const payrollDeductionLineCodeValues: ReadonlyArray<
 > = [
   "leaveDeduction",
   "absenceDeduction",
+  "childcareReductionDeduction",
   "laborInsurance",
   "healthInsurance",
   "healthSupplement",

@@ -10,6 +10,18 @@
     "label": "고정 공인 IP",
     "placeholder": "귀하의 고정 공인 IP를 입력해 주세요"
   },
+  "annualLeaveNotices": {
+    "label": "연차휴가 연도 통지",
+    "hint": "근로기준법 제38조 제5항에 따라 사용자는 매년 특별휴가 사용일과 미사용 일수 임금을 서면으로 통지합니다. 이 페이지에서 언제든지 확인하고 인쇄할 수 있습니다.",
+    "period": "휴가 연도",
+    "carriedIn": "전년도 이월",
+    "dates": "사용일",
+    "unused": "미사용",
+    "settlement": "미사용 처리",
+    "paid": "{amount} ({month} 급여명세서)",
+    "deferred": "합의에 따라 다음 연도로 이월",
+    "pending": "정산 대기"
+  },
   "approve": "승인",
   "approveCancellation": "취소 승인",
   "assignParentalChild": "자녀 연결",
@@ -239,7 +251,6 @@
   "groups": {
     "leave": "휴가",
     "mine": "내 정보",
-    "records": "근태 기록",
     "schedule": "근무 편성",
     "settings": "설정",
     "payroll": "급여"
@@ -332,7 +343,9 @@
   },
   "leaveType": {
     "label": "휴가 유형",
-    "placeholder": "귀하의 휴가 유형을 선택해 주세요"
+    "placeholder": "귀하의 휴가 유형을 선택해 주세요",
+    "remaining": "남은 시간 {duration}",
+    "remainingUntil": "남은 시간 {duration} ({date}까지)"
   },
   "leaveTypeGroups": {
     "custom": "사용자 지정",
@@ -443,12 +456,20 @@
   "paidPercent": "유급 비율(%)",
   "parentalChild": "자녀",
   "parentalChildHint": "증빙을 확인한 고정 식별 번호를 입력하고 주민등록번호 전체는 입력하지 마세요",
+  "parentalChildMissing": "이 직원은 자녀 정보가 없습니다. 먼저 「직원 관리」에서 추가하세요.",
   "parentalChildren": {
     "actions": {
-      "create": "자녀 정보 추가"
+      "create": "자녀 정보 추가",
+      "delete": "자녀 정보 삭제",
+      "update": "자녀 정보 수정",
+      "cancelEdit": "수정 취소"
     },
     "label": "자녀 정보",
-    "created": "{name}의 자녀 정보를 추가했습니다"
+    "created": "{name}의 자녀 정보를 추가했습니다",
+    "updated": "{name}의 자녀 정보를 수정했습니다",
+    "title": "{name}님의 자녀 정보",
+    "deleted": "자녀 정보 {label}을(를) 삭제했습니다",
+    "undo": "되돌리기"
   },
   "parentalContinuous": "연속 기간 신청",
   "parentalDaily": "일 단위 신청",
@@ -477,6 +498,7 @@
   "payrollLine": {
     "options": {
       "absenceDeduction": "결근 공제",
+      "childcareReductionDeduction": "육아 근로시간 단축 공제",
       "allowance": "고정 수당",
       "annualLeavePay": "미사용 연차 수당",
       "basePay": "기본급",
@@ -631,7 +653,7 @@
       "rejectSelectedExtraWork": "선택한 근무표 밖 시간 거절({count})"
     },
     "incompleteAttendance": "출퇴근 미완료",
-    "label": "근무 일정",
+    "label": "근태 기록",
     "unreviewedOvertime": "검토 대기 중인 근무표 밖 시간"
   },
   "sourceNote": "보험, 세금 및 조정 근거",
@@ -753,6 +775,12 @@
     "from": "시작일",
     "label": "임신 기간",
     "to": "종료일"
+  },
+  "childcareReductionPeriods": {
+    "label": "육아 근로시간 단축 기간",
+    "from": "시작일",
+    "to": "종료일",
+    "hint": "성평등고용법 제19조: 만 3세 미만 자녀 양육을 위해 하루 1시간 근로시간을 단축합니다. 단축 시간은 무급이지만 제21조에 따라 결근으로 보아 개근수당에 영향을 줄 수 없습니다. 기간은 등록된 자녀가 만 3세가 되기 전이어야 합니다."
   },
   "nursingPeriods": {
     "from": "시작일",
@@ -905,7 +933,6 @@
   },
   "withholding": {
     "label": "원천징수영수증",
-    "mine": "내 원천징수영수증",
     "year": "소득 연도",
     "download": "신고 파일 다운로드",
     "unitRequired": "먼저 신고 단위 정보를 입력하세요",

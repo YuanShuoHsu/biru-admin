@@ -10,6 +10,18 @@
     "label": "固定公网 IP",
     "placeholder": "请输入您的固定公网 IP"
   },
+  "annualLeaveNotices": {
+    "label": "特休年度通知",
+    "hint": "依劳动基准法第 38 条第 5 项，雇主每年以书面通知特休日期与未休日数工资；本页可随时查阅与打印。",
+    "period": "特休年度",
+    "carriedIn": "上年度递延",
+    "dates": "特休日期",
+    "unused": "未休",
+    "settlement": "未休处理",
+    "paid": "{amount}（{month} 薪资单）",
+    "deferred": "已协议递延至下一年度",
+    "pending": "待结算"
+  },
   "approve": "批准",
   "approveCancellation": "批准撤假",
   "assignParentalChild": "确认子女归户",
@@ -239,7 +251,6 @@
   "groups": {
     "leave": "请假",
     "mine": "我的",
-    "records": "出勤记录",
     "schedule": "排班",
     "settings": "设置",
     "payroll": "薪资"
@@ -332,7 +343,9 @@
   },
   "leaveType": {
     "label": "假别",
-    "placeholder": "请选择您的假别"
+    "placeholder": "请选择您的假别",
+    "remaining": "剩余 {duration}",
+    "remainingUntil": "剩余 {duration}（至 {date}）"
   },
   "leaveTypeGroups": {
     "custom": "自定义",
@@ -443,12 +456,20 @@
   "paidPercent": "给薪比例（%）",
   "parentalChild": "子女",
   "parentalChildHint": "查验证明后填写固定识别编号，请勿输入完整身份证号",
+  "parentalChildMissing": "此员工尚无子女资料，请先到「员工管理」新增",
   "parentalChildren": {
     "actions": {
-      "create": "新增子女资料"
+      "create": "新增子女资料",
+      "delete": "删除子女资料",
+      "update": "编辑子女资料",
+      "cancelEdit": "取消编辑"
     },
     "label": "子女资料",
-    "created": "已新增 {name} 的子女资料"
+    "created": "已新增 {name} 的子女资料",
+    "updated": "已更新 {name} 的子女资料",
+    "title": "{name} 的子女资料",
+    "deleted": "已删除子女资料 {label}",
+    "undo": "恢复"
   },
   "parentalContinuous": "连续期间申请",
   "parentalDaily": "按日申请",
@@ -477,6 +498,7 @@
   "payrollLine": {
     "options": {
       "absenceDeduction": "缺勤扣款",
+      "childcareReductionDeduction": "育儿减少工时扣款",
       "allowance": "固定津贴",
       "annualLeavePay": "未休年假工资",
       "basePay": "基本工资",
@@ -631,7 +653,7 @@
       "rejectSelectedExtraWork": "不核准所选排班外时数（{count}）"
     },
     "incompleteAttendance": "未完成打卡",
-    "label": "班表管理",
+    "label": "出勤记录",
     "unreviewedOvertime": "待审排班外时数"
   },
   "sourceNote": "投保、扣缴与调整依据",
@@ -753,6 +775,12 @@
     "from": "开始日",
     "label": "妊娠期间",
     "to": "结束日"
+  },
+  "childcareReductionPeriods": {
+    "label": "育儿减少工时期间",
+    "from": "开始日",
+    "to": "结束日",
+    "hint": "性别平等工作法第 19 条：抚育未满三岁子女，每天减少工作时间一小时；减少的工时不给薪，但依第 21 条不得视为缺勤而影响全勤奖金。期间须落在已登记子女满三岁前。"
   },
   "nursingPeriods": {
     "from": "开始日",
@@ -905,7 +933,6 @@
   },
   "withholding": {
     "label": "扣缴凭单",
-    "mine": "我的扣缴凭单",
     "year": "所得年度",
     "download": "下载申报文件",
     "unitRequired": "请先填写申报单位资料",

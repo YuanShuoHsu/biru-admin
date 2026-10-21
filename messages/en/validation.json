@@ -316,6 +316,10 @@
     "required": "Choose the start and end dates of the pregnancy period.",
     "order": "The end date cannot be before the start date."
   },
+  "childcareReductionPeriod": {
+    "required": "Select the start and end dates of the reduced childcare hours.",
+    "order": "The end date cannot be before the start date."
+  },
   "nursingPeriod": {
     "required": "Choose the start and end dates of the nursing period.",
     "order": "The end date cannot be before the start date."

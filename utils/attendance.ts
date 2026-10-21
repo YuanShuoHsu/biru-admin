@@ -16,6 +16,7 @@ import {
   payrollEmployerCostCodeValues,
 } from "@/types/api";
 import type {
+  AttendanceAnnualLeaveNotice,
   AttendanceCalendarDayKinds,
   AttendanceContext,
   AttendanceEmployee,
@@ -601,6 +602,19 @@ export const getPayrollWithholdingSummary = cache(
       `${payrollPath(organizationSlug, "org", "withholding-certificates")}?${new URLSearchParams({ year: String(year) })}`,
       init,
     ),
+);
+
+export const getMyAnnualLeaveNotices = cache(
+  async (organizationSlug: string, init?: RequestInit) => {
+    try {
+      return await fetcher<AttendanceAnnualLeaveNotice[]>(
+        attendancePath(organizationSlug, "me", "annual-leave-notices"),
+        init,
+      );
+    } catch {
+      return [];
+    }
+  },
 );
 
 export const getMyWithholdingCertificates = cache(

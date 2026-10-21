@@ -316,6 +316,10 @@
     "required": "請選擇妊娠期間起訖日。",
     "order": "結束日不可早於開始日。"
   },
+  "childcareReductionPeriod": {
+    "required": "請選擇育兒減少工時期間起訖日。",
+    "order": "結束日不可早於開始日。"
+  },
   "nursingPeriod": {
     "required": "請選擇哺乳期間起訖日。",
     "order": "結束日不可早於開始日。"

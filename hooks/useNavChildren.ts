@@ -26,22 +26,29 @@ export const useNavChildren = (): Record<string, NavItem[]> => {
   const authChildren = useAuthNavItems();
   const reviewCounts = useAttendanceReviewCounts(useDefaultOrganizationSlug());
 
+  const attendanceGroups = attendanceNavGroups(memberRole);
+
+  const attendancePage = (path: string) => ({
+    ...navItem(path),
+    badge: reviewCounts[path],
+  });
+
   return {
-    "/attendance": attendanceNavGroups(memberRole).map(({ children, path }) =>
-      children.length === 1
-        ? { ...navItem(children[0]), badge: reviewCounts[children[0]] }
-        : {
-            ...navItem(path),
-            badge: children.reduce(
-              (sum, child) => sum + (reviewCounts[child] ?? 0),
-              0,
-            ),
-            children: children.map((child) => ({
-              ...navItem(child),
-              badge: reviewCounts[child],
-            })),
-          },
-    ),
+    "/attendance":
+      attendanceGroups.length === 1
+        ? attendanceGroups[0].children.map(attendancePage)
+        : attendanceGroups.map(({ children, path }) =>
+            children.length === 1
+              ? attendancePage(children[0])
+              : {
+                  ...navItem(path),
+                  badge: children.reduce(
+                    (sum, child) => sum + (reviewCounts[child] ?? 0),
+                    0,
+                  ),
+                  children: children.map(attendancePage),
+                },
+          ),
     "/auth": session ? accountChildren : authChildren,
     "/company": [navItem("/company/terms"), navItem("/company/privacy")],
     "/inventory": [

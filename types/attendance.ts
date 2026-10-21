@@ -82,6 +82,8 @@ export type AttendanceParentalChild =
   components["schemas"]["AttendanceParentalChildResponseDto"];
 export type AttendanceParentalChildPage =
   components["schemas"]["AttendanceParentalChildrenResponseDto"];
+export type AttendanceAnnualLeaveNotice =
+  components["schemas"]["AttendanceAnnualLeaveNoticeResponseDto"];
 export type AttendanceParentalReturn =
   components["schemas"]["AttendanceParentalReturnResponseDto"];
 export type AttendanceParentalReturnPage =
