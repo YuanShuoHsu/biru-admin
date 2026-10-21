@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-import ParentalReturns from ".";
+import ParentalReturns from "../../../ParentalReturns";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -69,11 +69,7 @@ const ParentalReturnsPage = async ({
 
   const { memberRole, organization } = access;
 
-  if (!hasRolePermission(memberRole, { parentalReturn: ["read"] }))
-    redirect({
-      href: `/attendance/mine/requests?${new URLSearchParams({ organization: organization.slug }).toString()}`,
-      locale,
-    });
+  if (!hasRolePermission(memberRole, { parentalReturn: ["read"] })) notFound();
 
   const {
     filterField,
@@ -140,6 +136,7 @@ const ParentalReturnsPage = async ({
         parentalReturn: ["update"],
       })}
       canReviewOwn={selfReviewAllowed.parentalReturn}
+      canViewAll
       employeeId={employee?.id}
       filterField={filterField}
       filterOperator={filterOperator}

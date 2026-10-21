@@ -4,7 +4,6 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
 import Requests from ".";
-import MyParentalReturns from "./MyParentalReturns";
 
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
@@ -21,7 +20,6 @@ import {
   getAttendanceContext,
   getAttendanceLeaveCases,
   getAttendanceLeaveTypes,
-  getAttendanceParentalReturns,
   getAttendanceRequests,
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
@@ -117,78 +115,60 @@ const RequestsPage = async ({ params, searchParams }: RequestsPageProps) => {
 
   const enabled = employee?.status === "active";
 
-  const [
-    { requests: rows, total: rowCount },
-    { leaveTypes },
-    { leaveCases },
-    { parentalReturns },
-  ] = await Promise.all([
-    enabled
-      ? getAttendanceRequests(
-          organization.slug,
-          "me",
-          {
-            page,
-            pageSize,
-            filterField,
-            filterOperator,
-            filterValue,
-            quickFilterEnums,
-            quickFilterValue,
-            sortBy,
-            sortDirection,
-          },
-          fetchOptions,
-        )
-      : { requests: [], total: 0 },
-    enabled
-      ? getAttendanceLeaveTypes(
-          organization.slug,
-          { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
-          fetchOptions,
-        )
-      : { leaveTypes: [] },
-    enabled
-      ? getAttendanceLeaveCases(
-          organization.slug,
-          "me",
-          { pageSize: MAX_PAGE_SIZE },
-          fetchOptions,
-        )
-      : { leaveCases: [] },
-    getAttendanceParentalReturns(
-      organization.slug,
-      "me",
-      { pageSize: MAX_PAGE_SIZE },
-      fetchOptions,
-    ),
-  ]);
+  const [{ requests: rows, total: rowCount }, { leaveTypes }, { leaveCases }] =
+    await Promise.all([
+      enabled
+        ? getAttendanceRequests(
+            organization.slug,
+            "me",
+            {
+              page,
+              pageSize,
+              filterField,
+              filterOperator,
+              filterValue,
+              quickFilterEnums,
+              quickFilterValue,
+              sortBy,
+              sortDirection,
+            },
+            fetchOptions,
+          )
+        : { requests: [], total: 0 },
+      enabled
+        ? getAttendanceLeaveTypes(
+            organization.slug,
+            { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
+            fetchOptions,
+          )
+        : { leaveTypes: [] },
+      enabled
+        ? getAttendanceLeaveCases(
+            organization.slug,
+            "me",
+            { pageSize: MAX_PAGE_SIZE },
+            fetchOptions,
+          )
+        : { leaveCases: [] },
+    ]);
 
   return (
-    <>
-      <Requests
-        enabled={enabled}
-        filterField={filterField}
-        filterOperator={filterOperator}
-        filterValue={filterValue}
-        leaveCases={leaveCases}
-        leaveTypes={leaveTypes}
-        organization={organization}
-        page={page}
-        pageSize={pageSize}
-        quickFilterValue={quickFilterValue}
-        rowCount={rowCount}
-        rows={rows}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-      />
-      {!!parentalReturns.length && (
-        <MyParentalReturns
-          organizationSlug={organization.slug}
-          parentalReturns={parentalReturns}
-        />
-      )}
-    </>
+    <Requests
+      enabled={enabled}
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
+      leaveCases={leaveCases}
+      leaveTypes={leaveTypes}
+      organization={organization}
+      page={page}
+      pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
+      rowCount={rowCount}
+      rows={rows}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+    />
   );
 };
 

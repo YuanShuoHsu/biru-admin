@@ -69,11 +69,7 @@ const BalancesPage = async ({ params, searchParams }: BalancesPageProps) => {
 
   const { memberRole, organization } = access;
 
-  if (!hasRolePermission(memberRole, { leaveBalance: ["read"] }))
-    redirect({
-      href: `/attendance/mine/leave?${new URLSearchParams({ organization: organization.slug }).toString()}`,
-      locale,
-    });
+  if (!hasRolePermission(memberRole, { leaveBalance: ["read"] })) notFound();
 
   const canWrite = hasRolePermission(memberRole, {
     leaveBalance: ["create", "update"],

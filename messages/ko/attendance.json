@@ -12,15 +12,22 @@
   },
   "annualLeaveNotices": {
     "label": "연차휴가 연도 통지",
-    "hint": "근로기준법 제38조 제5항에 따라 사용자는 매년 특별휴가 사용일과 미사용 일수 임금을 서면으로 통지합니다. 이 페이지에서 언제든지 확인하고 인쇄할 수 있습니다.",
-    "period": "휴가 연도",
     "carriedIn": "전년도 이월",
     "dates": "사용일",
     "unused": "미사용",
     "settlement": "미사용 처리",
-    "paid": "{amount} ({month} 급여명세서)",
-    "deferred": "합의에 따라 다음 연도로 이월",
-    "pending": "정산 대기"
+    "notifiedAt": "부여 통지일",
+    "periodStart": "연도 시작",
+    "periodEnd": "연도 종료",
+    "payout": "정산액",
+    "payoutMonth": "{amount} ({month} 급여명세서)",
+    "settlements": {
+      "ongoing": "연도 진행 중",
+      "paid": "정산 완료",
+      "deferred": "합의에 따라 다음 연도로 이월",
+      "unrecorded": "정산 기록 없음",
+      "nothingUnused": "미사용 없음"
+    }
   },
   "approve": "승인",
   "approveCancellation": "취소 승인",
@@ -933,6 +940,7 @@
   },
   "withholding": {
     "label": "원천징수영수증",
+    "mine": "내 원천징수영수증",
     "year": "소득 연도",
     "download": "신고 파일 다운로드",
     "unitRequired": "먼저 신고 단위 정보를 입력하세요",

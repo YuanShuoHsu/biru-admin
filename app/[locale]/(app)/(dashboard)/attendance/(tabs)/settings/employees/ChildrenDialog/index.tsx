@@ -100,7 +100,10 @@ const ChildrenDialog = ({
     resolver: zodResolver(childFormSchema),
   });
 
-  const birthDate = useWatch({ control, name: "birthDate" });
+  const [birthDate, label, reference] = useWatch({
+    control,
+    name: ["birthDate", "label", "reference"],
+  });
 
   const refresh = () => {
     mutateChildren();
@@ -277,6 +280,7 @@ const ChildrenDialog = ({
         }
         label={tAttendance("childReference")}
         required
+        slotProps={{ inputLabel: { shrink: !!reference } }}
         {...register("reference")}
       />
       <TextField
@@ -285,6 +289,7 @@ const ChildrenDialog = ({
         helperText={errors.label?.message}
         label={tAttendance("childLabel")}
         required
+        slotProps={{ inputLabel: { shrink: !!label } }}
         {...register("label")}
       />
       <DatePicker

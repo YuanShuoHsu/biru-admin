@@ -56,15 +56,15 @@ const escapeHtml = (value: string) =>
       })[char]!,
   );
 
-interface WithholdingCertificatesProps {
+interface MyWithholdingProps {
   certificates: MyWithholdingCertificate[];
   organization: Organization;
 }
 
-const WithholdingCertificates = ({
+const MyWithholding = ({
   certificates,
   organization: { currency = "", slug: organizationSlug },
-}: WithholdingCertificatesProps) => {
+}: MyWithholdingProps) => {
   const tAttendance = useTranslations("attendance");
 
   const format = useFormatter();
@@ -197,16 +197,15 @@ const WithholdingCertificates = ({
     printWindow.print();
   };
 
+  if (!certificates.length)
+    return (
+      <Typography color="textSecondary">
+        {tAttendance("withholding.noMine")}
+      </Typography>
+    );
+
   return (
     <CardsStack>
-      <Typography component="h2" variant="h6">
-        {tAttendance("withholding.label")}
-      </Typography>
-      {!certificates.length && (
-        <Typography color="textSecondary">
-          {tAttendance("withholding.noMine")}
-        </Typography>
-      )}
       {certificates.map((certificate) => (
         <Card
           key={certificate.paymentDate ?? certificate.year}
@@ -244,4 +243,4 @@ const WithholdingCertificates = ({
   );
 };
 
-export default WithholdingCertificates;
+export default MyWithholding;

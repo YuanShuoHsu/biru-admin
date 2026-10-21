@@ -12,15 +12,22 @@
   },
   "annualLeaveNotices": {
     "label": "年次有給休暇の通知",
-    "hint": "労働基準法第 38 条第 5 項に基づき、雇主は毎年、特別休暇の取得日と未消化日数の賃金を書面で通知します。このページでいつでも確認・印刷できます。",
-    "period": "休暇年度",
     "carriedIn": "前年度からの繰越",
     "dates": "取得日",
     "unused": "未消化",
     "settlement": "未消化分の扱い",
-    "paid": "{amount}（{month} の給与明細）",
-    "deferred": "合意により翌年度へ繰越",
-    "pending": "精算待ち"
+    "notifiedAt": "取得通知日",
+    "periodStart": "年度開始",
+    "periodEnd": "年度終了",
+    "payout": "精算額",
+    "payoutMonth": "{amount}（{month} の給与明細）",
+    "settlements": {
+      "ongoing": "年度途中",
+      "paid": "精算済み",
+      "deferred": "合意により翌年度へ繰越",
+      "unrecorded": "精算記録なし",
+      "nothingUnused": "未消化なし"
+    }
   },
   "approve": "承認",
   "approveCancellation": "取消を承認",
@@ -933,6 +940,7 @@
   },
   "withholding": {
     "label": "源泉徴収票",
+    "mine": "自分の源泉徴収票",
     "year": "所得年度",
     "download": "申告ファイルをダウンロード",
     "unitRequired": "先に申告単位情報を入力してください",

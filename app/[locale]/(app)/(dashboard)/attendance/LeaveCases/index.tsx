@@ -6,7 +6,7 @@ import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import AssignChildDialog from "./AssignChildDialog";
-import LeaveCaseDialog from "../../../LeaveCaseDialog";
+import LeaveCaseDialog from "../LeaveCaseDialog";
 
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
@@ -89,6 +89,7 @@ interface LeaveCasesProps {
   canAssignChild: boolean;
   canDelete: boolean;
   canUpdate: boolean;
+  canViewAll: boolean;
   canWrite: boolean;
   canReviewOwn: boolean;
   employeeId?: string;
@@ -112,6 +113,7 @@ const LeaveCases = ({
   canAssignChild,
   canDelete,
   canUpdate,
+  canViewAll,
   canWrite,
   canReviewOwn,
   employeeId,
@@ -180,7 +182,11 @@ const LeaveCases = ({
     [format],
   );
 
-  const base = attendancePath(organizationSlug, "org", "leave-cases");
+  const base = attendancePath(
+    organizationSlug,
+    canViewAll ? "org" : "me",
+    "leave-cases",
+  );
 
   const {
     data: { data: rows, total: rowCount } = {
@@ -586,16 +592,20 @@ const LeaveCases = ({
             },
           ]
         : []),
-      {
-        field: "employeeName",
-        filterOperators: stringFilterOperators,
-        headerName: tAttendance("employee"),
-      },
-      {
-        field: "employeeEmail",
-        filterOperators: stringFilterOperators,
-        headerName: tAttendance("account"),
-      },
+      ...(canViewAll
+        ? [
+            {
+              field: "employeeName",
+              filterOperators: stringFilterOperators,
+              headerName: tAttendance("employee"),
+            },
+            {
+              field: "employeeEmail",
+              filterOperators: stringFilterOperators,
+              headerName: tAttendance("account"),
+            },
+          ]
+        : []),
       {
         field: "leaveTypeName",
         filterOperators: enumFilterOperators,
@@ -673,6 +683,7 @@ const LeaveCases = ({
     ],
     [
       availableActions,
+      canViewAll,
       date,
       dateFilterOperators,
       enumFilterOperators,

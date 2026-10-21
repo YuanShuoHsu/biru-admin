@@ -3,6 +3,8 @@ import {
   attendanceEmployeeSortFieldValues,
   attendanceHolidaySubstituteFilterFieldValues,
   attendanceHolidaySubstituteSortFieldValues,
+  attendanceAnnualLeaveNoticeFilterFieldValues,
+  attendanceAnnualLeaveNoticeSortFieldValues,
   attendanceLeaveBalanceFilterFieldValues,
   attendanceLeaveBalanceSortFieldValues,
   attendanceLeaveCaseFilterFieldValues,
@@ -84,6 +86,8 @@ export type AttendanceParentalChildPage =
   components["schemas"]["AttendanceParentalChildrenResponseDto"];
 export type AttendanceAnnualLeaveNotice =
   components["schemas"]["AttendanceAnnualLeaveNoticeResponseDto"];
+export type AttendanceAnnualLeaveNoticePage =
+  components["schemas"]["AttendanceAnnualLeaveNoticesResponseDto"];
 export type AttendanceParentalReturn =
   components["schemas"]["AttendanceParentalReturnResponseDto"];
 export type AttendanceParentalReturnPage =
@@ -159,6 +163,8 @@ export type AttendanceLeaveTypeFilterField =
   (typeof attendanceLeaveTypeFilterFieldValues)[number];
 export type AttendanceLeaveBalanceFilterField =
   (typeof attendanceLeaveBalanceFilterFieldValues)[number];
+export type AttendanceAnnualLeaveNoticeFilterField =
+  (typeof attendanceAnnualLeaveNoticeFilterFieldValues)[number];
 export type AttendanceHolidaySubstituteFilterField =
   (typeof attendanceHolidaySubstituteFilterFieldValues)[number];
 export type AttendanceHolidaySubstituteSortField =
@@ -180,6 +186,8 @@ export type AttendanceLeaveTypeSortField =
   (typeof attendanceLeaveTypeSortFieldValues)[number];
 export type AttendanceLeaveBalanceSortField =
   (typeof attendanceLeaveBalanceSortFieldValues)[number];
+export type AttendanceAnnualLeaveNoticeSortField =
+  (typeof attendanceAnnualLeaveNoticeSortFieldValues)[number];
 export type AttendanceLeaveCaseSortField =
   (typeof attendanceLeaveCaseSortFieldValues)[number];
 export type AttendanceParentalChildSortField =

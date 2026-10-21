@@ -12,15 +12,22 @@
   },
   "annualLeaveNotices": {
     "label": "特休年度通知",
-    "hint": "依劳动基准法第 38 条第 5 项，雇主每年以书面通知特休日期与未休日数工资；本页可随时查阅与打印。",
-    "period": "特休年度",
     "carriedIn": "上年度递延",
     "dates": "特休日期",
     "unused": "未休",
     "settlement": "未休处理",
-    "paid": "{amount}（{month} 薪资单）",
-    "deferred": "已协议递延至下一年度",
-    "pending": "待结算"
+    "notifiedAt": "取得特休告知日",
+    "periodStart": "年度开始",
+    "periodEnd": "年度结束",
+    "payout": "结清工资",
+    "payoutMonth": "{amount}（{month} 薪资单）",
+    "settlements": {
+      "ongoing": "年度进行中",
+      "paid": "已结清",
+      "deferred": "已协议递延至下一年度",
+      "unrecorded": "尚无结算记录",
+      "nothingUnused": "无未休"
+    }
   },
   "approve": "批准",
   "approveCancellation": "批准撤假",
@@ -933,6 +940,7 @@
   },
   "withholding": {
     "label": "扣缴凭单",
+    "mine": "我的扣缴凭单",
     "year": "所得年度",
     "download": "下载申报文件",
     "unitRequired": "请先填写申报单位资料",

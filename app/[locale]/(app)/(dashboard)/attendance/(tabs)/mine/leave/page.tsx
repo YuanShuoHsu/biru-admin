@@ -4,11 +4,6 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
 import Balances from "../../../LeaveBalances";
-import MyAnnualLeaveNotices from "./MyAnnualLeaveNotices";
-import MyLeaveCases from "./MyLeaveCases";
-import MyParentalChildren from "./MyParentalChildren";
-
-import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -19,12 +14,7 @@ import {
   filterOperatorValues,
 } from "@/types/api";
 
-import {
-  getAttendanceLeaveBalances,
-  getAttendanceLeaveCases,
-  getAttendanceParentalChildren,
-  getMyAnnualLeaveNotices,
-} from "@/utils/attendance";
+import { getAttendanceLeaveBalances } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceLeaveTypeNameEnumOptions } from "@/utils/enumOptions";
 import { getAttendanceAccess } from "@/utils/session";
@@ -108,80 +98,43 @@ const MyLeavePage = async ({ params, searchParams }: MyLeavePageProps) => {
       )
     : [];
 
-  const [
-    { balances: rows, total: rowCount },
-    { leaveCases },
-    { parentalChildren },
-    annualLeaveNotices,
-  ] = await Promise.all([
-    getAttendanceLeaveBalances(
-      organization.slug,
-      "me",
-      {
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterEnums,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-      },
-      fetchOptions,
-    ),
-    getAttendanceLeaveCases(
-      organization.slug,
-      "me",
-      { pageSize: MAX_PAGE_SIZE },
-      fetchOptions,
-    ),
-    getAttendanceParentalChildren(
-      organization.slug,
-      "me",
-      { pageSize: MAX_PAGE_SIZE },
-      fetchOptions,
-    ),
-    getMyAnnualLeaveNotices(organization.slug, fetchOptions),
-  ]);
+  const { balances: rows, total: rowCount } = await getAttendanceLeaveBalances(
+    organization.slug,
+    "me",
+    {
+      page,
+      pageSize,
+      filterField,
+      filterOperator,
+      filterValue,
+      quickFilterEnums,
+      quickFilterValue,
+      sortBy,
+      sortDirection,
+    },
+    fetchOptions,
+  );
 
   return (
-    <>
-      <Balances
-        canDefer={false}
-        canRevokeDeferral={false}
-        canViewAll={false}
-        canWrite={false}
-        employees={[]}
-        filterField={filterField}
-        filterOperator={filterOperator}
-        filterValue={filterValue}
-        leaveTypes={[]}
-        organization={organization}
-        page={page}
-        pageSize={pageSize}
-        quickFilterValue={quickFilterValue}
-        rowCount={rowCount}
-        rows={rows}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-      />
-      {!!annualLeaveNotices.length && (
-        <MyAnnualLeaveNotices
-          currency={organization.currency ?? ""}
-          notices={annualLeaveNotices}
-        />
-      )}
-      {!!leaveCases.length && (
-        <MyLeaveCases
-          leaveCases={leaveCases}
-          parentalChildren={parentalChildren}
-        />
-      )}
-      {!!parentalChildren.length && (
-        <MyParentalChildren parentalChildren={parentalChildren} />
-      )}
-    </>
+    <Balances
+      canDefer={false}
+      canRevokeDeferral={false}
+      canViewAll={false}
+      canWrite={false}
+      employees={[]}
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
+      leaveTypes={[]}
+      organization={organization}
+      page={page}
+      pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
+      rowCount={rowCount}
+      rows={rows}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+    />
   );
 };
 

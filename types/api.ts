@@ -677,6 +677,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/attendance/annual-leave-notices": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 全店特休年度書面通知，含未休工資所以同時需要薪資單讀取權限 */
+    get: operations["AttendanceLeavesController_annualLeaveNotices"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/attendance/leave-balances": {
     parameters: {
       query?: never;
@@ -5734,6 +5751,37 @@ export interface components {
       data: components["schemas"]["AttendanceLeaveBalanceResponseDto"][];
       total: number;
     };
+    /** @enum {string} */
+    AttendanceAnnualLeaveNoticeFilterField:
+      | "employeeName"
+      | "employeeEmail"
+      | "settlement"
+      | "periodStart"
+      | "periodEnd"
+      | "notifiedAt"
+      | "grantedMinutes"
+      | "carriedInMinutes"
+      | "usedMinutes"
+      | "unusedMinutes";
+    /** @enum {string} */
+    AttendanceAnnualLeaveNoticeSortField:
+      | "employeeName"
+      | "employeeEmail"
+      | "settlement"
+      | "periodStart"
+      | "periodEnd"
+      | "notifiedAt"
+      | "grantedMinutes"
+      | "carriedInMinutes"
+      | "usedMinutes"
+      | "unusedMinutes";
+    /** @enum {string} */
+    AttendanceAnnualLeaveSettlement:
+      | "ongoing"
+      | "paid"
+      | "deferred"
+      | "unrecorded"
+      | "nothingUnused";
     AttendanceAnnualLeaveNoticeLeaveDto: {
       /** Format: date-time */
       startsAt: string;
@@ -5749,18 +5797,34 @@ export interface components {
       paidOn?: string | null;
     };
     AttendanceAnnualLeaveNoticeResponseDto: {
+      id: string;
+      employeeId: string;
+      employeeName: string;
+      employeeEmail: string;
       /** Format: date-time */
       periodStart: string;
       /** Format: date-time */
       periodEnd: string;
+      /** @description 特休年度尚未結束，未休為目前剩餘 */
+      ongoing: boolean;
+      /**
+       * Format: date-time
+       * @description 依勞基法 §38 III 寄出取得特休通知的時間
+       */
+      notifiedAt?: string | null;
       grantedMinutes: number;
       carriedInMinutes: number;
       usedMinutes: number;
       expiredMinutes: number;
       unusedMinutes: number;
       deferred: boolean;
+      settlement: components["schemas"]["AttendanceAnnualLeaveSettlement"];
       leaves: components["schemas"]["AttendanceAnnualLeaveNoticeLeaveDto"][];
       payouts: components["schemas"]["AttendanceAnnualLeaveNoticePayoutDto"][];
+    };
+    AttendanceAnnualLeaveNoticesResponseDto: {
+      data: components["schemas"]["AttendanceAnnualLeaveNoticeResponseDto"][];
+      total: number;
     };
     SaveAttendanceLeaveBalanceDto: {
       /** Format: uuid */
@@ -12885,7 +12949,18 @@ export interface operations {
   };
   AttendanceLeavesController_myAnnualLeaveNotices: {
     parameters: {
-      query?: never;
+      query?: {
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["AttendanceAnnualLeaveNoticeFilterField"];
+        sortBy?: components["schemas"]["AttendanceAnnualLeaveNoticeSortField"];
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+      };
       header?: never;
       path?: never;
       cookie?: never;
@@ -12897,7 +12972,44 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["AttendanceAnnualLeaveNoticeResponseDto"][];
+          "application/json": components["schemas"]["AttendanceAnnualLeaveNoticesResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceLeavesController_annualLeaveNotices: {
+    parameters: {
+      query?: {
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["AttendanceAnnualLeaveNoticeFilterField"];
+        sortBy?: components["schemas"]["AttendanceAnnualLeaveNoticeSortField"];
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceAnnualLeaveNoticesResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -22648,6 +22760,37 @@ export const attendanceLeaveBalanceSortFieldValues: ReadonlyArray<
   "grantedMinutes",
   "usedMinutes",
 ];
+export const attendanceAnnualLeaveNoticeFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["AttendanceAnnualLeaveNoticeFilterField"]
+> = [
+  "employeeName",
+  "employeeEmail",
+  "settlement",
+  "periodStart",
+  "periodEnd",
+  "notifiedAt",
+  "grantedMinutes",
+  "carriedInMinutes",
+  "usedMinutes",
+  "unusedMinutes",
+];
+export const attendanceAnnualLeaveNoticeSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["AttendanceAnnualLeaveNoticeSortField"]
+> = [
+  "employeeName",
+  "employeeEmail",
+  "settlement",
+  "periodStart",
+  "periodEnd",
+  "notifiedAt",
+  "grantedMinutes",
+  "carriedInMinutes",
+  "usedMinutes",
+  "unusedMinutes",
+];
+export const attendanceAnnualLeaveSettlementValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["AttendanceAnnualLeaveSettlement"]
+> = ["ongoing", "paid", "deferred", "unrecorded", "nothingUnused"];
 export const attendanceHolidaySubstituteFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceHolidaySubstituteFilterField"]
 > = [

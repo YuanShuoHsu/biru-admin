@@ -4,7 +4,6 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
 import Payslips from ".";
-import WithholdingCertificates from "./WithholdingCertificates";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -15,10 +14,7 @@ import {
   payrollStatementSortFieldValues,
 } from "@/types/api";
 
-import {
-  getMyWithholdingCertificates,
-  getPayrollStatements,
-} from "@/utils/attendance";
+import { getPayrollStatements } from "@/utils/attendance";
 import { resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -89,46 +85,36 @@ const PayslipsPage = async ({ params, searchParams }: PayslipsPageProps) => {
       locale,
     });
 
-  const [{ statements: rows, total: rowCount }, certificates] =
-    await Promise.all([
-      getPayrollStatements(
-        organization.slug,
-        "me",
-        {
-          page,
-          pageSize,
-          filterField,
-          filterOperator,
-          filterValue,
-          quickFilterValue,
-          sortBy,
-          sortDirection,
-        },
-        fetchOptions,
-      ),
-      getMyWithholdingCertificates(organization.slug, fetchOptions),
-    ]);
+  const { statements: rows, total: rowCount } = await getPayrollStatements(
+    organization.slug,
+    "me",
+    {
+      page,
+      pageSize,
+      filterField,
+      filterOperator,
+      filterValue,
+      quickFilterValue,
+      sortBy,
+      sortDirection,
+    },
+    fetchOptions,
+  );
 
   return (
-    <>
-      <Payslips
-        filterField={filterField}
-        filterOperator={filterOperator}
-        filterValue={filterValue}
-        organization={organization}
-        page={page}
-        pageSize={pageSize}
-        quickFilterValue={quickFilterValue}
-        rowCount={rowCount}
-        rows={rows}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-      />
-      <WithholdingCertificates
-        certificates={certificates}
-        organization={organization}
-      />
-    </>
+    <Payslips
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
+      organization={organization}
+      page={page}
+      pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
+      rowCount={rowCount}
+      rows={rows}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+    />
   );
 };
 

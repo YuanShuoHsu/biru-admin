@@ -27,8 +27,6 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { useRouter } from "@/i18n/navigation";
-
 import { Add, AssignmentReturn, Cancel, Undo } from "@mui/icons-material";
 import {
   Alert,
@@ -160,8 +158,6 @@ const Requests = ({
 
   const updateQuery = useUpdateQuery();
 
-  const router = useRouter();
-
   const enumOptions = useMemo(
     () => getAttendanceRequestEnumOptions(tAttendance),
     [tAttendance],
@@ -265,10 +261,7 @@ const Requests = ({
         confirmText: tAttendance("save"),
         content: (
           <ReturnDialog
-            mutate={() => {
-              mutate();
-              router.refresh();
-            }}
+            mutate={mutate}
             organizationSlug={organizationSlug}
             request={request}
           />
@@ -277,7 +270,7 @@ const Requests = ({
         open: true,
         title: tAttendance("parentalReturn"),
       }),
-    [mutate, organizationSlug, router, setDialog, tAttendance],
+    [mutate, organizationSlug, setDialog, tAttendance],
   );
 
   const handleWithdraw = useCallback(

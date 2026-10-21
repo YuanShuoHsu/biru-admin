@@ -17,6 +17,8 @@ import {
 } from "@/types/api";
 import type {
   AttendanceAnnualLeaveNotice,
+  AttendanceAnnualLeaveNoticeFilterField,
+  AttendanceAnnualLeaveNoticeSortField,
   AttendanceCalendarDayKinds,
   AttendanceContext,
   AttendanceEmployee,
@@ -604,16 +606,27 @@ export const getPayrollWithholdingSummary = cache(
     ),
 );
 
-export const getMyAnnualLeaveNotices = cache(
-  async (organizationSlug: string, init?: RequestInit) => {
-    try {
-      return await fetcher<AttendanceAnnualLeaveNotice[]>(
-        attendancePath(organizationSlug, "me", "annual-leave-notices"),
-        init,
-      );
-    } catch {
-      return [];
-    }
+export const getAttendanceAnnualLeaveNotices = cache(
+  async (
+    organizationSlug: string,
+    scope: AttendanceScope,
+    query: GridQuery<
+      AttendanceAnnualLeaveNoticeFilterField,
+      AttendanceAnnualLeaveNoticeSortField
+    > = {},
+    init?: RequestInit,
+  ) => {
+    const { data: notices, total } = await getGrid<
+      AttendanceAnnualLeaveNotice,
+      AttendanceAnnualLeaveNoticeFilterField,
+      AttendanceAnnualLeaveNoticeSortField
+    >(
+      attendancePath(organizationSlug, scope, "annual-leave-notices"),
+      query,
+      init,
+    );
+
+    return { notices, total };
   },
 );
 

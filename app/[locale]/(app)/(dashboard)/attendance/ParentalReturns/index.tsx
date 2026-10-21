@@ -76,6 +76,7 @@ const StyledIconButton = styled(IconButton, {
 interface ParentalReturnsProps {
   canReview: boolean;
   canReviewOwn: boolean;
+  canViewAll: boolean;
   employeeId?: string;
   filterField?: AttendanceParentalReturnFilterField;
   filterOperator?: FilterOperator;
@@ -93,6 +94,7 @@ interface ParentalReturnsProps {
 const ParentalReturns = ({
   canReview,
   canReviewOwn,
+  canViewAll,
   employeeId,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
@@ -159,7 +161,11 @@ const ParentalReturns = ({
     [format],
   );
 
-  const base = attendancePath(organizationSlug, "org", "return-requests");
+  const base = attendancePath(
+    organizationSlug,
+    canViewAll ? "org" : "me",
+    "return-requests",
+  );
 
   const {
     data: { data: rows, total: rowCount } = {
@@ -268,7 +274,14 @@ const ParentalReturns = ({
         ),
         onConfirm: async () => {
           try {
-            await fetcher(`${base}/${id}/withdraw`, { method: "PATCH" });
+            await fetcher(
+              attendancePath(
+                organizationSlug,
+                "org",
+                `return-requests/${id}/withdraw`,
+              ),
+              { method: "PATCH" },
+            );
 
             enqueueSnackbar(
               tAttendance("parentalReturns.withdrawn", { name: employeeName }),
@@ -284,7 +297,7 @@ const ParentalReturns = ({
         open: true,
         title: tAttendance("withdraw"),
       }),
-    [base, mutate, setDialog, tAttendance],
+    [mutate, organizationSlug, setDialog, tAttendance],
   );
 
   const getRowActions = useCallback(
@@ -368,16 +381,20 @@ const ParentalReturns = ({
         resizable: false,
         sortable: false,
       },
-      {
-        field: "employeeName",
-        filterOperators: stringFilterOperators,
-        headerName: tAttendance("employee"),
-      },
-      {
-        field: "employeeEmail",
-        filterOperators: stringFilterOperators,
-        headerName: tAttendance("account"),
-      },
+      ...(canViewAll
+        ? [
+            {
+              field: "employeeName",
+              filterOperators: stringFilterOperators,
+              headerName: tAttendance("employee"),
+            },
+            {
+              field: "employeeEmail",
+              filterOperators: stringFilterOperators,
+              headerName: tAttendance("account"),
+            },
+          ]
+        : []),
       {
         field: "returnsAt",
         filterOperators: dateFilterOperators,
@@ -425,6 +442,7 @@ const ParentalReturns = ({
     ],
     [
       availableActions,
+      canViewAll,
       date,
       dateFilterOperators,
       enumFilterOperators,

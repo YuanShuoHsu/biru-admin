@@ -3,6 +3,7 @@ import type { useTranslations } from "next-intl";
 import { PLATFORM_ORGANIZATION_ID } from "@/constants/organizations";
 
 import {
+  attendanceAnnualLeaveSettlementValues,
   attendanceDayKindValues,
   attendanceEmployeeStatusValues,
   attendanceEmploymentTypeValues,
@@ -276,6 +277,15 @@ export const getAttendanceLeaveTypeEnumOptions = (
 ) => ({
   statutoryKind: statutoryLeaveKindValues.map((value) => ({
     label: tAttendance(`statutoryKind.options.${value}`),
+    value,
+  })),
+});
+
+export const getAttendanceAnnualLeaveNoticeEnumOptions = (
+  tAttendance: ReturnType<typeof useTranslations<"attendance">>,
+) => ({
+  settlement: attendanceAnnualLeaveSettlementValues.map((value) => ({
+    label: tAttendance(`annualLeaveNotices.settlements.${value}`),
     value,
   })),
 });

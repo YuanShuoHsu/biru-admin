@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-import LeaveCases from ".";
+import LeaveCases from "../../../LeaveCases";
 
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
@@ -74,11 +74,7 @@ const LeaveCasesPage = async ({
 
   const { memberRole, organization } = access;
 
-  if (!hasRolePermission(memberRole, { leaveCase: ["read"] }))
-    redirect({
-      href: `/attendance/mine/leave?${new URLSearchParams({ organization: organization.slug }).toString()}`,
-      locale,
-    });
+  if (!hasRolePermission(memberRole, { leaveCase: ["read"] })) notFound();
 
   const canViewAllParentalChildren = hasRolePermission(memberRole, {
     parentalChild: ["read"],
@@ -172,6 +168,7 @@ const LeaveCasesPage = async ({
       canAssignChild={hasRolePermission(memberRole, {
         leaveCase: ["update"],
       })}
+      canViewAll
       canWrite={canWrite}
       canReviewOwn={selfReviewAllowed.leaveCase}
       employeeId={employee?.id}

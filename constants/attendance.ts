@@ -23,8 +23,13 @@ export const ATTENDANCE_NAV_GROUPS: {
     children: [
       { path: "/attendance/mine/shifts" },
       { path: "/attendance/mine/requests" },
+      { path: "/attendance/mine/parental-returns" },
       { path: "/attendance/mine/leave" },
+      { path: "/attendance/mine/leave-cases" },
+      { path: "/attendance/mine/annual-leave-notices" },
+      { path: "/attendance/mine/children" },
       { path: "/attendance/mine/payslips" },
+      { path: "/attendance/mine/withholding" },
     ],
     path: "/attendance/mine",
   },
@@ -57,6 +62,10 @@ export const ATTENDANCE_NAV_GROUPS: {
         permission: { leaveBalance: ["read"] },
       },
       { path: "/attendance/leave/cases", permission: { leaveCase: ["read"] } },
+      {
+        path: "/attendance/leave/annual-leave-notices",
+        permission: { leaveBalance: ["read"], payslip: ["read"] },
+      },
       {
         path: "/attendance/leave/parental-returns",
         permission: { parentalReturn: ["read"] },

@@ -12,15 +12,22 @@
   },
   "annualLeaveNotices": {
     "label": "Annual leave notices",
-    "hint": "Under Article 38(5) of the Labor Standards Act, the employer gives a written notice each year of your annual leave dates and pay for unused days. You can view and print it here at any time.",
-    "period": "Leave year",
     "carriedIn": "Carried over",
     "dates": "Leave dates",
     "unused": "Unused",
     "settlement": "Unused leave",
-    "paid": "{amount} ({month} payslip)",
-    "deferred": "Carried over to next year by agreement",
-    "pending": "Pending settlement"
+    "notifiedAt": "Entitlement notified",
+    "periodStart": "Year starts",
+    "periodEnd": "Year ends",
+    "payout": "Payout",
+    "payoutMonth": "{amount} ({month} payslip)",
+    "settlements": {
+      "ongoing": "Leave year in progress",
+      "paid": "Paid out",
+      "deferred": "Carried over to next year by agreement",
+      "unrecorded": "No settlement on record",
+      "nothingUnused": "Nothing unused"
+    }
   },
   "approve": "Approve",
   "approveCancellation": "Approve cancellation",
@@ -933,6 +940,7 @@
   },
   "withholding": {
     "label": "Withholding statements",
+    "mine": "My withholding statements",
     "year": "Income year",
     "download": "Download filing file",
     "unitRequired": "Fill in the withholding unit details first",
