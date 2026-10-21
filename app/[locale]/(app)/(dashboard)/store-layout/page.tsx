@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import StoreLayout from ".";
 
@@ -11,7 +12,7 @@ import type { Locale } from "@/i18n/routing";
 import { STORE_LAYOUT_ORGANIZATION_SLUG } from "@/constants/storeLayout";
 
 import { getAdminOrderBoard } from "@/utils/orders";
-import { getResolvedAdminOrganization } from "@/utils/session";
+import { getResolvedAdminOrganization, getSession } from "@/utils/session";
 
 interface StoreLayoutPageProps {
   params: Promise<{ locale: Locale }>;
@@ -30,12 +31,14 @@ export const generateMetadata = async ({
   return { title: tStoreLayout("label") };
 };
 
-const StoreLayoutPage = async ({
+const StoreLayoutContent = async ({
   params,
   searchParams,
 }: StoreLayoutPageProps) => {
-  const [cookieStore, { locale }, { organization: organizationSlug }] =
-    await Promise.all([cookies(), params, searchParams]);
+  const [session, cookieStore, { locale }, { organization: organizationSlug }] =
+    await Promise.all([getSession(), cookies(), params, searchParams]);
+
+  if (session?.user?.role !== "admin") notFound();
 
   const organization = await getResolvedAdminOrganization(organizationSlug);
 
@@ -59,5 +62,11 @@ const StoreLayoutPage = async ({
     <StoreLayout columns={columns} empty={empty} organization={organization} />
   );
 };
+
+const StoreLayoutPage = (props: StoreLayoutPageProps) => (
+  <Suspense fallback={<StoreLayout loading />}>
+    <StoreLayoutContent {...props} />
+  </Suspense>
+);
 
 export default StoreLayoutPage;

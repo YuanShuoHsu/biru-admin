@@ -5,10 +5,9 @@ import {
   userSortFieldValues,
 } from "@/types/api";
 
-export type User = components["schemas"]["UserResponseDto"];
+export type User = components["schemas"]["UserListItemDto"];
 export type UserRole = NonNullable<User["role"]>;
 export type UserStatsResponse = components["schemas"]["UserStatsResponseDto"];
-export type UserDeletability = components["schemas"]["UserDeletabilityDto"];
 
 export type UserFilterField = (typeof userFilterFieldValues)[number];
 export type UserFilterOperator = (typeof userFilterOperatorValues)[number];

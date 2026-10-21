@@ -36,11 +36,17 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { formatUserAgent } from "@/utils/auth";
+import { formatUserAgent, isActiveSession } from "@/utils/auth";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
+const ExpiresAtStack = styled(Stack)(({ theme }) => ({
   height: "100%",
   alignItems: "center",
   gap: theme.spacing(1),
@@ -72,7 +78,9 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
   const currentSession = useSession();
 
   const isUserSessionSelectable = useCallback(
-    ({ token }: Session) => token !== currentSession?.session.token,
+    (session: Session) =>
+      session.token !== currentSession?.session.token &&
+      isActiveSession(session),
     [currentSession?.session.token],
   );
 
@@ -320,6 +328,21 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
       {
         field: "expiresAt",
         headerName: tUserSessions("expiresAt"),
+        renderCell: ({
+          formattedValue,
+          row,
+        }: GridRenderCellParams<Session>) => (
+          <ExpiresAtStack direction="row">
+            {formattedValue}
+            {!isActiveSession(row) && (
+              <Chip
+                label={tUserSessions("expired")}
+                size="small"
+                variant="outlined"
+              />
+            )}
+          </ExpiresAtStack>
+        ),
         valueFormatter: (value: string) =>
           format.dateTime(new Date(value), "short"),
       },

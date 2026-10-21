@@ -134,6 +134,7 @@
     },
     "createdAt": "ログイン日時",
     "current": "現在",
+    "expired": "期限切れ",
     "expiresAt": "有効期限",
     "ipAddress": {
       "label": "IPアドレス",

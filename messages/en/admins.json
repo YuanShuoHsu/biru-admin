@@ -134,6 +134,7 @@
     },
     "createdAt": "Signed in",
     "current": "Current",
+    "expired": "Expired",
     "expiresAt": "Expires",
     "ipAddress": {
       "label": "IP address",

@@ -1,13 +1,10 @@
-import { notFound } from "next/navigation";
+import PlatformAdminGate from "@/components/PlatformAdminGate";
 
-import { getSession } from "@/utils/session";
-
-const AdminsLayout = async ({ children }: { children: React.ReactNode }) => {
-  const session = await getSession();
-
-  if (session?.user?.role !== "admin") notFound();
-
-  return children;
-};
+const AdminsLayout = ({ children }: { children: React.ReactNode }) => (
+  <>
+    <PlatformAdminGate />
+    {children}
+  </>
+);
 
 export default AdminsLayout;

@@ -134,6 +134,7 @@
     },
     "createdAt": "로그인 시간",
     "current": "현재",
+    "expired": "만료됨",
     "expiresAt": "만료일",
     "ipAddress": {
       "label": "IP 주소",

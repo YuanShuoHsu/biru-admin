@@ -30,7 +30,7 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 import {
   DEFAULT_AUTHENTICATED_ROUTE,
   IMPERSONATE_RETURN_KEY,
@@ -97,11 +97,6 @@ import type {
 } from "@/types/admins";
 import type { SortDirection } from "@/types/dataGrid";
 
-import {
-  getDeletableUserIds,
-  getUserSessions,
-  type UserSessions,
-} from "@/utils/admins";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAdminEnumOptions } from "@/utils/enumOptions";
 import { getErrorMessage } from "@/utils/errors";
@@ -158,28 +153,28 @@ interface AdminsProps {
   filterField?: UserFilterField;
   filterOperator?: UserFilterOperator;
   filterValue?: string;
-  page: number;
-  pageSize: number;
+  loading?: boolean;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: User[];
+  rowCount?: number;
+  rows?: User[];
   sortBy?: UserSortField;
   sortDirection?: SortDirection;
-  userSessions: UserSessions;
 }
 
 const Admins = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  page,
-  pageSize,
+  loading = false,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
-  userSessions: initialUserSessions,
 }: AdminsProps) => {
   const [isSelectMode, setIsSelectMode] = useState(false);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
@@ -235,15 +230,14 @@ const Admins = ({
   const enumOptions = useMemo(() => getAdminEnumOptions(tAdmins), [tAdmins]);
 
   const {
-    data: { rows, rowCount, userSessions } = {
-      rows: initialRows,
-      rowCount: initialRowCount,
-      userSessions: initialUserSessions,
+    data: { data: rows, total: rowCount } = {
+      data: initialRows,
+      total: initialRowCount,
     },
     mutate: mutateAdmins,
     isValidating,
   } = useSWR(
-    [
+    !loading && [
       "/api/admins",
       filterModel.items[0]?.field,
       filterModel.items[0]?.operator,
@@ -261,21 +255,12 @@ const Admins = ({
         enumOptions,
       );
 
-      const { data: userRows, total } = await fetcher<{
-        data: User[];
-        total: number;
-      }>(`/api/users/list?${params}`);
-
-      const userSessions = await getUserSessions(userRows);
-
-      return { rows: userRows, rowCount: total, userSessions };
+      return fetcher<{ data: User[]; total: number }>(
+        `/api/users/list?${params}`,
+      );
     },
     {
-      fallbackData: {
-        rows: initialRows,
-        rowCount: initialRowCount,
-        userSessions: initialUserSessions,
-      },
+      fallbackData: { data: initialRows, total: initialRowCount },
       onSuccess: () => {
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
@@ -284,18 +269,11 @@ const Admins = ({
     },
   );
 
-  const { data: deletableUserIds } = useSWR(
-    rows.length
-      ? ["/api/users/deletability", ...rows.map(({ id }) => id)]
-      : null,
-    () => getDeletableUserIds(rows),
-  );
-
   const currentUserId = session?.user?.id;
 
   const isUserSelectable = useCallback(
-    ({ id }: User) => id !== currentUserId && !!deletableUserIds?.has(id),
-    [currentUserId, deletableUserIds],
+    ({ deletable, id }: User) => id !== currentUserId && deletable,
+    [currentUserId],
   );
 
   const {
@@ -308,6 +286,7 @@ const Admins = ({
     isRowSelectable: isUserSelectable,
     rows,
   });
+  const hasSessionUser = rows.some(({ hasSession }) => hasSession);
   const hasImpersonableUser = rows.some(
     (row) => row.id !== currentUserId && row.role !== "admin",
   );
@@ -657,9 +636,6 @@ const Admins = ({
                   (!row.banExpires || new Date(row.banExpires) > new Date());
                 const isCurrentUser = row.id === currentUserId;
 
-                const { hasUserSessions, userSession } = userSessions;
-                const hasUserSession = userSession[row.id];
-
                 return (
                   <ActionsStack direction="row">
                     <Tooltip title={tAdmins("actions.updateUser.title")}>
@@ -726,7 +702,7 @@ const Admins = ({
                         )}
                       </StyledIconButton>
                     </Tooltip>
-                    {hasUserSessions && (
+                    {hasSessionUser && (
                       <Tooltip title={tAdmins("userSessions.label")}>
                         <StyledIconButton
                           onClick={(event) => {
@@ -735,7 +711,7 @@ const Admins = ({
                             router.push(`/admins/${row.id}`);
                           }}
                           size="small"
-                          visible={hasUserSession}
+                          visible={row.hasSession}
                         >
                           <Devices fontSize="small" />
                         </StyledIconButton>
@@ -930,6 +906,7 @@ const Admins = ({
       handleSetUserPassword,
       handleUnbanUser,
       handleUpdateUser,
+      hasSessionUser,
       hasImpersonableUser,
       isSelectMode,
       isUserSelectable,
@@ -937,7 +914,6 @@ const Admins = ({
       tAdmins,
       tCommon,
       textFilterOperators,
-      userSessions,
     ],
   );
 
@@ -947,6 +923,7 @@ const Admins = ({
         {!isSelectMode && (
           <>
             <Button
+              disabled={loading}
               onClick={handleCreateUser}
               size="small"
               startIcon={<PersonAdd />}
@@ -997,7 +974,7 @@ const Admins = ({
         columns={columns}
         filterMode="server"
         filterModel={filterModel}
-        loading={isValidating}
+        loading={loading || isValidating}
         onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
         onSortModelChange={handleSortModelChange}

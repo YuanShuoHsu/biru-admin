@@ -134,6 +134,7 @@
     },
     "createdAt": "登入時間",
     "current": "目前",
+    "expired": "已過期",
     "expiresAt": "到期時間",
     "ipAddress": {
       "label": "IP 位址",

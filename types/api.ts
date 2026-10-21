@@ -1041,23 +1041,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/users/deletability": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** 查詢使用者是否可刪除 */
-    get: operations["UsersController_deletability"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   "/api/users/{id}/sessions": {
     parameters: {
       query?: never;
@@ -6288,6 +6271,110 @@ export interface components {
       | "banned"
       | "emailSubscribed"
       | "createdAt";
+    UserListItemDto: {
+      /**
+       * @description ID
+       * @example 123e4567-e89b-12d3-a456-426614174000
+       */
+      id: string;
+      /**
+       * @description 角色
+       * @example user
+       */
+      role: components["schemas"]["UserRole"] | null;
+      /**
+       * @description 是否已封鎖
+       * @example false
+       */
+      banned: boolean | null;
+      /**
+       * @description 封鎖原因
+       * @example 違反使用條款
+       */
+      banReason?: string | null;
+      /**
+       * Format: date-time
+       * @description 封鎖到期時間；null 為永久
+       * @example 2025-12-31T23:59:59.000Z
+       */
+      banExpires?: string | null;
+      /**
+       * @description 個人簡介
+       * @example 喜歡精釀啤酒
+       */
+      bio?: string | null;
+      /**
+       * @description 姓名
+       * @example Coffee
+       */
+      name: string;
+      /**
+       * Format: date-time
+       * @description 建立時間
+       * @example 2025-10-14T12:34:56.000Z
+       */
+      createdAt: string;
+      /**
+       * @description 電子郵件
+       * @example biru@example.com
+       */
+      email: string;
+      /**
+       * @description 是否訂閱電子報
+       * @example true
+       */
+      emailSubscribed: boolean;
+      /**
+       * @description 是否已驗證電子郵件
+       * @example true
+       */
+      emailVerified: boolean;
+      /**
+       * @description 名
+       * @example Coffee
+       */
+      firstName: string;
+      /**
+       * @description 頭像 URL
+       * @example https://example.com/avatar.png
+       */
+      image?: string | null;
+      /**
+       * @description 語言
+       * @example zh-TW
+       * @enum {string}
+       */
+      lang: "en" | "ja" | "ko" | "zh-CN" | "zh-TW";
+      /**
+       * @description 姓
+       * @example Biru
+       */
+      lastName?: string | null;
+      /**
+       * @description 電話（E.164 格式）
+       * @example +886912345678
+       */
+      phoneNumber?: string | null;
+      /**
+       * @description 是否已驗證電話
+       * @example false
+       */
+      phoneNumberVerified: boolean;
+      /**
+       * Format: date-time
+       * @description 最後更新時間
+       * @example 2025-10-14T12:34:56.000Z
+       */
+      updatedAt: string;
+      /** @description 有出勤或薪資紀錄、或是某組織唯一的擁有者時不可刪除 */
+      deletable: boolean;
+      /** @description 有登入裝置紀錄（含已過期） */
+      hasSession: boolean;
+    };
+    UserListResponseDto: {
+      data: components["schemas"]["UserListItemDto"][];
+      total: number;
+    };
     /** @enum {string} */
     StatsBucketUnit: "day" | "hour";
     UserStatsBucketDto: {
@@ -6301,11 +6388,6 @@ export interface components {
       buckets: components["schemas"]["UserStatsBucketDto"][];
       /** @description 上期新增使用者數 */
       previous: number;
-    };
-    UserDeletabilityDto: {
-      id: string;
-      /** @description 有出勤或薪資紀錄、或是某組織唯一的擁有者時不可刪除 */
-      deletable: boolean;
     };
     UpdateUserDto: {
       /**
@@ -13881,7 +13963,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["UserListResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -13915,34 +13999,6 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["UserStatsResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  UsersController_deletability: {
-    parameters: {
-      query: {
-        ids: string[];
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["UserDeletabilityDto"][];
         };
       };
       /** @description Internal server error */
@@ -23004,6 +23060,9 @@ export const userSearchOperatorValues: ReadonlyArray<
 export const userSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserSortField"]
 > = ["name", "email", "role", "banned", "emailSubscribed", "createdAt"];
+export const userListItemDtoLangValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["UserListItemDto"]["lang"]
+> = ["en", "ja", "ko", "zh-CN", "zh-TW"];
 export const statsBucketUnitValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["StatsBucketUnit"]
 > = ["day", "hour"];

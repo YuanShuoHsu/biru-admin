@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
+import { Suspense } from "react";
 
 import Admins from ".";
 
@@ -17,7 +18,6 @@ import {
 
 import type { User } from "@/types/admins";
 
-import { getUserSessions } from "@/utils/admins";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAdminEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
@@ -46,7 +46,7 @@ export const generateMetadata = async ({
   return { title: tAdmins("label") };
 };
 
-const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
+const AdminsContent = async ({ params, searchParams }: AdminsPageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -111,8 +111,6 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
   const rows: User[] = data || [];
   const rowCount = total || 0;
 
-  const userSessions = await getUserSessions(rows, fetchOptions);
-
   return (
     <Admins
       filterField={filterField}
@@ -125,9 +123,14 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
       rowCount={rowCount}
       sortBy={sortBy}
       sortDirection={sortDirection}
-      userSessions={userSessions}
     />
   );
 };
+
+const AdminsPage = (props: AdminsPageProps) => (
+  <Suspense fallback={<Admins loading />}>
+    <AdminsContent {...props} />
+  </Suspense>
+);
 
 export default AdminsPage;
