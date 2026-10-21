@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import DeletedRecords from ".";
 
@@ -36,7 +37,7 @@ export const generateMetadata = async ({
   return { title: tDeletedRecords("label") };
 };
 
-const DeletedRecordsPage = async ({
+const DeletedRecordsContent = async ({
   params,
   searchParams,
 }: DeletedRecordsPageProps) => {
@@ -86,5 +87,11 @@ const DeletedRecordsPage = async ({
     />
   );
 };
+
+const DeletedRecordsPage = (props: DeletedRecordsPageProps) => (
+  <Suspense fallback={<DeletedRecords loading />}>
+    <DeletedRecordsContent {...props} />
+  </Suspense>
+);
 
 export default DeletedRecordsPage;

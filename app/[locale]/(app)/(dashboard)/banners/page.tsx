@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
+import { Suspense } from "react";
 
 import Banners from ".";
 
@@ -41,7 +42,7 @@ export const generateMetadata = async ({
   return { title: tBanners("label") };
 };
 
-const BannersPage = async ({ params, searchParams }: BannersPageProps) => {
+const BannersContent = async ({ params, searchParams }: BannersPageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -104,5 +105,11 @@ const BannersPage = async ({ params, searchParams }: BannersPageProps) => {
     />
   );
 };
+
+const BannersPage = (props: BannersPageProps) => (
+  <Suspense fallback={<Banners loading />}>
+    <BannersContent {...props} />
+  </Suspense>
+);
 
 export default BannersPage;

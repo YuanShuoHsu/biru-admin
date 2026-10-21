@@ -9,7 +9,7 @@ import DataGrid from "@/components/DataGrid";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
@@ -62,19 +62,21 @@ const getLabel = (
   typeof label === "string" ? label : localize(label ?? undefined, locale);
 
 interface DeletedRecordsProps {
+  loading?: boolean;
   organizationSlug?: string;
-  page: number;
-  pageSize: number;
-  rowCount: number;
-  rows: DeletedRecordBatch[];
+  page?: number;
+  pageSize?: number;
+  rowCount?: number;
+  rows?: DeletedRecordBatch[];
 }
 
 const DeletedRecords = ({
+  loading = false,
   organizationSlug,
-  page,
-  pageSize,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
 }: DeletedRecordsProps) => {
   const [isSelectMode, setIsSelectMode] = useState(false);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
@@ -100,9 +102,9 @@ const DeletedRecords = ({
       total: initialRowCount,
     },
     mutate,
-    isValidating: loading,
+    isValidating,
   } = useSWR(
-    [
+    !loading && [
       getDeletedRecordsPath(organizationSlug),
       paginationModel.page,
       paginationModel.pageSize,
@@ -425,7 +427,7 @@ const DeletedRecords = ({
         columns={columns}
         disableColumnFilter
         getRowId={({ batchId }) => batchId}
-        loading={loading}
+        loading={loading || isValidating}
         onPaginationModelChange={handlePaginationModelChange}
         pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
         paginationMode="server"

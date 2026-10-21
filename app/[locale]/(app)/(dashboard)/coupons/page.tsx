@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import Coupons from ".";
 
@@ -49,7 +50,7 @@ export const generateMetadata = async ({
   return { title: tCoupons("label") };
 };
 
-const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
+const CouponsContent = async ({ params, searchParams }: CouponsPageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -144,7 +145,6 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
   return (
     <Coupons
       canGrantCoupon={canGrantCoupon}
-      canManageCoupon={isAdmin}
       canViewAuditLog={canViewAuditLog}
       filterField={filterField}
       filterOperator={filterOperator}
@@ -161,5 +161,11 @@ const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
     />
   );
 };
+
+const CouponsPage = (props: CouponsPageProps) => (
+  <Suspense fallback={<Coupons loading />}>
+    <CouponsContent {...props} />
+  </Suspense>
+);
 
 export default CouponsPage;

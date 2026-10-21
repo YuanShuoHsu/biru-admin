@@ -16,7 +16,7 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
@@ -97,11 +97,12 @@ interface BannersProps {
   filterField?: BannerFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  page: number;
-  pageSize: number;
+  loading?: boolean;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: Banner[];
+  rowCount?: number;
+  rows?: Banner[];
   sortBy?: BannerSortField;
   sortDirection?: SortDirection;
 }
@@ -110,11 +111,12 @@ const Banners = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  page,
-  pageSize,
+  loading = false,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
 }: BannersProps) => {
@@ -169,9 +171,9 @@ const Banners = ({
       total: initialRowCount,
     },
     mutate,
-    isValidating: loading,
+    isValidating,
   } = useSWR(
-    [
+    !loading && [
       "/api/banners",
       filterModel.items[0]?.field,
       filterModel.items[0]?.operator,
@@ -608,6 +610,7 @@ const Banners = ({
         {!toolbarMode && (
           <>
             <Button
+              disabled={loading}
               onClick={handleCreateBanner}
               size="small"
               startIcon={<Add />}
@@ -688,7 +691,7 @@ const Banners = ({
           columns={columns}
           filterMode="server"
           filterModel={filterModel}
-          loading={loading}
+          loading={loading || isValidating}
           onFilterModelChange={handleFilterModelChange}
           onPaginationModelChange={handlePaginationModelChange}
           onSortModelChange={handleSortModelChange}

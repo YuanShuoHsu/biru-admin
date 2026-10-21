@@ -18,6 +18,7 @@ import {
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
 import {
+  DEFAULT_PAGE_SIZE,
   DEFAULT_PAGINATION_QUERY,
   getPageSizeOptions,
 } from "@/constants/pagination";
@@ -31,6 +32,7 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useRowSelection } from "@/hooks/useRowSelection";
+import { useSession } from "@/hooks/useSession";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { Link } from "@/i18n/navigation";
@@ -104,19 +106,19 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface CouponsProps {
-  canGrantCoupon: boolean;
-  canManageCoupon: boolean;
-  canViewAuditLog: boolean;
+  canGrantCoupon?: boolean;
+  canViewAuditLog?: boolean;
   filterField?: CouponFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
+  loading?: boolean;
   organization?: Organization;
-  organizations: OrganizationResponse[];
-  page: number;
-  pageSize: number;
+  organizations?: OrganizationResponse[];
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: CouponListItem[];
+  rowCount?: number;
+  rows?: CouponListItem[];
   sortBy?: CouponSortField;
   sortDirection?: SortDirection;
 }
@@ -130,19 +132,19 @@ const isExclusiveTo = (
   applicableOrganizationIds[0] === organizationId;
 
 const Coupons = ({
-  canGrantCoupon,
-  canManageCoupon,
-  canViewAuditLog,
+  canGrantCoupon = false,
+  canViewAuditLog = false,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
+  loading = false,
   organization,
-  organizations: initialOrganizations,
-  page,
-  pageSize,
+  organizations: initialOrganizations = [],
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
 }: CouponsProps) => {
@@ -176,6 +178,8 @@ const Coupons = ({
 
   const { setDialog } = useDialogStore((state) => state);
 
+  const canManageCoupon = useSession()?.user.role === "admin";
+
   const format = useFormatter();
 
   const formatMoney = useFormatMoney();
@@ -198,9 +202,15 @@ const Coupons = ({
 
   const { data: organizations = initialOrganizations } = useSWR<
     OrganizationResponse[]
-  >(canManageCoupon ? "/api/organizations?includeClosed=true" : null, fetcher, {
-    fallbackData: initialOrganizations,
-  });
+  >(
+    !loading && canManageCoupon
+      ? "/api/organizations?includeClosed=true"
+      : null,
+    fetcher,
+    {
+      fallbackData: initialOrganizations,
+    },
+  );
 
   const enumOptions = useMemo(
     () => getCouponEnumOptions(tCoupons, tCommon, organizations),
@@ -215,10 +225,10 @@ const Coupons = ({
       data: initialRows,
       total: initialRowCount,
     },
-    isValidating: loading,
+    isValidating,
     mutate,
   } = useSWR(
-    couponsPath
+    !loading && couponsPath
       ? [
           couponsPath,
           filterModel.items[0]?.field,
@@ -800,6 +810,7 @@ const Coupons = ({
           {!isSelectMode && (
             <>
               <Button
+                disabled={loading}
                 onClick={handleCreateCoupon}
                 size="small"
                 startIcon={<Add />}
@@ -851,7 +862,7 @@ const Coupons = ({
         columns={columns}
         filterMode="server"
         filterModel={filterModel}
-        loading={loading}
+        loading={loading || isValidating}
         onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
         onSortModelChange={handleSortModelChange}
