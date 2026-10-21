@@ -848,7 +848,7 @@
     "agent": {
       "approve": {
         "title": "Allow Claude Code to connect",
-        "confirm": "Allow the Claude Code agent on this computer to connect? Check that the code matches the one in your terminal: {code}. A new connection token is created and the old one stops working.",
+        "confirm": "Allow the Claude Code agent on this computer to connect? Check that the code matches the one in your terminal: {code}. A new connection token is created and the old one stops working. This token lets running bots place live orders from the agent's decisions — only allow an agent you started yourself.",
         "success": "Connection allowed. The agent in your terminal will start automatically"
       },
       "bind": "Connect Claude Code",
@@ -865,7 +865,7 @@
       },
       "setup": {
         "connect": "On the first run it opens this admin page automatically. Check the code and press Confirm to connect; nothing else is needed afterwards. If the connection ever becomes invalid, it reconnects the same way.",
-        "safety": "The agent only returns decisions; the backend places orders from them, within the per-order limit, stop-loss / take-profit and max daily loss. If the agent stops, the bot only holds — it does not close or stop, and the backend still enforces stop-loss / take-profit.",
+        "safety": "The backend places live orders directly from the agent's decisions, limited only by the per-order limit and stop-loss / take-profit. If the agent stops, the bot only holds — it does not close or stop, and the backend still enforces stop-loss / take-profit.",
         "start": "Run this in a terminal in the biru-api folder. It prints a status line every minute; press Ctrl+C to stop. Closing the terminal tab also stops it:",
         "startCommand": "Start watch mode",
         "title": "Decide with Claude Code"
