@@ -733,20 +733,22 @@ const Admins = ({
                         </StyledIconButton>
                       </Tooltip>
                     )}
-                    <Tooltip title={tAdmins("actions.removeUser.title")}>
-                      <StyledIconButton
-                        color="error"
-                        onClick={(event) => {
-                          event.stopPropagation();
+                    {hasSelectableRows && (
+                      <Tooltip title={tAdmins("actions.removeUser.title")}>
+                        <StyledIconButton
+                          color="error"
+                          onClick={(event) => {
+                            event.stopPropagation();
 
-                          handleRemoveUser(row);
-                        }}
-                        size="small"
-                        visible={isUserSelectable(row)}
-                      >
-                        <Delete fontSize="small" />
-                      </StyledIconButton>
-                    </Tooltip>
+                            handleRemoveUser(row);
+                          }}
+                          size="small"
+                          visible={isUserSelectable(row)}
+                        >
+                          <Delete fontSize="small" />
+                        </StyledIconButton>
+                      </Tooltip>
+                    )}
                   </ActionsStack>
                 );
               },
@@ -906,6 +908,7 @@ const Admins = ({
       handleSetUserPassword,
       handleUnbanUser,
       handleUpdateUser,
+      hasSelectableRows,
       hasSessionUser,
       hasImpersonableUser,
       isSelectMode,
