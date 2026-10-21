@@ -149,6 +149,7 @@ const MenuItemModifierGroups = ({
 
   const format = useFormatter();
   const locale = useLocale();
+  const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
   const stringFilterOperators = useStringFilterOperators();
   const dateFilterOperators = useDateFilterOperators();
@@ -578,7 +579,7 @@ const MenuItemModifierGroups = ({
       {
         field: "minSelectionCount",
         filterOperators: numberFilterOperators,
-        headerName: tMenus("modifierGroups.minSelectionCount.label"),
+        headerName: `${tMenus("modifierGroups.minSelectionCount.label")} ${tCommon("optional")}`,
         renderCell: renderEmptyableCell,
         valueGetter: (
           _value: unknown,
@@ -588,7 +589,7 @@ const MenuItemModifierGroups = ({
       {
         field: "maxSelectionCount",
         filterOperators: numberFilterOperators,
-        headerName: tMenus("modifierGroups.maxSelectionCount.label"),
+        headerName: `${tMenus("modifierGroups.maxSelectionCount.label")} ${tCommon("optional")}`,
         valueGetter: (
           _value: unknown,
           { modifierGroup }: MenuItemModifierGroup,
@@ -621,6 +622,7 @@ const MenuItemModifierGroups = ({
       locale,
       numberFilterOperators,
       stringFilterOperators,
+      tCommon,
       tMenus,
       toolbarMode,
     ],

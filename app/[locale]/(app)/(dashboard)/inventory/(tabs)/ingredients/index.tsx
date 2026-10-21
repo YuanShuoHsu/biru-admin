@@ -821,7 +821,7 @@ const Ingredients = ({
       {
         field: "inventoryLevel",
         filterOperators: numberFilterOperators,
-        headerName: tInventory("ingredients.inventoryLevel.label"),
+        headerName: `${tInventory("ingredients.inventoryLevel.label")} ${tCommon("optional")}`,
         renderCell: ({ row }: GridRenderCellParams<Ingredient>) => {
           const { inventoryLevel, lowStockThreshold } = row;
           const level = Number(inventoryLevel);
@@ -882,7 +882,7 @@ const Ingredients = ({
             {
               field: "url",
               filterable: false,
-              headerName: tInventory("ingredients.url.label"),
+              headerName: `${tInventory("ingredients.url.label")} ${tCommon("optional")}`,
               sortable: false,
               renderCell: ({
                 row: { url },

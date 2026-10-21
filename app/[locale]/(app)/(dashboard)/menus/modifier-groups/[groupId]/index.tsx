@@ -173,6 +173,7 @@ const Modifiers = ({
 
   const locale = useLocale();
 
+  const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
 
   const formatMoney = useFormatMoney();
@@ -619,7 +620,7 @@ const Modifiers = ({
       {
         field: "priceAdjustment",
         filterOperators: numberFilterOperators,
-        headerName: tMenus("modifiers.priceAdjustment.label"),
+        headerName: `${tMenus("modifiers.priceAdjustment.label")} ${tCommon("optional")}`,
         renderCell: ({
           row: { priceAdjustment, priceCurrency },
         }: GridRenderCellParams<Modifier>) =>
@@ -704,6 +705,7 @@ const Modifiers = ({
       locale,
       numberFilterOperators,
       stringFilterOperators,
+      tCommon,
       tMenus,
       toolbarMode,
       tOrder,

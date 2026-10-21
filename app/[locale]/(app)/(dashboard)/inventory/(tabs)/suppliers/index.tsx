@@ -481,7 +481,7 @@ const Suppliers = ({
       {
         field: "ingredients",
         filterable: false,
-        headerName: tInventory("suppliers.ingredients.label"),
+        headerName: `${tInventory("suppliers.ingredients.label")} ${tCommon("optional")}`,
         sortable: false,
         renderCell: ({
           row: { ingredients: supplied },

@@ -183,6 +183,7 @@ const Employees = ({
   const format = useFormatter();
 
   const tAttendance = useTranslations("attendance");
+  const tCommon = useTranslations("common");
 
   const updateQuery = useUpdateQuery();
 
@@ -645,7 +646,7 @@ const Employees = ({
       {
         field: "terminatedAt",
         filterOperators: dateFilterOperators,
-        headerName: tAttendance("terminatedAt"),
+        headerName: `${tAttendance("terminatedAt")} ${tCommon("optional")}`,
         renderCell: renderEmptyableCell,
         valueGetter: (_, row: AttendanceMember) => row.employee?.terminatedAt,
         valueFormatter: (value: string | null | undefined) =>
@@ -724,6 +725,7 @@ const Employees = ({
       isSelectMode,
       stringFilterOperators,
       tAttendance,
+      tCommon,
     ],
   );
 

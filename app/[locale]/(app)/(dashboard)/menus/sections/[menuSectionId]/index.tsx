@@ -730,7 +730,7 @@ const MenusMenuIdSectionId = ({
       {
         field: "servingTemperatures",
         filterOperators: enumFilterOperators,
-        headerName: tMenus("items.servingTemperatures.label"),
+        headerName: `${tMenus("items.servingTemperatures.label")} ${tCommon("optional")}`,
         type: "singleSelect",
         valueOptions: enumOptions.servingTemperatures,
         renderCell: ({

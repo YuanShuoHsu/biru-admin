@@ -175,6 +175,7 @@ const ModifierGroups = ({
   const searchParams = useSearchParams();
   const organization = searchParams.get("organization");
 
+  const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
 
   const updateQuery = useUpdateQuery();
@@ -636,12 +637,12 @@ const ModifierGroups = ({
       {
         field: "minSelectionCount",
         filterOperators: numberFilterOperators,
-        headerName: tMenus("modifierGroups.minSelectionCount.label"),
+        headerName: `${tMenus("modifierGroups.minSelectionCount.label")} ${tCommon("optional")}`,
       },
       {
         field: "maxSelectionCount",
         filterOperators: numberFilterOperators,
-        headerName: tMenus("modifierGroups.maxSelectionCount.label"),
+        headerName: `${tMenus("modifierGroups.maxSelectionCount.label")} ${tCommon("optional")}`,
         renderCell: ({
           row: { maxSelectionCount },
         }: GridRenderCellParams<ModifierGroup>) =>
@@ -675,6 +676,7 @@ const ModifierGroups = ({
       locale,
       numberFilterOperators,
       stringFilterOperators,
+      tCommon,
       tMenus,
       toolbarMode,
     ],

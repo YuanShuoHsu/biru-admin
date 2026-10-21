@@ -543,7 +543,7 @@ const Coupons = ({
                     </Tooltip>
                   )}
                   {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
-                  {canManageCoupon && (
+                  {canManageCoupon && hasSelectableRows && (
                     <Tooltip title={tCoupons("actions.deleteCoupon.title")}>
                       <StyledIconButton
                         color="error"
@@ -673,7 +673,7 @@ const Coupons = ({
       {
         field: "minSubtotal",
         filterOperators: numberFilterOperators,
-        headerName: tCoupons("minSubtotal.label"),
+        headerName: `${tCoupons("minSubtotal.label")} ${tCommon("optional")}`,
         renderCell: renderEmptyableCell,
         valueGetter: (
           _value: unknown,
@@ -697,14 +697,14 @@ const Coupons = ({
       {
         field: "perUserLimit",
         filterOperators: numberFilterOperators,
-        headerName: tCoupons("perUserLimit.label"),
+        headerName: `${tCoupons("perUserLimit.label")} ${tCommon("optional")}`,
         valueGetter: (_value: unknown, { perUserLimit }: Coupon) =>
           perUserLimit ?? tCoupons("unlimited"),
       },
       {
         field: "pointsCost",
         filterOperators: numberFilterOperators,
-        headerName: tCoupons("pointsCost.label"),
+        headerName: `${tCoupons("pointsCost.label")} ${tCommon("optional")}`,
         renderCell: renderEmptyableCell,
         valueGetter: (_value: unknown, { pointsCost }: Coupon) =>
           pointsCost == null
@@ -793,12 +793,14 @@ const Coupons = ({
       handleDeleteCoupon,
       handleGrantCoupon,
       handleUpdateCoupon,
+      hasSelectableRows,
       isCouponSelectable,
       isSelectMode,
       numberFilterOperators,
       organization?.id,
       stringFilterOperators,
       tAuth,
+      tCommon,
       tCoupons,
     ],
   );

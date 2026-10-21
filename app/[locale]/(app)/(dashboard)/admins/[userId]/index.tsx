@@ -276,22 +276,24 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
 
                 return (
                   <ActionsStack direction="row">
-                    <Tooltip
-                      title={tUserSessions("actions.revokeUserSession.title")}
-                    >
-                      <StyledIconButton
-                        color="error"
-                        onClick={(event) => {
-                          event.stopPropagation();
-
-                          handleRevokeUserSession(row);
-                        }}
-                        size="small"
-                        visible={isUserSessionSelectable(row)}
+                    {hasSelectableRows && (
+                      <Tooltip
+                        title={tUserSessions("actions.revokeUserSession.title")}
                       >
-                        <DeleteOutlined fontSize="small" />
-                      </StyledIconButton>
-                    </Tooltip>
+                        <StyledIconButton
+                          color="error"
+                          onClick={(event) => {
+                            event.stopPropagation();
+
+                            handleRevokeUserSession(row);
+                          }}
+                          size="small"
+                          visible={isUserSessionSelectable(row)}
+                        >
+                          <DeleteOutlined fontSize="small" />
+                        </StyledIconButton>
+                      </Tooltip>
+                    )}
                     {isCurrent && (
                       <Chip
                         label={tUserSessions("current")}
@@ -351,6 +353,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
       currentSession?.session,
       format,
       handleRevokeUserSession,
+      hasSelectableRows,
       isSelectMode,
       isUserSessionSelectable,
       tUserSessions,
