@@ -714,7 +714,7 @@ const Coupons = ({
       {
         field: "validFrom",
         filterOperators: dateFilterOperators,
-        headerName: tCoupons("validity"),
+        headerName: `${tCoupons("validity")} ${tCommon("optional")}`,
         valueGetter: (_value: unknown, { validFrom, validThrough }: Coupon) =>
           validFrom || validThrough
             ? [
