@@ -2449,17 +2449,17 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/organizations/{organizationSlug}/order-qr-sessions": {
+  "/api/organizations/{organizationSlug}/order-qr": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get?: never;
+    /** 店內 QR code 的網址：簽章換成短效 cookie 後轉到點餐頁，點餐頁網址不帶簽章 */
+    get: operations["OrderQrController_scan"];
     put?: never;
-    /** 掃描店內 QR code 後換成短效 cookie，之後網址不再帶簽章 */
-    post: operations["OrderQrController_createSession"];
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -8941,13 +8941,6 @@ export interface components {
     };
     /** @enum {string} */
     QrOrderMode: "dineIn" | "counter" | "driveThru";
-    CreateOrderQrSessionDto: {
-      mode: components["schemas"]["QrOrderMode"];
-      /** @description 內用必填 */
-      tableNumber?: number;
-      /** @description QR code 帶的簽章 */
-      token: string;
-    };
     OrderQrSessionResponseDto: {
       mode: components["schemas"]["QrOrderMode"];
       tableNumber: number | null;
@@ -18005,28 +17998,28 @@ export interface operations {
       };
     };
   };
-  OrderQrController_createSession: {
+  OrderQrController_scan: {
     parameters: {
-      query?: never;
+      query: {
+        mode: components["schemas"]["QrOrderMode"];
+        /** @description 內用必填 */
+        tableNumber?: number;
+        /** @description QR code 帶的簽章 */
+        token: string;
+      };
       header?: never;
       path: {
         organizationSlug: string;
       };
       cookie?: never;
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateOrderQrSessionDto"];
-      };
-    };
+    requestBody?: never;
     responses: {
-      201: {
+      200: {
         headers: {
           [name: string]: unknown;
         };
-        content: {
-          "application/json": components["schemas"]["OrderQrSessionResponseDto"];
-        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {

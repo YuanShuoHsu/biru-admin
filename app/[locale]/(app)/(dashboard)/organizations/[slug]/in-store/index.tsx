@@ -122,7 +122,7 @@ const DineInQrCodeCard = ({ organizationSlug }: DineInQrCodeCardProps) => {
 
   const orderUrl =
     data &&
-    `${process.env.NEXT_PUBLIC_NEXT_URL}/order/${ORDER_MODE.DineIn}/${organizationSlug}?${new URLSearchParams({ tableNumber, tableToken: data.token })}`;
+    `${process.env.NEXT_PUBLIC_NEXT_URL}/api/organizations/${organizationSlug}/order-qr?${new URLSearchParams({ mode: API_ORDER_MODE[ORDER_MODE.DineIn], tableNumber, token: data.token })}`;
 
   return (
     <Card variant="outlined">
@@ -169,7 +169,7 @@ const OrderModeQrCodeCard = ({
 
   const orderUrl =
     data &&
-    `${process.env.NEXT_PUBLIC_NEXT_URL}/order/${mode}/${organizationSlug}?${new URLSearchParams({ modeToken: data.token })}`;
+    `${process.env.NEXT_PUBLIC_NEXT_URL}/api/organizations/${organizationSlug}/order-qr?${new URLSearchParams({ mode: apiMode, token: data.token })}`;
 
   return (
     <Card variant="outlined">
