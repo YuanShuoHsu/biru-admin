@@ -150,6 +150,7 @@ const PayrollContent = async ({ params, searchParams }: PayrollPageProps) => {
   return (
     <Payroll
       canCreate={hasRolePermission(memberRole, { payslip: ["create"] })}
+      canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
       canViewCosts={hasRolePermission(memberRole, { payslip: ["read"] })}
       canManage={hasRolePermission(memberRole, { payslip: ["update"] })}
       canManageTerms={hasRolePermission(memberRole, {

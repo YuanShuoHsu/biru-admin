@@ -170,6 +170,7 @@ const LeaveCasesContent = async ({
         leaveCase: ["update"],
       })}
       canViewAll
+      canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
       canWrite={canWrite}
       canReviewOwn={selfReviewAllowed.leaveCase}
       employeeId={employee?.id}

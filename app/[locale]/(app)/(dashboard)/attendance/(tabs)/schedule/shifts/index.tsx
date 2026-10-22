@@ -9,6 +9,7 @@ import BatchReviewDialog from "../../../BatchReviewDialog";
 import EventsDialogContent from "../../../EventsDialogContent";
 import ReviewDialog from "../reviews/ReviewDialog";
 
+import AuditLogButton from "@/components/AuditLogButton";
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -29,7 +30,7 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { Add, Cancel, Check, Close, History } from "@mui/icons-material";
+import { Add, Cancel, Check, Close, PunchClock } from "@mui/icons-material";
 import { Button, Chip, IconButton, Stack, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
@@ -98,6 +99,7 @@ interface ShiftsProps {
   canCancel?: boolean;
   canCreate?: boolean;
   canReviewExtraWork?: boolean;
+  canViewAuditLog?: boolean;
   employees?: AttendanceEmployeeSummary[];
   filterField?: AttendanceShiftFilterField;
   filterOperator?: FilterOperator;
@@ -120,6 +122,7 @@ const Shifts = ({
   canCancel = false,
   canCreate = false,
   canReviewExtraWork = false,
+  canViewAuditLog = false,
   employees = [],
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
@@ -426,7 +429,7 @@ const Shifts = ({
                   size="small"
                   visible={!!row.originalEvents}
                 >
-                  <History fontSize="small" />
+                  <PunchClock fontSize="small" />
                 </StyledIconButton>
               </Tooltip>
             )}
@@ -455,6 +458,7 @@ const Shifts = ({
                   </StyledIconButton>
                 </Tooltip>
               ))}
+            {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
             {canCancel && (
               <Tooltip title={tAttendance("cancelShift")}>
                 <StyledIconButton
@@ -561,6 +565,7 @@ const Shifts = ({
     ],
     [
       canCancel,
+      canViewAuditLog,
       dateFilterOperators,
       enumFilterOperators,
       enumOptions.dayKind,

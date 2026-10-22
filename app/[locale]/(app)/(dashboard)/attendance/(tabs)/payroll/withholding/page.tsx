@@ -93,6 +93,7 @@ const WithholdingContent = async ({
   return (
     <Withholding
       canManage={hasRolePermission(memberRole, { payrollTerm: ["update"] })}
+      canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
       organization={organization}
       summary={summary}
     />

@@ -138,6 +138,7 @@ const ParentalReturnsContent = async ({
       })}
       canReviewOwn={selfReviewAllowed.parentalReturn}
       canViewAll
+      canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
       employeeId={employee?.id}
       filterField={filterField}
       filterOperator={filterOperator}

@@ -8,6 +8,7 @@ import useSWR from "swr";
 import BalanceDialog from "./BalanceDialog";
 import DeferralDialog from "./DeferralDialog";
 
+import AuditLogButton from "@/components/AuditLogButton";
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -78,6 +79,7 @@ interface BalancesProps {
   canDefer?: boolean;
   canRevokeDeferral?: boolean;
   canViewAll?: boolean;
+  canViewAuditLog?: boolean;
   canWrite?: boolean;
   employees?: AttendanceEmployeeSummary[];
   filterField?: AttendanceLeaveBalanceFilterField;
@@ -99,6 +101,7 @@ const Balances = ({
   canDefer = false,
   canRevokeDeferral = false,
   canViewAll = false,
+  canViewAuditLog = false,
   canWrite = false,
   employees = [],
   filterField: initialFilterField,
@@ -461,7 +464,9 @@ const Balances = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...(canViewAll && (canDefer || canRevokeDeferral) && !isSelectMode
+      ...(canViewAll &&
+      (canDefer || canRevokeDeferral || canViewAuditLog) &&
+      !isSelectMode
         ? [
             {
               disableColumnMenu: true,
@@ -472,6 +477,11 @@ const Balances = ({
               renderCell: ({
                 row,
               }: GridRenderCellParams<AttendanceLeaveBalance>) => {
+                if (!row.statutory)
+                  return (
+                    canViewAuditLog && <AuditLogButton resourceId={row.id} />
+                  );
+
                 if (row.leaveTypeStatutoryKind !== "annual") return null;
 
                 return row.annualLeaveDeferralId
@@ -575,6 +585,7 @@ const Balances = ({
       canDefer,
       canRevokeDeferral,
       canViewAll,
+      canViewAuditLog,
       date,
       dateFilterOperators,
       durationFilterOperators,

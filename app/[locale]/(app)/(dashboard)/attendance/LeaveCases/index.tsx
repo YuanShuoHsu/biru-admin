@@ -8,6 +8,7 @@ import useSWR from "swr";
 import AssignChildDialog from "./AssignChildDialog";
 import LeaveCaseDialog from "../LeaveCaseDialog";
 
+import AuditLogButton from "@/components/AuditLogButton";
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -90,6 +91,7 @@ interface LeaveCasesProps {
   canDelete?: boolean;
   canUpdate?: boolean;
   canViewAll?: boolean;
+  canViewAuditLog?: boolean;
   canWrite?: boolean;
   canReviewOwn?: boolean;
   employeeId?: string;
@@ -115,6 +117,7 @@ const LeaveCases = ({
   canDelete = false,
   canUpdate = false,
   canViewAll = false,
+  canViewAuditLog = false,
   canWrite = false,
   canReviewOwn = false,
   employeeId,
@@ -533,7 +536,8 @@ const LeaveCases = ({
     () => [
       ...((availableActions.assignChild ||
         availableActions.update ||
-        availableActions.delete) &&
+        availableActions.delete ||
+        canViewAuditLog) &&
       !isSelectMode
         ? [
             {
@@ -575,6 +579,7 @@ const LeaveCases = ({
                         </StyledIconButton>
                       </Tooltip>
                     )}
+                    {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
                     {availableActions.delete && (
                       <Tooltip title={tAttendance("leaveCases.actions.delete")}>
                         <StyledIconButton
@@ -688,6 +693,7 @@ const LeaveCases = ({
     [
       availableActions,
       canViewAll,
+      canViewAuditLog,
       date,
       dateFilterOperators,
       enumFilterOperators,

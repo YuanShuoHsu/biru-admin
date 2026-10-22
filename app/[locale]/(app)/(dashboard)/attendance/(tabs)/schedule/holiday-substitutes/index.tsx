@@ -10,6 +10,7 @@ import useSWR from "swr";
 
 import SubstituteDialog from "./SubstituteDialog";
 
+import AuditLogButton from "@/components/AuditLogButton";
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -68,6 +69,12 @@ const YearDatePicker = styled(DatePicker)({
   alignSelf: "flex-start",
 });
 
+const ActionsStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
 const ToolbarStack = styled(Stack)(({ theme }) => ({
   flexWrap: "wrap",
   alignItems: "center",
@@ -76,6 +83,7 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 
 interface HolidaySubstitutesProps {
   canUpdate?: boolean;
+  canViewAuditLog?: boolean;
   filterField?: AttendanceHolidaySubstituteFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
@@ -93,6 +101,7 @@ interface HolidaySubstitutesProps {
 
 const HolidaySubstitutes = ({
   canUpdate = false,
+  canViewAuditLog = false,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
@@ -437,7 +446,7 @@ const HolidaySubstitutes = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...(canUpdate && !isSelectMode
+      ...((canUpdate || canViewAuditLog) && !isSelectMode
         ? [
             {
               disableColumnMenu: true,
@@ -447,27 +456,39 @@ const HolidaySubstitutes = ({
               headerName: tAttendance("actions"),
               renderCell: ({
                 row,
-              }: GridRenderCellParams<AttendanceHolidaySubstitute>) =>
-                row.substituteId ? (
-                  <Tooltip
-                    title={tAttendance("holidaySubstitutes.actions.revoke")}
-                  >
-                    <IconButton onClick={() => handleRevoke(row)} size="small">
-                      <EventBusy fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                ) : (
-                  <Tooltip
-                    title={tAttendance("holidaySubstitutes.actions.designate")}
-                  >
-                    <IconButton
-                      onClick={() => handleDesignate(row)}
-                      size="small"
-                    >
-                      <EventAvailable fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                ),
+              }: GridRenderCellParams<AttendanceHolidaySubstitute>) => (
+                <ActionsStack direction="row">
+                  {canUpdate &&
+                    (row.substituteId ? (
+                      <Tooltip
+                        title={tAttendance("holidaySubstitutes.actions.revoke")}
+                      >
+                        <IconButton
+                          onClick={() => handleRevoke(row)}
+                          size="small"
+                        >
+                          <EventBusy fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    ) : (
+                      <Tooltip
+                        title={tAttendance(
+                          "holidaySubstitutes.actions.designate",
+                        )}
+                      >
+                        <IconButton
+                          onClick={() => handleDesignate(row)}
+                          size="small"
+                        >
+                          <EventAvailable fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    ))}
+                  {canViewAuditLog && row.substituteId && (
+                    <AuditLogButton resourceId={row.substituteId} />
+                  )}
+                </ActionsStack>
+              ),
               resizable: false,
               sortable: false,
             } satisfies GridColDef,
@@ -529,6 +550,7 @@ const HolidaySubstitutes = ({
     ],
     [
       canUpdate,
+      canViewAuditLog,
       dateFilterOperators,
       format,
       handleDesignate,

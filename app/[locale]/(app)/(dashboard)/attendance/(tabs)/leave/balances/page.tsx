@@ -157,6 +157,7 @@ const BalancesContent = async ({ params, searchParams }: BalancesPageProps) => {
       canDefer={canDefer}
       canRevokeDeferral={canRevokeDeferral}
       canViewAll
+      canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
       canWrite={canWrite}
       employees={employees}
       filterField={filterField}

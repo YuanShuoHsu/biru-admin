@@ -8,6 +8,7 @@ import BatchReviewDialog from "../../../BatchReviewDialog";
 import LeaveCaseDialog from "../../../LeaveCaseDialog";
 import ReviewDialog from "./ReviewDialog";
 
+import AuditLogButton from "@/components/AuditLogButton";
 import DataGrid from "@/components/DataGrid";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -78,6 +79,7 @@ interface ReviewsProps {
   canGrantLeaveCase?: boolean;
   canReview?: boolean;
   canReviewOwn?: boolean;
+  canViewAuditLog?: boolean;
   employeeId?: string;
   employees?: AttendanceEmployeeSummary[];
   filterField?: AttendanceRequestFilterField;
@@ -99,6 +101,7 @@ const Reviews = ({
   canGrantLeaveCase = false,
   canReview = false,
   canReviewOwn = false,
+  canViewAuditLog = false,
   employeeId,
   employees = [],
   filterField: initialFilterField,
@@ -378,7 +381,7 @@ const Reviews = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...(canReview
+      ...(canReview || canViewAuditLog
         ? [
             {
               disableColumnMenu: true,
@@ -386,52 +389,59 @@ const Reviews = ({
               field: "actions",
               filterable: false,
               headerName: tAttendance("actions"),
-              renderCell: ({ row }: GridRenderCellParams<AttendanceRequest>) =>
-                row.status === "pending" ||
-                row.status === "cancellationPending" ? (
-                  <StyledStack direction="row">
-                    <Tooltip
-                      title={
-                        !canReviewOwn && row.employeeId === employeeId
-                          ? tAttendance("errors.cannotReviewSelf")
-                          : reviewTitle(row, "approved")
-                      }
-                    >
-                      <span>
-                        <IconButton
-                          color="success"
-                          disabled={
+              renderCell: ({
+                row,
+              }: GridRenderCellParams<AttendanceRequest>) => (
+                <StyledStack direction="row">
+                  {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
+                  {canReview &&
+                    (row.status === "pending" ||
+                      row.status === "cancellationPending") && (
+                      <>
+                        <Tooltip
+                          title={
                             !canReviewOwn && row.employeeId === employeeId
+                              ? tAttendance("errors.cannotReviewSelf")
+                              : reviewTitle(row, "approved")
                           }
-                          onClick={() => handleReview(row, "approved")}
-                          size="small"
                         >
-                          <Check fontSize="small" />
-                        </IconButton>
-                      </span>
-                    </Tooltip>
-                    <Tooltip
-                      title={
-                        !canReviewOwn && row.employeeId === employeeId
-                          ? tAttendance("errors.cannotReviewSelf")
-                          : reviewTitle(row, "rejected")
-                      }
-                    >
-                      <span>
-                        <IconButton
-                          color="error"
-                          disabled={
+                          <span>
+                            <IconButton
+                              color="success"
+                              disabled={
+                                !canReviewOwn && row.employeeId === employeeId
+                              }
+                              onClick={() => handleReview(row, "approved")}
+                              size="small"
+                            >
+                              <Check fontSize="small" />
+                            </IconButton>
+                          </span>
+                        </Tooltip>
+                        <Tooltip
+                          title={
                             !canReviewOwn && row.employeeId === employeeId
+                              ? tAttendance("errors.cannotReviewSelf")
+                              : reviewTitle(row, "rejected")
                           }
-                          onClick={() => handleReview(row, "rejected")}
-                          size="small"
                         >
-                          <Close fontSize="small" />
-                        </IconButton>
-                      </span>
-                    </Tooltip>
-                  </StyledStack>
-                ) : null,
+                          <span>
+                            <IconButton
+                              color="error"
+                              disabled={
+                                !canReviewOwn && row.employeeId === employeeId
+                              }
+                              onClick={() => handleReview(row, "rejected")}
+                              size="small"
+                            >
+                              <Close fontSize="small" />
+                            </IconButton>
+                          </span>
+                        </Tooltip>
+                      </>
+                    )}
+                </StyledStack>
+              ),
               resizable: false,
               sortable: false,
             },
@@ -516,6 +526,7 @@ const Reviews = ({
     [
       canReviewOwn,
       canReview,
+      canViewAuditLog,
       date,
       dateFilterOperators,
       employeeId,

@@ -130,6 +130,7 @@ const LeaveTypesContent = async ({
 
   return (
     <LeaveTypes
+      canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}

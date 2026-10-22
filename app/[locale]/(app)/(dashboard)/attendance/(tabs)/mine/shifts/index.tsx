@@ -29,7 +29,7 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { EditNote, EventBusy, History, MoreTime } from "@mui/icons-material";
+import { EditNote, EventBusy, MoreTime, PunchClock } from "@mui/icons-material";
 import { Alert, Chip, IconButton, Stack, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
@@ -335,7 +335,7 @@ const Mine = ({
                   size="small"
                   visible={!!row.originalEvents}
                 >
-                  <History fontSize="small" />
+                  <PunchClock fontSize="small" />
                 </StyledIconButton>
               </Tooltip>
             )}

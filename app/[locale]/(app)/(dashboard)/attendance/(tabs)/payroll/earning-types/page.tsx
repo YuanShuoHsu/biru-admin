@@ -123,6 +123,7 @@ const EarningTypesContent = async ({
 
   return (
     <EarningTypes
+      canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}

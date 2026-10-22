@@ -7,6 +7,7 @@ import useSWR from "swr";
 
 import LeaveTypeDialog from "./LeaveTypeDialog";
 
+import AuditLogButton from "@/components/AuditLogButton";
 import DataGrid from "@/components/DataGrid";
 
 import {
@@ -79,6 +80,7 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface LeaveTypesProps {
+  canViewAuditLog?: boolean;
   filterField?: AttendanceLeaveTypeFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
@@ -94,6 +96,7 @@ interface LeaveTypesProps {
 }
 
 const LeaveTypes = ({
+  canViewAuditLog = false,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
@@ -422,6 +425,7 @@ const LeaveTypes = ({
                       <Edit fontSize="small" />
                     </IconButton>
                   </Tooltip>
+                  {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
                   {isLeaveTypeSelectable(row) && (
                     <Tooltip
                       title={tAttendance("leaveTypes.actions.delete.title")}
@@ -519,6 +523,7 @@ const LeaveTypes = ({
     ],
     [
       booleanFilterOperators,
+      canViewAuditLog,
       enumFilterOperators,
       enumOptions.statutoryKind,
       handleDeleteLeaveType,

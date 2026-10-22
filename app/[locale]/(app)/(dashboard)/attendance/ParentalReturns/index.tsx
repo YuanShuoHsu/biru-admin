@@ -7,6 +7,7 @@ import useSWR, { mutate as mutateCache } from "swr";
 
 import ReturnReviewDialog from "./ReturnReviewDialog";
 
+import AuditLogButton from "@/components/AuditLogButton";
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -77,6 +78,7 @@ interface ParentalReturnsProps {
   canReview?: boolean;
   canReviewOwn?: boolean;
   canViewAll?: boolean;
+  canViewAuditLog?: boolean;
   employeeId?: string;
   filterField?: AttendanceParentalReturnFilterField;
   filterOperator?: FilterOperator;
@@ -96,6 +98,7 @@ const ParentalReturns = ({
   canReview = false,
   canReviewOwn = false,
   canViewAll = false,
+  canViewAuditLog = false,
   employeeId,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
@@ -334,54 +337,54 @@ const ParentalReturns = ({
         headerName: tAttendance("actions"),
         renderCell: ({
           row,
-        }: GridRenderCellParams<AttendanceParentalReturn>) =>
-          row.status === "pending" ? (
-            <StyledStack direction="row">
-              {availableActions.review && (
-                <>
-                  <Tooltip title={tAttendance("approve")}>
-                    <StyledIconButton
-                      color="success"
-                      onClick={() => {
-                        if (getRowActions(row).review)
-                          handleReview(row, "approved");
-                      }}
-                      size="small"
-                      visible={getRowActions(row).review}
-                    >
-                      <Check fontSize="small" />
-                    </StyledIconButton>
-                  </Tooltip>
-                  <Tooltip title={tAttendance("reject")}>
-                    <StyledIconButton
-                      color="error"
-                      onClick={() => {
-                        if (getRowActions(row).review)
-                          handleReview(row, "rejected");
-                      }}
-                      size="small"
-                      visible={getRowActions(row).review}
-                    >
-                      <Close fontSize="small" />
-                    </StyledIconButton>
-                  </Tooltip>
-                </>
-              )}
-              {availableActions.withdraw && (
-                <Tooltip title={tAttendance("withdraw")}>
+        }: GridRenderCellParams<AttendanceParentalReturn>) => (
+          <StyledStack direction="row">
+            {availableActions.review && (
+              <>
+                <Tooltip title={tAttendance("approve")}>
                   <StyledIconButton
+                    color="success"
                     onClick={() => {
-                      if (getRowActions(row).withdraw) handleWithdraw(row);
+                      if (getRowActions(row).review)
+                        handleReview(row, "approved");
                     }}
                     size="small"
-                    visible={getRowActions(row).withdraw}
+                    visible={getRowActions(row).review}
                   >
-                    <Undo fontSize="small" />
+                    <Check fontSize="small" />
                   </StyledIconButton>
                 </Tooltip>
-              )}
-            </StyledStack>
-          ) : null,
+                <Tooltip title={tAttendance("reject")}>
+                  <StyledIconButton
+                    color="error"
+                    onClick={() => {
+                      if (getRowActions(row).review)
+                        handleReview(row, "rejected");
+                    }}
+                    size="small"
+                    visible={getRowActions(row).review}
+                  >
+                    <Close fontSize="small" />
+                  </StyledIconButton>
+                </Tooltip>
+              </>
+            )}
+            {availableActions.withdraw && (
+              <Tooltip title={tAttendance("withdraw")}>
+                <StyledIconButton
+                  onClick={() => {
+                    if (getRowActions(row).withdraw) handleWithdraw(row);
+                  }}
+                  size="small"
+                  visible={getRowActions(row).withdraw}
+                >
+                  <Undo fontSize="small" />
+                </StyledIconButton>
+              </Tooltip>
+            )}
+            {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
+          </StyledStack>
+        ),
         resizable: false,
         sortable: false,
       },
@@ -447,6 +450,7 @@ const ParentalReturns = ({
     [
       availableActions,
       canViewAll,
+      canViewAuditLog,
       date,
       dateFilterOperators,
       enumFilterOperators,

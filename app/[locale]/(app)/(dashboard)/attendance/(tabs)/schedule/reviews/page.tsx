@@ -157,6 +157,7 @@ const ReviewsContent = async ({ params, searchParams }: ReviewsPageProps) => {
         attendanceRequest: ["update"],
       })}
       canReviewOwn={selfReviewAllowed.attendanceRequest}
+      canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
       employeeId={employee?.id}
       employees={employees}
       filterField={filterField}

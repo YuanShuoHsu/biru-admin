@@ -222,24 +222,88 @@ const routes: Route[] = [
             segment: "calendar",
           },
           {
+            children: [
+              {
+                children: [
+                  {
+                    icon: History,
+                    label: "audit.title",
+                    query: ["organization", "page", "pageSize"],
+                    segment: "audit-logs",
+                  },
+                ],
+                icon: EventNote,
+                label: "audit.resource.shift",
+                segment: "[shiftId]",
+                to: null,
+              },
+            ],
             icon: EventNote,
             label: "attendance.shifts.label",
             query: ["organization", "page", "pageSize"],
             segment: "shifts",
           },
           {
+            children: [
+              {
+                children: [
+                  {
+                    icon: History,
+                    label: "audit.title",
+                    query: ["organization", "page", "pageSize"],
+                    segment: "audit-logs",
+                  },
+                ],
+                icon: FactCheck,
+                label: "audit.resource.attendanceRequest",
+                segment: "[requestId]",
+                to: null,
+              },
+            ],
             icon: FactCheck,
             label: "attendance.reviews.label",
             query: ["organization", "page", "pageSize"],
             segment: "reviews",
           },
           {
+            children: [
+              {
+                children: [
+                  {
+                    icon: History,
+                    label: "audit.title",
+                    query: ["organization", "page", "pageSize"],
+                    segment: "audit-logs",
+                  },
+                ],
+                icon: EventRepeat,
+                label: "audit.resource.holidaySubstitute",
+                segment: "[substituteId]",
+                to: null,
+              },
+            ],
             icon: EventRepeat,
             label: "attendance.holidaySubstitutes.label",
             query: ["organization", "page", "pageSize"],
             segment: "holiday-substitutes",
           },
           {
+            children: [
+              {
+                children: [
+                  {
+                    icon: History,
+                    label: "audit.title",
+                    query: ["organization", "page", "pageSize"],
+                    segment: "audit-logs",
+                  },
+                ],
+                icon: Schedule,
+                label: "audit.resource.shiftType",
+                segment: "[shiftTypeId]",
+                to: null,
+              },
+            ],
             icon: Schedule,
             label: "attendance.shiftTypes.label",
             query: ["organization", "page", "pageSize"],
@@ -254,12 +318,44 @@ const routes: Route[] = [
       {
         children: [
           {
+            children: [
+              {
+                children: [
+                  {
+                    icon: History,
+                    label: "audit.title",
+                    query: ["organization", "page", "pageSize"],
+                    segment: "audit-logs",
+                  },
+                ],
+                icon: AccountBalanceWallet,
+                label: "audit.resource.leaveBalance",
+                segment: "[balanceId]",
+                to: null,
+              },
+            ],
             icon: AccountBalanceWallet,
             label: "attendance.balances.label",
             query: ["organization", "page", "pageSize"],
             segment: "balances",
           },
           {
+            children: [
+              {
+                children: [
+                  {
+                    icon: History,
+                    label: "audit.title",
+                    query: ["organization", "page", "pageSize"],
+                    segment: "audit-logs",
+                  },
+                ],
+                icon: FolderShared,
+                label: "audit.resource.leaveCase",
+                segment: "[leaveCaseId]",
+                to: null,
+              },
+            ],
             icon: FolderShared,
             label: "attendance.leaveCases.label",
             query: ["organization", "page", "pageSize"],
@@ -272,12 +368,44 @@ const routes: Route[] = [
             segment: "annual-leave-notices",
           },
           {
+            children: [
+              {
+                children: [
+                  {
+                    icon: History,
+                    label: "audit.title",
+                    query: ["organization", "page", "pageSize"],
+                    segment: "audit-logs",
+                  },
+                ],
+                icon: AssignmentReturn,
+                label: "audit.resource.parentalReturn",
+                segment: "[parentalReturnId]",
+                to: null,
+              },
+            ],
             icon: AssignmentReturn,
             label: "attendance.parentalReturns.label",
             query: ["organization", "page", "pageSize"],
             segment: "parental-returns",
           },
           {
+            children: [
+              {
+                children: [
+                  {
+                    icon: History,
+                    label: "audit.title",
+                    query: ["organization", "page", "pageSize"],
+                    segment: "audit-logs",
+                  },
+                ],
+                icon: Category,
+                label: "audit.resource.leaveType",
+                segment: "[leaveTypeId]",
+                to: null,
+              },
+            ],
             icon: Category,
             label: "attendance.leaveTypes.label",
             query: ["organization", "page", "pageSize"],
@@ -292,18 +420,66 @@ const routes: Route[] = [
       {
         children: [
           {
+            children: [
+              {
+                children: [
+                  {
+                    icon: History,
+                    label: "audit.title",
+                    query: ["organization", "page", "pageSize"],
+                    segment: "audit-logs",
+                  },
+                ],
+                icon: Payments,
+                label: "audit.resource.payslip",
+                segment: "[statementId]",
+                to: null,
+              },
+            ],
             icon: Payments,
             label: "attendance.payslips.label",
             query: ["organization", "page", "pageSize"],
             segment: "statements",
           },
           {
+            children: [
+              {
+                children: [
+                  {
+                    icon: History,
+                    label: "audit.title",
+                    query: ["organization", "page", "pageSize"],
+                    segment: "audit-logs",
+                  },
+                ],
+                icon: ReceiptLong,
+                label: "audit.resource.taxIdentity",
+                segment: "[employeeId]",
+                to: null,
+              },
+            ],
             icon: ReceiptLong,
             label: "attendance.withholding.label",
             query: ["organization"],
             segment: "withholding",
           },
           {
+            children: [
+              {
+                children: [
+                  {
+                    icon: History,
+                    label: "audit.title",
+                    query: ["organization", "page", "pageSize"],
+                    segment: "audit-logs",
+                  },
+                ],
+                icon: AddCard,
+                label: "audit.resource.earningType",
+                segment: "[earningTypeId]",
+                to: null,
+              },
+            ],
             icon: AddCard,
             label: "attendance.earningTypes.label",
             query: ["organization", "page", "pageSize"],

@@ -7,6 +7,7 @@ import useSWR from "swr";
 
 import ShiftTypeDialog from "./ShiftTypeDialog";
 
+import AuditLogButton from "@/components/AuditLogButton";
 import DataGrid from "@/components/DataGrid";
 
 import {
@@ -66,6 +67,7 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface ShiftTypesProps {
+  canViewAuditLog?: boolean;
   filterField?: AttendanceShiftTypeFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
@@ -81,6 +83,7 @@ interface ShiftTypesProps {
 }
 
 const ShiftTypes = ({
+  canViewAuditLog = false,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
@@ -390,6 +393,7 @@ const ShiftTypes = ({
                       <Edit fontSize="small" />
                     </IconButton>
                   </Tooltip>
+                  {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
                   <Tooltip
                     title={tAttendance("shiftTypes.actions.delete.title")}
                   >
@@ -429,6 +433,7 @@ const ShiftTypes = ({
       },
     ],
     [
+      canViewAuditLog,
       handleDeleteShiftType,
       handleShiftTypeDialog,
       isSelectMode,

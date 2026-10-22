@@ -13,6 +13,7 @@ import DraftDialog from "./DraftDialog";
 import EmployerSupplementDialog from "./EmployerSupplementDialog";
 import TermsDialog from "./TermsDialog";
 
+import AuditLogButton from "@/components/AuditLogButton";
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -92,6 +93,7 @@ interface PayrollProps {
   canViewCosts?: boolean;
   canManage?: boolean;
   canManageTerms?: boolean;
+  canViewAuditLog?: boolean;
   earningTypes?: PayrollEarningType[];
   employees?: AttendanceEmployeeSummary[];
   filterField?: PayrollStatementFilterField;
@@ -114,6 +116,7 @@ const Payroll = ({
   canViewCosts = false,
   canManage = false,
   canManageTerms = false,
+  canViewAuditLog = false,
   earningTypes = [],
   employees = [],
   filterField: initialFilterField,
@@ -434,7 +437,7 @@ const Payroll = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...(canManage
+      ...(canManage || canViewAuditLog
         ? [
             {
               disableColumnMenu: true,
@@ -442,10 +445,12 @@ const Payroll = ({
               field: "actions",
               filterable: false,
               headerName: tAttendance("actions"),
-              renderCell: ({ row }: GridRenderCellParams<PayrollStatement>) =>
-                row.status === "published" ? null : (
-                  <ActionsStack direction="row">
-                    {row.snapshot.blockers.length > 0 ? (
+              renderCell: ({ row }: GridRenderCellParams<PayrollStatement>) => (
+                <ActionsStack direction="row">
+                  {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
+                  {canManage &&
+                    row.status !== "published" &&
+                    (row.snapshot.blockers.length > 0 ? (
                       <Tooltip title={tAttendance("errors.payrollBlocked")}>
                         <IconButton
                           color="warning"
@@ -478,9 +483,9 @@ const Payroll = ({
                           )}
                         </IconButton>
                       </Tooltip>
-                    )}
-                  </ActionsStack>
-                ),
+                    ))}
+                </ActionsStack>
+              ),
               resizable: false,
               sortable: false,
             },
@@ -555,6 +560,7 @@ const Payroll = ({
     ],
     [
       canManage,
+      canViewAuditLog,
       enumFilterOperators,
       enumOptions.status,
       format,

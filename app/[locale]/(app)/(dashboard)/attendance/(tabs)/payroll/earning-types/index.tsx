@@ -7,6 +7,7 @@ import useSWR from "swr";
 
 import EarningTypeDialog from "./EarningTypeDialog";
 
+import AuditLogButton from "@/components/AuditLogButton";
 import DataGrid from "@/components/DataGrid";
 
 import {
@@ -70,6 +71,7 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface EarningTypesProps {
+  canViewAuditLog?: boolean;
   filterField?: PayrollEarningTypeFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
@@ -85,6 +87,7 @@ interface EarningTypesProps {
 }
 
 const EarningTypes = ({
+  canViewAuditLog = false,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
@@ -411,6 +414,7 @@ const EarningTypes = ({
                       <Edit fontSize="small" />
                     </IconButton>
                   </Tooltip>
+                  {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
                   {isEarningTypeSelectable(row) && (
                     <Tooltip
                       title={tAttendance("earningTypes.actions.delete.title")}
@@ -445,6 +449,7 @@ const EarningTypes = ({
       },
     ],
     [
+      canViewAuditLog,
       enumFilterOperators,
       enumOptions.category,
       handleDeleteEarningType,

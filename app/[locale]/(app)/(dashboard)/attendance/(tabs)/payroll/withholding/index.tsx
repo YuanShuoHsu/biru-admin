@@ -8,6 +8,7 @@ import { useCallback, useMemo, useState } from "react";
 import TaxIdentityDialog from "./TaxIdentityDialog";
 import UnitDialog from "./UnitDialog";
 
+import AuditLogButton from "@/components/AuditLogButton";
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -74,6 +75,7 @@ const NON_RESIDENT_AMOUNT_FIELDS = [
 
 interface WithholdingProps {
   canManage?: boolean;
+  canViewAuditLog?: boolean;
   loading?: boolean;
   organization?: Organization;
   summary?: PayrollWithholdingSummary;
@@ -81,6 +83,7 @@ interface WithholdingProps {
 
 const Withholding = ({
   canManage = false,
+  canViewAuditLog = false,
   loading = false,
   organization,
   summary,
@@ -240,7 +243,7 @@ const Withholding = ({
 
   const annualColumns = useMemo<GridColDef[]>(
     () => [
-      ...(canManage
+      ...(canManage || canViewAuditLog
         ? [
             {
               disableColumnMenu: true,
@@ -252,20 +255,25 @@ const Withholding = ({
                 row,
               }: GridRenderCellParams<PayrollWithholdingCertificate>) => (
                 <ActionsStack direction="row">
-                  <Tooltip title={tAttendance("withholding.identity.edit")}>
-                    <IconButton
-                      onClick={() =>
-                        handleTaxIdentityDialog(
-                          row.employeeId,
-                          row.employeeName,
-                          row.idType !== "0",
-                        )
-                      }
-                      size="small"
-                    >
-                      <Edit fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
+                  {canManage && (
+                    <Tooltip title={tAttendance("withholding.identity.edit")}>
+                      <IconButton
+                        onClick={() =>
+                          handleTaxIdentityDialog(
+                            row.employeeId,
+                            row.employeeName,
+                            row.idType !== "0",
+                          )
+                        }
+                        size="small"
+                      >
+                        <Edit fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {canViewAuditLog && (
+                    <AuditLogButton resourceId={row.employeeId} />
+                  )}
                 </ActionsStack>
               ),
               resizable: false,
@@ -312,6 +320,7 @@ const Withholding = ({
     [
       amountColumn,
       canManage,
+      canViewAuditLog,
       handleTaxIdentityDialog,
       identityColumns,
       monthFormat,
@@ -353,6 +362,9 @@ const Withholding = ({
                     <Edit fontSize="small" />
                   </IconButton>
                 </Tooltip>
+              )}
+              {canViewAuditLog && (
+                <AuditLogButton resourceId={row.employeeId} />
               )}
               <Tooltip
                 title={
@@ -409,6 +421,7 @@ const Withholding = ({
       amountColumn,
       blockedReason,
       canManage,
+      canViewAuditLog,
       download,
       downloading,
       format,

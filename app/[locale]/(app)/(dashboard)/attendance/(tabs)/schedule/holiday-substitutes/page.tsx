@@ -124,6 +124,7 @@ const HolidaySubstitutesContent = async ({
   return (
     <HolidaySubstitutes
       canUpdate={hasRolePermission(memberRole, { shift: ["update"] })}
+      canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}

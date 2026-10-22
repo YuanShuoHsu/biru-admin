@@ -109,6 +109,7 @@ const ShiftTypesContent = async ({
 
   return (
     <ShiftTypes
+      canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
