@@ -263,6 +263,7 @@ const FIELD_LABEL_KEYS = {
   periodStart: "field.periodStart",
   originalEndsAt: "field.originalEndsAt",
   irreversible: "field.irreversible",
+  username: "field.username",
 } as const;
 
 const ATTENDANCE_FIELD_LABEL_KEYS = {

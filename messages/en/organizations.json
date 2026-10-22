@@ -104,6 +104,7 @@
       "lastSeenAt": "Last connected",
       "neverSeen": "Not connected yet",
       "password": "Password",
+      "queued": "Sent {count} unprinted invoices to the printer",
       "remove": "Remove printer",
       "removeConfirm": "Invoices will be printed from the browser instead, and print jobs not yet sent will be cancelled. Remove the printer?",
       "removeSuccess": "Removed the invoice printer",

@@ -205,9 +205,20 @@ const InvoicePrinterCard = ({ organizationSlug }: InvoicePrinterCardProps) => {
   const [settingUp, setSettingUp] = useState(false);
 
   const register = async () => {
-    setCredentials(
-      await fetcher<InvoicePrinterCredentials>(printerUrl, { method: "PUT" }),
-    );
+    const registered = await fetcher<InvoicePrinterCredentials>(printerUrl, {
+      method: "PUT",
+    });
+
+    setCredentials(registered);
+
+    if (registered.queuedCount)
+      enqueueSnackbar(
+        tOrganizations("inStore.invoicePrinter.queued", {
+          count: registered.queuedCount,
+        }),
+        { variant: "info" },
+      );
+
     await mutate();
   };
 

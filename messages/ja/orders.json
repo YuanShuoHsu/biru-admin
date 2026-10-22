@@ -7,6 +7,11 @@
     },
     "label": "操作",
     "printInvoice": {
+      "blocked": {
+        "queued": "インボイスはプリンター待ちです",
+        "sent": "インボイスを印刷中です",
+        "unknown": "先に前回の印刷結果を確認してください"
+      },
       "queued": "注文 {orderNumber} のインボイスをインボイスプリンターに送信しました",
       "reprintConfirm": "注文 <bold>{orderNumber}</bold> のインボイスを再印刷してもよろしいですか？正本はすでに印刷済みで、再印刷分は当選対象になりません。正本が実際に出力されなかった場合は、先に未印刷に戻してください。",
       "reprintLabel": "インボイスを再印刷",
@@ -41,6 +46,7 @@
       "title": "未印刷に戻す"
     },
     "resolveInvoicePrint": {
+      "browserReprint": "印刷ダイアログで正本を再印刷してください",
       "description": "注文 <bold>{orderNumber}</bold> のインボイスの印刷が完了したかどうか、プリンターから報告がありません{reason}。プリンターからこのインボイスが出てきたか確認し、実際の状況を選んでください。",
       "notPrinted": "バーコードはまったく印刷されていない。正本を再印刷する",
       "printed": "バーコードが印刷された（一部だけでも）",

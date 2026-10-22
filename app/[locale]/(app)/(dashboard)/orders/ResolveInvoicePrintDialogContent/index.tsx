@@ -36,6 +36,7 @@ export const RESOLVE_INVOICE_PRINT_FORM_ID = "resolve-invoice-print-form";
 
 interface ResolveInvoicePrintDialogContentProps {
   mutate: () => void;
+  onBrowserReprint: () => Promise<void>;
   order: AdminOrderResponse;
   organizationSlug: string;
   printJob: InvoicePrintJob;
@@ -43,6 +44,7 @@ interface ResolveInvoicePrintDialogContentProps {
 
 const ResolveInvoicePrintDialogContent = ({
   mutate,
+  onBrowserReprint,
   order,
   organizationSlug,
   printJob,
@@ -70,7 +72,7 @@ const ResolveInvoicePrintDialogContent = ({
     setDialog({ confirmLoading: true });
 
     try {
-      await fetcher(
+      const resolved = await fetcher<InvoicePrintJob>(
         `/api/organizations/${organizationSlug}/orders/${order.id}/invoice/print-jobs/${printJob.id}/resolution`,
         {
           body: JSON.stringify({
@@ -81,6 +83,18 @@ const ResolveInvoicePrintDialogContent = ({
         },
       );
 
+      closeDialog();
+
+      // 沒有印表機時後端只作廢這次列印，重印要由這個瀏覽器再開一次列印視窗
+      if (resolved.status === "cancelled") {
+        enqueueSnackbar(tOrders("actions.resolveInvoicePrint.browserReprint"), {
+          variant: "info",
+        });
+        await onBrowserReprint();
+
+        return;
+      }
+
       enqueueSnackbar(
         tOrders(
           printed
@@ -90,8 +104,6 @@ const ResolveInvoicePrintDialogContent = ({
         ),
         { variant: "success" },
       );
-
-      closeDialog();
     } catch (error) {
       enqueueSnackbar(getErrorMessage(error), { variant: "error" });
     } finally {

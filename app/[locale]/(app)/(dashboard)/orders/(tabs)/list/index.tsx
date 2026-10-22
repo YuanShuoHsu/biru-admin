@@ -31,7 +31,9 @@ import {
   canResetInvoicePrint,
   canResolveInvoicePrint,
   canVoidInvoice,
+  printInvoiceBlockedBy,
   useOrderActions,
+  usePrintInvoiceTooltip,
 } from "@/hooks/useOrderActions";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
@@ -275,6 +277,8 @@ const Orders = ({
     handleViewOrder,
   } = useOrderActions(organizationSlug, mutate);
 
+  const printInvoiceTooltip = usePrintInvoiceTooltip();
+
   const hasPendingInvoice = useMemo(() => rows.some(canIssueInvoice), [rows]);
 
   const hasPrintableInvoice = useMemo(() => rows.some(canPrintInvoice), [rows]);
@@ -352,24 +356,21 @@ const Orders = ({
               </Tooltip>
             )}
             {hasPrintableInvoice && (
-              <Tooltip
-                title={tOrders(
-                  row.invoice?.printedAt
-                    ? "actions.printInvoice.reprintTitle"
-                    : "actions.printInvoice.title",
-                )}
-              >
-                <StyledIconButton
-                  onClick={(event) => {
-                    event.stopPropagation();
+              <Tooltip title={printInvoiceTooltip(row)}>
+                <span>
+                  <StyledIconButton
+                    disabled={!!printInvoiceBlockedBy(row)}
+                    onClick={(event) => {
+                      event.stopPropagation();
 
-                    if (canPrintInvoice(row)) handleConfirmPrintInvoice(row);
-                  }}
-                  size="small"
-                  visible={canPrintInvoice(row)}
-                >
-                  <Print fontSize="small" />
-                </StyledIconButton>
+                      if (canPrintInvoice(row)) handleConfirmPrintInvoice(row);
+                    }}
+                    size="small"
+                    visible={canPrintInvoice(row)}
+                  >
+                    <Print fontSize="small" />
+                  </StyledIconButton>
+                </span>
               </Tooltip>
             )}
             {hasUnresolvedInvoicePrint && (
@@ -646,6 +647,7 @@ const Orders = ({
       handleConfirmStatusAction,
       handleConfirmPrintInvoice,
       handleResolveInvoicePrint,
+      printInvoiceTooltip,
       handleUpdateCustomer,
       handleViewOrder,
       hasPendingInvoice,

@@ -144,6 +144,7 @@
     "url": "상품 링크",
     "usedAt": "사용 일시",
     "user": "회원",
+    "username": "세금계산서 프린터 ID",
     "weeklyMinutes": "주간 근로시간",
     "weeklyMinutesHistory": "주간 근로시간 이력"
   },

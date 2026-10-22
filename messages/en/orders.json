@@ -7,6 +7,11 @@
     },
     "label": "Actions",
     "printInvoice": {
+      "blocked": {
+        "queued": "The invoice is waiting for the printer",
+        "sent": "The invoice is printing",
+        "unknown": "Confirm the last print result first"
+      },
       "queued": "Sent the invoice for order {orderNumber} to the invoice printer",
       "reprintConfirm": "Reprint the invoice for order <bold>{orderNumber}</bold>? The original has already been printed, and a reprinted copy is not eligible for the lottery. If the original never came out of the printer, reset it to not printed first.",
       "reprintLabel": "Reprint invoice",
@@ -41,6 +46,7 @@
       "title": "Reset to not printed"
     },
     "resolveInvoicePrint": {
+      "browserReprint": "Print the original again in the print dialog",
       "description": "The printer didn't report whether the invoice for order <bold>{orderNumber}</bold> finished printing{reason}. Check whether the printer produced this invoice, then choose what happened.",
       "notPrinted": "No barcodes were printed; print the original again",
       "printed": "Barcodes were printed (even partially)",

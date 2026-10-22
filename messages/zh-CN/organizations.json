@@ -104,6 +104,7 @@
       "lastSeenAt": "最后连接",
       "neverSeen": "尚未连接",
       "password": "密码",
+      "queued": "已将 {count} 张尚未打印的发票发送到打印机",
       "remove": "移除打印机",
       "removeConfirm": "移除后发票改用浏览器打印，尚未发送的打印任务会取消。确定要移除吗？",
       "removeSuccess": "已移除发票打印机",

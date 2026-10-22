@@ -104,6 +104,7 @@
       "lastSeenAt": "最後連線",
       "neverSeen": "尚未連線",
       "password": "密碼",
+      "queued": "已將 {count} 張尚未列印的發票送到印表機",
       "remove": "移除印表機",
       "removeConfirm": "移除後發票改用瀏覽器列印，尚未送出的列印工作會取消。確定要移除嗎？",
       "removeSuccess": "已移除發票印表機",

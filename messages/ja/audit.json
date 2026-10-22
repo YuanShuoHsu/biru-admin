@@ -144,6 +144,7 @@
     "url": "商品リンク",
     "usedAt": "使用日時",
     "user": "会員",
+    "username": "インボイスプリンター ID",
     "weeklyMinutes": "週所定労働時間",
     "weeklyMinutesHistory": "週所定労働時間の履歴"
   },

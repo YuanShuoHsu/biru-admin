@@ -7,6 +7,11 @@
     },
     "label": "操作",
     "printInvoice": {
+      "blocked": {
+        "queued": "發票正在等待印表機",
+        "sent": "發票正在列印",
+        "unknown": "請先確認上次的列印結果"
+      },
       "queued": "已將訂單 {orderNumber} 的發票送到發票印表機",
       "reprintConfirm": "確定要補印訂單 <bold>{orderNumber}</bold> 的發票嗎？正本已經列印過，補印聯不能用來對獎。若正本沒有真的印出來，請先重設為未列印。",
       "reprintLabel": "補印發票",
@@ -41,6 +46,7 @@
       "title": "重設為未列印"
     },
     "resolveInvoicePrint": {
+      "browserReprint": "請在列印視窗重新列印正本",
       "description": "印表機沒有回報訂單 <bold>{orderNumber}</bold> 的發票是否印完{reason}。請看印表機有沒有吐出這張發票，再選擇實際情況。",
       "notPrinted": "完全沒有印出條碼，重新列印正本",
       "printed": "有印出條碼（即使只印出一部分）",

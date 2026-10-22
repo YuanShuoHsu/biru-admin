@@ -14,7 +14,9 @@ import {
   canResetInvoicePrint,
   canResolveInvoicePrint,
   canVoidInvoice,
+  printInvoiceBlockedBy,
   useOrderActions,
+  usePrintInvoiceTooltip,
 } from "@/hooks/useOrderActions";
 import { useOrderModeLabel } from "@/hooks/useOrderModeLabel";
 import { Person, Schedule } from "@mui/icons-material";
@@ -23,6 +25,7 @@ import {
   Chip,
   DialogContentText,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -111,6 +114,8 @@ const OrdersBoard = ({
     handleViewOrder,
   } = useOrderActions(organizationSlug, mutate);
 
+  const printInvoiceTooltip = usePrintInvoiceTooltip();
+
   const columns = useMemo(
     () =>
       orderFlowStatusValues.map((status) => ({
@@ -126,6 +131,7 @@ const OrdersBoard = ({
           );
           const actions: {
             color?: "error";
+            disabledReason?: string;
             label: string;
             onClick: () => void;
           }[] = [
@@ -142,6 +148,9 @@ const OrdersBoard = ({
               onClick: () => handleConfirmIssueInvoice(order),
             },
             canPrintInvoice(order) && {
+              disabledReason: printInvoiceBlockedBy(order)
+                ? printInvoiceTooltip(order)
+                : undefined,
               label: tOrders(
                 order.invoice?.printedAt
                   ? "actions.printInvoice.reprintLabel"
@@ -210,17 +219,23 @@ const OrdersBoard = ({
                 )}
               </Stack>
             ),
-            actions: actions.map(({ color, label, onClick }) => (
-              <Button
-                color={color || "inherit"}
-                key={label}
-                onClick={onClick}
-                size="small"
-                variant="outlined"
-              >
-                {label}
-              </Button>
-            )),
+            actions: actions.map(
+              ({ color, disabledReason, label, onClick }) => (
+                <Tooltip key={label} title={disabledReason ?? ""}>
+                  <span>
+                    <Button
+                      color={color || "inherit"}
+                      disabled={!!disabledReason}
+                      onClick={onClick}
+                      size="small"
+                      variant="outlined"
+                    >
+                      {label}
+                    </Button>
+                  </span>
+                </Tooltip>
+              ),
+            ),
           };
         }),
         size: { xs: 12, md: 7 },
@@ -240,6 +255,7 @@ const OrdersBoard = ({
       handleResolveInvoicePrint,
       handleUpdateCustomer,
       handleViewOrder,
+      printInvoiceTooltip,
       tOrders,
     ],
   );

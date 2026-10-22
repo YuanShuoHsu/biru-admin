@@ -7,6 +7,11 @@
     },
     "label": "操作",
     "printInvoice": {
+      "blocked": {
+        "queued": "发票正在等待打印机",
+        "sent": "发票正在打印",
+        "unknown": "请先确认上次的打印结果"
+      },
       "queued": "已将订单 {orderNumber} 的发票发送到发票打印机",
       "reprintConfirm": "确定要补印订单 <bold>{orderNumber}</bold> 的发票吗？正本已经打印过，补印联不能用来对奖。若正本没有真的打印出来，请先重设为未打印。",
       "reprintLabel": "补印发票",
@@ -41,6 +46,7 @@
       "title": "重设为未打印"
     },
     "resolveInvoicePrint": {
+      "browserReprint": "请在打印窗口重新打印正本",
       "description": "打印机没有回报订单 <bold>{orderNumber}</bold> 的发票是否打印完成{reason}。请查看打印机是否打出这张发票，再选择实际情况。",
       "notPrinted": "完全没有打出条码，重新打印正本",
       "printed": "有打出条码（即使只打出一部分）",

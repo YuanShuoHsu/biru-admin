@@ -144,6 +144,7 @@
     "url": "商品链接",
     "usedAt": "使用时间",
     "user": "会员",
+    "username": "发票打印机 ID",
     "weeklyMinutes": "每周工时",
     "weeklyMinutesHistory": "每周工时记录"
   },

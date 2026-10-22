@@ -1997,7 +1997,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** 列印發票：有發票印表機時排入印表機佇列，否則領取列印頁（未印過時給正本，印完須回報 print/confirmation） */
+    /** 列印發票：有發票印表機時排入印表機佇列，否則回傳列印頁（未印過時給正本，印完須回報 print-jobs/:jobId/confirmation） */
     post: operations["EcpayOrderInvoiceController_print"];
     delete?: never;
     options?: never;
@@ -2006,7 +2006,7 @@ export interface paths {
     patch: operations["EcpayOrderInvoiceController_resetPrint"];
     trace?: never;
   };
-  "/api/organizations/{organizationSlug}/orders/{orderId}/invoice/print/confirmation": {
+  "/api/organizations/{organizationSlug}/orders/{orderId}/invoice/print-jobs/{jobId}/confirmation": {
     parameters: {
       query?: never;
       header?: never;
@@ -2015,7 +2015,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** 回報正本已送出列印，之後再印只會是補印聯 */
+    /** 瀏覽器列印完成後回報，正本之後再印只會是補印聯 */
     post: operations["EcpayOrderInvoiceController_confirmPrint"];
     delete?: never;
     options?: never;
@@ -8032,12 +8032,12 @@ export interface components {
     };
     OrderInvoicePrintDto: {
       /**
-       * @description 未設定發票印表機時回傳列印頁內容，前端以 iframe srcdoc 呈現後列印，印完須回報 print/confirmation
+       * @description 未設定發票印表機時回傳列印頁內容，前端以 iframe srcdoc 呈現後列印，印完須回報 print-jobs/:jobId/confirmation
        * @example <html>…</html>
        */
       printHtml?: string;
-      /** @description 已設定發票印表機時回傳排入佇列的列印工作 */
-      printJob?: components["schemas"]["InvoicePrintJobDto"];
+      /** @description 這次列印的工作；瀏覽器列印在回報完成前都是結果不明 */
+      printJob: components["schemas"]["InvoicePrintJobDto"];
     };
     ResolveInvoicePrintJobDto: {
       /** @description 店員確認紙本是否已印出 */
@@ -8228,6 +8228,8 @@ export interface components {
       createdAt: string;
       /** @description 只在建立或重設時回傳一次 */
       password: string;
+      /** @description 這次一併送印的未印正本張數 */
+      queuedCount: number;
     };
     /** @enum {string} */
     IngredientFilterField:
@@ -16314,6 +16316,7 @@ export interface operations {
       path: {
         organizationSlug: string;
         orderId: string;
+        jobId: string;
       };
       cookie?: never;
     };

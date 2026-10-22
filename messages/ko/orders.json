@@ -7,6 +7,11 @@
     },
     "label": "작업",
     "printInvoice": {
+      "blocked": {
+        "queued": "세금계산서가 프린터를 기다리는 중입니다",
+        "sent": "세금계산서를 인쇄 중입니다",
+        "unknown": "먼저 지난 인쇄 결과를 확인하세요"
+      },
       "queued": "주문 {orderNumber}의 세금계산서를 세금계산서 프린터로 보냈습니다",
       "reprintConfirm": "주문 <bold>{orderNumber}</bold>의 영수증을 재인쇄하시겠습니까? 정본은 이미 인쇄되었으며 재인쇄본은 추첨 대상이 아닙니다. 정본이 실제로 출력되지 않았다면 먼저 미인쇄로 되돌리세요.",
       "reprintLabel": "영수증 재인쇄",
@@ -41,6 +46,7 @@
       "title": "미인쇄로 되돌리기"
     },
     "resolveInvoicePrint": {
+      "browserReprint": "인쇄 창에서 정본을 다시 인쇄하세요",
       "description": "프린터가 주문 <bold>{orderNumber}</bold>의 세금계산서 인쇄 완료 여부를 보고하지 않았습니다{reason}. 프린터에서 이 세금계산서가 나왔는지 확인한 후 실제 상황을 선택하세요.",
       "notPrinted": "바코드가 전혀 인쇄되지 않음, 정본 다시 인쇄",
       "printed": "바코드가 인쇄됨(일부만 인쇄된 경우 포함)",

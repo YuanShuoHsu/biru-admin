@@ -67,6 +67,33 @@ export const canResetInvoicePrint = (order: AdminOrderResponse) =>
 export const canResolveInvoicePrint = (order: AdminOrderResponse) =>
   canPrintInvoice(order) && order.invoice?.printJob?.status === "unknown";
 
+const IN_FLIGHT_PRINT_JOB_STATUSES = ["queued", "sent", "unknown"] as const;
+
+export const printInvoiceBlockedBy = ({ invoice }: AdminOrderResponse) =>
+  IN_FLIGHT_PRINT_JOB_STATUSES.find(
+    (status) => status === invoice?.printJob?.status,
+  ) ?? null;
+
+export const usePrintInvoiceTooltip = () => {
+  const tOrders = useTranslations("orders");
+
+  return useCallback(
+    (order: AdminOrderResponse) => {
+      const blockedBy = printInvoiceBlockedBy(order);
+
+      if (blockedBy)
+        return tOrders(`actions.printInvoice.blocked.${blockedBy}`);
+
+      return tOrders(
+        order.invoice?.printedAt
+          ? "actions.printInvoice.reprintTitle"
+          : "actions.printInvoice.title",
+      );
+    },
+    [tOrders],
+  );
+};
+
 export const canVoidInvoice = ({ invoice }: AdminOrderResponse) =>
   invoice?.status === "issued";
 
@@ -250,7 +277,7 @@ export const useOrderActions = (
           { method: "POST" },
         );
 
-        if (printJob)
+        if (!printHtml) {
           enqueueSnackbar(
             tOrders("actions.printInvoice.queued", {
               orderNumber: order.orderNumber,
@@ -258,12 +285,13 @@ export const useOrderActions = (
             { variant: "success" },
           );
 
-        if (printHtml) {
-          await printDocument(printHtml);
-          await fetcher(`${invoiceUrl}/print/confirmation`, {
-            method: "POST",
-          });
+          return;
         }
+
+        await printDocument(printHtml);
+        await fetcher(`${invoiceUrl}/print-jobs/${printJob.id}/confirmation`, {
+          method: "POST",
+        });
       } catch (error) {
         enqueueSnackbar(getErrorMessage(error), { variant: "error" });
       } finally {
@@ -343,6 +371,7 @@ export const useOrderActions = (
         content: (
           <ResolveInvoicePrintDialogContent
             mutate={mutate}
+            onBrowserReprint={() => handlePrintInvoice(order)}
             order={order}
             organizationSlug={organizationSlug}
             printJob={printJob}
@@ -353,7 +382,7 @@ export const useOrderActions = (
         title: tOrders("actions.resolveInvoicePrint.title"),
       });
     },
-    [mutate, organizationSlug, setDialog, tOrders],
+    [handlePrintInvoice, mutate, organizationSlug, setDialog, tOrders],
   );
 
   return {

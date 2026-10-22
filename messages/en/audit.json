@@ -144,6 +144,7 @@
     "url": "Product link",
     "usedAt": "Used at",
     "user": "Member",
+    "username": "Invoice printer ID",
     "weeklyMinutes": "Weekly hours",
     "weeklyMinutesHistory": "Weekly hours history"
   },
