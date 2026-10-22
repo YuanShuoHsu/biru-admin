@@ -10,6 +10,7 @@ import TaxIdentityDialog from "../../payroll/withholding/TaxIdentityDialog";
 import ChildrenDialog from "./ChildrenDialog";
 import EmployeeDialog from "./EmployeeDialog";
 
+import AuditLogButton from "@/components/AuditLogButton";
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -58,6 +59,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
+  AttendanceEmployee,
   AttendanceEmployeeFilterField,
   AttendanceEmployeeSortField,
   AttendanceEmploymentType,
@@ -70,7 +72,12 @@ import type {
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 
-import { attendancePath, payrollPath } from "@/utils/attendance";
+import {
+  attendancePath,
+  payrollPath,
+  WORK_PERMIT_EXPIRY_WARNING_DAYS,
+  workPermitDaysLeft,
+} from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceEmployeeEnumOptions } from "@/utils/enumOptions";
 import { getErrorMessage } from "@/utils/errors";
@@ -101,6 +108,7 @@ interface EmployeesProps {
   canManageTaxIdentity?: boolean;
   canManageTerms?: boolean;
   canReviewOwnChildren?: boolean;
+  canViewAuditLog?: boolean;
   canWrite?: boolean;
   employeeId?: string;
   filterField?: AttendanceEmployeeFilterField;
@@ -127,6 +135,7 @@ const Employees = ({
   canManageTaxIdentity = false,
   canManageTerms = false,
   canReviewOwnChildren = false,
+  canViewAuditLog = false,
   canWrite = false,
   employeeId,
   filterField: initialFilterField,
@@ -303,11 +312,29 @@ const Employees = ({
   );
 
   const handleEmployeeDialog = useCallback(
-    (member: AttendanceMember) =>
+    async (member: AttendanceMember) => {
+      let employee: AttendanceEmployee | undefined;
+
+      if (member.employee) {
+        try {
+          employee = await fetcher<AttendanceEmployee>(
+            attendancePath(
+              organizationSlug,
+              "org",
+              `employees/${member.employee.id}`,
+            ),
+          );
+        } catch (error) {
+          enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+          return;
+        }
+      }
+
       setDialog({
         confirmText: tAttendance("save"),
         content: (
           <EmployeeDialog
+            employee={employee}
             legalStatusObligations={legalStatusObligations}
             member={member}
             mutate={mutate}
@@ -317,11 +344,10 @@ const Employees = ({
         formId: "attendance-employee-form",
         open: true,
         title: tAttendance(
-          member.employee
-            ? "employees.actions.update"
-            : "employees.actions.create",
+          employee ? "employees.actions.update" : "employees.actions.create",
         ),
-      }),
+      });
+    },
     [legalStatusObligations, mutate, organizationSlug, setDialog, tAttendance],
   );
 
@@ -334,7 +360,7 @@ const Employees = ({
   );
 
   const handleTermsDialog = useCallback(
-    ({ employee, status }: AttendanceMember) =>
+    ({ email, employee, name }: AttendanceMember) =>
       employee &&
       setDialog({
         confirmText: tAttendance("save"),
@@ -342,7 +368,7 @@ const Employees = ({
           <TermsDialog
             currency={currency}
             employeeId={employee.id}
-            employees={[{ ...employee, status }]}
+            employees={[{ ...employee, email, name }]}
             mutate={mutateTerms}
             organizationSlug={organizationSlug}
             terms={terms}
@@ -542,7 +568,11 @@ const Employees = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...((canWrite || canDelete || canManageTerms || canManageTaxIdentity) &&
+      ...((canWrite ||
+        canDelete ||
+        canManageTerms ||
+        canManageTaxIdentity ||
+        canViewAuditLog) &&
       !isSelectMode
         ? [
             {
@@ -613,6 +643,9 @@ const Employees = ({
                         </StyledIconButton>
                       </span>
                     </Tooltip>
+                  )}
+                  {canViewAuditLog && row.employee && (
+                    <AuditLogButton resourceId={row.employee.id} />
                   )}
                   {canDelete && isEmployeeSelectable(row) && (
                     <Tooltip
@@ -695,6 +728,38 @@ const Employees = ({
         valueOptions: enumOptions.legalStatus,
       },
       {
+        field: "workPermitDaysLeft",
+        filterable: false,
+        headerName: tAttendance("workPermits.daysLeft"),
+        renderCell: (
+          params: GridRenderCellParams<AttendanceMember, number | null>,
+        ) =>
+          params.value === undefined ? (
+            renderEmptyableCell(params)
+          ) : params.value === null ||
+            params.value <= WORK_PERMIT_EXPIRY_WARNING_DAYS ? (
+            <Chip
+              color={params.value === null ? "error" : "warning"}
+              label={params.formattedValue}
+              size="small"
+              variant="outlined"
+            />
+          ) : (
+            params.formattedValue
+          ),
+        sortable: false,
+        valueFormatter: (value: number | null | undefined) =>
+          value === undefined
+            ? ""
+            : value === null
+              ? tAttendance("workPermits.invalid")
+              : tAttendance("duration.days", { days: value }),
+        valueGetter: (_, { employee, status }: AttendanceMember) =>
+          employee?.workPermitRequired && status !== "terminated"
+            ? workPermitDaysLeft(employee)
+            : undefined,
+      },
+      {
         field: "status",
         filterOperators: enumFilterOperators,
         headerName: tAttendance("employeeStatus.label"),
@@ -718,6 +783,7 @@ const Employees = ({
       canManageTaxIdentity,
       canManageTerms,
       canReviewOwnChildren,
+      canViewAuditLog,
       canWrite,
       date,
       dateFilterOperators,

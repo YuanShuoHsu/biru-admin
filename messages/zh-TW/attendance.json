@@ -418,7 +418,11 @@
     "punch": {
       "empty": "目前沒有可打卡的班次。",
       "title": "打卡",
-      "success": "已完成{action}"
+      "success": "已完成{action}",
+      "locationDenied": "未允許定位，請在瀏覽器或系統設定開啟本網站的定位權限後再打卡。",
+      "locationUnavailable": "抓不到目前位置，請開啟裝置的定位服務後再試；仍無法打卡時可提出補卡申請。",
+      "locationTimeout": "定位逾時，請移到收訊較好的地方再試一次。",
+      "retry": "重試"
     }
   },
   "month": "薪資月份",
@@ -691,7 +695,9 @@
     "to": "結束日"
   },
   "workPermits": {
+    "daysLeft": "許可剩餘天數",
     "from": "許可起日",
+    "invalid": "無有效許可",
     "label": "工作許可期間",
     "to": "許可迄日"
   },

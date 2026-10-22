@@ -48,6 +48,7 @@ import {
 } from "@/types/api";
 
 import type {
+  AttendanceEmployee,
   AttendanceLegalStatusObligation,
   AttendanceMember,
   SaveAttendanceEmployee,
@@ -217,6 +218,7 @@ const IndigenousHolidayFields = ({
 };
 
 interface EmployeeDialogProps {
+  employee?: AttendanceEmployee;
   legalStatusObligations: AttendanceLegalStatusObligation[];
   member: AttendanceMember;
   mutate: () => void;
@@ -224,13 +226,12 @@ interface EmployeeDialogProps {
 }
 
 const EmployeeDialog = ({
+  employee,
   legalStatusObligations,
   member,
   mutate,
   organizationSlug,
 }: EmployeeDialogProps) => {
-  const employee = member.employee ?? undefined;
-
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const format = useFormatter();

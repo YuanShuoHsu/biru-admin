@@ -32,7 +32,7 @@ import {
 export type AttendanceEmployee =
   components["schemas"]["AttendanceEmployeeResponseDto"];
 export type AttendanceEmployment =
-  components["schemas"]["AttendanceEmploymentResponseDto"];
+  components["schemas"]["AttendanceMemberEmploymentResponseDto"];
 export type AttendanceEmployeeStatus =
   components["schemas"]["AttendanceEmployeeStatus"];
 export type AttendanceEmploymentType =

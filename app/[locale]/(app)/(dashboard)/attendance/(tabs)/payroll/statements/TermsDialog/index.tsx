@@ -102,7 +102,14 @@ const ExemptionSelect = ({
 interface TermsDialogProps {
   currency: string;
   employeeId?: string;
-  employees: AttendanceEmployee[];
+  employees: Pick<
+    AttendanceEmployee,
+    | "email"
+    | "employmentInsuranceEligible"
+    | "id"
+    | "name"
+    | "pensionApplicable"
+  >[];
   mutate: () => void;
   organizationSlug: string;
   terms: PayrollTerms[];

@@ -418,7 +418,11 @@
     "punch": {
       "empty": "No shifts are open for punching right now.",
       "title": "Punch",
-      "success": "{action} recorded"
+      "success": "{action} recorded",
+      "locationDenied": "Location access is blocked. Allow location for this site in your browser or system settings, then punch again.",
+      "locationUnavailable": "Unable to determine your location. Turn on location services and try again, or submit a correction request.",
+      "locationTimeout": "Locating timed out. Move to a spot with better signal and try again.",
+      "retry": "Retry"
     }
   },
   "month": "Payroll month",
@@ -691,7 +695,9 @@
     "to": "End date"
   },
   "workPermits": {
+    "daysLeft": "Permit days left",
     "from": "Permit start",
+    "invalid": "No valid permit",
     "label": "Work permit periods",
     "to": "Permit end"
   },

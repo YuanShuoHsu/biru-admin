@@ -23,6 +23,7 @@ const NUTRITION_KEYS = [
 ] as const;
 
 const DATE_PERIOD_FIELDS = [
+  "childcareReductionPeriods",
   "nursingPeriods",
   "pregnancyPeriods",
   "studentVacations",

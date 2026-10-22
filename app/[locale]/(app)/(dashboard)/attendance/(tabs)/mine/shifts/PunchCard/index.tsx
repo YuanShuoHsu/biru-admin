@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import { enqueueSnackbar } from "notistack";
+import { closeSnackbar, enqueueSnackbar } from "notistack";
 import { type ReactNode, useRef, useState } from "react";
 import useSWR from "swr";
 
@@ -106,8 +106,37 @@ const PunchCard = ({
             timeout: 15000,
           });
       });
-    } catch {
-      enqueueSnackbar(tAttendance("locationError"), { variant: "error" });
+    } catch (error) {
+      const code =
+        error instanceof GeolocationPositionError ? error.code : undefined;
+
+      if (code === GeolocationPositionError.TIMEOUT)
+        enqueueSnackbar(tAttendance("mine.punch.locationTimeout"), {
+          action: (key) => (
+            <Button
+              color="inherit"
+              onClick={() => {
+                closeSnackbar(key);
+                void handlePunch(shift, action);
+              }}
+            >
+              {tAttendance("mine.punch.retry")}
+            </Button>
+          ),
+          variant: "error",
+        });
+      else
+        enqueueSnackbar(
+          tAttendance(
+            code === GeolocationPositionError.PERMISSION_DENIED
+              ? "mine.punch.locationDenied"
+              : code === GeolocationPositionError.POSITION_UNAVAILABLE
+                ? "mine.punch.locationUnavailable"
+                : "locationError",
+          ),
+          { variant: "error" },
+        );
+
       setBusy(null);
 
       return;

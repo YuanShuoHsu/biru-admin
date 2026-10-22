@@ -24,6 +24,7 @@ import type {
   AttendanceEmployee,
   AttendanceEmployeeFilterField,
   AttendanceEmployeeSortField,
+  AttendanceEmployment,
   AttendanceHolidaySubstitute,
   AttendanceHolidaySubstituteFilterField,
   AttendanceHolidaySubstitutePage,
@@ -844,4 +845,31 @@ export const toCents = (value: number) => {
     BigInt(match[1]) * BigInt(100) +
     BigInt((match[2] ?? "").padEnd(2, "0"))
   ).toString();
+};
+
+export const WORK_PERMIT_EXPIRY_WARNING_DAYS = 30;
+
+export const workPermitDaysLeft = ({
+  hiredAt,
+  workPermits,
+}: Pick<AttendanceEmployment, "hiredAt" | "workPermits">) => {
+  const today = dayjs().tz(PLATFORM_TIMEZONE).format("YYYY-MM-DD");
+  const hiredOn = dayjs(hiredAt).tz(PLATFORM_TIMEZONE).format("YYYY-MM-DD");
+  let validThrough: string | undefined;
+
+  for (const { from, to } of workPermits.toSorted((a, b) =>
+    a.from.localeCompare(b.from),
+  )) {
+    const next = validThrough
+      ? dayjs.utc(validThrough).add(1, "day").format("YYYY-MM-DD")
+      : hiredOn > today
+        ? hiredOn
+        : today;
+
+    if (from <= next && to >= next) validThrough = to;
+  }
+
+  return validThrough === undefined
+    ? null
+    : dayjs.utc(validThrough).diff(dayjs.utc(today), "day");
 };

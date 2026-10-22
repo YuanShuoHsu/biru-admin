@@ -156,6 +156,7 @@ const EmployeesContent = async ({
       canUpdateChildren={hasRolePermission(memberRole, {
         parentalChild: ["update"],
       })}
+      canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
       canReviewOwnChildren={!!context?.selfReviewAllowed.parentalChild}
       canManageTaxIdentity={hasRolePermission(memberRole, {
         payrollTerm: ["update"],

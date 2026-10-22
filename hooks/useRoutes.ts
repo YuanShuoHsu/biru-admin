@@ -324,6 +324,22 @@ const routes: Route[] = [
             segment: "general",
           },
           {
+            children: [
+              {
+                children: [
+                  {
+                    icon: History,
+                    label: "audit.title",
+                    query: ["organization", "page", "pageSize"],
+                    segment: "audit-logs",
+                  },
+                ],
+                icon: Badge,
+                label: "attendance.employee",
+                segment: "[employeeId]",
+                to: null,
+              },
+            ],
             icon: Badge,
             label: "attendance.employees.label",
             query: ["organization", "page", "pageSize"],
