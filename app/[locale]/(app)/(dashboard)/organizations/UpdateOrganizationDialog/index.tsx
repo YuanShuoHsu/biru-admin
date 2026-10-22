@@ -27,7 +27,7 @@ import type { Organization } from "@/types/organizations";
 
 interface UpdateOrganizationDialogProps {
   mutate: () => void;
-  organization: Organization;
+  organization: Pick<Organization, "id" | "logo" | "name" | "slug">;
 }
 
 const UpdateOrganizationDialog = ({
