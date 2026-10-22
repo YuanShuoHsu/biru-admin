@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import WaitlistTickets from ".";
 
@@ -45,7 +46,7 @@ export const generateMetadata = async ({
   return { title: tWaitlist("list.label") };
 };
 
-const WaitlistListPage = async ({
+const WaitlistListContent = async ({
   params,
   searchParams,
 }: WaitlistListPageProps) => {
@@ -133,5 +134,11 @@ const WaitlistListPage = async ({
     />
   );
 };
+
+const WaitlistListPage = (props: WaitlistListPageProps) => (
+  <Suspense fallback={<WaitlistTickets loading />}>
+    <WaitlistListContent {...props} />
+  </Suspense>
+);
 
 export default WaitlistListPage;

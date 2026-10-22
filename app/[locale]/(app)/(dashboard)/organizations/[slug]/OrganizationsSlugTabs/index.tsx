@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
+import { Suspense, use } from "react";
 
 import RouteTabs from "@/components/RouteTabs";
 
@@ -22,14 +23,28 @@ const TabLabelStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(1),
 }));
 
+const PendingInvitationChip = ({
+  initialCount,
+}: {
+  initialCount: Promise<number>;
+}) => {
+  const loadedCount = use(initialCount);
+
+  const { getCount } = useCountStore((state) => state);
+  const count = getCount(countKeys.pendingInvitations) ?? loadedCount;
+
+  return count > 0 && <Chip color="secondary" label={count} size="small" />;
+};
+
 interface OrganizationsSlugTabsProps {
   children: React.ReactNode;
+  pendingInvitationCount: Promise<number>;
 }
 
-const OrganizationsSlugTabs = ({ children }: OrganizationsSlugTabsProps) => {
-  const { getCount } = useCountStore((state) => state);
-  const count = getCount(countKeys.pendingInvitations);
-
+const OrganizationsSlugTabs = ({
+  children,
+  pendingInvitationCount,
+}: OrganizationsSlugTabsProps) => {
   const { slug } = useParams<{ slug: string }>();
 
   const tInvitations = useTranslations("organizations.invitations");
@@ -45,9 +60,11 @@ const OrganizationsSlugTabs = ({ children }: OrganizationsSlugTabsProps) => {
             label: (
               <TabLabelStack direction="row">
                 {tInvitations("label")}
-                {count > 0 && (
-                  <Chip color="secondary" label={count} size="small" />
-                )}
+                <Suspense>
+                  <PendingInvitationChip
+                    initialCount={pendingInvitationCount}
+                  />
+                </Suspense>
               </TabLabelStack>
             ),
             path: `/organizations/${slug}/invitations`,

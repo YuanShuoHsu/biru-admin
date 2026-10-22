@@ -1048,7 +1048,8 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get?: never;
+    /** 查詢使用者的登入裝置 */
+    get: operations["UsersController_findSessions"];
     put?: never;
     post?: never;
     /** 批次撤銷使用者的登入裝置 */
@@ -3229,6 +3230,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/users/me/organizations": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢目前使用者所屬的組織與可執行的操作 */
+    get: operations["MyOrganizationsController_findAll"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations": {
     parameters: {
       query?: never;
@@ -3343,23 +3361,6 @@ export interface paths {
     put?: never;
     /** 復業 */
     post: operations["OrganizationClosureController_reopen"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/organizations/{organizationId}/deletability": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** 查詢組織是否可刪除 */
-    get: operations["OrganizationDeletabilityController_findOne"];
-    put?: never;
-    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -6388,6 +6389,27 @@ export interface components {
       buckets: components["schemas"]["UserStatsBucketDto"][];
       /** @description 上期新增使用者數 */
       previous: number;
+    };
+    /** @enum {string} */
+    UserSessionFilterField:
+      | "userAgent"
+      | "ipAddress"
+      | "createdAt"
+      | "expiresAt";
+    /** @enum {string} */
+    UserSessionSortField: "userAgent" | "ipAddress" | "createdAt" | "expiresAt";
+    UserSessionResponseDto: {
+      id: string;
+      ipAddress?: string | null;
+      userAgent?: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      expiresAt: string;
+    };
+    UserSessionListResponseDto: {
+      data: components["schemas"]["UserSessionResponseDto"][];
+      total: number;
     };
     UpdateUserDto: {
       /**
@@ -10080,6 +10102,43 @@ export interface components {
       /** @description 上期新建立的組織數（範圍同 total） */
       previous: number;
     };
+    MyOrganizationListItemDto: {
+      id: string;
+      name: string;
+      slug: string;
+      logo?: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      metadata?: string | null;
+      addressCountry?: string | null;
+      addressLocality?: string | null;
+      addressRegion?: string | null;
+      extendedAddress?: string | null;
+      postalCode?: string | null;
+      streetAddress?: string | null;
+      hasMap?: string | null;
+      openingHours?: string | null;
+      telephone?: string | null;
+      /**
+       * @description 店家目錄定價幣別
+       * @example TWD
+       */
+      currency: string;
+      amountPerPoint?: string | null;
+      pointsValidityYears?: number | null;
+      pickupLeadMinutes: number;
+      pickupMaxAdvanceDays: number;
+      pickupCutoffMinutes: number;
+      /**
+       * Format: date-time
+       * @description 停業時間；營業中為 null
+       */
+      closedAt?: string | null;
+      /** @description 目前使用者可編輯組織資料 */
+      canUpdate: boolean;
+      /** @description 目前使用者有刪除權限；有訂單、出勤或薪資紀錄時依法須保存，不可刪除 */
+      deletable: boolean;
+    };
     OrganizationResponseDto: {
       id: string;
       name: string;
@@ -10112,10 +10171,6 @@ export interface components {
        * @description 停業時間；營業中為 null
        */
       closedAt?: string | null;
-    };
-    OrganizationDeletabilityDto: {
-      /** @description 有訂單、出勤或薪資紀錄時依法須保存，不可刪除 */
-      deletable: boolean;
     };
     OrganizationMemberTeamDto: {
       id: string;
@@ -13999,6 +14054,45 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["UserStatsResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  UsersController_findSessions: {
+    parameters: {
+      query?: {
+        filterField?: components["schemas"]["UserSessionFilterField"];
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortBy?: components["schemas"]["UserSessionSortField"];
+        sortDirection?: components["schemas"]["SortDirection"];
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UserSessionListResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -19579,6 +19673,32 @@ export interface operations {
       };
     };
   };
+  MyOrganizationsController_findAll: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MyOrganizationListItemDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   OrganizationsController_findAll: {
     parameters: {
       query?: {
@@ -19802,34 +19922,6 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["OrganizationResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  OrganizationDeletabilityController_findOne: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        organizationId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["OrganizationDeletabilityDto"];
         };
       };
       /** @description Internal server error */
@@ -23066,6 +23158,12 @@ export const userListItemDtoLangValues: ReadonlyArray<
 export const statsBucketUnitValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["StatsBucketUnit"]
 > = ["day", "hour"];
+export const userSessionFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["UserSessionFilterField"]
+> = ["userAgent", "ipAddress", "createdAt", "expiresAt"];
+export const userSessionSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["UserSessionSortField"]
+> = ["userAgent", "ipAddress", "createdAt", "expiresAt"];
 export const updateUserDtoGenderValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UpdateUserDto"]["gender"]
 > = ["female", "male", "other"];

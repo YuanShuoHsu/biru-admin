@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import Orders from ".";
 
@@ -45,7 +46,7 @@ export const generateMetadata = async ({
   return { title: tOrders("list.label") };
 };
 
-const OrdersPage = async ({ params, searchParams }: OrdersPageProps) => {
+const OrdersContent = async ({ params, searchParams }: OrdersPageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -130,5 +131,11 @@ const OrdersPage = async ({ params, searchParams }: OrdersPageProps) => {
     />
   );
 };
+
+const OrdersPage = (props: OrdersPageProps) => (
+  <Suspense fallback={<Orders loading />}>
+    <OrdersContent {...props} />
+  </Suspense>
+);
 
 export default OrdersPage;

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import RecipeIngredients from ".";
 
@@ -59,7 +60,7 @@ export const generateMetadata = async ({
   return { title: tInventory("recipes.ingredients.label") };
 };
 
-const RecipeIngredientsPage = async ({
+const RecipeIngredientsContent = async ({
   params,
   searchParams,
 }: RecipeIngredientsPageProps) => {
@@ -173,5 +174,11 @@ const RecipeIngredientsPage = async ({
     />
   );
 };
+
+const RecipeIngredientsPage = (props: RecipeIngredientsPageProps) => (
+  <Suspense fallback={<RecipeIngredients loading />}>
+    <RecipeIngredientsContent {...props} />
+  </Suspense>
+);
 
 export default RecipeIngredientsPage;

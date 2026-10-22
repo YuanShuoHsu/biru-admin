@@ -12,7 +12,7 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import {
   useDateFilterOperators,
@@ -49,15 +49,16 @@ const StyledStack = styled(Stack)({
 });
 
 interface CouponRecipientsProps {
-  couponId: string;
+  couponId?: string;
   filterField?: CouponRecipientFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  page: number;
-  pageSize: number;
+  loading?: boolean;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: CouponRecipient[];
+  rowCount?: number;
+  rows?: CouponRecipient[];
   sortBy?: CouponRecipientSortField;
   sortDirection?: SortDirection;
 }
@@ -67,11 +68,12 @@ const CouponRecipients = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  page,
-  pageSize,
+  loading = false,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
 }: CouponRecipientsProps) => {
@@ -125,9 +127,9 @@ const CouponRecipients = ({
       data: initialRows,
       total: initialRowCount,
     },
-    isValidating: loading,
+    isValidating,
   } = useSWR(
-    [
+    !loading && [
       `/api/coupons/${couponId}/recipients`,
       filterModel.items[0]?.field,
       filterModel.items[0]?.operator,
@@ -290,7 +292,7 @@ const CouponRecipients = ({
       columns={columns}
       filterMode="server"
       filterModel={filterModel}
-      loading={loading}
+      loading={loading || isValidating}
       onFilterModelChange={handleFilterModelChange}
       onPaginationModelChange={handlePaginationModelChange}
       onSortModelChange={handleSortModelChange}

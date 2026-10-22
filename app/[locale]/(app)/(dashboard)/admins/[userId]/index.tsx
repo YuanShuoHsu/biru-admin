@@ -1,25 +1,31 @@
 "use client";
 
 import type { UserWithRole } from "better-auth/client/plugins";
-import type { Session } from "better-auth/types";
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
-import { flushSync } from "react-dom";
-import { useSWRConfig } from "swr";
+import useSWR, { useSWRConfig } from "swr";
 
 import RevokeUserSessionDialogContent from "./RevokeUserSessionDialogContent";
 
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
-import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+import {
+  autosizeOptions,
+  DATA_GRID_PROPS,
+  NO_VALUE_FILTER_OPERATORS,
+} from "@/constants/dataGrid";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import { deviceSessionsKey } from "@/hooks/useDeviceSessions";
+import {
+  useDateFilterOperators,
+  useStringFilterOperators,
+} from "@/hooks/useFilterOperators";
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useSession } from "@/hooks/useSession";
-
-import { authClient } from "@/lib/auth-client";
+import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { Cancel, DeleteOutlined } from "@mui/icons-material";
 import {
@@ -31,12 +37,26 @@ import {
   Tooltip,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import type {
+  GridColDef,
+  GridFilterModel,
+  GridPaginationModel,
+  GridRenderCellParams,
+  GridSortModel,
+} from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
+import type {
+  UserSession,
+  UserSessionFilterField,
+  UserSessionSortField,
+} from "@/types/admins";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+
 import { formatUserAgent, isActiveSession } from "@/utils/auth";
+import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
@@ -65,23 +85,115 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface UserSessionsProps {
-  initialRows: Session[];
-  user: UserWithRole;
+  filterField?: UserSessionFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  loading?: boolean;
+  page?: number;
+  pageSize?: number;
+  quickFilterValue?: string;
+  rowCount?: number;
+  rows?: UserSession[];
+  sortBy?: UserSessionSortField;
+  sortDirection?: SortDirection;
+  user?: UserWithRole;
 }
 
-const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
+const UserSessions = ({
+  filterField: initialFilterField,
+  filterOperator: initialFilterOperator,
+  filterValue: initialFilterValue,
+  loading = false,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
+  quickFilterValue: initialQuickFilterValue,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
+  sortBy,
+  sortDirection,
+  user,
+}: UserSessionsProps) => {
+  const userEmail = user?.email ?? "";
+  const userId = user?.id ?? "";
+
   const [isSelectMode, setIsSelectMode] = useState(false);
-  const [rows, setRows] = useState(initialRows);
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    page: page - 1,
+    pageSize,
+  });
+  const [sortModel, setSortModel] = useState<GridSortModel>(
+    sortBy && sortDirection ? [{ field: sortBy, sort: sortDirection }] : [],
+  );
+  const [filterModel, setFilterModel] = useState<GridFilterModel>({
+    items:
+      initialFilterField &&
+      initialFilterOperator &&
+      (initialFilterValue ||
+        NO_VALUE_FILTER_OPERATORS.includes(initialFilterOperator))
+        ? [
+            {
+              field: initialFilterField,
+              operator: initialFilterOperator,
+              value: initialFilterValue,
+            },
+          ]
+        : [],
+    quickFilterValues: initialQuickFilterValue ? [initialQuickFilterValue] : [],
+  });
 
   const apiRef = useGridApiRef();
 
   const currentSession = useSession();
 
+  const { setDialog } = useDialogStore((state) => state);
+
+  const { mutate: mutateGlobal } = useSWRConfig();
+
+  const format = useFormatter();
+
+  const tUserSessions = useTranslations("admins.userSessions");
+
+  const dateFilterOperators = useDateFilterOperators();
+  const stringFilterOperators = useStringFilterOperators();
+
+  const updateQuery = useUpdateQuery();
+
+  const {
+    data: { data: rows, total: rowCount } = {
+      data: initialRows,
+      total: initialRowCount,
+    },
+    mutate,
+    isValidating,
+  } = useSWR(
+    !loading && [
+      `/api/users/${userId}/sessions`,
+      filterModel.items[0]?.field,
+      filterModel.items[0]?.operator,
+      filterModel.items[0]?.value,
+      filterModel.quickFilterValues,
+      paginationModel.page,
+      paginationModel.pageSize,
+      sortModel,
+    ],
+    ([url]) =>
+      fetcher<{ data: UserSession[]; total: number }>(
+        `${url}?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
+      ),
+    {
+      fallbackData: { data: initialRows, total: initialRowCount },
+      onSuccess: () => {
+        setTimeout(() => {
+          apiRef.current?.autosizeColumns(autosizeOptions);
+        }, 0);
+      },
+    },
+  );
+
   const isUserSessionSelectable = useCallback(
-    (session: Session) =>
-      session.token !== currentSession?.session.token &&
-      isActiveSession(session),
-    [currentSession?.session.token],
+    (session: UserSession) =>
+      session.id !== currentSession?.session.id && isActiveSession(session),
+    [currentSession?.session.id],
   );
 
   const {
@@ -94,75 +206,94 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
     isRowSelectable: isUserSessionSelectable,
     rows,
   });
-  const { setDialog } = useDialogStore((state) => state);
 
-  const { mutate } = useSWRConfig();
+  const revokeUserSessions = useCallback(
+    async (ids: string[]) => {
+      await fetcher(`/api/users/${userId}/sessions`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids }),
+      });
 
-  const format = useFormatter();
+      mutateGlobal(deviceSessionsKey);
+      mutate();
+    },
+    [mutate, mutateGlobal, userId],
+  );
 
-  const tUserSessions = useTranslations("admins.userSessions");
+  const handlePaginationModelChange = useCallback(
+    (newModel: GridPaginationModel) => {
+      setPaginationModel(newModel);
 
-  const [loading, setLoading] = useState(false);
+      updateQuery({
+        page: String(newModel.page + 1),
+        pageSize: String(newModel.pageSize),
+      });
+    },
+    [updateQuery],
+  );
 
-  const fetchListUserSessions = useCallback(async () => {
-    await authClient.admin.listUserSessions(
-      { userId: user.id },
-      {
-        onError: ({ error: { message } }) => {
-          setLoading(false);
+  const handleSortModelChange = useCallback(
+    (newModel: GridSortModel) => {
+      setSortModel(newModel);
+      setPaginationModel((previous) => ({ ...previous, page: 0 }));
 
-          enqueueSnackbar(message, {
-            variant: "error",
-          });
-        },
-        onRequest: () => setLoading(true),
-        onSuccess: ({ data: { sessions: rows } }) => {
-          flushSync(() => {
-            setRows(rows);
+      updateQuery({
+        page: "1",
+        sortBy: newModel[0]?.field ?? "",
+        sortDirection: newModel[0]?.sort ?? "",
+      });
+    },
+    [updateQuery],
+  );
 
-            setLoading(false);
-          });
+  const handleFilterModelChange = useCallback(
+    (newModel: GridFilterModel) => {
+      setFilterModel(newModel);
+      setPaginationModel((previous) => ({ ...previous, page: 0 }));
 
-          setTimeout(() => {
-            apiRef.current?.autosizeColumns(autosizeOptions);
-          }, 0);
-        },
-      },
-    );
-  }, [apiRef, user.id]);
+      const {
+        filterField = "",
+        filterOperator = "",
+        filterValue = "",
+      } = getFilterItemParams(newModel.items[0]);
+
+      updateQuery({
+        filterField,
+        filterOperator,
+        filterValue,
+        page: "1",
+        quickFilterValue: (newModel.quickFilterValues ?? []).join(" ").trim(),
+      });
+    },
+    [updateQuery],
+  );
 
   const handleRevokeUserSession = useCallback(
-    (session: Pick<Session, "token" | "ipAddress" | "userAgent">) => {
+    (session: UserSession) => {
       setDialog({
         content: <RevokeUserSessionDialogContent session={session} />,
         onConfirm: async () => {
-          await authClient.admin.revokeUserSession(
-            { sessionToken: session.token },
-            {
-              onError: ({ error: { message } }) => {
-                enqueueSnackbar(message, {
-                  variant: "error",
-                });
-              },
-              onSuccess: () => {
-                enqueueSnackbar(
-                  tUserSessions("actions.revokeUserSession.success", {
-                    email: user.email,
-                  }),
-                  { variant: "success" },
-                );
+          try {
+            await revokeUserSessions([session.id]);
 
-                mutate(deviceSessionsKey);
-                fetchListUserSessions();
-              },
-            },
-          );
+            enqueueSnackbar(
+              tUserSessions("actions.revokeUserSession.success", {
+                email: userEmail,
+              }),
+              { variant: "success" },
+            );
+          } catch (error) {
+            enqueueSnackbar(getErrorMessage(error), {
+              variant: "error",
+            });
+          }
         },
         open: true,
         title: tUserSessions("actions.revokeUserSession.title"),
       });
     },
-    [fetchListUserSessions, mutate, setDialog, tUserSessions, user.email],
+    [revokeUserSessions, setDialog, tUserSessions, userEmail],
   );
 
   const handleEnterUserSessionBatchRevokeMode = useCallback(() => {
@@ -197,11 +328,7 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
       ),
       onConfirm: async () => {
         try {
-          await fetcher(`/api/users/${user.id}/sessions`, {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
-          });
+          await revokeUserSessions(selectedRows.map(({ id }) => id));
 
           setIsSelectMode(false);
           clearRowSelection();
@@ -221,9 +348,6 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
             variant: "error",
           });
         }
-
-        mutate(deviceSessionsKey);
-        fetchListUserSessions();
       },
       open: true,
       title: tUserSessions("actions.batchRevokeUserSession.submit.label", {
@@ -233,12 +357,10 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
   }, [
     apiRef,
     clearRowSelection,
-    fetchListUserSessions,
-    mutate,
+    revokeUserSessions,
     selectedRows,
     setDialog,
     tUserSessions,
-    user.id,
   ]);
 
   const handleCancelUserSessionBatchRevoke = useCallback(() => {
@@ -271,8 +393,8 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
               field: "actions",
               filterable: false,
               headerName: tUserSessions("actions.label"),
-              renderCell: ({ row }: GridRenderCellParams<Session>) => {
-                const isCurrent = row.token === currentSession?.session.token;
+              renderCell: ({ row }: GridRenderCellParams<UserSession>) => {
+                const isCurrent = row.id === currentSession?.session.id;
 
                 return (
                   <ActionsStack direction="row">
@@ -311,29 +433,33 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
         : []),
       {
         field: "userAgent",
+        filterOperators: stringFilterOperators,
         headerName: tUserSessions("userAgent.label"),
         renderCell: renderEmptyableCell,
-        valueGetter: (_value: unknown, { userAgent }: Session) =>
+        valueGetter: (_value: unknown, { userAgent }: UserSession) =>
           formatUserAgent(userAgent),
       },
       {
         field: "ipAddress",
+        filterOperators: stringFilterOperators,
         headerName: tUserSessions("ipAddress.label"),
         renderCell: renderEmptyableCell,
       },
       {
         field: "createdAt",
+        filterOperators: dateFilterOperators,
         headerName: tUserSessions("createdAt"),
         valueFormatter: (value: string) =>
           format.dateTime(new Date(value), "short"),
       },
       {
         field: "expiresAt",
+        filterOperators: dateFilterOperators,
         headerName: tUserSessions("expiresAt"),
         renderCell: ({
           formattedValue,
           row,
-        }: GridRenderCellParams<Session>) => (
+        }: GridRenderCellParams<UserSession>) => (
           <ExpiresAtStack direction="row">
             {formattedValue}
             {!isActiveSession(row) && (
@@ -351,11 +477,13 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
     ],
     [
       currentSession?.session,
+      dateFilterOperators,
       format,
       handleRevokeUserSession,
       hasSelectableRows,
       isSelectMode,
       isUserSessionSelectable,
+      stringFilterOperators,
       tUserSessions,
     ],
   );
@@ -404,11 +532,19 @@ const UserSessions = ({ initialRows, user }: UserSessionsProps) => {
         {...rowSelectionProps}
         apiRef={apiRef}
         columns={columns}
-        loading={loading}
-        onPaginationModelChange={() =>
-          apiRef.current?.autosizeColumns(autosizeOptions)
-        }
+        filterMode="server"
+        filterModel={filterModel}
+        loading={loading || isValidating}
+        onFilterModelChange={handleFilterModelChange}
+        onPaginationModelChange={handlePaginationModelChange}
+        onSortModelChange={handleSortModelChange}
+        pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
+        paginationMode="server"
+        paginationModel={paginationModel}
+        rowCount={rowCount}
         rows={rows}
+        sortingMode="server"
+        sortModel={sortModel}
       />
     </>
   );

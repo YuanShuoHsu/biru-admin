@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import Employees from ".";
 
@@ -53,7 +54,10 @@ export const generateMetadata = async ({
   return { title: tAttendance("employees.label") };
 };
 
-const EmployeesPage = async ({ params, searchParams }: EmployeesPageProps) => {
+const EmployeesContent = async ({
+  params,
+  searchParams,
+}: EmployeesPageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -177,5 +181,11 @@ const EmployeesPage = async ({ params, searchParams }: EmployeesPageProps) => {
     />
   );
 };
+
+const EmployeesPage = (props: EmployeesPageProps) => (
+  <Suspense fallback={<Employees loading />}>
+    <EmployeesContent {...props} />
+  </Suspense>
+);
 
 export default EmployeesPage;

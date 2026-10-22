@@ -21,6 +21,7 @@ import {
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
 import {
+  DEFAULT_PAGE_SIZE,
   DEFAULT_PAGINATION_QUERY,
   getPageSizeOptions,
 } from "@/constants/pagination";
@@ -150,42 +151,47 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface IngredientsProps {
-  organization: Organization;
-  suppliers: Supplier[];
-  canRecordTransaction: boolean;
-  canViewAuditLog: boolean;
-  canViewPurchasing: boolean;
-  canWrite: boolean;
+  loading?: boolean;
+  organization?: Organization;
+  suppliers?: Supplier[];
+  canRecordTransaction?: boolean;
+  canViewAuditLog?: boolean;
+  canViewPurchasing?: boolean;
+  canWrite?: boolean;
   filterField?: IngredientFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  page: number;
-  pageSize: number;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: Ingredient[];
+  rowCount?: number;
+  rows?: Ingredient[];
   sortBy?: IngredientSortField;
   sortDirection?: SortDirection;
 }
 
 const Ingredients = ({
-  canRecordTransaction,
-  canViewAuditLog,
-  canViewPurchasing,
-  canWrite,
+  canRecordTransaction = false,
+  canViewAuditLog = false,
+  canViewPurchasing = false,
+  canWrite = false,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  organization: { currency = "", slug: organizationSlug },
-  page,
-  pageSize,
+  loading = false,
+  organization: currentOrganization,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
-  suppliers,
+  suppliers = [],
 }: IngredientsProps) => {
+  const currency = currentOrganization?.currency ?? "";
+  const organizationSlug = currentOrganization?.slug ?? "";
+
   const [toolbarMode, setToolbarMode] = useState<ToolbarMode>(null);
   const isReorderMode = toolbarMode === "reorder";
   const isSelectMode = toolbarMode === "select";
@@ -250,9 +256,9 @@ const Ingredients = ({
       total: initialRowCount,
     },
     mutate,
-    isValidating: loading,
+    isValidating,
   } = useSWR(
-    [
+    !loading && [
       `/api/organizations/${organizationSlug}/ingredients`,
       filterModel.items[0]?.field,
       filterModel.items[0]?.operator,
@@ -1032,7 +1038,7 @@ const Ingredients = ({
           columns={columns}
           filterMode="server"
           filterModel={filterModel}
-          loading={loading}
+          loading={loading || isValidating}
           onFilterModelChange={handleFilterModelChange}
           onPaginationModelChange={handlePaginationModelChange}
           onSortModelChange={handleSortModelChange}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
+import { Suspense } from "react";
 
 import BotList from "./BotList";
 
@@ -41,7 +42,10 @@ export const generateMetadata = async ({
   return { title: tBots("label") };
 };
 
-const QuantBotsPage = async ({ params, searchParams }: QuantBotsPageProps) => {
+const QuantBotsContent = async ({
+  params,
+  searchParams,
+}: QuantBotsPageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -104,5 +108,11 @@ const QuantBotsPage = async ({ params, searchParams }: QuantBotsPageProps) => {
     />
   );
 };
+
+const QuantBotsPage = (props: QuantBotsPageProps) => (
+  <Suspense fallback={<BotList loading />}>
+    <QuantBotsContent {...props} />
+  </Suspense>
+);
 
 export default QuantBotsPage;

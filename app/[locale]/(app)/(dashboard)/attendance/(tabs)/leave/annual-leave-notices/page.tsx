@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import AnnualLeaveNotices from "../../../AnnualLeaveNotices";
 
@@ -48,7 +49,7 @@ export const generateMetadata = async ({
   return { title: tAttendance("annualLeaveNotices.label") };
 };
 
-const AnnualLeaveNoticesPage = async ({
+const AnnualLeaveNoticesContent = async ({
   params,
   searchParams,
 }: AnnualLeaveNoticesPageProps) => {
@@ -143,5 +144,11 @@ const AnnualLeaveNoticesPage = async ({
     />
   );
 };
+
+const AnnualLeaveNoticesPage = (props: AnnualLeaveNoticesPageProps) => (
+  <Suspense fallback={<AnnualLeaveNotices canViewAll loading />}>
+    <AnnualLeaveNoticesContent {...props} />
+  </Suspense>
+);
 
 export default AnnualLeaveNoticesPage;

@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import HolidaySubstitutes from ".";
 
@@ -56,7 +57,7 @@ export const generateMetadata = async ({
   return { title: tAttendance("holidaySubstitutes.label") };
 };
 
-const HolidaySubstitutesPage = async ({
+const HolidaySubstitutesContent = async ({
   params,
   searchParams,
 }: HolidaySubstitutesPageProps) => {
@@ -138,5 +139,11 @@ const HolidaySubstitutesPage = async ({
     />
   );
 };
+
+const HolidaySubstitutesPage = (props: HolidaySubstitutesPageProps) => (
+  <Suspense fallback={<HolidaySubstitutes loading />}>
+    <HolidaySubstitutesContent {...props} />
+  </Suspense>
+);
 
 export default HolidaySubstitutesPage;

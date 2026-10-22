@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import Payslips from ".";
 
@@ -46,7 +47,7 @@ export const generateMetadata = async ({
   return { title: tAttendance("payslips.label") };
 };
 
-const PayslipsPage = async ({ params, searchParams }: PayslipsPageProps) => {
+const PayslipsContent = async ({ params, searchParams }: PayslipsPageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -117,5 +118,11 @@ const PayslipsPage = async ({ params, searchParams }: PayslipsPageProps) => {
     />
   );
 };
+
+const PayslipsPage = (props: PayslipsPageProps) => (
+  <Suspense fallback={<Payslips loading />}>
+    <PayslipsContent {...props} />
+  </Suspense>
+);
 
 export default PayslipsPage;

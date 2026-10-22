@@ -286,6 +286,7 @@ const Admins = ({
     isRowSelectable: isUserSelectable,
     rows,
   });
+  const hasOtherUser = rows.some(({ id }) => id !== currentUserId);
   const hasSessionUser = rows.some(({ hasSession }) => hasSession);
   const hasImpersonableUser = rows.some(
     (row) => row.id !== currentUserId && row.role !== "admin",
@@ -674,34 +675,36 @@ const Admins = ({
                         <Password fontSize="small" />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip
-                      title={
-                        isBanned
-                          ? tAdmins("actions.unbanUser.title")
-                          : tAdmins("actions.banUser.title")
-                      }
-                    >
-                      <StyledIconButton
-                        color={isBanned ? "success" : "warning"}
-                        onClick={(event) => {
-                          event.stopPropagation();
-
-                          if (isBanned) {
-                            handleUnbanUser(row);
-                          } else {
-                            handleBanUser(row);
-                          }
-                        }}
-                        size="small"
-                        visible={!isCurrentUser}
+                    {hasOtherUser && (
+                      <Tooltip
+                        title={
+                          isBanned
+                            ? tAdmins("actions.unbanUser.title")
+                            : tAdmins("actions.banUser.title")
+                        }
                       >
-                        {isBanned ? (
-                          <LockOpen fontSize="small" />
-                        ) : (
-                          <Block fontSize="small" />
-                        )}
-                      </StyledIconButton>
-                    </Tooltip>
+                        <StyledIconButton
+                          color={isBanned ? "success" : "warning"}
+                          onClick={(event) => {
+                            event.stopPropagation();
+
+                            if (isBanned) {
+                              handleUnbanUser(row);
+                            } else {
+                              handleBanUser(row);
+                            }
+                          }}
+                          size="small"
+                          visible={!isCurrentUser}
+                        >
+                          {isBanned ? (
+                            <LockOpen fontSize="small" />
+                          ) : (
+                            <Block fontSize="small" />
+                          )}
+                        </StyledIconButton>
+                      </Tooltip>
+                    )}
                     {hasSessionUser && (
                       <Tooltip title={tAdmins("userSessions.label")}>
                         <StyledIconButton
@@ -908,6 +911,7 @@ const Admins = ({
       handleSetUserPassword,
       handleUnbanUser,
       handleUpdateUser,
+      hasOtherUser,
       hasSelectableRows,
       hasSessionUser,
       hasImpersonableUser,

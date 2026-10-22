@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import Balances from "../../../LeaveBalances";
 
@@ -54,7 +55,7 @@ export const generateMetadata = async ({
   return { title: tAttendance("balances.label") };
 };
 
-const BalancesPage = async ({ params, searchParams }: BalancesPageProps) => {
+const BalancesContent = async ({ params, searchParams }: BalancesPageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -175,5 +176,11 @@ const BalancesPage = async ({ params, searchParams }: BalancesPageProps) => {
     />
   );
 };
+
+const BalancesPage = (props: BalancesPageProps) => (
+  <Suspense fallback={<Balances canViewAll loading />}>
+    <BalancesContent {...props} />
+  </Suspense>
+);
 
 export default BalancesPage;

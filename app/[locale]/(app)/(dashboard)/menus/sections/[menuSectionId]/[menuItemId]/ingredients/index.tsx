@@ -54,26 +54,30 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface MenuItemRecipeProps {
-  canCreate: boolean;
-  canViewAuditLog: boolean;
-  canViewPurchasing: boolean;
-  canWrite: boolean;
-  ingredients: Ingredient[];
-  menuItem: MenuItem;
-  organization: Organization;
-  recipe: Recipe | null;
+  canCreate?: boolean;
+  canViewAuditLog?: boolean;
+  canViewPurchasing?: boolean;
+  canWrite?: boolean;
+  ingredients?: Ingredient[];
+  loading?: boolean;
+  menuItem?: MenuItem;
+  organization?: Organization;
+  recipe?: Recipe | null;
 }
 
 const MenuItemRecipe = ({
-  canCreate,
-  canViewAuditLog,
-  canViewPurchasing,
-  canWrite,
-  ingredients,
+  canCreate = false,
+  canViewAuditLog = false,
+  canViewPurchasing = false,
+  canWrite = false,
+  ingredients = [],
+  loading = false,
   menuItem,
-  organization: { slug: organizationSlug },
+  organization,
   recipe: initialRecipe,
 }: MenuItemRecipeProps) => {
+  const organizationSlug = organization?.slug ?? "";
+
   const { setDialog } = useDialogStore((state) => state);
 
   const pathname = usePathname();
@@ -84,10 +88,10 @@ const MenuItemRecipe = ({
 
   const tInventory = useTranslations("inventory");
 
-  const priceCurrency = menuItem.offer?.priceCurrency;
+  const priceCurrency = menuItem?.offer?.priceCurrency;
 
   const { data: recipe, mutate: mutateRecipe } = useSWR(
-    `/api/menu-items/${menuItem.id}/recipe`,
+    !loading && `/api/menu-items/${menuItem?.id}/recipe`,
     (url: string) =>
       fetcher<MenuItemRecipeDetail>(url).then(({ recipe }) => recipe),
     { fallbackData: initialRecipe },
@@ -128,8 +132,8 @@ const MenuItemRecipe = ({
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              menuItemId: menuItem.id,
-              name: menuItem.name,
+              menuItemId: menuItem?.id,
+              name: menuItem?.name,
             }),
           },
         );
@@ -303,6 +307,7 @@ const MenuItemRecipe = ({
         disableColumnMenu
         disableColumnSorting
         hideFooter
+        loading={loading}
         rows={recipe ? [recipe] : []}
       />
     </>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import Suppliers from ".";
 
@@ -45,7 +46,10 @@ export const generateMetadata = async ({
   return { title: tInventory("suppliers.label") };
 };
 
-const SuppliersPage = async ({ params, searchParams }: SuppliersPageProps) => {
+const SuppliersContent = async ({
+  params,
+  searchParams,
+}: SuppliersPageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -141,5 +145,11 @@ const SuppliersPage = async ({ params, searchParams }: SuppliersPageProps) => {
     />
   );
 };
+
+const SuppliersPage = (props: SuppliersPageProps) => (
+  <Suspense fallback={<Suppliers loading />}>
+    <SuppliersContent {...props} />
+  </Suspense>
+);
 
 export default SuppliersPage;

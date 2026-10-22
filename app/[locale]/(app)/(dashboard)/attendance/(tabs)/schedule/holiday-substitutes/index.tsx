@@ -15,7 +15,7 @@ import { renderEmptyableCell } from "@/components/EmptyCell";
 
 import { HOLIDAY_SUBSTITUTE_STATUS_COLORS } from "@/constants/attendance";
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import {
@@ -75,36 +75,40 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface HolidaySubstitutesProps {
-  canUpdate: boolean;
+  canUpdate?: boolean;
   filterField?: AttendanceHolidaySubstituteFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  organization: Organization;
-  page: number;
-  pageSize: number;
+  loading?: boolean;
+  organization?: Organization;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: AttendanceHolidaySubstitute[];
+  rowCount?: number;
+  rows?: AttendanceHolidaySubstitute[];
   sortBy?: AttendanceHolidaySubstituteSortField;
   sortDirection?: SortDirection;
-  year: number;
+  year?: number;
 }
 
 const HolidaySubstitutes = ({
-  canUpdate,
+  canUpdate = false,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  organization: { slug: organizationSlug },
-  page,
-  pageSize,
+  loading = false,
+  organization,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
   year: initialYear,
 }: HolidaySubstitutesProps) => {
+  const organizationSlug = organization?.slug ?? "";
+
   const [isSelectMode, setIsSelectMode] = useState(false);
   const [year, setYear] = useState(initialYear);
 
@@ -149,10 +153,10 @@ const HolidaySubstitutes = ({
       data: initialRows,
       total: initialRowCount,
     },
-    isValidating: loading,
+    isValidating,
     mutate,
   } = useSWR(
-    [
+    !loading && [
       "attendance-holiday-substitutes",
       organizationSlug,
       year,
@@ -541,11 +545,12 @@ const HolidaySubstitutes = ({
         {!isSelectMode && (
           <>
             <YearDatePicker
+              disabled={loading}
               label={tAttendance("year")}
               onChange={(value) =>
                 value?.isValid() && handleYearChange(value.year())
               }
-              value={dayjs(`${year}-01-01`)}
+              value={year ? dayjs(`${year}-01-01`) : null}
               views={["year"]}
             />
             {canUpdate && (
@@ -596,7 +601,7 @@ const HolidaySubstitutes = ({
         columns={columns}
         filterMode="server"
         filterModel={filterModel}
-        loading={loading}
+        loading={loading || isValidating}
         onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
         onSortModelChange={handleSortModelChange}

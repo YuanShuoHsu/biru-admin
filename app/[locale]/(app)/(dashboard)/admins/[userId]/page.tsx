@@ -2,15 +2,37 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import UserSessions from ".";
 
+import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
+import {
+  filterOperatorValues,
+  userSessionFilterFieldValues,
+  userSessionSortFieldValues,
+} from "@/types/api";
+import type { UserSession } from "@/types/admins";
+
+import { getGridSearchParams, resolveGridSearchParams } from "@/utils/dataGrid";
+import { fetcher } from "@/utils/fetcher";
+
 interface UserSessionsPageProps {
   params: Promise<{ locale: Locale; userId: string }>;
+  searchParams: Promise<{
+    filterField?: string;
+    filterOperator?: string;
+    filterValue?: string;
+    page?: string;
+    pageSize?: string;
+    quickFilterValue?: string;
+    sortBy?: string;
+    sortDirection?: string;
+  }>;
 }
 
 export const generateMetadata = async ({
@@ -22,26 +44,86 @@ export const generateMetadata = async ({
   return { title: tAdmins("label") };
 };
 
-const UserSessionsPage = async ({ params }: UserSessionsPageProps) => {
-  const [cookieStore, { userId }] = await Promise.all([cookies(), params]);
-
-  const fetchOptions = {
-    headers: {
-      cookie: cookieStore.toString(),
-      origin: process.env.NEXT_PUBLIC_ADMIN_URL!,
-    },
-  };
-
-  const [{ data: user }, { data: sessionsData }] = await Promise.all([
-    authClient.admin.getUser({ query: { id: userId }, fetchOptions }),
-    authClient.admin.listUserSessions({ userId, fetchOptions }),
+const UserSessionsContent = async ({
+  params,
+  searchParams,
+}: UserSessionsPageProps) => {
+  const [cookieStore, { locale, userId }, rawSearchParams] = await Promise.all([
+    cookies(),
+    params,
+    searchParams,
   ]);
 
-  const initialRows = sessionsData?.sessions || [];
+  const {
+    filterField,
+    filterOperator,
+    filterValue,
+    page,
+    pageSize,
+    quickFilterValue,
+    redirectParams,
+    sortBy,
+    sortDirection,
+  } = resolveGridSearchParams({
+    searchParams: rawSearchParams,
+    sortFields: userSessionSortFieldValues,
+    filterFields: userSessionFilterFieldValues,
+    filterOperators: filterOperatorValues,
+  });
+
+  if (redirectParams)
+    redirect({
+      href: `/admins/${userId}?${redirectParams.toString()}`,
+      locale,
+    });
+
+  const cookie = cookieStore.toString();
+
+  const [{ data: user }, { data: rows, total: rowCount }] = await Promise.all([
+    authClient.admin.getUser({
+      query: { id: userId },
+      fetchOptions: {
+        headers: { cookie, origin: process.env.NEXT_PUBLIC_ADMIN_URL! },
+      },
+    }),
+    fetcher<{ data: UserSession[]; total: number }>(
+      `/api/users/${userId}/sessions?${getGridSearchParams({
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      })}`,
+      { headers: { cookie } },
+    ),
+  ]);
 
   if (!user) notFound();
 
-  return <UserSessions initialRows={initialRows} user={user} />;
+  return (
+    <UserSessions
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
+      page={page}
+      pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
+      rowCount={rowCount}
+      rows={rows}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+      user={user}
+    />
+  );
 };
+
+const UserSessionsPage = (props: UserSessionsPageProps) => (
+  <Suspense fallback={<UserSessions loading />}>
+    <UserSessionsContent {...props} />
+  </Suspense>
+);
 
 export default UserSessionsPage;

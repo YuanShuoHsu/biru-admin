@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import ModifierGroups from ".";
 
@@ -46,7 +47,7 @@ export const generateMetadata = async ({
   return { title: tMenus("modifierGroups.label") };
 };
 
-const ModifierGroupsPage = async ({
+const ModifierGroupsContent = async ({
   params,
   searchParams,
 }: ModifierGroupsPageProps) => {
@@ -126,5 +127,11 @@ const ModifierGroupsPage = async ({
     />
   );
 };
+
+const ModifierGroupsPage = (props: ModifierGroupsPageProps) => (
+  <Suspense fallback={<ModifierGroups loading />}>
+    <ModifierGroupsContent {...props} />
+  </Suspense>
+);
 
 export default ModifierGroupsPage;

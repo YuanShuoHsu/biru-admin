@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import Shifts from ".";
 
@@ -57,7 +58,7 @@ export const generateMetadata = async ({
   return { title: tAttendance("shifts.label") };
 };
 
-const ShiftsPage = async ({ params, searchParams }: ShiftsPageProps) => {
+const ShiftsContent = async ({ params, searchParams }: ShiftsPageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -180,5 +181,11 @@ const ShiftsPage = async ({ params, searchParams }: ShiftsPageProps) => {
     />
   );
 };
+
+const ShiftsPage = (props: ShiftsPageProps) => (
+  <Suspense fallback={<Shifts loading />}>
+    <ShiftsContent {...props} />
+  </Suspense>
+);
 
 export default ShiftsPage;

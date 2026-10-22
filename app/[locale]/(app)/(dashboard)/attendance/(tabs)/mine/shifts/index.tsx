@@ -20,7 +20,7 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import {
   useDateFilterOperators,
@@ -82,40 +82,44 @@ const ChipsStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface MineProps {
-  enabled: boolean;
+  enabled?: boolean;
   filterField?: AttendanceShiftFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  leaveCases: AttendanceLeaveCase[];
-  leaveTypes: AttendanceLeaveType[];
-  organization: Organization;
-  page: number;
-  pageSize: number;
-  punchableShifts: AttendanceShift[];
+  leaveCases?: AttendanceLeaveCase[];
+  leaveTypes?: AttendanceLeaveType[];
+  loading?: boolean;
+  organization?: Organization;
+  page?: number;
+  pageSize?: number;
+  punchableShifts?: AttendanceShift[];
   quickFilterValue?: string;
-  rowCount: number;
-  rows: AttendanceShift[];
+  rowCount?: number;
+  rows?: AttendanceShift[];
   sortBy?: AttendanceShiftSortField;
   sortDirection?: SortDirection;
 }
 
 const Mine = ({
-  enabled,
+  enabled = false,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  leaveCases,
-  leaveTypes,
-  organization: { slug: organizationSlug },
-  page,
-  pageSize,
-  punchableShifts,
+  leaveCases = [],
+  leaveTypes = [],
+  loading = false,
+  organization,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
+  punchableShifts = [],
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
 }: MineProps) => {
+  const organizationSlug = organization?.slug ?? "";
+
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -171,7 +175,7 @@ const Mine = ({
       data: initialRows,
       total: initialRowCount,
     },
-    isValidating: loading,
+    isValidating,
     mutate,
   } = useSWR(
     enabled ? [resource, paginationModel, filterModel, sortModel] : null,
@@ -309,6 +313,11 @@ const Mine = ({
     [rows],
   );
 
+  const hasScheduledShift = useMemo(
+    () => rows.some(({ state }) => state === "scheduled"),
+    [rows],
+  );
+
   const columns = useMemo<GridColDef[]>(
     () => [
       {
@@ -352,15 +361,17 @@ const Mine = ({
                 <MoreTime fontSize="small" />
               </IconButton>
             </Tooltip>
-            <Tooltip title={tAttendance("requests.actions.create")}>
-              <StyledIconButton
-                onClick={() => handleLeave(row)}
-                size="small"
-                visible={row.state === "scheduled"}
-              >
-                <EventBusy fontSize="small" />
-              </StyledIconButton>
-            </Tooltip>
+            {hasScheduledShift && (
+              <Tooltip title={tAttendance("requests.actions.create")}>
+                <StyledIconButton
+                  onClick={() => handleLeave(row)}
+                  size="small"
+                  visible={row.state === "scheduled"}
+                >
+                  <EventBusy fontSize="small" />
+                </StyledIconButton>
+              </Tooltip>
+            )}
           </ActionsStack>
         ),
         resizable: false,
@@ -455,6 +466,7 @@ const Mine = ({
       handleOvertime,
       handleViewEvents,
       hasCorrectedShift,
+      hasScheduledShift,
       stringFilterOperators,
       tAttendance,
     ],
@@ -462,8 +474,9 @@ const Mine = ({
 
   return (
     <>
-      {enabled ? (
+      {loading || enabled ? (
         <PunchCard
+          loading={loading}
           onPunched={() => mutate()}
           organizationSlug={organizationSlug}
           shifts={punchableShifts}
@@ -479,7 +492,7 @@ const Mine = ({
         columns={columns}
         filterMode="server"
         filterModel={filterModel}
-        loading={loading}
+        loading={loading || isValidating}
         onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
         onSortModelChange={handleSortModelChange}

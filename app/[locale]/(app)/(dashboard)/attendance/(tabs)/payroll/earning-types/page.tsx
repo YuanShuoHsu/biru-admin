@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import EarningTypes from ".";
 
@@ -48,7 +49,7 @@ export const generateMetadata = async ({
   return { title: tAttendance("earningTypes.label") };
 };
 
-const EarningTypesPage = async ({
+const EarningTypesContent = async ({
   params,
   searchParams,
 }: EarningTypesPageProps) => {
@@ -136,5 +137,11 @@ const EarningTypesPage = async ({
     />
   );
 };
+
+const EarningTypesPage = (props: EarningTypesPageProps) => (
+  <Suspense fallback={<EarningTypes loading />}>
+    <EarningTypesContent {...props} />
+  </Suspense>
+);
 
 export default EarningTypesPage;

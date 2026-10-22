@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import LeaveCases from "../../../LeaveCases";
 
@@ -56,7 +57,7 @@ export const generateMetadata = async ({
   return { title: tAttendance("leaveCases.label") };
 };
 
-const LeaveCasesPage = async ({
+const LeaveCasesContent = async ({
   params,
   searchParams,
 }: LeaveCasesPageProps) => {
@@ -189,5 +190,11 @@ const LeaveCasesPage = async ({
     />
   );
 };
+
+const LeaveCasesPage = (props: LeaveCasesPageProps) => (
+  <Suspense fallback={<LeaveCases canViewAll loading />}>
+    <LeaveCasesContent {...props} />
+  </Suspense>
+);
 
 export default LeaveCasesPage;

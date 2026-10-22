@@ -16,7 +16,7 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import {
   useDateFilterOperators,
@@ -79,38 +79,42 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface SuppliersProps {
-  canViewAuditLog: boolean;
-  canWrite: boolean;
+  canViewAuditLog?: boolean;
+  canWrite?: boolean;
   filterField?: SupplierFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  ingredients: Ingredient[];
-  organization: Organization;
-  page: number;
-  pageSize: number;
+  ingredients?: Ingredient[];
+  loading?: boolean;
+  organization?: Organization;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: Supplier[];
+  rowCount?: number;
+  rows?: Supplier[];
   sortBy?: SupplierSortField;
   sortDirection?: SortDirection;
 }
 
 const Suppliers = ({
-  canViewAuditLog,
-  canWrite,
+  canViewAuditLog = false,
+  canWrite = false,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  ingredients,
-  organization: { slug: organizationSlug },
-  page,
-  pageSize,
+  ingredients = [],
+  loading = false,
+  organization,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
 }: SuppliersProps) => {
+  const organizationSlug = organization?.slug ?? "";
+
   const [isSelectMode, setIsSelectMode] = useState(false);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
@@ -161,9 +165,9 @@ const Suppliers = ({
       total: initialRowCount,
     },
     mutate,
-    isValidating: loading,
+    isValidating,
   } = useSWR(
-    [
+    !loading && [
       `/api/organizations/${organizationSlug}/suppliers`,
       filterModel.items[0]?.field,
       filterModel.items[0]?.operator,
@@ -596,7 +600,7 @@ const Suppliers = ({
         columns={columns}
         filterMode="server"
         filterModel={filterModel}
-        loading={loading}
+        loading={loading || isValidating}
         onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
         onSortModelChange={handleSortModelChange}

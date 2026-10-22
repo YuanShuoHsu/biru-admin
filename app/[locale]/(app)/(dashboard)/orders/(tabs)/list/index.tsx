@@ -15,7 +15,7 @@ import {
 } from "@/constants/dataGrid";
 import { MODE_COLORS } from "@/constants/orderMode";
 import { INVOICE_STATUS_COLORS, STATUS_COLORS } from "@/constants/orders";
-import { getPageSizeOptions } from "@/constants/pagination";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import {
   useDateFilterOperators,
@@ -95,34 +95,38 @@ const TRANSITION_SLOTS: OrderTransition["direction"][][] = [
 ];
 
 interface OrdersProps {
-  canViewAuditLog: boolean;
+  canViewAuditLog?: boolean;
   filterField?: OrderFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  organization: Organization;
-  page: number;
-  pageSize: number;
+  loading?: boolean;
+  organization?: Organization;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: AdminOrderResponse[];
+  rowCount?: number;
+  rows?: AdminOrderResponse[];
   sortBy?: OrderSortField;
   sortDirection?: SortDirection;
 }
 
 const Orders = ({
-  canViewAuditLog,
+  canViewAuditLog = false,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  organization: { slug: organizationSlug },
-  page,
-  pageSize,
+  loading = false,
+  organization,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
 }: OrdersProps) => {
+  const organizationSlug = organization?.slug ?? "";
+
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -169,10 +173,10 @@ const Orders = ({
       data: initialRows,
       total: initialRowCount,
     },
-    isValidating: loading,
+    isValidating,
     mutate,
   } = useSWR(
-    [
+    !loading && [
       `/api/organizations/${organizationSlug}/orders`,
       filterModel.items[0]?.field,
       filterModel.items[0]?.operator,
@@ -630,7 +634,7 @@ const Orders = ({
       columns={columns}
       filterMode="server"
       filterModel={filterModel}
-      loading={loading}
+      loading={loading || isValidating}
       onFilterModelChange={handleFilterModelChange}
       onPaginationModelChange={handlePaginationModelChange}
       onSortModelChange={handleSortModelChange}

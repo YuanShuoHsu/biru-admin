@@ -28,6 +28,7 @@ import {
 } from "@/constants/menus";
 import { MODE_COLORS } from "@/constants/orderMode";
 import {
+  DEFAULT_PAGE_SIZE,
   DEFAULT_PAGINATION_QUERY,
   getPageSizeOptions,
 } from "@/constants/pagination";
@@ -139,40 +140,44 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface MenusMenuIdSectionIdProps {
-  canUpdateAvailability: boolean;
-  canViewAuditLog: boolean;
-  canWrite: boolean;
+  canUpdateAvailability?: boolean;
+  canViewAuditLog?: boolean;
+  canWrite?: boolean;
   filterField?: MenuItemFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  organization: Organization;
-  page: number;
-  pageSize: number;
+  loading?: boolean;
+  organization?: Organization;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: MenuItem[];
-  menuSectionId: string;
+  rowCount?: number;
+  rows?: MenuItem[];
+  menuSectionId?: string;
   sortBy?: MenuItemSortField;
   sortDirection?: SortDirection;
 }
 
 const MenusMenuIdSectionId = ({
-  canUpdateAvailability,
-  canViewAuditLog,
-  canWrite,
+  canUpdateAvailability = false,
+  canViewAuditLog = false,
+  canWrite = false,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  organization: { openingHours },
-  page,
-  pageSize,
+  loading = false,
+  organization,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
-  menuSectionId,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
+  menuSectionId = "",
   sortBy,
   sortDirection,
 }: MenusMenuIdSectionIdProps) => {
+  const openingHours = organization?.openingHours ?? "";
+
   const [toolbarMode, setToolbarMode] = useState<ToolbarMode>(null);
   const isReorderMode = toolbarMode === "reorder";
   const isSelectMode = toolbarMode === "select";
@@ -239,9 +244,9 @@ const MenusMenuIdSectionId = ({
       total: initialRowCount,
     },
     mutate,
-    isValidating: loading,
+    isValidating,
   } = useSWR(
-    [
+    !loading && [
       `/api/menu-sections/${menuSectionId}/menu-items`,
       filterModel.items[0]?.field,
       filterModel.items[0]?.operator,
@@ -1027,7 +1032,7 @@ const MenusMenuIdSectionId = ({
           columns={columns}
           filterMode="server"
           filterModel={filterModel}
-          loading={loading}
+          loading={loading || isValidating}
           onFilterModelChange={handleFilterModelChange}
           onPaginationModelChange={handlePaginationModelChange}
           onSortModelChange={handleSortModelChange}

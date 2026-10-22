@@ -14,7 +14,7 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import {
   useEnumFilterOperators,
@@ -73,12 +73,13 @@ interface EarningTypesProps {
   filterField?: PayrollEarningTypeFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  organization: Organization;
-  page: number;
-  pageSize: number;
+  loading?: boolean;
+  organization?: Organization;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: PayrollEarningType[];
+  rowCount?: number;
+  rows?: PayrollEarningType[];
   sortBy?: PayrollEarningTypeSortField;
   sortDirection?: SortDirection;
 }
@@ -87,15 +88,18 @@ const EarningTypes = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  organization: { slug: organizationSlug },
-  page,
-  pageSize,
+  loading = false,
+  organization,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
 }: EarningTypesProps) => {
+  const organizationSlug = organization?.slug ?? "";
+
   const [isSelectMode, setIsSelectMode] = useState(false);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
@@ -149,10 +153,10 @@ const EarningTypes = ({
       data: initialRows,
       total: initialRowCount,
     },
-    isValidating: loading,
+    isValidating,
     mutate,
   } = useSWR(
-    [base, paginationModel, filterModel, sortModel],
+    !loading && [base, paginationModel, filterModel, sortModel],
     () =>
       fetcher<PayrollEarningTypePage>(
         `${base}?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
@@ -458,6 +462,7 @@ const EarningTypes = ({
         {!isSelectMode && (
           <>
             <Button
+              disabled={loading}
               onClick={() => handleEarningTypeDialog()}
               size="small"
               startIcon={<Add />}
@@ -508,7 +513,7 @@ const EarningTypes = ({
         columns={columns}
         filterMode="server"
         filterModel={filterModel}
-        loading={loading}
+        loading={loading || isValidating}
         onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
         onSortModelChange={handleSortModelChange}

@@ -13,7 +13,7 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import {
   useDateFilterOperators,
@@ -53,34 +53,39 @@ import { getAttendanceAnnualLeaveNoticeEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 
 interface AnnualLeaveNoticesProps {
-  canViewAll: boolean;
+  canViewAll?: boolean;
   filterField?: AttendanceAnnualLeaveNoticeFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  organization: Organization;
-  page: number;
-  pageSize: number;
+  loading?: boolean;
+  organization?: Organization;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: AttendanceAnnualLeaveNotice[];
+  rowCount?: number;
+  rows?: AttendanceAnnualLeaveNotice[];
   sortBy?: AttendanceAnnualLeaveNoticeSortField;
   sortDirection?: SortDirection;
 }
 
 const AnnualLeaveNotices = ({
-  canViewAll,
+  canViewAll = false,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  organization: { currency = "", slug: organizationSlug },
-  page,
-  pageSize,
+  loading = false,
+  organization,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
 }: AnnualLeaveNoticesProps) => {
+  const currency = organization?.currency ?? "";
+  const organizationSlug = organization?.slug ?? "";
+
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -150,7 +155,7 @@ const AnnualLeaveNotices = ({
     },
     isValidating,
   } = useSWR(
-    [base, paginationModel, filterModel, sortModel],
+    !loading && [base, paginationModel, filterModel, sortModel],
     () =>
       fetcher<AttendanceAnnualLeaveNoticePage>(
         `${base}?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
@@ -363,7 +368,7 @@ const AnnualLeaveNotices = ({
       columns={columns}
       filterMode="server"
       filterModel={filterModel}
-      loading={isValidating}
+      loading={loading || isValidating}
       onFilterModelChange={handleFilterModelChange}
       onPaginationModelChange={handlePaginationModelChange}
       onSortModelChange={handleSortModelChange}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import LeaveTypes from ".";
 
@@ -51,7 +52,7 @@ export const generateMetadata = async ({
   return { title: tAttendance("leaveTypes.label") };
 };
 
-const LeaveTypesPage = async ({
+const LeaveTypesContent = async ({
   params,
   searchParams,
 }: LeaveTypesPageProps) => {
@@ -143,5 +144,11 @@ const LeaveTypesPage = async ({
     />
   );
 };
+
+const LeaveTypesPage = (props: LeaveTypesPageProps) => (
+  <Suspense fallback={<LeaveTypes loading />}>
+    <LeaveTypesContent {...props} />
+  </Suspense>
+);
 
 export default LeaveTypesPage;

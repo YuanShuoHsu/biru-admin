@@ -11,7 +11,7 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import {
   useDateFilterOperators,
@@ -44,12 +44,13 @@ interface MyChildrenProps {
   filterField?: AttendanceParentalChildFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  organization: Organization;
-  page: number;
-  pageSize: number;
+  loading?: boolean;
+  organization?: Organization;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: AttendanceParentalChild[];
+  rowCount?: number;
+  rows?: AttendanceParentalChild[];
   sortBy?: AttendanceParentalChildSortField;
   sortDirection?: SortDirection;
 }
@@ -58,15 +59,18 @@ const MyChildren = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  organization: { slug: organizationSlug },
-  page,
-  pageSize,
+  loading = false,
+  organization,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
 }: MyChildrenProps) => {
+  const organizationSlug = organization?.slug ?? "";
+
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -116,7 +120,7 @@ const MyChildren = ({
     },
     isValidating,
   } = useSWR(
-    [base, paginationModel, filterModel, sortModel],
+    !loading && [base, paginationModel, filterModel, sortModel],
     () =>
       fetcher<AttendanceParentalChildPage>(
         `${base}?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
@@ -209,7 +213,7 @@ const MyChildren = ({
       columns={columns}
       filterMode="server"
       filterModel={filterModel}
-      loading={isValidating}
+      loading={loading || isValidating}
       onFilterModelChange={handleFilterModelChange}
       onPaginationModelChange={handlePaginationModelChange}
       onSortModelChange={handleSortModelChange}

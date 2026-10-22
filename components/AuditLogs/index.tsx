@@ -15,6 +15,7 @@ import {
 } from "@/constants/dataGrid";
 import { PLATFORM_ORGANIZATION_ID } from "@/constants/organizations";
 import {
+  DEFAULT_PAGE_SIZE,
   DEFAULT_PAGINATION_QUERY,
   getPageSizeOptions,
 } from "@/constants/pagination";
@@ -429,15 +430,16 @@ interface AuditLogsProps {
   filterOperator?: FilterOperator;
   filterValue?: string;
   ingredient?: Ingredient;
-  logs: AuditLogResponse[];
+  loading?: boolean;
+  logs?: AuditLogResponse[];
   organization?: Organization;
-  organizations: OrganizationResponse[];
-  page: number;
-  pageSize: number;
+  organizations?: OrganizationResponse[];
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
   resource?: AuditResource;
   resourceId?: string;
-  rowCount: number;
+  rowCount?: number;
   sortBy?: AuditLogSortField;
   sortDirection?: SortDirection;
 }
@@ -448,15 +450,16 @@ const AuditLogs = ({
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
   ingredient,
-  logs: initialLogs,
+  loading = false,
+  logs: initialLogs = [],
   organization,
-  organizations,
-  page,
-  pageSize,
+  organizations = [],
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
   resource,
   resourceId,
-  rowCount: initialRowCount,
+  rowCount: initialRowCount = 0,
   sortBy,
   sortDirection,
 }: AuditLogsProps) => {
@@ -518,9 +521,9 @@ const AuditLogs = ({
       data: initialLogs,
       total: initialRowCount,
     },
-    isValidating: loading,
+    isValidating,
   } = useSWR(
-    [
+    !loading && [
       getAuditLogsPath(organization?.slug),
       resource,
       resourceId,
@@ -889,7 +892,7 @@ const AuditLogs = ({
       columns={columns}
       filterMode="server"
       filterModel={filterModel}
-      loading={loading}
+      loading={loading || isValidating}
       onFilterModelChange={handleFilterModelChange}
       onPaginationModelChange={handlePaginationModelChange}
       onSortModelChange={handleSortModelChange}

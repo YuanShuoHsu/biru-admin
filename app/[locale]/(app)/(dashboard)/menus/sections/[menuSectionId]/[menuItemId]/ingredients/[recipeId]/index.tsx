@@ -16,7 +16,7 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
@@ -88,41 +88,43 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface RecipeIngredientsProps {
-  canCreate: boolean;
-  canDelete: boolean;
-  canViewPurchasing: boolean;
-  canWrite: boolean;
+  canCreate?: boolean;
+  canDelete?: boolean;
+  canViewPurchasing?: boolean;
+  canWrite?: boolean;
   filterField?: RecipeIngredientFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  ingredients: Ingredient[];
-  menuItem: MenuItem;
-  page: number;
-  pageSize: number;
+  ingredients?: Ingredient[];
+  loading?: boolean;
+  menuItem?: MenuItem;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  recipe: Recipe;
-  rowCount: number;
-  rows: RecipeIngredient[];
+  recipe?: Recipe;
+  rowCount?: number;
+  rows?: RecipeIngredient[];
   sortBy?: RecipeIngredientSortField;
   sortDirection?: SortDirection;
 }
 
 const RecipeIngredients = ({
-  canCreate,
-  canDelete,
-  canViewPurchasing,
-  canWrite,
+  canCreate = false,
+  canDelete = false,
+  canViewPurchasing = false,
+  canWrite = false,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  ingredients,
+  ingredients = [],
+  loading = false,
   menuItem,
-  page,
-  pageSize,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
   recipe: initialRecipe,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
 }: RecipeIngredientsProps) => {
@@ -168,7 +170,7 @@ const RecipeIngredients = ({
 
   const formatMoney = useFormatMoney();
 
-  const priceCurrency = menuItem.offer?.priceCurrency;
+  const priceCurrency = menuItem?.offer?.priceCurrency;
 
   const locale = useLocale();
 
@@ -178,7 +180,7 @@ const RecipeIngredients = ({
   const updateQuery = useUpdateQuery();
 
   const { data: recipe, mutate: mutateRecipe } = useSWR(
-    `/api/menu-items/${menuItem.id}/recipe`,
+    !loading && `/api/menu-items/${menuItem?.id}/recipe`,
     (url: string) =>
       fetcher<MenuItemRecipeDetail>(url).then(
         ({ recipe }) => recipe ?? initialRecipe,
@@ -186,16 +188,18 @@ const RecipeIngredients = ({
     { fallbackData: initialRecipe },
   );
 
+  const recipeId = recipe?.id ?? "";
+
   const {
     data: { data: rows, total: rowCount } = {
       data: initialRows,
       total: initialRowCount,
     },
     mutate,
-    isValidating: loading,
+    isValidating,
   } = useSWR(
-    [
-      `/api/recipes/${recipe.id}/recipe-ingredients`,
+    !loading && [
+      `/api/recipes/${recipeId}/recipe-ingredients`,
       filterModel.items[0]?.field,
       filterModel.items[0]?.operator,
       filterModel.items[0]?.value,
@@ -315,17 +319,14 @@ const RecipeIngredients = ({
       ),
       onConfirm: async () => {
         try {
-          await fetcher(
-            `/api/recipes/${recipe.id}/recipe-ingredients/reorder`,
-            {
-              method: "PATCH",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                ids: rows.map(({ id }) => id),
-                offset: paginationModel.page * paginationModel.pageSize,
-              }),
-            },
-          );
+          await fetcher(`/api/recipes/${recipeId}/recipe-ingredients/reorder`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ids: rows.map(({ id }) => id),
+              offset: paginationModel.page * paginationModel.pageSize,
+            }),
+          });
 
           setToolbarMode(null);
 
@@ -359,7 +360,7 @@ const RecipeIngredients = ({
     mutate,
     paginationModel.page,
     paginationModel.pageSize,
-    recipe,
+    recipeId,
     setDialog,
     tInventory,
   ]);
@@ -403,6 +404,8 @@ const RecipeIngredients = ({
   };
 
   const handleCreateRecipeIngredient = useCallback(() => {
+    if (!recipe) return;
+
     setDialog({
       content: (
         <RecipeIngredientDialog
@@ -423,6 +426,8 @@ const RecipeIngredients = ({
 
   const handleUpdateRecipeIngredient = useCallback(
     (material: RecipeIngredient) => {
+      if (!recipe) return;
+
       setDialog({
         content: (
           <RecipeIngredientDialog
@@ -459,10 +464,9 @@ const RecipeIngredients = ({
         ),
         onConfirm: async () => {
           try {
-            await fetcher(
-              `/api/recipes/${recipe.id}/recipe-ingredients/${id}`,
-              { method: "DELETE" },
-            );
+            await fetcher(`/api/recipes/${recipeId}/recipe-ingredients/${id}`, {
+              method: "DELETE",
+            });
 
             enqueueSnackbar(
               tInventory(
@@ -487,7 +491,7 @@ const RecipeIngredients = ({
         ),
       });
     },
-    [handleMutate, locale, recipe, setDialog, tInventory],
+    [handleMutate, locale, recipeId, setDialog, tInventory],
   );
 
   const handleEnterBatchDeleteMode = useCallback(() => {
@@ -530,7 +534,7 @@ const RecipeIngredients = ({
       ),
       onConfirm: async () => {
         try {
-          await fetcher(`/api/recipes/${recipe.id}/recipe-ingredients`, {
+          await fetcher(`/api/recipes/${recipeId}/recipe-ingredients`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
@@ -571,7 +575,7 @@ const RecipeIngredients = ({
     apiRef,
     clearRowSelection,
     mutate,
-    recipe.id,
+    recipeId,
     selectedRows,
     setDialog,
     tInventory,
@@ -705,7 +709,7 @@ const RecipeIngredients = ({
       {
         field: "requiredQuantity",
         filterOperators: numberFilterOperators,
-        headerName: `${tInventory("recipes.ingredients.requiredQuantity.label")}${tCommon("parenthesisOpen")}${format.number(recipe.recipeYield)} ${tInventory("recipes.recipeYield.unit")}${tCommon("parenthesisClose")}`,
+        headerName: `${tInventory("recipes.ingredients.requiredQuantity.label")}${recipe ? `${tCommon("parenthesisOpen")}${format.number(recipe.recipeYield)} ${tInventory("recipes.recipeYield.unit")}${tCommon("parenthesisClose")}` : ""}`,
         valueGetter: (_value: unknown, row: RecipeIngredient) =>
           `${format.number(Number(row.requiredQuantity))} ${tInventory(`units.${row.unitCode}`)}`,
       },
@@ -852,7 +856,7 @@ const RecipeIngredients = ({
           columns={columns}
           filterMode="server"
           filterModel={filterModel}
-          loading={loading}
+          loading={loading || isValidating}
           onFilterModelChange={handleFilterModelChange}
           onPaginationModelChange={handlePaginationModelChange}
           onSortModelChange={handleSortModelChange}

@@ -100,32 +100,34 @@ const ROLE_COLOR_MAP: Record<string, "error" | "warning" | "default"> = {
 };
 
 interface OrganizationsSlugMembersProps {
-  activeOrganization: ActiveOrganization;
-  canCreateInvitation: boolean;
-  canDeleteMember: boolean;
-  canLeaveOrganizations: boolean;
-  canRemoveMembers: boolean;
-  canUpdateMember: boolean;
-  canUpdateMemberRoles: boolean;
-  currentUserId: string;
-  currentUserRole: string;
+  activeOrganization?: ActiveOrganization;
+  canCreateInvitation?: boolean;
+  canDeleteMember?: boolean;
+  canLeaveOrganizations?: boolean;
+  canRemoveMembers?: boolean;
+  canUpdateMember?: boolean;
+  canUpdateMemberRoles?: boolean;
+  currentUserId?: string;
+  currentUserRole?: string;
+  loading?: boolean;
 }
 
 const OrganizationsSlugMembers = ({
-  activeOrganization: {
-    id: organizationId,
-    members: initialMembers,
-    teams: initialTeams,
-  },
-  canCreateInvitation,
-  canDeleteMember,
-  canLeaveOrganizations,
-  canRemoveMembers,
-  canUpdateMember,
-  canUpdateMemberRoles,
-  currentUserId,
-  currentUserRole,
+  activeOrganization,
+  canCreateInvitation = false,
+  canDeleteMember = false,
+  canLeaveOrganizations = false,
+  canRemoveMembers = false,
+  canUpdateMember = false,
+  canUpdateMemberRoles = false,
+  currentUserId = "",
+  currentUserRole = "",
+  loading = false,
 }: OrganizationsSlugMembersProps) => {
+  const organizationId = activeOrganization?.id ?? "";
+  const initialMembers = activeOrganization?.members ?? [];
+  const initialTeams = activeOrganization?.teams ?? [];
+
   const [isSelectMode, setIsSelectMode] = useState(false);
 
   const apiRef = useGridApiRef();
@@ -150,9 +152,9 @@ const OrganizationsSlugMembers = ({
       teams: initialTeams,
     },
     mutate,
-    isValidating: loading,
+    isValidating,
   } = useSWR(
-    ["organization-members", slug],
+    !loading && ["organization-members", slug],
     async () => {
       const { data, error } = await authClient.organization.getFullOrganization(
         {
@@ -653,7 +655,7 @@ const OrganizationsSlugMembers = ({
         {...rowSelectionProps}
         apiRef={apiRef}
         columns={columns}
-        loading={loading}
+        loading={loading || isValidating}
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }

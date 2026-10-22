@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import Payroll from ".";
 
@@ -55,7 +56,7 @@ export const generateMetadata = async ({
   return { title: tAttendance("payslips.label") };
 };
 
-const PayrollPage = async ({ params, searchParams }: PayrollPageProps) => {
+const PayrollContent = async ({ params, searchParams }: PayrollPageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -171,5 +172,11 @@ const PayrollPage = async ({ params, searchParams }: PayrollPageProps) => {
     />
   );
 };
+
+const PayrollPage = (props: PayrollPageProps) => (
+  <Suspense fallback={<Payroll loading />}>
+    <PayrollContent {...props} />
+  </Suspense>
+);
 
 export default PayrollPage;

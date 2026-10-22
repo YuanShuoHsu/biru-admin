@@ -8,10 +8,9 @@ export type Member = typeof authClient.$Infer.Member;
 export type Organization = typeof authClient.$Infer.Organization;
 export type Team = typeof authClient.$Infer.Team;
 
+export type MyOrganization = components["schemas"]["MyOrganizationListItemDto"];
 export type OrganizationResponse =
   components["schemas"]["OrganizationResponseDto"];
-export type OrganizationDeletability =
-  components["schemas"]["OrganizationDeletabilityDto"];
 export type OrganizationMember =
   components["schemas"]["OrganizationMemberResponseDto"];
 export type OrganizationStats =

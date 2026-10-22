@@ -20,7 +20,7 @@ import {
 } from "@/constants/dataGrid";
 import { ITEM_AVAILABILITY_COLOR_MAP } from "@/constants/itemAvailability";
 import { MODE_COLORS } from "@/constants/orderMode";
-import { getPageSizeOptions } from "@/constants/pagination";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
@@ -98,38 +98,42 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface ModifiersProps {
-  canViewAuditLog: boolean;
-  canUpdateAvailability: boolean;
-  canWrite: boolean;
+  canViewAuditLog?: boolean;
+  canUpdateAvailability?: boolean;
+  canWrite?: boolean;
   filterField?: ModifierFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  group: ModifierGroup;
-  page: number;
-  pageSize: number;
+  group?: ModifierGroup;
+  loading?: boolean;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: Modifier[];
+  rowCount?: number;
+  rows?: Modifier[];
   sortBy?: ModifierSortField;
   sortDirection?: SortDirection;
 }
 
 const Modifiers = ({
-  canViewAuditLog,
-  canUpdateAvailability,
-  canWrite,
+  canViewAuditLog = false,
+  canUpdateAvailability = false,
+  canWrite = false,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
   group,
-  page,
-  pageSize,
+  loading = false,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
 }: ModifiersProps) => {
+  const groupId = group?.id ?? "";
+
   const [toolbarMode, setToolbarMode] = useState<ToolbarMode>(null);
   const isReorderMode = toolbarMode === "reorder";
   const isSelectMode = toolbarMode === "select";
@@ -192,10 +196,10 @@ const Modifiers = ({
       total: initialRowCount,
     },
     mutate,
-    isValidating: loading,
+    isValidating,
   } = useSWR(
-    [
-      `/api/modifier-groups/${group.id}/modifiers`,
+    !loading && [
+      `/api/modifier-groups/${groupId}/modifiers`,
       filterModel.items[0]?.field,
       filterModel.items[0]?.operator,
       filterModel.items[0]?.value,
@@ -206,7 +210,7 @@ const Modifiers = ({
     ],
     async () => {
       return fetcher<{ data: Modifier[]; total: number }>(
-        `/api/modifier-groups/${group.id}/modifiers?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
+        `/api/modifier-groups/${groupId}/modifiers?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
       );
     },
     {
@@ -306,7 +310,7 @@ const Modifiers = ({
       ),
       onConfirm: async () => {
         try {
-          await fetcher(`/api/modifier-groups/${group.id}/modifiers/reorder`, {
+          await fetcher(`/api/modifier-groups/${groupId}/modifiers/reorder`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -337,7 +341,7 @@ const Modifiers = ({
     });
   }, [
     apiRef,
-    group.id,
+    groupId,
     rows,
     mutate,
     paginationModel.page,
@@ -382,13 +386,13 @@ const Modifiers = ({
   const handleCreateModifier = useCallback(() => {
     setDialog({
       content: (
-        <CreateModifierDialog modifierGroupId={group.id} mutate={mutate} />
+        <CreateModifierDialog modifierGroupId={groupId} mutate={mutate} />
       ),
       formId: "create-modifier-form",
       open: true,
       title: tMenus("modifiers.actions.createModifier.title"),
     });
-  }, [group.id, mutate, setDialog, tMenus]);
+  }, [groupId, mutate, setDialog, tMenus]);
 
   const handleUpdateModifier = useCallback(
     (modifier: Modifier) => {
@@ -481,7 +485,7 @@ const Modifiers = ({
       ),
       onConfirm: async () => {
         try {
-          await fetcher(`/api/modifier-groups/${group.id}/modifiers`, {
+          await fetcher(`/api/modifier-groups/${groupId}/modifiers`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
@@ -517,7 +521,7 @@ const Modifiers = ({
   }, [
     apiRef,
     clearRowSelection,
-    group.id,
+    groupId,
     mutate,
     selectedRows,
     setDialog,
@@ -804,7 +808,7 @@ const Modifiers = ({
           columns={columns}
           filterMode="server"
           filterModel={filterModel}
-          loading={loading}
+          loading={loading || isValidating}
           onFilterModelChange={handleFilterModelChange}
           onPaginationModelChange={handlePaginationModelChange}
           onSortModelChange={handleSortModelChange}

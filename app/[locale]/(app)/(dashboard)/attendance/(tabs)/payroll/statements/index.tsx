@@ -22,7 +22,7 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import {
@@ -88,46 +88,51 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface PayrollProps {
-  canCreate: boolean;
-  canViewCosts: boolean;
-  canManage: boolean;
-  canManageTerms: boolean;
-  earningTypes: PayrollEarningType[];
-  employees: AttendanceEmployee[];
+  canCreate?: boolean;
+  canViewCosts?: boolean;
+  canManage?: boolean;
+  canManageTerms?: boolean;
+  earningTypes?: PayrollEarningType[];
+  employees?: AttendanceEmployee[];
   filterField?: PayrollStatementFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  organization: Organization;
-  page: number;
-  pageSize: number;
+  loading?: boolean;
+  organization?: Organization;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: PayrollStatementListItem[];
+  rowCount?: number;
+  rows?: PayrollStatementListItem[];
   sortBy?: PayrollStatementSortField;
   sortDirection?: SortDirection;
-  terms: PayrollTerms[];
+  terms?: PayrollTerms[];
 }
 
 const Payroll = ({
-  canCreate,
-  canViewCosts,
-  canManage,
-  canManageTerms,
-  earningTypes,
-  employees,
+  canCreate = false,
+  canViewCosts = false,
+  canManage = false,
+  canManageTerms = false,
+  earningTypes = [],
+  employees = [],
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  organization: { currency = "", slug: organizationSlug },
-  page,
-  pageSize,
+  loading = false,
+  organization,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
-  terms: initialTerms,
+  terms: initialTerms = [],
 }: PayrollProps) => {
+  const currency = organization?.currency ?? "";
+  const organizationSlug = organization?.slug ?? "";
+
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -211,7 +216,7 @@ const Payroll = ({
 
   const { data: terms = initialTerms, mutate: mutateTerms } = useSWR<
     PayrollTerms[]
-  >(payrollPath(organizationSlug, "org", "terms"), fetcher, {
+  >(!loading && payrollPath(organizationSlug, "org", "terms"), fetcher, {
     fallbackData: initialTerms,
   });
 
@@ -220,10 +225,10 @@ const Payroll = ({
       data: initialRows,
       total: initialRowCount,
     },
-    isValidating: loading,
+    isValidating,
     mutate,
   } = useSWR(
-    [base, paginationModel, filterModel, sortModel],
+    !loading && [base, paginationModel, filterModel, sortModel],
     () =>
       fetcher<PayrollStatementPage>(
         `${base}?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
@@ -612,7 +617,7 @@ const Payroll = ({
         isRowSelectable={({ row }) =>
           row.status !== "published" && !row.snapshot.blockers.length
         }
-        loading={loading}
+        loading={loading || isValidating}
         onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
         onRowSelectionModelChange={setRowSelectionModel}

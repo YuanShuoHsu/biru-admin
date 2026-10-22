@@ -57,12 +57,14 @@ const PUNCH_ICONS: Record<AttendanceEventAction, ReactNode> = {
 };
 
 interface PunchCardProps {
+  loading?: boolean;
   onPunched: () => void;
   organizationSlug: string;
   shifts: AttendanceShift[];
 }
 
 const PunchCard = ({
+  loading = false,
   onPunched,
   organizationSlug,
   shifts: initialShifts,
@@ -77,7 +79,7 @@ const PunchCard = ({
   const tAttendance = useTranslations("attendance");
 
   const { data: shifts = initialShifts, mutate } = useSWR<AttendanceShift[]>(
-    attendancePath(organizationSlug, "me", "shifts/punchable"),
+    !loading && attendancePath(organizationSlug, "me", "shifts/punchable"),
     fetcher,
     { fallbackData: initialShifts },
   );
@@ -159,44 +161,44 @@ const PunchCard = ({
           <Typography color="textSecondary" variant="body2">
             {tAttendance("locationHint")}
           </Typography>
-          {shifts.length ? (
-            shifts.map((shift) => (
-              <ShiftStack direction={{ sm: "row" }} key={shift.id}>
-                <ShiftTimeStack direction="row">
-                  <Typography>
-                    {format.dateTimeRange(
-                      new Date(shift.startsAt),
-                      new Date(shift.endsAt),
-                      "compact",
-                    )}
-                  </Typography>
-                  <Chip
-                    color={SHIFT_STATE_COLORS[shift.state]}
-                    label={tAttendance(`state.options.${shift.state}`)}
-                    size="small"
-                  />
-                </ShiftTimeStack>
-                <ActionsStack direction="row">
-                  {shift.availableActions.map((action) => (
-                    <Button
-                      disabled={!!busy}
-                      key={action}
-                      loading={busy === `${shift.id}:${action}`}
-                      onClick={() => void handlePunch(shift, action)}
-                      startIcon={PUNCH_ICONS[action]}
-                      variant="contained"
-                    >
-                      {tAttendance(`eventAction.options.${action}`)}
-                    </Button>
-                  ))}
-                </ActionsStack>
-              </ShiftStack>
-            ))
-          ) : (
-            <Typography color="textSecondary">
-              {tAttendance("mine.punch.empty")}
-            </Typography>
-          )}
+          {shifts.length
+            ? shifts.map((shift) => (
+                <ShiftStack direction={{ sm: "row" }} key={shift.id}>
+                  <ShiftTimeStack direction="row">
+                    <Typography>
+                      {format.dateTimeRange(
+                        new Date(shift.startsAt),
+                        new Date(shift.endsAt),
+                        "compact",
+                      )}
+                    </Typography>
+                    <Chip
+                      color={SHIFT_STATE_COLORS[shift.state]}
+                      label={tAttendance(`state.options.${shift.state}`)}
+                      size="small"
+                    />
+                  </ShiftTimeStack>
+                  <ActionsStack direction="row">
+                    {shift.availableActions.map((action) => (
+                      <Button
+                        disabled={!!busy}
+                        key={action}
+                        loading={busy === `${shift.id}:${action}`}
+                        onClick={() => void handlePunch(shift, action)}
+                        startIcon={PUNCH_ICONS[action]}
+                        variant="contained"
+                      >
+                        {tAttendance(`eventAction.options.${action}`)}
+                      </Button>
+                    ))}
+                  </ActionsStack>
+                </ShiftStack>
+              ))
+            : !loading && (
+                <Typography color="textSecondary">
+                  {tAttendance("mine.punch.empty")}
+                </Typography>
+              )}
         </ContentStack>
       </CardContent>
     </Card>

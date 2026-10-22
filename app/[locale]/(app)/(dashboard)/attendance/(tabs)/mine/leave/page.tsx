@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import Balances from "../../../LeaveBalances";
 
@@ -47,7 +48,7 @@ export const generateMetadata = async ({
   return { title: tAttendance("balances.label") };
 };
 
-const MyLeavePage = async ({ params, searchParams }: MyLeavePageProps) => {
+const MyLeaveContent = async ({ params, searchParams }: MyLeavePageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -137,5 +138,11 @@ const MyLeavePage = async ({ params, searchParams }: MyLeavePageProps) => {
     />
   );
 };
+
+const MyLeavePage = (props: MyLeavePageProps) => (
+  <Suspense fallback={<Balances loading />}>
+    <MyLeaveContent {...props} />
+  </Suspense>
+);
 
 export default MyLeavePage;

@@ -17,7 +17,7 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import { attendanceReviewCountsKey } from "@/hooks/useAttendanceReviewCounts";
 import {
@@ -75,44 +75,48 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface ReviewsProps {
-  canGrantLeaveCase: boolean;
-  canReview: boolean;
-  canReviewOwn: boolean;
+  canGrantLeaveCase?: boolean;
+  canReview?: boolean;
+  canReviewOwn?: boolean;
   employeeId?: string;
-  employees: AttendanceEmployee[];
+  employees?: AttendanceEmployee[];
   filterField?: AttendanceRequestFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  leaveTypes: AttendanceLeaveType[];
-  organization: Organization;
-  page: number;
-  pageSize: number;
+  leaveTypes?: AttendanceLeaveType[];
+  loading?: boolean;
+  organization?: Organization;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: AttendanceRequest[];
+  rowCount?: number;
+  rows?: AttendanceRequest[];
   sortBy?: AttendanceRequestSortField;
   sortDirection?: SortDirection;
 }
 
 const Reviews = ({
-  canGrantLeaveCase,
-  canReview,
-  canReviewOwn,
+  canGrantLeaveCase = false,
+  canReview = false,
+  canReviewOwn = false,
   employeeId,
-  employees,
+  employees = [],
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  leaveTypes,
-  organization: { slug: organizationSlug },
-  page,
-  pageSize,
+  leaveTypes = [],
+  loading = false,
+  organization,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
 }: ReviewsProps) => {
+  const organizationSlug = organization?.slug ?? "";
+
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -176,10 +180,10 @@ const Reviews = ({
       data: initialRows,
       total: initialRowCount,
     },
-    isValidating: loading,
+    isValidating,
     mutate,
   } = useSWR(
-    [base, paginationModel, filterModel, sortModel],
+    !loading && [base, paginationModel, filterModel, sortModel],
     () =>
       fetcher<AttendanceRequestPage>(
         `${base}?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
@@ -558,7 +562,7 @@ const Reviews = ({
         isRowSelectable={({ row: { employeeId, status } }) =>
           isReviewable({ employeeId, status })
         }
-        loading={loading}
+        loading={loading || isValidating}
         onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
         onRowSelectionModelChange={setRowSelectionModel}

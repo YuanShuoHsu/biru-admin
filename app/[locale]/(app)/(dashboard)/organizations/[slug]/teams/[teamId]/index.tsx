@@ -71,20 +71,30 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface OrganizationsSlugTeamsTeamIdProps {
-  activeOrganization: ActiveOrganization;
-  canUpdateTeam: boolean;
-  currentUserId: string;
-  team: Team;
-  teamMembers: TeamMemberRow[];
+  activeOrganization?: ActiveOrganization;
+  canUpdateTeam?: boolean;
+  currentUserId?: string;
+  loading?: boolean;
+  team?: Team;
+  teamMembers?: TeamMemberRow[];
 }
 
 const OrganizationsSlugTeamsTeamId = ({
-  activeOrganization: { members },
-  canUpdateTeam,
-  currentUserId,
+  activeOrganization,
+  canUpdateTeam = false,
+  currentUserId = "",
+  loading = false,
   team,
-  teamMembers: initialTeamMembers,
+  teamMembers: initialTeamMembers = [],
 }: OrganizationsSlugTeamsTeamIdProps) => {
+  const members = useMemo(
+    () => activeOrganization?.members ?? [],
+    [activeOrganization],
+  );
+  const teamId = team?.id ?? "";
+  const teamName = team?.name ?? "";
+  const teamOrganizationId = team?.organizationId ?? "";
+
   const [isSelectMode, setIsSelectMode] = useState(false);
 
   const apiRef = useGridApiRef();
@@ -99,12 +109,12 @@ const OrganizationsSlugTeamsTeamId = ({
   const {
     data: rows = initialTeamMembers,
     mutate,
-    isValidating: loading,
+    isValidating,
   } = useSWR(
-    `team-members-${team.id}`,
+    !loading && `team-members-${teamId}`,
     async () => {
       const { data, error } = await authClient.organization.listTeamMembers({
-        query: { teamId: team.id },
+        query: { teamId },
       });
       if (error?.code === "USER_IS_NOT_A_MEMBER_OF_THE_TEAM") return [];
       if (error) throw error;
@@ -134,6 +144,8 @@ const OrganizationsSlugTeamsTeamId = ({
   } = useRowSelection({ enabled: isSelectMode, rows });
 
   const handleAddTeamMember = () => {
+    if (!team) return;
+
     const teamMemberIds = new Set(rows.map(({ userId }) => userId));
     const isCurrentUserTeamMember =
       currentUserId && teamMemberIds.has(currentUserId);
@@ -169,13 +181,13 @@ const OrganizationsSlugTeamsTeamId = ({
             {tMembers.rich("actions.removeTeamMember.confirm", {
               bold: (chunks) => <strong>{chunks}</strong>,
               email: member?.user.email || "",
-              team: team.name,
+              team: teamName,
             })}
           </DialogContentText>
         ),
         onConfirm: async () => {
           await authClient.organization.removeTeamMember(
-            { teamId: team.id, userId },
+            { teamId, userId },
             {
               onError: ({ error: { message } }) => {
                 enqueueSnackbar(message, {
@@ -186,7 +198,7 @@ const OrganizationsSlugTeamsTeamId = ({
                 enqueueSnackbar(
                   tMembers("actions.removeTeamMember.success", {
                     email: member?.user.email || "",
-                    team: team.name,
+                    team: teamName,
                   }),
                   { variant: "success" },
                 );
@@ -200,7 +212,7 @@ const OrganizationsSlugTeamsTeamId = ({
         title: tMembers("actions.removeTeamMember.title"),
       });
     },
-    [members, mutate, setDialog, team.id, team.name, tMembers],
+    [members, mutate, setDialog, teamId, teamName, tMembers],
   );
 
   const handleEnterTeamMemberBatchRemoveMode = useCallback(() => {
@@ -236,7 +248,7 @@ const OrganizationsSlugTeamsTeamId = ({
       onConfirm: async () => {
         try {
           await fetcher(
-            `/api/organizations/${team.organizationId}/teams/${team.id}/members`,
+            `/api/organizations/${teamOrganizationId}/teams/${teamId}/members`,
             {
               method: "DELETE",
               headers: { "Content-Type": "application/json" },
@@ -272,8 +284,8 @@ const OrganizationsSlugTeamsTeamId = ({
     mutate,
     selectedRows,
     setDialog,
-    team.id,
-    team.organizationId,
+    teamId,
+    teamOrganizationId,
     tMembers,
   ]);
 
@@ -435,7 +447,7 @@ const OrganizationsSlugTeamsTeamId = ({
         {...rowSelectionProps}
         apiRef={apiRef}
         columns={columns}
-        loading={loading}
+        loading={loading || isValidating}
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }

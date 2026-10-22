@@ -20,6 +20,7 @@ import {
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
 import {
+  DEFAULT_PAGE_SIZE,
   DEFAULT_PAGINATION_QUERY,
   getPageSizeOptions,
 } from "@/constants/pagination";
@@ -98,36 +99,40 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface MenuDetailProps {
-  canViewAuditLog: boolean;
-  canWrite: boolean;
+  canViewAuditLog?: boolean;
+  canWrite?: boolean;
   filterField?: MenuSectionFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  menu: Menu;
-  page: number;
-  pageSize: number;
+  loading?: boolean;
+  menu?: Menu;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: MenuSection[];
+  rowCount?: number;
+  rows?: MenuSection[];
   sortBy?: MenuSectionSortField;
   sortDirection?: SortDirection;
 }
 
 const MenusMenuId = ({
-  canViewAuditLog,
-  canWrite,
+  canViewAuditLog = false,
+  canWrite = false,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
+  loading = false,
   menu,
-  page,
-  pageSize,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
 }: MenuDetailProps) => {
+  const menuId = menu?.id ?? "";
+
   const [toolbarMode, setToolbarMode] = useState<ToolbarMode>(null);
   const isReorderMode = toolbarMode === "reorder";
   const isSelectMode = toolbarMode === "select";
@@ -184,10 +189,10 @@ const MenusMenuId = ({
       total: initialRowCount,
     },
     mutate,
-    isValidating: loading,
+    isValidating,
   } = useSWR(
-    [
-      `/api/menus/${menu.id}/menu-sections`,
+    !loading && [
+      `/api/menus/${menuId}/menu-sections`,
       filterModel.items[0]?.field,
       filterModel.items[0]?.operator,
       filterModel.items[0]?.value,
@@ -198,7 +203,7 @@ const MenusMenuId = ({
     ],
     async () => {
       return fetcher<{ data: MenuSection[]; total: number }>(
-        `/api/menus/${menu.id}/menu-sections?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
+        `/api/menus/${menuId}/menu-sections?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
       );
     },
     {
@@ -298,7 +303,7 @@ const MenusMenuId = ({
       ),
       onConfirm: async () => {
         try {
-          await fetcher(`/api/menus/${menu.id}/menu-sections/reorder`, {
+          await fetcher(`/api/menus/${menuId}/menu-sections/reorder`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -329,7 +334,7 @@ const MenusMenuId = ({
     });
   }, [
     apiRef,
-    menu.id,
+    menuId,
     mutate,
     paginationModel.page,
     paginationModel.pageSize,
@@ -373,12 +378,12 @@ const MenusMenuId = ({
 
   const handleCreateSection = useCallback(() => {
     setDialog({
-      content: <CreateMenuSectionDialog menuId={menu.id} mutate={mutate} />,
+      content: <CreateMenuSectionDialog menuId={menuId} mutate={mutate} />,
       formId: "create-section-form",
       open: true,
       title: tMenus("sections.actions.createSection.title"),
     });
-  }, [menu.id, mutate, setDialog, tMenus]);
+  }, [menuId, mutate, setDialog, tMenus]);
 
   const handleViewSection = useCallback(
     (section: MenuSection) => {
@@ -476,7 +481,7 @@ const MenusMenuId = ({
       ),
       onConfirm: async () => {
         try {
-          await fetcher(`/api/menus/${menu.id}/menu-sections`, {
+          await fetcher(`/api/menus/${menuId}/menu-sections`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
@@ -512,7 +517,7 @@ const MenusMenuId = ({
   }, [
     apiRef,
     clearRowSelection,
-    menu.id,
+    menuId,
     mutate,
     selectedRows,
     setDialog,
@@ -757,7 +762,7 @@ const MenusMenuId = ({
           columns={columns}
           filterMode="server"
           filterModel={filterModel}
-          loading={loading}
+          loading={loading || isValidating}
           onFilterModelChange={handleFilterModelChange}
           onPaginationModelChange={handlePaginationModelChange}
           onSortModelChange={handleSortModelChange}

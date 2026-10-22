@@ -18,7 +18,7 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 import { WAITLIST_STATUS_COLORS } from "@/constants/waitlist";
 
 import {
@@ -73,36 +73,40 @@ const isEditable = ({ status }: WaitlistTicketListItem) =>
   status === "waiting" || status === "called";
 
 interface WaitlistTicketsProps {
-  canUpdate: boolean;
-  canViewAuditLog: boolean;
+  canUpdate?: boolean;
+  canViewAuditLog?: boolean;
   filterField?: WaitlistTicketFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  organization: Organization;
-  page: number;
-  pageSize: number;
+  loading?: boolean;
+  organization?: Organization;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: WaitlistTicketListItem[];
+  rowCount?: number;
+  rows?: WaitlistTicketListItem[];
   sortBy?: WaitlistTicketSortField;
   sortDirection?: SortDirection;
 }
 
 const WaitlistTickets = ({
-  canUpdate,
-  canViewAuditLog,
+  canUpdate = false,
+  canViewAuditLog = false,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  organization: { slug: organizationSlug },
-  page,
-  pageSize,
+  loading = false,
+  organization,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
 }: WaitlistTicketsProps) => {
+  const organizationSlug = organization?.slug ?? "";
+
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -148,10 +152,10 @@ const WaitlistTickets = ({
       data: initialRows,
       total: initialRowCount,
     },
-    isValidating: loading,
+    isValidating,
     mutate,
   } = useSWR(
-    [
+    !loading && [
       `/api/organizations/${organizationSlug}/waitlist/tickets/list`,
       filterModel.items[0]?.field,
       filterModel.items[0]?.operator,
@@ -407,7 +411,7 @@ const WaitlistTickets = ({
       columns={columns}
       filterMode="server"
       filterModel={filterModel}
-      loading={loading}
+      loading={loading || isValidating}
       onFilterModelChange={handleFilterModelChange}
       onPaginationModelChange={handlePaginationModelChange}
       onSortModelChange={handleSortModelChange}

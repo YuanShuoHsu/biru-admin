@@ -19,6 +19,7 @@ import {
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
 import {
+  DEFAULT_PAGE_SIZE,
   DEFAULT_PAGINATION_QUERY,
   getPageSizeOptions,
 } from "@/constants/pagination";
@@ -98,36 +99,40 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface ModifierGroupsProps {
-  canViewAuditLog: boolean;
-  canWrite: boolean;
+  canViewAuditLog?: boolean;
+  canWrite?: boolean;
   filterField?: ModifierGroupFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  menu: Menu;
-  page: number;
-  pageSize: number;
+  loading?: boolean;
+  menu?: Menu;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: ModifierGroup[];
+  rowCount?: number;
+  rows?: ModifierGroup[];
   sortBy?: ModifierGroupSortField;
   sortDirection?: SortDirection;
 }
 
 const ModifierGroups = ({
-  canViewAuditLog,
-  canWrite,
+  canViewAuditLog = false,
+  canWrite = false,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
+  loading = false,
   menu,
-  page,
-  pageSize,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
 }: ModifierGroupsProps) => {
+  const menuId = menu?.id ?? "";
+
   const [toolbarMode, setToolbarMode] = useState<ToolbarMode>(null);
   const isReorderMode = toolbarMode === "reorder";
   const isSelectMode = toolbarMode === "select";
@@ -186,10 +191,10 @@ const ModifierGroups = ({
       total: initialRowCount,
     },
     mutate,
-    isValidating: loading,
+    isValidating,
   } = useSWR(
-    [
-      `/api/menus/${menu.id}/modifier-groups`,
+    !loading && [
+      `/api/menus/${menuId}/modifier-groups`,
       filterModel.items[0]?.field,
       filterModel.items[0]?.operator,
       filterModel.items[0]?.value,
@@ -200,7 +205,7 @@ const ModifierGroups = ({
     ],
     async () => {
       return fetcher<{ data: ModifierGroup[]; total: number }>(
-        `/api/menus/${menu.id}/modifier-groups?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
+        `/api/menus/${menuId}/modifier-groups?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
       );
     },
     {
@@ -300,7 +305,7 @@ const ModifierGroups = ({
       ),
       onConfirm: async () => {
         try {
-          await fetcher(`/api/menus/${menu.id}/modifier-groups/reorder`, {
+          await fetcher(`/api/menus/${menuId}/modifier-groups/reorder`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -332,7 +337,7 @@ const ModifierGroups = ({
   }, [
     apiRef,
     rows,
-    menu.id,
+    menuId,
     mutate,
     paginationModel.page,
     paginationModel.pageSize,
@@ -375,12 +380,12 @@ const ModifierGroups = ({
 
   const handleCreateModifierGroup = useCallback(() => {
     setDialog({
-      content: <CreateModifierGroupDialog menuId={menu.id} mutate={mutate} />,
+      content: <CreateModifierGroupDialog menuId={menuId} mutate={mutate} />,
       formId: "create-modifier-group-form",
       open: true,
       title: tMenus("modifierGroups.actions.createGroup.title"),
     });
-  }, [menu.id, mutate, setDialog, tMenus]);
+  }, [menuId, mutate, setDialog, tMenus]);
 
   const handleViewModifiers = useCallback(
     (group: ModifierGroup) => {
@@ -481,7 +486,7 @@ const ModifierGroups = ({
       ),
       onConfirm: async () => {
         try {
-          await fetcher(`/api/menus/${menu.id}/modifier-groups`, {
+          await fetcher(`/api/menus/${menuId}/modifier-groups`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
@@ -517,7 +522,7 @@ const ModifierGroups = ({
   }, [
     apiRef,
     clearRowSelection,
-    menu.id,
+    menuId,
     mutate,
     selectedRows,
     setDialog,
@@ -774,7 +779,7 @@ const ModifierGroups = ({
           columns={columns}
           filterMode="server"
           filterModel={filterModel}
-          loading={loading}
+          loading={loading || isValidating}
           onFilterModelChange={handleFilterModelChange}
           onPaginationModelChange={handlePaginationModelChange}
           onSortModelChange={handleSortModelChange}

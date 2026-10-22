@@ -19,7 +19,7 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import {
   useDateFilterOperators,
@@ -94,54 +94,59 @@ const StyledIconButton = styled(IconButton, {
 }));
 
 interface EmployeesProps {
-  canDelete: boolean;
-  canDeleteChildren: boolean;
-  canUpdateChildren: boolean;
-  canManageChildren: boolean;
-  canManageTaxIdentity: boolean;
-  canManageTerms: boolean;
-  canReviewOwnChildren: boolean;
-  canWrite: boolean;
+  canDelete?: boolean;
+  canDeleteChildren?: boolean;
+  canUpdateChildren?: boolean;
+  canManageChildren?: boolean;
+  canManageTaxIdentity?: boolean;
+  canManageTerms?: boolean;
+  canReviewOwnChildren?: boolean;
+  canWrite?: boolean;
   employeeId?: string;
   filterField?: AttendanceEmployeeFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  legalStatusObligations: AttendanceLegalStatusObligation[];
-  organization: Organization;
-  page: number;
-  pageSize: number;
+  legalStatusObligations?: AttendanceLegalStatusObligation[];
+  loading?: boolean;
+  organization?: Organization;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: AttendanceMember[];
+  rowCount?: number;
+  rows?: AttendanceMember[];
   sortBy?: AttendanceEmployeeSortField;
   sortDirection?: SortDirection;
-  terms: PayrollTerms[];
+  terms?: PayrollTerms[];
 }
 
 const Employees = ({
-  canDelete,
-  canDeleteChildren,
-  canManageChildren,
-  canUpdateChildren,
-  canManageTaxIdentity,
-  canManageTerms,
-  canReviewOwnChildren,
-  canWrite,
+  canDelete = false,
+  canDeleteChildren = false,
+  canManageChildren = false,
+  canUpdateChildren = false,
+  canManageTaxIdentity = false,
+  canManageTerms = false,
+  canReviewOwnChildren = false,
+  canWrite = false,
   employeeId,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  legalStatusObligations,
-  organization: { currency = "", slug: organizationSlug },
-  page,
-  pageSize,
+  legalStatusObligations = [],
+  loading = false,
+  organization,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
-  terms: initialTerms,
+  terms: initialTerms = [],
 }: EmployeesProps) => {
+  const currency = organization?.currency ?? "";
+  const organizationSlug = organization?.slug ?? "";
+
   const [isSelectMode, setIsSelectMode] = useState(false);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
@@ -204,10 +209,10 @@ const Employees = ({
       data: initialRows,
       total: initialRowCount,
     },
-    isValidating: loading,
+    isValidating,
     mutate,
   } = useSWR(
-    [base, paginationModel, filterModel, sortModel],
+    !loading && [base, paginationModel, filterModel, sortModel],
     () =>
       fetcher<AttendanceMemberPage>(
         `${base}?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
@@ -243,6 +248,11 @@ const Employees = ({
     isRowSelectable: isEmployeeSelectable,
     rows,
   });
+
+  const hasEmployee = useMemo(
+    () => rows.some(({ employee }) => employee),
+    [rows],
+  );
 
   const handlePaginationModelChange = useCallback(
     (newModel: GridPaginationModel) => {
@@ -559,7 +569,7 @@ const Employees = ({
                       </IconButton>
                     </Tooltip>
                   )}
-                  {canManageTerms && (
+                  {canManageTerms && hasEmployee && (
                     <Tooltip title={tAttendance("payrollTerms")}>
                       <StyledIconButton
                         onClick={() => handleTermsDialog(row)}
@@ -570,7 +580,7 @@ const Employees = ({
                       </StyledIconButton>
                     </Tooltip>
                   )}
-                  {canManageTaxIdentity && (
+                  {canManageTaxIdentity && hasEmployee && (
                     <Tooltip title={tAttendance("withholding.identity.edit")}>
                       <StyledIconButton
                         onClick={() => handleTaxIdentityDialog(row)}
@@ -581,7 +591,7 @@ const Employees = ({
                       </StyledIconButton>
                     </Tooltip>
                   )}
-                  {canManageChildren && (
+                  {canManageChildren && hasEmployee && (
                     <Tooltip
                       title={
                         !canReviewOwnChildren && row.employee?.id === employeeId
@@ -721,6 +731,7 @@ const Employees = ({
       handleEmployeeDialog,
       handleTaxIdentityDialog,
       handleTermsDialog,
+      hasEmployee,
       isEmployeeSelectable,
       isSelectMode,
       stringFilterOperators,
@@ -778,7 +789,7 @@ const Employees = ({
         filterMode="server"
         filterModel={filterModel}
         getRowId={({ userId }) => userId}
-        loading={loading}
+        loading={loading || isValidating}
         onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
         onSortModelChange={handleSortModelChange}

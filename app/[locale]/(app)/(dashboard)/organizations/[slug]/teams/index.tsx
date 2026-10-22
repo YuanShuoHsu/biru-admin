@@ -57,18 +57,23 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface OrganizationsSlugTeamsProps {
-  activeOrganization: ActiveOrganization;
-  canCreateTeam: boolean;
-  canDeleteTeam: boolean;
-  canUpdateTeam: boolean;
+  activeOrganization?: ActiveOrganization;
+  canCreateTeam?: boolean;
+  canDeleteTeam?: boolean;
+  canUpdateTeam?: boolean;
+  loading?: boolean;
 }
 
 const OrganizationsSlugTeams = ({
-  activeOrganization: { id: organizationId, teams: initialTeams },
-  canCreateTeam,
-  canDeleteTeam,
-  canUpdateTeam,
+  activeOrganization,
+  canCreateTeam = false,
+  canDeleteTeam = false,
+  canUpdateTeam = false,
+  loading = false,
 }: OrganizationsSlugTeamsProps) => {
+  const organizationId = activeOrganization?.id ?? "";
+  const initialTeams = activeOrganization?.teams ?? [];
+
   const [isSelectMode, setIsSelectMode] = useState(false);
 
   const apiRef = useGridApiRef();
@@ -86,9 +91,9 @@ const OrganizationsSlugTeams = ({
   const {
     data: { rows } = { rows: initialTeams },
     mutate,
-    isValidating: loading,
+    isValidating,
   } = useSWR(
-    ["organization-teams", slug],
+    !loading && ["organization-teams", slug],
     async () => {
       const { data, error } = await authClient.organization.getFullOrganization(
         {
@@ -429,7 +434,7 @@ const OrganizationsSlugTeams = ({
         {...rowSelectionProps}
         apiRef={apiRef}
         columns={columns}
-        loading={loading}
+        loading={loading || isValidating}
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }

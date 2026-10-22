@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+
 import MenuCard from "@/app/[locale]/(app)/(dashboard)/menus/MenuCard";
 
 import { hasRolePermission } from "@/utils/organizations";
@@ -10,7 +12,7 @@ interface SubheaderMenusSectionsPageProps {
   searchParams: Promise<{ organization?: string }>;
 }
 
-const SubheaderMenusSectionsPage = async ({
+const SubheaderMenusSectionsContent = async ({
   searchParams,
 }: SubheaderMenusSectionsPageProps) => {
   const { organization: organizationSlug } = await searchParams;
@@ -30,5 +32,11 @@ const SubheaderMenusSectionsPage = async ({
     />
   );
 };
+
+const SubheaderMenusSectionsPage = (props: SubheaderMenusSectionsPageProps) => (
+  <Suspense fallback={<MenuCard loading />}>
+    <SubheaderMenusSectionsContent {...props} />
+  </Suspense>
+);
 
 export default SubheaderMenusSectionsPage;

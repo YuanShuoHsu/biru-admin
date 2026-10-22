@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
 
+import AuditLogs from "@/components/AuditLogs";
 import AuditLogsPage, {
   type AuditLogSearchParams,
 } from "@/components/AuditLogsPage";
@@ -21,7 +23,7 @@ export const generateMetadata = async ({
   return { title: tAudit("title") };
 };
 
-const OrganizationAuditLogsPage = async ({
+const OrganizationAuditLogsContent = async ({
   params,
   searchParams,
 }: OrganizationAuditLogsPageProps) => {
@@ -36,5 +38,11 @@ const OrganizationAuditLogsPage = async ({
     />
   );
 };
+
+const OrganizationAuditLogsPage = (props: OrganizationAuditLogsPageProps) => (
+  <Suspense fallback={<AuditLogs loading />}>
+    <OrganizationAuditLogsContent {...props} />
+  </Suspense>
+);
 
 export default OrganizationAuditLogsPage;

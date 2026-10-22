@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import Requests from ".";
 
@@ -57,7 +58,7 @@ export const generateMetadata = async ({
   return { title: tAttendance("requests.label") };
 };
 
-const RequestsPage = async ({ params, searchParams }: RequestsPageProps) => {
+const RequestsContent = async ({ params, searchParams }: RequestsPageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -171,5 +172,11 @@ const RequestsPage = async ({ params, searchParams }: RequestsPageProps) => {
     />
   );
 };
+
+const RequestsPage = (props: RequestsPageProps) => (
+  <Suspense fallback={<Requests loading />}>
+    <RequestsContent {...props} />
+  </Suspense>
+);
 
 export default RequestsPage;

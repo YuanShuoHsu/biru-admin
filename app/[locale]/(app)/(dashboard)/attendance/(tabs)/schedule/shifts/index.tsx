@@ -18,7 +18,7 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import { attendanceReviewCountsKey } from "@/hooks/useAttendanceReviewCounts";
 import { useCancelShift } from "@/hooks/useCancelShift";
@@ -95,46 +95,51 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface ShiftsProps {
-  canCancel: boolean;
-  canCreate: boolean;
-  canReviewExtraWork: boolean;
-  employees: AttendanceEmployee[];
+  canCancel?: boolean;
+  canCreate?: boolean;
+  canReviewExtraWork?: boolean;
+  employees?: AttendanceEmployee[];
   filterField?: AttendanceShiftFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  organization: Organization;
-  page: number;
-  pageSize: number;
+  loading?: boolean;
+  organization?: Organization;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: AttendanceShift[];
-  shiftTypes: AttendanceShiftType[];
+  rowCount?: number;
+  rows?: AttendanceShift[];
+  shiftTypes?: AttendanceShiftType[];
   sortBy?: AttendanceShiftSortField;
   sortDirection?: SortDirection;
-  teams: AttendanceTeam[];
+  teams?: AttendanceTeam[];
   shiftFilter?: AttendanceShiftFilter;
 }
 
 const Shifts = ({
-  canCancel,
-  canCreate,
-  canReviewExtraWork,
-  employees,
+  canCancel = false,
+  canCreate = false,
+  canReviewExtraWork = false,
+  employees = [],
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  organization: { openingHours = "", slug: organizationSlug },
-  page,
-  pageSize,
+  loading = false,
+  organization,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
-  shiftTypes,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
+  shiftTypes = [],
   sortBy,
   sortDirection,
-  teams,
+  teams = [],
   shiftFilter: initialShiftFilter,
 }: ShiftsProps) => {
+  const openingHours = organization?.openingHours ?? "";
+  const organizationSlug = organization?.slug ?? "";
+
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -195,10 +200,10 @@ const Shifts = ({
       data: initialRows,
       total: initialRowCount,
     },
-    isValidating: loading,
+    isValidating,
     mutate,
   } = useSWR(
-    [base, paginationModel, filterModel, sortModel, shiftFilter],
+    !loading && [base, paginationModel, filterModel, sortModel, shiftFilter],
     () => {
       const params = getDataGridSearchParams(
         paginationModel,
@@ -576,6 +581,7 @@ const Shifts = ({
       <ToolbarStack direction="row">
         <Chip
           color={shiftFilter === "incompleteAttendance" ? "primary" : "default"}
+          disabled={loading}
           label={tAttendance("shifts.incompleteAttendance")}
           onClick={() => handleToggleShiftFilter("incompleteAttendance")}
           variant={
@@ -634,7 +640,7 @@ const Shifts = ({
         filterMode="server"
         filterModel={filterModel}
         isRowSelectable={({ row }) => row.unreviewedOvertime.length > 0}
-        loading={loading}
+        loading={loading || isValidating}
         onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
         onRowSelectionModelChange={setRowSelectionModel}

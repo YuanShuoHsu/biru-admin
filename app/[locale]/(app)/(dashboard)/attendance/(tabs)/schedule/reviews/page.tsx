@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import Reviews from ".";
 
@@ -58,7 +59,7 @@ export const generateMetadata = async ({
   return { title: tAttendance("reviews.label") };
 };
 
-const ReviewsPage = async ({ params, searchParams }: ReviewsPageProps) => {
+const ReviewsContent = async ({ params, searchParams }: ReviewsPageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -173,5 +174,11 @@ const ReviewsPage = async ({ params, searchParams }: ReviewsPageProps) => {
     />
   );
 };
+
+const ReviewsPage = (props: ReviewsPageProps) => (
+  <Suspense fallback={<Reviews loading />}>
+    <ReviewsContent {...props} />
+  </Suspense>
+);
 
 export default ReviewsPage;

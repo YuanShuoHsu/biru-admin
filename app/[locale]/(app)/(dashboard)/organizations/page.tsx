@@ -1,16 +1,15 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
+import { Suspense } from "react";
 
 import Organizations from ".";
 
 import type { Locale } from "@/i18n/routing";
 
-import {
-  getOrganizationPermissions,
-  sortByCreatedAtDesc,
-} from "@/utils/organizations";
-import { getSession, listOrganizations } from "@/utils/session";
+import type { MyOrganization } from "@/types/organizations";
+
+import { fetcher } from "@/utils/fetcher";
 
 interface OrganizationsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -28,31 +27,20 @@ export const generateMetadata = async ({
   return { title: tOrganizations("label") };
 };
 
-const OrganizationsPage = async () => {
+const OrganizationsContent = async () => {
   const cookieStore = await cookies();
 
-  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
+  const rows = await fetcher<MyOrganization[]>("/api/users/me/organizations", {
+    headers: { cookie: cookieStore.toString() },
+  });
 
-  const [data, session] = await Promise.all([
-    listOrganizations(),
-    getSession(),
-  ]);
-
-  const organizations = sortByCreatedAtDesc(data);
-
-  const organizationPermissions = await getOrganizationPermissions(
-    organizations,
-    fetchOptions,
-  );
-
-  return (
-    <Organizations
-      canCloseOrganization={session?.user.role === "admin"}
-      canCreateOrganization={session?.user.role === "admin"}
-      organizationPermissions={organizationPermissions}
-      rows={organizations}
-    />
-  );
+  return <Organizations rows={rows} />;
 };
+
+const OrganizationsPage = () => (
+  <Suspense fallback={<Organizations loading />}>
+    <OrganizationsContent />
+  </Suspense>
+);
 
 export default OrganizationsPage;

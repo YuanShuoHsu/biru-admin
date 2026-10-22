@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import ParentalReturns from "../../../ParentalReturns";
 
@@ -51,7 +52,7 @@ export const generateMetadata = async ({
   return { title: tAttendance("parentalReturns.label") };
 };
 
-const ParentalReturnsPage = async ({
+const ParentalReturnsContent = async ({
   params,
   searchParams,
 }: ParentalReturnsPageProps) => {
@@ -152,5 +153,11 @@ const ParentalReturnsPage = async ({
     />
   );
 };
+
+const ParentalReturnsPage = (props: ParentalReturnsPageProps) => (
+  <Suspense fallback={<ParentalReturns canViewAll loading />}>
+    <ParentalReturnsContent {...props} />
+  </Suspense>
+);
 
 export default ParentalReturnsPage;

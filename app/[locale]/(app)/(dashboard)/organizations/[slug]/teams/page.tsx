@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import OrganizationsSlugTeams from ".";
 
@@ -28,7 +29,7 @@ export const generateMetadata = async ({
   return { title: tOrganizations("teams.label") };
 };
 
-const OrganizationsSlugTeamsPage = async ({
+const OrganizationsSlugTeamsContent = async ({
   params,
 }: OrganizationsSlugTeamsPageProps) => {
   const [cookieStore, { slug }] = await Promise.all([cookies(), params]);
@@ -68,5 +69,11 @@ const OrganizationsSlugTeamsPage = async ({
     />
   );
 };
+
+const OrganizationsSlugTeamsPage = (props: OrganizationsSlugTeamsPageProps) => (
+  <Suspense fallback={<OrganizationsSlugTeams loading />}>
+    <OrganizationsSlugTeamsContent {...props} />
+  </Suspense>
+);
 
 export default OrganizationsSlugTeamsPage;

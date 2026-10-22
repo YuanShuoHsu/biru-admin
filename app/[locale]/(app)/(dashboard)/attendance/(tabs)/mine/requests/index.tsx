@@ -18,7 +18,7 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import {
   useDateFilterOperators,
@@ -83,38 +83,42 @@ const StyledButton = styled(Button)({
 });
 
 interface RequestsProps {
-  enabled: boolean;
+  enabled?: boolean;
   filterField?: AttendanceRequestFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  leaveCases: AttendanceLeaveCase[];
-  leaveTypes: AttendanceLeaveType[];
-  organization: Organization;
-  page: number;
-  pageSize: number;
+  leaveCases?: AttendanceLeaveCase[];
+  leaveTypes?: AttendanceLeaveType[];
+  loading?: boolean;
+  organization?: Organization;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: AttendanceRequest[];
+  rowCount?: number;
+  rows?: AttendanceRequest[];
   sortBy?: AttendanceRequestSortField;
   sortDirection?: SortDirection;
 }
 
 const Requests = ({
-  enabled,
+  enabled = false,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  leaveCases,
-  leaveTypes,
-  organization: { slug: organizationSlug },
-  page,
-  pageSize,
+  leaveCases = [],
+  leaveTypes = [],
+  loading = false,
+  organization,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
 }: RequestsProps) => {
+  const organizationSlug = organization?.slug ?? "";
+
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -170,7 +174,7 @@ const Requests = ({
       data: initialRows,
       total: initialRowCount,
     },
-    isValidating: loading,
+    isValidating,
     mutate,
   } = useSWR(
     enabled ? [resource, paginationModel, filterModel, sortModel] : null,
@@ -497,7 +501,7 @@ const Requests = ({
 
   return (
     <>
-      {!enabled && (
+      {!loading && !enabled && (
         <Alert severity="info">
           {tAttendance("errors.employeeNotEnabled")}
         </Alert>
@@ -517,7 +521,7 @@ const Requests = ({
         columns={columns}
         filterMode="server"
         filterModel={filterModel}
-        loading={loading}
+        loading={loading || isValidating}
         onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
         onSortModelChange={handleSortModelChange}

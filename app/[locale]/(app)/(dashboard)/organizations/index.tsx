@@ -20,6 +20,7 @@ import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
 import { useOrganizations } from "@/hooks/organizations";
 import { useRowSelection } from "@/hooks/useRowSelection";
+import { useSession } from "@/hooks/useSession";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -49,15 +50,11 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { Organization } from "@/types/organizations";
+import type { MyOrganization } from "@/types/organizations";
 
 import { stringAvatar } from "@/utils/avatar";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
-import {
-  getOrganizationPermissions,
-  type OrganizationPermissions,
-} from "@/utils/organizations";
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
   height: "100%",
@@ -90,53 +87,47 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface OrganizationsProps {
-  canCloseOrganization: boolean;
-  canCreateOrganization: boolean;
-  organizationPermissions: OrganizationPermissions;
-  rows: Organization[];
+  loading?: boolean;
+  rows?: MyOrganization[];
 }
 
 const Organizations = ({
-  canCloseOrganization,
-  canCreateOrganization,
-  organizationPermissions: initialOrganizationPermissions,
-  rows: initialRows,
+  loading = false,
+  rows: initialRows = [],
 }: OrganizationsProps) => {
   const [isSelectMode, setIsSelectMode] = useState(false);
 
   const apiRef = useGridApiRef();
 
+  const isPlatformAdmin = useSession()?.user.role === "admin";
+
+  const { mutate: mutateOrganizations } = useOrganizations();
+
   const {
     data: rows = initialRows,
-    mutate,
-    isValidating: loadingOrganizations,
-  } = useOrganizations({
-    fallbackData: initialRows,
-    onError: ({ message }) => {
-      enqueueSnackbar(message, {
-        variant: "error",
-      });
+    mutate: mutateMyOrganizations,
+    isValidating,
+  } = useSWR<MyOrganization[]>(
+    !loading && "/api/users/me/organizations",
+    fetcher,
+    {
+      fallbackData: initialRows,
+      onSuccess: () => {
+        setTimeout(() => {
+          apiRef.current?.autosizeColumns(autosizeOptions);
+        }, 0);
+      },
     },
-    onSuccess: () => {
-      setTimeout(() => {
-        apiRef.current?.autosizeColumns(autosizeOptions);
-      }, 0);
-    },
-  });
-
-  const {
-    data: organizationPermissions = initialOrganizationPermissions,
-    isValidating: loadingPermissions,
-  } = useSWR(
-    ["organization-permissions", ...rows.map(({ id }) => id)],
-    () => getOrganizationPermissions(rows),
-    { fallbackData: initialOrganizationPermissions },
   );
 
+  const mutate = useCallback(() => {
+    mutateMyOrganizations();
+    mutateOrganizations();
+  }, [mutateMyOrganizations, mutateOrganizations]);
+
   const isOrganizationSelectable = useCallback(
-    ({ id }: Organization) =>
-      !!organizationPermissions[id]?.canDeleteOrganization,
-    [organizationPermissions],
+    ({ deletable }: MyOrganization) => deletable,
+    [],
   );
 
   const {
@@ -168,7 +159,7 @@ const Organizations = ({
   };
 
   const handleUpdateOrganization = useCallback(
-    (organization: Organization) => {
+    (organization: MyOrganization) => {
       setDialog({
         content: (
           <UpdateOrganizationDialog
@@ -185,7 +176,7 @@ const Organizations = ({
   );
 
   const handleDeleteOrganization = useCallback(
-    ({ id, name }: Organization) => {
+    ({ id, name }: MyOrganization) => {
       setDialog({
         confirmDisabled: true,
         content: <DeleteOrganizationConfirm names={[name]} />,
@@ -310,7 +301,7 @@ const Organizations = ({
   }, [apiRef, clearRowSelection, setDialog, tOrganizations]);
 
   const handleToggleClosed = useCallback(
-    ({ closedAt, id, name }: Organization) => {
+    ({ closedAt, id, name }: MyOrganization) => {
       const action = closedAt ? "reopenOrganization" : "closeOrganization";
 
       setDialog({
@@ -348,22 +339,8 @@ const Organizations = ({
     [mutate, setDialog, tOrganizations],
   );
 
-  const { canUpdateOrganizations, canDeleteOrganizations } = useMemo(() => {
-    let canUpdateOrganizations = false;
-    let canDeleteOrganizations = false;
-
-    for (const {
-      canUpdateOrganization,
-      canDeleteOrganization,
-    } of Object.values(organizationPermissions)) {
-      canUpdateOrganizations ||= canUpdateOrganization;
-      canDeleteOrganizations ||= canDeleteOrganization;
-
-      if (canUpdateOrganizations && canDeleteOrganizations) break;
-    }
-
-    return { canUpdateOrganizations, canDeleteOrganizations };
-  }, [organizationPermissions]);
+  const canUpdateOrganizations = rows.some(({ canUpdate }) => canUpdate);
+  const canDeleteOrganizations = rows.some(({ deletable }) => deletable);
 
   const columns = useMemo<GridColDef[]>(
     () => [
@@ -375,11 +352,11 @@ const Organizations = ({
               field: "actions",
               filterable: false,
               headerName: tOrganizations("actions.label"),
-              renderCell: ({ row }: GridRenderCellParams<Organization>) => {
+              renderCell: ({ row }: GridRenderCellParams<MyOrganization>) => {
                 const {
-                  canDeleteOrganization = false,
-                  canUpdateOrganization = false,
-                } = organizationPermissions[row.id] ?? {};
+                  canUpdate: canUpdateOrganization,
+                  deletable: canDeleteOrganization,
+                } = row;
 
                 return (
                   <ActionsStack direction="row">
@@ -436,7 +413,7 @@ const Organizations = ({
                         </StyledIconButton>
                       </Tooltip>
                     )}
-                    {canCloseOrganization && (
+                    {isPlatformAdmin && (
                       <Tooltip
                         title={tOrganizations(
                           row.closedAt
@@ -471,7 +448,7 @@ const Organizations = ({
       {
         field: "closedAt",
         headerName: tOrganizations("status.label"),
-        renderCell: ({ value }: GridRenderCellParams<Organization>) => (
+        renderCell: ({ value }: GridRenderCellParams<MyOrganization>) => (
           <Chip
             color={value ? "default" : "success"}
             label={tOrganizations(value ? "status.closed" : "status.open")}
@@ -484,7 +461,7 @@ const Organizations = ({
         headerName: tOrganizations("logo"),
         renderCell: ({
           row: { logo, name, slug },
-        }: GridRenderCellParams<Organization>) => (
+        }: GridRenderCellParams<MyOrganization>) => (
           <AvatarStack>
             <StyledAvatar
               alt={name}
@@ -512,15 +489,14 @@ const Organizations = ({
       },
     ],
     [
-      canCloseOrganization,
       canDeleteOrganizations,
       canUpdateOrganizations,
       format,
       handleDeleteOrganization,
       handleToggleClosed,
       handleUpdateOrganization,
+      isPlatformAdmin,
       isSelectMode,
-      organizationPermissions,
       router,
       tOrganizations,
     ],
@@ -528,12 +504,13 @@ const Organizations = ({
 
   return (
     <>
-      {(canCreateOrganization || canDeleteOrganizations) && (
+      {(isPlatformAdmin || canDeleteOrganizations) && (
         <ToolbarStack direction="row">
           {!isSelectMode && (
             <>
-              {canCreateOrganization && (
+              {isPlatformAdmin && (
                 <Button
+                  disabled={loading}
                   onClick={handleCreateOrganization}
                   size="small"
                   startIcon={<AddBusiness />}
@@ -587,7 +564,7 @@ const Organizations = ({
         {...rowSelectionProps}
         apiRef={apiRef}
         columns={columns}
-        loading={loadingOrganizations || loadingPermissions}
+        loading={loading || isValidating}
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import MenuItemRecipe from ".";
 
@@ -38,7 +39,7 @@ export const generateMetadata = async ({
   return { title: tInventory("recipes.label") };
 };
 
-const MenuItemRecipePage = async ({
+const MenuItemRecipeContent = async ({
   params,
   searchParams,
 }: MenuItemRecipePageProps) => {
@@ -114,5 +115,11 @@ const MenuItemRecipePage = async ({
     />
   );
 };
+
+const MenuItemRecipePage = (props: MenuItemRecipePageProps) => (
+  <Suspense fallback={<MenuItemRecipe loading />}>
+    <MenuItemRecipeContent {...props} />
+  </Suspense>
+);
 
 export default MenuItemRecipePage;

@@ -25,7 +25,7 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 import { quantPairOf } from "@/constants/quant";
 
 import {
@@ -108,11 +108,12 @@ interface BotListProps {
   filterField?: QuantBotFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  page: number;
-  pageSize: number;
+  loading?: boolean;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: QuantBot[];
+  rowCount?: number;
+  rows?: QuantBot[];
   sortBy?: QuantBotSortField;
   sortDirection?: SortDirection;
 }
@@ -121,11 +122,12 @@ const BotList = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  page,
-  pageSize,
+  loading = false,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
 }: BotListProps) => {
@@ -180,9 +182,9 @@ const BotList = ({
       data: initialRows,
       total: initialRowCount,
     },
-    isLoading: loading,
+    isLoading,
   } = useSWR(
-    [
+    !loading && [
       QUANT_BOTS_URL,
       filterModel.items[0]?.field,
       filterModel.items[0]?.operator,
@@ -581,7 +583,7 @@ const BotList = ({
         columns={columns}
         filterMode="server"
         filterModel={filterModel}
-        loading={loading}
+        loading={loading || isLoading}
         onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
         onSortModelChange={handleSortModelChange}

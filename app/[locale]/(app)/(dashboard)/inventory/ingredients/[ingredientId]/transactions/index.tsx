@@ -14,7 +14,7 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import {
   useDateFilterOperators,
@@ -49,34 +49,38 @@ import { fetcher } from "@/utils/fetcher";
 import { formatStockDelta, formatUnitPriceOf } from "@/utils/ingredients";
 
 interface IngredientTransactionsProps {
-  canViewPurchasing: boolean;
+  canViewPurchasing?: boolean;
   filterField?: InventoryTransactionFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  ingredient: Ingredient;
-  page: number;
-  pageSize: number;
+  ingredient?: Ingredient;
+  loading?: boolean;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: InventoryTransaction[];
+  rowCount?: number;
+  rows?: InventoryTransaction[];
   sortBy?: InventoryTransactionSortField;
   sortDirection?: SortDirection;
 }
 
 const IngredientTransactions = ({
-  canViewPurchasing,
+  canViewPurchasing = false,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
   ingredient,
-  page,
-  pageSize,
+  loading = false,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
 }: IngredientTransactionsProps) => {
+  const ingredientId = ingredient?.id ?? "";
+
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -130,10 +134,10 @@ const IngredientTransactions = ({
       data: initialRows,
       total: initialRowCount,
     },
-    isValidating: loading,
+    isValidating,
   } = useSWR(
-    [
-      `/api/ingredients/${ingredient.id}/inventory-transactions`,
+    !loading && [
+      `/api/ingredients/${ingredientId}/inventory-transactions`,
       filterModel.items[0]?.field,
       filterModel.items[0]?.operator,
       filterModel.items[0]?.value,
@@ -144,7 +148,7 @@ const IngredientTransactions = ({
     ],
     async () =>
       fetcher<{ data: InventoryTransaction[]; total: number }>(
-        `/api/ingredients/${ingredient.id}/inventory-transactions?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
+        `/api/ingredients/${ingredientId}/inventory-transactions?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
       ),
     {
       fallbackData: { data: initialRows, total: initialRowCount },
@@ -213,7 +217,7 @@ const IngredientTransactions = ({
         renderCell: renderEmptyableCell,
         type: "number",
         valueFormatter: (value: InventoryTransaction["unitCost"]) =>
-          value == null
+          value == null || !ingredient
             ? ""
             : formatUnitPriceOf(Number(value), ingredient, {
                 format,
@@ -238,18 +242,19 @@ const IngredientTransactions = ({
         headerName: tInventory("transactions.quantity.label"),
         renderCell: ({
           row: { quantity },
-        }: GridRenderCellParams<InventoryTransaction>) => (
-          <Chip
-            color={Number(quantity) < 0 ? "error" : "success"}
-            label={formatStockDelta(Number(quantity), ingredient, {
-              format,
-              tCommon,
-              tInventory,
-            })}
-            size="small"
-            variant="outlined"
-          />
-        ),
+        }: GridRenderCellParams<InventoryTransaction>) =>
+          ingredient && (
+            <Chip
+              color={Number(quantity) < 0 ? "error" : "success"}
+              label={formatStockDelta(Number(quantity), ingredient, {
+                format,
+                tCommon,
+                tInventory,
+              })}
+              size="small"
+              variant="outlined"
+            />
+          ),
         type: "number",
       },
       {
@@ -258,9 +263,10 @@ const IngredientTransactions = ({
         headerName: tInventory("transactions.balance.label"),
         renderCell: ({
           row: { balance },
-        }: GridRenderCellParams<InventoryTransaction>) => (
-          <StockCell ingredient={ingredient} quantity={Number(balance)} />
-        ),
+        }: GridRenderCellParams<InventoryTransaction>) =>
+          ingredient && (
+            <StockCell ingredient={ingredient} quantity={Number(balance)} />
+          ),
         sortable: false,
         type: "number",
       },
@@ -308,7 +314,7 @@ const IngredientTransactions = ({
       columns={columns}
       filterMode="server"
       filterModel={filterModel}
-      loading={loading}
+      loading={loading || isValidating}
       onFilterModelChange={handleFilterModelChange}
       onPaginationModelChange={handlePaginationModelChange}
       onSortModelChange={handleSortModelChange}

@@ -16,6 +16,7 @@ import {
   CardActions,
   CardContent,
   CardMedia,
+  Skeleton,
   Stack,
   Typography,
 } from "@mui/material";
@@ -82,12 +83,18 @@ const StyledCardActions = styled(CardActions)(({ theme }) => ({
 }));
 
 interface MenuCardProps {
-  canViewAuditLog: boolean;
-  canWrite: boolean;
-  menu: Menu;
+  canViewAuditLog?: boolean;
+  canWrite?: boolean;
+  loading?: boolean;
+  menu?: Menu;
 }
 
-const MenuCard = ({ canViewAuditLog, canWrite, menu }: MenuCardProps) => {
+const MenuCard = ({
+  canViewAuditLog = false,
+  canWrite = false,
+  loading = false,
+  menu,
+}: MenuCardProps) => {
   const { setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
@@ -99,6 +106,8 @@ const MenuCard = ({ canViewAuditLog, canWrite, menu }: MenuCardProps) => {
   const tMenus = useTranslations("menus");
 
   const handleEditMenu = () => {
+    if (!menu) return;
+
     setDialog({
       content: <UpdateMenuDialog menu={menu} mutate={router.refresh} />,
       formId: "update-menu-form",
@@ -109,17 +118,17 @@ const MenuCard = ({ canViewAuditLog, canWrite, menu }: MenuCardProps) => {
 
   return (
     <StyledCard variant="outlined">
-      <StyledCardMedia image={menu.image || undefined}>
-        {!menu.image && <RestaurantMenu color="disabled" fontSize="large" />}
+      <StyledCardMedia image={menu?.image || undefined}>
+        {!menu?.image && <RestaurantMenu color="disabled" fontSize="large" />}
       </StyledCardMedia>
       <InfoStack>
         <StyledCardContent>
           <NameTypography variant="subtitle1">
-            {localize(menu.name, locale)}
+            {loading ? <Skeleton width={160} /> : localize(menu?.name, locale)}
           </NameTypography>
-          {localize(menu.description, locale) && (
+          {localize(menu?.description, locale) && (
             <WrapTypography color="textSecondary" variant="body2">
-              {localize(menu.description, locale)}
+              {localize(menu?.description, locale)}
             </WrapTypography>
           )}
         </StyledCardContent>

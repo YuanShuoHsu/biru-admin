@@ -18,7 +18,7 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
@@ -83,35 +83,37 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface MenuItemAddOnsProps {
-  canViewAuditLog: boolean;
-  canWrite: boolean;
+  canViewAuditLog?: boolean;
+  canWrite?: boolean;
   filterField?: AddOnFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  menuId: string;
-  menuItemId: string;
-  page: number;
-  pageSize: number;
+  loading?: boolean;
+  menuId?: string;
+  menuItemId?: string;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: MenuItemAddOn[];
+  rowCount?: number;
+  rows?: MenuItemAddOn[];
   sortBy?: AddOnSortField;
   sortDirection?: SortDirection;
 }
 
 const MenuItemAddOns = ({
-  canViewAuditLog,
-  canWrite,
+  canViewAuditLog = false,
+  canWrite = false,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  menuId,
-  menuItemId,
-  page,
-  pageSize,
+  loading = false,
+  menuId = "",
+  menuItemId = "",
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
 }: MenuItemAddOnsProps) => {
@@ -167,9 +169,9 @@ const MenuItemAddOns = ({
       total: initialRowCount,
     },
     mutate,
-    isValidating: loading,
+    isValidating,
   } = useSWR(
-    [
+    !loading && [
       `/api/menu-items/${menuItemId}/add-ons`,
       filterModel.items[0]?.field,
       filterModel.items[0]?.operator,
@@ -743,7 +745,7 @@ const MenuItemAddOns = ({
           columns={columns}
           filterMode="server"
           filterModel={filterModel}
-          loading={loading}
+          loading={loading || isValidating}
           onFilterModelChange={handleFilterModelChange}
           onPaginationModelChange={handlePaginationModelChange}
           onSortModelChange={handleSortModelChange}

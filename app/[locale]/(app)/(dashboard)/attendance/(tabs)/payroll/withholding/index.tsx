@@ -73,16 +73,28 @@ const NON_RESIDENT_AMOUNT_FIELDS = [
 ] as const;
 
 interface WithholdingProps {
-  canManage: boolean;
-  organization: Organization;
-  summary: PayrollWithholdingSummary;
+  canManage?: boolean;
+  loading?: boolean;
+  organization?: Organization;
+  summary?: PayrollWithholdingSummary;
 }
 
 const Withholding = ({
-  canManage,
-  organization: { currency = "", slug: organizationSlug },
-  summary: { certificates, nonResidentPayments, unit, year },
+  canManage = false,
+  loading = false,
+  organization,
+  summary,
 }: WithholdingProps) => {
+  const currency = organization?.currency ?? "";
+  const organizationSlug = organization?.slug ?? "";
+  const certificates = summary?.certificates ?? [];
+  const nonResidentPayments = useMemo(
+    () => summary?.nonResidentPayments ?? [],
+    [summary],
+  );
+  const unit = summary?.unit;
+  const year = summary?.year;
+
   const [downloading, setDownloading] = useState<string | null>(null);
 
   const { setDialog } = useDialogStore((state) => state);
@@ -118,7 +130,7 @@ const Withholding = ({
     [tAttendance, unit],
   );
 
-  const annualBlockedReason = blockedReason(certificates);
+  const annualBlockedReason = loading ? null : blockedReason(certificates);
 
   const handleUnitDialog = useCallback(
     () =>
@@ -411,11 +423,12 @@ const Withholding = ({
     <>
       <ToolbarStack direction="row">
         <DatePicker
+          disabled={loading}
           label={tAttendance("withholding.year")}
           onChange={(value) =>
             value?.isValid() && updateQuery({ year: String(value.year()) })
           }
-          value={dayjs(`${year}-01-01`)}
+          value={year ? dayjs(`${year}-01-01`) : null}
           views={["year"]}
         />
         {canManage && (
@@ -426,7 +439,7 @@ const Withholding = ({
         <Tooltip title={annualBlockedReason ?? ""}>
           <span>
             <Button
-              disabled={!!annualBlockedReason}
+              disabled={loading || !!annualBlockedReason}
               loading={downloading === "annual"}
               onClick={() =>
                 download("annual", "withholding-file", { year: String(year) })
@@ -451,6 +464,7 @@ const Withholding = ({
         {...DATA_GRID_PROPS}
         columns={annualColumns}
         getRowId={({ employeeId }) => employeeId}
+        loading={loading}
         rows={certificates}
       />
       {nonResidentPayments.length > 0 && (

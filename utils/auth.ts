@@ -19,7 +19,7 @@ export const formatUserAgent = (userAgent?: string | null): string => {
   return [browserName, osName].filter(Boolean).join(" · ");
 };
 
-export const isActiveSession = ({ expiresAt }: { expiresAt: Date }) =>
+export const isActiveSession = ({ expiresAt }: { expiresAt: Date | string }) =>
   new Date(expiresAt) > new Date();
 
 export const formatFullName = (

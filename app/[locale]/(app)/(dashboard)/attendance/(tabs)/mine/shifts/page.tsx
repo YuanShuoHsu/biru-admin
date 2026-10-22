@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import Mine from ".";
 
@@ -55,7 +56,7 @@ export const generateMetadata = async ({
   return { title: tAttendance("mine.label") };
 };
 
-const MinePage = async ({ params, searchParams }: MinePageProps) => {
+const MineContent = async ({ params, searchParams }: MinePageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -171,5 +172,11 @@ const MinePage = async ({ params, searchParams }: MinePageProps) => {
     />
   );
 };
+
+const MinePage = (props: MinePageProps) => (
+  <Suspense fallback={<Mine loading />}>
+    <MineContent {...props} />
+  </Suspense>
+);
 
 export default MinePage;

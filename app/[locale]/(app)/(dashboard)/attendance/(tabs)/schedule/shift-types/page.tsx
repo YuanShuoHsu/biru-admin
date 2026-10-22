@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import ShiftTypes from ".";
 
@@ -47,7 +48,7 @@ export const generateMetadata = async ({
   return { title: tAttendance("shiftTypes.label") };
 };
 
-const ShiftTypesPage = async ({
+const ShiftTypesContent = async ({
   params,
   searchParams,
 }: ShiftTypesPageProps) => {
@@ -122,5 +123,11 @@ const ShiftTypesPage = async ({
     />
   );
 };
+
+const ShiftTypesPage = (props: ShiftTypesPageProps) => (
+  <Suspense fallback={<ShiftTypes loading />}>
+    <ShiftTypesContent {...props} />
+  </Suspense>
+);
 
 export default ShiftTypesPage;

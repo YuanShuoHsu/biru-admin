@@ -16,7 +16,7 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import { attendanceReviewCountsKey } from "@/hooks/useAttendanceReviewCounts";
 import {
@@ -74,40 +74,44 @@ const StyledIconButton = styled(IconButton, {
 }));
 
 interface ParentalReturnsProps {
-  canReview: boolean;
-  canReviewOwn: boolean;
-  canViewAll: boolean;
+  canReview?: boolean;
+  canReviewOwn?: boolean;
+  canViewAll?: boolean;
   employeeId?: string;
   filterField?: AttendanceParentalReturnFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  organization: Organization;
-  page: number;
-  pageSize: number;
+  loading?: boolean;
+  organization?: Organization;
+  page?: number;
+  pageSize?: number;
   quickFilterValue?: string;
-  rowCount: number;
-  rows: AttendanceParentalReturn[];
+  rowCount?: number;
+  rows?: AttendanceParentalReturn[];
   sortBy?: AttendanceParentalReturnSortField;
   sortDirection?: SortDirection;
 }
 
 const ParentalReturns = ({
-  canReview,
-  canReviewOwn,
-  canViewAll,
+  canReview = false,
+  canReviewOwn = false,
+  canViewAll = false,
   employeeId,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  organization: { slug: organizationSlug },
-  page,
-  pageSize,
+  loading = false,
+  organization,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
 }: ParentalReturnsProps) => {
+  const organizationSlug = organization?.slug ?? "";
+
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -172,10 +176,10 @@ const ParentalReturns = ({
       data: initialRows,
       total: initialRowCount,
     },
-    isValidating: loading,
+    isValidating,
     mutate,
   } = useSWR(
-    [base, paginationModel, filterModel, sortModel],
+    !loading && [base, paginationModel, filterModel, sortModel],
     () =>
       fetcher<AttendanceParentalReturnPage>(
         `${base}?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
@@ -464,7 +468,7 @@ const ParentalReturns = ({
         columns={columns}
         filterMode="server"
         filterModel={filterModel}
-        loading={loading}
+        loading={loading || isValidating}
         onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
         onSortModelChange={handleSortModelChange}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import MenuItemAddOns from ".";
 
@@ -51,7 +52,7 @@ export const generateMetadata = async ({
   return { title: tMenus("items.addOns.label") };
 };
 
-const MenuItemAddOnsPage = async ({
+const MenuItemAddOnsContent = async ({
   params,
   searchParams,
 }: MenuItemAddOnsPageProps) => {
@@ -134,5 +135,11 @@ const MenuItemAddOnsPage = async ({
     />
   );
 };
+
+const MenuItemAddOnsPage = (props: MenuItemAddOnsPageProps) => (
+  <Suspense fallback={<MenuItemAddOns loading />}>
+    <MenuItemAddOnsContent {...props} />
+  </Suspense>
+);
 
 export default MenuItemAddOnsPage;

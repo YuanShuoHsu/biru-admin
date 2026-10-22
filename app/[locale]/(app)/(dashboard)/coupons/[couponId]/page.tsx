@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import CouponRecipients from ".";
 
@@ -42,7 +43,7 @@ export const generateMetadata = async ({
   return { title: tCoupons("recipients.label") };
 };
 
-const CouponRecipientsPage = async ({
+const CouponRecipientsContent = async ({
   params,
   searchParams,
 }: CouponRecipientsPageProps) => {
@@ -120,5 +121,11 @@ const CouponRecipientsPage = async ({
     />
   );
 };
+
+const CouponRecipientsPage = (props: CouponRecipientsPageProps) => (
+  <Suspense fallback={<CouponRecipients loading />}>
+    <CouponRecipientsContent {...props} />
+  </Suspense>
+);
 
 export default CouponRecipientsPage;

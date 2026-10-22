@@ -16,7 +16,7 @@ import {
   DATA_GRID_PROPS,
   NO_VALUE_FILTER_OPERATORS,
 } from "@/constants/dataGrid";
-import { getPageSizeOptions } from "@/constants/pagination";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import {
   useDateFilterOperators,
@@ -86,52 +86,56 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface LeaveCasesProps {
-  canAssignChild: boolean;
-  canDelete: boolean;
-  canUpdate: boolean;
-  canViewAll: boolean;
-  canWrite: boolean;
-  canReviewOwn: boolean;
+  canAssignChild?: boolean;
+  canDelete?: boolean;
+  canUpdate?: boolean;
+  canViewAll?: boolean;
+  canWrite?: boolean;
+  canReviewOwn?: boolean;
   employeeId?: string;
-  employees: AttendanceEmployee[];
+  employees?: AttendanceEmployee[];
   filterField?: AttendanceLeaveCaseFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  leaveTypes: AttendanceLeaveType[];
-  organization: Organization;
-  page: number;
-  pageSize: number;
-  parentalChildren: AttendanceParentalChild[];
+  leaveTypes?: AttendanceLeaveType[];
+  loading?: boolean;
+  organization?: Organization;
+  page?: number;
+  pageSize?: number;
+  parentalChildren?: AttendanceParentalChild[];
   quickFilterValue?: string;
-  rowCount: number;
-  rows: AttendanceLeaveCase[];
+  rowCount?: number;
+  rows?: AttendanceLeaveCase[];
   sortBy?: AttendanceLeaveCaseSortField;
   sortDirection?: SortDirection;
 }
 
 const LeaveCases = ({
-  canAssignChild,
-  canDelete,
-  canUpdate,
-  canViewAll,
-  canWrite,
-  canReviewOwn,
+  canAssignChild = false,
+  canDelete = false,
+  canUpdate = false,
+  canViewAll = false,
+  canWrite = false,
+  canReviewOwn = false,
   employeeId,
-  employees,
+  employees = [],
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  leaveTypes,
-  organization: { slug: organizationSlug },
-  page,
-  pageSize,
-  parentalChildren,
+  leaveTypes = [],
+  loading = false,
+  organization,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
+  parentalChildren = [],
   quickFilterValue: initialQuickFilterValue,
-  rowCount: initialRowCount,
-  rows: initialRows,
+  rowCount: initialRowCount = 0,
+  rows: initialRows = [],
   sortBy,
   sortDirection,
 }: LeaveCasesProps) => {
+  const organizationSlug = organization?.slug ?? "";
+
   const [isSelectMode, setIsSelectMode] = useState(false);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
@@ -193,10 +197,10 @@ const LeaveCases = ({
       data: initialRows,
       total: initialRowCount,
     },
-    isValidating: loading,
+    isValidating,
     mutate,
   } = useSWR(
-    [base, paginationModel, filterModel, sortModel],
+    !loading && [base, paginationModel, filterModel, sortModel],
     () =>
       fetcher<AttendanceLeaveCasePage>(
         `${base}?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
@@ -763,7 +767,7 @@ const LeaveCases = ({
         columns={columns}
         filterMode="server"
         filterModel={filterModel}
-        loading={loading}
+        loading={loading || isValidating}
         onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
         onSortModelChange={handleSortModelChange}

@@ -51,18 +51,20 @@ const ROLE_COLOR_MAP: Record<string, "error" | "warning" | "default"> = {
 };
 
 interface OrganizationsSlugInvitationsProps {
-  activeOrganization: ActiveOrganization;
-  canCancelInvitation: boolean;
+  activeOrganization?: ActiveOrganization;
+  canCancelInvitation?: boolean;
+  loading?: boolean;
 }
 
 const OrganizationsSlugInvitations = ({
-  activeOrganization: {
-    id: organizationId,
-    invitations: initialInvitations,
-    teams: initialTeams,
-  },
-  canCancelInvitation,
+  activeOrganization,
+  canCancelInvitation = false,
+  loading = false,
 }: OrganizationsSlugInvitationsProps) => {
+  const organizationId = activeOrganization?.id ?? "";
+  const initialInvitations = activeOrganization?.invitations ?? [];
+  const initialTeams = activeOrganization?.teams ?? [];
+
   const [isSelectMode, setIsSelectMode] = useState(false);
 
   const apiRef = useGridApiRef();
@@ -85,9 +87,9 @@ const OrganizationsSlugInvitations = ({
       teams: initialTeams,
     },
     mutate,
-    isValidating: loading,
+    isValidating,
   } = useSWR(
-    ["organization-invitations", slug],
+    !loading && ["organization-invitations", slug],
     async () => {
       const { data, error } = await authClient.organization.getFullOrganization(
         {
@@ -398,7 +400,7 @@ const OrganizationsSlugInvitations = ({
         {...rowSelectionProps}
         apiRef={apiRef}
         columns={columns}
-        loading={loading}
+        loading={loading || isValidating}
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }

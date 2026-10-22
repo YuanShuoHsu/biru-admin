@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import Withholding from ".";
 
@@ -39,7 +40,7 @@ export const generateMetadata = async ({
   return { title: tAttendance("withholding.label") };
 };
 
-const WithholdingPage = async ({
+const WithholdingContent = async ({
   params,
   searchParams,
 }: WithholdingPageProps) => {
@@ -97,5 +98,11 @@ const WithholdingPage = async ({
     />
   );
 };
+
+const WithholdingPage = (props: WithholdingPageProps) => (
+  <Suspense fallback={<Withholding loading />}>
+    <WithholdingContent {...props} />
+  </Suspense>
+);
 
 export default WithholdingPage;
