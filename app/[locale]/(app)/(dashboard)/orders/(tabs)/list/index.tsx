@@ -7,6 +7,7 @@ import useSWR from "swr";
 import AuditLogButton from "@/components/AuditLogButton";
 import DataGrid from "@/components/DataGrid";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
+import InvoicePrintJobChip from "@/components/InvoicePrintJobChip";
 
 import {
   autosizeOptions,
@@ -28,6 +29,7 @@ import {
   canIssueInvoice,
   canPrintInvoice,
   canResetInvoicePrint,
+  canResolveInvoicePrint,
   canVoidInvoice,
   useOrderActions,
 } from "@/hooks/useOrderActions";
@@ -38,6 +40,7 @@ import {
   Cancel,
   CurrencyExchange,
   Edit,
+  FactCheck,
   Print,
   Receipt,
   ReceiptLong,
@@ -267,6 +270,7 @@ const Orders = ({
     handleConfirmStatusAction,
     handleConfirmVoidInvoice,
     handleRefund,
+    handleResolveInvoicePrint,
     handleUpdateCustomer,
     handleViewOrder,
   } = useOrderActions(organizationSlug, mutate);
@@ -274,6 +278,11 @@ const Orders = ({
   const hasPendingInvoice = useMemo(() => rows.some(canIssueInvoice), [rows]);
 
   const hasPrintableInvoice = useMemo(() => rows.some(canPrintInvoice), [rows]);
+
+  const hasUnresolvedInvoicePrint = useMemo(
+    () => rows.some(canResolveInvoicePrint),
+    [rows],
+  );
 
   const hasResettableInvoicePrint = useMemo(
     () => rows.some(canResetInvoicePrint),
@@ -360,6 +369,23 @@ const Orders = ({
                   visible={canPrintInvoice(row)}
                 >
                   <Print fontSize="small" />
+                </StyledIconButton>
+              </Tooltip>
+            )}
+            {hasUnresolvedInvoicePrint && (
+              <Tooltip title={tOrders("actions.resolveInvoicePrint.title")}>
+                <StyledIconButton
+                  color="error"
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    if (canResolveInvoicePrint(row))
+                      handleResolveInvoicePrint(row);
+                  }}
+                  size="small"
+                  visible={canResolveInvoicePrint(row)}
+                >
+                  <FactCheck fontSize="small" />
                 </StyledIconButton>
               </Tooltip>
             )}
@@ -568,12 +594,17 @@ const Orders = ({
         headerName: tOrders("invoiceStatus"),
         renderCell: ({ row }: GridRenderCellParams<AdminOrderResponse>) =>
           row.invoice ? (
-            <Chip
-              color={INVOICE_STATUS_COLORS[row.invoice.status]}
-              label={tOrders(`invoiceStatusValue.${row.invoice.status}`)}
-              size="small"
-              variant="outlined"
-            />
+            <StyledStack direction="row">
+              <Chip
+                color={INVOICE_STATUS_COLORS[row.invoice.status]}
+                label={tOrders(`invoiceStatusValue.${row.invoice.status}`)}
+                size="small"
+                variant="outlined"
+              />
+              {row.invoice.printJob && (
+                <InvoicePrintJobChip printJob={row.invoice.printJob} />
+              )}
+            </StyledStack>
           ) : (
             <EmptyCell />
           ),
@@ -614,12 +645,14 @@ const Orders = ({
       hasVoidableInvoice,
       handleConfirmStatusAction,
       handleConfirmPrintInvoice,
+      handleResolveInvoicePrint,
       handleUpdateCustomer,
       handleViewOrder,
       hasPendingInvoice,
       hasPrintableInvoice,
       hasResettableInvoicePrint,
       hasTransitions,
+      hasUnresolvedInvoicePrint,
       numberFilterOperators,
       stringFilterOperators,
       tOrder,

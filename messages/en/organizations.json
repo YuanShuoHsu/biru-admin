@@ -97,6 +97,23 @@
     "driveThru": {
       "label": "Drive-thru ordering QR code"
     },
+    "invoicePrinter": {
+      "credentialsNotice": "The password is shown only once. Enter it on the printer now.",
+      "description": "Once set up, issued invoices are sent to the Epson thermal printer automatically and the printer reports whether they finished printing. Without a printer, invoices are printed from the browser.",
+      "label": "Invoice printer",
+      "lastSeenAt": "Last connected",
+      "neverSeen": "Not connected yet",
+      "password": "Password",
+      "remove": "Remove printer",
+      "removeConfirm": "Invoices will be printed from the browser instead, and print jobs not yet sent will be cancelled. Remove the printer?",
+      "removeSuccess": "Removed the invoice printer",
+      "reset": "Reset password",
+      "resetConfirm": "The old password stops working immediately, and the printer can't print until you enter the new one. Reset the password?",
+      "setup": "Set up printer",
+      "steps": "Enable Server Direct Print in the printer's Web Config and enter the ID, password and URL below. Invoice slips must be 5.7 cm wide, so use 58 mm paper.",
+      "url": "URL",
+      "username": "ID"
+    },
     "label": "In-store ordering"
   },
   "invitations": {

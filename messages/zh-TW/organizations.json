@@ -97,6 +97,23 @@
     "driveThru": {
       "label": "得來速點餐 QR code"
     },
+    "invoicePrinter": {
+      "credentialsNotice": "密碼只會顯示這一次，請現在填入印表機。",
+      "description": "設定後，發票開立就會自動送到 Epson 熱感應印表機，並由印表機回報是否印完；未設定時改用瀏覽器列印。",
+      "label": "發票印表機",
+      "lastSeenAt": "最後連線",
+      "neverSeen": "尚未連線",
+      "password": "密碼",
+      "remove": "移除印表機",
+      "removeConfirm": "移除後發票改用瀏覽器列印，尚未送出的列印工作會取消。確定要移除嗎？",
+      "removeSuccess": "已移除發票印表機",
+      "reset": "重設密碼",
+      "resetConfirm": "重設後舊密碼立即失效，印表機要填入新密碼才能繼續列印。確定要重設嗎？",
+      "setup": "設定印表機",
+      "steps": "在印表機 Web Config 的「Server Direct Print」啟用，填入下列 ID、密碼與 URL。證明聯寬度須為 5.7 公分，請使用 58mm 紙寬。",
+      "url": "URL",
+      "username": "ID"
+    },
     "label": "現場點餐"
   },
   "invitations": {

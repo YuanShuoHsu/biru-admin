@@ -7,6 +7,7 @@
     },
     "label": "操作",
     "printInvoice": {
+      "queued": "注文 {orderNumber} のインボイスをインボイスプリンターに送信しました",
       "reprintConfirm": "注文 <bold>{orderNumber}</bold> のインボイスを再印刷してもよろしいですか？正本はすでに印刷済みで、再印刷分は当選対象になりません。正本が実際に出力されなかった場合は、先に未印刷に戻してください。",
       "reprintLabel": "インボイスを再印刷",
       "reprintTitle": "インボイスを再印刷（正本は印刷済み）",
@@ -38,6 +39,15 @@
       "resetCount": "このインボイスは印刷を {count} 回リセット済みです",
       "success": "注文 {orderNumber} のインボイスを未印刷に戻しました",
       "title": "未印刷に戻す"
+    },
+    "resolveInvoicePrint": {
+      "description": "注文 <bold>{orderNumber}</bold> のインボイスの印刷が完了したかどうか、プリンターから報告がありません{reason}。プリンターからこのインボイスが出てきたか確認し、実際の状況を選んでください。",
+      "notPrinted": "バーコードはまったく印刷されていない。正本を再印刷する",
+      "printed": "バーコードが印刷された（一部だけでも）",
+      "printedSuccess": "注文 {orderNumber} のインボイスを印刷済みにしました",
+      "reprintSuccess": "注文 {orderNumber} のインボイス正本をインボイスプリンターに再送信しました",
+      "title": "インボイスの印刷結果を確認",
+      "warning": "バーコードが印刷された紙は抽選に使えるため、再印刷すると抽選に使える正本が 2 枚になります。"
     },
     "updateCustomer": {
       "success": "注文 {orderNumber} のお客様情報を更新しました",
@@ -90,11 +100,6 @@
       "refundUnconfirmed": "返金結果が未確認で、返金可能数量が確保されたまま"
     }
   },
-  "autoPrint": {
-    "interrupted": "印刷が中断されました。再接続中",
-    "label": "このタブでインボイスを自動印刷",
-    "replaced": "別のタブがインボイスの自動印刷を引き継ぎました"
-  },
   "board": {
     "empty": "現在ご注文はありません",
     "title": "注文ボード"
@@ -116,6 +121,7 @@
     "invoice": {
       "invoiceDate": "発行日時",
       "invoiceNumber": "インボイス番号",
+      "printJob": "印刷状況",
       "printedAt": "正本印刷日時",
       "status": "発行状況",
       "title": "インボイス情報",
@@ -207,6 +213,29 @@
   "paymentDate": "支払い日時",
   "paymentMethod": "支払い方法",
   "pickupTime": "受け取り時間",
+  "printJobError": {
+    "DeviceNotFound": "プリンターが見つかりません",
+    "ECPAY_UNAVAILABLE": "ECPay からインボイスのデータを取得できません。自動で再試行します",
+    "EPTR_AUTOMATICAL": "プリンターが過熱しています。自動復帰中です",
+    "EPTR_COVER_OPEN": "プリンターのカバーが開いています",
+    "EPTR_CUTTER": "カッターに紙が詰まっています",
+    "EPTR_MECHANICAL": "プリンターの機構エラー",
+    "EPTR_REC_EMPTY": "プリンターの用紙切れ",
+    "EPTR_UNRECOVERABLE": "プリンターの電圧異常",
+    "EX_BADPORT": "プリンターが接続されていません",
+    "EX_SPOOLER": "プリンターのキューがいっぱいです",
+    "EX_TIMEOUT": "印刷がタイムアウトしました",
+    "RECEIPT_CODES_MISSING": "ECPay からインボイスのバーコードが提供されていません。先に ECPay 管理画面で QR Code のシードを設定してください",
+    "SchemaError": "印刷データの形式が正しくありません",
+    "other": "プリンターエラー {code}"
+  },
+  "printJobStatus": {
+    "cancelled": "キャンセル済み",
+    "printed": "印刷済み",
+    "queued": "プリンター待ち",
+    "sent": "印刷中",
+    "unknown": "印刷結果不明"
+  },
   "status": {
     "OrderCancelled": "キャンセル済み",
     "OrderDelivered": "受け渡し済み",

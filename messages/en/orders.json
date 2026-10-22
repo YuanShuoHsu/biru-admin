@@ -7,6 +7,7 @@
     },
     "label": "Actions",
     "printInvoice": {
+      "queued": "Sent the invoice for order {orderNumber} to the invoice printer",
       "reprintConfirm": "Reprint the invoice for order <bold>{orderNumber}</bold>? The original has already been printed, and a reprinted copy is not eligible for the lottery. If the original never came out of the printer, reset it to not printed first.",
       "reprintLabel": "Reprint invoice",
       "reprintTitle": "Print invoice copy (original already printed)",
@@ -38,6 +39,15 @@
       "resetCount": "This invoice has already been reset for printing {count} times",
       "success": "Invoice for order {orderNumber} reset to not printed",
       "title": "Reset to not printed"
+    },
+    "resolveInvoicePrint": {
+      "description": "The printer didn't report whether the invoice for order <bold>{orderNumber}</bold> finished printing{reason}. Check whether the printer produced this invoice, then choose what happened.",
+      "notPrinted": "No barcodes were printed; print the original again",
+      "printed": "Barcodes were printed (even partially)",
+      "printedSuccess": "Marked the invoice for order {orderNumber} as printed",
+      "reprintSuccess": "Sent the original invoice for order {orderNumber} to the invoice printer again",
+      "title": "Confirm invoice print result",
+      "warning": "A printout with barcodes can claim the lottery prize. Reprinting it creates a second claimable original."
     },
     "updateCustomer": {
       "success": "Customer information for order {orderNumber} updated",
@@ -90,11 +100,6 @@
       "refundUnconfirmed": "Refund result unconfirmed; the quantity stays reserved"
     }
   },
-  "autoPrint": {
-    "interrupted": "Printing interrupted, reconnecting",
-    "label": "Auto-print invoices in this tab",
-    "replaced": "Another tab has taken over invoice auto-printing"
-  },
   "board": {
     "empty": "No orders right now",
     "title": "Order Board"
@@ -116,6 +121,7 @@
     "invoice": {
       "invoiceDate": "Issued at",
       "invoiceNumber": "Invoice number",
+      "printJob": "Print status",
       "printedAt": "Original printed at",
       "status": "Status",
       "title": "Invoice",
@@ -207,6 +213,29 @@
   "paymentDate": "Payment date",
   "paymentMethod": "Payment method",
   "pickupTime": "Pickup time",
+  "printJobError": {
+    "DeviceNotFound": "Printer not found",
+    "ECPAY_UNAVAILABLE": "Couldn't get invoice data from ECPay. It will retry automatically",
+    "EPTR_AUTOMATICAL": "Printer overheated, recovering",
+    "EPTR_COVER_OPEN": "Printer cover is open",
+    "EPTR_CUTTER": "Paper jammed in the cutter",
+    "EPTR_MECHANICAL": "Printer mechanical error",
+    "EPTR_REC_EMPTY": "Printer is out of paper",
+    "EPTR_UNRECOVERABLE": "Printer voltage error",
+    "EX_BADPORT": "Printer not connected",
+    "EX_SPOOLER": "Printer queue is full",
+    "EX_TIMEOUT": "Print timed out",
+    "RECEIPT_CODES_MISSING": "ECPay didn't provide the invoice barcodes. Set the QR Code seed in the ECPay dashboard first",
+    "SchemaError": "Print data is malformed",
+    "other": "Printer error {code}"
+  },
+  "printJobStatus": {
+    "cancelled": "Cancelled",
+    "printed": "Printed",
+    "queued": "Waiting for printer",
+    "sent": "Printing",
+    "unknown": "Print result unknown"
+  },
   "status": {
     "OrderCancelled": "Cancelled",
     "OrderDelivered": "Delivered",

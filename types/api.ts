@@ -1997,7 +1997,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** 領取發票列印頁（熱感應紙）；未印過時給正本，印完須回報 print/confirmation */
+    /** 列印發票：有發票印表機時排入印表機佇列，否則領取列印頁（未印過時給正本，印完須回報 print/confirmation） */
     post: operations["EcpayOrderInvoiceController_print"];
     delete?: never;
     options?: never;
@@ -2017,6 +2017,23 @@ export interface paths {
     put?: never;
     /** 回報正本已送出列印，之後再印只會是補印聯 */
     post: operations["EcpayOrderInvoiceController_confirmPrint"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/orders/{orderId}/invoice/print-jobs/{jobId}/resolution": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 確認列印結果不明的工作：有印出就結案，沒印出就重新排入佇列 */
+    post: operations["EcpayOrderInvoiceController_resolvePrintJob"];
     delete?: never;
     options?: never;
     head?: never;
@@ -2109,18 +2126,20 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/organizations/{organizationSlug}/invoices/unprinted": {
+  "/api/organizations/{organizationSlug}/invoice-printer": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    /** 今天開立、可列印但尚未印過的發票（自動列印補印用） */
-    get: operations["EcpayOrganizationInvoiceController_listUnprinted"];
-    put?: never;
+    /** 查看發票印表機設定 */
+    get: operations["InvoicePrinterController_find"];
+    /** 設定發票印表機，或重設帳密（舊帳密立即失效） */
+    put: operations["InvoicePrinterController_register"];
     post?: never;
-    delete?: never;
+    /** 移除發票印表機，之後改回瀏覽器列印 */
+    delete: operations["InvoicePrinterController_remove"];
     options?: never;
     head?: never;
     patch?: never;
@@ -7963,6 +7982,26 @@ export interface components {
       | "PaymentDeclined";
     /** @enum {string} */
     InvoiceStatus: "pending" | "issuing" | "issued" | "voided";
+    /** @enum {string} */
+    InvoicePrintCopy: "original" | "reprint";
+    /** @enum {string} */
+    InvoicePrintJobStatus:
+      | "queued"
+      | "sent"
+      | "printed"
+      | "unknown"
+      | "cancelled";
+    InvoicePrintJobDto: {
+      id: string;
+      copy: components["schemas"]["InvoicePrintCopy"];
+      status: components["schemas"]["InvoicePrintJobStatus"];
+      /** @description 印表機回報的錯誤碼 */
+      errorCode?: string | null;
+      /** Format: date-time */
+      sentAt?: string | null;
+      /** Format: date-time */
+      createdAt: string;
+    };
     OrderInvoiceDto: {
       id: string;
       orderId: string;
@@ -7984,6 +8023,8 @@ export interface components {
       printedAt?: string | null;
       /** @description 已重設列印的次數 */
       printResetCount: number;
+      /** @description 送往發票印表機、尚未結案的列印工作 */
+      printJob?: components["schemas"]["InvoicePrintJobDto"] | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -7991,10 +8032,16 @@ export interface components {
     };
     OrderInvoicePrintDto: {
       /**
-       * @description 列印頁內容，前端以 iframe srcdoc 呈現後列印
+       * @description 未設定發票印表機時回傳列印頁內容，前端以 iframe srcdoc 呈現後列印，印完須回報 print/confirmation
        * @example <html>…</html>
        */
-      printHtml: string;
+      printHtml?: string;
+      /** @description 已設定發票印表機時回傳排入佇列的列印工作 */
+      printJob?: components["schemas"]["InvoicePrintJobDto"];
+    };
+    ResolveInvoicePrintJobDto: {
+      /** @description 店員確認紙本是否已印出 */
+      printed: boolean;
     };
     OrderInvoiceVerificationDto: {
       /** @description 綠界端的發票號碼 */
@@ -8151,9 +8198,36 @@ export interface components {
       /** @description 退款說明，會作為發票作廢／折讓原因送至綠界；原因分類為 other 時必填 */
       reason?: string;
     };
-    UnprintedInvoiceDto: {
-      /** @description 訂單 ID */
-      orderId: string;
+    InvoicePrinterDto: {
+      /** @description 填入印表機 Server Direct Print 的 ID */
+      username: string;
+      /** @description 填入印表機 Server Direct Print 的 URL */
+      url: string;
+      /**
+       * Format: date-time
+       * @description 印表機最後一次來拉列印工作的時間
+       */
+      lastSeenAt?: string | null;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    InvoicePrinterSettingDto: {
+      printer?: components["schemas"]["InvoicePrinterDto"] | null;
+    };
+    InvoicePrinterCredentialsDto: {
+      /** @description 填入印表機 Server Direct Print 的 ID */
+      username: string;
+      /** @description 填入印表機 Server Direct Print 的 URL */
+      url: string;
+      /**
+       * Format: date-time
+       * @description 印表機最後一次來拉列印工作的時間
+       */
+      lastSeenAt?: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** @description 只在建立或重設時回傳一次 */
+      password: string;
     };
     /** @enum {string} */
     IngredientFilterField:
@@ -16260,6 +16334,40 @@ export interface operations {
       };
     };
   };
+  EcpayOrderInvoiceController_resolvePrintJob: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        orderId: string;
+        jobId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ResolveInvoicePrintJobDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["InvoicePrintJobDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   EcpayOrderInvoiceController_verify: {
     parameters: {
       query?: never;
@@ -16446,7 +16554,7 @@ export interface operations {
       };
     };
   };
-  EcpayOrganizationInvoiceController_listUnprinted: {
+  InvoicePrinterController_find: {
     parameters: {
       query?: never;
       header?: never;
@@ -16462,8 +16570,62 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["UnprintedInvoiceDto"][];
+          "application/json": components["schemas"]["InvoicePrinterSettingDto"];
         };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  InvoicePrinterController_register: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["InvoicePrinterCredentialsDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  InvoicePrinterController_remove: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {
@@ -23767,6 +23929,12 @@ export const invoicePaymentStatusValues: ReadonlyArray<
 export const invoiceStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["InvoiceStatus"]
 > = ["pending", "issuing", "issued", "voided"];
+export const invoicePrintCopyValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["InvoicePrintCopy"]
+> = ["original", "reprint"];
+export const invoicePrintJobStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["InvoicePrintJobStatus"]
+> = ["queued", "sent", "printed", "unknown", "cancelled"];
 export const ecpayCallbackEndpointValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["EcpayCallbackEndpoint"]
 > = ["return", "result", "query"];

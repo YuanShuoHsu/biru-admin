@@ -5,6 +5,8 @@ import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import useSWR from "swr";
 
+import InvoicePrintJobChip from "@/components/InvoicePrintJobChip";
+
 import { MODE_COLORS } from "@/constants/orderMode";
 import {
   INVOICE_STATUS_COLORS,
@@ -342,6 +344,12 @@ const OrderDetailDialog = ({
                 new Date(order.invoice.invoiceDate),
                 "short",
               )}
+            />
+          )}
+          {order.invoice.printJob && (
+            <InfoRow
+              label={tOrders("detail.invoice.printJob")}
+              value={<InvoicePrintJobChip printJob={order.invoice.printJob} />}
             />
           )}
           {order.invoice.printedAt && (

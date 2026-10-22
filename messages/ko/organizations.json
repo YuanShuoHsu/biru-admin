@@ -97,6 +97,23 @@
     "driveThru": {
       "label": "드라이브 스루 주문 QR 코드"
     },
+    "invoicePrinter": {
+      "credentialsNotice": "비밀번호는 이번에만 표시됩니다. 지금 프린터에 입력하세요.",
+      "description": "설정하면 발행된 세금계산서가 Epson 감열 프린터로 자동 전송되고, 인쇄 완료 여부를 프린터가 보고합니다. 설정하지 않으면 브라우저에서 인쇄합니다.",
+      "label": "세금계산서 프린터",
+      "lastSeenAt": "마지막 연결",
+      "neverSeen": "아직 연결되지 않음",
+      "password": "비밀번호",
+      "remove": "프린터 제거",
+      "removeConfirm": "제거하면 세금계산서를 브라우저에서 인쇄하고, 아직 보내지 않은 인쇄 작업은 취소됩니다. 제거하시겠습니까?",
+      "removeSuccess": "세금계산서 프린터를 제거했습니다",
+      "reset": "비밀번호 재설정",
+      "resetConfirm": "재설정하면 기존 비밀번호는 즉시 무효가 되며, 새 비밀번호를 입력할 때까지 프린터가 인쇄할 수 없습니다. 재설정하시겠습니까?",
+      "setup": "프린터 설정",
+      "steps": "프린터 Web Config에서 「Server Direct Print」를 활성화하고 아래 ID, 비밀번호, URL을 입력하세요. 증명련 폭은 5.7cm여야 하므로 58mm 용지를 사용하세요.",
+      "url": "URL",
+      "username": "ID"
+    },
     "label": "매장 주문"
   },
   "invitations": {

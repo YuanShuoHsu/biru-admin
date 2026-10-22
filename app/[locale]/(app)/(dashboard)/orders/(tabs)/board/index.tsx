@@ -12,6 +12,7 @@ import {
   canIssueInvoice,
   canPrintInvoice,
   canResetInvoicePrint,
+  canResolveInvoicePrint,
   canVoidInvoice,
   useOrderActions,
 } from "@/hooks/useOrderActions";
@@ -26,6 +27,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
+import InvoicePrintJobChip from "@/components/InvoicePrintJobChip";
 import SelectAllTransferList, {
   type SelectAllTransferListAction,
 } from "@/components/SelectAllTransferList";
@@ -104,6 +106,7 @@ const OrdersBoard = ({
     handleConfirmStatusAction,
     handleConfirmVoidInvoice,
     handleRefund,
+    handleResolveInvoicePrint,
     handleUpdateCustomer,
     handleViewOrder,
   } = useOrderActions(organizationSlug, mutate);
@@ -146,6 +149,10 @@ const OrdersBoard = ({
               ),
               onClick: () => handleConfirmPrintInvoice(order),
             },
+            canResolveInvoicePrint(order) && {
+              label: tOrders("actions.resolveInvoicePrint.title"),
+              onClick: () => handleResolveInvoicePrint(order),
+            },
             canResetInvoicePrint(order) && {
               label: tOrders("actions.resetInvoicePrint.title"),
               onClick: () => handleConfirmResetInvoicePrint(order),
@@ -176,6 +183,9 @@ const OrdersBoard = ({
                   size="small"
                   variant="outlined"
                 />
+                {order.invoice?.printJob && (
+                  <InvoicePrintJobChip printJob={order.invoice.printJob} />
+                )}
               </StyledStack>
             ),
             secondary: (
@@ -227,6 +237,7 @@ const OrdersBoard = ({
       handleConfirmStatusAction,
       handleConfirmVoidInvoice,
       handleRefund,
+      handleResolveInvoicePrint,
       handleUpdateCustomer,
       handleViewOrder,
       tOrders,

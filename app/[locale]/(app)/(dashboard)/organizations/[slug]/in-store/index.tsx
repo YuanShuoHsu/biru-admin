@@ -1,6 +1,7 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
+import { enqueueSnackbar } from "notistack";
 import { QRCodeCanvas } from "qrcode.react";
 import { useRef, useState } from "react";
 import useSWR from "swr";
@@ -10,13 +11,30 @@ import { StyledCardContent } from "@/components/FormCard";
 import { API_ORDER_MODE, ORDER_MODE } from "@/constants/orderMode";
 
 import { Download } from "@mui/icons-material";
-import { Button, Card, Stack, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  Button,
+  Card,
+  DialogContentText,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
+
+import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
   DineInTableTokenResponse,
   OrderModeTokenResponse,
 } from "@/types/orders";
+import type {
+  InvoicePrinterCredentials,
+  InvoicePrinterSetting,
+} from "@/types/organizations";
+
+import { getErrorMessage } from "@/utils/errors";
+import { fetcher } from "@/utils/fetcher";
 
 const QR_CODE_DISPLAY_SIZE = 240;
 const QR_CODE_DOWNLOAD_SIZE = 1024;
@@ -166,6 +184,153 @@ const OrderModeQrCodeCard = ({
   );
 };
 
+interface InvoicePrinterCardProps {
+  organizationSlug: string;
+}
+
+const InvoicePrinterCard = ({ organizationSlug }: InvoicePrinterCardProps) => {
+  const { setDialog } = useDialogStore((state) => state);
+
+  const format = useFormatter();
+
+  const tOrganizations = useTranslations("organizations");
+
+  const printerUrl = `/api/organizations/${organizationSlug}/invoice-printer`;
+
+  const { data, mutate } = useSWR<InvoicePrinterSetting>(printerUrl);
+
+  const [credentials, setCredentials] =
+    useState<InvoicePrinterCredentials | null>(null);
+
+  const [settingUp, setSettingUp] = useState(false);
+
+  const register = async () => {
+    setCredentials(
+      await fetcher<InvoicePrinterCredentials>(printerUrl, { method: "PUT" }),
+    );
+    await mutate();
+  };
+
+  const handleSetup = async () => {
+    setSettingUp(true);
+
+    try {
+      await register();
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+    } finally {
+      setSettingUp(false);
+    }
+  };
+
+  const handleReset = () =>
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tOrganizations("inStore.invoicePrinter.resetConfirm")}
+        </DialogContentText>
+      ),
+      onConfirm: register,
+      open: true,
+      title: tOrganizations("inStore.invoicePrinter.reset"),
+    });
+
+  const handleRemove = () =>
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tOrganizations("inStore.invoicePrinter.removeConfirm")}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        await fetcher(printerUrl, { method: "DELETE" });
+        setCredentials(null);
+        enqueueSnackbar(
+          tOrganizations("inStore.invoicePrinter.removeSuccess"),
+          {
+            variant: "success",
+          },
+        );
+        await mutate();
+      },
+      open: true,
+      title: tOrganizations("inStore.invoicePrinter.remove"),
+    });
+
+  const printer = credentials ?? data?.printer;
+
+  return (
+    <Card variant="outlined">
+      <StyledCardContent>
+        <BoldTypography color="textSecondary" variant="subtitle2">
+          {tOrganizations("inStore.invoicePrinter.label")}
+        </BoldTypography>
+        <Typography variant="body2">
+          {tOrganizations("inStore.invoicePrinter.description")}
+        </Typography>
+        {printer ? (
+          <>
+            <Alert severity="info">
+              {tOrganizations("inStore.invoicePrinter.steps")}
+            </Alert>
+            <Stack>
+              <UrlTypography variant="body2">
+                {tOrganizations("inStore.invoicePrinter.username")}
+                {": "}
+                {printer.username}
+              </UrlTypography>
+              {credentials && (
+                <UrlTypography variant="body2">
+                  {tOrganizations("inStore.invoicePrinter.password")}
+                  {": "}
+                  {credentials.password}
+                </UrlTypography>
+              )}
+              <UrlTypography variant="body2">
+                {tOrganizations("inStore.invoicePrinter.url")}
+                {": "}
+                {printer.url}
+              </UrlTypography>
+              <Typography color="textSecondary" variant="body2">
+                {tOrganizations("inStore.invoicePrinter.lastSeenAt")}
+                {": "}
+                {printer.lastSeenAt
+                  ? format.dateTime(new Date(printer.lastSeenAt), "short")
+                  : tOrganizations("inStore.invoicePrinter.neverSeen")}
+              </Typography>
+            </Stack>
+            {credentials && (
+              <Alert severity="warning">
+                {tOrganizations("inStore.invoicePrinter.credentialsNotice")}
+              </Alert>
+            )}
+            <ActionsStack direction="row">
+              <Button onClick={handleReset} variant="outlined">
+                {tOrganizations("inStore.invoicePrinter.reset")}
+              </Button>
+              <Button color="error" onClick={handleRemove} variant="outlined">
+                {tOrganizations("inStore.invoicePrinter.remove")}
+              </Button>
+            </ActionsStack>
+          </>
+        ) : (
+          data && (
+            <ActionsStack direction="row">
+              <Button
+                loading={settingUp}
+                onClick={handleSetup}
+                variant="outlined"
+              >
+                {tOrganizations("inStore.invoicePrinter.setup")}
+              </Button>
+            </ActionsStack>
+          )
+        )}
+      </StyledCardContent>
+    </Card>
+  );
+};
+
 interface OrganizationsSlugInStoreProps {
   organizationSlug: string;
 }
@@ -188,6 +353,7 @@ const OrganizationsSlugInStore = ({
         mode={ORDER_MODE.DriveThru}
         organizationSlug={organizationSlug}
       />
+      <InvoicePrinterCard organizationSlug={organizationSlug} />
     </CardsStack>
   );
 };

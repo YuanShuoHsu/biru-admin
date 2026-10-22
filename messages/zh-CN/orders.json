@@ -7,6 +7,7 @@
     },
     "label": "操作",
     "printInvoice": {
+      "queued": "已将订单 {orderNumber} 的发票发送到发票打印机",
       "reprintConfirm": "确定要补印订单 <bold>{orderNumber}</bold> 的发票吗？正本已经打印过，补印联不能用来对奖。若正本没有真的打印出来，请先重设为未打印。",
       "reprintLabel": "补印发票",
       "reprintTitle": "补印发票（正本已打印）",
@@ -38,6 +39,15 @@
       "resetCount": "这张发票已重设过 {count} 次打印",
       "success": "已将订单 {orderNumber} 的发票重设为未打印",
       "title": "重设为未打印"
+    },
+    "resolveInvoicePrint": {
+      "description": "打印机没有回报订单 <bold>{orderNumber}</bold> 的发票是否打印完成{reason}。请查看打印机是否打出这张发票，再选择实际情况。",
+      "notPrinted": "完全没有打出条码，重新打印正本",
+      "printed": "有打出条码（即使只打出一部分）",
+      "printedSuccess": "已将订单 {orderNumber} 的发票记为已打印",
+      "reprintSuccess": "已重新将订单 {orderNumber} 的发票正本发送到发票打印机",
+      "title": "确认发票打印结果",
+      "warning": "打出条码的纸本就能对奖，此时重印会产生第二张可对奖的正本。"
     },
     "updateCustomer": {
       "success": "已更新订单 {orderNumber} 的顾客信息",
@@ -90,11 +100,6 @@
       "refundUnconfirmed": "退刷结果未确认，可退数量被占住"
     }
   },
-  "autoPrint": {
-    "interrupted": "打印中断，正在重新连接",
-    "label": "此标签页自动打印发票",
-    "replaced": "已由其他标签页接手自动打印发票"
-  },
   "board": {
     "empty": "目前没有订单",
     "title": "订单看板"
@@ -116,6 +121,7 @@
     "invoice": {
       "invoiceDate": "开立时间",
       "invoiceNumber": "发票号码",
+      "printJob": "打印状态",
       "printedAt": "正本打印时间",
       "status": "开立状态",
       "title": "发票信息",
@@ -207,6 +213,29 @@
   "paymentDate": "付款时间",
   "paymentMethod": "付款方式",
   "pickupTime": "取餐时间",
+  "printJobError": {
+    "DeviceNotFound": "找不到打印机",
+    "ECPAY_UNAVAILABLE": "暂时无法向绿界取得发票数据，会自动重试",
+    "EPTR_AUTOMATICAL": "打印机过热，自动恢复中",
+    "EPTR_COVER_OPEN": "打印机上盖打开",
+    "EPTR_CUTTER": "切刀卡纸",
+    "EPTR_MECHANICAL": "打印机机构异常",
+    "EPTR_REC_EMPTY": "打印机缺纸",
+    "EPTR_UNRECOVERABLE": "打印机电压异常",
+    "EX_BADPORT": "打印机未连接",
+    "EX_SPOOLER": "打印机队列已满",
+    "EX_TIMEOUT": "打印超时",
+    "RECEIPT_CODES_MISSING": "绿界没有提供发票条码，请先在绿界后台设置 QR Code 密码种子",
+    "SchemaError": "打印数据格式错误",
+    "other": "打印机错误 {code}"
+  },
+  "printJobStatus": {
+    "cancelled": "已取消",
+    "printed": "已打印",
+    "queued": "等待打印机",
+    "sent": "打印中",
+    "unknown": "打印结果不明"
+  },
   "status": {
     "OrderCancelled": "已取消",
     "OrderDelivered": "已送达",

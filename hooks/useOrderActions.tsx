@@ -27,6 +27,9 @@ import OrderDetailDialog from "@/app/[locale]/(app)/(dashboard)/orders/OrderDeta
 import RefundOrderDialogContent, {
   REFUND_ORDER_FORM_ID,
 } from "@/app/[locale]/(app)/(dashboard)/orders/RefundOrderDialogContent";
+import ResolveInvoicePrintDialogContent, {
+  RESOLVE_INVOICE_PRINT_FORM_ID,
+} from "@/app/[locale]/(app)/(dashboard)/orders/ResolveInvoicePrintDialogContent";
 import ResetInvoicePrintDialogContent, {
   RESET_INVOICE_PRINT_FORM_ID,
 } from "@/app/[locale]/(app)/(dashboard)/orders/ResetInvoicePrintDialogContent";
@@ -60,6 +63,9 @@ export const canPrintInvoice = ({ invoice }: AdminOrderResponse) =>
 
 export const canResetInvoicePrint = (order: AdminOrderResponse) =>
   canPrintInvoice(order) && !!order.invoice?.printedAt;
+
+export const canResolveInvoicePrint = (order: AdminOrderResponse) =>
+  canPrintInvoice(order) && order.invoice?.printJob?.status === "unknown";
 
 export const canVoidInvoice = ({ invoice }: AdminOrderResponse) =>
   invoice?.status === "issued";
@@ -239,20 +245,32 @@ export const useOrderActions = (
       const invoiceUrl = `/api/organizations/${organizationSlug}/orders/${order.id}/invoice`;
 
       try {
-        const { printHtml } = await fetcher<OrderInvoicePrint>(
+        const { printHtml, printJob } = await fetcher<OrderInvoicePrint>(
           `${invoiceUrl}/print`,
           { method: "POST" },
         );
 
-        await printDocument(printHtml);
-        await fetcher(`${invoiceUrl}/print/confirmation`, { method: "POST" });
+        if (printJob)
+          enqueueSnackbar(
+            tOrders("actions.printInvoice.queued", {
+              orderNumber: order.orderNumber,
+            }),
+            { variant: "success" },
+          );
+
+        if (printHtml) {
+          await printDocument(printHtml);
+          await fetcher(`${invoiceUrl}/print/confirmation`, {
+            method: "POST",
+          });
+        }
       } catch (error) {
         enqueueSnackbar(getErrorMessage(error), { variant: "error" });
       } finally {
         mutate();
       }
     },
-    [mutate, organizationSlug],
+    [mutate, organizationSlug, tOrders],
   );
 
   const handleConfirmPrintInvoice = useCallback(
@@ -316,6 +334,28 @@ export const useOrderActions = (
     [mutate, organizationSlug, setDialog, tOrders],
   );
 
+  const handleResolveInvoicePrint = useCallback(
+    (order: AdminOrderResponse) => {
+      const printJob = order.invoice?.printJob;
+      if (!printJob) return;
+
+      setDialog({
+        content: (
+          <ResolveInvoicePrintDialogContent
+            mutate={mutate}
+            order={order}
+            organizationSlug={organizationSlug}
+            printJob={printJob}
+          />
+        ),
+        formId: RESOLVE_INVOICE_PRINT_FORM_ID,
+        open: true,
+        title: tOrders("actions.resolveInvoicePrint.title"),
+      });
+    },
+    [mutate, organizationSlug, setDialog, tOrders],
+  );
+
   return {
     handleConfirmIssueInvoice,
     handleConfirmPrintInvoice,
@@ -323,6 +363,7 @@ export const useOrderActions = (
     handleConfirmStatusAction,
     handleConfirmVoidInvoice,
     handleRefund,
+    handleResolveInvoicePrint,
     handleUpdateCustomer,
     handleViewOrder,
   };

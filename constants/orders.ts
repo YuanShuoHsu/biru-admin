@@ -1,6 +1,7 @@
 import type { ChipProps } from "@mui/material/Chip";
 
 import type {
+  InvoicePrintJobStatus,
   InvoiceStatus,
   OrderStatus,
   RefundInvoiceAction,
@@ -14,6 +15,17 @@ export const INVOICE_STATUS_COLORS: Record<InvoiceStatus, ChipProps["color"]> =
     pending: "warning",
     voided: "default",
   };
+
+export const INVOICE_PRINT_JOB_STATUS_COLORS: Record<
+  InvoicePrintJobStatus,
+  ChipProps["color"]
+> = {
+  cancelled: "default",
+  printed: "success",
+  queued: "info",
+  sent: "info",
+  unknown: "error",
+};
 
 export const REFUND_INVOICE_ACTION_COLORS: Record<
   RefundInvoiceAction | "pending",

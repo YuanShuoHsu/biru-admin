@@ -22,7 +22,11 @@ export type OrderInvoice = components["schemas"]["OrderInvoiceDto"];
 export type OrderInvoicePrint = components["schemas"]["OrderInvoicePrintDto"];
 export type OrderInvoiceVerification =
   components["schemas"]["OrderInvoiceVerificationDto"];
-export type UnprintedInvoice = components["schemas"]["UnprintedInvoiceDto"];
+export type InvoicePrintJob = components["schemas"]["InvoicePrintJobDto"];
+export type InvoicePrintJobStatus =
+  components["schemas"]["InvoicePrintJobStatus"];
+export type ResolveInvoicePrintJobDto =
+  components["schemas"]["ResolveInvoicePrintJobDto"];
 export type ResetInvoicePrintDto =
   components["schemas"]["ResetInvoicePrintDto"];
 export type VoidInvoiceDto = components["schemas"]["VoidInvoiceDto"];
