@@ -9,6 +9,7 @@ import { MODE_COLORS } from "@/constants/orderMode";
 import { STATUS_COLORS, STATUS_TEXT_COLORS } from "@/constants/orders";
 
 import {
+  canCancelInvoicePrint,
   canIssueInvoice,
   canPrintInvoice,
   canResetInvoicePrint,
@@ -106,6 +107,7 @@ const OrdersBoard = ({
   });
 
   const {
+    handleCancelInvoicePrint,
     handleConfirmIssueInvoice,
     handleConfirmPrintInvoice,
     handleConfirmReprintOrderTicket,
@@ -178,6 +180,10 @@ const OrdersBoard = ({
             canResolveInvoicePrint(order) && {
               label: tOrders("actions.resolveInvoicePrint.title"),
               onClick: () => handleResolveInvoicePrint(order),
+            },
+            canCancelInvoicePrint(order) && {
+              label: tOrders("actions.cancelInvoicePrint.title"),
+              onClick: () => void handleCancelInvoicePrint(order),
             },
             canResetInvoicePrint(order) && {
               label: tOrders("actions.resetInvoicePrint.title"),
@@ -264,6 +270,7 @@ const OrdersBoard = ({
       boardColumns,
       format,
       getOrderModeLabel,
+      handleCancelInvoicePrint,
       handleConfirmIssueInvoice,
       handleConfirmPrintInvoice,
       handleConfirmReprintOrderTicket,

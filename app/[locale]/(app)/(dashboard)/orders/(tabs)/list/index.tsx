@@ -27,6 +27,7 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useFormatMoney } from "@/hooks/useFormatMoney";
 import {
+  canCancelInvoicePrint,
   canIssueInvoice,
   canPrintInvoice,
   canResetInvoicePrint,
@@ -43,6 +44,7 @@ import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 import {
   Block,
   Cancel,
+  CancelScheduleSend,
   ConfirmationNumber,
   CurrencyExchange,
   Edit,
@@ -271,6 +273,7 @@ const Orders = ({
   );
 
   const {
+    handleCancelInvoicePrint,
     handleConfirmIssueInvoice,
     handleConfirmPrintInvoice,
     handleConfirmReprintOrderTicket,
@@ -295,6 +298,11 @@ const Orders = ({
 
   const hasUnresolvedInvoicePrint = useMemo(
     () => rows.some(canResolveInvoicePrint),
+    [rows],
+  );
+
+  const hasCancellableInvoicePrint = useMemo(
+    () => rows.some(canCancelInvoicePrint),
     [rows],
   );
 
@@ -407,6 +415,22 @@ const Orders = ({
                   visible={canResolveInvoicePrint(row)}
                 >
                   <FactCheck fontSize="small" />
+                </StyledIconButton>
+              </Tooltip>
+            )}
+            {hasCancellableInvoicePrint && (
+              <Tooltip title={tOrders("actions.cancelInvoicePrint.title")}>
+                <StyledIconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    if (canCancelInvoicePrint(row))
+                      void handleCancelInvoicePrint(row);
+                  }}
+                  size="small"
+                  visible={canCancelInvoicePrint(row)}
+                >
+                  <CancelScheduleSend fontSize="small" />
                 </StyledIconButton>
               </Tooltip>
             )}
@@ -703,8 +727,10 @@ const Orders = ({
       handleConfirmStatusAction,
       handleConfirmPrintInvoice,
       handleConfirmReprintOrderTicket,
+      handleCancelInvoicePrint,
       handleResolveInvoicePrint,
       handleResolveOrderTicket,
+      hasCancellableInvoicePrint,
       hasReprintableOrderTicket,
       hasUnresolvedOrderTicket,
       orderTicketPrinters,

@@ -13,6 +13,8 @@ import {
 } from "./definitions";
 
 import CheckboxesGroup from "@/components/CheckboxesGroup";
+import OrderTicketPrinterField from "@/app/[locale]/(app)/(dashboard)/menus/OrderTicketPrinterField";
+
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
 import NumberSpinner from "@/components/NumberSpinner";
@@ -58,12 +60,14 @@ const StyledGrid = styled(Grid)({
 const CREATE_MENU_ITEM_IMAGE_KEY = "create-menu-item-image";
 
 interface CreateMenuItemDialogProps {
+  menuId: string;
   mutate: () => void;
   menuSectionId: string;
   openingHours?: string | null;
 }
 
 const CreateMenuItemDialog = ({
+  menuId,
   mutate,
   menuSectionId,
   openingHours,
@@ -94,6 +98,7 @@ const CreateMenuItemDialog = ({
       fixedSweetnessLevel: null,
       recommendedServingTemperatureLevel: null,
       recommendedSweetnessLevel: null,
+      orderTicketPrinterId: null,
       offer: {
         price: "",
         availability: "InStock",
@@ -133,6 +138,10 @@ const CreateMenuItemDialog = ({
     control,
     name: "recommendedSweetnessLevel",
   });
+  const orderTicketPrinterId = useWatch({
+    control,
+    name: "orderTicketPrinterId",
+  });
   const deliveryLeadTimeMinutes = useWatch({
     control,
     name: "offer.deliveryLeadTimeMinutes",
@@ -159,6 +168,7 @@ const CreateMenuItemDialog = ({
     sweetness,
     fixedSweetnessLevel,
     recommendedSweetnessLevel,
+    orderTicketPrinterId,
     offer,
   }: CreateMenuItemForm) => {
     try {
@@ -181,6 +191,7 @@ const CreateMenuItemDialog = ({
               sweetness === "Fixed" ? fixedSweetnessLevel : null,
             recommendedSweetnessLevel:
               sweetness === "Adjustable" ? recommendedSweetnessLevel : null,
+            orderTicketPrinterId,
             offer: {
               price: offer?.price,
               availability: offer?.availability,
@@ -452,6 +463,12 @@ const CreateMenuItemDialog = ({
           ))}
         </TextField>
       )}
+      <OrderTicketPrinterField
+        menuId={menuId}
+        onChange={(value) => setValue("orderTicketPrinterId", value)}
+        scope="item"
+        value={orderTicketPrinterId}
+      />
       <Divider flexItem>
         <Chip label={tMenus("items.offers.label")} size="small" />
       </Divider>

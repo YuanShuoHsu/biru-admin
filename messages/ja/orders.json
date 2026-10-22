@@ -1,5 +1,9 @@
 {
   "actions": {
+    "cancelInvoicePrint": {
+      "success": "注文 {orderNumber} の待機中のインボイス印刷を取り消しました",
+      "title": "待機中のインボイス印刷を取り消す"
+    },
     "issueInvoice": {
       "confirm": "注文 <bold>{orderNumber}</bold> のインボイスを発行してもよろしいですか？発行後はこの画面では取り消せません。",
       "success": "注文 {orderNumber} のインボイス {invoiceNumber} を発行しました",
@@ -37,7 +41,7 @@
     },
     "reprintOrderTicket": {
       "confirm": "{printer}プリンターで注文 <bold>{orderNumber}</bold> の伝票を再印刷してもよろしいですか？「再印刷」と記載された伝票がもう 1 枚出ます。",
-      "confirmMultiple": "注文 <bold>{orderNumber}</bold> の伝票をどのプリンターで再印刷しますか？選択したプリンターから「再印刷」と記載された伝票が 1 枚ずつ出ます。",
+      "confirmMultiple": "注文 <bold>{orderNumber}</bold> の伝票をどのプリンターで再印刷しますか？選択したプリンターから、そのプリンターが担当する品目の伝票が「再印刷」と記載されて 1 枚ずつ出ます。",
       "printers": "再印刷するプリンター",
       "success": "注文 {orderNumber} の伝票をプリンターに送信しました",
       "title": "伝票を再印刷"
@@ -239,7 +243,8 @@
     "offline": {
       "label": "{printer}プリンターがオフライン",
       "tooltip": "最終接続：{lastSeenAt}。プリンターが復旧すると、待機中の伝票は自動で印刷されます。それまでは注文ボードを見て調理してください。"
-    }
+    },
+    "removedPrinter": "削除済み"
   },
   "partySize": "人数",
   "paymentDate": "支払い日時",
@@ -247,6 +252,7 @@
   "pickupTime": "受け取り時間",
   "printJobError": {
     "DeviceNotFound": "プリンターが見つかりません",
+    "ECPAY_REJECTED": "ECPay がこのインボイスのデータ提供を拒否しました。自動で再試行します。失敗が続く場合は印刷を取り消し、ECPay で確認してください",
     "ECPAY_UNAVAILABLE": "ECPay からインボイスのデータを取得できません。自動で再試行します",
     "EPTR_AUTOMATICAL": "プリンターが過熱しています。自動復帰中です",
     "EPTR_COVER_OPEN": "プリンターのカバーが開いています",
@@ -257,6 +263,7 @@
     "EX_BADPORT": "プリンターが接続されていません",
     "EX_SPOOLER": "プリンターのキューがいっぱいです",
     "EX_TIMEOUT": "印刷がタイムアウトしました",
+    "INVOICE_VOIDED_AT_ECPAY": "ECPay ではこのインボイスが無効になっているため、印刷を取り消しました。ECPay で確認してください",
     "RECEIPT_CODES_MISSING": "ECPay からインボイスのバーコードが提供されていません。先に ECPay 管理画面で QR Code のシードを設定してください",
     "SchemaError": "印刷データの形式が正しくありません",
     "other": "プリンターエラー {code}"

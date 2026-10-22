@@ -139,6 +139,7 @@
     "requiredQuantity": "用量",
     "revokedSessions": "撤销的登录设备数",
     "role": "平台角色",
+    "rotatedAt": "二维码更换时间",
     "scope": "退款范围",
     "serviceDate": "服务日期",
     "servingTemperatures": "冷热供应",

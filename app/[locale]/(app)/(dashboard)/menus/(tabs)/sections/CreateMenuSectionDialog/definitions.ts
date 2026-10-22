@@ -10,6 +10,7 @@ export const useCreateMenuSectionFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
+    orderTicketPrinterId: z.string().nullable(),
     name: z
       .record(z.string(), z.string().trim())
       .superRefine(

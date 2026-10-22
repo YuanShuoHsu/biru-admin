@@ -1,5 +1,9 @@
 {
   "actions": {
+    "cancelInvoicePrint": {
+      "success": "Cancelled the queued invoice print for order {orderNumber}",
+      "title": "Cancel queued invoice print"
+    },
     "issueInvoice": {
       "confirm": "Are you sure you want to issue an invoice for order <bold>{orderNumber}</bold>? An issued invoice cannot be cancelled here.",
       "success": "Invoice {invoiceNumber} issued for order {orderNumber}",
@@ -37,7 +41,7 @@
     },
     "reprintOrderTicket": {
       "confirm": "Reprint the ticket for order <bold>{orderNumber}</bold> on the {printer} printer? Another ticket marked as a reprint will be printed.",
-      "confirmMultiple": "Which printers should reprint the ticket for order <bold>{orderNumber}</bold>? Each selected printer prints another ticket marked as a reprint.",
+      "confirmMultiple": "Which printers should reprint the ticket for order <bold>{orderNumber}</bold>? Each selected printer prints another ticket for its own items, marked as a reprint.",
       "printers": "Printers to reprint on",
       "success": "Sent the ticket for order {orderNumber} to the printer",
       "title": "Reprint ticket"
@@ -239,7 +243,8 @@
     "offline": {
       "label": "{printer} printer offline",
       "tooltip": "Last connected: {lastSeenAt}. Queued tickets print automatically once the printer is back; until then, prepare orders from the order board."
-    }
+    },
+    "removedPrinter": "Removed"
   },
   "partySize": "Party size",
   "paymentDate": "Payment date",
@@ -247,6 +252,7 @@
   "pickupTime": "Pickup time",
   "printJobError": {
     "DeviceNotFound": "Printer not found",
+    "ECPAY_REJECTED": "ECPay refused to return this invoice. It will retry automatically; if it keeps failing, cancel the print and verify with ECPay",
     "ECPAY_UNAVAILABLE": "Couldn't get invoice data from ECPay. It will retry automatically",
     "EPTR_AUTOMATICAL": "Printer overheated, recovering",
     "EPTR_COVER_OPEN": "Printer cover is open",
@@ -257,6 +263,7 @@
     "EX_BADPORT": "Printer not connected",
     "EX_SPOOLER": "Printer queue is full",
     "EX_TIMEOUT": "Print timed out",
+    "INVOICE_VOIDED_AT_ECPAY": "ECPay shows this invoice as voided, so printing was cancelled. Please verify with ECPay",
     "RECEIPT_CODES_MISSING": "ECPay didn't provide the invoice barcodes. Set the QR Code seed in the ECPay dashboard first",
     "SchemaError": "Print data is malformed",
     "other": "Printer error {code}"

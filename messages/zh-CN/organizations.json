@@ -120,7 +120,8 @@
     "orderTicketPrinters": {
       "add": "新增打印机",
       "credentialsNotice": "密码只会显示这一次，请现在填入打印机。",
-      "description": "订单付款后（现金收款或线上付款完成）会自动在每台工作单打印机打印工作单；已出单的订单退款时会打印退品单。打印结果不明时，会在订单上请店员确认。",
+      "default": "默认",
+      "description": "订单付款后（现金收款或线上付款完成）会自动出工作单：品项依菜单分类或品项指定的工作单打印机分送，没有指定的打印到默认打印机。已出单的品项退款时，会在拿到那张单的打印机打印退品单。打印结果不明时，会在订单上请店员确认。",
       "empty": "尚未设置工作单打印机",
       "label": "工作单打印机",
       "lastSeenAt": "最后连接",
@@ -135,13 +136,27 @@
       "pollInterval": "轮询间隔：约 {seconds} 秒",
       "queued": "已将 {count} 笔制作中的订单发送到「{name}」",
       "remove": "移除打印机",
-      "removeConfirm": "移除「{name}」后，尚未打印的工作单会一并取消。确定要移除吗？",
+      "removeConfirm": "移除「{name}」后，还没送出的工作单会改送到品项现在对应的打印机，指定这台的分类与品项改回未指定。确定要移除吗？",
       "removeSuccess": "已移除「{name}」",
       "reset": "重设密码",
       "resetConfirm": "重设后旧密码立即失效，打印机要填入新密码才能继续打印。确定要重设吗？",
+      "setDefault": "设为默认",
+      "setDefaultSuccess": "没有指定工作单打印机的品项，之后会打印到「{name}」",
       "steps": "在打印机 Web Config 的「Server Direct Print」启用，填入下列 ID、密码与 URL。轮询间隔越短出单越快。",
       "url": "URL",
       "username": "ID"
+    },
+    "qrSecret": {
+      "description": "仅在二维码外泄（例如被拍下来发到网上）时才需要更换。更换后，所有已打印的桌面、柜台、得来速二维码立即失效，需要重新下载换上；已扫码的顾客也要重新扫描。",
+      "label": "二维码更换",
+      "neverRotated": "尚未更换过",
+      "restore": "换回上一组",
+      "restoreConfirm": "换回后，上次更换前打印的二维码恢复有效，当前的二维码立即失效。确定要换回吗？",
+      "restoreSuccess": "已换回上一组二维码",
+      "rotate": "更换二维码",
+      "rotateConfirm": "更换后，所有已打印的桌面、柜台、得来速二维码立即失效，需要重新下载换上；换好之前顾客无法扫码点餐。按错可以再换回上一组。确定要更换吗？",
+      "rotateSuccess": "已更换二维码，请重新下载并换上",
+      "rotatedAt": "上次更换"
     }
   },
   "invitations": {

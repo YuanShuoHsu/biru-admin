@@ -10,6 +10,8 @@ import {
   useUpdateMenuSectionFormSchema,
 } from "./definitions";
 
+import OrderTicketPrinterField from "@/app/[locale]/(app)/(dashboard)/menus/OrderTicketPrinterField";
+
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
 import UploadAvatars from "@/components/UploadAvatars";
@@ -53,16 +55,22 @@ const UpdateMenuSectionDialog = ({
     defaultValues: {
       name: section.name ?? {},
       description: section.description ?? {},
+      orderTicketPrinterId: section.orderTicketPrinterId,
     },
     resolver: zodResolver(updateMenuSectionFormSchema),
   });
 
   const nameValue = useWatch({ control, name: "name" });
   const descriptionValue = useWatch({ control, name: "description" });
+  const orderTicketPrinterId = useWatch({
+    control,
+    name: "orderTicketPrinterId",
+  });
 
   const onSubmitHandler = async ({
     name,
     description,
+    orderTicketPrinterId,
   }: UpdateMenuSectionForm) => {
     try {
       setDialog({ confirmLoading: true });
@@ -74,6 +82,7 @@ const UpdateMenuSectionDialog = ({
           name,
           description,
           ...(imageSrc !== (section.image || null) && { image: imageSrc }),
+          orderTicketPrinterId,
         }),
       });
 
@@ -138,6 +147,12 @@ const UpdateMenuSectionDialog = ({
             value: descriptionValue?.[lang] || "",
           },
         ]}
+      />
+      <OrderTicketPrinterField
+        menuId={section.menuId}
+        onChange={(value) => setValue("orderTicketPrinterId", value)}
+        scope="section"
+        value={orderTicketPrinterId}
       />
     </FormBox>
   );

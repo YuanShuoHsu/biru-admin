@@ -439,6 +439,12 @@
     "label": "Menu name",
     "placeholder": "Please enter your menu name"
   },
+  "orderTicketPrinter": {
+    "itemHelperText": "When not set, the section's printer is used",
+    "label": "Order ticket printer",
+    "placeholder": "Not set",
+    "sectionHelperText": "When not set, tickets print on the default printer \"{name}\""
+  },
   "reorder": "Order",
   "sections": {
     "actions": {

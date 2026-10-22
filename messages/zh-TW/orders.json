@@ -1,5 +1,9 @@
 {
   "actions": {
+    "cancelInvoicePrint": {
+      "success": "已取消訂單 {orderNumber} 排隊中的發票列印",
+      "title": "取消排隊中的發票列印"
+    },
     "issueInvoice": {
       "confirm": "確定要為訂單 <bold>{orderNumber}</bold> 開立發票嗎？發票一經開立即無法自行取消。",
       "success": "已為訂單 {orderNumber} 開立發票 {invoiceNumber}",
@@ -37,7 +41,7 @@
     },
     "reprintOrderTicket": {
       "confirm": "確定要在{printer}印表機重印訂單 <bold>{orderNumber}</bold> 的工作單嗎？會再印一張標示「補印」的單。",
-      "confirmMultiple": "要在哪幾台印表機重印訂單 <bold>{orderNumber}</bold> 的工作單？選擇的印表機會各印一張標示「補印」的單。",
+      "confirmMultiple": "要在哪幾台印表機重印訂單 <bold>{orderNumber}</bold> 的工作單？選擇的印表機會各印一張它負責品項的單，標示「補印」。",
       "printers": "重印的印表機",
       "success": "已將訂單 {orderNumber} 的工作單送到印表機",
       "title": "重印工作單"
@@ -239,7 +243,8 @@
     "offline": {
       "label": "{printer}印表機離線",
       "tooltip": "最後連線：{lastSeenAt}。印表機恢復後，排隊中的工作單會自動印出；在那之前請看訂單看板出餐。"
-    }
+    },
+    "removedPrinter": "已移除"
   },
   "partySize": "用餐人數",
   "paymentDate": "付款時間",
@@ -247,6 +252,7 @@
   "pickupTime": "取餐時間",
   "printJobError": {
     "DeviceNotFound": "找不到印表機",
+    "ECPAY_REJECTED": "綠界拒絕提供這張發票的資料，會自動重試；若一直失敗，可取消列印並向綠界查證",
     "ECPAY_UNAVAILABLE": "暫時無法向綠界取得發票資料，會自動重試",
     "EPTR_AUTOMATICAL": "印表機過熱，自動恢復中",
     "EPTR_COVER_OPEN": "印表機上蓋開著",
@@ -257,6 +263,7 @@
     "EX_BADPORT": "印表機未連線",
     "EX_SPOOLER": "印表機佇列已滿",
     "EX_TIMEOUT": "列印逾時",
+    "INVOICE_VOIDED_AT_ECPAY": "綠界端顯示這張發票已作廢，已取消列印，請向綠界查證",
     "RECEIPT_CODES_MISSING": "綠界沒有提供發票條碼，請先在綠界後台設定 QR Code 密碼種子",
     "SchemaError": "列印資料格式錯誤",
     "other": "印表機錯誤 {code}"

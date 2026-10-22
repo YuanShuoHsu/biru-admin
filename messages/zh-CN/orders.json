@@ -1,5 +1,9 @@
 {
   "actions": {
+    "cancelInvoicePrint": {
+      "success": "已取消订单 {orderNumber} 排队中的发票打印",
+      "title": "取消排队中的发票打印"
+    },
     "issueInvoice": {
       "confirm": "确定要为订单 <bold>{orderNumber}</bold> 开立发票吗？发票一经开立即无法自行撤销。",
       "success": "已为订单 {orderNumber} 开立发票 {invoiceNumber}",
@@ -37,7 +41,7 @@
     },
     "reprintOrderTicket": {
       "confirm": "确定要在{printer}打印机重印订单 <bold>{orderNumber}</bold> 的工作单吗？会再打印一张标示「补印」的单。",
-      "confirmMultiple": "要在哪几台打印机重印订单 <bold>{orderNumber}</bold> 的工作单？选择的打印机会各打印一张标示「补印」的单。",
+      "confirmMultiple": "要在哪几台打印机重印订单 <bold>{orderNumber}</bold> 的工作单？选择的打印机会各打印一张它负责品项的单，标示「补印」。",
       "printers": "重印的打印机",
       "success": "已将订单 {orderNumber} 的工作单发送到打印机",
       "title": "重印工作单"
@@ -239,7 +243,8 @@
     "offline": {
       "label": "{printer}打印机离线",
       "tooltip": "最后连接：{lastSeenAt}。打印机恢复后，排队中的工作单会自动打印；在那之前请看订单看板出餐。"
-    }
+    },
+    "removedPrinter": "已移除"
   },
   "partySize": "用餐人数",
   "paymentDate": "付款时间",
@@ -247,6 +252,7 @@
   "pickupTime": "取餐时间",
   "printJobError": {
     "DeviceNotFound": "找不到打印机",
+    "ECPAY_REJECTED": "绿界拒绝提供这张发票的数据，会自动重试；若一直失败，可取消打印并向绿界查证",
     "ECPAY_UNAVAILABLE": "暂时无法向绿界取得发票数据，会自动重试",
     "EPTR_AUTOMATICAL": "打印机过热，自动恢复中",
     "EPTR_COVER_OPEN": "打印机上盖打开",
@@ -257,6 +263,7 @@
     "EX_BADPORT": "打印机未连接",
     "EX_SPOOLER": "打印机队列已满",
     "EX_TIMEOUT": "打印超时",
+    "INVOICE_VOIDED_AT_ECPAY": "绿界端显示这张发票已作废，已取消打印，请向绿界查证",
     "RECEIPT_CODES_MISSING": "绿界没有提供发票条码，请先在绿界后台设置 QR Code 密码种子",
     "SchemaError": "打印数据格式错误",
     "other": "打印机错误 {code}"

@@ -10,6 +10,7 @@ export const useUpdateMenuSectionFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
+    orderTicketPrinterId: z.string().nullable(),
     image: z.string().trim().optional(),
     name: z
       .record(z.string(), z.string().trim())

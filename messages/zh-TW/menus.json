@@ -439,6 +439,12 @@
     "label": "菜單名稱",
     "placeholder": "請輸入您的菜單名稱"
   },
+  "orderTicketPrinter": {
+    "itemHelperText": "未指定時沿用分類的設定",
+    "label": "工作單印表機",
+    "placeholder": "未指定",
+    "sectionHelperText": "未指定時印到預設印表機「{name}」"
+  },
   "reorder": "排序",
   "sections": {
     "actions": {

@@ -18,7 +18,8 @@ const OrderTicketJobChips = ({ jobs }: OrderTicketJobChipsProps) => {
       key={job.id}
       label={tOrders("orderTicket.chip", {
         kind: job.kind,
-        printer: job.printerName,
+        printer:
+          job.printerName ?? tOrders("orderTicket.removedPrinter"),
         status: tOrders(`printJobStatus.${job.status}`),
       })}
       printJob={job}

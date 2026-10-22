@@ -4,7 +4,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { QRCodeCanvas } from "qrcode.react";
 import { useRef, useState } from "react";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 
 import { StyledCardContent } from "@/components/FormCard";
 
@@ -29,6 +29,7 @@ import type {
   CreateOrderTicketPrinterDto,
   DineInTableTokenResponse,
   OrderModeTokenResponse,
+  OrderQrSecretResponse,
 } from "@/types/orders";
 import type {
   InvoicePrinterSetting,
@@ -181,6 +182,109 @@ const OrderModeQrCodeCard = ({
             fileName={`${mode}-${organizationSlug}.png`}
             orderUrl={orderUrl}
           />
+        )}
+      </StyledCardContent>
+    </Card>
+  );
+};
+
+interface OrderQrSecretCardProps {
+  organizationSlug: string;
+}
+
+const OrderQrSecretCard = ({ organizationSlug }: OrderQrSecretCardProps) => {
+  const { setDialog } = useDialogStore((state) => state);
+
+  const format = useFormatter();
+
+  const tOrganizations = useTranslations("organizations");
+
+  const { mutate: mutateTokens } = useSWRConfig();
+
+  const secretUrl = `/api/organizations/${organizationSlug}/order-qr-secret`;
+
+  const { data, mutate } = useSWR<OrderQrSecretResponse>(secretUrl);
+
+  const updateSecret = async (
+    action: "restore" | "rotate",
+    successMessage: string,
+  ) => {
+    await mutate(
+      fetcher<OrderQrSecretResponse>(`${secretUrl}/${action}`, {
+        method: "POST",
+      }),
+      { revalidate: false },
+    );
+    await mutateTokens(
+      (key) =>
+        typeof key === "string" &&
+        key.startsWith(`/api/organizations/${organizationSlug}/`) &&
+        key.endsWith("/token"),
+    );
+    enqueueSnackbar(successMessage, { variant: "success" });
+  };
+
+  const handleRotate = () =>
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tOrganizations("inStore.qrSecret.rotateConfirm")}
+        </DialogContentText>
+      ),
+      onConfirm: () =>
+        updateSecret(
+          "rotate",
+          tOrganizations("inStore.qrSecret.rotateSuccess"),
+        ),
+      open: true,
+      title: tOrganizations("inStore.qrSecret.rotate"),
+    });
+
+  const handleRestore = () =>
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tOrganizations("inStore.qrSecret.restoreConfirm")}
+        </DialogContentText>
+      ),
+      onConfirm: () =>
+        updateSecret(
+          "restore",
+          tOrganizations("inStore.qrSecret.restoreSuccess"),
+        ),
+      open: true,
+      title: tOrganizations("inStore.qrSecret.restore"),
+    });
+
+  return (
+    <Card variant="outlined">
+      <StyledCardContent>
+        <BoldTypography color="textSecondary" variant="subtitle2">
+          {tOrganizations("inStore.qrSecret.label")}
+        </BoldTypography>
+        <Typography variant="body2">
+          {tOrganizations("inStore.qrSecret.description")}
+        </Typography>
+        {data && (
+          <>
+            <Typography color="textSecondary" variant="body2">
+              {tOrganizations("inStore.qrSecret.rotatedAt")}
+              {": "}
+              {data.rotatedAt
+                ? format.dateTime(new Date(data.rotatedAt), "short")
+                : tOrganizations("inStore.qrSecret.neverRotated")}
+            </Typography>
+            <ActionsStack direction="row">
+              <Button color="error" onClick={handleRotate} variant="outlined">
+                {tOrganizations("inStore.qrSecret.rotate")}
+              </Button>
+              {data.restorable && (
+                <Button onClick={handleRestore} variant="outlined">
+                  {tOrganizations("inStore.qrSecret.restore")}
+                </Button>
+              )}
+            </ActionsStack>
+          </>
         )}
       </StyledCardContent>
     </Card>
@@ -355,16 +459,18 @@ const InvoicePrinterCard = ({ organizationSlug }: InvoicePrinterCardProps) => {
 
 interface OrderTicketPrinterItemProps {
   credentials: PrinterCredentials | null;
+  multiple: boolean;
+  onChanged: () => Promise<unknown>;
   onRegistered: (credentials: PrinterCredentials) => void;
-  onRemoved: () => Promise<unknown>;
   organizationSlug: string;
   printer: Printer;
 }
 
 const OrderTicketPrinterItem = ({
   credentials,
+  multiple,
+  onChanged,
   onRegistered,
-  onRemoved,
   organizationSlug,
   printer,
 }: OrderTicketPrinterItemProps) => {
@@ -411,11 +517,32 @@ const OrderTicketPrinterItem = ({
           }),
           { variant: "success" },
         );
-        await onRemoved();
+        await onChanged();
       },
       open: true,
       title: tOrganizations("inStore.orderTicketPrinters.remove"),
     });
+
+  const [settingDefault, setSettingDefault] = useState(false);
+
+  const handleSetDefault = async () => {
+    setSettingDefault(true);
+
+    try {
+      await fetcher<Printer>(`${printerUrl}/default`, { method: "PUT" });
+      enqueueSnackbar(
+        tOrganizations("inStore.orderTicketPrinters.setDefaultSuccess", {
+          name,
+        }),
+        { variant: "success" },
+      );
+      await onChanged();
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+    } finally {
+      setSettingDefault(false);
+    }
+  };
 
   const current = credentials ?? printer;
 
@@ -423,6 +550,14 @@ const OrderTicketPrinterItem = ({
     <CardsStack>
       <ActionsStack direction="row">
         <BoldTypography variant="body1">{name}</BoldTypography>
+        {multiple && printer.isDefault && (
+          <Chip
+            color="primary"
+            label={tOrganizations("inStore.orderTicketPrinters.default")}
+            size="small"
+            variant="outlined"
+          />
+        )}
         <Chip
           color={printer.online ? "success" : "error"}
           label={tOrganizations(
@@ -473,6 +608,15 @@ const OrderTicketPrinterItem = ({
         </Alert>
       )}
       <ActionsStack direction="row">
+        {multiple && !printer.isDefault && (
+          <Button
+            loading={settingDefault}
+            onClick={handleSetDefault}
+            variant="outlined"
+          >
+            {tOrganizations("inStore.orderTicketPrinters.setDefault")}
+          </Button>
+        )}
         <Button onClick={handleReset} variant="outlined">
           {tOrganizations("inStore.orderTicketPrinters.reset")}
         </Button>
@@ -563,8 +707,9 @@ const OrderTicketPrintersCard = ({
                     credentials?.id === printer.id ? credentials : null
                   }
                   key={printer.id}
+                  multiple={printers.length > 1}
+                  onChanged={mutate}
                   onRegistered={handleRegistered}
-                  onRemoved={mutate}
                   organizationSlug={organizationSlug}
                   printer={printer}
                 />
@@ -624,6 +769,7 @@ const OrganizationsSlugInStore = ({
         mode={ORDER_MODE.DriveThru}
         organizationSlug={organizationSlug}
       />
+      <OrderQrSecretCard organizationSlug={organizationSlug} />
       <InvoicePrinterCard organizationSlug={organizationSlug} />
       <OrderTicketPrintersCard organizationSlug={organizationSlug} />
     </CardsStack>

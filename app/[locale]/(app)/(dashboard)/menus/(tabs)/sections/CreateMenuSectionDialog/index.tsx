@@ -10,6 +10,8 @@ import {
   useCreateMenuSectionFormSchema,
 } from "./definitions";
 
+import OrderTicketPrinterField from "@/app/[locale]/(app)/(dashboard)/menus/OrderTicketPrinterField";
+
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
 import UploadAvatars from "@/components/UploadAvatars";
@@ -51,16 +53,21 @@ const CreateMenuSectionDialog = ({
     handleSubmit,
     setValue,
   } = useForm<CreateMenuSectionForm>({
-    defaultValues: { name: {}, description: {} },
+    defaultValues: { name: {}, description: {}, orderTicketPrinterId: null },
     resolver: zodResolver(createMenuSectionFormSchema),
   });
 
   const nameValue = useWatch({ control, name: "name" });
   const descriptionValue = useWatch({ control, name: "description" });
+  const orderTicketPrinterId = useWatch({
+    control,
+    name: "orderTicketPrinterId",
+  });
 
   const onSubmitHandler = async ({
     name,
     description,
+    orderTicketPrinterId,
   }: CreateMenuSectionForm) => {
     try {
       setDialog({ confirmLoading: true });
@@ -72,6 +79,7 @@ const CreateMenuSectionDialog = ({
           name,
           description,
           ...(imageSrc && { image: imageSrc }),
+          orderTicketPrinterId,
         }),
       });
 
@@ -135,6 +143,12 @@ const CreateMenuSectionDialog = ({
             value: descriptionValue?.[lang] || "",
           },
         ]}
+      />
+      <OrderTicketPrinterField
+        menuId={menuId}
+        onChange={(value) => setValue("orderTicketPrinterId", value)}
+        scope="section"
+        value={orderTicketPrinterId}
       />
     </FormBox>
   );

@@ -153,6 +153,7 @@ interface MenusMenuIdSectionIdProps {
   quickFilterValue?: string;
   rowCount?: number;
   rows?: MenuItem[];
+  menuId?: string;
   menuSectionId?: string;
   sortBy?: MenuItemSortField;
   sortDirection?: SortDirection;
@@ -172,6 +173,7 @@ const MenusMenuIdSectionId = ({
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount = 0,
   rows: initialRows = [],
+  menuId = "",
   menuSectionId = "",
   sortBy,
   sortDirection,
@@ -450,6 +452,7 @@ const MenusMenuIdSectionId = ({
     setDialog({
       content: (
         <CreateMenuItemDialog
+          menuId={menuId}
           mutate={mutate}
           menuSectionId={menuSectionId}
           openingHours={openingHours}
@@ -459,7 +462,7 @@ const MenusMenuIdSectionId = ({
       open: true,
       title: tMenus("items.actions.createItem.title"),
     });
-  }, [mutate, menuSectionId, openingHours, setDialog, tMenus]);
+  }, [menuId, mutate, menuSectionId, openingHours, setDialog, tMenus]);
 
   const handleUpdateItem = useCallback(
     (item: MenuItem) => {

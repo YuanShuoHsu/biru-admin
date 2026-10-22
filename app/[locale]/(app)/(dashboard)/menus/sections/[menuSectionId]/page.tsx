@@ -141,6 +141,7 @@ const MenusMenuIdSectionIdContent = async ({
       quickFilterValue={quickFilterValue}
       rowCount={rowCount}
       rows={rows}
+      menuId={section.menuId}
       menuSectionId={menuSectionId}
       sortBy={sortBy}
       sortDirection={sortDirection}

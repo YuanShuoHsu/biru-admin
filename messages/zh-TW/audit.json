@@ -139,6 +139,7 @@
     "requiredQuantity": "用量",
     "revokedSessions": "撤銷的登入裝置數",
     "role": "平台角色",
+    "rotatedAt": "QR code 更換時間",
     "scope": "退款範圍",
     "serviceDate": "服務日期",
     "servingTemperatures": "冷熱供應",

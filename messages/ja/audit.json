@@ -139,6 +139,7 @@
     "requiredQuantity": "使用量",
     "revokedSessions": "ログアウトさせた端末数",
     "role": "プラットフォームでの役割",
+    "rotatedAt": "QR コード変更日時",
     "scope": "返金範囲",
     "serviceDate": "営業日",
     "servingTemperatures": "提供温度",

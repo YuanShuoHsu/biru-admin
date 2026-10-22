@@ -120,7 +120,8 @@
     "orderTicketPrinters": {
       "add": "新增印表機",
       "credentialsNotice": "密碼只會顯示這一次，請現在填入印表機。",
-      "description": "訂單付款後（現金收款或線上付款完成）會自動在每台工作單印表機印出工作單；已出單的訂單退款時會印退品單。印表機的結果不明時，會在訂單上請店員確認。",
+      "default": "預設",
+      "description": "訂單付款後（現金收款或線上付款完成）會自動出工作單：品項依菜單分類或品項指定的工作單印表機分送，沒有指定的印到預設印表機。已出單的品項退款時，會在拿到那張單的印表機印退品單。印表機的結果不明時，會在訂單上請店員確認。",
       "empty": "尚未設定工作單印表機",
       "label": "工作單印表機",
       "lastSeenAt": "最後連線",
@@ -135,13 +136,27 @@
       "pollInterval": "輪詢間隔：約 {seconds} 秒",
       "queued": "已將 {count} 筆製作中的訂單送到「{name}」",
       "remove": "移除印表機",
-      "removeConfirm": "移除「{name}」後，尚未印出的工作單會一併取消。確定要移除嗎？",
+      "removeConfirm": "移除「{name}」後，還沒送出的工作單會改送到品項現在對應的印表機，指定這台的分類與品項改回未指定。確定要移除嗎？",
       "removeSuccess": "已移除「{name}」",
       "reset": "重設密碼",
       "resetConfirm": "重設後舊密碼立即失效，印表機要填入新密碼才能繼續列印。確定要重設嗎？",
+      "setDefault": "設為預設",
+      "setDefaultSuccess": "沒有指定工作單印表機的品項，之後會印到「{name}」",
       "steps": "在印表機 Web Config 的「Server Direct Print」啟用，填入下列 ID、密碼與 URL。輪詢間隔越短出單越快。",
       "url": "URL",
       "username": "ID"
+    },
+    "qrSecret": {
+      "description": "QR code 外流（例如被拍下來貼到網路上）時才需要更換。更換後，所有已印出的桌面、櫃台、得來速 QR code 立即失效，要重新下載換上；已掃碼的顧客也要重新掃描。",
+      "label": "QR code 更換",
+      "neverRotated": "尚未更換過",
+      "restore": "換回上一組",
+      "restoreConfirm": "換回後，上次更換前印出的 QR code 恢復有效，目前的 QR code 立即失效。確定要換回嗎？",
+      "restoreSuccess": "已換回上一組 QR code",
+      "rotate": "更換 QR code",
+      "rotateConfirm": "更換後，所有已印出的桌面、櫃台、得來速 QR code 立即失效，要重新下載換上；換好之前顧客無法掃碼點餐。按錯可以再換回上一組。確定要更換嗎？",
+      "rotateSuccess": "已更換 QR code，請重新下載並換上",
+      "rotatedAt": "上次更換"
     }
   },
   "invitations": {

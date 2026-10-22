@@ -439,6 +439,12 @@
     "label": "메뉴 이름",
     "placeholder": "메뉴 이름을 입력해 주세요"
   },
+  "orderTicketPrinter": {
+    "itemHelperText": "지정하지 않으면 분류의 설정을 따릅니다",
+    "label": "주문서 프린터",
+    "placeholder": "미지정",
+    "sectionHelperText": "지정하지 않으면 기본 프린터 '{name}'에서 출력됩니다"
+  },
   "reorder": "순서",
   "sections": {
     "actions": {

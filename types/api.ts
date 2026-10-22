@@ -2024,6 +2024,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/orders/{orderId}/invoice/print-jobs/{jobId}/cancellation": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 取消排隊中、還沒送到印表機的列印工作；之後可再按列印重新排入 */
+    post: operations["EcpayOrderInvoiceController_cancelPrintJob"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/orders/{orderId}/invoice/print-jobs/{jobId}/resolution": {
     parameters: {
       query?: never;
@@ -2432,6 +2449,91 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/order-qr-sessions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 掃描店內 QR code 後換成短效 cookie，之後網址不再帶簽章 */
+    post: operations["OrderQrController_createSession"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/order-qr-sessions/current": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 目前瀏覽器持有的店內 QR code 點餐資格 */
+    get: operations["OrderQrController_findSession"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/order-qr-secret": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 店內 QR code 金鑰的更換狀態 */
+    get: operations["OrderQrController_findSecretStatus"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/order-qr-secret/rotate": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 更換店內 QR code 金鑰：已印出的桌號／櫃台／得來速 QR code 立即失效 */
+    post: operations["OrderQrController_rotateSecret"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/order-qr-secret/restore": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 換回上一把金鑰：更換前印出的 QR code 恢復有效 */
+    post: operations["OrderQrController_restoreSecret"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/order-stats": {
     parameters: {
       query?: never;
@@ -2501,6 +2603,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/order-ticket-printers/{printerId}/default": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** 設為預設工作單印表機：沒指定工作單印表機的品項改印到這台 */
+    put: operations["OrderTicketPrintersController_setDefault"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/order-ticket-printers/{printerId}": {
     parameters: {
       query?: never;
@@ -2511,7 +2630,7 @@ export interface paths {
     get?: never;
     put?: never;
     post?: never;
-    /** 移除工作單印表機，尚未印出的工作單一併取消 */
+    /** 移除工作單印表機：還沒送出的工作單改排到品項現在對應的印表機，已送出的交給店員確認 */
     delete: operations["OrderTicketPrintersController_remove"];
     options?: never;
     head?: never;
@@ -2527,7 +2646,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** 重印工作單：在指定的工作單印表機各補印一張 */
+    /** 重印工作單：在指定的工作單印表機各補印一張它負責的品項 */
     post: operations["OrderTicketPrintersController_reprint"];
     delete?: never;
     options?: never;
@@ -2755,6 +2874,23 @@ export interface paths {
     post: operations["MenusController_createMenuSection"];
     /** 批次刪除菜單分類 */
     delete: operations["MenusController_deleteMenuSections"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/menus/{menuId}/order-ticket-printers": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 分類與品項可指定的工作單印表機 */
+    get: operations["MenusController_findOrderTicketPrinters"];
+    put?: never;
+    post?: never;
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -8331,6 +8467,8 @@ export interface components {
       purpose: components["schemas"]["PrinterPurpose"];
       /** @description 店家自訂的名稱（例如吧台、廚房）；發票印表機為 null */
       name: string | null;
+      /** @description 沒指定工作單印表機的品項印到這台；只有工作單印表機會是 true */
+      isDefault: boolean;
       /** @description 填入印表機 Server Direct Print 的 ID */
       username: string;
       /** @description 填入印表機 Server Direct Print 的 URL */
@@ -8368,6 +8506,8 @@ export interface components {
       purpose: components["schemas"]["PrinterPurpose"];
       /** @description 店家自訂的名稱（例如吧台、廚房）；發票印表機為 null */
       name: string | null;
+      /** @description 沒指定工作單印表機的品項印到這台；只有工作單印表機會是 true */
+      isDefault: boolean;
       /** @description 填入印表機 Server Direct Print 的 ID */
       username: string;
       /** @description 填入印表機 Server Direct Print 的 URL */
@@ -8785,7 +8925,7 @@ export interface components {
       ingredientIds?: string[];
     };
     DineInTableTokenResponseDto: {
-      /** @description 印在桌上 QR code 的簽章；不會過期，換 BETTER_AUTH_SECRET 會讓已印的全部失效 */
+      /** @description 印在桌上 QR code 的簽章；不會過期，更換門市 QR secret 後失效 */
       token: string;
     };
     MenuItemSalesResponseDto: {
@@ -8796,8 +8936,32 @@ export interface components {
       sold: number;
     };
     OrderModeTokenResponseDto: {
-      /** @description 印在櫃台／得來速 QR code 的簽章；不會過期，換 BETTER_AUTH_SECRET 會讓已印的全部失效 */
+      /** @description 印在櫃台／得來速 QR code 的簽章；不會過期，更換門市 QR secret 後失效 */
       token: string;
+    };
+    /** @enum {string} */
+    QrOrderMode: "dineIn" | "counter" | "driveThru";
+    CreateOrderQrSessionDto: {
+      mode: components["schemas"]["QrOrderMode"];
+      /** @description 內用必填 */
+      tableNumber?: number;
+      /** @description QR code 帶的簽章 */
+      token: string;
+    };
+    OrderQrSessionResponseDto: {
+      mode: components["schemas"]["QrOrderMode"];
+      tableNumber: number | null;
+      /** Format: date-time */
+      expiresAt: string;
+    };
+    OrderQrSecretResponseDto: {
+      /**
+       * Format: date-time
+       * @description 從未更換過為 null，表示仍沿用最初的 QR code
+       */
+      rotatedAt: string | null;
+      /** @description 能否換回上一把，讓更換前印出的 QR code 恢復有效 */
+      restorable: boolean;
     };
     OrderStatsBucketDto: {
       orders: number;
@@ -8929,7 +9093,8 @@ export interface components {
       createdAt: string;
       /** @description order：訂單工作單；refund：退品單 */
       kind: components["schemas"]["OrderTicketKind"];
-      printerName: string;
+      /** @description 印表機已移除時為 null */
+      printerName: string | null;
     };
     CreateOrderCustomerDto: {
       /** Format: email */
@@ -8971,10 +9136,6 @@ export interface components {
       /** @example 2026-08-31T09:15:00+08:00 */
       pickupTime?: string;
       tableNumber?: number;
-      /** @description 桌上 QR code 帶的桌號簽章，內用必填 */
-      tableToken?: string;
-      /** @description 櫃台／得來速 QR code 帶的點餐方式簽章，這兩種方式付現金時必填 */
-      modeToken?: string;
     };
     OrderItemModifierSnapshotDto: {
       modifierGroupId: string;
@@ -9202,6 +9363,8 @@ export interface components {
       refundChannel: components["schemas"]["RefundChannel"];
       /** @description 在途（排隊、列印中、結果不明）的工作單與退品單 */
       orderTicketJobs: components["schemas"]["OrderTicketJobDto"][];
+      /** @description 這張訂單有分到品項的工作單印表機，重印只能選這些 */
+      orderTicketPrinterIds: string[];
       /** @description 訂單狀態是否允許重印工作單；店家有沒有工作單印表機要另外看印表機清單 */
       orderTicketReprintable: boolean;
     };
@@ -9453,6 +9616,8 @@ export interface components {
       name: Record<string, never>;
       description?: Record<string, never> | null;
       image?: string;
+      /** @description 工作單印表機；null 時沿用上層分類，最上層也沒設就印到預設工作單印表機 */
+      orderTicketPrinterId?: string | null;
     };
     MenuSectionResponseDto: {
       id: string;
@@ -9461,6 +9626,8 @@ export interface components {
       name: Record<string, never>;
       description?: Record<string, never> | null;
       image?: string | null;
+      /** @description 工作單印表機；null 時沿用上層分類，最上層也沒設就印到預設工作單印表機 */
+      orderTicketPrinterId: string | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -9470,6 +9637,13 @@ export interface components {
     MenuSectionFilterField: "name" | "description" | "createdAt" | "updatedAt";
     /** @enum {string} */
     MenuSectionSortField: "name" | "description" | "createdAt" | "updatedAt";
+    OrderTicketPrinterOptionDto: {
+      id: string;
+      /** @description 店家自訂的名稱（例如吧台、廚房）；發票印表機為 null */
+      name: string | null;
+      /** @description 沒指定工作單印表機的品項印到這台；只有工作單印表機會是 true */
+      isDefault: boolean;
+    };
     UpdateMenuSectionDto: {
       /** @description Parent section ID for nested sections */
       parentSectionId?: string;
@@ -9482,6 +9656,8 @@ export interface components {
       name?: Record<string, never>;
       description?: Record<string, never> | null;
       image?: string;
+      /** @description 工作單印表機；null 時沿用上層分類，最上層也沒設就印到預設工作單印表機 */
+      orderTicketPrinterId?: string | null;
     };
     /**
      * @description 可供應的飲品溫度；省略代表不適用
@@ -9588,6 +9764,8 @@ export interface components {
       availableModes?: components["schemas"]["OrderMode"][];
       nutrition?: components["schemas"]["NutritionInformationDto"];
       offer?: components["schemas"]["CreateOfferDto"];
+      /** @description 工作單印表機；null 時沿用所屬分類 */
+      orderTicketPrinterId?: string | null;
     };
     OfferResponseDto: {
       id: string;
@@ -9621,6 +9799,8 @@ export interface components {
       id: string;
       menuId: string;
       menuSectionId?: string | null;
+      /** @description 工作單印表機；null 時沿用所屬分類 */
+      orderTicketPrinterId: string | null;
       name: Record<string, never>;
       description?: Record<string, never> | null;
       image?: string | null;
@@ -9737,6 +9917,8 @@ export interface components {
       availableModes?: components["schemas"]["OrderMode"][];
       nutrition?: components["schemas"]["NutritionInformationDto"];
       offer?: components["schemas"]["CreateOfferDto"];
+      /** @description 工作單印表機；null 時沿用所屬分類 */
+      orderTicketPrinterId?: string | null;
     };
     UpdateOfferDto: {
       /** @example 150.00 */
@@ -16567,6 +16749,34 @@ export interface operations {
       };
     };
   };
+  EcpayOrderInvoiceController_cancelPrintJob: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        orderId: string;
+        jobId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   EcpayOrderInvoiceController_resolvePrintJob: {
     parameters: {
       query?: never;
@@ -17795,6 +18005,150 @@ export interface operations {
       };
     };
   };
+  OrderQrController_createSession: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateOrderQrSessionDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderQrSessionResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrderQrController_findSession: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderQrSessionResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrderQrController_findSecretStatus: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderQrSecretResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrderQrController_rotateSecret: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderQrSecretResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrderQrController_restoreSecret: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderQrSecretResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   OrderStatsController_findOne: {
     parameters: {
       query: {
@@ -17937,6 +18291,35 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["PrinterCredentialsDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrderTicketPrintersController_setDefault: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        printerId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PrinterDto"];
         };
       };
       /** @description Internal server error */
@@ -18540,6 +18923,34 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenusController_findOrderTicketPrinters: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        menuId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderTicketPrinterOptionDto"][];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -24515,6 +24926,9 @@ export const recipeIngredientSortFieldValues: ReadonlyArray<
   "unitPrice",
   "cost",
 ];
+export const qrOrderModeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["QrOrderMode"]
+> = ["dineIn", "counter", "driveThru"];
 export const orderStatsModeDtoModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrderStatsModeDto"]["mode"]
 > = ["counter", "dineIn", "driveThru", "pickup"];

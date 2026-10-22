@@ -13,6 +13,8 @@ import {
 } from "./definitions";
 
 import CheckboxesGroup from "@/components/CheckboxesGroup";
+import OrderTicketPrinterField from "@/app/[locale]/(app)/(dashboard)/menus/OrderTicketPrinterField";
+
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
 import NumberSpinner from "@/components/NumberSpinner";
@@ -96,6 +98,7 @@ const UpdateMenuItemDialog = ({
       recommendedServingTemperatureLevel:
         item.recommendedServingTemperatureLevel || null,
       recommendedSweetnessLevel: item.recommendedSweetnessLevel || null,
+      orderTicketPrinterId: item.orderTicketPrinterId,
       offer: {
         price: item.offer?.price || "",
         availability: item.offer?.availability || "InStock",
@@ -148,6 +151,10 @@ const UpdateMenuItemDialog = ({
     control,
     name: "recommendedSweetnessLevel",
   });
+  const orderTicketPrinterId = useWatch({
+    control,
+    name: "orderTicketPrinterId",
+  });
   const deliveryLeadTimeMinutes = useWatch({
     control,
     name: "offer.deliveryLeadTimeMinutes",
@@ -174,6 +181,7 @@ const UpdateMenuItemDialog = ({
     sweetness,
     fixedSweetnessLevel,
     recommendedSweetnessLevel,
+    orderTicketPrinterId,
     offer,
   }: UpdateMenuItemForm) => {
     try {
@@ -222,6 +230,7 @@ const UpdateMenuItemDialog = ({
             sweetness === "Fixed" ? fixedSweetnessLevel : null,
           recommendedSweetnessLevel:
             sweetness === "Adjustable" ? recommendedSweetnessLevel : null,
+          orderTicketPrinterId,
           offer: {
             price: offer?.price,
             availability: offer?.availability,
@@ -501,6 +510,13 @@ const UpdateMenuItemDialog = ({
           ))}
         </TextField>
       )}
+      <OrderTicketPrinterField
+        disabled={!canWrite}
+        menuId={item.menuId}
+        onChange={(value) => setValue("orderTicketPrinterId", value)}
+        scope="item"
+        value={orderTicketPrinterId}
+      />
       <Divider flexItem>
         <Chip label={tMenus("items.offers.label")} size="small" />
       </Divider>

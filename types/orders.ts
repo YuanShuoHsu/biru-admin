@@ -30,6 +30,8 @@ export type CreateOrderTicketPrinterDto =
   components["schemas"]["CreateOrderTicketPrinterDto"];
 export type ReprintOrderTicketDto =
   components["schemas"]["ReprintOrderTicketDto"];
+export type OrderTicketPrinterOption =
+  components["schemas"]["OrderTicketPrinterOptionDto"];
 export type OrderTicketPrinterStatus =
   components["schemas"]["OrderTicketPrinterStatusDto"];
 export type ResetInvoicePrintDto =
@@ -60,3 +62,5 @@ export type DineInTableTokenResponse =
   components["schemas"]["DineInTableTokenResponseDto"];
 export type OrderModeTokenResponse =
   components["schemas"]["OrderModeTokenResponseDto"];
+export type OrderQrSecretResponse =
+  components["schemas"]["OrderQrSecretResponseDto"];

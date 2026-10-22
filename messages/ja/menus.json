@@ -439,6 +439,12 @@
     "label": "メニュー名",
     "placeholder": "メニュー名を入力してください"
   },
+  "orderTicketPrinter": {
+    "itemHelperText": "未指定の場合はカテゴリーの設定に従います",
+    "label": "オーダー伝票プリンター",
+    "placeholder": "未指定",
+    "sectionHelperText": "未指定の場合はデフォルトのプリンター「{name}」で印刷されます"
+  },
   "reorder": "並び替え",
   "sections": {
     "actions": {

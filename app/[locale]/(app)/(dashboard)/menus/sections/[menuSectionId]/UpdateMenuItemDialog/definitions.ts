@@ -61,6 +61,7 @@ export const useUpdateMenuItemFormSchema = () => {
       sweetness: z.enum(sweetnessValues),
       fixedSweetnessLevel: z.enum(sweetnessLevelValues).nullable(),
       recommendedSweetnessLevel: z.enum(sweetnessLevelValues).nullable(),
+      orderTicketPrinterId: z.string().nullable(),
       offer: z
         .object({
           price: z

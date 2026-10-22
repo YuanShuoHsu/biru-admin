@@ -73,6 +73,11 @@ export const canPrintInvoice = ({ invoice }: AdminOrderResponse) =>
 export const canResetInvoicePrint = (order: AdminOrderResponse) =>
   canPrintInvoice(order) && !!order.invoice?.printedAt;
 
+export const canCancelInvoicePrint = (order: AdminOrderResponse) =>
+  canPrintInvoice(order) &&
+  order.invoice?.printJob?.status === "queued" &&
+  !!order.invoice.printJob.errorCode;
+
 export const canResolveInvoicePrint = (order: AdminOrderResponse) =>
   canPrintInvoice(order) && order.invoice?.printJob?.status === "unknown";
 
@@ -139,10 +144,17 @@ export const useOrderTicketPrinterStatuses = (organizationSlug: string) =>
     { refreshInterval: PRINTER_STATUS_REFRESH_MS },
   ).data;
 
-export const canReprintOrderTicket = (
-  { orderTicketReprintable }: AdminOrderResponse,
+const orderTicketPrintersOf = (
+  { orderTicketPrinterIds }: AdminOrderResponse,
   printers: OrderTicketPrinterStatus[] | undefined,
-) => orderTicketReprintable && !!printers?.length;
+) => printers?.filter(({ id }) => orderTicketPrinterIds.includes(id)) ?? [];
+
+export const canReprintOrderTicket = (
+  order: AdminOrderResponse,
+  printers: OrderTicketPrinterStatus[] | undefined,
+) =>
+  order.orderTicketReprintable &&
+  !!orderTicketPrintersOf(order, printers).length;
 
 export const findUnresolvedOrderTicket = ({
   orderTicketJobs,
@@ -353,6 +365,32 @@ export const useOrderActions = (
     [mutate, organizationSlug, tOrders],
   );
 
+  const handleCancelInvoicePrint = useCallback(
+    async (order: AdminOrderResponse) => {
+      const printJob = order.invoice?.printJob;
+      if (!printJob) return;
+
+      try {
+        await fetcher(
+          `/api/organizations/${organizationSlug}/orders/${order.id}/invoice/print-jobs/${printJob.id}/cancellation`,
+          { method: "POST" },
+        );
+
+        enqueueSnackbar(
+          tOrders("actions.cancelInvoicePrint.success", {
+            orderNumber: order.orderNumber,
+          }),
+          { variant: "success" },
+        );
+      } catch (error) {
+        enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+      } finally {
+        mutate();
+      }
+    },
+    [mutate, organizationSlug, tOrders],
+  );
+
   const handleConfirmPrintInvoice = useCallback(
     (order: AdminOrderResponse) => {
       if (!order.invoice?.printedAt) {
@@ -418,7 +456,8 @@ export const useOrderActions = (
 
   const handleConfirmReprintOrderTicket = useCallback(
     (order: AdminOrderResponse) => {
-      if (!orderTicketPrinters?.length) return;
+      const printers = orderTicketPrintersOf(order, orderTicketPrinters);
+      if (!printers.length) return;
 
       setDialog({
         content: (
@@ -426,7 +465,7 @@ export const useOrderActions = (
             mutate={mutate}
             order={order}
             organizationSlug={organizationSlug}
-            printers={orderTicketPrinters}
+            printers={printers}
           />
         ),
         formId: REPRINT_ORDER_TICKET_FORM_ID,
@@ -483,6 +522,7 @@ export const useOrderActions = (
   );
 
   return {
+    handleCancelInvoicePrint,
     handleConfirmIssueInvoice,
     handleConfirmPrintInvoice,
     handleConfirmReprintOrderTicket,

@@ -139,6 +139,7 @@
     "requiredQuantity": "사용량",
     "revokedSessions": "로그아웃시킨 기기 수",
     "role": "플랫폼 역할",
+    "rotatedAt": "QR 코드 변경 시각",
     "scope": "환불 범위",
     "serviceDate": "영업일",
     "servingTemperatures": "제공 온도",

@@ -439,6 +439,12 @@
     "label": "菜单名称",
     "placeholder": "请输入您的菜单名称"
   },
+  "orderTicketPrinter": {
+    "itemHelperText": "未指定时沿用分类的设置",
+    "label": "工作单打印机",
+    "placeholder": "未指定",
+    "sectionHelperText": "未指定时打印到默认打印机「{name}」"
+  },
   "reorder": "排序",
   "sections": {
     "actions": {

@@ -120,7 +120,8 @@
     "orderTicketPrinters": {
       "add": "Add printer",
       "credentialsNotice": "The password is shown only once. Enter it on the printer now.",
-      "description": "Once an order is paid (cash received or online payment completed), each order ticket printer prints a ticket automatically. Refunds on orders that already have a ticket print a refund ticket. When a print result is unknown, staff are asked to confirm it on the order.",
+      "default": "Default",
+      "description": "Once an order is paid (cash received or online payment completed), order tickets print automatically: each item goes to the order ticket printer set on its menu section or item, and items without one go to the default printer. Refunding an item that already has a ticket prints a refund ticket on the printer that holds that ticket. When a print result is unknown, staff are asked to confirm it on the order.",
       "empty": "No order ticket printers yet",
       "label": "Order ticket printers",
       "lastSeenAt": "Last connected",
@@ -135,13 +136,27 @@
       "pollInterval": "Polling interval: about {seconds} s",
       "queued": "Sent {count} orders in preparation to \"{name}\"",
       "remove": "Remove printer",
-      "removeConfirm": "Tickets not yet printed on \"{name}\" will be cancelled. Remove the printer?",
+      "removeConfirm": "Tickets not yet sent to \"{name}\" will go to the printers their items now route to, and sections and items set to this printer will be unset. Remove the printer?",
       "removeSuccess": "Removed \"{name}\"",
       "reset": "Reset password",
       "resetConfirm": "The old password stops working immediately, and the printer can't print until you enter the new one. Reset the password?",
+      "setDefault": "Set as default",
+      "setDefaultSuccess": "Items without an order ticket printer will now print on \"{name}\"",
       "steps": "Enable Server Direct Print in the printer's Web Config and enter the ID, password and URL below. A shorter polling interval prints tickets sooner.",
       "url": "URL",
       "username": "ID"
+    },
+    "qrSecret": {
+      "description": "Only replace QR codes if they have leaked, for example if someone photographed one and posted it online. Replacing them immediately invalidates every printed table, counter, and drive-thru QR code, so download and put up new ones. Customers who already scanned will need to scan again.",
+      "label": "Replace QR codes",
+      "neverRotated": "Never replaced",
+      "restore": "Restore previous codes",
+      "restoreConfirm": "QR codes printed before the last replacement will work again, and the current ones will stop working immediately. Restore the previous codes?",
+      "restoreSuccess": "Previous QR codes restored",
+      "rotate": "Replace QR codes",
+      "rotateConfirm": "Every printed table, counter, and drive-thru QR code will stop working immediately. Download and put up the new ones; customers can't order by scanning until you do. If this was a mistake, you can restore the previous codes. Replace QR codes?",
+      "rotateSuccess": "QR codes replaced. Download and put up the new ones.",
+      "rotatedAt": "Last replaced"
     }
   },
   "invitations": {

@@ -1,5 +1,9 @@
 {
   "actions": {
+    "cancelInvoicePrint": {
+      "success": "주문 {orderNumber}의 대기 중인 세금계산서 인쇄를 취소했습니다",
+      "title": "대기 중인 세금계산서 인쇄 취소"
+    },
     "issueInvoice": {
       "confirm": "주문 <bold>{orderNumber}</bold>의 영수증을 발행하시겠습니까? 발행 후에는 이 화면에서 취소할 수 없습니다.",
       "success": "주문 {orderNumber}의 영수증 {invoiceNumber}을(를) 발행했습니다",
@@ -37,7 +41,7 @@
     },
     "reprintOrderTicket": {
       "confirm": "{printer} 프린터에서 주문 <bold>{orderNumber}</bold>의 주문서를 재출력하시겠습니까? '재출력'이 표시된 주문서가 한 장 더 출력됩니다.",
-      "confirmMultiple": "주문 <bold>{orderNumber}</bold>의 주문서를 어느 프린터에서 재출력하시겠습니까? 선택한 프린터에서 '재출력'이 표시된 주문서가 한 장씩 출력됩니다.",
+      "confirmMultiple": "주문 <bold>{orderNumber}</bold>의 주문서를 어느 프린터에서 재출력하시겠습니까? 선택한 프린터에서 해당 프린터가 맡은 품목의 주문서가 '재출력' 표시와 함께 한 장씩 출력됩니다.",
       "printers": "재출력할 프린터",
       "success": "주문 {orderNumber}의 주문서를 프린터로 보냈습니다",
       "title": "주문서 재출력"
@@ -239,7 +243,8 @@
     "offline": {
       "label": "{printer} 프린터 오프라인",
       "tooltip": "마지막 연결: {lastSeenAt}. 프린터가 복구되면 대기 중인 주문서가 자동으로 출력됩니다. 그 전까지는 주문 보드를 보고 제조해 주세요."
-    }
+    },
+    "removedPrinter": "삭제된"
   },
   "partySize": "인원수",
   "paymentDate": "결제 일시",
@@ -247,6 +252,7 @@
   "pickupTime": "픽업 시간",
   "printJobError": {
     "DeviceNotFound": "프린터를 찾을 수 없습니다",
+    "ECPAY_REJECTED": "ECPay가 이 세금계산서 데이터 제공을 거부했습니다. 자동으로 다시 시도하며, 계속 실패하면 인쇄를 취소하고 ECPay에서 확인해 주세요",
     "ECPAY_UNAVAILABLE": "ECPay에서 세금계산서 데이터를 가져올 수 없습니다. 자동으로 다시 시도합니다",
     "EPTR_AUTOMATICAL": "프린터 과열, 자동 복구 중",
     "EPTR_COVER_OPEN": "프린터 덮개가 열려 있습니다",
@@ -257,6 +263,7 @@
     "EX_BADPORT": "프린터가 연결되지 않았습니다",
     "EX_SPOOLER": "프린터 대기열이 가득 찼습니다",
     "EX_TIMEOUT": "인쇄 시간 초과",
+    "INVOICE_VOIDED_AT_ECPAY": "ECPay에서 이 세금계산서가 취소된 것으로 표시되어 인쇄를 취소했습니다. ECPay에서 확인해 주세요",
     "RECEIPT_CODES_MISSING": "ECPay에서 세금계산서 바코드를 제공하지 않았습니다. 먼저 ECPay 관리자 페이지에서 QR Code 시드를 설정하세요",
     "SchemaError": "인쇄 데이터 형식 오류",
     "other": "프린터 오류 {code}"

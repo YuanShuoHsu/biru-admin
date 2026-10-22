@@ -139,6 +139,7 @@
     "requiredQuantity": "Amount",
     "revokedSessions": "Sessions revoked",
     "role": "Platform role",
+    "rotatedAt": "QR codes replaced at",
     "scope": "Refund scope",
     "serviceDate": "Service date",
     "servingTemperatures": "Serving temperature",
