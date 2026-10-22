@@ -22,6 +22,7 @@ import {
   payrollEarningCategoryValues,
   payrollStatementStatusValues,
   payrollViolationValues,
+  printerPurposeValues,
   refundChannelValues,
   refundInvoiceActionValues,
   refundReasonCodeValues,
@@ -188,6 +189,12 @@ export const useAuditLogValueLabels = () => {
         orderResponseDtoPaymentMethodValues.map((value) => [
           value,
           tOrder(`checkout.payment.${value}`),
+        ]),
+      ),
+      purpose: Object.fromEntries(
+        printerPurposeValues.map((value) => [
+          value,
+          tAudit(`printerPurpose.${value}`),
         ]),
       ),
       source: Object.fromEntries(

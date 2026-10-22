@@ -126,6 +126,7 @@
     "printResetCount": "印刷リセット回数",
     "printResetReason": "印刷リセット理由",
     "printedAt": "正本印刷日時",
+    "purpose": "用途",
     "randomNumber": "ランダムコード",
     "reason": "返金の補足",
     "reasonCode": "返金理由",
@@ -159,7 +160,7 @@
     "url": "商品リンク",
     "usedAt": "使用日時",
     "user": "会員",
-    "username": "インボイスプリンター ID",
+    "username": "プリンター ID",
     "voidedAt": "無効化日時",
     "weeklyMinutes": "週所定労働時間",
     "weeklyMinutesHistory": "週所定労働時間の履歴"
@@ -192,6 +193,10 @@
   },
   "organization": "店舗",
   "platform": "プラットフォーム",
+  "printerPurpose": {
+    "invoice": "インボイス",
+    "orderTicket": "オーダー伝票"
+  },
   "refundItem": {
     "orderItemId": "注文商品ID",
     "quantity": "数量",

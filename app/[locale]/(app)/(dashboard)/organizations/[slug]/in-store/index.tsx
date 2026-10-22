@@ -15,6 +15,7 @@ import {
   Alert,
   Button,
   Card,
+  Chip,
   DialogContentText,
   Stack,
   TextField,
@@ -25,12 +26,14 @@ import { styled } from "@mui/material/styles";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
+  CreateOrderTicketPrinterDto,
   DineInTableTokenResponse,
   OrderModeTokenResponse,
 } from "@/types/orders";
 import type {
-  InvoicePrinterCredentials,
   InvoicePrinterSetting,
+  Printer,
+  PrinterCredentials,
 } from "@/types/organizations";
 
 import { getErrorMessage } from "@/utils/errors";
@@ -199,13 +202,14 @@ const InvoicePrinterCard = ({ organizationSlug }: InvoicePrinterCardProps) => {
 
   const { data, mutate } = useSWR<InvoicePrinterSetting>(printerUrl);
 
-  const [credentials, setCredentials] =
-    useState<InvoicePrinterCredentials | null>(null);
+  const [credentials, setCredentials] = useState<PrinterCredentials | null>(
+    null,
+  );
 
   const [settingUp, setSettingUp] = useState(false);
 
   const register = async () => {
-    const registered = await fetcher<InvoicePrinterCredentials>(printerUrl, {
+    const registered = await fetcher<PrinterCredentials>(printerUrl, {
       method: "PUT",
     });
 
@@ -349,6 +353,255 @@ const InvoicePrinterCard = ({ organizationSlug }: InvoicePrinterCardProps) => {
   );
 };
 
+interface OrderTicketPrinterItemProps {
+  credentials: PrinterCredentials | null;
+  onRegistered: (credentials: PrinterCredentials) => void;
+  onRemoved: () => Promise<unknown>;
+  organizationSlug: string;
+  printer: Printer;
+}
+
+const OrderTicketPrinterItem = ({
+  credentials,
+  onRegistered,
+  onRemoved,
+  organizationSlug,
+  printer,
+}: OrderTicketPrinterItemProps) => {
+  const { setDialog } = useDialogStore((state) => state);
+
+  const format = useFormatter();
+
+  const tOrganizations = useTranslations("organizations");
+
+  const printerUrl = `/api/organizations/${organizationSlug}/order-ticket-printers/${printer.id}`;
+  const name = printer.name ?? "";
+
+  const handleReset = () =>
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tOrganizations("inStore.orderTicketPrinters.resetConfirm")}
+        </DialogContentText>
+      ),
+      onConfirm: async () =>
+        onRegistered(
+          await fetcher<PrinterCredentials>(`${printerUrl}/credentials`, {
+            method: "PUT",
+          }),
+        ),
+      open: true,
+      title: tOrganizations("inStore.orderTicketPrinters.reset"),
+    });
+
+  const handleRemove = () =>
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tOrganizations("inStore.orderTicketPrinters.removeConfirm", {
+            name,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        await fetcher(printerUrl, { method: "DELETE" });
+        enqueueSnackbar(
+          tOrganizations("inStore.orderTicketPrinters.removeSuccess", {
+            name,
+          }),
+          { variant: "success" },
+        );
+        await onRemoved();
+      },
+      open: true,
+      title: tOrganizations("inStore.orderTicketPrinters.remove"),
+    });
+
+  const current = credentials ?? printer;
+
+  return (
+    <CardsStack>
+      <ActionsStack direction="row">
+        <BoldTypography variant="body1">{name}</BoldTypography>
+        <Chip
+          color={printer.online ? "success" : "error"}
+          label={tOrganizations(
+            printer.online
+              ? "inStore.orderTicketPrinters.online"
+              : "inStore.orderTicketPrinters.offline",
+          )}
+          size="small"
+          variant="outlined"
+        />
+      </ActionsStack>
+      <Stack>
+        <UrlTypography variant="body2">
+          {tOrganizations("inStore.orderTicketPrinters.username")}
+          {": "}
+          {current.username}
+        </UrlTypography>
+        {credentials && (
+          <UrlTypography variant="body2">
+            {tOrganizations("inStore.orderTicketPrinters.password")}
+            {": "}
+            {credentials.password}
+          </UrlTypography>
+        )}
+        <UrlTypography variant="body2">
+          {tOrganizations("inStore.orderTicketPrinters.url")}
+          {": "}
+          {current.url}
+        </UrlTypography>
+        <Typography color="textSecondary" variant="body2">
+          {tOrganizations("inStore.orderTicketPrinters.lastSeenAt")}
+          {": "}
+          {printer.lastSeenAt
+            ? format.dateTime(new Date(printer.lastSeenAt), "short")
+            : tOrganizations("inStore.orderTicketPrinters.neverSeen")}
+        </Typography>
+        {printer.pollIntervalMs !== null && (
+          <Typography color="textSecondary" variant="body2">
+            {tOrganizations("inStore.orderTicketPrinters.pollInterval", {
+              seconds: Math.round(printer.pollIntervalMs / 1000),
+            })}
+          </Typography>
+        )}
+      </Stack>
+      {credentials && (
+        <Alert severity="warning">
+          {tOrganizations("inStore.orderTicketPrinters.credentialsNotice")}
+        </Alert>
+      )}
+      <ActionsStack direction="row">
+        <Button onClick={handleReset} variant="outlined">
+          {tOrganizations("inStore.orderTicketPrinters.reset")}
+        </Button>
+        <Button color="error" onClick={handleRemove} variant="outlined">
+          {tOrganizations("inStore.orderTicketPrinters.remove")}
+        </Button>
+      </ActionsStack>
+    </CardsStack>
+  );
+};
+
+interface OrderTicketPrintersCardProps {
+  organizationSlug: string;
+}
+
+const OrderTicketPrintersCard = ({
+  organizationSlug,
+}: OrderTicketPrintersCardProps) => {
+  const tOrganizations = useTranslations("organizations");
+
+  const printersUrl = `/api/organizations/${organizationSlug}/order-ticket-printers`;
+
+  const { data: printers, mutate } = useSWR<Printer[]>(printersUrl);
+
+  const [credentials, setCredentials] = useState<PrinterCredentials | null>(
+    null,
+  );
+
+  const [name, setName] = useState("");
+
+  const [adding, setAdding] = useState(false);
+
+  const handleAdd = async () => {
+    setAdding(true);
+
+    try {
+      const created = await fetcher<PrinterCredentials>(printersUrl, {
+        body: JSON.stringify({
+          name: name.trim(),
+        } satisfies CreateOrderTicketPrinterDto),
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+      });
+
+      setCredentials(created);
+      setName("");
+
+      if (created.queuedCount)
+        enqueueSnackbar(
+          tOrganizations("inStore.orderTicketPrinters.queued", {
+            count: created.queuedCount,
+            name: created.name ?? "",
+          }),
+          { variant: "info" },
+        );
+
+      await mutate();
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+    } finally {
+      setAdding(false);
+    }
+  };
+
+  const handleRegistered = async (registered: PrinterCredentials) => {
+    setCredentials(registered);
+    await mutate();
+  };
+
+  return (
+    <Card variant="outlined">
+      <StyledCardContent>
+        <BoldTypography color="textSecondary" variant="subtitle2">
+          {tOrganizations("inStore.orderTicketPrinters.label")}
+        </BoldTypography>
+        <Typography variant="body2">
+          {tOrganizations("inStore.orderTicketPrinters.description")}
+        </Typography>
+        {printers &&
+          (printers.length ? (
+            <>
+              <Alert severity="info">
+                {tOrganizations("inStore.orderTicketPrinters.steps")}
+              </Alert>
+              {printers.map((printer) => (
+                <OrderTicketPrinterItem
+                  credentials={
+                    credentials?.id === printer.id ? credentials : null
+                  }
+                  key={printer.id}
+                  onRegistered={handleRegistered}
+                  onRemoved={mutate}
+                  organizationSlug={organizationSlug}
+                  printer={printer}
+                />
+              ))}
+            </>
+          ) : (
+            <Typography color="textSecondary" variant="body2">
+              {tOrganizations("inStore.orderTicketPrinters.empty")}
+            </Typography>
+          ))}
+        {printers && (
+          <ActionsStack direction="row">
+            <TextField
+              label={tOrganizations("inStore.orderTicketPrinters.name.label")}
+              onChange={(event) => setName(event.target.value)}
+              placeholder={tOrganizations(
+                "inStore.orderTicketPrinters.name.placeholder",
+              )}
+              size="small"
+              slotProps={{ htmlInput: { maxLength: 50 } }}
+              value={name}
+            />
+            <Button
+              disabled={!name.trim()}
+              loading={adding}
+              onClick={handleAdd}
+              variant="outlined"
+            >
+              {tOrganizations("inStore.orderTicketPrinters.add")}
+            </Button>
+          </ActionsStack>
+        )}
+      </StyledCardContent>
+    </Card>
+  );
+};
+
 interface OrganizationsSlugInStoreProps {
   organizationSlug: string;
 }
@@ -372,6 +625,7 @@ const OrganizationsSlugInStore = ({
         organizationSlug={organizationSlug}
       />
       <InvoicePrinterCard organizationSlug={organizationSlug} />
+      <OrderTicketPrintersCard organizationSlug={organizationSlug} />
     </CardsStack>
   );
 };

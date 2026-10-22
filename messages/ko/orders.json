@@ -35,6 +35,11 @@
       "success": "주문 {orderNumber}에 대해 {amount} 환불했습니다",
       "title": "환불"
     },
+    "reprintOrderTicket": {
+      "confirm": "주문 <bold>{orderNumber}</bold>의 주문서를 재출력하시겠습니까? 모든 주문서 프린터에서 '재출력'이 표시된 주문서가 한 장 더 출력됩니다.",
+      "success": "주문 {orderNumber}의 주문서를 프린터로 보냈습니다",
+      "title": "주문서 재출력"
+    },
     "resetInvoicePrint": {
       "confirm": "주문 <bold>{orderNumber}</bold>의 영수증을 미인쇄로 되돌리시겠습니까? 정본이 실제로 출력되지 않은 경우에만 사용하세요. 되돌린 후 인쇄하면 추첨 대상 정본이 두 번째로 발행됩니다.",
       "reason": {
@@ -54,6 +59,15 @@
       "reprintSuccess": "주문 {orderNumber}의 세금계산서 정본을 세금계산서 프린터로 다시 보냈습니다",
       "title": "세금계산서 인쇄 결과 확인",
       "warning": "바코드가 인쇄된 종이는 추첨에 사용할 수 있으므로, 다시 인쇄하면 추첨 가능한 정본이 두 장이 됩니다."
+    },
+    "resolveOrderTicket": {
+      "description": "{printer} 프린터가 주문 <bold>{orderNumber}</bold>의 {kind, select, refund {반품 주문서} other {주문서}} 출력 완료 여부를 보고하지 않았습니다{reason}. 프린터에서 주문서가 나왔는지 확인한 후 실제 상황을 선택해 주세요.",
+      "notPrinted": "전혀 출력되지 않음, 다시 출력",
+      "printed": "출력됨 (일부만 출력되었더라도)",
+      "printedSuccess": "주문 {orderNumber}의 주문서를 출력됨으로 기록했습니다",
+      "reprintSuccess": "주문 {orderNumber}의 주문서를 프린터로 다시 보냈습니다",
+      "title": "주문서 출력 결과 확인",
+      "warning": "바에서 이미 주문서를 받았다면, 재출력 시 같은 주문을 두 번 만들게 됩니다."
     },
     "updateCustomer": {
       "success": "주문 {orderNumber}의 고객 정보를 수정했습니다",
@@ -157,6 +171,9 @@
       "title": "결제 알림 기록",
       "unhandled": "주문 미반영"
     },
+    "orderTickets": {
+      "title": "주문서"
+    },
     "refunds": {
       "allowanceNo": "에누리 전표 번호",
       "channel": {
@@ -215,6 +232,13 @@
   "mode": "주문 방식",
   "orderNumber": "픽업 번호",
   "orderStatus": "주문 상태",
+  "orderTicket": {
+    "chip": "{printer} {kind, select, refund {반품 주문서} other {주문서}}: {status}",
+    "offline": {
+      "label": "{printer} 프린터 오프라인",
+      "tooltip": "마지막 연결: {lastSeenAt}. 프린터가 복구되면 대기 중인 주문서가 자동으로 출력됩니다. 그 전까지는 주문 보드를 보고 제조해 주세요."
+    }
+  },
   "partySize": "인원수",
   "paymentDate": "결제 일시",
   "paymentMethod": "결제 수단",

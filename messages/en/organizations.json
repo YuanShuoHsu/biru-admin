@@ -116,7 +116,33 @@
       "url": "URL",
       "username": "ID"
     },
-    "label": "In-store ordering"
+    "label": "In-store ordering",
+    "orderTicketPrinters": {
+      "add": "Add printer",
+      "credentialsNotice": "The password is shown only once. Enter it on the printer now.",
+      "description": "Once an order is paid (cash received or online payment completed), each order ticket printer prints a ticket automatically. Refunds on orders that already have a ticket print a refund ticket. When a print result is unknown, staff are asked to confirm it on the order.",
+      "empty": "No order ticket printers yet",
+      "label": "Order ticket printers",
+      "lastSeenAt": "Last connected",
+      "name": {
+        "label": "Name",
+        "placeholder": "e.g. Bar"
+      },
+      "neverSeen": "Not connected yet",
+      "offline": "Offline",
+      "online": "Online",
+      "password": "Password",
+      "pollInterval": "Polling interval: about {seconds} s",
+      "queued": "Sent {count} orders in preparation to \"{name}\"",
+      "remove": "Remove printer",
+      "removeConfirm": "Tickets not yet printed on \"{name}\" will be cancelled. Remove the printer?",
+      "removeSuccess": "Removed \"{name}\"",
+      "reset": "Reset password",
+      "resetConfirm": "The old password stops working immediately, and the printer can't print until you enter the new one. Reset the password?",
+      "steps": "Enable Server Direct Print in the printer's Web Config and enter the ID, password and URL below. A shorter polling interval prints tickets sooner.",
+      "url": "URL",
+      "username": "ID"
+    }
   },
   "invitations": {
     "actions": {

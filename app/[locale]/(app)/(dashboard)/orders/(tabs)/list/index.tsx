@@ -7,7 +7,8 @@ import useSWR from "swr";
 import AuditLogButton from "@/components/AuditLogButton";
 import DataGrid from "@/components/DataGrid";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
-import InvoicePrintJobChip from "@/components/InvoicePrintJobChip";
+import OrderTicketJobChips from "@/components/OrderTicketJobChips";
+import PrintJobChip from "@/components/PrintJobChip";
 
 import {
   autosizeOptions,
@@ -30,8 +31,11 @@ import {
   canPrintInvoice,
   canResetInvoicePrint,
   canResolveInvoicePrint,
+  canReprintOrderTicket,
   canVoidInvoice,
+  findUnresolvedOrderTicket,
   useOrderActions,
+  useOrderTicketPrinterStatuses,
   usePrintInvoiceBlocker,
 } from "@/hooks/useOrderActions";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
@@ -39,9 +43,11 @@ import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 import {
   Block,
   Cancel,
+  ConfirmationNumber,
   CurrencyExchange,
   Edit,
   FactCheck,
+  PendingActions,
   Print,
   Receipt,
   ReceiptLong,
@@ -267,14 +273,18 @@ const Orders = ({
   const {
     handleConfirmIssueInvoice,
     handleConfirmPrintInvoice,
+    handleConfirmReprintOrderTicket,
     handleConfirmResetInvoicePrint,
     handleConfirmStatusAction,
     handleConfirmVoidInvoice,
     handleRefund,
     handleResolveInvoicePrint,
+    handleResolveOrderTicket,
     handleUpdateCustomer,
     handleViewOrder,
   } = useOrderActions(organizationSlug, mutate);
+
+  const orderTicketPrinters = useOrderTicketPrinterStatuses(organizationSlug);
 
   const { blockedBy: printInvoiceBlockedBy, tooltip: printInvoiceTooltip } =
     usePrintInvoiceBlocker(organizationSlug);
@@ -294,6 +304,16 @@ const Orders = ({
   );
 
   const hasVoidableInvoice = useMemo(() => rows.some(canVoidInvoice), [rows]);
+
+  const hasUnresolvedOrderTicket = useMemo(
+    () => rows.some((row) => !!findUnresolvedOrderTicket(row)),
+    [rows],
+  );
+
+  const hasReprintableOrderTicket = useMemo(
+    () => rows.some((row) => canReprintOrderTicket(row, orderTicketPrinters)),
+    [orderTicketPrinters, rows],
+  );
 
   const hasRefundable = useMemo(
     () => rows.some(({ refundable }) => refundable),
@@ -421,6 +441,39 @@ const Orders = ({
                 </StyledIconButton>
               </Tooltip>
             )}
+            {hasUnresolvedOrderTicket && (
+              <Tooltip title={tOrders("actions.resolveOrderTicket.title")}>
+                <StyledIconButton
+                  color="error"
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    if (findUnresolvedOrderTicket(row))
+                      handleResolveOrderTicket(row);
+                  }}
+                  size="small"
+                  visible={!!findUnresolvedOrderTicket(row)}
+                >
+                  <PendingActions fontSize="small" />
+                </StyledIconButton>
+              </Tooltip>
+            )}
+            {hasReprintableOrderTicket && (
+              <Tooltip title={tOrders("actions.reprintOrderTicket.title")}>
+                <StyledIconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    if (canReprintOrderTicket(row, orderTicketPrinters))
+                      handleConfirmReprintOrderTicket(row);
+                  }}
+                  size="small"
+                  visible={canReprintOrderTicket(row, orderTicketPrinters)}
+                >
+                  <ConfirmationNumber fontSize="small" />
+                </StyledIconButton>
+              </Tooltip>
+            )}
             {hasRefundable && (
               <Tooltip title={tOrders("actions.refund.title")}>
                 <StyledIconButton
@@ -501,12 +554,15 @@ const Orders = ({
         filterOperators: enumFilterOperators,
         headerName: tOrders("orderStatus"),
         renderCell: ({ row }: GridRenderCellParams<AdminOrderResponse>) => (
-          <Chip
-            color={STATUS_COLORS[row.orderStatus]}
-            label={tOrders(`status.${row.orderStatus}`)}
-            size="small"
-            variant="outlined"
-          />
+          <StyledStack direction="row">
+            <Chip
+              color={STATUS_COLORS[row.orderStatus]}
+              label={tOrders(`status.${row.orderStatus}`)}
+              size="small"
+              variant="outlined"
+            />
+            <OrderTicketJobChips jobs={row.orderTicketJobs} />
+          </StyledStack>
         ),
         type: "singleSelect",
         valueOptions: enumOptions.orderStatus,
@@ -603,7 +659,7 @@ const Orders = ({
                 variant="outlined"
               />
               {row.invoice.printJob && (
-                <InvoicePrintJobChip printJob={row.invoice.printJob} />
+                <PrintJobChip printJob={row.invoice.printJob} />
               )}
             </StyledStack>
           ) : (
@@ -646,7 +702,12 @@ const Orders = ({
       hasVoidableInvoice,
       handleConfirmStatusAction,
       handleConfirmPrintInvoice,
+      handleConfirmReprintOrderTicket,
       handleResolveInvoicePrint,
+      handleResolveOrderTicket,
+      hasReprintableOrderTicket,
+      hasUnresolvedOrderTicket,
+      orderTicketPrinters,
       printInvoiceBlockedBy,
       printInvoiceTooltip,
       handleUpdateCustomer,

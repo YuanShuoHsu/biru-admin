@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useEffect, useState } from "react";
 
-import { usePrintJobErrorText } from "@/components/InvoicePrintJobChip";
+import { usePrintJobErrorText } from "@/components/PrintJobChip";
 import StyledFormControlLabel from "@/components/StyledFormControlLabel";
 
 import {
@@ -21,8 +21,8 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
   AdminOrderResponse,
-  InvoicePrintJob,
-  ResolveInvoicePrintJobDto,
+  PrintJob,
+  ResolvePrintJobDto,
 } from "@/types/orders";
 
 import { getErrorMessage } from "@/utils/errors";
@@ -39,7 +39,7 @@ interface ResolveInvoicePrintDialogContentProps {
   onBrowserReprint: () => Promise<void>;
   order: AdminOrderResponse;
   organizationSlug: string;
-  printJob: InvoicePrintJob;
+  printJob: PrintJob;
 }
 
 const ResolveInvoicePrintDialogContent = ({
@@ -72,12 +72,12 @@ const ResolveInvoicePrintDialogContent = ({
     setDialog({ confirmLoading: true });
 
     try {
-      const resolved = await fetcher<InvoicePrintJob>(
+      const resolved = await fetcher<PrintJob>(
         `/api/organizations/${organizationSlug}/orders/${order.id}/invoice/print-jobs/${printJob.id}/resolution`,
         {
           body: JSON.stringify({
             printed,
-          } satisfies ResolveInvoicePrintJobDto),
+          } satisfies ResolvePrintJobDto),
           headers: { "Content-Type": "application/json" },
           method: "POST",
         },

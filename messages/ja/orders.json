@@ -35,6 +35,11 @@
       "success": "注文 {orderNumber} に {amount} を返金しました",
       "title": "返金"
     },
+    "reprintOrderTicket": {
+      "confirm": "注文 <bold>{orderNumber}</bold> の伝票を再印刷してもよろしいですか？すべてのオーダー伝票プリンターから「再印刷」と記載された伝票がもう 1 枚出ます。",
+      "success": "注文 {orderNumber} の伝票をプリンターに送信しました",
+      "title": "伝票を再印刷"
+    },
     "resetInvoicePrint": {
       "confirm": "注文 <bold>{orderNumber}</bold> のインボイスを未印刷に戻してもよろしいですか？正本が実際に出力されなかった場合のみ行ってください。戻した後に印刷すると、当選対象となる正本が 2 枚目として発行されます。",
       "reason": {
@@ -54,6 +59,15 @@
       "reprintSuccess": "注文 {orderNumber} のインボイス正本をインボイスプリンターに再送信しました",
       "title": "インボイスの印刷結果を確認",
       "warning": "バーコードが印刷された紙は抽選に使えるため、再印刷すると抽選に使える正本が 2 枚になります。"
+    },
+    "resolveOrderTicket": {
+      "description": "{printer}プリンターから、注文 <bold>{orderNumber}</bold> の{kind, select, refund {返品伝票} other {オーダー伝票}}の印刷が完了したかどうか報告がありません{reason}。プリンターから伝票が出てきたか確認し、実際の状況を選んでください。",
+      "notPrinted": "まったく印刷されていない。再印刷する",
+      "printed": "印刷された（一部だけでも）",
+      "printedSuccess": "注文 {orderNumber} の伝票を印刷済みにしました",
+      "reprintSuccess": "注文 {orderNumber} の伝票をプリンターに再送信しました",
+      "title": "伝票の印刷結果を確認",
+      "warning": "バーに伝票がすでに届いている場合、再印刷すると同じ注文を 2 回作ることになります。"
     },
     "updateCustomer": {
       "success": "注文 {orderNumber} のお客様情報を更新しました",
@@ -157,6 +171,9 @@
       "title": "決済通知の履歴",
       "unhandled": "注文に未反映"
     },
+    "orderTickets": {
+      "title": "オーダー伝票"
+    },
     "refunds": {
       "allowanceNo": "返品値引伝票番号",
       "channel": {
@@ -215,6 +232,13 @@
   "mode": "注文方法",
   "orderNumber": "受け取り番号",
   "orderStatus": "注文状況",
+  "orderTicket": {
+    "chip": "{printer}{kind, select, refund {返品伝票} other {オーダー伝票}}：{status}",
+    "offline": {
+      "label": "{printer}プリンターがオフライン",
+      "tooltip": "最終接続：{lastSeenAt}。プリンターが復旧すると、待機中の伝票は自動で印刷されます。それまでは注文ボードを見て調理してください。"
+    }
+  },
   "partySize": "人数",
   "paymentDate": "支払い日時",
   "paymentMethod": "支払い方法",

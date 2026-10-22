@@ -2,13 +2,13 @@
 
 import { useTranslations } from "next-intl";
 
-import { INVOICE_PRINT_JOB_STATUS_COLORS } from "@/constants/orders";
+import { PRINT_JOB_STATUS_COLORS } from "@/constants/orders";
 
 import { Chip, Tooltip } from "@mui/material";
 
 import orders from "@/messages/en/orders.json";
 
-import type { InvoicePrintJob } from "@/types/orders";
+import type { PrintJob } from "@/types/orders";
 
 const isKnownErrorCode = (
   code: string,
@@ -27,11 +27,12 @@ export const usePrintJobErrorText = () => {
   };
 };
 
-interface InvoicePrintJobChipProps {
-  printJob: InvoicePrintJob;
+interface PrintJobChipProps {
+  label?: string;
+  printJob: PrintJob;
 }
 
-const InvoicePrintJobChip = ({ printJob }: InvoicePrintJobChipProps) => {
+const PrintJobChip = ({ label, printJob }: PrintJobChipProps) => {
   const tOrders = useTranslations("orders");
 
   const printJobErrorText = usePrintJobErrorText();
@@ -42,9 +43,9 @@ const InvoicePrintJobChip = ({ printJob }: InvoicePrintJobChipProps) => {
         color={
           printJob.errorCode && printJob.status === "queued"
             ? "warning"
-            : INVOICE_PRINT_JOB_STATUS_COLORS[printJob.status]
+            : PRINT_JOB_STATUS_COLORS[printJob.status]
         }
-        label={tOrders(`printJobStatus.${printJob.status}`)}
+        label={label ?? tOrders(`printJobStatus.${printJob.status}`)}
         size="small"
         variant="outlined"
       />
@@ -52,4 +53,4 @@ const InvoicePrintJobChip = ({ printJob }: InvoicePrintJobChipProps) => {
   );
 };
 
-export default InvoicePrintJobChip;
+export default PrintJobChip;

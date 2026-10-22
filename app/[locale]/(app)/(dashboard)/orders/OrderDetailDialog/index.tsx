@@ -5,7 +5,8 @@ import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import useSWR from "swr";
 
-import InvoicePrintJobChip from "@/components/InvoicePrintJobChip";
+import OrderTicketJobChips from "@/components/OrderTicketJobChips";
+import PrintJobChip from "@/components/PrintJobChip";
 
 import { MODE_COLORS } from "@/constants/orderMode";
 import {
@@ -22,6 +23,7 @@ import { Button, Chip, Divider, Stack, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import type {
+  AdminOrderResponse,
   OrderInvoiceVerification,
   OrderPaymentNotification,
   OrderRefund,
@@ -127,7 +129,7 @@ const Section = ({
 );
 
 interface OrderDetailDialogProps {
-  order: OrderResponse;
+  order: OrderResponse & Partial<Pick<AdminOrderResponse, "orderTicketJobs">>;
   organizationSlug: string;
 }
 
@@ -318,6 +320,13 @@ const OrderDetailDialog = ({
           </BoldTypography>
         </TotalStack>
       </Section>
+      {!!order.orderTicketJobs?.length && (
+        <Section title={tOrders("detail.orderTickets.title")}>
+          <ChipStack direction="row">
+            <OrderTicketJobChips jobs={order.orderTicketJobs} />
+          </ChipStack>
+        </Section>
+      )}
       {order.invoice && (
         <Section title={tOrders("detail.invoice.title")}>
           <InfoRow
@@ -349,7 +358,7 @@ const OrderDetailDialog = ({
           {order.invoice.printJob && (
             <InfoRow
               label={tOrders("detail.invoice.printJob")}
-              value={<InvoicePrintJobChip printJob={order.invoice.printJob} />}
+              value={<PrintJobChip printJob={order.invoice.printJob} />}
             />
           )}
           {order.invoice.printedAt && (

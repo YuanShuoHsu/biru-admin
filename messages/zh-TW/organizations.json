@@ -116,7 +116,33 @@
       "url": "URL",
       "username": "ID"
     },
-    "label": "現場點餐"
+    "label": "現場點餐",
+    "orderTicketPrinters": {
+      "add": "新增印表機",
+      "credentialsNotice": "密碼只會顯示這一次，請現在填入印表機。",
+      "description": "訂單付款後（現金收款或線上付款完成）會自動在每台工作單印表機印出工作單；已出單的訂單退款時會印退品單。印表機的結果不明時，會在訂單上請店員確認。",
+      "empty": "尚未設定工作單印表機",
+      "label": "工作單印表機",
+      "lastSeenAt": "最後連線",
+      "name": {
+        "label": "名稱",
+        "placeholder": "例如：吧台"
+      },
+      "neverSeen": "尚未連線",
+      "offline": "離線",
+      "online": "在線",
+      "password": "密碼",
+      "pollInterval": "輪詢間隔：約 {seconds} 秒",
+      "queued": "已將 {count} 筆製作中的訂單送到「{name}」",
+      "remove": "移除印表機",
+      "removeConfirm": "移除「{name}」後，尚未印出的工作單會一併取消。確定要移除嗎？",
+      "removeSuccess": "已移除「{name}」",
+      "reset": "重設密碼",
+      "resetConfirm": "重設後舊密碼立即失效，印表機要填入新密碼才能繼續列印。確定要重設嗎？",
+      "steps": "在印表機 Web Config 的「Server Direct Print」啟用，填入下列 ID、密碼與 URL。輪詢間隔越短出單越快。",
+      "url": "URL",
+      "username": "ID"
+    }
   },
   "invitations": {
     "actions": {

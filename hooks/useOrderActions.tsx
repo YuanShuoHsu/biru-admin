@@ -17,6 +17,7 @@ import type {
   OrderInvoice,
   OrderInvoicePrint,
   OrderStatus,
+  OrderTicketPrinterStatus,
   OrderTransition,
 } from "@/types/orders";
 import type { InvoicePrinterStatus } from "@/types/organizations";
@@ -32,6 +33,9 @@ import RefundOrderDialogContent, {
 import ResolveInvoicePrintDialogContent, {
   RESOLVE_INVOICE_PRINT_FORM_ID,
 } from "@/app/[locale]/(app)/(dashboard)/orders/ResolveInvoicePrintDialogContent";
+import ResolveOrderTicketDialogContent, {
+  RESOLVE_ORDER_TICKET_FORM_ID,
+} from "@/app/[locale]/(app)/(dashboard)/orders/ResolveOrderTicketDialogContent";
 import ResetInvoicePrintDialogContent, {
   RESET_INVOICE_PRINT_FORM_ID,
 } from "@/app/[locale]/(app)/(dashboard)/orders/ResetInvoicePrintDialogContent";
@@ -123,6 +127,24 @@ export const usePrintInvoiceBlocker = (organizationSlug: string) => {
 
 export const canVoidInvoice = ({ invoice }: AdminOrderResponse) =>
   invoice?.status === "issued";
+
+export const useOrderTicketPrinterStatuses = (organizationSlug: string) =>
+  useSWR<OrderTicketPrinterStatus[]>(
+    organizationSlug
+      ? `/api/organizations/${organizationSlug}/order-ticket-printers/status`
+      : null,
+    { refreshInterval: PRINTER_STATUS_REFRESH_MS },
+  ).data;
+
+export const canReprintOrderTicket = (
+  { orderTicketReprintable }: AdminOrderResponse,
+  printers: OrderTicketPrinterStatus[] | undefined,
+) => orderTicketReprintable && !!printers?.length;
+
+export const findUnresolvedOrderTicket = ({
+  orderTicketJobs,
+}: AdminOrderResponse) =>
+  orderTicketJobs.find(({ status }) => status === "unknown");
 
 export const useOrderActions = (
   organizationSlug: string,
@@ -389,6 +411,70 @@ export const useOrderActions = (
     [mutate, organizationSlug, setDialog, tOrders],
   );
 
+  const handleReprintOrderTicket = useCallback(
+    async (order: AdminOrderResponse) => {
+      try {
+        await fetcher(
+          `/api/organizations/${organizationSlug}/orders/${order.id}/order-tickets/reprint`,
+          { method: "POST" },
+        );
+
+        enqueueSnackbar(
+          tOrders("actions.reprintOrderTicket.success", {
+            orderNumber: order.orderNumber,
+          }),
+          { variant: "success" },
+        );
+      } catch (error) {
+        enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+      } finally {
+        mutate();
+      }
+    },
+    [mutate, organizationSlug, tOrders],
+  );
+
+  const handleConfirmReprintOrderTicket = useCallback(
+    (order: AdminOrderResponse) => {
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tOrders.rich("actions.reprintOrderTicket.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              orderNumber: order.orderNumber,
+            })}
+          </DialogContentText>
+        ),
+        onConfirm: () => handleReprintOrderTicket(order),
+        open: true,
+        title: tOrders("actions.reprintOrderTicket.title"),
+      });
+    },
+    [handleReprintOrderTicket, setDialog, tOrders],
+  );
+
+  const handleResolveOrderTicket = useCallback(
+    (order: AdminOrderResponse) => {
+      const job = findUnresolvedOrderTicket(order);
+      if (!job) return;
+
+      setDialog({
+        content: (
+          <ResolveOrderTicketDialogContent
+            job={job}
+            mutate={mutate}
+            order={order}
+            organizationSlug={organizationSlug}
+          />
+        ),
+        formId: RESOLVE_ORDER_TICKET_FORM_ID,
+        open: true,
+        title: tOrders("actions.resolveOrderTicket.title"),
+      });
+    },
+    [mutate, organizationSlug, setDialog, tOrders],
+  );
+
   const handleResolveInvoicePrint = useCallback(
     (order: AdminOrderResponse) => {
       const printJob = order.invoice?.printJob;
@@ -415,11 +501,13 @@ export const useOrderActions = (
   return {
     handleConfirmIssueInvoice,
     handleConfirmPrintInvoice,
+    handleConfirmReprintOrderTicket,
     handleConfirmResetInvoicePrint,
     handleConfirmStatusAction,
     handleConfirmVoidInvoice,
     handleRefund,
     handleResolveInvoicePrint,
+    handleResolveOrderTicket,
     handleUpdateCustomer,
     handleViewOrder,
   };

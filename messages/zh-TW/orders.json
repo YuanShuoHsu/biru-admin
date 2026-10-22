@@ -35,6 +35,11 @@
       "success": "訂單 {orderNumber} 已退款 {amount}",
       "title": "退款"
     },
+    "reprintOrderTicket": {
+      "confirm": "確定要重印訂單 <bold>{orderNumber}</bold> 的工作單嗎？每台工作單印表機都會再印一張標示「補印」的單。",
+      "success": "已將訂單 {orderNumber} 的工作單送到印表機",
+      "title": "重印工作單"
+    },
     "resetInvoicePrint": {
       "confirm": "確定要將訂單 <bold>{orderNumber}</bold> 的發票重設為未列印嗎？只有在正本沒有真的印出來時才這樣做，重設後再列印會印出第二張可對獎的正本。",
       "reason": {
@@ -54,6 +59,15 @@
       "reprintSuccess": "已重新將訂單 {orderNumber} 的發票正本送到發票印表機",
       "title": "確認發票列印結果",
       "warning": "印出條碼的紙本就能對獎，這時重印會產生第二張可對獎的正本。"
+    },
+    "resolveOrderTicket": {
+      "description": "{printer}印表機沒有回報訂單 <bold>{orderNumber}</bold> 的{kind, select, refund {退品單} other {工作單}}是否印完{reason}。請看印表機有沒有吐出這張單，再選擇實際情況。",
+      "notPrinted": "完全沒有印出，重新列印",
+      "printed": "有印出（即使只印出一部分）",
+      "printedSuccess": "已將訂單 {orderNumber} 的工作單記為已印出",
+      "reprintSuccess": "已重新將訂單 {orderNumber} 的工作單送到印表機",
+      "title": "確認工作單列印結果",
+      "warning": "吧台已經拿到單的話，重印會讓同一份餐做兩次。"
     },
     "updateCustomer": {
       "success": "已更新訂單 {orderNumber} 的顧客資訊",
@@ -157,6 +171,9 @@
       "title": "付款通知紀錄",
       "unhandled": "未更新訂單"
     },
+    "orderTickets": {
+      "title": "工作單"
+    },
     "refunds": {
       "allowanceNo": "折讓單號",
       "channel": {
@@ -215,6 +232,13 @@
   "mode": "點餐方式",
   "orderNumber": "取餐號碼",
   "orderStatus": "訂單狀態",
+  "orderTicket": {
+    "chip": "{printer}{kind, select, refund {退品單} other {工作單}}：{status}",
+    "offline": {
+      "label": "{printer}印表機離線",
+      "tooltip": "最後連線：{lastSeenAt}。印表機恢復後，排隊中的工作單會自動印出；在那之前請看訂單看板出餐。"
+    }
+  },
   "partySize": "用餐人數",
   "paymentDate": "付款時間",
   "paymentMethod": "付款方式",

@@ -126,6 +126,7 @@
     "printResetCount": "인쇄 재설정 횟수",
     "printResetReason": "인쇄 재설정 사유",
     "printedAt": "정본 인쇄 시간",
+    "purpose": "용도",
     "randomNumber": "랜덤 코드",
     "reason": "환불 추가 설명",
     "reasonCode": "환불 사유",
@@ -159,7 +160,7 @@
     "url": "상품 링크",
     "usedAt": "사용 일시",
     "user": "회원",
-    "username": "세금계산서 프린터 ID",
+    "username": "프린터 ID",
     "voidedAt": "무효 처리 시간",
     "weeklyMinutes": "주간 근로시간",
     "weeklyMinutesHistory": "주간 근로시간 이력"
@@ -192,6 +193,10 @@
   },
   "organization": "매장",
   "platform": "플랫폼",
+  "printerPurpose": {
+    "invoice": "영수증",
+    "orderTicket": "주문서"
+  },
   "refundItem": {
     "orderItemId": "주문 메뉴 ID",
     "quantity": "수량",

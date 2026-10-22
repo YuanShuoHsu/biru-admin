@@ -2449,6 +2449,109 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/order-ticket-printers": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查看工作單印表機設定 */
+    get: operations["OrderTicketPrintersController_findAll"];
+    put?: never;
+    /** 新增工作單印表機，並把目前製作中的訂單排進它的佇列 */
+    post: operations["OrderTicketPrintersController_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/order-ticket-printers/status": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 工作單印表機是否在線（訂單頁顯示離線提示用） */
+    get: operations["OrderTicketPrintersController_status"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/order-ticket-printers/{printerId}/credentials": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** 重設工作單印表機帳密（舊帳密立即失效） */
+    put: operations["OrderTicketPrintersController_reset"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/order-ticket-printers/{printerId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 移除工作單印表機，尚未印出的工作單一併取消 */
+    delete: operations["OrderTicketPrintersController_remove"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/orders/{orderId}/order-tickets/reprint": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 重印工作單：每台工作單印表機各補印一張 */
+    post: operations["OrderTicketPrintersController_reprint"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/orders/{orderId}/order-tickets/{jobId}/resolution": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 確認列印結果不明的工作單：有印出就結案，沒印出就重新排入佇列 */
+    post: operations["OrderTicketPrintersController_resolve"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/orders": {
     parameters: {
       query?: never;
@@ -8011,18 +8114,13 @@ export interface components {
     /** @enum {string} */
     InvoiceStatus: "pending" | "issuing" | "issued" | "voided";
     /** @enum {string} */
-    InvoicePrintCopy: "original" | "reprint";
+    PrintCopy: "original" | "reprint";
     /** @enum {string} */
-    InvoicePrintJobStatus:
-      | "queued"
-      | "sent"
-      | "printed"
-      | "unknown"
-      | "cancelled";
-    InvoicePrintJobDto: {
+    PrintJobStatus: "queued" | "sent" | "printed" | "unknown" | "cancelled";
+    PrintJobDto: {
       id: string;
-      copy: components["schemas"]["InvoicePrintCopy"];
-      status: components["schemas"]["InvoicePrintJobStatus"];
+      copy: components["schemas"]["PrintCopy"];
+      status: components["schemas"]["PrintJobStatus"];
       /** @description 印表機回報的錯誤碼 */
       errorCode?: string | null;
       /** Format: date-time */
@@ -8052,7 +8150,7 @@ export interface components {
       /** @description 已重設列印的次數 */
       printResetCount: number;
       /** @description 送往發票印表機、尚未結案的列印工作 */
-      printJob?: components["schemas"]["InvoicePrintJobDto"] | null;
+      printJob?: components["schemas"]["PrintJobDto"] | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -8065,9 +8163,9 @@ export interface components {
        */
       printHtml?: string;
       /** @description 這次列印的工作；瀏覽器列印在回報完成前都是結果不明 */
-      printJob: components["schemas"]["InvoicePrintJobDto"];
+      printJob: components["schemas"]["PrintJobDto"];
     };
-    ResolveInvoicePrintJobDto: {
+    ResolvePrintJobDto: {
       /** @description 店員確認紙本是否已印出 */
       printed: boolean;
     };
@@ -8226,7 +8324,13 @@ export interface components {
       /** @description 退款說明，會作為發票作廢／折讓原因送至綠界；原因分類為 other 時必填 */
       reason?: string;
     };
-    InvoicePrinterDto: {
+    /** @enum {string} */
+    PrinterPurpose: "invoice" | "orderTicket";
+    PrinterDto: {
+      id: string;
+      purpose: components["schemas"]["PrinterPurpose"];
+      /** @description 店家自訂的名稱（例如吧台、廚房）；發票印表機為 null */
+      name: string | null;
       /** @description 填入印表機 Server Direct Print 的 ID */
       username: string;
       /** @description 填入印表機 Server Direct Print 的 URL */
@@ -8238,11 +8342,13 @@ export interface components {
       lastSeenAt?: string | null;
       /** @description 從印表機實際來拉工作的節奏量出的輪詢間隔（毫秒），還沒量到時為 null */
       pollIntervalMs: number | null;
+      /** @description 印表機最近仍有來拉列印工作 */
+      online: boolean;
       /** Format: date-time */
       createdAt: string;
     };
     InvoicePrinterSettingDto: {
-      printer?: components["schemas"]["InvoicePrinterDto"] | null;
+      printer?: components["schemas"]["PrinterDto"] | null;
     };
     InvoicePrinterStatusDto: {
       /** @description 是否設定了發票印表機 */
@@ -8257,7 +8363,11 @@ export interface components {
       /** @description 從印表機實際來拉工作的節奏量出的輪詢間隔（毫秒），還沒量到時為 null */
       pollIntervalMs: number | null;
     };
-    InvoicePrinterCredentialsDto: {
+    PrinterCredentialsDto: {
+      id: string;
+      purpose: components["schemas"]["PrinterPurpose"];
+      /** @description 店家自訂的名稱（例如吧台、廚房）；發票印表機為 null */
+      name: string | null;
       /** @description 填入印表機 Server Direct Print 的 ID */
       username: string;
       /** @description 填入印表機 Server Direct Print 的 URL */
@@ -8269,11 +8379,13 @@ export interface components {
       lastSeenAt?: string | null;
       /** @description 從印表機實際來拉工作的節奏量出的輪詢間隔（毫秒），還沒量到時為 null */
       pollIntervalMs: number | null;
+      /** @description 印表機最近仍有來拉列印工作 */
+      online: boolean;
       /** Format: date-time */
       createdAt: string;
       /** @description 只在建立或重設時回傳一次 */
       password: string;
-      /** @description 這次一併送印的未印正本張數 */
+      /** @description 這次一併送印的張數 */
       queuedCount: number;
     };
     /** @enum {string} */
@@ -8778,6 +8890,43 @@ export interface components {
       /** @description 各冰量／溫度售出份數（含加購品項）；不分冷熱的品項不計 */
       servingTemperatureLevels: components["schemas"]["OrderStatsServingTemperatureLevelDto"][];
     };
+    OrderTicketPrinterStatusDto: {
+      id: string;
+      /** @description 店家自訂的名稱（例如吧台、廚房）；發票印表機為 null */
+      name: string | null;
+      /**
+       * Format: date-time
+       * @description 印表機最後一次來拉列印工作的時間
+       */
+      lastSeenAt?: string | null;
+      /** @description 從印表機實際來拉工作的節奏量出的輪詢間隔（毫秒），還沒量到時為 null */
+      pollIntervalMs: number | null;
+      /** @description 印表機最近仍有來拉列印工作 */
+      online: boolean;
+    };
+    CreateOrderTicketPrinterDto: {
+      /** @description 例如吧台、廚房 */
+      name: string;
+    };
+    /**
+     * @description order：訂單工作單；refund：退品單
+     * @enum {string}
+     */
+    OrderTicketKind: "order" | "refund";
+    OrderTicketJobDto: {
+      id: string;
+      copy: components["schemas"]["PrintCopy"];
+      status: components["schemas"]["PrintJobStatus"];
+      /** @description 印表機回報的錯誤碼 */
+      errorCode?: string | null;
+      /** Format: date-time */
+      sentAt?: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** @description order：訂單工作單；refund：退品單 */
+      kind: components["schemas"]["OrderTicketKind"];
+      printerName: string;
+    };
     CreateOrderCustomerDto: {
       /** Format: email */
       email?: string;
@@ -9047,6 +9196,10 @@ export interface components {
       refundable: boolean;
       /** @description ecpay：可直接透過綠界退刷；manual：綠界不支援此付款方式的退款 API，系統僅登錄，需店家自行退款 */
       refundChannel: components["schemas"]["RefundChannel"];
+      /** @description 在途（排隊、列印中、結果不明）的工作單與退品單 */
+      orderTicketJobs: components["schemas"]["OrderTicketJobDto"][];
+      /** @description 訂單狀態是否允許重印工作單；店家有沒有工作單印表機要另外看印表機清單 */
+      orderTicketReprintable: boolean;
     };
     AdminOrderBoardColumnDto: {
       orderStatus: components["schemas"]["OrderFlowStatus"];
@@ -16423,7 +16576,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["ResolveInvoicePrintJobDto"];
+        "application/json": components["schemas"]["ResolvePrintJobDto"];
       };
     };
     responses: {
@@ -16432,7 +16585,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["InvoicePrintJobDto"];
+          "application/json": components["schemas"]["PrintJobDto"];
         };
       };
       /** @description Internal server error */
@@ -16674,7 +16827,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["InvoicePrinterCredentialsDto"];
+          "application/json": components["schemas"]["PrinterCredentialsDto"];
         };
       };
       /** @description Internal server error */
@@ -17663,6 +17816,213 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["OrderStatsResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrderTicketPrintersController_findAll: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PrinterDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrderTicketPrintersController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateOrderTicketPrinterDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PrinterCredentialsDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrderTicketPrintersController_status: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderTicketPrinterStatusDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrderTicketPrintersController_reset: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        printerId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PrinterCredentialsDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrderTicketPrintersController_remove: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        printerId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrderTicketPrintersController_reprint: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        orderId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderTicketJobDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrderTicketPrintersController_resolve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        orderId: string;
+        jobId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ResolvePrintJobDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderTicketJobDto"];
         };
       };
       /** @description Internal server error */
@@ -19805,7 +20165,7 @@ export interface operations {
       path: {
         organizationSlug: string;
         ticketId: string;
-        status: "cancelled" | "waiting" | "called" | "seated" | "noShow";
+        status: "called" | "cancelled" | "waiting" | "seated" | "noShow";
       };
       cookie?: never;
     };
@@ -22856,7 +23216,7 @@ export const pathsApiOrganizationsOrganizationIdOrderMenuGetParametersQueryLangV
 > = ["en", "ja", "ko", "zh-CN", "zh-TW"];
 export const pathsApiOrganizationsOrganizationSlugWaitlistTicketsTicketIdTransitionsStatusPatchParametersPathStatusValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/organizations/{organizationSlug}/waitlist/tickets/{ticketId}/transitions/{status}"]["patch"]["parameters"]["path"]["status"]
-> = ["cancelled", "waiting", "called", "seated", "noShow"];
+> = ["called", "cancelled", "waiting", "seated", "noShow"];
 export const attendanceErrorCodeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceErrorCode"]
 > = [
@@ -24043,11 +24403,11 @@ export const invoicePaymentStatusValues: ReadonlyArray<
 export const invoiceStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["InvoiceStatus"]
 > = ["pending", "issuing", "issued", "voided"];
-export const invoicePrintCopyValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["InvoicePrintCopy"]
+export const printCopyValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PrintCopy"]
 > = ["original", "reprint"];
-export const invoicePrintJobStatusValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["InvoicePrintJobStatus"]
+export const printJobStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PrintJobStatus"]
 > = ["queued", "sent", "printed", "unknown", "cancelled"];
 export const ecpayCallbackEndpointValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["EcpayCallbackEndpoint"]
@@ -24075,6 +24435,9 @@ export const refundReasonCodeValues: ReadonlyArray<
 export const orderRefundDtoScopeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrderRefundDto"]["scope"]
 > = ["full", "partial"];
+export const printerPurposeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PrinterPurpose"]
+> = ["invoice", "orderTicket"];
 export const ingredientFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["IngredientFilterField"]
 > = [
@@ -24150,6 +24513,9 @@ export const orderStatsModeDtoModeValues: ReadonlyArray<
 export const orderStatsPaymentMethodDtoPaymentMethodValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrderStatsPaymentMethodDto"]["paymentMethod"]
 > = ["ApplePay", "Cash", "Credit", "iPASS", "Jkopay", "TWQR", "WeiXin"];
+export const orderTicketKindValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OrderTicketKind"]
+> = ["order", "refund"];
 export const createOrderInvoiceDtoTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CreateOrderInvoiceDto"]["type"]
 > = ["personal", "company", "donate"];

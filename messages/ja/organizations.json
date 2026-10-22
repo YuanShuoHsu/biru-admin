@@ -116,7 +116,33 @@
       "url": "URL",
       "username": "ID"
     },
-    "label": "店頭注文"
+    "label": "店頭注文",
+    "orderTicketPrinters": {
+      "add": "プリンターを追加",
+      "credentialsNotice": "パスワードは今回しか表示されません。今すぐプリンターに入力してください。",
+      "description": "注文の支払いが完了すると（現金受領またはオンライン決済完了）、各オーダー伝票プリンターから自動で伝票が印刷されます。伝票を印刷済みの注文を返金すると返品伝票が印刷されます。印刷結果が不明な場合は、注文画面でスタッフに確認を求めます。",
+      "empty": "オーダー伝票プリンターが未設定です",
+      "label": "オーダー伝票プリンター",
+      "lastSeenAt": "最終接続",
+      "name": {
+        "label": "名前",
+        "placeholder": "例：バー"
+      },
+      "neverSeen": "未接続",
+      "offline": "オフライン",
+      "online": "オンライン",
+      "password": "パスワード",
+      "pollInterval": "ポーリング間隔：約 {seconds} 秒",
+      "queued": "調理中の注文 {count} 件を「{name}」に送信しました",
+      "remove": "プリンターを削除",
+      "removeConfirm": "「{name}」を削除すると、未印刷の伝票はキャンセルされます。削除しますか？",
+      "removeSuccess": "「{name}」を削除しました",
+      "reset": "パスワードを再設定",
+      "resetConfirm": "再設定すると旧パスワードはすぐに無効になり、新しいパスワードを入力するまでプリンターは印刷できません。再設定しますか？",
+      "steps": "プリンターの Web Config で「Server Direct Print」を有効にし、下記の ID・パスワード・URL を入力してください。ポーリング間隔が短いほど早く印刷されます。",
+      "url": "URL",
+      "username": "ID"
+    }
   },
   "invitations": {
     "actions": {

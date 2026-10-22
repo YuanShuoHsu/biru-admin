@@ -14,7 +14,10 @@ import {
   canResetInvoicePrint,
   canResolveInvoicePrint,
   canVoidInvoice,
+  canReprintOrderTicket,
+  findUnresolvedOrderTicket,
   useOrderActions,
+  useOrderTicketPrinterStatuses,
   usePrintInvoiceBlocker,
 } from "@/hooks/useOrderActions";
 import { useOrderModeLabel } from "@/hooks/useOrderModeLabel";
@@ -29,7 +32,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import InvoicePrintJobChip from "@/components/InvoicePrintJobChip";
+import OrderTicketJobChips from "@/components/OrderTicketJobChips";
+import PrintJobChip from "@/components/PrintJobChip";
 import SelectAllTransferList, {
   type SelectAllTransferListAction,
 } from "@/components/SelectAllTransferList";
@@ -104,14 +108,18 @@ const OrdersBoard = ({
   const {
     handleConfirmIssueInvoice,
     handleConfirmPrintInvoice,
+    handleConfirmReprintOrderTicket,
     handleConfirmResetInvoicePrint,
     handleConfirmStatusAction,
     handleConfirmVoidInvoice,
     handleRefund,
     handleResolveInvoicePrint,
+    handleResolveOrderTicket,
     handleUpdateCustomer,
     handleViewOrder,
   } = useOrderActions(organizationSlug, mutate);
+
+  const orderTicketPrinters = useOrderTicketPrinterStatuses(organizationSlug);
 
   const { blockedBy: printInvoiceBlockedBy, tooltip: printInvoiceTooltip } =
     usePrintInvoiceBlocker(organizationSlug);
@@ -142,6 +150,15 @@ const OrdersBoard = ({
             {
               label: tOrders("actions.updateCustomer.title"),
               onClick: () => handleUpdateCustomer(order),
+            },
+            findUnresolvedOrderTicket(order) && {
+              color: "error" as const,
+              label: tOrders("actions.resolveOrderTicket.title"),
+              onClick: () => handleResolveOrderTicket(order),
+            },
+            canReprintOrderTicket(order, orderTicketPrinters) && {
+              label: tOrders("actions.reprintOrderTicket.title"),
+              onClick: () => handleConfirmReprintOrderTicket(order),
             },
             canIssueInvoice(order) && {
               label: tOrders("actions.issueInvoice.title"),
@@ -193,8 +210,9 @@ const OrdersBoard = ({
                   variant="outlined"
                 />
                 {order.invoice?.printJob && (
-                  <InvoicePrintJobChip printJob={order.invoice.printJob} />
+                  <PrintJobChip printJob={order.invoice.printJob} />
                 )}
+                <OrderTicketJobChips jobs={order.orderTicketJobs} />
               </StyledStack>
             ),
             secondary: (
@@ -248,13 +266,16 @@ const OrdersBoard = ({
       getOrderModeLabel,
       handleConfirmIssueInvoice,
       handleConfirmPrintInvoice,
+      handleConfirmReprintOrderTicket,
       handleConfirmResetInvoicePrint,
       handleConfirmStatusAction,
       handleConfirmVoidInvoice,
       handleRefund,
       handleResolveInvoicePrint,
+      handleResolveOrderTicket,
       handleUpdateCustomer,
       handleViewOrder,
+      orderTicketPrinters,
       printInvoiceBlockedBy,
       printInvoiceTooltip,
       tOrders,

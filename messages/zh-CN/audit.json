@@ -126,6 +126,7 @@
     "printResetCount": "重设打印次数",
     "printResetReason": "重设打印理由",
     "printedAt": "正本打印时间",
+    "purpose": "用途",
     "randomNumber": "随机码",
     "reason": "退款说明",
     "reasonCode": "退款原因",
@@ -159,7 +160,7 @@
     "url": "商品链接",
     "usedAt": "使用时间",
     "user": "会员",
-    "username": "发票打印机 ID",
+    "username": "打印机 ID",
     "voidedAt": "作废时间",
     "weeklyMinutes": "每周工时",
     "weeklyMinutesHistory": "每周工时记录"
@@ -192,6 +193,10 @@
   },
   "organization": "店家",
   "platform": "平台",
+  "printerPurpose": {
+    "invoice": "发票",
+    "orderTicket": "工作单"
+  },
   "refundItem": {
     "orderItemId": "订单品项 ID",
     "quantity": "数量",

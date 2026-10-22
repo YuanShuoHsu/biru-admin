@@ -116,7 +116,33 @@
       "url": "URL",
       "username": "ID"
     },
-    "label": "现场点餐"
+    "label": "现场点餐",
+    "orderTicketPrinters": {
+      "add": "新增打印机",
+      "credentialsNotice": "密码只会显示这一次，请现在填入打印机。",
+      "description": "订单付款后（现金收款或线上付款完成）会自动在每台工作单打印机打印工作单；已出单的订单退款时会打印退品单。打印结果不明时，会在订单上请店员确认。",
+      "empty": "尚未设置工作单打印机",
+      "label": "工作单打印机",
+      "lastSeenAt": "最后连接",
+      "name": {
+        "label": "名称",
+        "placeholder": "例如：吧台"
+      },
+      "neverSeen": "尚未连接",
+      "offline": "离线",
+      "online": "在线",
+      "password": "密码",
+      "pollInterval": "轮询间隔：约 {seconds} 秒",
+      "queued": "已将 {count} 笔制作中的订单发送到「{name}」",
+      "remove": "移除打印机",
+      "removeConfirm": "移除「{name}」后，尚未打印的工作单会一并取消。确定要移除吗？",
+      "removeSuccess": "已移除「{name}」",
+      "reset": "重设密码",
+      "resetConfirm": "重设后旧密码立即失效，打印机要填入新密码才能继续打印。确定要重设吗？",
+      "steps": "在打印机 Web Config 的「Server Direct Print」启用，填入下列 ID、密码与 URL。轮询间隔越短出单越快。",
+      "url": "URL",
+      "username": "ID"
+    }
   },
   "invitations": {
     "actions": {

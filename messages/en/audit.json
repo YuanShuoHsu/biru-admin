@@ -126,6 +126,7 @@
     "printResetCount": "Print reset count",
     "printResetReason": "Print reset reason",
     "printedAt": "Original printed at",
+    "purpose": "Purpose",
     "randomNumber": "Random code",
     "reason": "Refund note",
     "reasonCode": "Refund reason",
@@ -159,7 +160,7 @@
     "url": "Product link",
     "usedAt": "Used at",
     "user": "Member",
-    "username": "Invoice printer ID",
+    "username": "Printer ID",
     "voidedAt": "Voided at",
     "weeklyMinutes": "Weekly hours",
     "weeklyMinutesHistory": "Weekly hours history"
@@ -192,6 +193,10 @@
   },
   "organization": "Store",
   "platform": "Platform",
+  "printerPurpose": {
+    "invoice": "Invoice",
+    "orderTicket": "Order ticket"
+  },
   "refundItem": {
     "orderItemId": "Order item ID",
     "quantity": "Quantity",

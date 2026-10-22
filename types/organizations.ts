@@ -8,8 +8,6 @@ export type Member = typeof authClient.$Infer.Member;
 export type Organization = typeof authClient.$Infer.Organization;
 export type Team = typeof authClient.$Infer.Team;
 
-export type InvoicePrinterCredentials =
-  components["schemas"]["InvoicePrinterCredentialsDto"];
 export type InvoicePrinterSetting =
   components["schemas"]["InvoicePrinterSettingDto"];
 export type InvoicePrinterStatus =
@@ -21,3 +19,5 @@ export type OrganizationMember =
   components["schemas"]["OrganizationMemberResponseDto"];
 export type OrganizationStats =
   components["schemas"]["OrganizationStatsResponseDto"];
+export type Printer = components["schemas"]["PrinterDto"];
+export type PrinterCredentials = components["schemas"]["PrinterCredentialsDto"];

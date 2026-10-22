@@ -35,6 +35,11 @@
       "success": "Refunded {amount} for order {orderNumber}",
       "title": "Refund"
     },
+    "reprintOrderTicket": {
+      "confirm": "Reprint the ticket for order <bold>{orderNumber}</bold>? Every order ticket printer will print another ticket marked as a reprint.",
+      "success": "Sent the ticket for order {orderNumber} to the printer",
+      "title": "Reprint ticket"
+    },
     "resetInvoicePrint": {
       "confirm": "Reset the invoice for order <bold>{orderNumber}</bold> to not printed? Do this only if the original never came out of the printer — after resetting, the next print produces a second prize-eligible original.",
       "reason": {
@@ -54,6 +59,15 @@
       "reprintSuccess": "Sent the original invoice for order {orderNumber} to the invoice printer again",
       "title": "Confirm invoice print result",
       "warning": "A printout with barcodes can claim the lottery prize. Reprinting it creates a second claimable original."
+    },
+    "resolveOrderTicket": {
+      "description": "The {printer} printer didn't report whether the {kind, select, refund {refund ticket} other {order ticket}} for order <bold>{orderNumber}</bold> finished printing{reason}. Check whether the printer produced it, then choose what happened.",
+      "notPrinted": "Nothing was printed; print it again",
+      "printed": "It was printed (even partially)",
+      "printedSuccess": "Marked the ticket for order {orderNumber} as printed",
+      "reprintSuccess": "Sent the ticket for order {orderNumber} to the printer again",
+      "title": "Confirm ticket print result",
+      "warning": "If the bar already has this ticket, reprinting it means the same order gets made twice."
     },
     "updateCustomer": {
       "success": "Customer information for order {orderNumber} updated",
@@ -157,6 +171,9 @@
       "title": "Payment notifications",
       "unhandled": "Order not updated"
     },
+    "orderTickets": {
+      "title": "Order tickets"
+    },
     "refunds": {
       "allowanceNo": "Credit note number",
       "channel": {
@@ -215,6 +232,13 @@
   "mode": "Order mode",
   "orderNumber": "Pickup number",
   "orderStatus": "Order status",
+  "orderTicket": {
+    "chip": "{printer} {kind, select, refund {refund ticket} other {order ticket}}: {status}",
+    "offline": {
+      "label": "{printer} printer offline",
+      "tooltip": "Last connected: {lastSeenAt}. Queued tickets print automatically once the printer is back; until then, prepare orders from the order board."
+    }
+  },
   "partySize": "Party size",
   "paymentDate": "Payment date",
   "paymentMethod": "Payment method",

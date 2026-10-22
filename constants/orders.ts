@@ -1,9 +1,9 @@
 import type { ChipProps } from "@mui/material/Chip";
 
 import type {
-  InvoicePrintJobStatus,
   InvoiceStatus,
   OrderStatus,
+  PrintJobStatus,
   RefundInvoiceAction,
   RefundStatus,
 } from "@/types/orders";
@@ -16,8 +16,8 @@ export const INVOICE_STATUS_COLORS: Record<InvoiceStatus, ChipProps["color"]> =
     voided: "default",
   };
 
-export const INVOICE_PRINT_JOB_STATUS_COLORS: Record<
-  InvoicePrintJobStatus,
+export const PRINT_JOB_STATUS_COLORS: Record<
+  PrintJobStatus,
   ChipProps["color"]
 > = {
   cancelled: "default",

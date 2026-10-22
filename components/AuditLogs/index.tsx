@@ -264,6 +264,7 @@ const FIELD_LABEL_KEYS = {
   originalEndsAt: "field.originalEndsAt",
   irreversible: "field.irreversible",
   username: "field.username",
+  purpose: "field.purpose",
   carrierNum: "field.carrierNum",
   carrierType: "field.carrierType",
   customerAddr: "field.customerAddr",
