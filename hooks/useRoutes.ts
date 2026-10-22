@@ -1286,7 +1286,9 @@ export const useRoutes = () => {
     page: DEFAULT_PAGINATION_QUERY.page,
     pageSize: DEFAULT_PAGINATION_QUERY.pageSize,
     range: resolveDashboardRange(searchParams.get("range") || undefined),
-    redirectTo: searchParams.get("redirectTo") || pathname,
+    redirectTo:
+      searchParams.get("redirectTo") ||
+      getHref(pathname, Object.fromEntries(searchParams)),
     symbol: resolveQuantSymbol(searchParams.get("symbol")),
     view: DEFAULT_ATTENDANCE_CALENDAR_VIEW,
   };
