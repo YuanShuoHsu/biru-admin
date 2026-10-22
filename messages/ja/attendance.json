@@ -504,7 +504,9 @@
     "reviewSelected": "選択した項目を確認（{count}）",
     "publishSelected": "選択した項目を公開（{count}）",
     "reviewedCount": "給与明細 {count} 件を確認しました",
-    "publishedCount": "給与明細 {count} 件を公開しました"
+    "publishedCount": "給与明細 {count} 件を公開しました",
+    "violations": "既に発生した労働条件違反",
+    "acknowledgeViolations": "上記の違反が実際に発生したことを確認し、記録どおり給与を支払い、確認記録を残します"
   },
   "payrollLine": {
     "options": {

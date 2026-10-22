@@ -27,6 +27,7 @@ import {
   payrollEarningTypeSortFieldValues,
   payrollStatementFilterFieldValues,
   payrollStatementSortFieldValues,
+  payrollViolationValues,
 } from "@/types/api";
 
 export type AttendanceEmployee =
@@ -152,6 +153,7 @@ export type PayrollEarningTypeSortField =
   (typeof payrollEarningTypeSortFieldValues)[number];
 
 export type PayrollBlocker = (typeof payrollBlockerValues)[number];
+export type PayrollViolation = (typeof payrollViolationValues)[number];
 
 export type AttendanceRequestFilterField =
   (typeof attendanceRequestFilterFieldValues)[number];

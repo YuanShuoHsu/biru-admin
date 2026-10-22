@@ -6,6 +6,7 @@ import type {
   AttendanceShift,
   PayrollBlocker,
   PayrollStatement,
+  PayrollViolation,
 } from "@/types/attendance";
 
 import type { hasRolePermission } from "@/utils/organizations";
@@ -161,7 +162,7 @@ const PENDING_REQUESTS: PayrollBlockerPage = {
 };
 
 export const PAYROLL_BLOCKER_TARGETS: Record<
-  PayrollBlocker,
+  PayrollBlocker | PayrollViolation,
   PayrollBlockerPage | "terms" | null
 > = {
   averageWageStatementsRequired: null,

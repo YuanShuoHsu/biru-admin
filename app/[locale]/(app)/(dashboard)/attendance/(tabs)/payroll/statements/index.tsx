@@ -376,6 +376,16 @@ const Payroll = ({
                 { count },
               )
             }
+            violations={
+              action === "review"
+                ? Object.fromEntries(
+                    statements.map(({ id, snapshot }) => [
+                      id,
+                      snapshot.violations ?? [],
+                    ]),
+                  )
+                : undefined
+            }
           />
         ),
         formId: "attendance-batch-review-form",
@@ -390,12 +400,13 @@ const Payroll = ({
       setDialog({
         content: (
           <BlockerList
+            codes={statement.snapshot.blockers}
+            employeeName={statement.employeeName}
             onEditTerms={
               canManageTerms
                 ? () => handleTermsDialog(statement.employeeId)
                 : undefined
             }
-            statement={statement}
           />
         ),
         open: true,

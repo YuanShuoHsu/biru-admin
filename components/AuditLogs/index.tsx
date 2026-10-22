@@ -302,6 +302,7 @@ const ATTENDANCE_FIELD_LABEL_KEYS = {
   requiresBalance: "requiresBalance",
   medicalCertified: "medicalCertified",
   category: "earningCategory.label",
+  acknowledgedViolations: "payroll.violations",
   year: "year",
   month: "month",
   effectiveFrom: "effectiveFrom",

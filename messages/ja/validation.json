@@ -380,5 +380,8 @@
   },
   "endTime": {
     "sameAsStartTime": "終了時刻は開始時刻と異なる必要があります。"
+  },
+  "violationsAcknowledged": {
+    "required": "上記の違反を確認してから承認してください。"
   }
 }

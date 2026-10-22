@@ -504,7 +504,9 @@
     "reviewSelected": "선택 항목 검토({count})",
     "publishSelected": "선택 항목 게시({count})",
     "reviewedCount": "급여 명세서 {count}건을 검토했습니다",
-    "publishedCount": "급여 명세서 {count}건을 게시했습니다"
+    "publishedCount": "급여 명세서 {count}건을 게시했습니다",
+    "violations": "이미 발생한 근로조건 위반",
+    "acknowledgeViolations": "위 위반이 실제로 발생했음을 확인하며, 기록대로 급여를 지급하고 확인 기록을 남깁니다"
   },
   "payrollLine": {
     "options": {

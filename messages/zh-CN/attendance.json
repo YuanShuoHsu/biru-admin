@@ -504,7 +504,9 @@
     "reviewSelected": "复核所选（{count}）",
     "publishSelected": "发布所选（{count}）",
     "reviewedCount": "已复核 {count} 张工资单",
-    "publishedCount": "已发布 {count} 张工资单"
+    "publishedCount": "已发布 {count} 张工资单",
+    "violations": "已发生的劳动条件违规",
+    "acknowledgeViolations": "我已确认上述违规确实发生，照实发薪并留下确认记录"
   },
   "payrollLine": {
     "options": {

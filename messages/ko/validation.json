@@ -380,5 +380,8 @@
   },
   "endTime": {
     "sameAsStartTime": "종료 시간은 시작 시간과 달라야 합니다."
+  },
+  "violationsAcknowledged": {
+    "required": "위 위반을 확인한 후 검토하세요."
   }
 }

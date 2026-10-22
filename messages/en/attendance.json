@@ -504,7 +504,9 @@
     "reviewSelected": "Review selected ({count})",
     "publishSelected": "Publish selected ({count})",
     "reviewedCount": "Reviewed {count, plural, one {# payslip} other {# payslips}}",
-    "publishedCount": "Published {count, plural, one {# payslip} other {# payslips}}"
+    "publishedCount": "Published {count, plural, one {# payslip} other {# payslips}}",
+    "violations": "Labor-standard violations that already occurred",
+    "acknowledgeViolations": "I confirm these violations occurred and will pay wages as recorded, keeping this acknowledgement on file"
   },
   "payrollLine": {
     "options": {

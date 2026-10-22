@@ -4795,6 +4795,7 @@ export interface components {
       | "payrollRuleSetMissing"
       | "payrollSourceChanged"
       | "payrollTermsRequired"
+      | "payrollViolationsUnacknowledged"
       | "pendingRequestExists"
       | "pensionIneligible"
       | "pensionRequired"
@@ -7176,11 +7177,6 @@ export interface components {
       | "belowMinimumWage"
       | "birthDateRequired"
       | "calendarLeavePayRequired"
-      | "childLaborHoursExceeded"
-      | "childLaborNightWork"
-      | "childLaborRestDay"
-      | "consecutiveWorkdaysExceeded"
-      | "dailyHoursExceeded"
       | "emergencyDetailsRequired"
       | "employmentInsuranceExemptionInvalid"
       | "employmentInsuranceIneligible"
@@ -7200,16 +7196,13 @@ export interface components {
       | "laborInsuranceRequired"
       | "leavePolicyRequired"
       | "legacySeniorityUnsupported"
-      | "maternalNightWork"
       | "minimumWageUnconfirmed"
-      | "monthlyOvertimeExceeded"
       | "negativeNetPay"
       | "noShifts"
       | "occupationalAccidentRateRequired"
       | "openingHoursRequired"
       | "overlappingLeaveAttendance"
       | "parentalReturnPending"
-      | "overtimeAgreementRequired"
       | "partTimeLadderRequiresPartTime"
       | "payrollPeriodOpen"
       | "paydayRequired"
@@ -7218,15 +7211,25 @@ export interface components {
       | "pensionIneligible"
       | "pensionRequired"
       | "prorationRequired"
-      | "shiftRestTooShort"
-      | "studentWeeklyHoursExceeded"
       | "taiwanStaySinceRequired"
       | "terminationReasonRequired"
       | "unreviewedOvertime"
       | "unsupportedDayKind"
-      | "weeklyRestRequired"
       | "weeklyScheduleRequiresReview"
-      | "withholdingTableOutdated"
+      | "withholdingTableOutdated";
+    /** @enum {string} */
+    PayrollViolation:
+      | "childLaborHoursExceeded"
+      | "childLaborNightWork"
+      | "childLaborRestDay"
+      | "consecutiveWorkdaysExceeded"
+      | "dailyHoursExceeded"
+      | "maternalNightWork"
+      | "monthlyOvertimeExceeded"
+      | "overtimeAgreementRequired"
+      | "shiftRestTooShort"
+      | "studentWeeklyHoursExceeded"
+      | "weeklyRestRequired"
       | "workPermitRequired";
     PayrollSnapshotResponseDto: {
       terms: components["schemas"]["PayrollTermsValuesDto"];
@@ -7240,6 +7243,7 @@ export interface components {
       employerCosts?: components["schemas"]["PayrollEmployerCostResponseDto"][];
       workedSeconds: number;
       blockers: components["schemas"]["PayrollBlocker"][];
+      violations?: components["schemas"]["PayrollViolation"][];
       sourceFingerprint: string;
     };
     PayrollStatementListItemResponseDto: {
@@ -7315,10 +7319,12 @@ export interface components {
       reason?: string;
     };
     PayrollBatchReviewDto: {
+      acknowledgedViolations?: components["schemas"]["PayrollViolation"][];
       ids: string[];
       reason?: string;
     };
     PayrollReviewDto: {
+      acknowledgedViolations?: components["schemas"]["PayrollViolation"][];
       reason?: string;
     };
     /** @enum {string} */
@@ -22928,6 +22934,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "payrollRuleSetMissing",
   "payrollSourceChanged",
   "payrollTermsRequired",
+  "payrollViolationsUnacknowledged",
   "pendingRequestExists",
   "pensionIneligible",
   "pensionRequired",
@@ -23644,11 +23651,6 @@ export const payrollBlockerValues: ReadonlyArray<
   "belowMinimumWage",
   "birthDateRequired",
   "calendarLeavePayRequired",
-  "childLaborHoursExceeded",
-  "childLaborNightWork",
-  "childLaborRestDay",
-  "consecutiveWorkdaysExceeded",
-  "dailyHoursExceeded",
   "emergencyDetailsRequired",
   "employmentInsuranceExemptionInvalid",
   "employmentInsuranceIneligible",
@@ -23668,16 +23670,13 @@ export const payrollBlockerValues: ReadonlyArray<
   "laborInsuranceRequired",
   "leavePolicyRequired",
   "legacySeniorityUnsupported",
-  "maternalNightWork",
   "minimumWageUnconfirmed",
-  "monthlyOvertimeExceeded",
   "negativeNetPay",
   "noShifts",
   "occupationalAccidentRateRequired",
   "openingHoursRequired",
   "overlappingLeaveAttendance",
   "parentalReturnPending",
-  "overtimeAgreementRequired",
   "partTimeLadderRequiresPartTime",
   "payrollPeriodOpen",
   "paydayRequired",
@@ -23686,15 +23685,27 @@ export const payrollBlockerValues: ReadonlyArray<
   "pensionIneligible",
   "pensionRequired",
   "prorationRequired",
-  "shiftRestTooShort",
-  "studentWeeklyHoursExceeded",
   "taiwanStaySinceRequired",
   "terminationReasonRequired",
   "unreviewedOvertime",
   "unsupportedDayKind",
-  "weeklyRestRequired",
   "weeklyScheduleRequiresReview",
   "withholdingTableOutdated",
+];
+export const payrollViolationValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PayrollViolation"]
+> = [
+  "childLaborHoursExceeded",
+  "childLaborNightWork",
+  "childLaborRestDay",
+  "consecutiveWorkdaysExceeded",
+  "dailyHoursExceeded",
+  "maternalNightWork",
+  "monthlyOvertimeExceeded",
+  "overtimeAgreementRequired",
+  "shiftRestTooShort",
+  "studentWeeklyHoursExceeded",
+  "weeklyRestRequired",
   "workPermitRequired",
 ];
 export const payrollEarningTypeFilterFieldValues: ReadonlyArray<

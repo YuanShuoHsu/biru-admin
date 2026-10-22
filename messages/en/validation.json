@@ -380,5 +380,8 @@
   },
   "endTime": {
     "sameAsStartTime": "End time must be different from start time."
+  },
+  "violationsAcknowledged": {
+    "required": "Acknowledge the violations above before review."
   }
 }

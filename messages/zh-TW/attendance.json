@@ -504,7 +504,9 @@
     "reviewSelected": "覆核所選（{count}）",
     "publishSelected": "發布所選（{count}）",
     "reviewedCount": "已覆核 {count} 張薪資單",
-    "publishedCount": "已發布 {count} 張薪資單"
+    "publishedCount": "已發布 {count} 張薪資單",
+    "violations": "已發生的勞動條件違規",
+    "acknowledgeViolations": "我已確認上述違規確實發生，照實發薪並留下確認紀錄"
   },
   "payrollLine": {
     "options": {

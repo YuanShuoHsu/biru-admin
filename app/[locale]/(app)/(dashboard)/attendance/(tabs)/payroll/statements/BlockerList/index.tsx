@@ -13,7 +13,7 @@ import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { PayrollStatement } from "@/types/attendance";
+import type { PayrollBlocker, PayrollViolation } from "@/types/attendance";
 
 const StyledListItem = styled(ListItem)(({ theme }) => ({
   gap: theme.spacing(2),
@@ -24,16 +24,15 @@ const StyledButton = styled(Button)({
 }) as typeof Button;
 
 interface BlockerListProps {
+  codes: (PayrollBlocker | PayrollViolation)[];
+  employeeName: string;
   onEditTerms?: () => void;
-  statement: PayrollStatement;
 }
 
 const BlockerList = ({
+  codes,
+  employeeName,
   onEditTerms,
-  statement: {
-    employeeName,
-    snapshot: { blockers },
-  },
 }: BlockerListProps) => {
   const { closeDialog } = useDialogStore((state) => state);
 
@@ -43,8 +42,8 @@ const BlockerList = ({
 
   return (
     <List disablePadding>
-      {blockers.map((blocker) => {
-        const target = PAYROLL_BLOCKER_TARGETS[blocker];
+      {codes.map((code) => {
+        const target = PAYROLL_BLOCKER_TARGETS[code];
         const page = target && target !== "terms" ? target : null;
         const item = page && navItem(page.path);
 
@@ -54,8 +53,8 @@ const BlockerList = ({
         }).toString();
 
         return (
-          <StyledListItem disableGutters key={blocker}>
-            <ListItemText primary={tAttendance(`errors.${blocker}`)} />
+          <StyledListItem disableGutters key={code}>
+            <ListItemText primary={tAttendance(`errors.${code}`)} />
             {target === "terms" && onEditTerms && (
               <StyledButton onClick={onEditTerms} size="small">
                 {tAttendance("payrollTerms")}

@@ -2,8 +2,8 @@
 
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent } from "react";
-import { useForm } from "react-hook-form";
+import { type BaseSyntheticEvent, Fragment } from "react";
+import { useForm, useWatch } from "react-hook-form";
 
 import BatchSkippedList from "../BatchSkippedList";
 import { type BatchReviewForm, useBatchReviewFormSchema } from "./definitions";
@@ -12,11 +12,23 @@ import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { TextField } from "@mui/material";
+import {
+  Alert,
+  AlertTitle,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  FormHelperText,
+  TextField,
+  Typography,
+} from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { AttendanceBatchResult } from "@/types/attendance";
+import type {
+  AttendanceBatchResult,
+  PayrollViolation,
+} from "@/types/attendance";
 
 import { fetcher } from "@/utils/fetcher";
 import { getErrorMessage } from "@/utils/errors";
@@ -28,6 +40,7 @@ interface BatchReviewDialogProps {
   path: string;
   status?: "approved" | "rejected";
   succeededMessage?: (count: number) => string;
+  violations?: Record<string, PayrollViolation[]>;
 }
 
 const BatchReviewDialog = ({
@@ -37,21 +50,36 @@ const BatchReviewDialog = ({
   path,
   status,
   succeededMessage,
+  violations,
 }: BatchReviewDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const tAttendance = useTranslations("attendance");
 
-  const batchReviewFormSchema = useBatchReviewFormSchema(status === "rejected");
+  const violationEntries = Object.entries(violations ?? {}).filter(
+    ([, codes]) => codes.length,
+  );
+  const acknowledgedViolations = [
+    ...new Set(violationEntries.flatMap(([, codes]) => codes)),
+  ];
+
+  const batchReviewFormSchema = useBatchReviewFormSchema({
+    acknowledgementRequired: acknowledgedViolations.length > 0,
+    reasonRequired: status === "rejected",
+  });
 
   const {
+    control,
     formState: { errors },
     handleSubmit,
     register,
+    setValue,
   } = useForm<BatchReviewForm>({
-    defaultValues: { reason: "" },
+    defaultValues: { acknowledged: false, reason: "" },
     resolver: zodResolver(batchReviewFormSchema),
   });
+
+  const acknowledged = useWatch({ control, name: "acknowledged" });
 
   const onSubmitHandler = async ({ reason }: BatchReviewForm) => {
     try {
@@ -62,7 +90,12 @@ const BatchReviewDialog = ({
         {
           method,
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ids: Object.keys(labels), reason, status }),
+          body: JSON.stringify({
+            ids: Object.keys(labels),
+            reason,
+            status,
+            ...(acknowledgedViolations.length && { acknowledgedViolations }),
+          }),
         },
       );
 
@@ -98,6 +131,21 @@ const BatchReviewDialog = ({
 
   return (
     <FormBox id="attendance-batch-review-form" onSubmit={onSubmit}>
+      {violationEntries.length > 0 && (
+        <Alert severity="warning">
+          <AlertTitle>{tAttendance("payroll.violations")}</AlertTitle>
+          {violationEntries.map(([id, codes]) => (
+            <Fragment key={id}>
+              <Typography variant="subtitle2">{labels[id]}</Typography>
+              {codes.map((code) => (
+                <Typography key={code} variant="body2">
+                  {tAttendance(`errors.${code}`)}
+                </Typography>
+              ))}
+            </Fragment>
+          ))}
+        </Alert>
+      )}
       <TextField
         error={!!errors.reason}
         fullWidth
@@ -108,6 +156,24 @@ const BatchReviewDialog = ({
         required={status === "rejected"}
         {...register("reason")}
       />
+      {violationEntries.length > 0 && (
+        <FormControl error={!!errors.acknowledged}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={acknowledged}
+                onChange={(_, checked) =>
+                  setValue("acknowledged", checked, { shouldValidate: true })
+                }
+              />
+            }
+            label={tAttendance("payroll.acknowledgeViolations")}
+          />
+          {errors.acknowledged && (
+            <FormHelperText>{errors.acknowledged.message}</FormHelperText>
+          )}
+        </FormControl>
+      )}
     </FormBox>
   );
 };

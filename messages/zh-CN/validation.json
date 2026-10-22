@@ -380,5 +380,8 @@
   },
   "endTime": {
     "sameAsStartTime": "结束时间不能与开始时间相同。"
+  },
+  "violationsAcknowledged": {
+    "required": "请确认上述违规后再复核。"
   }
 }

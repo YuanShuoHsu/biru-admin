@@ -21,6 +21,7 @@ import {
   organizationMemberResponseDtoRoleValues,
   payrollEarningCategoryValues,
   payrollStatementStatusValues,
+  payrollViolationValues,
   refundChannelValues,
   refundInvoiceActionValues,
   refundReasonCodeValues,
@@ -76,6 +77,12 @@ export const useAuditLogValueLabels = () => {
         payrollStatementStatusValues.map((value) => [
           value,
           tAttendance(`payrollStatus.options.${value}`),
+        ]),
+      ),
+      acknowledgedViolations: Object.fromEntries(
+        payrollViolationValues.map((value) => [
+          value,
+          tAttendance(`errors.${value}`),
         ]),
       ),
       availability: Object.fromEntries(
