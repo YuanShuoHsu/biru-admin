@@ -698,10 +698,12 @@
   },
   "workPermits": {
     "daysLeft": "許可剩餘天數",
+    "expiring": "即將到期",
     "from": "許可起日",
     "invalid": "無有效許可",
     "label": "工作許可期間",
-    "to": "許可迄日"
+    "to": "許可迄日",
+    "valid": "有效"
   },
   "statutoryKind": {
     "label": "假別規則",

@@ -40,6 +40,8 @@ export type AttendanceEmployeeStatus =
   components["schemas"]["AttendanceEmployeeStatus"];
 export type AttendanceEmploymentType =
   components["schemas"]["AttendanceEmploymentType"];
+export type AttendanceWorkPermitStatus =
+  components["schemas"]["AttendanceWorkPermitStatus"];
 export type AttendanceLegalStatus =
   components["schemas"]["AttendanceLegalStatus"];
 export type AttendanceLegalStatusObligation =

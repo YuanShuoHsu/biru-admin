@@ -4950,7 +4950,8 @@ export interface components {
       | "terminatedAt"
       | "employmentType"
       | "legalStatus"
-      | "status";
+      | "status"
+      | "workPermitStatus";
     /** @enum {string} */
     AttendanceEmployeeSortField:
       | "name"
@@ -4959,7 +4960,13 @@ export interface components {
       | "terminatedAt"
       | "employmentType"
       | "legalStatus"
-      | "status";
+      | "status"
+      | "workPermitStatus";
+    /**
+     * @description 不需工作許可或已離職為 null
+     * @enum {string}
+     */
+    AttendanceWorkPermitStatus: "valid" | "expiring" | "invalid";
     AttendanceMemberEmploymentResponseDto: {
       id: string;
       employmentType: components["schemas"]["AttendanceEmploymentType"];
@@ -4984,6 +4991,11 @@ export interface components {
       /** @description 已設定且沒有任何出勤或薪資紀錄 */
       deletable: boolean;
       status: components["schemas"]["AttendanceEmployeeStatus"];
+      /** @description 不需工作許可或已離職為 null */
+      workPermitStatus:
+        | components["schemas"]["AttendanceWorkPermitStatus"]
+        | null;
+      workPermitDaysLeft: number | null;
       employee?:
         | components["schemas"]["AttendanceMemberEmploymentResponseDto"]
         | null;
@@ -5530,6 +5542,8 @@ export interface components {
       extraWork: number;
       /** @description 本年度待指定或須撤銷的國定假日補假 */
       holidaySubstitutes: number;
+      /** @description 工作許可即將到期或已失效的員工 */
+      workPermits: number;
     };
     CorrectedEventDto: {
       action: components["schemas"]["AttendanceEventAction"];
@@ -23041,6 +23055,7 @@ export const attendanceEmployeeFilterFieldValues: ReadonlyArray<
   "employmentType",
   "legalStatus",
   "status",
+  "workPermitStatus",
 ];
 export const attendanceEmployeeSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceEmployeeSortField"]
@@ -23052,7 +23067,11 @@ export const attendanceEmployeeSortFieldValues: ReadonlyArray<
   "employmentType",
   "legalStatus",
   "status",
+  "workPermitStatus",
 ];
+export const attendanceWorkPermitStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["AttendanceWorkPermitStatus"]
+> = ["valid", "expiring", "invalid"];
 export const attendanceShiftTypeFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceShiftTypeFilterField"]
 > = ["name", "startTime", "endTime"];

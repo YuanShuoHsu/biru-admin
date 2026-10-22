@@ -698,10 +698,12 @@
   },
   "workPermits": {
     "daysLeft": "許可残り日数",
+    "expiring": "まもなく期限切れ",
     "from": "許可開始日",
     "invalid": "有効な許可なし",
     "label": "就労許可期間",
-    "to": "許可終了日"
+    "to": "許可終了日",
+    "valid": "有効"
   },
   "statutoryKind": {
     "label": "休暇規則",

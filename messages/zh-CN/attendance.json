@@ -698,10 +698,12 @@
   },
   "workPermits": {
     "daysLeft": "许可剩余天数",
+    "expiring": "即将到期",
     "from": "许可起日",
     "invalid": "无有效许可",
     "label": "工作许可期间",
-    "to": "许可迄日"
+    "to": "许可迄日",
+    "valid": "有效"
   },
   "statutoryKind": {
     "label": "假别规则",

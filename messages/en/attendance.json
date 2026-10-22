@@ -698,10 +698,12 @@
   },
   "workPermits": {
     "daysLeft": "Permit days left",
+    "expiring": "Expiring soon",
     "from": "Permit start",
     "invalid": "No valid permit",
     "label": "Work permit periods",
-    "to": "Permit end"
+    "to": "Permit end",
+    "valid": "Valid"
   },
   "statutoryKind": {
     "label": "Leave rule",

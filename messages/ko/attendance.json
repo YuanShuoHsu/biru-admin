@@ -698,10 +698,12 @@
   },
   "workPermits": {
     "daysLeft": "허가 잔여 일수",
+    "expiring": "만료 임박",
     "from": "허가 시작일",
     "invalid": "유효한 허가 없음",
     "label": "취업 허가 기간",
-    "to": "허가 종료일"
+    "to": "허가 종료일",
+    "valid": "유효"
   },
   "statutoryKind": {
     "label": "휴가 규칙",

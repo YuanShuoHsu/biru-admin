@@ -3,7 +3,7 @@
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
-import useSWR from "swr";
+import useSWR, { mutate as mutateCache } from "swr";
 
 import TermsDialog from "../../payroll/statements/TermsDialog";
 import TaxIdentityDialog from "../../payroll/withholding/TaxIdentityDialog";
@@ -27,6 +27,7 @@ import {
   useEnumFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
+import { attendanceReviewCountsKey } from "@/hooks/useAttendanceReviewCounts";
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
@@ -67,17 +68,13 @@ import type {
   AttendanceLegalStatusObligation,
   AttendanceMember,
   AttendanceMemberPage,
+  AttendanceWorkPermitStatus,
   PayrollTerms,
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 
-import {
-  attendancePath,
-  payrollPath,
-  WORK_PERMIT_EXPIRY_WARNING_DAYS,
-  workPermitDaysLeft,
-} from "@/utils/attendance";
+import { attendancePath, payrollPath } from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAttendanceEmployeeEnumOptions } from "@/utils/enumOptions";
 import { getErrorMessage } from "@/utils/errors";
@@ -232,6 +229,7 @@ const Employees = ({
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
         }, 0);
+        mutateCache(attendanceReviewCountsKey(organizationSlug));
       },
     },
   );
@@ -728,36 +726,38 @@ const Employees = ({
         valueOptions: enumOptions.legalStatus,
       },
       {
-        field: "workPermitDaysLeft",
-        filterable: false,
+        field: "workPermitStatus",
+        filterOperators: enumFilterOperators,
         headerName: tAttendance("workPermits.daysLeft"),
         renderCell: (
-          params: GridRenderCellParams<AttendanceMember, number | null>,
+          params: GridRenderCellParams<
+            AttendanceMember,
+            AttendanceWorkPermitStatus | null
+          >,
         ) =>
-          params.value === undefined ? (
+          params.value === null ? (
             renderEmptyableCell(params)
-          ) : params.value === null ||
-            params.value <= WORK_PERMIT_EXPIRY_WARNING_DAYS ? (
+          ) : params.value === "valid" ? (
+            params.formattedValue
+          ) : (
             <Chip
-              color={params.value === null ? "error" : "warning"}
+              color={params.value === "invalid" ? "error" : "warning"}
               label={params.formattedValue}
               size="small"
               variant="outlined"
             />
-          ) : (
-            params.formattedValue
           ),
-        sortable: false,
-        valueFormatter: (value: number | null | undefined) =>
-          value === undefined
+        type: "singleSelect",
+        valueFormatter: (
+          value: AttendanceWorkPermitStatus | null,
+          { workPermitDaysLeft }: AttendanceMember,
+        ) =>
+          value === null
             ? ""
-            : value === null
+            : workPermitDaysLeft === null
               ? tAttendance("workPermits.invalid")
-              : tAttendance("duration.days", { days: value }),
-        valueGetter: (_, { employee, status }: AttendanceMember) =>
-          employee?.workPermitRequired && status !== "terminated"
-            ? workPermitDaysLeft(employee)
-            : undefined,
+              : tAttendance("duration.days", { days: workPermitDaysLeft }),
+        valueOptions: enumOptions.workPermitStatus,
       },
       {
         field: "status",
@@ -791,6 +791,7 @@ const Employees = ({
       enumOptions.employmentType,
       enumOptions.legalStatus,
       enumOptions.status,
+      enumOptions.workPermitStatus,
       employeeId,
       handleChildrenDialog,
       handleDeleteEmployee,

@@ -12,6 +12,7 @@ import {
   attendanceRequestKindValues,
   attendanceRequestStatusValues,
   attendanceScheduledDayKindValues,
+  attendanceWorkPermitStatusValues,
   auditActionValues,
   auditResourceValues,
   baseUnitCodeValues,
@@ -248,6 +249,10 @@ export const getAttendanceEmployeeEnumOptions = (
   })),
   status: attendanceEmployeeStatusValues.map((value) => ({
     label: tAttendance(`employeeStatus.options.${value}`),
+    value,
+  })),
+  workPermitStatus: attendanceWorkPermitStatusValues.map((value) => ({
+    label: tAttendance(`workPermits.${value}`),
     value,
   })),
 });

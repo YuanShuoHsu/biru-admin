@@ -26,5 +26,6 @@ export const useAttendanceReviewCounts = (
     "/attendance/schedule/holiday-substitutes": data?.holidaySubstitutes ?? 0,
     "/attendance/schedule/reviews": data?.requests ?? 0,
     "/attendance/leave/parental-returns": data?.parentalReturns ?? 0,
+    "/attendance/settings/employees": data?.workPermits ?? 0,
   };
 };
