@@ -111,8 +111,7 @@ const ResolveOrderTicketDialogContent = ({
           bold: (chunks) => <strong>{chunks}</strong>,
           kind: job.kind,
           orderNumber: order.orderNumber,
-          printer:
-            job.printerName ?? tOrders("orderTicket.removedPrinter"),
+          printer: job.printerName ?? tOrders("orderTicket.removedPrinter"),
           reason: reason
             ? `${tCommon("parenthesisOpen")}${reason}${tCommon("parenthesisClose")}`
             : "",
