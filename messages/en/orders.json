@@ -36,7 +36,9 @@
       "title": "Refund"
     },
     "reprintOrderTicket": {
-      "confirm": "Reprint the ticket for order <bold>{orderNumber}</bold>? Every order ticket printer will print another ticket marked as a reprint.",
+      "confirm": "Reprint the ticket for order <bold>{orderNumber}</bold> on the {printer} printer? Another ticket marked as a reprint will be printed.",
+      "confirmMultiple": "Which printers should reprint the ticket for order <bold>{orderNumber}</bold>? Each selected printer prints another ticket marked as a reprint.",
+      "printers": "Printers to reprint on",
       "success": "Sent the ticket for order {orderNumber} to the printer",
       "title": "Reprint ticket"
     },

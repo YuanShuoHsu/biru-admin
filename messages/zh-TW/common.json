@@ -1,12 +1,15 @@
 {
   "colon": "：",
   "currency": "NT$",
+  "decrease": "減少",
+  "delete": "刪除",
   "deletedAccount": "已刪除的帳號",
   "delimiter": "、",
   "discontinued": "已停售",
   "empty": "尚未有商品",
   "from": "起",
   "imageProcessingFailed": "圖片處理失敗",
+  "increase": "增加",
   "loading": "載入中...",
   "locales": {
     "zh-TW": "繁體中文",
@@ -45,6 +48,7 @@
   },
   "parenthesisClose": "）",
   "parenthesisOpen": "（",
+  "quantity": "數量",
   "reachStockLimit": "{label} 已達庫存上限",
   "selectedCount": "已選取 {checked}/{total} 筆",
   "slash": "／",

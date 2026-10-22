@@ -1,12 +1,15 @@
 {
   "colon": ": ",
   "currency": "NT$",
+  "decrease": "Decrease",
+  "delete": "Delete",
   "deletedAccount": "Deleted account",
   "delimiter": ", ",
   "discontinued": "Discontinued",
   "empty": "No items yet",
   "from": "from",
   "imageProcessingFailed": "Failed to process image",
+  "increase": "Increase",
   "loading": "Loading...",
   "locales": {
     "zh-TW": "Traditional Chinese",
@@ -45,6 +48,7 @@
   },
   "parenthesisClose": ")",
   "parenthesisOpen": "(",
+  "quantity": "Quantity",
   "reachStockLimit": "Stock limit reached {label}",
   "selectedCount": "{checked}/{total} selected",
   "slash": "/",

@@ -36,7 +36,9 @@
       "title": "환불"
     },
     "reprintOrderTicket": {
-      "confirm": "주문 <bold>{orderNumber}</bold>의 주문서를 재출력하시겠습니까? 모든 주문서 프린터에서 '재출력'이 표시된 주문서가 한 장 더 출력됩니다.",
+      "confirm": "{printer} 프린터에서 주문 <bold>{orderNumber}</bold>의 주문서를 재출력하시겠습니까? '재출력'이 표시된 주문서가 한 장 더 출력됩니다.",
+      "confirmMultiple": "주문 <bold>{orderNumber}</bold>의 주문서를 어느 프린터에서 재출력하시겠습니까? 선택한 프린터에서 '재출력'이 표시된 주문서가 한 장씩 출력됩니다.",
+      "printers": "재출력할 프린터",
       "success": "주문 {orderNumber}의 주문서를 프린터로 보냈습니다",
       "title": "주문서 재출력"
     },

@@ -2527,7 +2527,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** 重印工作單：每台工作單印表機各補印一張 */
+    /** 重印工作單：在指定的工作單印表機各補印一張 */
     post: operations["OrderTicketPrintersController_reprint"];
     delete?: never;
     options?: never;
@@ -8907,6 +8907,10 @@ export interface components {
     CreateOrderTicketPrinterDto: {
       /** @description 例如吧台、廚房 */
       name: string;
+    };
+    ReprintOrderTicketDto: {
+      /** @description 要補印的工作單印表機 */
+      printerIds: string[];
     };
     /**
      * @description order：訂單工作單；refund：退品單
@@ -17981,7 +17985,11 @@ export interface operations {
       };
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReprintOrderTicketDto"];
+      };
+    };
     responses: {
       201: {
         headers: {

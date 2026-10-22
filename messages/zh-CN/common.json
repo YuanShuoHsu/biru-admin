@@ -1,12 +1,15 @@
 {
   "colon": "：",
   "currency": "NT$",
+  "decrease": "减少",
+  "delete": "删除",
   "deletedAccount": "已删除的账号",
   "delimiter": "、",
   "discontinued": "已停售",
   "empty": "尚无商品",
   "from": "起",
   "imageProcessingFailed": "图片处理失败",
+  "increase": "增加",
   "loading": "加载中...",
   "locales": {
     "zh-TW": "繁体中文",
@@ -45,6 +48,7 @@
   },
   "parenthesisClose": "）",
   "parenthesisOpen": "（",
+  "quantity": "数量",
   "reachStockLimit": "{label} 已达库存上限",
   "selectedCount": "已选择 {checked}/{total} 笔",
   "slash": "／",

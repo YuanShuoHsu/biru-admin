@@ -1,5 +1,6 @@
 // https://mui.com/material-ui/react-number-field/#SpinnerDemo.tsx
 
+import { useTranslations } from "next-intl";
 import { useId } from "react";
 
 import { NumberField as BaseNumberField } from "@base-ui/react/number-field";
@@ -13,6 +14,7 @@ import {
   IconButton,
   OutlinedInput,
   Stack,
+  type ButtonProps,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -100,21 +102,21 @@ const IncrementButton = styled(Button)({
 interface NumberSpinnerProps extends BaseNumberField.Root.Props {
   className?: string;
   clearable?: boolean;
-  decrementAriaLabel?: string;
-  decrementIcon?: React.ReactNode;
   error?: boolean;
   fullWidth?: boolean;
   helperText?: string;
   label?: React.ReactNode;
   placeholder?: string;
   size?: "small" | "medium";
+  slotProps?: {
+    decrement?: ButtonProps;
+    increment?: ButtonProps;
+  };
 }
 
 const NumberSpinner = ({
   className,
   clearable,
-  decrementAriaLabel = "Decrease",
-  decrementIcon,
   error,
   fullWidth,
   helperText,
@@ -122,10 +124,13 @@ const NumberSpinner = ({
   label,
   placeholder,
   size = "medium",
+  slotProps,
   ...other
 }: NumberSpinnerProps) => {
   let id = useId();
   if (idProp) id = idProp;
+
+  const tCommon = useTranslations("common");
 
   return (
     <BaseNumberField.Root
@@ -170,13 +175,14 @@ const NumberSpinner = ({
         <BaseNumberField.Decrement
           render={
             <DecrementButton
-              aria-label={decrementAriaLabel}
+              aria-label={tCommon("decrease")}
               size={size}
               variant="outlined"
+              {...slotProps?.decrement}
             />
           }
         >
-          {decrementIcon || <Remove fontSize={size} />}
+          <Remove fontSize={size} />
         </BaseNumberField.Decrement>
         <BaseNumberField.Input
           id={id}
@@ -192,6 +198,7 @@ const NumberSpinner = ({
               slotProps={{
                 input: {
                   ...props,
+                  "aria-label": label ? undefined : tCommon("quantity"),
                   size:
                     Math.max(
                       (other.min?.toString() || "").length,
@@ -206,9 +213,10 @@ const NumberSpinner = ({
         <BaseNumberField.Increment
           render={
             <IncrementButton
-              aria-label="Increase"
+              aria-label={tCommon("increase")}
               size={size}
               variant="outlined"
+              {...slotProps?.increment}
             />
           }
         >

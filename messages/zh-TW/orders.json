@@ -36,7 +36,9 @@
       "title": "退款"
     },
     "reprintOrderTicket": {
-      "confirm": "確定要重印訂單 <bold>{orderNumber}</bold> 的工作單嗎？每台工作單印表機都會再印一張標示「補印」的單。",
+      "confirm": "確定要在{printer}印表機重印訂單 <bold>{orderNumber}</bold> 的工作單嗎？會再印一張標示「補印」的單。",
+      "confirmMultiple": "要在哪幾台印表機重印訂單 <bold>{orderNumber}</bold> 的工作單？選擇的印表機會各印一張標示「補印」的單。",
+      "printers": "重印的印表機",
       "success": "已將訂單 {orderNumber} 的工作單送到印表機",
       "title": "重印工作單"
     },

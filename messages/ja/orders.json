@@ -36,7 +36,9 @@
       "title": "返金"
     },
     "reprintOrderTicket": {
-      "confirm": "注文 <bold>{orderNumber}</bold> の伝票を再印刷してもよろしいですか？すべてのオーダー伝票プリンターから「再印刷」と記載された伝票がもう 1 枚出ます。",
+      "confirm": "{printer}プリンターで注文 <bold>{orderNumber}</bold> の伝票を再印刷してもよろしいですか？「再印刷」と記載された伝票がもう 1 枚出ます。",
+      "confirmMultiple": "注文 <bold>{orderNumber}</bold> の伝票をどのプリンターで再印刷しますか？選択したプリンターから「再印刷」と記載された伝票が 1 枚ずつ出ます。",
+      "printers": "再印刷するプリンター",
       "success": "注文 {orderNumber} の伝票をプリンターに送信しました",
       "title": "伝票を再印刷"
     },

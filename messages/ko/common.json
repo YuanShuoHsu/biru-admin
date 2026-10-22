@@ -1,12 +1,15 @@
 {
   "colon": ": ",
   "currency": "NT$",
+  "decrease": "감소",
+  "delete": "삭제",
   "deletedAccount": "삭제된 계정",
   "delimiter": ", ",
   "discontinued": "단종",
   "empty": "상품이 없습니다",
   "from": "부터",
   "imageProcessingFailed": "이미지 처리에 실패했습니다",
+  "increase": "증가",
   "loading": "로딩 중...",
   "locales": {
     "zh-TW": "번체 중국어",
@@ -45,6 +48,7 @@
   },
   "parenthesisClose": ")",
   "parenthesisOpen": "(",
+  "quantity": "수량",
   "reachStockLimit": "재고 한도에 도달했습니다 {label}",
   "selectedCount": "{checked}/{total}개 선택됨",
   "slash": "/",

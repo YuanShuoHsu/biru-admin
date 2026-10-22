@@ -28,6 +28,8 @@ export type ResolvePrintJobDto = components["schemas"]["ResolvePrintJobDto"];
 export type OrderTicketJob = components["schemas"]["OrderTicketJobDto"];
 export type CreateOrderTicketPrinterDto =
   components["schemas"]["CreateOrderTicketPrinterDto"];
+export type ReprintOrderTicketDto =
+  components["schemas"]["ReprintOrderTicketDto"];
 export type OrderTicketPrinterStatus =
   components["schemas"]["OrderTicketPrinterStatusDto"];
 export type ResetInvoicePrintDto =

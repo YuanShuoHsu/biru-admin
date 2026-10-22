@@ -36,6 +36,9 @@ import ResolveInvoicePrintDialogContent, {
 import ResolveOrderTicketDialogContent, {
   RESOLVE_ORDER_TICKET_FORM_ID,
 } from "@/app/[locale]/(app)/(dashboard)/orders/ResolveOrderTicketDialogContent";
+import ReprintOrderTicketDialogContent, {
+  REPRINT_ORDER_TICKET_FORM_ID,
+} from "@/app/[locale]/(app)/(dashboard)/orders/ReprintOrderTicketDialogContent";
 import ResetInvoicePrintDialogContent, {
   RESET_INVOICE_PRINT_FORM_ID,
 } from "@/app/[locale]/(app)/(dashboard)/orders/ResetInvoicePrintDialogContent";
@@ -411,46 +414,27 @@ export const useOrderActions = (
     [mutate, organizationSlug, setDialog, tOrders],
   );
 
-  const handleReprintOrderTicket = useCallback(
-    async (order: AdminOrderResponse) => {
-      try {
-        await fetcher(
-          `/api/organizations/${organizationSlug}/orders/${order.id}/order-tickets/reprint`,
-          { method: "POST" },
-        );
-
-        enqueueSnackbar(
-          tOrders("actions.reprintOrderTicket.success", {
-            orderNumber: order.orderNumber,
-          }),
-          { variant: "success" },
-        );
-      } catch (error) {
-        enqueueSnackbar(getErrorMessage(error), { variant: "error" });
-      } finally {
-        mutate();
-      }
-    },
-    [mutate, organizationSlug, tOrders],
-  );
+  const orderTicketPrinters = useOrderTicketPrinterStatuses(organizationSlug);
 
   const handleConfirmReprintOrderTicket = useCallback(
     (order: AdminOrderResponse) => {
+      if (!orderTicketPrinters?.length) return;
+
       setDialog({
         content: (
-          <DialogContentText>
-            {tOrders.rich("actions.reprintOrderTicket.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              orderNumber: order.orderNumber,
-            })}
-          </DialogContentText>
+          <ReprintOrderTicketDialogContent
+            mutate={mutate}
+            order={order}
+            organizationSlug={organizationSlug}
+            printers={orderTicketPrinters}
+          />
         ),
-        onConfirm: () => handleReprintOrderTicket(order),
+        formId: REPRINT_ORDER_TICKET_FORM_ID,
         open: true,
         title: tOrders("actions.reprintOrderTicket.title"),
       });
     },
-    [handleReprintOrderTicket, setDialog, tOrders],
+    [mutate, orderTicketPrinters, organizationSlug, setDialog, tOrders],
   );
 
   const handleResolveOrderTicket = useCallback(

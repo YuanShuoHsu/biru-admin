@@ -3,7 +3,7 @@
 
 "use client";
 
-import { Fragment } from "react";
+import { Fragment, useId } from "react";
 
 import {
   Chip,
@@ -52,6 +52,7 @@ interface ListRadioGroupOption {
 interface ListRadioGroupProps {
   error?: FormHelperTextProps["error"];
   helperText?: FormHelperTextProps["children"];
+  inputRef: React.Ref<HTMLInputElement>;
   label: string;
   onChange: RadioGroupProps["onChange"];
   options: ListRadioGroupOption[];
@@ -61,45 +62,74 @@ interface ListRadioGroupProps {
 const ListRadioGroup = ({
   error,
   helperText,
+  inputRef,
   label,
   onChange,
   options,
   value,
-}: ListRadioGroupProps) => (
-  <GroupStack>
-    <StyledTypography color="textSecondary" variant="subtitle2">
-      {label}
-    </StyledTypography>
-    <Paper variant="outlined">
-      <RadioGroup onChange={onChange} value={value}>
-        {options.map(
-          (
-            { disabled, disabledReason, icon, label, value: optionValue },
-            index,
-          ) => (
-            <Fragment key={optionValue}>
-              {index !== 0 && <Divider />}
-              <StyledFormControlLabel
-                control={<Radio size="small" />}
-                disabled={disabled}
-                label={
-                  <OptionLabelStack direction="row">
-                    {icon}
-                    <Typography variant="body2">{label}</Typography>
-                    {disabled && disabledReason && (
-                      <Chip label={disabledReason} size="small" />
-                    )}
-                  </OptionLabelStack>
-                }
-                value={optionValue}
-              />
-            </Fragment>
-          ),
-        )}
-      </RadioGroup>
-    </Paper>
-    {helperText && <FormHelperText error={error}>{helperText}</FormHelperText>}
-  </GroupStack>
-);
+}: ListRadioGroupProps) => {
+  const id = useId();
+  const labelId = `${id}-label`;
+  const helperTextId = `${id}-helper-text`;
+  const firstEnabledValue = options.find(({ disabled }) => !disabled)?.value;
+
+  return (
+    <GroupStack>
+      <StyledTypography color="textSecondary" id={labelId} variant="subtitle2">
+        {label}
+      </StyledTypography>
+      <Paper variant="outlined">
+        <RadioGroup
+          aria-describedby={helperText ? helperTextId : undefined}
+          aria-labelledby={labelId}
+          onChange={onChange}
+          value={value}
+        >
+          {options.map(
+            (
+              { disabled, disabledReason, icon, label, value: optionValue },
+              index,
+            ) => (
+              <Fragment key={optionValue}>
+                {index !== 0 && <Divider />}
+                <StyledFormControlLabel
+                  control={
+                    <Radio
+                      size="small"
+                      slotProps={{
+                        input: {
+                          ref:
+                            optionValue === firstEnabledValue
+                              ? inputRef
+                              : undefined,
+                        },
+                      }}
+                    />
+                  }
+                  disabled={disabled}
+                  label={
+                    <OptionLabelStack direction="row">
+                      {icon}
+                      <Typography variant="body2">{label}</Typography>
+                      {disabled && disabledReason && (
+                        <Chip label={disabledReason} size="small" />
+                      )}
+                    </OptionLabelStack>
+                  }
+                  value={optionValue}
+                />
+              </Fragment>
+            ),
+          )}
+        </RadioGroup>
+      </Paper>
+      {helperText && (
+        <FormHelperText error={error} id={helperTextId}>
+          {helperText}
+        </FormHelperText>
+      )}
+    </GroupStack>
+  );
+};
 
 export default ListRadioGroup;
