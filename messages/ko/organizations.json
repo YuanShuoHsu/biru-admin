@@ -104,6 +104,7 @@
       "lastSeenAt": "마지막 연결",
       "neverSeen": "아직 연결되지 않음",
       "password": "비밀번호",
+      "pollInterval": "폴링 간격: 약 {seconds}초",
       "queued": "인쇄되지 않은 세금계산서 {count}건을 프린터로 보냈습니다",
       "remove": "프린터 제거",
       "removeConfirm": "제거하면 세금계산서를 브라우저에서 인쇄하고, 아직 보내지 않은 인쇄 작업은 취소됩니다. 제거하시겠습니까?",
@@ -111,7 +112,7 @@
       "reset": "비밀번호 재설정",
       "resetConfirm": "재설정하면 기존 비밀번호는 즉시 무효가 되며, 새 비밀번호를 입력할 때까지 프린터가 인쇄할 수 없습니다. 재설정하시겠습니까?",
       "setup": "프린터 설정",
-      "steps": "프린터 Web Config에서 「Server Direct Print」를 활성화하고 아래 ID, 비밀번호, URL을 입력하세요. 증명련 폭은 5.7cm여야 하므로 58mm 용지를 사용하세요.",
+      "steps": "프린터 Web Config에서 「Server Direct Print」를 활성화하고 아래 ID, 비밀번호, URL을 입력하세요. 증명련 폭은 5.7cm여야 하므로 58mm 용지를 사용하세요. 폴링 간격이 짧을수록 더 빨리 인쇄됩니다.",
       "url": "URL",
       "username": "ID"
     },

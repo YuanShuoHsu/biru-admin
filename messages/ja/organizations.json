@@ -104,6 +104,7 @@
       "lastSeenAt": "最終接続",
       "neverSeen": "未接続",
       "password": "パスワード",
+      "pollInterval": "ポーリング間隔：約 {seconds} 秒",
       "queued": "未印刷のインボイス {count} 件をプリンターに送信しました",
       "remove": "プリンターを削除",
       "removeConfirm": "削除するとインボイスはブラウザから印刷し、未送信の印刷ジョブはキャンセルされます。削除しますか？",
@@ -111,7 +112,7 @@
       "reset": "パスワードを再設定",
       "resetConfirm": "再設定すると旧パスワードはすぐに無効になり、新しいパスワードを入力するまでプリンターは印刷できません。再設定しますか？",
       "setup": "プリンターを設定",
-      "steps": "プリンターの Web Config で「Server Direct Print」を有効にし、下記の ID・パスワード・URL を入力してください。証明聯の幅は 5.7 cm のため、58mm 幅の用紙を使用してください。",
+      "steps": "プリンターの Web Config で「Server Direct Print」を有効にし、下記の ID・パスワード・URL を入力してください。証明聯の幅は 5.7 cm のため、58mm 幅の用紙を使用してください。ポーリング間隔が短いほど早く印刷されます。",
       "url": "URL",
       "username": "ID"
     },

@@ -9,6 +9,10 @@ import {
   attendanceRequestStatusValues,
   attendanceTerminationReasonValues,
   createMenuItemDtoSuitableForDietValues,
+  invoiceCarrierTypeValues,
+  invoicePaymentStatusValues,
+  invoiceStatusValues,
+  invoiceTypeValues,
   itemAvailabilityValues,
   orderModeValues,
   orderRefundDtoScopeValues,
@@ -114,6 +118,30 @@ export const useAuditLogValueLabels = () => {
         INVITATION_STATUSES.map((value) => [
           value,
           tAudit(`invitationStatus.${value}`),
+        ]),
+      ),
+      "invoice.carrierType": Object.fromEntries(
+        invoiceCarrierTypeValues.map((value) => [
+          value,
+          tOrder(`checkout.invoice.${value}`),
+        ]),
+      ),
+      "invoice.paymentStatus": Object.fromEntries(
+        invoicePaymentStatusValues.map((value) => [
+          value,
+          tAudit(`invoicePaymentStatus.${value}`),
+        ]),
+      ),
+      "invoice.status": Object.fromEntries(
+        invoiceStatusValues.map((value) => [
+          value,
+          tOrders(`invoiceStatusValue.${value}`),
+        ]),
+      ),
+      "invoice.type": Object.fromEntries(
+        invoiceTypeValues.map((value) => [
+          value,
+          tOrder(`checkout.invoice.${value}`),
         ]),
       ),
       invoiceAction: Object.fromEntries(

@@ -130,7 +130,8 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get?: never;
+    /** 取得單一員工設定 */
+    get: operations["AttendanceEmployeesController_employee"];
     put?: never;
     post?: never;
     /** 刪除沒有任何出勤或薪資紀錄的員工設定 */
@@ -4958,40 +4959,20 @@ export interface components {
       | "employmentType"
       | "legalStatus"
       | "status";
-    AttendanceEmploymentResponseDto: {
+    AttendanceMemberEmploymentResponseDto: {
       id: string;
-      organizationId: string;
-      userId: string;
-      name: string;
-      email: string;
       employmentType: components["schemas"]["AttendanceEmploymentType"];
       legalStatus: components["schemas"]["AttendanceLegalStatus"];
-      studentVacations: components["schemas"]["DatePeriodDto"][];
       workPermits: components["schemas"]["DatePeriodDto"][];
-      pregnancyPeriods: components["schemas"]["DatePeriodDto"][];
-      nursingPeriods: components["schemas"]["DatePeriodDto"][];
-      childcareReductionPeriods: components["schemas"]["DatePeriodDto"][];
-      indigenousHolidays: string[];
-      regularLeaveWeekday?: number | null;
-      restDayWeekday?: number | null;
       employmentInsuranceEligible: boolean;
       /** @description 報稅身分須填居留證號、居住地國與當地稅務識別碼 */
       foreignTaxIdentityRequired: boolean;
       workPermitRequired: boolean;
       pensionApplicable: boolean;
-      birthDate?: string | null;
-      taiwanStaySince?: string | null;
       /** Format: date-time */
       hiredAt: string;
       /** Format: date-time */
       terminatedAt?: string | null;
-      terminationReason?:
-        | components["schemas"]["AttendanceTerminationReason"]
-        | null;
-      /** Format: date-time */
-      terminationNoticedAt?: string | null;
-      /** Format: date-time */
-      createdAt: string;
     };
     AttendanceMemberResponseDto: {
       userId: string;
@@ -5003,7 +4984,7 @@ export interface components {
       deletable: boolean;
       status: components["schemas"]["AttendanceEmployeeStatus"];
       employee?:
-        | components["schemas"]["AttendanceEmploymentResponseDto"]
+        | components["schemas"]["AttendanceMemberEmploymentResponseDto"]
         | null;
     };
     AttendanceMembersResponseDto: {
@@ -8225,6 +8206,8 @@ export interface components {
        * @description 印表機最後一次來拉列印工作的時間
        */
       lastSeenAt?: string | null;
+      /** @description 從印表機實際來拉工作的節奏量出的輪詢間隔（毫秒），還沒量到時為 null */
+      pollIntervalMs: number | null;
       /** Format: date-time */
       createdAt: string;
     };
@@ -8241,6 +8224,8 @@ export interface components {
        * @description 印表機最後一次連線的時間
        */
       lastSeenAt?: string | null;
+      /** @description 從印表機實際來拉工作的節奏量出的輪詢間隔（毫秒），還沒量到時為 null */
+      pollIntervalMs: number | null;
     };
     InvoicePrinterCredentialsDto: {
       /** @description 填入印表機 Server Direct Print 的 ID */
@@ -8252,6 +8237,8 @@ export interface components {
        * @description 印表機最後一次來拉列印工作的時間
        */
       lastSeenAt?: string | null;
+      /** @description 從印表機實際來拉工作的節奏量出的輪詢間隔（毫秒），還沒量到時為 null */
+      pollIntervalMs: number | null;
       /** Format: date-time */
       createdAt: string;
       /** @description 只在建立或重設時回傳一次 */
@@ -11908,6 +11895,34 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AttendanceEmployeesController_employee: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceEmployeeResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -19760,7 +19775,7 @@ export interface operations {
       path: {
         organizationSlug: string;
         ticketId: string;
-        status: "called" | "cancelled" | "waiting" | "seated" | "noShow";
+        status: "cancelled" | "waiting" | "called" | "seated" | "noShow";
       };
       cookie?: never;
     };
@@ -22811,7 +22826,7 @@ export const pathsApiOrganizationsOrganizationIdOrderMenuGetParametersQueryLangV
 > = ["en", "ja", "ko", "zh-CN", "zh-TW"];
 export const pathsApiOrganizationsOrganizationSlugWaitlistTicketsTicketIdTransitionsStatusPatchParametersPathStatusValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/organizations/{organizationSlug}/waitlist/tickets/{ticketId}/transitions/{status}"]["patch"]["parameters"]["path"]["status"]
-> = ["called", "cancelled", "waiting", "seated", "noShow"];
+> = ["cancelled", "waiting", "called", "seated", "noShow"];
 export const attendanceErrorCodeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceErrorCode"]
 > = [

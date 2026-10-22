@@ -104,6 +104,7 @@
       "lastSeenAt": "最后连接",
       "neverSeen": "尚未连接",
       "password": "密码",
+      "pollInterval": "轮询间隔：约 {seconds} 秒",
       "queued": "已将 {count} 张尚未打印的发票发送到打印机",
       "remove": "移除打印机",
       "removeConfirm": "移除后发票改用浏览器打印，尚未发送的打印任务会取消。确定要移除吗？",
@@ -111,7 +112,7 @@
       "reset": "重设密码",
       "resetConfirm": "重设后旧密码立即失效，打印机要填入新密码才能继续打印。确定要重设吗？",
       "setup": "设置打印机",
-      "steps": "在打印机 Web Config 的“Server Direct Print”启用，填入下列 ID、密码与 URL。证明联宽度须为 5.7 厘米，请使用 58mm 纸宽。",
+      "steps": "在打印机 Web Config 的“Server Direct Print”启用，填入下列 ID、密码与 URL。证明联宽度须为 5.7 厘米，请使用 58mm 纸宽。轮询间隔越短出单越快。",
       "url": "URL",
       "username": "ID"
     },

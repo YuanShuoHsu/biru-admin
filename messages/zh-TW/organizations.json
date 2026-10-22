@@ -104,6 +104,7 @@
       "lastSeenAt": "最後連線",
       "neverSeen": "尚未連線",
       "password": "密碼",
+      "pollInterval": "輪詢間隔：約 {seconds} 秒",
       "queued": "已將 {count} 張尚未列印的發票送到印表機",
       "remove": "移除印表機",
       "removeConfirm": "移除後發票改用瀏覽器列印，尚未送出的列印工作會取消。確定要移除嗎？",
@@ -111,7 +112,7 @@
       "reset": "重設密碼",
       "resetConfirm": "重設後舊密碼立即失效，印表機要填入新密碼才能繼續列印。確定要重設嗎？",
       "setup": "設定印表機",
-      "steps": "在印表機 Web Config 的「Server Direct Print」啟用，填入下列 ID、密碼與 URL。證明聯寬度須為 5.7 公分，請使用 58mm 紙寬。",
+      "steps": "在印表機 Web Config 的「Server Direct Print」啟用，填入下列 ID、密碼與 URL。證明聯寬度須為 5.7 公分，請使用 58mm 紙寬。輪詢間隔越短出單越快。",
       "url": "URL",
       "username": "ID"
     },

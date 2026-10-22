@@ -104,6 +104,7 @@
       "lastSeenAt": "Last connected",
       "neverSeen": "Not connected yet",
       "password": "Password",
+      "pollInterval": "Polling interval: about {seconds} s",
       "queued": "Sent {count} unprinted invoices to the printer",
       "remove": "Remove printer",
       "removeConfirm": "Invoices will be printed from the browser instead, and print jobs not yet sent will be cancelled. Remove the printer?",
@@ -111,7 +112,7 @@
       "reset": "Reset password",
       "resetConfirm": "The old password stops working immediately, and the printer can't print until you enter the new one. Reset the password?",
       "setup": "Set up printer",
-      "steps": "Enable Server Direct Print in the printer's Web Config and enter the ID, password and URL below. Invoice slips must be 5.7 cm wide, so use 58 mm paper.",
+      "steps": "Enable Server Direct Print in the printer's Web Config and enter the ID, password and URL below. Invoice slips must be 5.7 cm wide, so use 58 mm paper. A shorter polling interval prints receipts sooner.",
       "url": "URL",
       "username": "ID"
     },

@@ -309,6 +309,13 @@ const InvoicePrinterCard = ({ organizationSlug }: InvoicePrinterCardProps) => {
                   ? format.dateTime(new Date(printer.lastSeenAt), "short")
                   : tOrganizations("inStore.invoicePrinter.neverSeen")}
               </Typography>
+              {printer.pollIntervalMs !== null && (
+                <Typography color="textSecondary" variant="body2">
+                  {tOrganizations("inStore.invoicePrinter.pollInterval", {
+                    seconds: Math.round(printer.pollIntervalMs / 1000),
+                  })}
+                </Typography>
+              )}
             </Stack>
             {credentials && (
               <Alert severity="warning">

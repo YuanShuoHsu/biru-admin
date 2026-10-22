@@ -264,6 +264,22 @@ const FIELD_LABEL_KEYS = {
   originalEndsAt: "field.originalEndsAt",
   irreversible: "field.irreversible",
   username: "field.username",
+  carrierNum: "field.carrierNum",
+  carrierType: "field.carrierType",
+  customerAddr: "field.customerAddr",
+  customerIdentifier: "field.customerIdentifier",
+  customerName: "field.customerName",
+  donateCode: "field.donateCode",
+  invoiceDate: "field.invoiceDate",
+  invoiceNumber: "field.invoiceNumber",
+  paymentStatus: "field.paymentStatus",
+  printResetCount: "field.printResetCount",
+  printResetReason: "field.printResetReason",
+  printedAt: "field.printedAt",
+  randomNumber: "field.randomNumber",
+  relateNumber: "field.relateNumber",
+  type: "field.type",
+  voidedAt: "field.voidedAt",
 } as const;
 
 const ATTENDANCE_FIELD_LABEL_KEYS = {
@@ -361,11 +377,14 @@ const TIMESTAMP_FIELDS = new Set([
   "endedAt",
   "endsAt",
   "expiresAt",
+  "invoiceDate",
   "paymentDate",
   "pointsEnabledAt",
+  "printedAt",
   "returnsAt",
   "startsAt",
   "usedAt",
+  "voidedAt",
 ]);
 
 const DATE_FIELDS = new Set([
