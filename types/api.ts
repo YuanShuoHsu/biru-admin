@@ -2456,7 +2456,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 店內 QR code 的網址：簽章換成短效 cookie 後轉到點餐頁，點餐頁網址不帶簽章 */
+    /** 前台點餐頁帶 QR code 簽章時由 rewrite 轉進來：簽章換成短效 cookie 後轉回不帶簽章的點餐頁 */
     get: operations["OrderQrController_scan"];
     put?: never;
     post?: never;
@@ -18004,8 +18004,10 @@ export interface operations {
         mode: components["schemas"]["QrOrderMode"];
         /** @description 內用必填 */
         tableNumber?: number;
-        /** @description QR code 帶的簽章 */
-        token: string;
+        /** @description 桌上 QR code 的桌號簽章 */
+        tableToken?: string;
+        /** @description 櫃台／得來速 QR code 的點餐方式簽章 */
+        modeToken?: string;
       };
       header?: never;
       path: {
