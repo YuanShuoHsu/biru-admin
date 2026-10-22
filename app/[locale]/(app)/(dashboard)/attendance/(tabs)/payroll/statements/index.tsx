@@ -50,7 +50,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
-  AttendanceEmployee,
+  AttendanceEmployeeSummary,
   PayrollEarningType,
   PayrollStatement,
   PayrollStatementFilterField,
@@ -93,7 +93,7 @@ interface PayrollProps {
   canManage?: boolean;
   canManageTerms?: boolean;
   earningTypes?: PayrollEarningType[];
-  employees?: AttendanceEmployee[];
+  employees?: AttendanceEmployeeSummary[];
   filterField?: PayrollStatementFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;

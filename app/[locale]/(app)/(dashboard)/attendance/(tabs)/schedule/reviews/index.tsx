@@ -43,7 +43,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
-  AttendanceEmployee,
+  AttendanceEmployeeSummary,
   AttendanceLeaveType,
   AttendanceRequest,
   AttendanceRequestFilterField,
@@ -79,7 +79,7 @@ interface ReviewsProps {
   canReview?: boolean;
   canReviewOwn?: boolean;
   employeeId?: string;
-  employees?: AttendanceEmployee[];
+  employees?: AttendanceEmployeeSummary[];
   filterField?: AttendanceRequestFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;

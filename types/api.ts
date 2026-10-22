@@ -5008,8 +5008,18 @@ export interface components {
       /** @description 行業別災害費率（百萬分率，不含上下班費率） */
       rateMicros: number;
     };
+    AttendanceEmployeeSummaryResponseDto: {
+      id: string;
+      name: string;
+      email: string;
+      employmentType: components["schemas"]["AttendanceEmploymentType"];
+      regularLeaveWeekday?: number | null;
+      employmentInsuranceEligible: boolean;
+      pensionApplicable: boolean;
+      status: components["schemas"]["AttendanceEmployeeStatus"];
+    };
     AttendanceEmployeesResponseDto: {
-      data: components["schemas"]["AttendanceEmployeeResponseDto"][];
+      data: components["schemas"]["AttendanceEmployeeSummaryResponseDto"][];
       total: number;
     };
     SaveAttendanceEmployeeDto: {

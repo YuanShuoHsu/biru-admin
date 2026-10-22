@@ -49,7 +49,10 @@ import {
   payrollSalaryTypeValues,
   payrollTaxMethodValues,
 } from "@/types/api";
-import type { AttendanceEmployee, PayrollTerms } from "@/types/attendance";
+import type {
+  AttendanceEmployeeSummary,
+  PayrollTerms,
+} from "@/types/attendance";
 
 import { fromCents, payrollPath, toCents } from "@/utils/attendance";
 import { fetcher } from "@/utils/fetcher";
@@ -103,7 +106,7 @@ interface TermsDialogProps {
   currency: string;
   employeeId?: string;
   employees: Pick<
-    AttendanceEmployee,
+    AttendanceEmployeeSummary,
     | "email"
     | "employmentInsuranceEligible"
     | "id"

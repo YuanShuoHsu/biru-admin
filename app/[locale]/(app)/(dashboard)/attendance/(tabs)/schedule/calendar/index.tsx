@@ -37,7 +37,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
   AttendanceCalendarDayKinds,
-  AttendanceEmployee,
+  AttendanceEmployeeSummary,
   AttendanceRequest,
   AttendanceCopyWeekResult,
   AttendanceShift,
@@ -114,7 +114,7 @@ interface CalendarProps {
   canReadLeaves: boolean;
   canUpdate: boolean;
   dayKinds: AttendanceCalendarDayKinds;
-  employees: AttendanceEmployee[];
+  employees: AttendanceEmployeeSummary[];
   leaves: AttendanceRequest[];
   organization: Organization;
   shifts: AttendanceShift[];

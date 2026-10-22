@@ -45,7 +45,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
-  AttendanceEmployee,
+  AttendanceEmployeeSummary,
   AttendanceShift,
   AttendanceShiftFilterField,
   AttendanceShiftPage,
@@ -98,7 +98,7 @@ interface ShiftsProps {
   canCancel?: boolean;
   canCreate?: boolean;
   canReviewExtraWork?: boolean;
-  employees?: AttendanceEmployee[];
+  employees?: AttendanceEmployeeSummary[];
   filterField?: AttendanceShiftFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;

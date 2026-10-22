@@ -48,7 +48,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
-  AttendanceEmployee,
+  AttendanceEmployeeSummary,
   AttendanceLeaveCase,
   AttendanceLeaveCaseFilterField,
   AttendanceLeaveCasePage,
@@ -93,7 +93,7 @@ interface LeaveCasesProps {
   canWrite?: boolean;
   canReviewOwn?: boolean;
   employeeId?: string;
-  employees?: AttendanceEmployee[];
+  employees?: AttendanceEmployeeSummary[];
   filterField?: AttendanceLeaveCaseFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;

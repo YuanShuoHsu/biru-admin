@@ -21,7 +21,7 @@ import type {
   AttendanceAnnualLeaveNoticeSortField,
   AttendanceCalendarDayKinds,
   AttendanceContext,
-  AttendanceEmployee,
+  AttendanceEmployeeSummary,
   AttendanceEmployeeFilterField,
   AttendanceEmployeeSortField,
   AttendanceEmployment,
@@ -252,7 +252,7 @@ export const getAttendanceEmployees = cache(
     init?: RequestInit,
   ) => {
     const { data: employees, total } = await getGrid<
-      AttendanceEmployee,
+      AttendanceEmployeeSummary,
       AttendanceEmployeeFilterField,
       AttendanceEmployeeSortField
     >(attendancePath(organizationSlug, "org", "employees"), query, init);

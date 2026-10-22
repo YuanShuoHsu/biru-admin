@@ -49,7 +49,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
-  AttendanceEmployee,
+  AttendanceEmployeeSummary,
   AttendanceLeaveBalance,
   AttendanceLeaveBalanceFilterField,
   AttendanceLeaveBalancePage,
@@ -79,7 +79,7 @@ interface BalancesProps {
   canRevokeDeferral?: boolean;
   canViewAll?: boolean;
   canWrite?: boolean;
-  employees?: AttendanceEmployee[];
+  employees?: AttendanceEmployeeSummary[];
   filterField?: AttendanceLeaveBalanceFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;

@@ -40,7 +40,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
   AttendanceBatchResult,
-  AttendanceEmployee,
+  AttendanceEmployeeSummary,
   PayrollEarningInput,
   PayrollEarningType,
   PayrollStatement,
@@ -71,7 +71,7 @@ const StyledButton = styled(Button)({
 interface DraftDialogProps {
   currency: string;
   earningTypes: PayrollEarningType[];
-  employees: AttendanceEmployee[];
+  employees: AttendanceEmployeeSummary[];
   mutate: () => void;
   organizationSlug: string;
 }

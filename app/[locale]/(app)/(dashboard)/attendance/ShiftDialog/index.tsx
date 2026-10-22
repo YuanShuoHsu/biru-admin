@@ -37,7 +37,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { attendanceScheduledDayKindValues } from "@/types/api";
 import type {
-  AttendanceEmployee,
+  AttendanceEmployeeSummary,
   AttendanceShift,
   AttendanceShiftType,
   AttendanceTeam,
@@ -86,7 +86,7 @@ export type ShiftChange = Pick<
 interface ShiftDialogProps {
   date?: string;
   employeeId?: string;
-  employees: AttendanceEmployee[];
+  employees: AttendanceEmployeeSummary[];
   mutate: () => void;
   onCancelShift?: (shift: AttendanceShift) => void;
   onUpdateShift?: (

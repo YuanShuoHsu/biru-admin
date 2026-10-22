@@ -22,7 +22,7 @@ import { ListItemText, MenuItem, TextField } from "@mui/material";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
-  AttendanceEmployee,
+  AttendanceEmployeeSummary,
   AttendanceLeaveType,
 } from "@/types/attendance";
 
@@ -34,7 +34,7 @@ dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
 
 interface BalanceDialogProps {
-  employees: AttendanceEmployee[];
+  employees: AttendanceEmployeeSummary[];
   leaveTypes: AttendanceLeaveType[];
   mutate: () => void;
   organizationSlug: string;

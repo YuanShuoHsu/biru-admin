@@ -30,7 +30,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
-  AttendanceEmployee,
+  AttendanceEmployeeSummary,
   AttendanceLeaveCase,
   AttendanceLeaveType,
   AttendanceParentalChild,
@@ -62,7 +62,7 @@ const StyledFormControlLabel = styled(FormControlLabel)({
 
 interface LeaveCaseDialogProps {
   employeeId?: string;
-  employees: AttendanceEmployee[];
+  employees: AttendanceEmployeeSummary[];
   leaveCase?: AttendanceLeaveCase;
   leaveTypes: AttendanceLeaveType[];
   mutate: () => void;
