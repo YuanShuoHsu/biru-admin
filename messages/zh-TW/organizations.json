@@ -99,7 +99,7 @@
     },
     "invoicePrinter": {
       "credentialsNotice": "密碼只會顯示這一次，請現在填入印表機。",
-      "description": "設定後，發票開立就會自動送到 Epson 熱感應印表機，並由印表機回報是否印完；未設定時改用瀏覽器列印。",
+      "description": "設定後，發票開立就會自動送到 Epson 熱感應印表機，並由印表機回報是否印完；未設定時改用瀏覽器列印。印表機離線時，列印發票會自動改用瀏覽器。",
       "label": "發票印表機",
       "lastSeenAt": "最後連線",
       "neverSeen": "尚未連線",

@@ -99,7 +99,7 @@
     },
     "invoicePrinter": {
       "credentialsNotice": "The password is shown only once. Enter it on the printer now.",
-      "description": "Once set up, issued invoices are sent to the Epson thermal printer automatically and the printer reports whether they finished printing. Without a printer, invoices are printed from the browser.",
+      "description": "Once set up, issued invoices are sent to the Epson thermal printer automatically and the printer reports whether they finished printing. Without a printer, invoices are printed from the browser. While the printer is offline, invoices are printed from the browser automatically.",
       "label": "Invoice printer",
       "lastSeenAt": "Last connected",
       "neverSeen": "Not connected yet",

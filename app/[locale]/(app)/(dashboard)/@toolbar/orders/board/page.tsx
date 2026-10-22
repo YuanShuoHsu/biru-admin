@@ -1,3 +1,4 @@
+import InvoicePrinterStatusChip from "@/components/InvoicePrinterStatusChip";
 import OrganizationSelect from "@/components/OrganizationSelect";
 
 import { listOrganizations } from "@/utils/session";
@@ -14,10 +15,13 @@ const ToolbarOrdersBoardPage = async ({
   const organizations = await listOrganizations();
 
   return (
-    <OrganizationSelect
-      organizations={organizations}
-      organizationSlug={organization}
-    />
+    <>
+      <InvoicePrinterStatusChip organizationSlug={organization} />
+      <OrganizationSelect
+        organizations={organizations}
+        organizationSlug={organization}
+      />
+    </>
   );
 };
 

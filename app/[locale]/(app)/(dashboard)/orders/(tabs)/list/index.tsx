@@ -31,9 +31,8 @@ import {
   canResetInvoicePrint,
   canResolveInvoicePrint,
   canVoidInvoice,
-  printInvoiceBlockedBy,
   useOrderActions,
-  usePrintInvoiceTooltip,
+  usePrintInvoiceBlocker,
 } from "@/hooks/useOrderActions";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
@@ -277,7 +276,8 @@ const Orders = ({
     handleViewOrder,
   } = useOrderActions(organizationSlug, mutate);
 
-  const printInvoiceTooltip = usePrintInvoiceTooltip();
+  const { blockedBy: printInvoiceBlockedBy, tooltip: printInvoiceTooltip } =
+    usePrintInvoiceBlocker(organizationSlug);
 
   const hasPendingInvoice = useMemo(() => rows.some(canIssueInvoice), [rows]);
 
@@ -647,6 +647,7 @@ const Orders = ({
       handleConfirmStatusAction,
       handleConfirmPrintInvoice,
       handleResolveInvoicePrint,
+      printInvoiceBlockedBy,
       printInvoiceTooltip,
       handleUpdateCustomer,
       handleViewOrder,

@@ -242,6 +242,11 @@
     "sent": "打印中",
     "unknown": "打印结果不明"
   },
+  "printerOffline": {
+    "label": "发票打印机离线",
+    "neverSeen": "尚未连接过",
+    "tooltip": "最后连接：{lastSeenAt}。离线期间打印发票会改用浏览器；打印机恢复后，排队中的发票会自动打印。"
+  },
   "status": {
     "OrderCancelled": "已取消",
     "OrderDelivered": "已送达",

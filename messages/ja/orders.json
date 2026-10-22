@@ -242,6 +242,11 @@
     "sent": "印刷中",
     "unknown": "印刷結果不明"
   },
+  "printerOffline": {
+    "label": "インボイスプリンターがオフライン",
+    "neverSeen": "未接続",
+    "tooltip": "最終接続：{lastSeenAt}。オフライン中はブラウザから印刷します。プリンターが復旧すると、待機中のインボイスは自動で印刷されます。"
+  },
   "status": {
     "OrderCancelled": "キャンセル済み",
     "OrderDelivered": "受け渡し済み",

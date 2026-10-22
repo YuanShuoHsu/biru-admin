@@ -2145,6 +2145,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/invoice-printer/status": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 發票印表機是否在線（訂單頁顯示離線提示用） */
+    get: operations["InvoicePrinterController_status"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/ingredients": {
     parameters: {
       query?: never;
@@ -8213,6 +8230,17 @@ export interface components {
     };
     InvoicePrinterSettingDto: {
       printer?: components["schemas"]["InvoicePrinterDto"] | null;
+    };
+    InvoicePrinterStatusDto: {
+      /** @description 是否設定了發票印表機 */
+      configured: boolean;
+      /** @description 印表機最近仍有來拉列印工作；離線時列印發票改用瀏覽器 */
+      online: boolean;
+      /**
+       * Format: date-time
+       * @description 印表機最後一次連線的時間
+       */
+      lastSeenAt?: string | null;
     };
     InvoicePrinterCredentialsDto: {
       /** @description 填入印表機 Server Direct Print 的 ID */
@@ -16629,6 +16657,34 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  InvoicePrinterController_status: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["InvoicePrinterStatusDto"];
+        };
       };
       /** @description Internal server error */
       500: {

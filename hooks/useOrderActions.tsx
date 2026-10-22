@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useCallback } from "react";
+import useSWR from "swr";
 
 import { STATUS_TEXT_COLORS } from "@/constants/orders";
 
@@ -18,6 +19,7 @@ import type {
   OrderStatus,
   OrderTransition,
 } from "@/types/orders";
+import type { InvoicePrinterStatus } from "@/types/organizations";
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
@@ -69,20 +71,43 @@ export const canResolveInvoicePrint = (order: AdminOrderResponse) =>
 
 const IN_FLIGHT_PRINT_JOB_STATUSES = ["queued", "sent", "unknown"] as const;
 
-export const printInvoiceBlockedBy = ({ invoice }: AdminOrderResponse) =>
+const PRINTER_STATUS_REFRESH_MS = 15_000;
+
+// 只有排隊中的工作會被瀏覽器接手；印表機離線時它不該擋住列印
+export const printInvoiceBlockedBy = (
+  { invoice }: AdminOrderResponse,
+  printerOffline: boolean,
+) =>
   IN_FLIGHT_PRINT_JOB_STATUSES.find(
-    (status) => status === invoice?.printJob?.status,
+    (status) =>
+      status === invoice?.printJob?.status &&
+      !(printerOffline && status === "queued"),
   ) ?? null;
 
-export const usePrintInvoiceTooltip = () => {
+export const useInvoicePrinterStatus = (organizationSlug: string) =>
+  useSWR<InvoicePrinterStatus>(
+    organizationSlug
+      ? `/api/organizations/${organizationSlug}/invoice-printer/status`
+      : null,
+    { refreshInterval: PRINTER_STATUS_REFRESH_MS },
+  ).data;
+
+export const usePrintInvoiceBlocker = (organizationSlug: string) => {
   const tOrders = useTranslations("orders");
 
-  return useCallback(
-    (order: AdminOrderResponse) => {
-      const blockedBy = printInvoiceBlockedBy(order);
+  const status = useInvoicePrinterStatus(organizationSlug);
+  const printerOffline = !!status?.configured && !status.online;
 
-      if (blockedBy)
-        return tOrders(`actions.printInvoice.blocked.${blockedBy}`);
+  const blockedBy = useCallback(
+    (order: AdminOrderResponse) => printInvoiceBlockedBy(order, printerOffline),
+    [printerOffline],
+  );
+
+  const tooltip = useCallback(
+    (order: AdminOrderResponse) => {
+      const blocked = blockedBy(order);
+
+      if (blocked) return tOrders(`actions.printInvoice.blocked.${blocked}`);
 
       return tOrders(
         order.invoice?.printedAt
@@ -90,8 +115,10 @@ export const usePrintInvoiceTooltip = () => {
           : "actions.printInvoice.title",
       );
     },
-    [tOrders],
+    [blockedBy, tOrders],
   );
+
+  return { blockedBy, tooltip };
 };
 
 export const canVoidInvoice = ({ invoice }: AdminOrderResponse) =>

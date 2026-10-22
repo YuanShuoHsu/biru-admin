@@ -242,6 +242,11 @@
     "sent": "列印中",
     "unknown": "列印結果不明"
   },
+  "printerOffline": {
+    "label": "發票印表機離線",
+    "neverSeen": "尚未連線過",
+    "tooltip": "最後連線：{lastSeenAt}。離線期間列印發票會改用瀏覽器；印表機恢復後，排隊中的發票會自動印出。"
+  },
   "status": {
     "OrderCancelled": "已取消",
     "OrderDelivered": "已送達",

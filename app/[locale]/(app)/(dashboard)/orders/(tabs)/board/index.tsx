@@ -14,9 +14,8 @@ import {
   canResetInvoicePrint,
   canResolveInvoicePrint,
   canVoidInvoice,
-  printInvoiceBlockedBy,
   useOrderActions,
-  usePrintInvoiceTooltip,
+  usePrintInvoiceBlocker,
 } from "@/hooks/useOrderActions";
 import { useOrderModeLabel } from "@/hooks/useOrderModeLabel";
 import { Person, Schedule } from "@mui/icons-material";
@@ -114,7 +113,8 @@ const OrdersBoard = ({
     handleViewOrder,
   } = useOrderActions(organizationSlug, mutate);
 
-  const printInvoiceTooltip = usePrintInvoiceTooltip();
+  const { blockedBy: printInvoiceBlockedBy, tooltip: printInvoiceTooltip } =
+    usePrintInvoiceBlocker(organizationSlug);
 
   const columns = useMemo(
     () =>
@@ -255,6 +255,7 @@ const OrdersBoard = ({
       handleResolveInvoicePrint,
       handleUpdateCustomer,
       handleViewOrder,
+      printInvoiceBlockedBy,
       printInvoiceTooltip,
       tOrders,
     ],

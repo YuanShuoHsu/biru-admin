@@ -242,6 +242,11 @@
     "sent": "인쇄 중",
     "unknown": "인쇄 결과 불명"
   },
+  "printerOffline": {
+    "label": "세금계산서 프린터 오프라인",
+    "neverSeen": "연결된 적 없음",
+    "tooltip": "마지막 연결: {lastSeenAt}. 오프라인 동안에는 브라우저에서 인쇄하며, 프린터가 복구되면 대기 중인 세금계산서가 자동으로 인쇄됩니다."
+  },
   "status": {
     "OrderCancelled": "취소됨",
     "OrderDelivered": "전달 완료",

@@ -12,6 +12,8 @@ export type InvoicePrinterCredentials =
   components["schemas"]["InvoicePrinterCredentialsDto"];
 export type InvoicePrinterSetting =
   components["schemas"]["InvoicePrinterSettingDto"];
+export type InvoicePrinterStatus =
+  components["schemas"]["InvoicePrinterStatusDto"];
 export type MyOrganization = components["schemas"]["MyOrganizationListItemDto"];
 export type OrganizationResponse =
   components["schemas"]["OrganizationResponseDto"];

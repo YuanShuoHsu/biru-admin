@@ -242,6 +242,11 @@
     "sent": "Printing",
     "unknown": "Print result unknown"
   },
+  "printerOffline": {
+    "label": "Invoice printer offline",
+    "neverSeen": "never connected",
+    "tooltip": "Last connected: {lastSeenAt}. While offline, invoices are printed from the browser; queued invoices print automatically once the printer is back."
+  },
   "status": {
     "OrderCancelled": "Cancelled",
     "OrderDelivered": "Delivered",
