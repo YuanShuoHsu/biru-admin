@@ -31,8 +31,11 @@ const pendingTakeovers = new Set<string>();
 
 const interruptedPrinters = new Set<string>();
 
-// 即時通知與補印可能同時送來同一張；同一分頁重複呼叫列印端點會印成補印聯
+// 即時通知與補印可能同時送來同一張；同一分頁重複領取會撞上自己的領取，或在確認後印成補印聯
 const printingOrderIds = new Set<string>();
+
+// 同時呼叫多次 print() 會疊出多個列印對話框，有的會被吃掉
+let printQueue = Promise.resolve();
 
 const JOIN_TIMEOUT_MS = 5000;
 
@@ -149,22 +152,42 @@ export const useInvoiceAutoPrinter = ({
       enqueueSnackbar(tOrders("autoPrint.replaced"), { variant: "info" });
     };
 
-    const print = async (orderId: string) => {
-      if (printingOrderIds.has(orderId)) return;
+    const printInvoice = async (orderId: string) => {
+      if (cancelled) {
+        printingOrderIds.delete(orderId);
 
-      printingOrderIds.add(orderId);
+        return;
+      }
+
+      const invoiceUrl = `/api/organizations/${organizationSlug}/orders/${orderId}/invoice`;
 
       try {
         const { printHtml } = await fetcher<OrderInvoicePrint>(
-          `/api/organizations/${organizationSlug}/orders/${orderId}/invoice/print`,
+          `${invoiceUrl}/print`,
           { method: "POST" },
         );
 
-        printDocument(printHtml);
+        await printDocument(printHtml);
       } catch (error) {
         printingOrderIds.delete(orderId);
         enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+
+        return;
       }
+
+      // 已經印出來了，確認失敗也不能讓這張回到待印，否則會再印一次正本
+      await fetcher(`${invoiceUrl}/print/confirmation`, {
+        method: "POST",
+      }).catch((error) =>
+        enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
+      );
+    };
+
+    const print = (orderId: string) => {
+      if (printingOrderIds.has(orderId)) return;
+
+      printingOrderIds.add(orderId);
+      printQueue = printQueue.then(() => printInvoice(orderId));
     };
 
     const printMissed = async () => {
@@ -173,11 +196,7 @@ export const useInvoiceAutoPrinter = ({
           `/api/organizations/${organizationSlug}/invoices/unprinted`,
         );
 
-        for (const { orderId } of invoices) {
-          if (cancelled) return;
-
-          await print(orderId);
-        }
+        if (!cancelled) invoices.forEach(({ orderId }) => print(orderId));
       } catch (error) {
         if (!cancelled)
           enqueueSnackbar(getErrorMessage(error), { variant: "error" });
@@ -212,8 +231,7 @@ export const useInvoiceAutoPrinter = ({
     join();
 
     const handlePrintReady = (payload: InvoicePrintReadyPayload) => {
-      if (payload.organizationId === organizationId)
-        void print(payload.orderId);
+      if (payload.organizationId === organizationId) print(payload.orderId);
     };
 
     const handleReplacedEvent = (payload: InvoicePrinterReplacedPayload) => {

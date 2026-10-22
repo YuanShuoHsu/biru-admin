@@ -236,13 +236,16 @@ export const useOrderActions = (
 
   const handlePrintInvoice = useCallback(
     async (order: AdminOrderResponse) => {
+      const invoiceUrl = `/api/organizations/${organizationSlug}/orders/${order.id}/invoice`;
+
       try {
         const { printHtml } = await fetcher<OrderInvoicePrint>(
-          `/api/organizations/${organizationSlug}/orders/${order.id}/invoice/print`,
+          `${invoiceUrl}/print`,
           { method: "POST" },
         );
 
-        printDocument(printHtml);
+        await printDocument(printHtml);
+        await fetcher(`${invoiceUrl}/print/confirmation`, { method: "POST" });
       } catch (error) {
         enqueueSnackbar(getErrorMessage(error), { variant: "error" });
       } finally {

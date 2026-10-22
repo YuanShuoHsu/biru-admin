@@ -1997,13 +1997,30 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** 取得發票列印網址（熱感應紙，1 小時內有效） */
+    /** 領取發票列印頁（熱感應紙）；未印過時給正本，印完須回報 print/confirmation */
     post: operations["EcpayOrderInvoiceController_print"];
     delete?: never;
     options?: never;
     head?: never;
     /** 清除列印紀錄（紙沒印出來時還原正本） */
     patch: operations["EcpayOrderInvoiceController_resetPrint"];
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/orders/{orderId}/invoice/print/confirmation": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 回報正本已送出列印，之後再印只會是補印聯 */
+    post: operations["EcpayOrderInvoiceController_confirmPrint"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
     trace?: never;
   };
   "/api/organizations/{organizationSlug}/orders/{orderId}/invoice/verification": {
@@ -16206,6 +16223,33 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["OrderInvoiceDto"];
         };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  EcpayOrderInvoiceController_confirmPrint: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        orderId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {
