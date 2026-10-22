@@ -24,17 +24,9 @@ This is a **Next.js 16 App Router** admin panel with TypeScript, MUI, and multi-
 
 ### Routing Structure
 
-Routes live under `app/[locale]/` for i18n. Layout groups organize routes:
+Routes live under `app/[locale]/` for i18n. Every page except `(app)/maintenance/` sits in the `(app)/(dashboard)/` shell; whether a route is public or protected is decided by `proxy.ts` (below), not by its folder.
 
-- `(app)/(dashboard)/` — dashboard shell (auth/sign-in, auth/sign-up, auth/forgot-password, auth/reset-password are here but treated as public; auth/settings, order, menus, admins, organizations, company are protected)
-- `(app)/company/` — public company info pages (no dashboard shell)
-- `(app)/maintenance/` — maintenance mode page
-
-The `(dashboard)` layout uses three **parallel route slots** colocated with each feature:
-
-- `@breadcrumb` — breadcrumb bar
-- `@subheader` — secondary header (e.g., order search)
-- `@toolbar` — action toolbar (e.g., add items, toggle view)
+The `(dashboard)` layout renders three **parallel route slots**: `@breadcrumb`, `@subheader` (e.g., order search), `@toolbar` (e.g., add items, toggle view). `@subheader` and `@toolbar` have a `[...segments]` catch-all returning `null`, and `@breadcrumb/default.tsx` builds the trail from `hooks/useRoutes.ts` — so a new route needs no slot files unless it actually has a subheader/toolbar, but it must be registered in `hooks/useRoutes.ts` (and in `components/TemporaryDrawer/NestedList` if it belongs in the drawer).
 
 The middleware at `proxy.ts` handles:
 
@@ -62,7 +54,7 @@ React Hook Form + Zod schemas (`definitions.ts` files). Form schemas and error h
 
 ### Internationalization
 
-5 locales: `zh-TW` (default), `en`, `ja`, `ko`, `zh-CN`. Translation files are in `messages/[locale]/`. Always use `useTranslations()` from `next-intl` and locale-aware navigation from `@/i18n/navigation` (not `next/navigation`).
+5 locales: `zh-TW` (default), `en`, `ja`, `ko`, `zh-CN`. Translation files are in `messages/[locale]/`. Always use `useTranslations()` from `next-intl` and locale-aware `Link`, `redirect`, `usePathname`, `useRouter` from `@/i18n/navigation` (not `next/navigation`).
 
 ### UI & Theme
 
@@ -71,10 +63,6 @@ MUI v9 with a custom theme (`theme.ts`) supporting light/dark via CSS variables 
 ### Auth
 
 `better-auth` client in `lib/auth-client.ts` with `adminClient` and `organizationClient` plugins. Auth flow: sign in → verify platform admin or org membership (else `/auth/no-access`) → redirect to `DEFAULT_AUTHENTICATED_ROUTE` (`/dashboard`).
-
-### WebSocket
-
-`app/socket.ts` exports `menuSocket` — a Socket.IO client connected to the `/menus` namespace on `NEXT_PUBLIC_NEST_URL`. Used for real-time menu updates.
 
 ### API Types (Codegen)
 
@@ -93,9 +81,11 @@ For each changed file, read both versions and decide:
 1. **Superset files** (this repo has extra content — transplant only the changed hunks to biru, never overwrite the whole file):
    `utils/menus.ts`, `CustomerPaymentForm`, `messages/*/common.json`, `types/api.ts`
 
-2. **All other mirrored files** — if biru has the same path, check whether its content differs only because it's an older version of this repo (safe to `cp`) or because it has intentional frontend-specific differences (transplant hunks only).
+2. **All other mirrored files** — transplant only the hunks you changed in this task. biru is the source of truth for shared files: never `cp` this repo's version over biru, even when it looks newer or more conventional.
 
-3. **Renamed or deleted files** — apply the same operation in biru (rename directory, delete file).
+3. **Same path, different file** — `utils/orders.ts`, `utils/banners.ts`, `types/banners.ts` are separate implementations from biru; merge only the relevant change by hand, never `cp` either way.
+
+4. **Renamed or deleted files** — apply the same operation in biru (rename directory, delete file).
 
 When unsure whether a difference is intentional, read the biru file first before deciding.
 
