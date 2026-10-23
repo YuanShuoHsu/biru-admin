@@ -6401,7 +6401,7 @@ export interface components {
       /** @description 由根到父的 id，供前端拼出巢狀路由；頂層資源為空陣列 */
       ancestorIds?: string[] | null;
       action: components["schemas"]["AuditAction"];
-      /** @description 欄位名 → 變更前後值；建立的 before 與刪除的 after 為 null。出勤與薪資紀錄只記當下的值時省略另一側 */
+      /** @description 欄位名 → 變更前後值；建立的 before 與刪除的 after 為 null。出勤與薪資紀錄只記當下的值時省略另一側；敏感個資只記有無，有值時為 { redacted: true } */
       changes: {
         [key: string]: {
           after?: unknown;

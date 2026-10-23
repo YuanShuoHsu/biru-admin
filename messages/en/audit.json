@@ -251,6 +251,7 @@
     "empty": "—",
     "false": "No",
     "image": "Image",
+    "redacted": "Hidden",
     "true": "Yes"
   }
 }

@@ -251,6 +251,7 @@
     "empty": "—",
     "false": "否",
     "image": "图片",
+    "redacted": "已隐藏",
     "true": "是"
   }
 }

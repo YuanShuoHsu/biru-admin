@@ -366,6 +366,9 @@ const LOCALIZED_FIELDS = new Set([
 const isImageValue = (value: unknown): value is string =>
   typeof value === "string" && value.startsWith("data:image/");
 
+const isRedactedValue = (value: object) =>
+  "redacted" in value && value.redacted === true;
+
 const isUrlValue = (value: unknown): value is string =>
   typeof value === "string" && /^https?:\/\//.test(value);
 
@@ -689,6 +692,8 @@ const AuditLogs = ({
           : tAudit("value.empty");
 
       if (typeof value === "object") {
+        if (isRedactedValue(value)) return tAudit("value.redacted");
+
         if (isLocalizedField(value, field)) return localize(value, locale);
 
         const labels = objectLabels[field];
