@@ -361,9 +361,6 @@ importers:
       "@types/three":
         specifier: ^0.186.0
         version: 0.186.0
-      "@types/ua-parser-js":
-        specifier: ^0.7.39
-        version: 0.7.39
       eslint:
         specifier: ^9
         version: 9.30.0(jiti@2.4.2)(supports-color@10.2.2)
@@ -2719,12 +2716,6 @@ packages:
     resolution:
       {
         integrity: sha512-mxYSBpDC+D0pLfSP6sW4WZTcT+nrtmZcimMqnVmy36Hte3XpeYSrvgg4TRdaM1GemGog1AWzI5qL2VoIfMXbJQ==,
-      }
-
-  "@types/ua-parser-js@0.7.39":
-    resolution:
-      {
-        integrity: sha512-P/oDfpofrdtF5xw433SPALpdSchtJmY7nsJItf8h3KXqOslkbySh8zq4dSWXH2oTjRvJ5PczVEoCZPow6GicLg==,
       }
 
   "@types/webidl-conversions@7.0.3":
@@ -8459,8 +8450,6 @@ snapshots:
       "@types/webxr": 0.5.24
       fflate: 0.8.3
       meshoptimizer: 1.1.1
-
-  "@types/ua-parser-js@0.7.39": {}
 
   "@types/webidl-conversions@7.0.3":
     optional: true
