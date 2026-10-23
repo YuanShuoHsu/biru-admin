@@ -17113,6 +17113,8 @@ export interface operations {
         sortDirection?: components["schemas"]["SortDirection"];
         filterField?: components["schemas"]["IngredientFilterField"];
         sortBy?: components["schemas"]["IngredientSortField"];
+        /** @description 只列出庫存小於等於低庫存門檻的食材 */
+        lowStock?: "true";
         limit?: number;
         offset?: number;
         filterValue?: string;
@@ -23603,6 +23605,9 @@ export const pathsApiCouponsGetParametersQueryLangValues: ReadonlyArray<
 export const pathsApiOrganizationsOrganizationSlugCouponsGetParametersQueryLangValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/organizations/{organizationSlug}/coupons"]["get"]["parameters"]["query"]["lang"]
 > = ["en", "ja", "ko", "zh-CN", "zh-TW"];
+export const pathsApiOrganizationsOrganizationSlugIngredientsGetParametersQueryLowStockValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/organizations/{organizationSlug}/ingredients"]["get"]["parameters"]["query"]["lowStock"]
+> = ["true"];
 export const pathsApiOrganizationsOrganizationSlugOrderModesModeTokenGetParametersPathModeValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/organizations/{organizationSlug}/order-modes/{mode}/token"]["get"]["parameters"]["path"]["mode"]
 > = ["counter", "driveThru"];

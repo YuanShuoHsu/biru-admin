@@ -25,10 +25,15 @@ export const getIngredients = cache(
     organizationSlug: string,
     query: GridQuery<IngredientFilterField, IngredientSortField> = {},
     init?: RequestInit,
+    lowStock = false,
   ) => {
+    const params = getGridSearchParams(query);
+
+    if (lowStock) params.set("lowStock", "true");
+
     try {
       const result = await fetcher<{ data: Ingredient[]; total: number }>(
-        `/api/organizations/${organizationSlug}/ingredients?${getGridSearchParams(query).toString()}`,
+        `/api/organizations/${organizationSlug}/ingredients?${params}`,
         init,
       );
 

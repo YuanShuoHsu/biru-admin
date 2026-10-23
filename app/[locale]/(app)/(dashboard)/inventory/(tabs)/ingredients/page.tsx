@@ -29,6 +29,7 @@ interface IngredientsPageProps {
     filterField?: string;
     filterOperator?: string;
     filterValue?: string;
+    lowStock?: string;
     organization?: string;
     page?: string;
     pageSize?: string;
@@ -119,6 +120,8 @@ const IngredientsContent = async ({
       )
     : [];
 
+  const lowStock = rawSearchParams.lowStock === "true";
+
   const [{ ingredients: rows, total: rowCount }, { suppliers }] =
     await Promise.all([
       getIngredients(
@@ -135,6 +138,7 @@ const IngredientsContent = async ({
           sortDirection,
         },
         fetchOptions,
+        lowStock,
       ),
       canViewPurchasing
         ? getSuppliers(
@@ -154,6 +158,7 @@ const IngredientsContent = async ({
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
+      lowStock={lowStock}
       organization={organization}
       page={page}
       pageSize={pageSize}
