@@ -362,6 +362,16 @@
       "label": "포인트 유효기간(년)",
       "placeholder": "포인트 유효기간을 입력해 주세요",
       "value": "{value}년"
+    },
+    "transactions": {
+      "createdAt": "생성 시간",
+      "expiresAt": "만료일",
+      "orderNumber": "주문 번호",
+      "points": "포인트",
+      "remainingPoints": "남은 포인트",
+      "type": "유형",
+      "userEmail": "이메일",
+      "userName": "회원"
     }
   },
   "slug": {

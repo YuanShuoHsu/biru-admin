@@ -362,6 +362,16 @@
       "label": "ポイント有効期限（年）",
       "placeholder": "ポイント有効期限を入力してください",
       "value": "{value}年"
+    },
+    "transactions": {
+      "createdAt": "作成日時",
+      "expiresAt": "有効期限",
+      "orderNumber": "注文番号",
+      "points": "ポイント",
+      "remainingPoints": "残りポイント",
+      "type": "種類",
+      "userEmail": "メール",
+      "userName": "会員"
     }
   },
   "slug": {

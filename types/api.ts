@@ -2825,6 +2825,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/point-transactions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢本店發出與收回的會員點數明細 */
+    get: operations["OrganizationPointsController_findAll"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationId}/menus": {
     parameters: {
       query?: never;
@@ -9574,6 +9591,47 @@ export interface components {
     };
     RedeemPointsDto: {
       couponId: string;
+    };
+    /** @enum {string} */
+    PointTransactionFilterField:
+      | "userEmail"
+      | "userName"
+      | "orderNumber"
+      | "type"
+      | "points"
+      | "remainingPoints"
+      | "createdAt"
+      | "expiresAt";
+    /** @enum {string} */
+    PointTransactionSortField:
+      | "userEmail"
+      | "userName"
+      | "orderNumber"
+      | "type"
+      | "points"
+      | "remainingPoints"
+      | "createdAt"
+      | "expiresAt";
+    OrganizationPointTransactionDto: {
+      id: string;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      expiresAt?: string | null;
+      orderId?: string | null;
+      orderNumber?: string | null;
+      /** @description earn 為正、revoke 為負 */
+      points: number;
+      /** @description 尚未被兌換或收回的點數 */
+      remainingPoints: number;
+      /** @enum {string} */
+      type: "earn" | "redeem" | "revoke";
+      userEmail: string;
+      userName: string;
+    };
+    OrganizationPointTransactionListResponseDto: {
+      data: components["schemas"]["OrganizationPointTransactionDto"][];
+      total: number;
     };
     MenuResponseDto: {
       id: string;
@@ -18746,6 +18804,45 @@ export interface operations {
       };
     };
   };
+  OrganizationPointsController_findAll: {
+    parameters: {
+      query?: {
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["PointTransactionFilterField"];
+        sortBy?: components["schemas"]["PointTransactionSortField"];
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrganizationPointTransactionListResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   MenusController_findAllMenus: {
     parameters: {
       query?: never;
@@ -25106,6 +25203,33 @@ export const userOrderResponseDtoOrderStatusValues: ReadonlyArray<
 ];
 export const pointTransactionDtoTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PointTransactionDto"]["type"]
+> = ["earn", "redeem", "revoke"];
+export const pointTransactionFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PointTransactionFilterField"]
+> = [
+  "userEmail",
+  "userName",
+  "orderNumber",
+  "type",
+  "points",
+  "remainingPoints",
+  "createdAt",
+  "expiresAt",
+];
+export const pointTransactionSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PointTransactionSortField"]
+> = [
+  "userEmail",
+  "userName",
+  "orderNumber",
+  "type",
+  "points",
+  "remainingPoints",
+  "createdAt",
+  "expiresAt",
+];
+export const organizationPointTransactionDtoTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OrganizationPointTransactionDto"]["type"]
 > = ["earn", "redeem", "revoke"];
 export const menuSectionFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["MenuSectionFilterField"]

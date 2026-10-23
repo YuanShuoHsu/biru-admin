@@ -362,6 +362,16 @@
       "label": "Points validity (years)",
       "placeholder": "Please enter your points validity",
       "value": "{value, plural, one {# year} other {# years}}"
+    },
+    "transactions": {
+      "createdAt": "Created at",
+      "expiresAt": "Expires at",
+      "orderNumber": "Order number",
+      "points": "Points",
+      "remainingPoints": "Remaining points",
+      "type": "Type",
+      "userEmail": "Email",
+      "userName": "Member"
     }
   },
   "slug": {
