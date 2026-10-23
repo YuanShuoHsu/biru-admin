@@ -64,3 +64,7 @@ export type OrderModeTokenResponse =
   components["schemas"]["OrderModeTokenResponseDto"];
 export type OrderQrSecretResponse =
   components["schemas"]["OrderQrSecretResponseDto"];
+export type CurrentCashDrawer = components["schemas"]["CurrentCashDrawerDto"];
+export type CashDrawerSession = components["schemas"]["CashDrawerSessionDto"];
+export type CashDrawerMovementType =
+  components["schemas"]["CashDrawerMovementType"];

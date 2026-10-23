@@ -388,5 +388,17 @@
   },
   "violationsAcknowledged": {
     "required": "請確認上述違規後再覆核。"
+  },
+  "cashAmount": {
+    "required": "請輸入金額。"
+  },
+  "cashDrawerReason": {
+    "required": "原因為必填。"
+  },
+  "retainedFloat": {
+    "exceedsCounted": "留存零用金不可超過實點現金。"
+  },
+  "varianceNote": {
+    "required": "差額超過門檻，請填寫說明。"
   }
 }
