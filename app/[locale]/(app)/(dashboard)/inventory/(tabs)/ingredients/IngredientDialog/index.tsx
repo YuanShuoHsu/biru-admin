@@ -271,11 +271,16 @@ const IngredientDialog = ({
         eligibleQuantityUnitCode: values.unitCode,
         unitCode: BASE_UNIT_CODES[values.unitCode],
         lowStockThreshold:
-          values.lowStockThreshold && baseQuantity > 0
-            ? String(
-                toBaseQuantity(Number(values.lowStockThreshold), baseQuantity),
-              )
-            : null,
+          values.lowStockThreshold === initialLowStockThreshold
+            ? (ingredient?.lowStockThreshold ?? null)
+            : values.lowStockThreshold && baseQuantity > 0
+              ? String(
+                  toBaseQuantity(
+                    Number(values.lowStockThreshold),
+                    baseQuantity,
+                  ),
+                )
+              : null,
         inventoryLevel: stockPayload,
         inventoryLevelUnitText: values.inventoryLevelUnitText || null,
         note: values.note || null,
@@ -480,6 +485,7 @@ const IngredientDialog = ({
               })
             }
             placeholder={tInventory("ingredients.inventoryLevel.placeholder")}
+            step="any"
             value={inventoryLevel ? Number(inventoryLevel) : null}
           />
         </Grid>
@@ -511,7 +517,7 @@ const IngredientDialog = ({
         clearable
         disabled={!baseQuantity || !editable}
         error={!!errors.lowStockThreshold}
-        format={{ maximumFractionDigits: 0 }}
+        format={{ maximumFractionDigits: 3 }}
         fullWidth
         helperText={
           errors.lowStockThreshold?.message ||
@@ -527,6 +533,7 @@ const IngredientDialog = ({
         }
         placeholder={tInventory("ingredients.lowStockThreshold.placeholder")}
         smallStep={1}
+        step="any"
         value={lowStockThreshold ? Number(lowStockThreshold) : null}
       />
       {canViewPurchasing && (
