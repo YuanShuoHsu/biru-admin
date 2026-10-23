@@ -60,7 +60,11 @@ export const useNavChildren = (): Record<string, NavItem[]> => {
         : []),
     ],
     "/menus": [navItem("/menus/sections"), navItem("/menus/modifier-groups")],
-    "/orders": [navItem("/orders/board"), navItem("/orders/list")],
+    "/orders": [
+      navItem("/orders/board"),
+      navItem("/orders/list"),
+      navItem("/orders/cash-drawer"),
+    ],
     "/quant": [
       navItem("/quant/market"),
       navItem("/quant/bots"),
