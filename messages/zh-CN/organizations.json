@@ -362,6 +362,16 @@
       "label": "点数效期（年）",
       "placeholder": "请输入您的点数效期",
       "value": "{value} 年"
+    },
+    "transactions": {
+      "createdAt": "建立时间",
+      "expiresAt": "到期日",
+      "orderNumber": "订单编号",
+      "points": "点数",
+      "remainingPoints": "剩余点数",
+      "type": "类型",
+      "userEmail": "Email",
+      "userName": "会员"
     }
   },
   "slug": {

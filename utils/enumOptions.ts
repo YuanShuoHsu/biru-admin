@@ -26,6 +26,7 @@ import {
   orderResponseDtoModeValues,
   orderResponseDtoOrderStatusValues,
   orderResponseDtoPaymentMethodValues,
+  organizationPointTransactionDtoTypeValues,
   payrollEarningCategoryValues,
   payrollStatementStatusValues,
   quantBotExecutorValues,
@@ -201,6 +202,15 @@ export const getInventoryTransactionEnumOptions = (
 ) => ({
   reason: inventoryTransactionReasonValues.map((value) => ({
     label: tInventory(`transactions.reason.options.${value}`),
+    value,
+  })),
+});
+
+export const getPointTransactionEnumOptions = (
+  tAuth: ReturnType<typeof useTranslations<"auth">>,
+) => ({
+  type: organizationPointTransactionDtoTypeValues.map((value) => ({
+    label: tAuth(`points.type.${value}`),
     value,
   })),
 });
