@@ -4,6 +4,8 @@ import { useFormatter, useTranslations } from "next-intl";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
+import AdjustPointsDialog from "../AdjustPointsDialog";
+
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -22,7 +24,9 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { Chip } from "@mui/material";
+import { Add } from "@mui/icons-material";
+import { Button, Chip, Stack } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridFilterModel,
@@ -31,6 +35,8 @@ import type {
   GridSortModel,
 } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
+
+import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
@@ -42,6 +48,12 @@ import type {
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getPointTransactionEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
+
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(2),
+}));
 
 interface PointTransactionsProps {
   filterField?: PointTransactionFilterField;
@@ -106,6 +118,8 @@ const PointTransactions = ({
 
   const apiRef = useGridApiRef();
 
+  const { setDialog } = useDialogStore((state) => state);
+
   const tAuth = useTranslations("auth");
   const tOrganizations = useTranslations("organizations");
 
@@ -122,6 +136,7 @@ const PointTransactions = ({
       total: initialRowCount,
     },
     isValidating,
+    mutate,
   } = useSWR(
     [
       `/api/organizations/${organizationSlug}/point-transactions`,
@@ -195,6 +210,20 @@ const PointTransactions = ({
     [updateQuery],
   );
 
+  const handleAdjustPoints = () => {
+    setDialog({
+      content: (
+        <AdjustPointsDialog
+          mutate={mutate}
+          organizationSlug={organizationSlug}
+        />
+      ),
+      formId: "adjust-points-form",
+      open: true,
+      title: tOrganizations("points.adjust.title"),
+    });
+  };
+
   const columns = useMemo<GridColDef[]>(
     () => [
       {
@@ -252,6 +281,13 @@ const PointTransactions = ({
         renderCell: renderEmptyableCell,
       },
       {
+        field: "note",
+        filterable: false,
+        headerName: tOrganizations("points.transactions.note"),
+        renderCell: renderEmptyableCell,
+        sortable: false,
+      },
+      {
         field: "expiresAt",
         filterOperators: dateFilterOperators,
         headerName: tOrganizations("points.transactions.expiresAt"),
@@ -273,30 +309,42 @@ const PointTransactions = ({
   );
 
   return (
-    <DataGrid
-      {...DATA_GRID_PROPS}
-      apiRef={apiRef}
-      columns={columns}
-      filterMode="server"
-      filterModel={filterModel}
-      loading={isValidating}
-      onFilterModelChange={handleFilterModelChange}
-      onPaginationModelChange={handlePaginationModelChange}
-      onSortModelChange={handleSortModelChange}
-      pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
-      paginationMode="server"
-      paginationModel={paginationModel}
-      rowCount={rowCount}
-      rows={rows}
-      sortingMode="server"
-      sortModel={sortModel}
-      slotProps={{
-        ...DATA_GRID_PROPS.slotProps,
-        toolbar: {
-          exportDateField: "createdAt",
-        },
-      }}
-    />
+    <>
+      <ToolbarStack direction="row">
+        <Button
+          onClick={handleAdjustPoints}
+          size="small"
+          startIcon={<Add />}
+          variant="contained"
+        >
+          {tOrganizations("points.adjust.title")}
+        </Button>
+      </ToolbarStack>
+      <DataGrid
+        {...DATA_GRID_PROPS}
+        apiRef={apiRef}
+        columns={columns}
+        filterMode="server"
+        filterModel={filterModel}
+        loading={isValidating}
+        onFilterModelChange={handleFilterModelChange}
+        onPaginationModelChange={handlePaginationModelChange}
+        onSortModelChange={handleSortModelChange}
+        pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
+        paginationMode="server"
+        paginationModel={paginationModel}
+        rowCount={rowCount}
+        rows={rows}
+        sortingMode="server"
+        sortModel={sortModel}
+        slotProps={{
+          ...DATA_GRID_PROPS.slotProps,
+          toolbar: {
+            exportDateField: "createdAt",
+          },
+        }}
+      />
+    </>
   );
 };
 

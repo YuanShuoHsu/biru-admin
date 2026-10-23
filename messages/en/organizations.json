@@ -348,6 +348,25 @@
         "title": "Edit points"
       }
     },
+    "adjust": {
+      "email": {
+        "label": "Member email",
+        "placeholder": "Enter the member's email"
+      },
+      "note": {
+        "label": "Reason",
+        "placeholder": "e.g. Add a purchase that was missed",
+        "required": "Enter a reason"
+      },
+      "points": {
+        "hint": "Positive adds points, negative deducts them; deductions only take unexpired points issued by this store",
+        "invalid": "Enter a whole number between -{limit, number} and {limit, number}, not 0",
+        "label": "Points",
+        "placeholder": "Enter the points to adjust"
+      },
+      "success": "Adjusted points for {email}",
+      "title": "Adjust points"
+    },
     "amountPerPoint": {
       "empty": "Disabled",
       "hint": "Points are disabled when not set",
@@ -366,6 +385,7 @@
     "transactions": {
       "createdAt": "Created at",
       "expiresAt": "Expires at",
+      "note": "Reason",
       "orderNumber": "Order number",
       "points": "Points",
       "remainingPoints": "Remaining points",

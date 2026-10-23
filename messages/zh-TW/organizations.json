@@ -348,6 +348,25 @@
         "title": "編輯點數"
       }
     },
+    "adjust": {
+      "email": {
+        "label": "會員 Email",
+        "placeholder": "請輸入會員的 Email"
+      },
+      "note": {
+        "label": "調整原因",
+        "placeholder": "例如：補登漏掉的消費",
+        "required": "請輸入調整原因"
+      },
+      "points": {
+        "hint": "正數為補點、負數為扣點；扣點只扣本店發出且未過期的點數",
+        "invalid": "請輸入 -{limit, number} 到 {limit, number} 之間、不為 0 的整數",
+        "label": "調整點數",
+        "placeholder": "請輸入調整點數"
+      },
+      "success": "已調整 {email} 的點數",
+      "title": "補點／扣點"
+    },
     "amountPerPoint": {
       "empty": "未啟用",
       "hint": "未設定時不啟用點數",
@@ -366,6 +385,7 @@
     "transactions": {
       "createdAt": "建立時間",
       "expiresAt": "到期日",
+      "note": "調整原因",
       "orderNumber": "訂單編號",
       "points": "點數",
       "remainingPoints": "剩餘點數",
