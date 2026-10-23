@@ -76,6 +76,8 @@ MUI v9 with a custom theme (`theme.ts`) supporting light/dark via CSS variables 
 
 Mirror repo (frontend): `/Users/yuanshuohsu/Desktop/biru`. After completing any file changes, always sync to biru before considering the task done.
 
+Only files both repos use are mirrored: a file only one repo uses is not created in the other, and a changed file with no copy in the mirror needs no sync unless the task makes the mirror use it.
+
 For each changed file, read both versions and decide:
 
 1. **Superset files** (this repo has extra content — transplant only the changed hunks to biru, never overwrite the whole file):

@@ -356,13 +356,6 @@ pnpm add react-imask
 pnpm add socket.io-client
 ```
 
-## Swiper
-
-```bash
-# https://swiperjs.com/get-started
-pnpm add swiper
-```
-
 ## dnd kit
 
 ```bash
