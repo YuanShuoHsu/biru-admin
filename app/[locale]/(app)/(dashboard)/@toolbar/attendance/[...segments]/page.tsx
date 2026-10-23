@@ -1,6 +1,4 @@
-import OrganizationSelect from "@/components/OrganizationSelect";
-
-import { listOrganizations } from "@/utils/session";
+import OrganizationSelectToolbar from "@/components/OrganizationSelectToolbar";
 
 interface ToolbarAttendanceSegmentsPageProps {
   params: Promise<{ segments: string[] }>;
@@ -11,18 +9,12 @@ const ToolbarAttendanceSegmentsPage = async ({
   params,
   searchParams,
 }: ToolbarAttendanceSegmentsPageProps) => {
-  const [{ segments }, { organization = "" }] = await Promise.all([
-    params,
-    searchParams,
-  ]);
-
-  const organizations = await listOrganizations();
+  const { segments } = await params;
 
   return (
-    <OrganizationSelect
-      organizations={organizations}
-      organizationSlug={organization}
+    <OrganizationSelectToolbar
       readOnly={segments.at(-1) === "audit-logs"}
+      searchParams={searchParams}
     />
   );
 };

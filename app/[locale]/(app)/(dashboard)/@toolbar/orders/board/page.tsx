@@ -1,8 +1,6 @@
 import InvoicePrinterStatusChip from "@/components/InvoicePrinterStatusChip";
 import OrderTicketPrinterStatusChips from "@/components/OrderTicketPrinterStatusChips";
-import OrganizationSelect from "@/components/OrganizationSelect";
-
-import { listOrganizations } from "@/utils/session";
+import OrganizationSelectToolbar from "@/components/OrganizationSelectToolbar";
 
 interface ToolbarOrdersBoardPageProps {
   searchParams: Promise<{ organization?: string }>;
@@ -13,16 +11,11 @@ const ToolbarOrdersBoardPage = async ({
 }: ToolbarOrdersBoardPageProps) => {
   const { organization = "" } = await searchParams;
 
-  const organizations = await listOrganizations();
-
   return (
     <>
       <InvoicePrinterStatusChip organizationSlug={organization} />
       <OrderTicketPrinterStatusChips organizationSlug={organization} />
-      <OrganizationSelect
-        organizations={organizations}
-        organizationSlug={organization}
-      />
+      <OrganizationSelectToolbar searchParams={searchParams} />
     </>
   );
 };
