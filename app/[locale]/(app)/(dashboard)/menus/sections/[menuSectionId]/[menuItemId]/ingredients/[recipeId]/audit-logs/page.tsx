@@ -1,55 +1,18 @@
-import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
-import { Suspense } from "react";
-
-import AuditLogs from "@/components/AuditLogs";
-import AuditLogsPage, {
-  type AuditLogSearchParams,
+import {
+  createAuditLogsPage,
+  generateAuditLogsMetadata,
 } from "@/components/AuditLogsPage";
 
-import type { Locale } from "@/i18n/routing";
+export const generateMetadata = generateAuditLogsMetadata;
 
-interface RecipeAuditLogsPageProps {
-  params: Promise<{
-    locale: Locale;
-    menuSectionId: string;
-    menuItemId: string;
-    recipeId: string;
-  }>;
-  searchParams: Promise<AuditLogSearchParams>;
-}
-
-export const generateMetadata = async ({
-  params,
-}: RecipeAuditLogsPageProps): Promise<Metadata> => {
-  const { locale } = await params;
-  const tAudit = await getTranslations({ locale, namespace: "audit" });
-
-  return { title: tAudit("title") };
-};
-
-const RecipeAuditLogsContent = async ({
-  params,
-  searchParams,
-}: RecipeAuditLogsPageProps) => {
-  const [{ locale, menuSectionId, menuItemId, recipeId }, query] =
-    await Promise.all([params, searchParams]);
-
-  return (
-    <AuditLogsPage
-      href={`/menus/sections/${menuSectionId}/${menuItemId}/ingredients/${recipeId}/audit-logs`}
-      locale={locale}
-      resource="recipe"
-      resourceId={recipeId}
-      searchParams={query}
-    />
-  );
-};
-
-const RecipeAuditLogsPage = (props: RecipeAuditLogsPageProps) => (
-  <Suspense fallback={<AuditLogs loading resource="recipe" />}>
-    <RecipeAuditLogsContent {...props} />
-  </Suspense>
-);
-
-export default RecipeAuditLogsPage;
+export default createAuditLogsPage<{
+  menuItemId: string;
+  menuSectionId: string;
+  recipeId: string;
+}>({
+  resolveTarget: ({ menuItemId, menuSectionId, recipeId }) => ({
+    href: `/menus/sections/${menuSectionId}/${menuItemId}/ingredients/${recipeId}/audit-logs`,
+    resourceId: recipeId,
+  }),
+  resource: "recipe",
+});

@@ -142,6 +142,13 @@ interface Route {
   to?: string | null;
 }
 
+const auditLogsRoute: Route = {
+  icon: History,
+  label: "audit.title",
+  query: ["organization", "page", "pageSize"],
+  segment: "audit-logs",
+};
+
 const routes: Route[] = [
   {
     icon: Dashboard,
@@ -224,14 +231,7 @@ const routes: Route[] = [
           {
             children: [
               {
-                children: [
-                  {
-                    icon: History,
-                    label: "audit.title",
-                    query: ["organization", "page", "pageSize"],
-                    segment: "audit-logs",
-                  },
-                ],
+                children: [auditLogsRoute],
                 icon: EventNote,
                 label: "audit.resource.shift",
                 segment: "[shiftId]",
@@ -246,14 +246,7 @@ const routes: Route[] = [
           {
             children: [
               {
-                children: [
-                  {
-                    icon: History,
-                    label: "audit.title",
-                    query: ["organization", "page", "pageSize"],
-                    segment: "audit-logs",
-                  },
-                ],
+                children: [auditLogsRoute],
                 icon: FactCheck,
                 label: "audit.resource.attendanceRequest",
                 segment: "[requestId]",
@@ -268,14 +261,7 @@ const routes: Route[] = [
           {
             children: [
               {
-                children: [
-                  {
-                    icon: History,
-                    label: "audit.title",
-                    query: ["organization", "page", "pageSize"],
-                    segment: "audit-logs",
-                  },
-                ],
+                children: [auditLogsRoute],
                 icon: EventRepeat,
                 label: "audit.resource.holidaySubstitute",
                 segment: "[substituteId]",
@@ -290,14 +276,7 @@ const routes: Route[] = [
           {
             children: [
               {
-                children: [
-                  {
-                    icon: History,
-                    label: "audit.title",
-                    query: ["organization", "page", "pageSize"],
-                    segment: "audit-logs",
-                  },
-                ],
+                children: [auditLogsRoute],
                 icon: Schedule,
                 label: "audit.resource.shiftType",
                 segment: "[shiftTypeId]",
@@ -320,14 +299,7 @@ const routes: Route[] = [
           {
             children: [
               {
-                children: [
-                  {
-                    icon: History,
-                    label: "audit.title",
-                    query: ["organization", "page", "pageSize"],
-                    segment: "audit-logs",
-                  },
-                ],
+                children: [auditLogsRoute],
                 icon: AccountBalanceWallet,
                 label: "audit.resource.leaveBalance",
                 segment: "[balanceId]",
@@ -342,14 +314,7 @@ const routes: Route[] = [
           {
             children: [
               {
-                children: [
-                  {
-                    icon: History,
-                    label: "audit.title",
-                    query: ["organization", "page", "pageSize"],
-                    segment: "audit-logs",
-                  },
-                ],
+                children: [auditLogsRoute],
                 icon: FolderShared,
                 label: "audit.resource.leaveCase",
                 segment: "[leaveCaseId]",
@@ -370,14 +335,7 @@ const routes: Route[] = [
           {
             children: [
               {
-                children: [
-                  {
-                    icon: History,
-                    label: "audit.title",
-                    query: ["organization", "page", "pageSize"],
-                    segment: "audit-logs",
-                  },
-                ],
+                children: [auditLogsRoute],
                 icon: AssignmentReturn,
                 label: "audit.resource.parentalReturn",
                 segment: "[parentalReturnId]",
@@ -392,14 +350,7 @@ const routes: Route[] = [
           {
             children: [
               {
-                children: [
-                  {
-                    icon: History,
-                    label: "audit.title",
-                    query: ["organization", "page", "pageSize"],
-                    segment: "audit-logs",
-                  },
-                ],
+                children: [auditLogsRoute],
                 icon: Category,
                 label: "audit.resource.leaveType",
                 segment: "[leaveTypeId]",
@@ -422,14 +373,7 @@ const routes: Route[] = [
           {
             children: [
               {
-                children: [
-                  {
-                    icon: History,
-                    label: "audit.title",
-                    query: ["organization", "page", "pageSize"],
-                    segment: "audit-logs",
-                  },
-                ],
+                children: [auditLogsRoute],
                 icon: Payments,
                 label: "audit.resource.payslip",
                 segment: "[statementId]",
@@ -444,14 +388,7 @@ const routes: Route[] = [
           {
             children: [
               {
-                children: [
-                  {
-                    icon: History,
-                    label: "audit.title",
-                    query: ["organization", "page", "pageSize"],
-                    segment: "audit-logs",
-                  },
-                ],
+                children: [auditLogsRoute],
                 icon: ReceiptLong,
                 label: "audit.resource.taxIdentity",
                 segment: "[employeeId]",
@@ -466,14 +403,7 @@ const routes: Route[] = [
           {
             children: [
               {
-                children: [
-                  {
-                    icon: History,
-                    label: "audit.title",
-                    query: ["organization", "page", "pageSize"],
-                    segment: "audit-logs",
-                  },
-                ],
+                children: [auditLogsRoute],
                 icon: AddCard,
                 label: "audit.resource.earningType",
                 segment: "[earningTypeId]",
@@ -502,14 +432,7 @@ const routes: Route[] = [
           {
             children: [
               {
-                children: [
-                  {
-                    icon: History,
-                    label: "audit.title",
-                    query: ["organization", "page", "pageSize"],
-                    segment: "audit-logs",
-                  },
-                ],
+                children: [auditLogsRoute],
                 icon: Badge,
                 label: "attendance.employee",
                 segment: "[employeeId]",
@@ -544,14 +467,7 @@ const routes: Route[] = [
       {
         children: [
           {
-            children: [
-              {
-                icon: History,
-                label: "audit.title",
-                query: ["organization", "page", "pageSize"],
-                segment: "audit-logs",
-              },
-            ],
+            children: [auditLogsRoute],
             icon: ReceiptLong,
             segment: "[orderId]",
             to: null,
@@ -570,31 +486,14 @@ const routes: Route[] = [
   },
   {
     children: [
-      {
-        icon: History,
-        label: "audit.title",
-        query: ["organization", "page", "pageSize"],
-        segment: "audit-logs",
-      },
+      auditLogsRoute,
       {
         children: [
           {
             children: [
+              auditLogsRoute,
               {
-                icon: History,
-                label: "audit.title",
-                query: ["organization", "page", "pageSize"],
-                segment: "audit-logs",
-              },
-              {
-                children: [
-                  {
-                    icon: History,
-                    label: "audit.title",
-                    query: ["organization", "page", "pageSize"],
-                    segment: "audit-logs",
-                  },
-                ],
+                children: [auditLogsRoute],
                 icon: Checklist,
                 label: "menus.modifiers.label",
                 segment: "[modifierId]",
@@ -614,25 +513,13 @@ const routes: Route[] = [
         children: [
           {
             children: [
-              {
-                icon: History,
-                label: "audit.title",
-                query: ["organization", "page", "pageSize"],
-                segment: "audit-logs",
-              },
+              auditLogsRoute,
               {
                 children: [
                   {
                     children: [
                       {
-                        children: [
-                          {
-                            icon: History,
-                            label: "audit.title",
-                            query: ["organization", "page", "pageSize"],
-                            segment: "audit-logs",
-                          },
-                        ],
+                        children: [auditLogsRoute],
                         icon: Extension,
                         label: "menus.items.addOns.label",
                         segment: "[addOnId]",
@@ -644,23 +531,11 @@ const routes: Route[] = [
                     query: ["organization", "page", "pageSize"],
                     segment: "add-ons",
                   },
-                  {
-                    icon: History,
-                    label: "audit.title",
-                    query: ["organization", "page", "pageSize"],
-                    segment: "audit-logs",
-                  },
+                  auditLogsRoute,
                   {
                     children: [
                       {
-                        children: [
-                          {
-                            icon: History,
-                            label: "audit.title",
-                            query: ["organization", "page", "pageSize"],
-                            segment: "audit-logs",
-                          },
-                        ],
+                        children: [auditLogsRoute],
                         icon: Scale,
                         label: "inventory.recipes.ingredients.label",
                         query: ["organization", "page", "pageSize"],
@@ -675,14 +550,7 @@ const routes: Route[] = [
                   {
                     children: [
                       {
-                        children: [
-                          {
-                            icon: History,
-                            label: "audit.title",
-                            query: ["organization", "page", "pageSize"],
-                            segment: "audit-logs",
-                          },
-                        ],
+                        children: [auditLogsRoute],
                         icon: Tune,
                         label: "menus.items.modifierGroups.label",
                         segment: "[linkId]",
@@ -722,12 +590,7 @@ const routes: Route[] = [
         children: [
           {
             children: [
-              {
-                icon: History,
-                label: "audit.title",
-                query: ["organization", "page", "pageSize"],
-                segment: "audit-logs",
-              },
+              auditLogsRoute,
               {
                 icon: SwapVert,
                 label: "inventory.transactions.label",
@@ -748,14 +611,7 @@ const routes: Route[] = [
       {
         children: [
           {
-            children: [
-              {
-                icon: History,
-                label: "audit.title",
-                query: ["organization", "page", "pageSize"],
-                segment: "audit-logs",
-              },
-            ],
+            children: [auditLogsRoute],
             icon: LocalShipping,
             segment: "[supplierId]",
             to: null,
@@ -772,12 +628,7 @@ const routes: Route[] = [
     segment: "inventory",
     to: null,
   },
-  {
-    icon: History,
-    label: "audit.title",
-    query: ["organization", "page", "pageSize"],
-    segment: "audit-logs",
-  },
+  auditLogsRoute,
   {
     children: [
       {
@@ -836,14 +687,7 @@ const routes: Route[] = [
   {
     children: [
       {
-        children: [
-          {
-            icon: History,
-            label: "audit.title",
-            query: ["organization", "page", "pageSize"],
-            segment: "audit-logs",
-          },
-        ],
+        children: [auditLogsRoute],
         icon: ManageSearch,
         query: ["page", "pageSize"],
         segment: "[couponId]",
@@ -931,14 +775,7 @@ const routes: Route[] = [
       {
         children: [
           {
-            children: [
-              {
-                icon: History,
-                label: "audit.title",
-                query: ["organization", "page", "pageSize"],
-                segment: "audit-logs",
-              },
-            ],
+            children: [auditLogsRoute],
             icon: ConfirmationNumber,
             segment: "[ticketId]",
             to: null,

@@ -1,6 +1,8 @@
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import AuditLogs from "@/components/AuditLogs";
 
@@ -29,7 +31,7 @@ import {
   getSession,
 } from "@/utils/session";
 
-export interface AuditLogSearchParams {
+interface AuditLogSearchParams {
   filterField?: string;
   filterOperator?: string;
   filterValue?: string;
@@ -43,8 +45,8 @@ export interface AuditLogSearchParams {
 }
 
 interface AuditLogsPageProps {
-  ancestorId?: string;
   adminScope?: boolean;
+  ancestorId?: string;
   href: string;
   ingredient?: Ingredient;
   locale: Locale;
@@ -54,8 +56,8 @@ interface AuditLogsPageProps {
 }
 
 const AuditLogsPage = async ({
-  ancestorId,
   adminScope = false,
+  ancestorId,
   href,
   ingredient,
   locale,
@@ -199,4 +201,65 @@ const AuditLogsPage = async ({
   );
 };
 
-export default AuditLogsPage;
+type AuditLogsTarget = Pick<
+  AuditLogsPageProps,
+  "ancestorId" | "href" | "ingredient" | "resourceId"
+>;
+
+interface CreateAuditLogsPageOptions<Params> {
+  adminScope?: boolean;
+  resolveTarget: (
+    params: Params,
+    searchParams: AuditLogSearchParams,
+  ) => AuditLogsTarget | Promise<AuditLogsTarget>;
+  resource?: AuditResource;
+}
+
+interface AuditLogsRouteProps<Params> {
+  params: Promise<Params & { locale: Locale }>;
+  searchParams: Promise<AuditLogSearchParams>;
+}
+
+export const generateAuditLogsMetadata = async ({
+  params,
+}: {
+  params: Promise<{ locale: Locale }>;
+}): Promise<Metadata> => {
+  const { locale } = await params;
+  const tAudit = await getTranslations({ locale, namespace: "audit" });
+
+  return { title: tAudit("title") };
+};
+
+export const createAuditLogsPage = <Params extends object>({
+  adminScope,
+  resolveTarget,
+  resource,
+}: CreateAuditLogsPageOptions<Params>) => {
+  const AuditLogsContent = async ({
+    params,
+    searchParams,
+  }: AuditLogsRouteProps<Params>) => {
+    const [routeParams, query] = await Promise.all([params, searchParams]);
+
+    const target = await resolveTarget(routeParams, query);
+
+    return (
+      <AuditLogsPage
+        {...target}
+        adminScope={adminScope}
+        locale={routeParams.locale}
+        resource={resource}
+        searchParams={query}
+      />
+    );
+  };
+
+  const AuditLogsRoute = (props: AuditLogsRouteProps<Params>) => (
+    <Suspense fallback={<AuditLogs loading resource={resource} />}>
+      <AuditLogsContent {...props} />
+    </Suspense>
+  );
+
+  return AuditLogsRoute;
+};

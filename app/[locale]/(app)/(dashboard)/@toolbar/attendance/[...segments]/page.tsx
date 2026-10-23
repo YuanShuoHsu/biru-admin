@@ -3,13 +3,18 @@ import OrganizationSelect from "@/components/OrganizationSelect";
 import { listOrganizations } from "@/utils/session";
 
 interface ToolbarAttendanceSegmentsPageProps {
+  params: Promise<{ segments: string[] }>;
   searchParams: Promise<{ organization?: string }>;
 }
 
 const ToolbarAttendanceSegmentsPage = async ({
+  params,
   searchParams,
 }: ToolbarAttendanceSegmentsPageProps) => {
-  const { organization = "" } = await searchParams;
+  const [{ segments }, { organization = "" }] = await Promise.all([
+    params,
+    searchParams,
+  ]);
 
   const organizations = await listOrganizations();
 
@@ -17,6 +22,7 @@ const ToolbarAttendanceSegmentsPage = async ({
     <OrganizationSelect
       organizations={organizations}
       organizationSlug={organization}
+      readOnly={segments.at(-1) === "audit-logs"}
     />
   );
 };
