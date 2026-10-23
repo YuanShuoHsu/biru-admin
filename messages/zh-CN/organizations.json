@@ -89,6 +89,7 @@
       "label": "桌面点餐二维码",
       "tableNumber": {
         "helperText": "二维码打印后长期有效，请贴在对应桌号的桌面上",
+        "invalid": "桌号请输入 1 到 999",
         "label": "桌号",
         "placeholder": "请输入桌号"
       }

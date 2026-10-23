@@ -89,6 +89,7 @@
       "label": "Table ordering QR code",
       "tableNumber": {
         "helperText": "Printed QR codes stay valid indefinitely. Place each one on the table with the matching number.",
+        "invalid": "Enter a table number from 1 to 999",
         "label": "Table number",
         "placeholder": "Enter a table number"
       }

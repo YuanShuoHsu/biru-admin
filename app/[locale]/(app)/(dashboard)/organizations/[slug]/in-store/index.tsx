@@ -112,7 +112,8 @@ const DineInQrCodeCard = ({ organizationSlug }: DineInQrCodeCardProps) => {
 
   const tOrganizations = useTranslations("organizations");
 
-  const isValidTableNumber = /^[1-9]\d*$/.test(tableNumber);
+  const isValidTableNumber = /^[1-9]\d{0,2}$/.test(tableNumber);
+  const isInvalidTableNumber = !!tableNumber && !isValidTableNumber;
 
   const { data } = useSWR<DineInTableTokenResponse>(
     isValidTableNumber
@@ -131,8 +132,12 @@ const DineInQrCodeCard = ({ organizationSlug }: DineInQrCodeCardProps) => {
           {tOrganizations("inStore.dineIn.label")}
         </BoldTypography>
         <TextField
-          error={!!tableNumber && !isValidTableNumber}
-          helperText={tOrganizations("inStore.dineIn.tableNumber.helperText")}
+          error={isInvalidTableNumber}
+          helperText={tOrganizations(
+            isInvalidTableNumber
+              ? "inStore.dineIn.tableNumber.invalid"
+              : "inStore.dineIn.tableNumber.helperText",
+          )}
           label={tOrganizations("inStore.dineIn.tableNumber.label")}
           onChange={(event) => setTableNumber(event.target.value)}
           placeholder={tOrganizations("inStore.dineIn.tableNumber.placeholder")}

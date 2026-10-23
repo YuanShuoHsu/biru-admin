@@ -89,6 +89,7 @@
       "label": "桌面點餐 QR code",
       "tableNumber": {
         "helperText": "QR code 印出後長期有效，請貼在對應桌號的桌面上",
+        "invalid": "桌號請輸入 1 到 999",
         "label": "桌號",
         "placeholder": "請輸入桌號"
       }
