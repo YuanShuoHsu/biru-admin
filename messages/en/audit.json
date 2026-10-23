@@ -49,6 +49,7 @@
     "cutoffMinutes": "Stop taking new parties before closing (minutes)",
     "deliveryLeadTimeMinutes": "Preparation time (min)",
     "description": "Description",
+    "dineInTableCount": "Dine-in tables",
     "discount": "Discount",
     "discountCurrency": "Discount currency",
     "displayName": "Group name",

@@ -223,6 +223,7 @@ const FIELD_LABEL_KEYS = {
   pickupLeadMinutes: "field.pickupLeadMinutes",
   pickupMaxAdvanceDays: "field.pickupMaxAdvanceDays",
   pickupCutoffMinutes: "field.pickupCutoffMinutes",
+  dineInTableCount: "field.dineInTableCount",
   prefix: "field.prefix",
   number: "field.number",
   status: "field.status",

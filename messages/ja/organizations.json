@@ -86,10 +86,23 @@
       "label": "カウンター注文 QR コード"
     },
     "dineIn": {
+      "actions": {
+        "updateTableCount": {
+          "success": "{name} の店内テーブル数を更新しました",
+          "title": "店内テーブル数を設定"
+        }
+      },
       "label": "テーブル注文 QR コード",
+      "tableCount": {
+        "helperText": "テーブル番号は 1 からこの数までです（最大 {max}）。減らすと、範囲外のテーブルの QR コードは無効になります",
+        "label": "店内テーブル数",
+        "notSet": "店内テーブル数を設定すると、テーブルの QR コードを作成できます",
+        "placeholder": "店内テーブル数を入力してください",
+        "value": "{count} 卓"
+      },
       "tableNumber": {
         "helperText": "印刷した QR コードは長期間有効です。該当する番号のテーブルに貼ってください",
-        "invalid": "テーブル番号は 1〜999 で入力してください",
+        "invalid": "テーブル番号は 1〜{count} で入力してください",
         "label": "テーブル番号",
         "placeholder": "テーブル番号を入力してください"
       }

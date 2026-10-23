@@ -49,6 +49,7 @@
     "cutoffMinutes": "閉店前の受付終了（分）",
     "deliveryLeadTimeMinutes": "準備時間（分）",
     "description": "説明",
+    "dineInTableCount": "店内テーブル数",
     "discount": "割引",
     "discountCurrency": "割引の通貨",
     "displayName": "グループ名",

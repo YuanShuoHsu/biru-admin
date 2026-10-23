@@ -3,8 +3,10 @@
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { QRCodeCanvas } from "qrcode.react";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import useSWR, { useSWRConfig } from "swr";
+
+import UpdateDineInTableCountDialog from "./UpdateDineInTableCountDialog";
 
 import { StyledCardContent } from "@/components/FormCard";
 
@@ -33,6 +35,7 @@ import type {
 } from "@/types/orders";
 import type {
   InvoicePrinterSetting,
+  OrganizationResponse,
   Printer,
   PrinterCredentials,
 } from "@/types/organizations";
@@ -104,16 +107,46 @@ const OrderQrCode = ({ fileName, orderUrl }: OrderQrCodeProps) => {
 };
 
 interface DineInQrCodeCardProps {
-  organizationSlug: string;
+  organization: OrganizationResponse;
 }
 
-const DineInQrCodeCard = ({ organizationSlug }: DineInQrCodeCardProps) => {
+const DineInQrCodeCard = ({
+  organization: initialOrganization,
+}: DineInQrCodeCardProps) => {
+  const [organization, setOrganization] = useState(initialOrganization);
   const [tableNumber, setTableNumber] = useState("");
+
+  const { setDialog } = useDialogStore((state) => state);
 
   const tOrganizations = useTranslations("organizations");
 
-  const isValidTableNumber = /^[1-9]\d{0,2}$/.test(tableNumber);
+  const { dineInTableCount, slug: organizationSlug } = organization;
+
+  const isValidTableNumber =
+    /^[1-9]\d*$/.test(tableNumber) &&
+    Number(tableNumber) <= (dineInTableCount ?? 0);
   const isInvalidTableNumber = !!tableNumber && !isValidTableNumber;
+
+  const fetchOrganization = useCallback(async () => {
+    const data = await fetcher<OrganizationResponse>(
+      `/api/organizations/${organizationSlug}`,
+    );
+
+    setOrganization(data);
+  }, [organizationSlug]);
+
+  const handleUpdateTableCount = () =>
+    setDialog({
+      content: (
+        <UpdateDineInTableCountDialog
+          fetchOrganization={fetchOrganization}
+          organization={organization}
+        />
+      ),
+      formId: "update-dine-in-table-count-form",
+      open: true,
+      title: tOrganizations("inStore.dineIn.actions.updateTableCount.title"),
+    });
 
   const { data } = useSWR<DineInTableTokenResponse>(
     isValidTableNumber
@@ -131,19 +164,43 @@ const DineInQrCodeCard = ({ organizationSlug }: DineInQrCodeCardProps) => {
         <BoldTypography color="textSecondary" variant="subtitle2">
           {tOrganizations("inStore.dineIn.label")}
         </BoldTypography>
-        <TextField
-          error={isInvalidTableNumber}
-          helperText={tOrganizations(
-            isInvalidTableNumber
-              ? "inStore.dineIn.tableNumber.invalid"
-              : "inStore.dineIn.tableNumber.helperText",
-          )}
-          label={tOrganizations("inStore.dineIn.tableNumber.label")}
-          onChange={(event) => setTableNumber(event.target.value)}
-          placeholder={tOrganizations("inStore.dineIn.tableNumber.placeholder")}
-          slotProps={{ htmlInput: { inputMode: "numeric" } }}
-          value={tableNumber}
-        />
+        {dineInTableCount ? (
+          <Typography variant="body2">
+            {tOrganizations("inStore.dineIn.tableCount.label")}
+            {": "}
+            {tOrganizations("inStore.dineIn.tableCount.value", {
+              count: dineInTableCount,
+            })}
+          </Typography>
+        ) : (
+          <Alert severity="info">
+            {tOrganizations("inStore.dineIn.tableCount.notSet")}
+          </Alert>
+        )}
+        <ActionsStack direction="row">
+          <Button onClick={handleUpdateTableCount} variant="outlined">
+            {tOrganizations("inStore.dineIn.actions.updateTableCount.title")}
+          </Button>
+        </ActionsStack>
+        {!!dineInTableCount && (
+          <TextField
+            error={isInvalidTableNumber}
+            helperText={
+              isInvalidTableNumber
+                ? tOrganizations("inStore.dineIn.tableNumber.invalid", {
+                    count: dineInTableCount,
+                  })
+                : tOrganizations("inStore.dineIn.tableNumber.helperText")
+            }
+            label={tOrganizations("inStore.dineIn.tableNumber.label")}
+            onChange={(event) => setTableNumber(event.target.value)}
+            placeholder={tOrganizations(
+              "inStore.dineIn.tableNumber.placeholder",
+            )}
+            slotProps={{ htmlInput: { inputMode: "numeric" } }}
+            value={tableNumber}
+          />
+        )}
         {orderUrl && (
           <OrderQrCode
             fileName={`table-${tableNumber}-${organizationSlug}.png`}
@@ -753,17 +810,19 @@ const OrderTicketPrintersCard = ({
 };
 
 interface OrganizationsSlugInStoreProps {
+  organization: OrganizationResponse;
   organizationSlug: string;
 }
 
 const OrganizationsSlugInStore = ({
+  organization,
   organizationSlug,
 }: OrganizationsSlugInStoreProps) => {
   const tOrganizations = useTranslations("organizations");
 
   return (
     <CardsStack>
-      <DineInQrCodeCard organizationSlug={organizationSlug} />
+      <DineInQrCodeCard organization={organization} />
       <OrderModeQrCodeCard
         label={tOrganizations("inStore.counter.label")}
         mode={ORDER_MODE.Counter}

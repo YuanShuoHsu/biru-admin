@@ -10599,6 +10599,8 @@ export interface components {
       pickupLeadMinutes: number;
       pickupMaxAdvanceDays: number;
       pickupCutoffMinutes: number;
+      /** @description 內用桌數，桌號為 1 到此數；null 代表不開放內用 */
+      dineInTableCount?: number | null;
       /**
        * Format: date-time
        * @description 停業時間；營業中為 null
@@ -10636,6 +10638,8 @@ export interface components {
       pickupLeadMinutes: number;
       pickupMaxAdvanceDays: number;
       pickupCutoffMinutes: number;
+      /** @description 內用桌數，桌號為 1 到此數；null 代表不開放內用 */
+      dineInTableCount?: number | null;
       /**
        * Format: date-time
        * @description 停業時間；營業中為 null

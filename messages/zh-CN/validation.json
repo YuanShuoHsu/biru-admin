@@ -87,6 +87,11 @@
   "description": {
     "maxLength": "描述不能超过 160 个字符。"
   },
+  "dineInTableCount": {
+    "invalid": "堂食桌数格式无效。",
+    "max": "堂食桌数不可超过 {max} 桌。",
+    "required": "堂食桌数为必填。"
+  },
   "donateCode": {
     "invalid": "捐赠码格式无效。",
     "required": "捐赠码为必填。"

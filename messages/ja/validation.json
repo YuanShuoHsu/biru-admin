@@ -87,6 +87,11 @@
   "description": {
     "maxLength": "説明は160文字以内で入力してください。"
   },
+  "dineInTableCount": {
+    "invalid": "店内テーブル数の形式が正しくありません。",
+    "max": "店内テーブル数は {max} 以下にしてください。",
+    "required": "店内テーブル数は必須です。"
+  },
   "donateCode": {
     "invalid": "寄付コードが無効です。",
     "required": "寄付コードは必須です。"

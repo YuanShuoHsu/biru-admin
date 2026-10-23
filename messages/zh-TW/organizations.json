@@ -86,10 +86,23 @@
       "label": "櫃台點餐 QR code"
     },
     "dineIn": {
+      "actions": {
+        "updateTableCount": {
+          "success": "成功更新 {name} 的內用桌數",
+          "title": "設定內用桌數"
+        }
+      },
       "label": "桌面點餐 QR code",
+      "tableCount": {
+        "helperText": "桌號為 1 到此數，最多 {max} 桌；調少後，超出範圍的桌號 QR code 會失效",
+        "label": "內用桌數",
+        "notSet": "尚未設定內用桌數，設定後才能產生桌號 QR code",
+        "placeholder": "請輸入您的內用桌數",
+        "value": "{count} 桌"
+      },
       "tableNumber": {
         "helperText": "QR code 印出後長期有效，請貼在對應桌號的桌面上",
-        "invalid": "桌號請輸入 1 到 999",
+        "invalid": "桌號請輸入 1 到 {count}",
         "label": "桌號",
         "placeholder": "請輸入桌號"
       }

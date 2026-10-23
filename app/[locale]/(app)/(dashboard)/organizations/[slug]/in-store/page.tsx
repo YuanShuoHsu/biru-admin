@@ -9,7 +9,7 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
-import { hasRolePermission } from "@/utils/organizations";
+import { getOrganization, hasRolePermission } from "@/utils/organizations";
 import { getSession } from "@/utils/session";
 
 interface OrganizationsSlugInStorePageProps {
@@ -35,15 +35,16 @@ const OrganizationsSlugInStorePage = async ({
 
   const organizationSlug = decodeURIComponent(slug);
 
-  const [{ data }, session] = await Promise.all([
+  const [{ data }, organization, session] = await Promise.all([
     authClient.organization.getFullOrganization({
       query: { organizationSlug },
       fetchOptions: { headers: { cookie: cookieStore.toString() } },
     }),
+    getOrganization(organizationSlug),
     getSession(),
   ]);
 
-  if (!data) notFound();
+  if (!data || !organization) notFound();
 
   const currentUserRole = data.members.find(
     ({ userId }) => userId === session?.user?.id,
@@ -52,7 +53,12 @@ const OrganizationsSlugInStorePage = async ({
   if (!hasRolePermission(currentUserRole, { organization: ["update"] }))
     notFound();
 
-  return <OrganizationsSlugInStore organizationSlug={organizationSlug} />;
+  return (
+    <OrganizationsSlugInStore
+      organization={organization}
+      organizationSlug={organizationSlug}
+    />
+  );
 };
 
 export default OrganizationsSlugInStorePage;

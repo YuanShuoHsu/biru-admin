@@ -49,6 +49,7 @@
     "cutoffMinutes": "영업 종료 전 등록 마감(분)",
     "deliveryLeadTimeMinutes": "준비 시간(분)",
     "description": "설명",
+    "dineInTableCount": "매장 테이블 수",
     "discount": "할인",
     "discountCurrency": "할인 통화",
     "displayName": "그룹 이름",

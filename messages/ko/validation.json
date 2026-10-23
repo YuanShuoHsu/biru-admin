@@ -87,6 +87,11 @@
   "description": {
     "maxLength": "설명은 160자를 초과할 수 없습니다."
   },
+  "dineInTableCount": {
+    "invalid": "매장 테이블 수 형식이 올바르지 않습니다.",
+    "max": "매장 테이블 수는 {max}개를 넘을 수 없습니다.",
+    "required": "매장 테이블 수는 필수입니다."
+  },
   "donateCode": {
     "invalid": "기부코드가 유효하지 않습니다.",
     "required": "기부코드는 필수입니다."

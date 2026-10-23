@@ -86,10 +86,23 @@
       "label": "柜台点餐二维码"
     },
     "dineIn": {
+      "actions": {
+        "updateTableCount": {
+          "success": "成功更新 {name} 的堂食桌数",
+          "title": "设置堂食桌数"
+        }
+      },
       "label": "桌面点餐二维码",
+      "tableCount": {
+        "helperText": "桌号为 1 到此数，最多 {max} 桌；调少后，超出范围的桌号二维码会失效",
+        "label": "堂食桌数",
+        "notSet": "尚未设置堂食桌数，设置后才能生成桌号二维码",
+        "placeholder": "请输入您的堂食桌数",
+        "value": "{count} 桌"
+      },
       "tableNumber": {
         "helperText": "二维码打印后长期有效，请贴在对应桌号的桌面上",
-        "invalid": "桌号请输入 1 到 999",
+        "invalid": "桌号请输入 1 到 {count}",
         "label": "桌号",
         "placeholder": "请输入桌号"
       }

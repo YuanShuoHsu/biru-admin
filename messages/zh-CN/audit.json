@@ -49,6 +49,7 @@
     "cutoffMinutes": "打烊前停止取号（分钟）",
     "deliveryLeadTimeMinutes": "预计准备时间（分钟）",
     "description": "描述",
+    "dineInTableCount": "堂食桌数",
     "discount": "折扣",
     "discountCurrency": "折扣币别",
     "displayName": "组名称",

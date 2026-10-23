@@ -87,6 +87,11 @@
   "description": {
     "maxLength": "Description must not exceed 160 characters."
   },
+  "dineInTableCount": {
+    "invalid": "Dine-in tables is not valid.",
+    "max": "Dine-in tables cannot exceed {max}.",
+    "required": "Dine-in tables is required."
+  },
   "donateCode": {
     "invalid": "Donation code is not valid.",
     "required": "Donation code is required."

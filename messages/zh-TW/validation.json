@@ -87,6 +87,11 @@
   "description": {
     "maxLength": "描述不能超過 160 個字元。"
   },
+  "dineInTableCount": {
+    "invalid": "內用桌數格式無效。",
+    "max": "內用桌數不可超過 {max} 桌。",
+    "required": "內用桌數為必填。"
+  },
   "donateCode": {
     "invalid": "捐贈碼格式無效。",
     "required": "捐贈碼為必填。"

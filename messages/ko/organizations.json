@@ -86,10 +86,23 @@
       "label": "카운터 주문 QR 코드"
     },
     "dineIn": {
+      "actions": {
+        "updateTableCount": {
+          "success": "{name}의 매장 테이블 수를 업데이트했습니다",
+          "title": "매장 테이블 수 설정"
+        }
+      },
       "label": "테이블 주문 QR 코드",
+      "tableCount": {
+        "helperText": "테이블 번호는 1부터 이 수까지이며 최대 {max}개입니다. 줄이면 범위를 벗어난 테이블의 QR 코드는 사용할 수 없습니다",
+        "label": "매장 테이블 수",
+        "notSet": "매장 테이블 수를 설정하면 테이블 QR 코드를 만들 수 있습니다",
+        "placeholder": "매장 테이블 수를 입력하세요",
+        "value": "{count}개"
+      },
       "tableNumber": {
         "helperText": "인쇄한 QR 코드는 계속 유효합니다. 번호가 맞는 테이블에 붙이세요",
-        "invalid": "테이블 번호는 1~999 사이로 입력하세요",
+        "invalid": "테이블 번호는 1~{count} 사이로 입력하세요",
         "label": "테이블 번호",
         "placeholder": "테이블 번호를 입력하세요"
       }

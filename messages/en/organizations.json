@@ -86,10 +86,23 @@
       "label": "Counter ordering QR code"
     },
     "dineIn": {
+      "actions": {
+        "updateTableCount": {
+          "success": "Dine-in tables updated for {name}",
+          "title": "Set dine-in tables"
+        }
+      },
       "label": "Table ordering QR code",
+      "tableCount": {
+        "helperText": "Tables are numbered 1 to this count, up to {max}. Lowering it disables QR codes for the tables beyond it.",
+        "label": "Dine-in tables",
+        "notSet": "Set the number of dine-in tables to generate table QR codes.",
+        "placeholder": "Enter the number of dine-in tables",
+        "value": "{count} tables"
+      },
       "tableNumber": {
         "helperText": "Printed QR codes stay valid indefinitely. Place each one on the table with the matching number.",
-        "invalid": "Enter a table number from 1 to 999",
+        "invalid": "Enter a table number from 1 to {count}",
         "label": "Table number",
         "placeholder": "Enter a table number"
       }
