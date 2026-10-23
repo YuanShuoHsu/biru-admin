@@ -1,3 +1,4 @@
+import LowStockAlerts from "./LowStockAlerts";
 import { DashboardStack, HeaderStack } from "./styled";
 
 interface DashboardLayoutProps extends LayoutProps<"/[locale]"> {
@@ -19,6 +20,7 @@ const DashboardLayout = ({
     </HeaderStack>
     {subheader}
     {children}
+    <LowStockAlerts />
   </DashboardStack>
 );
 

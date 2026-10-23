@@ -74,6 +74,7 @@
     },
     "label": "食材",
     "lowStock": "在庫僅少",
+    "lowStockReached": "{names} が在庫僅少のしきい値を下回りました",
     "lowStockThreshold": {
       "label": "在庫僅少のしきい値",
       "placeholder": "在庫僅少のしきい値を入力してください"

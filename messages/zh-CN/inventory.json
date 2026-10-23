@@ -74,6 +74,7 @@
     },
     "label": "食材",
     "lowStock": "低库存",
+    "lowStockReached": "{names} 已降到低库存警示量以下",
     "lowStockThreshold": {
       "label": "低库存警示量",
       "placeholder": "请输入您的低库存警示量"

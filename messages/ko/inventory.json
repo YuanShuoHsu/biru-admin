@@ -74,6 +74,7 @@
     },
     "label": "식자재",
     "lowStock": "재고 부족",
+    "lowStockReached": "{names}이(가) 재고 부족 기준 이하로 떨어졌습니다",
     "lowStockThreshold": {
       "label": "재고 부족 기준",
       "placeholder": "재고 부족 기준을(를) 입력해 주세요"
