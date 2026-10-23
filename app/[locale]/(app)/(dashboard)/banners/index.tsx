@@ -36,6 +36,8 @@ import {
   Chip,
   DialogContentText,
   IconButton,
+  List,
+  ListItem,
   Stack,
   Tooltip,
 } from "@mui/material";
@@ -70,6 +72,16 @@ import {
 import { getBannerEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 
+const ConfirmStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(1),
+}));
+
+const StyledAvatar = styled(Avatar)(({ theme }) => ({
+  width: theme.spacing(10),
+  height: "auto",
+  aspectRatio: "16/9",
+}));
+
 const ActionsStack = styled(Stack)(({ theme }) => ({
   height: "100%",
   alignItems: "center",
@@ -80,12 +92,6 @@ const ImageStack = styled(Stack)({
   height: "100%",
   alignItems: "center",
 });
-
-const StyledAvatar = styled(Avatar)(({ theme }) => ({
-  width: theme.spacing(10),
-  height: "auto",
-  aspectRatio: "16/9",
-}));
 
 const ToolbarStack = styled(Stack)(({ theme }) => ({
   flexWrap: "wrap",
@@ -408,34 +414,34 @@ const Banners = ({
   );
 
   const handleEnterBatchDeleteMode = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tBanners.rich("actions.batchDeleteBanner.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setToolbarMode("select");
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tBanners("actions.batchDeleteBanner.title"),
-    });
-  }, [apiRef, setDialog, tBanners]);
+    setToolbarMode("select");
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef]);
 
   const handleSubmitBatchDelete = useCallback(() => {
     const count = selectedRows.length;
 
     setDialog({
       content: (
-        <DialogContentText>
-          {tBanners.rich("actions.batchDeleteBanner.submit.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-            count,
-          })}
-        </DialogContentText>
+        <ConfirmStack>
+          <DialogContentText>
+            {tBanners.rich("actions.batchDeleteBanner.submit.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              count,
+            })}
+          </DialogContentText>
+          <List dense disablePadding>
+            {selectedRows.map(({ id, image }) => (
+              <ListItem disableGutters key={id}>
+                <StyledAvatar
+                  alt={tBanners("image.label")}
+                  src={image}
+                  variant="rounded"
+                />
+              </ListItem>
+            ))}
+          </List>
+        </ConfirmStack>
       ),
       onConfirm: async () => {
         try {
@@ -470,24 +476,11 @@ const Banners = ({
   }, [apiRef, clearRowSelection, mutate, selectedRows, setDialog, tBanners]);
 
   const handleCancelBatchDelete = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tBanners.rich("actions.batchDeleteBanner.cancel.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setToolbarMode(null);
-        clearRowSelection();
+    setToolbarMode(null);
+    clearRowSelection();
 
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tBanners("actions.batchDeleteBanner.cancel.label"),
-    });
-  }, [apiRef, clearRowSelection, setDialog, tBanners]);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef, clearRowSelection]);
 
   const columns = useMemo<GridColDef[]>(
     () => [

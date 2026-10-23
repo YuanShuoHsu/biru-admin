@@ -127,14 +127,12 @@
       },
       "batchDelete": {
         "title": "批次刪除員工設定",
-        "confirm": "確定要進行<bold>員工設定</bold>批次刪除嗎？",
         "cancel": {
-          "label": "取消批次刪除員工設定",
-          "confirm": "確定要取消<bold>員工設定</bold>批次刪除嗎？已勾選的項目將會清除。"
+          "label": "取消批次刪除員工設定"
         },
         "submit": {
           "label": "刪除所選員工設定（{count}）",
-          "confirm": "確定要刪除所選的 <bold>{count} 筆員工設定</bold>嗎？這些員工沒有任何出勤或薪資紀錄，刪除後回到「未設定」。",
+          "confirm": "確定要刪除以下 <bold>{count} 筆員工設定</bold>嗎？這些員工沒有任何出勤或薪資紀錄，刪除後回到「未設定」。",
           "success": "已刪除 {count} 筆員工設定"
         }
       }
@@ -320,12 +318,10 @@
     "actions": {
       "batchDelete": {
         "cancel": {
-          "confirm": "確定要取消<bold>事件假額度</bold>批次刪除嗎？已勾選的項目將會清除。",
           "label": "取消批次刪除事件假額度"
         },
-        "confirm": "確定要進行<bold>事件假額度</bold>批次刪除嗎？",
         "submit": {
-          "confirm": "確定要刪除所選的 <bold>{count} 筆事件假額度</bold>嗎？",
+          "confirm": "確定要刪除以下 <bold>{count} 筆事件假額度</bold>嗎？",
           "label": "刪除所選事件假額度（{count}）",
           "success": "已刪除 {count} 筆事件假額度"
         },
@@ -363,12 +359,10 @@
     "actions": {
       "batchDelete": {
         "cancel": {
-          "confirm": "確定要取消<bold>假別</bold>批次刪除嗎？已勾選的項目將會清除。",
           "label": "取消批次刪除假別"
         },
-        "confirm": "確定要進行<bold>假別</bold>批次刪除嗎？",
         "submit": {
-          "confirm": "確定要刪除所選的 <bold>{count} 筆假別</bold>嗎？尚未使用的假別額度將一併刪除，且無法復原。",
+          "confirm": "確定要刪除以下 <bold>{count} 筆假別</bold>嗎？尚未使用的假別額度將一併刪除，且無法復原。",
           "label": "刪除所選假別（{count}）",
           "success": "已刪除 {count} 筆假別"
         },
@@ -932,14 +926,12 @@
       },
       "batchDelete": {
         "title": "批次刪除加項名目",
-        "confirm": "確定要進行<bold>加項名目</bold>批次刪除嗎？",
         "cancel": {
-          "label": "取消批次刪除加項名目",
-          "confirm": "確定要取消<bold>加項名目</bold>批次刪除嗎？已勾選的項目將會清除。"
+          "label": "取消批次刪除加項名目"
         },
         "submit": {
           "label": "刪除所選加項名目（{count}）",
-          "confirm": "確定要刪除所選的 <bold>{count} 筆加項名目</bold>嗎？",
+          "confirm": "確定要刪除以下 <bold>{count} 筆加項名目</bold>嗎？",
           "success": "已刪除 {count} 筆加項名目"
         }
       }
@@ -1043,14 +1035,12 @@
       },
       "batchDelete": {
         "title": "批次刪除班別",
-        "confirm": "確定要進行<bold>班別</bold>批次刪除嗎？",
         "cancel": {
-          "label": "取消批次刪除班別",
-          "confirm": "確定要取消<bold>班別</bold>批次刪除嗎？已勾選的項目將會清除。"
+          "label": "取消批次刪除班別"
         },
         "submit": {
           "label": "刪除所選班別（{count}）",
-          "confirm": "確定要刪除所選的 <bold>{count} 筆班別</bold>嗎？",
+          "confirm": "確定要刪除以下 <bold>{count} 筆班別</bold>嗎？",
           "success": "已刪除 {count} 筆班別"
         }
       }

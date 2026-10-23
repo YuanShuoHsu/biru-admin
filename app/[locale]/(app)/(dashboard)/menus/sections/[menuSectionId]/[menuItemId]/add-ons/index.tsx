@@ -36,6 +36,9 @@ import {
   Button,
   DialogContentText,
   IconButton,
+  List,
+  ListItem,
+  ListItemText,
   Stack,
   Tooltip,
 } from "@mui/material";
@@ -69,6 +72,10 @@ import {
 } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
+
+const ConfirmStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(1),
+}));
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
   height: "100%",
@@ -286,21 +293,26 @@ const MenuItemAddOns = ({
     [menuId, mutate, setDialog, tMenus],
   );
 
-  const handleDeleteAddOn = useCallback(
+  const getAddOnDisplayName = useCallback(
     ({
-      id,
       addOnMenuItemName,
       addOnMenuItemSectionName,
       addOnMenuSectionName,
-    }: MenuItemAddOn) => {
-      const displayName = addOnMenuItemName
+    }: MenuItemAddOn) =>
+      addOnMenuItemName
         ? tMenus("items.addOns.displayName.menuItem", {
             menuSection: localize(addOnMenuItemSectionName, locale),
             menuItem: localize(addOnMenuItemName, locale),
           })
         : tMenus("items.addOns.displayName.menuSection", {
             menuSection: localize(addOnMenuSectionName, locale),
-          });
+          }),
+    [locale, tMenus],
+  );
+
+  const handleDeleteAddOn = useCallback(
+    (addOn: MenuItemAddOn) => {
+      const displayName = getAddOnDisplayName(addOn);
 
       setDialog({
         content: (
@@ -313,7 +325,7 @@ const MenuItemAddOns = ({
         ),
         onConfirm: async () => {
           try {
-            await fetcher(`/api/menu-items/${menuItemId}/add-ons/${id}`, {
+            await fetcher(`/api/menu-items/${menuItemId}/add-ons/${addOn.id}`, {
               method: "DELETE",
             });
 
@@ -338,38 +350,37 @@ const MenuItemAddOns = ({
         title: tMenus("items.addOns.actions.deleteAddOn.title"),
       });
     },
-    [locale, menuItemId, mutate, setDialog, tMenus],
+    [getAddOnDisplayName, menuItemId, mutate, setDialog, tMenus],
   );
 
   const handleEnterBatchDeleteMode = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tMenus.rich("items.addOns.actions.batchDeleteAddOn.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setToolbarMode("select");
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tMenus("items.addOns.actions.batchDeleteAddOn.title"),
-    });
-  }, [apiRef, setDialog, tMenus]);
+    setToolbarMode("select");
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef]);
 
   const handleSubmitBatchDelete = useCallback(() => {
     const count = selectedRows.length;
 
     setDialog({
       content: (
-        <DialogContentText>
-          {tMenus.rich("items.addOns.actions.batchDeleteAddOn.submit.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-            count,
-          })}
-        </DialogContentText>
+        <ConfirmStack>
+          <DialogContentText>
+            {tMenus.rich(
+              "items.addOns.actions.batchDeleteAddOn.submit.confirm",
+              {
+                bold: (chunks) => <strong>{chunks}</strong>,
+                count,
+              },
+            )}
+          </DialogContentText>
+          <List dense disablePadding>
+            {selectedRows.map((addOn) => (
+              <ListItem disableGutters key={addOn.id}>
+                <ListItemText primary={getAddOnDisplayName(addOn)} />
+              </ListItem>
+            ))}
+          </List>
+        </ConfirmStack>
       ),
       onConfirm: async () => {
         try {
@@ -409,6 +420,7 @@ const MenuItemAddOns = ({
   }, [
     apiRef,
     clearRowSelection,
+    getAddOnDisplayName,
     menuItemId,
     mutate,
     selectedRows,
@@ -417,24 +429,11 @@ const MenuItemAddOns = ({
   ]);
 
   const handleCancelBatchDelete = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tMenus.rich("items.addOns.actions.batchDeleteAddOn.cancel.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setToolbarMode(null);
-        clearRowSelection();
+    setToolbarMode(null);
+    clearRowSelection();
 
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tMenus("items.addOns.actions.batchDeleteAddOn.cancel.label"),
-    });
-  }, [apiRef, clearRowSelection, setDialog, tMenus]);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef, clearRowSelection]);
 
   const handleEnterReorderMode = useCallback(() => {
     setDialog({

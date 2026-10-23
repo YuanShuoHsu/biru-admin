@@ -44,6 +44,9 @@ import {
   Chip,
   DialogContentText,
   IconButton,
+  List,
+  ListItem,
+  ListItemText,
   Stack,
   Tooltip,
 } from "@mui/material";
@@ -80,21 +83,25 @@ import { getAttendanceEmployeeEnumOptions } from "@/utils/enumOptions";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
+const ConfirmStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(1),
+}));
+
 const StyledStack = styled(Stack)({
   height: "100%",
   alignItems: "center",
 });
 
-const ToolbarStack = styled(Stack)(({ theme }) => ({
-  flexWrap: "wrap",
-  alignItems: "center",
-  gap: theme.spacing(1),
-}));
-
 const StyledIconButton = styled(IconButton, {
   shouldForwardProp: (prop) => prop !== "visible",
 })<{ visible: boolean }>(({ visible }) => ({
   visibility: visible ? "visible" : "hidden",
+}));
+
+const ToolbarStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(1),
 }));
 
 interface EmployeesProps {
@@ -469,34 +476,30 @@ const Employees = ({
   );
 
   const handleEnterEmployeeBatchDeleteMode = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tAttendance.rich("employees.actions.batchDelete.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setIsSelectMode(true);
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tAttendance("employees.actions.batchDelete.title"),
-    });
-  }, [apiRef, setDialog, tAttendance]);
+    setIsSelectMode(true);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef]);
 
   const handleSubmitEmployeeBatchDelete = useCallback(() => {
     const count = selectedRows.length;
 
     setDialog({
       content: (
-        <DialogContentText>
-          {tAttendance.rich("employees.actions.batchDelete.submit.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-            count,
-          })}
-        </DialogContentText>
+        <ConfirmStack>
+          <DialogContentText>
+            {tAttendance.rich("employees.actions.batchDelete.submit.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              count,
+            })}
+          </DialogContentText>
+          <List dense disablePadding>
+            {selectedRows.map(({ name, userId }) => (
+              <ListItem disableGutters key={userId}>
+                <ListItemText primary={name} />
+              </ListItem>
+            ))}
+          </List>
+        </ConfirmStack>
       ),
       onConfirm: async () => {
         try {
@@ -545,24 +548,11 @@ const Employees = ({
   ]);
 
   const handleCancelEmployeeBatchDelete = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tAttendance.rich("employees.actions.batchDelete.cancel.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setIsSelectMode(false);
-        clearRowSelection();
+    setIsSelectMode(false);
+    clearRowSelection();
 
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tAttendance("employees.actions.batchDelete.cancel.label"),
-    });
-  }, [apiRef, clearRowSelection, setDialog, tAttendance]);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef, clearRowSelection]);
 
   const columns = useMemo<GridColDef[]>(
     () => [

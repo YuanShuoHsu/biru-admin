@@ -55,12 +55,10 @@
     "actions": {
       "batchDeleteItem": {
         "cancel": {
-          "confirm": "<bold>品目</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。",
           "label": "品目の一括削除をキャンセル"
         },
-        "confirm": "<bold>品目</bold>を一括削除しますか？",
         "submit": {
-          "confirm": "選択した <bold>{count} 件の品目</bold>を削除しますか？価格設定もすべて削除されます。",
+          "confirm": "以下の <bold>{count} 件の品目</bold>を削除しますか？価格設定もすべて削除されます。",
           "error": "品目の一括削除に失敗しました",
           "label": "選択した品目を削除（{count}）",
           "success": "品目 {count} 件を削除しました"
@@ -106,12 +104,10 @@
       "actions": {
         "batchDeleteAddOn": {
           "cancel": {
-            "confirm": "<bold>追加オプション</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。",
             "label": "追加オプションの一括削除をキャンセル"
           },
-          "confirm": "<bold>追加オプション</bold>を一括削除しますか？",
           "submit": {
-            "confirm": "選択した <bold>{count} 件の追加オプション</bold>を削除しますか？",
+            "confirm": "以下の <bold>{count} 件の追加オプション</bold>を削除しますか？",
             "error": "追加オプションの一括削除に失敗しました",
             "label": "選択した追加オプションを削除（{count}）",
             "success": "追加オプション {count} 件を削除しました"
@@ -315,12 +311,10 @@
     "actions": {
       "batchDeleteGroup": {
         "cancel": {
-          "confirm": "<bold>オプショングループ</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。",
           "label": "オプショングループの一括削除をキャンセル"
         },
-        "confirm": "<bold>オプショングループ</bold>を一括削除しますか？",
         "submit": {
-          "confirm": "選択した <bold>{count} 件のオプショングループ</bold>を削除しますか？グループ内のオプションも削除されます。",
+          "confirm": "以下の <bold>{count} 件のオプショングループ</bold>を削除しますか？グループ内のオプションも削除されます。",
           "error": "オプショングループの一括削除に失敗しました",
           "label": "選択したオプショングループを削除（{count}）",
           "success": "オプショングループ {count} 件を削除しました"
@@ -381,12 +375,10 @@
     "actions": {
       "batchDeleteModifier": {
         "cancel": {
-          "confirm": "<bold>オプション</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。",
           "label": "オプションの一括削除をキャンセル"
         },
-        "confirm": "<bold>オプション</bold>を一括削除しますか？",
         "submit": {
-          "confirm": "選択した <bold>{count} 件のオプション</bold>を削除しますか？",
+          "confirm": "以下の <bold>{count} 件のオプション</bold>を削除しますか？",
           "error": "オプションの一括削除に失敗しました",
           "label": "選択したオプションを削除（{count}）",
           "success": "オプション {count} 件を削除しました"
@@ -456,12 +448,10 @@
       },
       "batchDeleteSection": {
         "cancel": {
-          "confirm": "<bold>セクション</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。",
           "label": "セクションの一括削除をキャンセル"
         },
-        "confirm": "<bold>セクション</bold>を一括削除しますか？",
         "submit": {
-          "confirm": "選択した <bold>{count} 件のセクション</bold>を削除しますか？サブセクションと品目もすべて削除されます。",
+          "confirm": "以下の <bold>{count} 件のセクション</bold>を削除しますか？サブセクションと品目もすべて削除されます。",
           "error": "セクションの一括削除に失敗しました",
           "label": "選択したセクションを削除（{count}）",
           "success": "セクション {count} 件を削除しました"

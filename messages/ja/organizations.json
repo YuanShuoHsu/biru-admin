@@ -2,12 +2,10 @@
   "actions": {
     "batchDeleteOrganization": {
       "cancel": {
-        "confirm": "<bold>組織</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。",
         "label": "組織の一括削除をキャンセル"
       },
-      "confirm": "<bold>組織</bold>を一括削除しますか？",
       "submit": {
-        "confirm": "選択した <bold>{count} 件の組織</bold>を削除しますか？メンバー、メニュー、在庫などのデータも削除されます。30 日以内であればプラットフォーム管理者が復元できます。",
+        "confirm": "以下の <bold>{count} 件の組織</bold>を削除しますか？メンバー、メニュー、在庫などのデータも削除されます。30 日以内であればプラットフォーム管理者が復元できます。",
         "label": "選択した組織を削除（{count}）",
         "success": "組織 {count} 件を削除しました",
         "typeCount": "確認のため削除する組織の数「{count}」を入力してください"
@@ -247,12 +245,10 @@
     "actions": {
       "batchRemoveMember": {
         "cancel": {
-          "confirm": "<bold>メンバー</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。",
           "label": "メンバーの一括削除をキャンセル"
         },
-        "confirm": "<bold>メンバー</bold>を一括削除しますか？",
         "submit": {
-          "confirm": "選択した <bold>{count} 件のメンバー</bold>を削除しますか？",
+          "confirm": "以下の <bold>{count} 件のメンバー</bold>を削除しますか？",
           "label": "選択したメンバーを削除（{count}）",
           "success": "メンバー {count} 件を削除しました"
         },
@@ -260,12 +256,10 @@
       },
       "batchRemoveTeamMember": {
         "cancel": {
-          "confirm": "<bold>チームメンバー</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。",
           "label": "チームメンバーの一括削除をキャンセル"
         },
-        "confirm": "<bold>チームメンバー</bold>を一括削除しますか？",
         "submit": {
-          "confirm": "選択した <bold>{count} 件のチームメンバー</bold>を削除しますか？",
+          "confirm": "以下の <bold>{count} 件のチームメンバー</bold>を削除しますか？",
           "label": "選択したチームメンバーを削除（{count}）",
           "success": "チームメンバー {count} 件を削除しました"
         },
@@ -387,12 +381,10 @@
       },
       "batchRemoveTeam": {
         "cancel": {
-          "confirm": "<bold>チーム</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。",
           "label": "チームの一括削除をキャンセル"
         },
-        "confirm": "<bold>チーム</bold>を一括削除しますか？",
         "submit": {
-          "confirm": "選択した <bold>{count} 件のチーム</bold>を削除しますか？",
+          "confirm": "以下の <bold>{count} 件のチーム</bold>を削除しますか？",
           "label": "選択したチームを削除（{count}）",
           "success": "チーム {count} 件を削除しました"
         },

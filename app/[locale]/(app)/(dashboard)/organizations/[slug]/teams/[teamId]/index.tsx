@@ -23,6 +23,9 @@ import {
   Chip,
   DialogContentText,
   IconButton,
+  List,
+  ListItem,
+  ListItemText,
   Stack,
   styled,
   Tooltip,
@@ -43,6 +46,10 @@ const ROLE_COLOR_MAP: Record<string, "error" | "warning" | "default"> = {
   admin: "warning",
   member: "default",
 };
+
+const ConfirmStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(1),
+}));
 
 const AvatarStack = styled(Stack)({
   height: "100%",
@@ -216,34 +223,30 @@ const OrganizationsSlugTeamsTeamId = ({
   );
 
   const handleEnterTeamMemberBatchRemoveMode = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tMembers.rich("actions.batchRemoveTeamMember.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setIsSelectMode(true);
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tMembers("actions.batchRemoveTeamMember.title"),
-    });
-  }, [apiRef, setDialog, tMembers]);
+    setIsSelectMode(true);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef]);
 
   const handleSubmitTeamMemberBatchRemove = useCallback(() => {
     const count = selectedRows.length;
 
     setDialog({
       content: (
-        <DialogContentText>
-          {tMembers.rich("actions.batchRemoveTeamMember.submit.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-            count,
-          })}
-        </DialogContentText>
+        <ConfirmStack>
+          <DialogContentText>
+            {tMembers.rich("actions.batchRemoveTeamMember.submit.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              count,
+            })}
+          </DialogContentText>
+          <List dense disablePadding>
+            {selectedRows.map(({ id, user: { email } }) => (
+              <ListItem disableGutters key={id}>
+                <ListItemText primary={email} />
+              </ListItem>
+            ))}
+          </List>
+        </ConfirmStack>
       ),
       onConfirm: async () => {
         try {
@@ -284,30 +287,17 @@ const OrganizationsSlugTeamsTeamId = ({
     mutate,
     selectedRows,
     setDialog,
+    tMembers,
     teamId,
     teamOrganizationId,
-    tMembers,
   ]);
 
   const handleCancelTeamMemberBatchRemove = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tMembers.rich("actions.batchRemoveTeamMember.cancel.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setIsSelectMode(false);
-        clearRowSelection();
+    setIsSelectMode(false);
+    clearRowSelection();
 
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tMembers("actions.batchRemoveTeamMember.cancel.label"),
-    });
-  }, [apiRef, clearRowSelection, setDialog, tMembers]);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef, clearRowSelection]);
 
   const columns = useMemo<GridColDef[]>(
     () => [

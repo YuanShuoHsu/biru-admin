@@ -50,6 +50,9 @@ import {
   Chip,
   DialogContentText,
   IconButton,
+  List,
+  ListItem,
+  ListItemText,
   Stack,
   Tooltip,
 } from "@mui/material";
@@ -80,6 +83,10 @@ import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getCouponEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 import { getHref } from "@/utils/href";
+
+const ConfirmStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(1),
+}));
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
   height: "100%",
@@ -410,34 +417,30 @@ const Coupons = ({
   );
 
   const handleEnterCouponBatchDeleteMode = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tCoupons.rich("actions.batchDeleteCoupon.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setIsSelectMode(true);
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tCoupons("actions.batchDeleteCoupon.title"),
-    });
-  }, [apiRef, setDialog, tCoupons]);
+    setIsSelectMode(true);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef]);
 
   const handleSubmitCouponBatchDelete = useCallback(() => {
     const count = selectedRows.length;
 
     setDialog({
       content: (
-        <DialogContentText>
-          {tCoupons.rich("actions.batchDeleteCoupon.submit.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-            count,
-          })}
-        </DialogContentText>
+        <ConfirmStack>
+          <DialogContentText>
+            {tCoupons.rich("actions.batchDeleteCoupon.submit.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              count,
+            })}
+          </DialogContentText>
+          <List dense disablePadding>
+            {selectedRows.map(({ code, id }) => (
+              <ListItem disableGutters key={id}>
+                <ListItemText primary={code} />
+              </ListItem>
+            ))}
+          </List>
+        </ConfirmStack>
       ),
       onConfirm: async () => {
         try {
@@ -472,24 +475,11 @@ const Coupons = ({
   }, [apiRef, clearRowSelection, mutate, selectedRows, setDialog, tCoupons]);
 
   const handleCancelCouponBatchDelete = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tCoupons.rich("actions.batchDeleteCoupon.cancel.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setIsSelectMode(false);
-        clearRowSelection();
+    setIsSelectMode(false);
+    clearRowSelection();
 
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tCoupons("actions.batchDeleteCoupon.cancel.label"),
-    });
-  }, [apiRef, clearRowSelection, setDialog, tCoupons]);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef, clearRowSelection]);
 
   const columns = useMemo<GridColDef[]>(
     () => [

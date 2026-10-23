@@ -127,14 +127,12 @@
       },
       "batchDelete": {
         "title": "批量删除员工设置",
-        "confirm": "确定要进行<bold>员工设置</bold>批量删除吗？",
         "cancel": {
-          "label": "取消批量删除员工设置",
-          "confirm": "确定要取消<bold>员工设置</bold>批量删除吗？已勾选的项目将会清除。"
+          "label": "取消批量删除员工设置"
         },
         "submit": {
           "label": "删除所选员工设置（{count}）",
-          "confirm": "确定要删除所选的 <bold>{count} 条员工设置</bold>吗？这些员工没有任何出勤或薪资记录，删除后回到“未设置”。",
+          "confirm": "确定要删除以下 <bold>{count} 条员工设置</bold>吗？这些员工没有任何出勤或薪资记录，删除后回到“未设置”。",
           "success": "已删除 {count} 条员工设置"
         }
       }
@@ -320,12 +318,10 @@
     "actions": {
       "batchDelete": {
         "cancel": {
-          "confirm": "确定要取消<bold>事件假额度</bold>批量删除吗？已勾选的项目将会清除。",
           "label": "取消批量删除事件假额度"
         },
-        "confirm": "确定要进行<bold>事件假额度</bold>批量删除吗？",
         "submit": {
-          "confirm": "确定要删除所选的 <bold>{count} 条事件假额度</bold>吗？",
+          "confirm": "确定要删除以下 <bold>{count} 条事件假额度</bold>吗？",
           "label": "删除所选事件假额度（{count}）",
           "success": "已删除 {count} 条事件假额度"
         },
@@ -363,12 +359,10 @@
     "actions": {
       "batchDelete": {
         "cancel": {
-          "confirm": "确定要取消<bold>假别</bold>批量删除吗？已勾选的项目将会清除。",
           "label": "取消批量删除假别"
         },
-        "confirm": "确定要进行<bold>假别</bold>批量删除吗？",
         "submit": {
-          "confirm": "确定要删除所选的 <bold>{count} 条假别</bold>吗？尚未使用的假别额度将一并删除，且无法撤销。",
+          "confirm": "确定要删除以下 <bold>{count} 条假别</bold>吗？尚未使用的假别额度将一并删除，且无法撤销。",
           "label": "删除所选假别（{count}）",
           "success": "已删除 {count} 条假别"
         },
@@ -932,14 +926,12 @@
       },
       "batchDelete": {
         "title": "批量删除加项名目",
-        "confirm": "确定要进行<bold>加项名目</bold>批量删除吗？",
         "cancel": {
-          "label": "取消批量删除加项名目",
-          "confirm": "确定要取消<bold>加项名目</bold>批量删除吗？已勾选的项目将会清除。"
+          "label": "取消批量删除加项名目"
         },
         "submit": {
           "label": "删除所选加项名目（{count}）",
-          "confirm": "确定要删除所选的 <bold>{count} 条加项名目</bold>吗？",
+          "confirm": "确定要删除以下 <bold>{count} 条加项名目</bold>吗？",
           "success": "已删除 {count} 条加项名目"
         }
       }
@@ -1043,14 +1035,12 @@
       },
       "batchDelete": {
         "title": "批量删除班别",
-        "confirm": "确定要进行<bold>班别</bold>批量删除吗？",
         "cancel": {
-          "label": "取消批量删除班别",
-          "confirm": "确定要取消<bold>班别</bold>批量删除吗？已勾选的项目将会清除。"
+          "label": "取消批量删除班别"
         },
         "submit": {
           "label": "删除所选班别（{count}）",
-          "confirm": "确定要删除所选的 <bold>{count} 条班别</bold>吗？",
+          "confirm": "确定要删除以下 <bold>{count} 条班别</bold>吗？",
           "success": "已删除 {count} 条班别"
         }
       }

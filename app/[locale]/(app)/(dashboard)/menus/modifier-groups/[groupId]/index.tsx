@@ -42,6 +42,9 @@ import {
   Chip,
   DialogContentText,
   IconButton,
+  List,
+  ListItem,
+  ListItemText,
   Stack,
   Tooltip,
 } from "@mui/material";
@@ -78,6 +81,10 @@ import {
 import { getMenuEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
+
+const ConfirmStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(1),
+}));
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
   height: "100%",
@@ -454,34 +461,33 @@ const Modifiers = ({
   );
 
   const handleEnterBatchDeleteMode = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tMenus.rich("modifiers.actions.batchDeleteModifier.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setToolbarMode("select");
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tMenus("modifiers.actions.batchDeleteModifier.title"),
-    });
-  }, [apiRef, setDialog, tMenus]);
+    setToolbarMode("select");
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef]);
 
   const handleSubmitBatchDelete = useCallback(() => {
     const count = selectedRows.length;
 
     setDialog({
       content: (
-        <DialogContentText>
-          {tMenus.rich("modifiers.actions.batchDeleteModifier.submit.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-            count,
-          })}
-        </DialogContentText>
+        <ConfirmStack>
+          <DialogContentText>
+            {tMenus.rich(
+              "modifiers.actions.batchDeleteModifier.submit.confirm",
+              {
+                bold: (chunks) => <strong>{chunks}</strong>,
+                count,
+              },
+            )}
+          </DialogContentText>
+          <List dense disablePadding>
+            {selectedRows.map(({ displayName, id }) => (
+              <ListItem disableGutters key={id}>
+                <ListItemText primary={localize(displayName, locale)} />
+              </ListItem>
+            ))}
+          </List>
+        </ConfirmStack>
       ),
       onConfirm: async () => {
         try {
@@ -522,6 +528,7 @@ const Modifiers = ({
     apiRef,
     clearRowSelection,
     groupId,
+    locale,
     mutate,
     selectedRows,
     setDialog,
@@ -529,24 +536,11 @@ const Modifiers = ({
   ]);
 
   const handleCancelBatchDelete = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tMenus.rich("modifiers.actions.batchDeleteModifier.cancel.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setToolbarMode(null);
-        clearRowSelection();
+    setToolbarMode(null);
+    clearRowSelection();
 
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tMenus("modifiers.actions.batchDeleteModifier.cancel.label"),
-    });
-  }, [apiRef, clearRowSelection, setDialog, tMenus]);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef, clearRowSelection]);
 
   const columns = useMemo<GridColDef[]>(
     () => [

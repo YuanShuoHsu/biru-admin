@@ -2,12 +2,10 @@
   "actions": {
     "batchDeleteOrganization": {
       "cancel": {
-        "confirm": "Are you sure you want to cancel batch delete <bold>organizations</bold>? Your selection will be cleared.",
         "label": "Cancel Batch Delete Organizations"
       },
-      "confirm": "Are you sure you want to batch delete <bold>organizations</bold>?",
       "submit": {
-        "confirm": "Are you sure you want to delete the <bold>{count} selected organizations</bold>? Their members, menus, inventory, and other data will be deleted too. A platform admin can restore them within 30 days.",
+        "confirm": "Are you sure you want to delete the following <bold>{count} organizations</bold>? Their members, menus, inventory, and other data will be deleted too. A platform admin can restore them within 30 days.",
         "label": "Delete Selected Organizations ({count})",
         "success": "Deleted {count} organizations",
         "typeCount": "Type \"{count}\" to confirm the number of organizations to delete"
@@ -247,12 +245,10 @@
     "actions": {
       "batchRemoveMember": {
         "cancel": {
-          "confirm": "Are you sure you want to cancel batch remove <bold>members</bold>? Your selection will be cleared.",
           "label": "Cancel Batch Remove Members"
         },
-        "confirm": "Are you sure you want to batch remove <bold>members</bold>?",
         "submit": {
-          "confirm": "Are you sure you want to remove the <bold>{count} selected members</bold>?",
+          "confirm": "Are you sure you want to remove the following <bold>{count} members</bold>?",
           "label": "Remove Selected Members ({count})",
           "success": "Removed {count} members"
         },
@@ -260,12 +256,10 @@
       },
       "batchRemoveTeamMember": {
         "cancel": {
-          "confirm": "Are you sure you want to cancel batch remove <bold>team members</bold>? Your selection will be cleared.",
           "label": "Cancel Batch Remove Team Members"
         },
-        "confirm": "Are you sure you want to batch remove <bold>team members</bold>?",
         "submit": {
-          "confirm": "Are you sure you want to remove the <bold>{count} selected team members</bold>?",
+          "confirm": "Are you sure you want to remove the following <bold>{count} team members</bold>?",
           "label": "Remove Selected Team Members ({count})",
           "success": "Removed {count} team members"
         },
@@ -387,12 +381,10 @@
       },
       "batchRemoveTeam": {
         "cancel": {
-          "confirm": "Are you sure you want to cancel batch delete <bold>teams</bold>? Your selection will be cleared.",
           "label": "Cancel Batch Delete Teams"
         },
-        "confirm": "Are you sure you want to batch delete <bold>teams</bold>?",
         "submit": {
-          "confirm": "Are you sure you want to delete the <bold>{count} selected teams</bold>?",
+          "confirm": "Are you sure you want to delete the following <bold>{count} teams</bold>?",
           "label": "Delete Selected Teams ({count})",
           "success": "Deleted {count} teams"
         },

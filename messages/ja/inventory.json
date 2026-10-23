@@ -4,12 +4,10 @@
     "actions": {
       "batchDeleteIngredient": {
         "cancel": {
-          "confirm": "<bold>食材</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。",
           "label": "食材の一括削除をキャンセル"
         },
-        "confirm": "<bold>食材</bold>を一括削除しますか？",
         "submit": {
-          "confirm": "選択した <bold>{count} 件の食材</bold>を削除しますか？",
+          "confirm": "以下の <bold>{count} 件の食材</bold>を削除しますか？",
           "error": "食材の一括削除に失敗しました",
           "label": "選択した食材を削除（{count}）",
           "success": "食材 {count} 件を削除しました"
@@ -139,12 +137,10 @@
       "actions": {
         "batchDeleteRecipeIngredient": {
           "cancel": {
-            "confirm": "<bold>材料</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。",
             "label": "材料の一括削除をキャンセル"
           },
-          "confirm": "<bold>材料</bold>を一括削除しますか？",
           "submit": {
-            "confirm": "選択した <bold>{count} 件の材料</bold>を削除しますか？",
+            "confirm": "以下の <bold>{count} 件の材料</bold>を削除しますか？",
             "error": "材料の一括削除に失敗しました",
             "label": "選択した材料を削除（{count}）",
             "success": "材料 {count} 件を削除しました"
@@ -214,12 +210,10 @@
     "actions": {
       "batchDeleteSupplier": {
         "cancel": {
-          "confirm": "<bold>仕入先</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。",
           "label": "仕入先の一括削除をキャンセル"
         },
-        "confirm": "<bold>仕入先</bold>を一括削除しますか？",
         "submit": {
-          "confirm": "選択した <bold>{count} 件の仕入先</bold>を削除しますか？",
+          "confirm": "以下の <bold>{count} 件の仕入先</bold>を削除しますか？",
           "error": "仕入先の一括削除に失敗しました",
           "label": "選択した仕入先を削除（{count}）",
           "success": "仕入先 {count} 件を削除しました"

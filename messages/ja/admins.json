@@ -24,12 +24,10 @@
     },
     "batchRemoveUser": {
       "cancel": {
-        "confirm": "<bold>ユーザー</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。",
         "label": "ユーザーの一括削除をキャンセル"
       },
-      "confirm": "<bold>ユーザー</bold>を一括削除しますか？",
       "submit": {
-        "confirm": "選択した <bold>{count} 件のユーザー</bold>を削除しますか？",
+        "confirm": "以下の <bold>{count} 件のユーザー</bold>を削除しますか？",
         "label": "選択したユーザーを削除（{count}）",
         "success": "ユーザー {count} 件を削除しました"
       },

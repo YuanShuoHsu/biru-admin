@@ -3,13 +3,24 @@
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
-import { DialogContentText, Stack, TextField } from "@mui/material";
+import {
+  DialogContentText,
+  List,
+  ListItem,
+  ListItemText,
+  Stack,
+  TextField,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 const StyledStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(2),
+}));
+
+const ConfirmStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(1),
 }));
 
 interface DeleteOrganizationConfirmProps {
@@ -21,7 +32,6 @@ const DeleteOrganizationConfirm = ({
 }: DeleteOrganizationConfirmProps) => {
   const { confirmLoading, setDialog } = useDialogStore((state) => state);
 
-  const tCommon = useTranslations("common");
   const tOrganizations = useTranslations("organizations");
 
   const [typedValue, setTypedValue] = useState("");
@@ -38,25 +48,31 @@ const DeleteOrganizationConfirm = ({
 
   return (
     <StyledStack>
-      <DialogContentText>
-        {isBatch
-          ? tOrganizations.rich(
-              "actions.batchDeleteOrganization.submit.confirm",
-              {
-                bold: (chunks) => <strong>{chunks}</strong>,
-                count: names.length,
-              },
-            )
-          : tOrganizations.rich("actions.deleteOrganization.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              name,
-            })}
-      </DialogContentText>
-      {isBatch && (
+      <ConfirmStack>
         <DialogContentText>
-          {names.join(tCommon("delimiter"))}
+          {isBatch
+            ? tOrganizations.rich(
+                "actions.batchDeleteOrganization.submit.confirm",
+                {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  count: names.length,
+                },
+              )
+            : tOrganizations.rich("actions.deleteOrganization.confirm", {
+                bold: (chunks) => <strong>{chunks}</strong>,
+                name,
+              })}
         </DialogContentText>
-      )}
+        {isBatch && (
+          <List dense disablePadding>
+            {names.map((name, index) => (
+              <ListItem disableGutters key={index}>
+                <ListItemText primary={name} />
+              </ListItem>
+            ))}
+          </List>
+        )}
+      </ConfirmStack>
       <TextField
         autoComplete="off"
         disabled={confirmLoading}

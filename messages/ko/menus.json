@@ -55,12 +55,10 @@
     "actions": {
       "batchDeleteItem": {
         "cancel": {
-          "confirm": "<bold>항목</bold> 일괄 삭제를 취소하시겠습니까? 선택한 항목이 해제됩니다.",
           "label": "항목 일괄 삭제 취소"
         },
-        "confirm": "<bold>항목</bold>을(를) 일괄 삭제하시겠습니까?",
         "submit": {
-          "confirm": "선택한 <bold>{count}개의 항목</bold>을(를) 삭제하시겠습니까? 가격 설정도 모두 삭제됩니다.",
+          "confirm": "다음 <bold>{count}개의 항목</bold>을(를) 삭제하시겠습니까? 가격 설정도 모두 삭제됩니다.",
           "error": "항목 일괄 삭제에 실패했습니다",
           "label": "선택한 항목 삭제 ({count})",
           "success": "항목 {count}개를 삭제했습니다"
@@ -106,12 +104,10 @@
       "actions": {
         "batchDeleteAddOn": {
           "cancel": {
-            "confirm": "<bold>추가 옵션</bold> 일괄 삭제를 취소하시겠습니까? 선택한 항목이 해제됩니다.",
             "label": "추가 옵션 일괄 삭제 취소"
           },
-          "confirm": "<bold>추가 옵션</bold>을(를) 일괄 삭제하시겠습니까?",
           "submit": {
-            "confirm": "선택한 <bold>{count}개의 추가 옵션</bold>을(를) 삭제하시겠습니까?",
+            "confirm": "다음 <bold>{count}개의 추가 옵션</bold>을(를) 삭제하시겠습니까?",
             "error": "추가 옵션 일괄 삭제에 실패했습니다",
             "label": "선택한 추가 옵션 삭제 ({count})",
             "success": "추가 옵션 {count}개를 삭제했습니다"
@@ -315,12 +311,10 @@
     "actions": {
       "batchDeleteGroup": {
         "cancel": {
-          "confirm": "<bold>옵션 그룹</bold> 일괄 삭제를 취소하시겠습니까? 선택한 항목이 해제됩니다.",
           "label": "옵션 그룹 일괄 삭제 취소"
         },
-        "confirm": "<bold>옵션 그룹</bold>을(를) 일괄 삭제하시겠습니까?",
         "submit": {
-          "confirm": "선택한 <bold>{count}개의 옵션 그룹</bold>을(를) 삭제하시겠습니까? 그룹 내 옵션도 함께 삭제됩니다.",
+          "confirm": "다음 <bold>{count}개의 옵션 그룹</bold>을(를) 삭제하시겠습니까? 그룹 내 옵션도 함께 삭제됩니다.",
           "error": "옵션 그룹 일괄 삭제에 실패했습니다",
           "label": "선택한 옵션 그룹 삭제 ({count})",
           "success": "옵션 그룹 {count}개를 삭제했습니다"
@@ -381,12 +375,10 @@
     "actions": {
       "batchDeleteModifier": {
         "cancel": {
-          "confirm": "<bold>옵션</bold> 일괄 삭제를 취소하시겠습니까? 선택한 항목이 해제됩니다.",
           "label": "옵션 일괄 삭제 취소"
         },
-        "confirm": "<bold>옵션</bold>을(를) 일괄 삭제하시겠습니까?",
         "submit": {
-          "confirm": "선택한 <bold>{count}개의 옵션</bold>을(를) 삭제하시겠습니까?",
+          "confirm": "다음 <bold>{count}개의 옵션</bold>을(를) 삭제하시겠습니까?",
           "error": "옵션 일괄 삭제에 실패했습니다",
           "label": "선택한 옵션 삭제 ({count})",
           "success": "옵션 {count}개를 삭제했습니다"
@@ -456,12 +448,10 @@
       },
       "batchDeleteSection": {
         "cancel": {
-          "confirm": "<bold>섹션</bold> 일괄 삭제를 취소하시겠습니까? 선택한 항목이 해제됩니다.",
           "label": "섹션 일괄 삭제 취소"
         },
-        "confirm": "<bold>섹션</bold>을(를) 일괄 삭제하시겠습니까?",
         "submit": {
-          "confirm": "선택한 <bold>{count}개의 섹션</bold>을(를) 삭제하시겠습니까? 하위 섹션과 항목도 모두 삭제됩니다.",
+          "confirm": "다음 <bold>{count}개의 섹션</bold>을(를) 삭제하시겠습니까? 하위 섹션과 항목도 모두 삭제됩니다.",
           "error": "섹션 일괄 삭제에 실패했습니다",
           "label": "선택한 섹션 삭제 ({count})",
           "success": "섹션 {count}개를 삭제했습니다"

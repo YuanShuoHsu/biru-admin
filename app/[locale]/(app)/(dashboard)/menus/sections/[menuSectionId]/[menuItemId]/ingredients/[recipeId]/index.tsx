@@ -36,6 +36,9 @@ import {
   Button,
   DialogContentText,
   IconButton,
+  List,
+  ListItem,
+  ListItemText,
   Stack,
   Tooltip,
 } from "@mui/material";
@@ -74,6 +77,10 @@ import {
 import { fetcher } from "@/utils/fetcher";
 import { formatUnitPriceOf } from "@/utils/ingredients";
 import { localize } from "@/utils/locale";
+
+const ConfirmStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(1),
+}));
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
   height: "100%",
@@ -495,42 +502,33 @@ const RecipeIngredients = ({
   );
 
   const handleEnterBatchDeleteMode = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tInventory.rich(
-            "recipes.ingredients.actions.batchDeleteRecipeIngredient.confirm",
-            {
-              bold: (chunks) => <strong>{chunks}</strong>,
-            },
-          )}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setToolbarMode("select");
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tInventory(
-        "recipes.ingredients.actions.batchDeleteRecipeIngredient.title",
-      ),
-    });
-  }, [apiRef, setDialog, tInventory]);
+    setToolbarMode("select");
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef]);
 
   const handleSubmitBatchDelete = useCallback(() => {
     const count = selectedRows.length;
 
     setDialog({
       content: (
-        <DialogContentText>
-          {tInventory.rich(
-            "recipes.ingredients.actions.batchDeleteRecipeIngredient.submit.confirm",
-            {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              count,
-            },
-          )}
-        </DialogContentText>
+        <ConfirmStack>
+          <DialogContentText>
+            {tInventory.rich(
+              "recipes.ingredients.actions.batchDeleteRecipeIngredient.submit.confirm",
+              {
+                bold: (chunks) => <strong>{chunks}</strong>,
+                count,
+              },
+            )}
+          </DialogContentText>
+          <List dense disablePadding>
+            {selectedRows.map(({ id, ingredientName }) => (
+              <ListItem disableGutters key={id}>
+                <ListItemText primary={localize(ingredientName, locale)} />
+              </ListItem>
+            ))}
+          </List>
+        </ConfirmStack>
       ),
       onConfirm: async () => {
         try {
@@ -574,6 +572,7 @@ const RecipeIngredients = ({
   }, [
     apiRef,
     clearRowSelection,
+    locale,
     mutate,
     recipeId,
     selectedRows,
@@ -582,29 +581,11 @@ const RecipeIngredients = ({
   ]);
 
   const handleCancelBatchDelete = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tInventory.rich(
-            "recipes.ingredients.actions.batchDeleteRecipeIngredient.cancel.confirm",
-            {
-              bold: (chunks) => <strong>{chunks}</strong>,
-            },
-          )}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setToolbarMode(null);
-        clearRowSelection();
+    setToolbarMode(null);
+    clearRowSelection();
 
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tInventory(
-        "recipes.ingredients.actions.batchDeleteRecipeIngredient.cancel.label",
-      ),
-    });
-  }, [apiRef, clearRowSelection, setDialog, tInventory]);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef, clearRowSelection]);
 
   const columns = useMemo<GridColDef[]>(() => {
     const costColumns: GridColDef[] = [

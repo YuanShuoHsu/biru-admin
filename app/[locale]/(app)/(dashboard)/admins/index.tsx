@@ -71,6 +71,9 @@ import {
   Chip,
   DialogContentText,
   IconButton,
+  List,
+  ListItem,
+  ListItemText,
   Stack,
   Tooltip,
   Typography,
@@ -101,6 +104,10 @@ import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getAdminEnumOptions } from "@/utils/enumOptions";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
+
+const ConfirmStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(1),
+}));
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
   height: "100%",
@@ -531,34 +538,30 @@ const Admins = ({
   );
 
   const handleEnterUserBatchRemoveMode = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tAdmins.rich("actions.batchRemoveUser.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setIsSelectMode(true);
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tAdmins("actions.batchRemoveUser.title"),
-    });
-  }, [apiRef, setDialog, tAdmins]);
+    setIsSelectMode(true);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef]);
 
   const handleSubmitUserBatchRemove = useCallback(() => {
     const count = selectedRows.length;
 
     setDialog({
       content: (
-        <DialogContentText>
-          {tAdmins.rich("actions.batchRemoveUser.submit.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-            count,
-          })}
-        </DialogContentText>
+        <ConfirmStack>
+          <DialogContentText>
+            {tAdmins.rich("actions.batchRemoveUser.submit.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              count,
+            })}
+          </DialogContentText>
+          <List dense disablePadding>
+            {selectedRows.map(({ email, id }) => (
+              <ListItem disableGutters key={id}>
+                <ListItemText primary={email} />
+              </ListItem>
+            ))}
+          </List>
+        </ConfirmStack>
       ),
       onConfirm: async () => {
         try {
@@ -602,24 +605,11 @@ const Admins = ({
   ]);
 
   const handleCancelUserBatchRemove = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tAdmins.rich("actions.batchRemoveUser.cancel.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setIsSelectMode(false);
-        clearRowSelection();
+    setIsSelectMode(false);
+    clearRowSelection();
 
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tAdmins("actions.batchRemoveUser.cancel.label"),
-    });
-  }, [apiRef, clearRowSelection, setDialog, tAdmins]);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef, clearRowSelection]);
 
   const columns = useMemo<GridColDef[]>(
     () => [

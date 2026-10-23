@@ -55,12 +55,10 @@
     "actions": {
       "batchDeleteItem": {
         "cancel": {
-          "confirm": "确定要取消<bold>品项</bold>批量删除吗？已勾选的项目将会清除。",
           "label": "取消批量删除品项"
         },
-        "confirm": "确定要进行<bold>品项</bold>批量删除吗？",
         "submit": {
-          "confirm": "确定要删除所选的 <bold>{count} 条品项</bold>吗？定价设置将一并删除。",
+          "confirm": "确定要删除以下 <bold>{count} 条品项</bold>吗？定价设置将一并删除。",
           "error": "批量删除品项失败",
           "label": "删除所选品项（{count}）",
           "success": "已删除 {count} 条品项"
@@ -106,12 +104,10 @@
       "actions": {
         "batchDeleteAddOn": {
           "cancel": {
-            "confirm": "确定要取消<bold>加购</bold>批量删除吗？已勾选的项目将会清除。",
             "label": "取消批量删除加购"
           },
-          "confirm": "确定要进行<bold>加购</bold>批量删除吗？",
           "submit": {
-            "confirm": "确定要删除所选的 <bold>{count} 条加购</bold>吗？",
+            "confirm": "确定要删除以下 <bold>{count} 条加购</bold>吗？",
             "error": "批量删除加购失败",
             "label": "删除所选加购（{count}）",
             "success": "已删除 {count} 条加购"
@@ -315,12 +311,10 @@
     "actions": {
       "batchDeleteGroup": {
         "cancel": {
-          "confirm": "确定要取消<bold>选项组</bold>批量删除吗？已勾选的项目将会清除。",
           "label": "取消批量删除选项组"
         },
-        "confirm": "确定要进行<bold>选项组</bold>批量删除吗？",
         "submit": {
-          "confirm": "确定要删除所选的 <bold>{count} 条选项组</bold>吗？组内的选项将一并删除。",
+          "confirm": "确定要删除以下 <bold>{count} 条选项组</bold>吗？组内的选项将一并删除。",
           "error": "批量删除选项组失败",
           "label": "删除所选选项组（{count}）",
           "success": "已删除 {count} 条选项组"
@@ -381,12 +375,10 @@
     "actions": {
       "batchDeleteModifier": {
         "cancel": {
-          "confirm": "确定要取消<bold>选项</bold>批量删除吗？已勾选的项目将会清除。",
           "label": "取消批量删除选项"
         },
-        "confirm": "确定要进行<bold>选项</bold>批量删除吗？",
         "submit": {
-          "confirm": "确定要删除所选的 <bold>{count} 条选项</bold>吗？",
+          "confirm": "确定要删除以下 <bold>{count} 条选项</bold>吗？",
           "error": "批量删除选项失败",
           "label": "删除所选选项（{count}）",
           "success": "已删除 {count} 条选项"
@@ -456,12 +448,10 @@
       },
       "batchDeleteSection": {
         "cancel": {
-          "confirm": "确定要取消<bold>分类</bold>批量删除吗？已勾选的项目将会清除。",
           "label": "取消批量删除分类"
         },
-        "confirm": "确定要进行<bold>分类</bold>批量删除吗？",
         "submit": {
-          "confirm": "确定要删除所选的 <bold>{count} 条分类</bold>吗？子分类与品项将一并删除。",
+          "confirm": "确定要删除以下 <bold>{count} 条分类</bold>吗？子分类与品项将一并删除。",
           "error": "批量删除分类失败",
           "label": "删除所选分类（{count}）",
           "success": "已删除 {count} 条分类"

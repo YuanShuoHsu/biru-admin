@@ -33,6 +33,9 @@ import {
   Button,
   DialogContentText,
   IconButton,
+  List,
+  ListItem,
+  ListItemText,
   Stack,
   Tooltip,
 } from "@mui/material";
@@ -68,6 +71,10 @@ import {
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
+
+const ConfirmStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(1),
+}));
 
 const StyledStack = styled(Stack)({
   alignItems: "center",
@@ -417,34 +424,40 @@ const LeaveCases = ({
   });
 
   const handleEnterLeaveCaseBatchDeleteMode = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tAttendance.rich("leaveCases.actions.batchDelete.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setIsSelectMode(true);
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tAttendance("leaveCases.actions.batchDelete.title"),
-    });
-  }, [apiRef, setDialog, tAttendance]);
+    setIsSelectMode(true);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef]);
 
   const handleSubmitLeaveCaseBatchDelete = useCallback(() => {
     const count = selectedRows.length;
 
     setDialog({
       content: (
-        <DialogContentText>
-          {tAttendance.rich("leaveCases.actions.batchDelete.submit.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-            count,
-          })}
-        </DialogContentText>
+        <ConfirmStack>
+          <DialogContentText>
+            {tAttendance.rich("leaveCases.actions.batchDelete.submit.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              count,
+            })}
+          </DialogContentText>
+          <List dense disablePadding>
+            {selectedRows.map(
+              ({ employeeName, id, leaveTypeName, leaveTypeStatutoryKind }) => (
+                <ListItem disableGutters key={id}>
+                  <ListItemText
+                    primary={`${employeeName} · ${getStatutoryLeaveName(
+                      tAttendance,
+                      {
+                        name: leaveTypeName,
+                        statutoryKind: leaveTypeStatutoryKind,
+                      },
+                    )}`}
+                  />
+                </ListItem>
+              ),
+            )}
+          </List>
+        </ConfirmStack>
       ),
       onConfirm: async () => {
         try {
@@ -494,24 +507,11 @@ const LeaveCases = ({
   ]);
 
   const handleCancelLeaveCaseBatchDelete = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tAttendance.rich("leaveCases.actions.batchDelete.cancel.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setIsSelectMode(false);
-        clearRowSelection();
+    setIsSelectMode(false);
+    clearRowSelection();
 
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tAttendance("leaveCases.actions.batchDelete.cancel.label"),
-    });
-  }, [apiRef, clearRowSelection, setDialog, tAttendance]);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef, clearRowSelection]);
 
   const availableActions = useMemo(() => {
     const rowActions = rows.map(getRowActions);

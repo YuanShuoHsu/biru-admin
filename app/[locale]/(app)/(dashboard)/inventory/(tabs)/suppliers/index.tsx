@@ -32,6 +32,9 @@ import {
   DialogContentText,
   IconButton,
   Link,
+  List,
+  ListItem,
+  ListItemText,
   Stack,
   Tooltip,
 } from "@mui/material";
@@ -59,6 +62,10 @@ import type { Organization } from "@/types/organizations";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
+
+const ConfirmStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(1),
+}));
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
   height: "100%",
@@ -317,37 +324,33 @@ const Suppliers = ({
   );
 
   const handleEnterSupplierBatchDeleteMode = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tInventory.rich("suppliers.actions.batchDeleteSupplier.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setIsSelectMode(true);
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tInventory("suppliers.actions.batchDeleteSupplier.title"),
-    });
-  }, [apiRef, setDialog, tInventory]);
+    setIsSelectMode(true);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef]);
 
   const handleSubmitSupplierBatchDelete = useCallback(() => {
     const count = selectedRows.length;
 
     setDialog({
       content: (
-        <DialogContentText>
-          {tInventory.rich(
-            "suppliers.actions.batchDeleteSupplier.submit.confirm",
-            {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              count,
-            },
-          )}
-        </DialogContentText>
+        <ConfirmStack>
+          <DialogContentText>
+            {tInventory.rich(
+              "suppliers.actions.batchDeleteSupplier.submit.confirm",
+              {
+                bold: (chunks) => <strong>{chunks}</strong>,
+                count,
+              },
+            )}
+          </DialogContentText>
+          <List dense disablePadding>
+            {selectedRows.map(({ id, name }) => (
+              <ListItem disableGutters key={id}>
+                <ListItemText primary={name} />
+              </ListItem>
+            ))}
+          </List>
+        </ConfirmStack>
       ),
       onConfirm: async () => {
         try {
@@ -395,27 +398,11 @@ const Suppliers = ({
   ]);
 
   const handleCancelSupplierBatchDelete = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tInventory.rich(
-            "suppliers.actions.batchDeleteSupplier.cancel.confirm",
-            {
-              bold: (chunks) => <strong>{chunks}</strong>,
-            },
-          )}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setIsSelectMode(false);
-        clearRowSelection();
+    setIsSelectMode(false);
+    clearRowSelection();
 
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tInventory("suppliers.actions.batchDeleteSupplier.cancel.label"),
-    });
-  }, [apiRef, clearRowSelection, setDialog, tInventory]);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef, clearRowSelection]);
 
   const columns = useMemo<GridColDef[]>(
     () => [

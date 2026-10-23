@@ -4,12 +4,10 @@
     "actions": {
       "batchDeleteIngredient": {
         "cancel": {
-          "confirm": "确定要取消<bold>食材</bold>批量删除吗？已勾选的项目将会清除。",
           "label": "取消批量删除食材"
         },
-        "confirm": "确定要进行<bold>食材</bold>批量删除吗？",
         "submit": {
-          "confirm": "确定要删除所选的 <bold>{count} 条食材</bold>吗？",
+          "confirm": "确定要删除以下 <bold>{count} 条食材</bold>吗？",
           "error": "批量删除食材失败",
           "label": "删除所选食材（{count}）",
           "success": "已删除 {count} 条食材"
@@ -139,12 +137,10 @@
       "actions": {
         "batchDeleteRecipeIngredient": {
           "cancel": {
-            "confirm": "确定要取消<bold>材料</bold>批量删除吗？已勾选的项目将会清除。",
             "label": "取消批量删除材料"
           },
-          "confirm": "确定要进行<bold>材料</bold>批量删除吗？",
           "submit": {
-            "confirm": "确定要删除所选的 <bold>{count} 条材料</bold>吗？",
+            "confirm": "确定要删除以下 <bold>{count} 条材料</bold>吗？",
             "error": "批量删除材料失败",
             "label": "删除所选材料（{count}）",
             "success": "已删除 {count} 条材料"
@@ -214,12 +210,10 @@
     "actions": {
       "batchDeleteSupplier": {
         "cancel": {
-          "confirm": "确定要取消<bold>供应商</bold>批量删除吗？已勾选的项目将会清除。",
           "label": "取消批量删除供应商"
         },
-        "confirm": "确定要进行<bold>供应商</bold>批量删除吗？",
         "submit": {
-          "confirm": "确定要删除所选的 <bold>{count} 家供应商</bold>吗？",
+          "confirm": "确定要删除以下 <bold>{count} 家供应商</bold>吗？",
           "error": "批量删除供应商失败",
           "label": "删除所选供应商（{count}）",
           "success": "已删除 {count} 家供应商"

@@ -4,12 +4,10 @@
     "actions": {
       "batchDeleteIngredient": {
         "cancel": {
-          "confirm": "確定要取消<bold>食材</bold>批次刪除嗎？已勾選的項目將會清除。",
           "label": "取消批次刪除食材"
         },
-        "confirm": "確定要進行<bold>食材</bold>批次刪除嗎？",
         "submit": {
-          "confirm": "確定要刪除所選的 <bold>{count} 筆食材</bold>嗎？",
+          "confirm": "確定要刪除以下 <bold>{count} 筆食材</bold>嗎？",
           "error": "批次刪除食材失敗",
           "label": "刪除所選食材（{count}）",
           "success": "已刪除 {count} 筆食材"
@@ -139,12 +137,10 @@
       "actions": {
         "batchDeleteRecipeIngredient": {
           "cancel": {
-            "confirm": "確定要取消<bold>材料</bold>批次刪除嗎？已勾選的項目將會清除。",
             "label": "取消批次刪除材料"
           },
-          "confirm": "確定要進行<bold>材料</bold>批次刪除嗎？",
           "submit": {
-            "confirm": "確定要刪除所選的 <bold>{count} 筆材料</bold>嗎？",
+            "confirm": "確定要刪除以下 <bold>{count} 筆材料</bold>嗎？",
             "error": "批次刪除材料失敗",
             "label": "刪除所選材料（{count}）",
             "success": "已刪除 {count} 筆材料"
@@ -214,12 +210,10 @@
     "actions": {
       "batchDeleteSupplier": {
         "cancel": {
-          "confirm": "確定要取消<bold>供應商</bold>批次刪除嗎？已勾選的項目將會清除。",
           "label": "取消批次刪除供應商"
         },
-        "confirm": "確定要進行<bold>供應商</bold>批次刪除嗎？",
         "submit": {
-          "confirm": "確定要刪除所選的 <bold>{count} 家供應商</bold>嗎？",
+          "confirm": "確定要刪除以下 <bold>{count} 家供應商</bold>嗎？",
           "error": "批次刪除供應商失敗",
           "label": "刪除所選供應商（{count}）",
           "success": "已刪除 {count} 家供應商"

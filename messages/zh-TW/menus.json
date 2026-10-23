@@ -55,12 +55,10 @@
     "actions": {
       "batchDeleteItem": {
         "cancel": {
-          "confirm": "確定要取消<bold>品項</bold>批次刪除嗎？已勾選的項目將會清除。",
           "label": "取消批次刪除品項"
         },
-        "confirm": "確定要進行<bold>品項</bold>批次刪除嗎？",
         "submit": {
-          "confirm": "確定要刪除所選的 <bold>{count} 筆品項</bold>嗎？定價設定將一併刪除。",
+          "confirm": "確定要刪除以下 <bold>{count} 筆品項</bold>嗎？定價設定將一併刪除。",
           "error": "批次刪除品項失敗",
           "label": "刪除所選品項（{count}）",
           "success": "已刪除 {count} 筆品項"
@@ -106,12 +104,10 @@
       "actions": {
         "batchDeleteAddOn": {
           "cancel": {
-            "confirm": "確定要取消<bold>加購</bold>批次刪除嗎？已勾選的項目將會清除。",
             "label": "取消批次刪除加購"
           },
-          "confirm": "確定要進行<bold>加購</bold>批次刪除嗎？",
           "submit": {
-            "confirm": "確定要刪除所選的 <bold>{count} 筆加購</bold>嗎？",
+            "confirm": "確定要刪除以下 <bold>{count} 筆加購</bold>嗎？",
             "error": "批次刪除加購失敗",
             "label": "刪除所選加購（{count}）",
             "success": "已刪除 {count} 筆加購"
@@ -315,12 +311,10 @@
     "actions": {
       "batchDeleteGroup": {
         "cancel": {
-          "confirm": "確定要取消<bold>選項群組</bold>批次刪除嗎？已勾選的項目將會清除。",
           "label": "取消批次刪除選項群組"
         },
-        "confirm": "確定要進行<bold>選項群組</bold>批次刪除嗎？",
         "submit": {
-          "confirm": "確定要刪除所選的 <bold>{count} 筆選項群組</bold>嗎？群組底下的選項將一併刪除。",
+          "confirm": "確定要刪除以下 <bold>{count} 筆選項群組</bold>嗎？群組底下的選項將一併刪除。",
           "error": "批次刪除選項群組失敗",
           "label": "刪除所選選項群組（{count}）",
           "success": "已刪除 {count} 筆選項群組"
@@ -381,12 +375,10 @@
     "actions": {
       "batchDeleteModifier": {
         "cancel": {
-          "confirm": "確定要取消<bold>選項</bold>批次刪除嗎？已勾選的項目將會清除。",
           "label": "取消批次刪除選項"
         },
-        "confirm": "確定要進行<bold>選項</bold>批次刪除嗎？",
         "submit": {
-          "confirm": "確定要刪除所選的 <bold>{count} 筆選項</bold>嗎？",
+          "confirm": "確定要刪除以下 <bold>{count} 筆選項</bold>嗎？",
           "error": "批次刪除選項失敗",
           "label": "刪除所選選項（{count}）",
           "success": "已刪除 {count} 筆選項"
@@ -456,12 +448,10 @@
       },
       "batchDeleteSection": {
         "cancel": {
-          "confirm": "確定要取消<bold>分類</bold>批次刪除嗎？已勾選的項目將會清除。",
           "label": "取消批次刪除分類"
         },
-        "confirm": "確定要進行<bold>分類</bold>批次刪除嗎？",
         "submit": {
-          "confirm": "確定要刪除所選的 <bold>{count} 筆分類</bold>嗎？子分類與品項將一併刪除。",
+          "confirm": "確定要刪除以下 <bold>{count} 筆分類</bold>嗎？子分類與品項將一併刪除。",
           "error": "批次刪除分類失敗",
           "label": "刪除所選分類（{count}）",
           "success": "已刪除 {count} 筆分類"

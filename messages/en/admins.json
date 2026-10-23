@@ -24,12 +24,10 @@
     },
     "batchRemoveUser": {
       "cancel": {
-        "confirm": "Are you sure you want to cancel batch delete <bold>users</bold>? Your selection will be cleared.",
         "label": "Cancel Batch Delete Users"
       },
-      "confirm": "Are you sure you want to batch delete <bold>users</bold>?",
       "submit": {
-        "confirm": "Are you sure you want to delete the <bold>{count} selected users</bold>?",
+        "confirm": "Are you sure you want to delete the following <bold>{count} users</bold>?",
         "label": "Delete Selected Users ({count})",
         "success": "Deleted {count} users"
       },

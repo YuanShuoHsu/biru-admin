@@ -127,14 +127,12 @@
       },
       "batchDelete": {
         "title": "従業員設定を一括削除",
-        "confirm": "<bold>従業員設定</bold>を一括削除しますか？",
         "cancel": {
-          "label": "従業員設定の一括削除をキャンセル",
-          "confirm": "<bold>従業員設定</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。"
+          "label": "従業員設定の一括削除をキャンセル"
         },
         "submit": {
           "label": "選択した従業員設定を削除（{count}）",
-          "confirm": "選択した <bold>{count} 件の従業員設定</bold>を削除しますか？勤怠・給与の記録はなく、削除後は「未設定」に戻ります。",
+          "confirm": "以下の <bold>{count} 件の従業員設定</bold>を削除しますか？勤怠・給与の記録はなく、削除後は「未設定」に戻ります。",
           "success": "従業員設定 {count} 件を削除しました"
         }
       }
@@ -320,12 +318,10 @@
     "actions": {
       "batchDelete": {
         "cancel": {
-          "confirm": "<bold>事由別休暇枠</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。",
           "label": "事由別休暇枠の一括削除をキャンセル"
         },
-        "confirm": "<bold>事由別休暇枠</bold>を一括削除しますか？",
         "submit": {
-          "confirm": "選択した <bold>{count} 件の事由別休暇枠</bold>を削除しますか？",
+          "confirm": "以下の <bold>{count} 件の事由別休暇枠</bold>を削除しますか？",
           "label": "選択した事由別休暇枠を削除（{count}）",
           "success": "事由別休暇枠 {count} 件を削除しました"
         },
@@ -363,12 +359,10 @@
     "actions": {
       "batchDelete": {
         "cancel": {
-          "confirm": "<bold>休暇区分</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。",
           "label": "休暇区分の一括削除をキャンセル"
         },
-        "confirm": "<bold>休暇区分</bold>を一括削除しますか？",
         "submit": {
-          "confirm": "選択した <bold>{count} 件の休暇区分</bold>を削除しますか？未使用の休暇残高もすべて削除され、この操作は元に戻せません。",
+          "confirm": "以下の <bold>{count} 件の休暇区分</bold>を削除しますか？未使用の休暇残高もすべて削除され、この操作は元に戻せません。",
           "label": "選択した休暇区分を削除（{count}）",
           "success": "休暇区分 {count} 件を削除しました"
         },
@@ -932,14 +926,12 @@
       },
       "batchDelete": {
         "title": "加算項目を一括削除",
-        "confirm": "<bold>加算項目</bold>を一括削除しますか？",
         "cancel": {
-          "label": "加算項目の一括削除をキャンセル",
-          "confirm": "<bold>加算項目</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。"
+          "label": "加算項目の一括削除をキャンセル"
         },
         "submit": {
           "label": "選択した加算項目を削除（{count}）",
-          "confirm": "選択した <bold>{count} 件の加算項目</bold>を削除しますか？",
+          "confirm": "以下の <bold>{count} 件の加算項目</bold>を削除しますか？",
           "success": "加算項目 {count} 件を削除しました"
         }
       }
@@ -1043,14 +1035,12 @@
       },
       "batchDelete": {
         "title": "シフト区分を一括削除",
-        "confirm": "<bold>シフト区分</bold>を一括削除しますか？",
         "cancel": {
-          "label": "シフト区分の一括削除をキャンセル",
-          "confirm": "<bold>シフト区分</bold>の一括削除をキャンセルしますか？選択した項目はクリアされます。"
+          "label": "シフト区分の一括削除をキャンセル"
         },
         "submit": {
           "label": "選択したシフト区分を削除（{count}）",
-          "confirm": "選択した <bold>{count} 件のシフト区分</bold>を削除しますか？",
+          "confirm": "以下の <bold>{count} 件のシフト区分</bold>を削除しますか？",
           "success": "シフト区分 {count} 件を削除しました"
         }
       }

@@ -24,12 +24,10 @@
     },
     "batchRemoveUser": {
       "cancel": {
-        "confirm": "确定要取消<bold>用户</bold>批量删除吗？已勾选的项目将会清除。",
         "label": "取消批量删除用户"
       },
-      "confirm": "确定要进行<bold>用户</bold>批量删除吗？",
       "submit": {
-        "confirm": "确定要删除所选的 <bold>{count} 位用户</bold>吗？",
+        "confirm": "确定要删除以下 <bold>{count} 位用户</bold>吗？",
         "label": "删除所选用户（{count}）",
         "success": "已删除 {count} 位用户"
       },

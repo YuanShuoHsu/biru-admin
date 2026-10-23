@@ -127,14 +127,12 @@
       },
       "batchDelete": {
         "title": "직원 설정 일괄 삭제",
-        "confirm": "<bold>직원 설정</bold>을(를) 일괄 삭제하시겠습니까?",
         "cancel": {
-          "label": "직원 설정 일괄 삭제 취소",
-          "confirm": "<bold>직원 설정</bold> 일괄 삭제를 취소하시겠습니까? 선택한 항목이 해제됩니다."
+          "label": "직원 설정 일괄 삭제 취소"
         },
         "submit": {
           "label": "선택한 직원 설정 삭제 ({count})",
-          "confirm": "선택한 <bold>{count}개의 직원 설정</bold>을(를) 삭제하시겠습니까? 근태나 급여 기록이 없으며 삭제 후 '미설정'으로 돌아갑니다.",
+          "confirm": "다음 <bold>{count}개의 직원 설정</bold>을(를) 삭제하시겠습니까? 근태나 급여 기록이 없으며 삭제 후 '미설정'으로 돌아갑니다.",
           "success": "직원 설정 {count}개를 삭제했습니다"
         }
       }
@@ -320,12 +318,10 @@
     "actions": {
       "batchDelete": {
         "cancel": {
-          "confirm": "<bold>사유별 휴가 한도</bold> 일괄 삭제를 취소하시겠습니까? 선택한 항목이 해제됩니다.",
           "label": "사유별 휴가 한도 일괄 삭제 취소"
         },
-        "confirm": "<bold>사유별 휴가 한도</bold>을(를) 일괄 삭제하시겠습니까?",
         "submit": {
-          "confirm": "선택한 <bold>{count}개의 사유별 휴가 한도</bold>을(를) 삭제하시겠습니까?",
+          "confirm": "다음 <bold>{count}개의 사유별 휴가 한도</bold>을(를) 삭제하시겠습니까?",
           "label": "선택한 사유별 휴가 한도 삭제 ({count})",
           "success": "사유별 휴가 한도 {count}개를 삭제했습니다"
         },
@@ -363,12 +359,10 @@
     "actions": {
       "batchDelete": {
         "cancel": {
-          "confirm": "<bold>휴가 정책</bold> 일괄 삭제를 취소하시겠습니까? 선택한 항목이 해제됩니다.",
           "label": "휴가 정책 일괄 삭제 취소"
         },
-        "confirm": "<bold>휴가 정책</bold>을(를) 일괄 삭제하시겠습니까?",
         "submit": {
-          "confirm": "선택한 <bold>{count}개의 휴가 정책</bold>을(를) 삭제하시겠습니까? 사용하지 않은 휴가 잔액도 모두 삭제되며 이 작업은 되돌릴 수 없습니다.",
+          "confirm": "다음 <bold>{count}개의 휴가 정책</bold>을(를) 삭제하시겠습니까? 사용하지 않은 휴가 잔액도 모두 삭제되며 이 작업은 되돌릴 수 없습니다.",
           "label": "선택한 휴가 정책 삭제 ({count})",
           "success": "휴가 정책 {count}개를 삭제했습니다"
         },
@@ -932,14 +926,12 @@
       },
       "batchDelete": {
         "title": "가산 항목 일괄 삭제",
-        "confirm": "<bold>가산 항목</bold>을(를) 일괄 삭제하시겠습니까?",
         "cancel": {
-          "label": "가산 항목 일괄 삭제 취소",
-          "confirm": "<bold>가산 항목</bold> 일괄 삭제를 취소하시겠습니까? 선택한 항목이 해제됩니다."
+          "label": "가산 항목 일괄 삭제 취소"
         },
         "submit": {
           "label": "선택한 가산 항목 삭제 ({count})",
-          "confirm": "선택한 <bold>{count}개의 가산 항목</bold>을(를) 삭제하시겠습니까?",
+          "confirm": "다음 <bold>{count}개의 가산 항목</bold>을(를) 삭제하시겠습니까?",
           "success": "가산 항목 {count}개를 삭제했습니다"
         }
       }
@@ -1043,14 +1035,12 @@
       },
       "batchDelete": {
         "title": "근무 유형 일괄 삭제",
-        "confirm": "<bold>근무 유형</bold>을(를) 일괄 삭제하시겠습니까?",
         "cancel": {
-          "label": "근무 유형 일괄 삭제 취소",
-          "confirm": "<bold>근무 유형</bold> 일괄 삭제를 취소하시겠습니까? 선택한 항목이 해제됩니다."
+          "label": "근무 유형 일괄 삭제 취소"
         },
         "submit": {
           "label": "선택한 근무 유형 삭제 ({count})",
-          "confirm": "선택한 <bold>{count}개의 근무 유형</bold>을(를) 삭제하시겠습니까?",
+          "confirm": "다음 <bold>{count}개의 근무 유형</bold>을(를) 삭제하시겠습니까?",
           "success": "근무 유형 {count}개를 삭제했습니다"
         }
       }

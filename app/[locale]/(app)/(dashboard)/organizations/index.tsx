@@ -207,22 +207,9 @@ const Organizations = ({
   );
 
   const handleEnterOrganizationBatchDeleteMode = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tOrganizations.rich("actions.batchDeleteOrganization.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setIsSelectMode(true);
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tOrganizations("actions.batchDeleteOrganization.title"),
-    });
-  }, [apiRef, setDialog, tOrganizations]);
+    setIsSelectMode(true);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef]);
 
   const handleSubmitOrganizationBatchDelete = useCallback(() => {
     const count = selectedRows.length;
@@ -278,27 +265,11 @@ const Organizations = ({
   ]);
 
   const handleCancelOrganizationBatchDelete = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tOrganizations.rich(
-            "actions.batchDeleteOrganization.cancel.confirm",
-            {
-              bold: (chunks) => <strong>{chunks}</strong>,
-            },
-          )}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setIsSelectMode(false);
-        clearRowSelection();
+    setIsSelectMode(false);
+    clearRowSelection();
 
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tOrganizations("actions.batchDeleteOrganization.cancel.label"),
-    });
-  }, [apiRef, clearRowSelection, setDialog, tOrganizations]);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef, clearRowSelection]);
 
   const handleToggleClosed = useCallback(
     ({ closedAt, id, name }: MyOrganization) => {

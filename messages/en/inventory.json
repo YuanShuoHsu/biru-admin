@@ -4,12 +4,10 @@
     "actions": {
       "batchDeleteIngredient": {
         "cancel": {
-          "confirm": "Are you sure you want to cancel batch delete <bold>ingredients</bold>? Your selection will be cleared.",
           "label": "Cancel Batch Delete Ingredients"
         },
-        "confirm": "Are you sure you want to batch delete <bold>ingredients</bold>?",
         "submit": {
-          "confirm": "Are you sure you want to delete the <bold>{count} selected ingredients</bold>?",
+          "confirm": "Are you sure you want to delete the following <bold>{count} ingredients</bold>?",
           "error": "Failed to batch delete ingredients",
           "label": "Delete Selected Ingredients ({count})",
           "success": "Deleted {count} ingredients"
@@ -139,12 +137,10 @@
       "actions": {
         "batchDeleteRecipeIngredient": {
           "cancel": {
-            "confirm": "Are you sure you want to cancel batch delete <bold>recipe ingredients</bold>? Your selection will be cleared.",
             "label": "Cancel Batch Delete Recipe Ingredients"
           },
-          "confirm": "Are you sure you want to batch delete <bold>recipe ingredients</bold>?",
           "submit": {
-            "confirm": "Are you sure you want to delete the <bold>{count} selected recipe ingredients</bold>?",
+            "confirm": "Are you sure you want to delete the following <bold>{count} recipe ingredients</bold>?",
             "error": "Failed to batch delete recipe ingredients",
             "label": "Delete Selected Recipe Ingredients ({count})",
             "success": "Deleted {count} recipe ingredients"
@@ -214,12 +210,10 @@
     "actions": {
       "batchDeleteSupplier": {
         "cancel": {
-          "confirm": "Are you sure you want to cancel batch delete <bold>suppliers</bold>? Your selection will be cleared.",
           "label": "Cancel Batch Delete Suppliers"
         },
-        "confirm": "Are you sure you want to batch delete <bold>suppliers</bold>?",
         "submit": {
-          "confirm": "Are you sure you want to delete the <bold>{count} selected suppliers</bold>?",
+          "confirm": "Are you sure you want to delete the following <bold>{count} suppliers</bold>?",
           "error": "Failed to batch delete suppliers",
           "label": "Delete Selected Suppliers ({count})",
           "success": "Deleted {count} suppliers"

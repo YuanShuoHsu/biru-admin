@@ -2,12 +2,10 @@
   "actions": {
     "batchDeleteBanner": {
       "cancel": {
-        "confirm": "Are you sure you want to cancel batch delete <bold>banners</bold>? Your selection will be cleared.",
         "label": "Cancel Batch Delete Banners"
       },
-      "confirm": "Are you sure you want to batch delete <bold>banners</bold>?",
       "submit": {
-        "confirm": "Are you sure you want to delete the <bold>{count} selected banners</bold>?",
+        "confirm": "Are you sure you want to delete the following <bold>{count} banners</bold>?",
         "error": "Failed to batch delete banners",
         "label": "Delete Selected Banners ({count})",
         "success": "Deleted {count} banners"

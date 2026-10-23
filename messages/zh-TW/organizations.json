@@ -2,12 +2,10 @@
   "actions": {
     "batchDeleteOrganization": {
       "cancel": {
-        "confirm": "確定要取消<bold>組織</bold>批次刪除嗎？已勾選的項目將會清除。",
         "label": "取消批次刪除組織"
       },
-      "confirm": "確定要進行<bold>組織</bold>批次刪除嗎？",
       "submit": {
-        "confirm": "確定要刪除所選的 <bold>{count} 個組織</bold>嗎？成員、菜單、庫存等資料會一併刪除，30 天內可由平台管理員還原。",
+        "confirm": "確定要刪除以下 <bold>{count} 個組織</bold>嗎？成員、菜單、庫存等資料會一併刪除，30 天內可由平台管理員還原。",
         "label": "刪除所選組織（{count}）",
         "success": "已刪除 {count} 個組織",
         "typeCount": "請輸入要刪除的組織數量「{count}」以確認"
@@ -247,12 +245,10 @@
     "actions": {
       "batchRemoveMember": {
         "cancel": {
-          "confirm": "確定要取消<bold>成員</bold>批次移除嗎？已勾選的項目將會清除。",
           "label": "取消批次移除成員"
         },
-        "confirm": "確定要進行<bold>成員</bold>批次移除嗎？",
         "submit": {
-          "confirm": "確定要移除所選的 <bold>{count} 位成員</bold>嗎？",
+          "confirm": "確定要移除以下 <bold>{count} 位成員</bold>嗎？",
           "label": "移除所選成員（{count}）",
           "success": "已移除 {count} 位成員"
         },
@@ -260,12 +256,10 @@
       },
       "batchRemoveTeamMember": {
         "cancel": {
-          "confirm": "確定要取消<bold>團隊成員</bold>批次移除嗎？已勾選的項目將會清除。",
           "label": "取消批次移除團隊成員"
         },
-        "confirm": "確定要進行<bold>團隊成員</bold>批次移除嗎？",
         "submit": {
-          "confirm": "確定要移除所選的 <bold>{count} 位團隊成員</bold>嗎？",
+          "confirm": "確定要移除以下 <bold>{count} 位團隊成員</bold>嗎？",
           "label": "移除所選團隊成員（{count}）",
           "success": "已移除 {count} 位團隊成員"
         },
@@ -387,12 +381,10 @@
       },
       "batchRemoveTeam": {
         "cancel": {
-          "confirm": "確定要取消<bold>團隊</bold>批次刪除嗎？已勾選的項目將會清除。",
           "label": "取消批次刪除團隊"
         },
-        "confirm": "確定要進行<bold>團隊</bold>批次刪除嗎？",
         "submit": {
-          "confirm": "確定要刪除所選的 <bold>{count} 個團隊</bold>嗎？",
+          "confirm": "確定要刪除以下 <bold>{count} 個團隊</bold>嗎？",
           "label": "刪除所選團隊（{count}）",
           "success": "已刪除 {count} 個團隊"
         },
