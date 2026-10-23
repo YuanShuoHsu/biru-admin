@@ -48,9 +48,13 @@ const LowStockAlerts = () => {
 
     const handleLowStock = ({
       ingredients,
+      organizationId,
     }: {
       ingredients: { id: string; name: LocalizedText }[];
+      organizationId: string;
     }) => {
+      if (organizationId !== organization.id) return;
+
       enqueueSnackbar(
         tInventory("ingredients.lowStockReached", {
           names: format.list(

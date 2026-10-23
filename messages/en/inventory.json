@@ -74,7 +74,7 @@
     },
     "label": "Ingredient",
     "lowStock": "Low stock",
-    "lowStockReached": "{names} dropped to the low stock threshold",
+    "lowStockReached": "{names} dropped to or below the low stock threshold",
     "lowStockThreshold": {
       "label": "Low stock threshold",
       "placeholder": "Please enter your Low stock threshold"
