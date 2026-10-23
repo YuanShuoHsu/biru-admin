@@ -55,6 +55,7 @@ import {
 import {
   Box,
   Button,
+  Chip,
   DialogContentText,
   IconButton,
   Link,
@@ -168,6 +169,7 @@ interface IngredientsProps {
   filterField?: IngredientFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
+  lowStock?: boolean;
   page?: number;
   pageSize?: number;
   quickFilterValue?: string;
@@ -186,6 +188,7 @@ const Ingredients = ({
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
   loading = false,
+  lowStock: initialLowStock = false,
   organization: currentOrganization,
   page = 1,
   pageSize = DEFAULT_PAGE_SIZE,
@@ -199,6 +202,7 @@ const Ingredients = ({
   const currency = currentOrganization?.currency ?? "";
   const organizationSlug = currentOrganization?.slug ?? "";
 
+  const [lowStock, setLowStock] = useState(initialLowStock);
   const [toolbarMode, setToolbarMode] = useState<ToolbarMode>(null);
   const isReorderMode = toolbarMode === "reorder";
   const isSelectMode = toolbarMode === "select";
@@ -274,11 +278,22 @@ const Ingredients = ({
       paginationModel.page,
       paginationModel.pageSize,
       sortModel,
+      lowStock,
     ],
-    async () =>
-      fetcher<{ data: Ingredient[]; total: number }>(
-        `/api/organizations/${organizationSlug}/ingredients?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
-      ),
+    async () => {
+      const params = getDataGridSearchParams(
+        paginationModel,
+        filterModel,
+        sortModel,
+        enumOptions,
+      );
+
+      if (lowStock) params.set("lowStock", "true");
+
+      return fetcher<{ data: Ingredient[]; total: number }>(
+        `/api/organizations/${organizationSlug}/ingredients?${params}`,
+      );
+    },
     {
       fallbackData: { data: initialRows, total: initialRowCount },
       onSuccess: () => {
@@ -344,8 +359,17 @@ const Ingredients = ({
     [updateQuery],
   );
 
+  const handleToggleLowStock = useCallback(() => {
+    const next = !lowStock;
+
+    setLowStock(next);
+    setPaginationModel((previous) => ({ ...previous, page: 0 }));
+
+    updateQuery({ lowStock: next ? "true" : "", page: "1" });
+  }, [lowStock, updateQuery]);
+
   const isReorderDisabled =
-    rowCount < 2 || isFilteredOrSorted(filterModel, sortModel);
+    rowCount < 2 || lowStock || isFilteredOrSorted(filterModel, sortModel);
 
   const handleEnterReorderMode = useCallback(() => {
     setDialog({
@@ -930,89 +954,98 @@ const Ingredients = ({
 
   return (
     <>
-      {canWrite && (
-        <ToolbarStack direction="row">
-          {!toolbarMode && (
-            <>
-              <Button
-                onClick={handleCreateIngredient}
-                size="small"
-                startIcon={<Add />}
-                variant="contained"
-              >
-                {tInventory("ingredients.actions.createIngredient.title")}
-              </Button>
-              <Button
-                disabled={isReorderDisabled}
-                onClick={handleEnterReorderMode}
-                size="small"
-                startIcon={<Sort />}
-                variant="outlined"
-              >
-                {tInventory("ingredients.actions.reorderIngredient.title")}
-              </Button>
-              <Button
-                disabled={!hasSelectableRows}
-                onClick={handleEnterBatchDeleteMode}
-                size="small"
-                startIcon={<Delete />}
-                variant="outlined"
-              >
-                {tInventory("ingredients.actions.batchDeleteIngredient.title")}
-              </Button>
-            </>
-          )}
-          {isReorderMode && (
-            <>
-              <Button
-                onClick={handleCancelReorder}
-                size="small"
-                startIcon={<Cancel />}
-                variant="outlined"
-              >
-                {tInventory(
-                  "ingredients.actions.reorderIngredient.cancel.label",
-                )}
-              </Button>
-              <Button
-                onClick={handleSaveReorder}
-                size="small"
-                startIcon={<Save />}
-                variant="contained"
-              >
-                {tInventory("ingredients.actions.reorderIngredient.save.label")}
-              </Button>
-            </>
-          )}
-          {isSelectMode && (
-            <>
-              <Button
-                onClick={handleCancelBatchDelete}
-                size="small"
-                startIcon={<Cancel />}
-                variant="outlined"
-              >
-                {tInventory(
-                  "ingredients.actions.batchDeleteIngredient.cancel.label",
-                )}
-              </Button>
-              <Button
-                color="error"
-                disabled={!selectedRows.length}
-                onClick={handleSubmitBatchDelete}
-                size="small"
-                startIcon={<Delete />}
-                variant="contained"
-              >
-                {tInventory(
-                  "ingredients.actions.batchDeleteIngredient.submit.label",
-                  { count: selectedRows.length },
-                )}
-              </Button>
-            </>
-          )}
-        </ToolbarStack>
-      )}
+      <ToolbarStack direction="row">
+        {!toolbarMode && (
+          <>
+            <Chip
+              color={lowStock ? "primary" : "default"}
+              disabled={loading}
+              label={tInventory("ingredients.lowStock")}
+              onClick={handleToggleLowStock}
+              variant={lowStock ? "filled" : "outlined"}
+            />
+            {canWrite && (
+              <>
+                <Button
+                  onClick={handleCreateIngredient}
+                  size="small"
+                  startIcon={<Add />}
+                  variant="contained"
+                >
+                  {tInventory("ingredients.actions.createIngredient.title")}
+                </Button>
+                <Button
+                  disabled={isReorderDisabled}
+                  onClick={handleEnterReorderMode}
+                  size="small"
+                  startIcon={<Sort />}
+                  variant="outlined"
+                >
+                  {tInventory("ingredients.actions.reorderIngredient.title")}
+                </Button>
+                <Button
+                  disabled={!hasSelectableRows}
+                  onClick={handleEnterBatchDeleteMode}
+                  size="small"
+                  startIcon={<Delete />}
+                  variant="outlined"
+                >
+                  {tInventory(
+                    "ingredients.actions.batchDeleteIngredient.title",
+                  )}
+                </Button>
+              </>
+            )}
+          </>
+        )}
+        {isReorderMode && (
+          <>
+            <Button
+              onClick={handleCancelReorder}
+              size="small"
+              startIcon={<Cancel />}
+              variant="outlined"
+            >
+              {tInventory("ingredients.actions.reorderIngredient.cancel.label")}
+            </Button>
+            <Button
+              onClick={handleSaveReorder}
+              size="small"
+              startIcon={<Save />}
+              variant="contained"
+            >
+              {tInventory("ingredients.actions.reorderIngredient.save.label")}
+            </Button>
+          </>
+        )}
+        {isSelectMode && (
+          <>
+            <Button
+              onClick={handleCancelBatchDelete}
+              size="small"
+              startIcon={<Cancel />}
+              variant="outlined"
+            >
+              {tInventory(
+                "ingredients.actions.batchDeleteIngredient.cancel.label",
+              )}
+            </Button>
+            <Button
+              color="error"
+              disabled={!selectedRows.length}
+              onClick={handleSubmitBatchDelete}
+              size="small"
+              startIcon={<Delete />}
+              variant="contained"
+            >
+              {tInventory(
+                "ingredients.actions.batchDeleteIngredient.submit.label",
+                { count: selectedRows.length },
+              )}
+            </Button>
+          </>
+        )}
+      </ToolbarStack>
       <DragDropProvider onDragEnd={handleDragEnd}>
         <DataGrid
           {...DATA_GRID_PROPS}
