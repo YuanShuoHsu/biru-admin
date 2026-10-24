@@ -194,6 +194,7 @@
       "label": "操作"
     },
     "email": "メール",
+    "expired": "期限切れ",
     "expiresAt": "有効期限",
     "label": "保留中の招待",
     "role": "役割"
