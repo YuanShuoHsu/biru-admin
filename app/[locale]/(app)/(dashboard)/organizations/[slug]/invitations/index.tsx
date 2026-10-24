@@ -34,9 +34,16 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { ActiveOrganization, Invitation } from "@/types/organizations";
 
+import { isActiveSession } from "@/utils/auth";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { sortByCreatedAtDesc } from "@/utils/organizations";
+
+const ExpiresAtStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
 
 const ToolbarStack = styled(Stack)(({ theme }) => ({
   flexWrap: "wrap",
@@ -107,7 +114,8 @@ const OrganizationsSlugInvitations = ({
       return {
         rows: pendingInvitations,
         teams: data.teams,
-        pendingInvitationCount: pendingInvitations.length,
+        pendingInvitationCount:
+          pendingInvitations.filter(isActiveSession).length,
       };
     },
     {
@@ -337,6 +345,21 @@ const OrganizationsSlugInvitations = ({
       {
         field: "expiresAt",
         headerName: tInvitations("expiresAt"),
+        renderCell: ({
+          formattedValue,
+          row,
+        }: GridRenderCellParams<Invitation>) => (
+          <ExpiresAtStack direction="row">
+            {formattedValue}
+            {!isActiveSession(row) && (
+              <Chip
+                label={tInvitations("expired")}
+                size="small"
+                variant="outlined"
+              />
+            )}
+          </ExpiresAtStack>
+        ),
         valueFormatter: (value: Date | string) =>
           format.dateTime(new Date(value), "short"),
       },

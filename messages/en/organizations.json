@@ -194,6 +194,7 @@
       "label": "Actions"
     },
     "email": "Email",
+    "expired": "Expired",
     "expiresAt": "Expires",
     "label": "Pending invitations",
     "role": "Role"

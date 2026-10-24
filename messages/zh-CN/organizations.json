@@ -194,6 +194,7 @@
       "label": "操作"
     },
     "email": "电子邮件",
+    "expired": "已过期",
     "expiresAt": "到期时间",
     "label": "待处理邀请",
     "role": "角色"

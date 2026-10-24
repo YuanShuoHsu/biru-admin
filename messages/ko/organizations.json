@@ -194,6 +194,7 @@
       "label": "작업"
     },
     "email": "이메일",
+    "expired": "만료됨",
     "expiresAt": "만료일",
     "label": "대기 중인 초대",
     "role": "역할"
