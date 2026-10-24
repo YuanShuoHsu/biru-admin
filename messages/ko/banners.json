@@ -44,7 +44,12 @@
       "title": "배너 편집"
     }
   },
+  "alt": {
+    "helperText": "이미지를 표시할 수 없거나 스크린 리더가 읽을 때 사용하는 설명",
+    "label": "대체 텍스트"
+  },
   "createdAt": "생성일",
+  "endsAt": "게시 종료",
   "image": {
     "label": "이미지",
     "notSelected": "이미지를 선택해 주세요"
@@ -56,5 +61,19 @@
   },
   "label": "배너",
   "reorder": "순서",
-  "updatedAt": "수정일"
+  "schedule": {
+    "invalid": "게시 시작과 종료 시간을 모두 입력하고, 종료는 시작보다 뒤여야 합니다."
+  },
+  "startsAt": "게시 시작",
+  "status": {
+    "ended": "종료",
+    "label": "상태",
+    "live": "게시 중",
+    "scheduled": "예약됨"
+  },
+  "updatedAt": "수정일",
+  "url": {
+    "helperText": "사이트 내 경로는 /로 시작하고, 외부 링크는 https://여야 합니다",
+    "label": "링크"
+  }
 }
