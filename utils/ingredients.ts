@@ -136,18 +136,6 @@ export const formatPackagePrice = (
   { formatMoney }: IngredientPriceFormatters,
 ) => (price == null ? "" : formatMoney(Number(price), priceCurrency));
 
-export const formatPackage = (
-  ingredient: Ingredient,
-  formatters: IngredientPriceFormatters,
-) => {
-  const quantity = formatPackageQuantity(ingredient, formatters);
-  const price = formatPackagePrice(ingredient, formatters);
-
-  return quantity
-    ? withSuffix(quantity, price ? [price] : [], formatters.tCommon)
-    : "";
-};
-
 export const formatUnitPriceOf = (
   value: number,
   {
