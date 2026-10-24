@@ -92,13 +92,36 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
     bucketCount: String(buckets),
   });
 
+  const waitlistPromise = (
+    resolvedOrganizationId
+      ? getMemberRole(resolvedOrganizationId)
+      : Promise.resolve(null)
+  ).then(
+    async (
+      memberRole,
+    ): Promise<[WaitlistStats | null, WaitlistStatusResponse | null]> =>
+      organizationSlug &&
+      (isAdmin || hasRolePermission(memberRole, { waitlist: ["read"] }))
+        ? Promise.all([
+            fetcher<WaitlistStats>(
+              `/api/organizations/${organizationSlug}/waitlist/stats?since=${periodStart.toISOString()}`,
+              fetchOptions,
+            ).catch(() => null),
+            fetcher<WaitlistStatusResponse>(
+              `/api/organizations/${organizationSlug}/waitlist`,
+              fetchOptions,
+            ).catch(() => null),
+          ])
+        : [null, null],
+  );
+
   const [
     userStats,
     organizationStats,
     orderStats,
     orderMenu,
     sales,
-    memberRole,
+    [waitlistStats, waitlistStatus],
   ] = await Promise.all([
     isAdmin
       ? fetcher<UserStatsResponse>(
@@ -128,27 +151,8 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
           fetchOptions,
         ).catch(() => [])
       : Promise.resolve([]),
-    resolvedOrganizationId
-      ? getMemberRole(resolvedOrganizationId)
-      : Promise.resolve(null),
+    waitlistPromise,
   ]);
-
-  const canViewWaitlist =
-    isAdmin || hasRolePermission(memberRole, { waitlist: ["read"] });
-
-  const [waitlistStats, waitlistStatus] =
-    organizationSlug && canViewWaitlist
-      ? await Promise.all([
-          fetcher<WaitlistStats>(
-            `/api/organizations/${organizationSlug}/waitlist/stats?since=${periodStart.toISOString()}`,
-            fetchOptions,
-          ).catch(() => null),
-          fetcher<WaitlistStatusResponse>(
-            `/api/organizations/${organizationSlug}/waitlist`,
-            fetchOptions,
-          ).catch(() => null),
-        ])
-      : [null, null];
 
   const topItems = [...sales]
     .sort((a, b) => b.sold - a.sold)
