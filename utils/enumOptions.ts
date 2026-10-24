@@ -17,6 +17,7 @@ import {
   baseUnitCodeValues,
   couponIssueTriggerValues,
   couponScopeValues,
+  deletedRecordTableValues,
   inventoryTransactionReasonValues,
   invoiceStatusValues,
   invoiceTypeValues,
@@ -137,6 +138,15 @@ export const getCouponRecipientEnumOptions = (
     { label: tCoupons("recipients.used"), value: "used" },
     { label: tCoupons("recipients.unused"), value: "unused" },
   ],
+});
+
+export const getDeletedRecordEnumOptions = (
+  tDeletedRecords: ReturnType<typeof useTranslations<"deletedRecords">>,
+) => ({
+  tableName: deletedRecordTableValues.map((value) => ({
+    label: tDeletedRecords(`table.${value}`),
+    value,
+  })),
 });
 
 export const getMenuEnumOptions = (

@@ -10,18 +10,32 @@ import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import {
+  deletedRecordFilterFieldValues,
+  deletedRecordSortFieldValues,
+  filterOperatorValues,
+} from "@/types/api";
+
+import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
+import {
   canRestoreDeletedRecords,
   getDeletedRecords,
 } from "@/utils/deletedRecords";
-import { resolveGridSearchParams } from "@/utils/dataGrid";
+import { getDeletedRecordEnumOptions } from "@/utils/enumOptions";
 import { getResolvedAdminOrganization, getSession } from "@/utils/session";
 
 interface DeletedRecordsPageProps {
   params: Promise<{ locale: Locale }>;
   searchParams: Promise<{
+    filterField?: string;
+    filterOperator?: string;
+    filterValue?: string;
     organization?: string;
     page?: string;
     pageSize?: string;
+    quickFilterEnums?: string | string[];
+    quickFilterValue?: string;
+    sortBy?: string;
+    sortDirection?: string;
   }>;
 }
 
@@ -59,31 +73,71 @@ const DeletedRecordsContent = async ({
   )
     notFound();
 
-  const { page, pageSize, redirectParams } = resolveGridSearchParams({
+  const isVisibleField = (field: string) =>
+    !organization || field !== "organizationName";
+
+  const {
+    filterField,
+    filterOperator,
+    filterValue,
+    page,
+    pageSize,
+    quickFilterValue,
+    redirectParams,
+    sortBy,
+    sortDirection,
+  } = resolveGridSearchParams({
     searchParams: rawSearchParams,
-    sortFields: [],
-    filterFields: [],
-    filterOperators: [],
+    sortFields: deletedRecordSortFieldValues.filter(isVisibleField),
+    filterFields: deletedRecordFilterFieldValues.filter(isVisibleField),
+    filterOperators: filterOperatorValues,
     organizationSlug: organization?.slug,
   });
 
   if (redirectParams)
     redirect({ href: `/deleted-records?${redirectParams.toString()}`, locale });
 
+  const tDeletedRecords = await getTranslations({
+    locale,
+    namespace: "deletedRecords",
+  });
+
+  const quickFilterEnums = quickFilterValue
+    ? getQuickFilterEnums(
+        quickFilterValue,
+        getDeletedRecordEnumOptions(tDeletedRecords),
+      )
+    : [];
+
   const { deletedRecords: rows, total: rowCount } = await getDeletedRecords(
     organization?.slug,
-    page,
-    pageSize,
+    {
+      page,
+      pageSize,
+      filterField,
+      filterOperator,
+      filterValue,
+      quickFilterEnums,
+      quickFilterValue,
+      sortBy,
+      sortDirection,
+    },
     init,
   );
 
   return (
     <DeletedRecords
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
       organizationSlug={organization?.slug}
       page={page}
       pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
       rowCount={rowCount}
       rows={rows}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
     />
   );
 };
