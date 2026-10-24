@@ -4,8 +4,10 @@ import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import useSWR from "swr";
 
 import CashAmountField from "../CashAmountField";
+import { toCents } from "../CashAmountField/definitions";
 import {
   type CloseCashDrawerForm,
   exceedsTolerance,
@@ -22,7 +24,7 @@ import { Alert, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { CashDrawerSession } from "@/types/orders";
+import type { CashDrawerSession, CurrentCashDrawer } from "@/types/orders";
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
@@ -43,10 +45,19 @@ const CloseCashDrawerDialog = ({
   session: {
     id: sessionId,
     openingFloat,
-    summary: { expectedCash },
+    summary: { expectedCash: initialExpectedCash },
   },
-  varianceTolerance,
+  varianceTolerance: initialVarianceTolerance,
 }: CloseCashDrawerDialogProps) => {
+  const { data: current } = useSWR<CurrentCashDrawer>(
+    `${cashDrawerPath(organizationSlug)}/current`,
+  );
+
+  const expectedCash =
+    current?.session?.summary.expectedCash ?? initialExpectedCash;
+  const varianceTolerance =
+    current?.varianceTolerance ?? initialVarianceTolerance;
+
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const formatMoney = useFormatMoney();
@@ -80,7 +91,9 @@ const CloseCashDrawerDialog = ({
   });
 
   const variance =
-    countedCash === "" ? null : Number(countedCash) - Number(expectedCash);
+    countedCash === ""
+      ? null
+      : (toCents(countedCash) - toCents(expectedCash)) / 100;
 
   const money = (amount: number) =>
     formatMoney(amount, currency, { signDisplay: "exceptZero" });
