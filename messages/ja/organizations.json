@@ -349,6 +349,25 @@
         "title": "ポイントを編集"
       }
     },
+    "adjust": {
+      "email": {
+        "label": "会員のメールアドレス",
+        "placeholder": "会員のメールアドレスを入力してください"
+      },
+      "note": {
+        "label": "調整理由",
+        "placeholder": "例：付与漏れの購入分",
+        "required": "調整理由を入力してください"
+      },
+      "points": {
+        "hint": "正の数で付与、負の数で減算します。減算は当店が付与した有効期限内のポイントのみが対象です",
+        "invalid": "-{limit, number}〜{limit, number} の 0 以外の整数を入力してください",
+        "label": "調整ポイント",
+        "placeholder": "調整するポイントを入力してください"
+      },
+      "success": "{email} のポイントを調整しました",
+      "title": "ポイント付与・減算"
+    },
     "amountPerPoint": {
       "empty": "無効",
       "hint": "未設定の場合、ポイントは無効になります",
@@ -367,6 +386,7 @@
     "transactions": {
       "createdAt": "作成日時",
       "expiresAt": "有効期限",
+      "note": "調整理由",
       "orderNumber": "注文番号",
       "points": "ポイント",
       "remainingPoints": "残りポイント",

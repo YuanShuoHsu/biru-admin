@@ -349,6 +349,25 @@
         "title": "编辑点数"
       }
     },
+    "adjust": {
+      "email": {
+        "label": "会员 Email",
+        "placeholder": "请输入会员的 Email"
+      },
+      "note": {
+        "label": "调整原因",
+        "placeholder": "例如：补登漏掉的消费",
+        "required": "请输入调整原因"
+      },
+      "points": {
+        "hint": "正数为补点、负数为扣点；扣点只扣本店发出且未过期的点数",
+        "invalid": "请输入 -{limit, number} 到 {limit, number} 之间、不为 0 的整数",
+        "label": "调整点数",
+        "placeholder": "请输入调整点数"
+      },
+      "success": "已调整 {email} 的点数",
+      "title": "补点／扣点"
+    },
     "amountPerPoint": {
       "empty": "未启用",
       "hint": "未设置时不启用点数",
@@ -367,6 +386,7 @@
     "transactions": {
       "createdAt": "建立时间",
       "expiresAt": "到期日",
+      "note": "调整原因",
       "orderNumber": "订单编号",
       "points": "点数",
       "remainingPoints": "剩余点数",

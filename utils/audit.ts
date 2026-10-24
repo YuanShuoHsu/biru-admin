@@ -82,6 +82,7 @@ export const getAuditLogHref = (
     case "invitation":
     case "user":
     case "team":
+    case "pointTransaction":
     case "employee":
     case "attendanceSetting":
     case "leaveCase":
