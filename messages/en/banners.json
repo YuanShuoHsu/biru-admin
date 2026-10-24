@@ -44,7 +44,12 @@
       "title": "Edit banner"
     }
   },
+  "alt": {
+    "helperText": "Shown when the image can't load and read by screen readers",
+    "label": "Alt text"
+  },
   "createdAt": "Created",
+  "endsAt": "Ends at",
   "image": {
     "label": "Image",
     "notSelected": "Please select your image"
@@ -56,5 +61,19 @@
   },
   "label": "Banners",
   "reorder": "Order",
-  "updatedAt": "Updated"
+  "schedule": {
+    "invalid": "Enter complete start and end times, with the end after the start."
+  },
+  "startsAt": "Starts at",
+  "status": {
+    "ended": "Ended",
+    "label": "Status",
+    "live": "Live",
+    "scheduled": "Scheduled"
+  },
+  "updatedAt": "Updated",
+  "url": {
+    "helperText": "Site paths start with /; external links must use https://",
+    "label": "Link"
+  }
 }

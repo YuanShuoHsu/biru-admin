@@ -9,6 +9,7 @@ import BannerDialog from "./BannerDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
 import DataGrid from "@/components/DataGrid";
+import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
 import {
@@ -569,6 +570,50 @@ const Banners = ({
           />
         ),
         type: "boolean",
+      },
+      {
+        field: "status",
+        filterable: false,
+        headerName: tBanners("status.label"),
+        renderCell: ({
+          row: { endsAt, isActive, startsAt },
+        }: GridRenderCellParams<Banner>) => {
+          if (!isActive) return <EmptyCell />;
+
+          const now = Date.now();
+          const status =
+            startsAt && new Date(startsAt).getTime() > now
+              ? "scheduled"
+              : endsAt && new Date(endsAt).getTime() <= now
+                ? "ended"
+                : "live";
+
+          return (
+            <Chip
+              color={status === "live" ? "success" : "default"}
+              label={tBanners(`status.${status}`)}
+              size="small"
+              variant="outlined"
+            />
+          );
+        },
+        sortable: false,
+      },
+      {
+        field: "startsAt",
+        filterOperators: dateFilterOperators,
+        headerName: tBanners("startsAt"),
+        renderCell: renderEmptyableCell,
+        valueFormatter: (value: string | null) =>
+          value ? format.dateTime(new Date(value), "short") : "",
+      },
+      {
+        field: "endsAt",
+        filterOperators: dateFilterOperators,
+        headerName: tBanners("endsAt"),
+        renderCell: renderEmptyableCell,
+        valueFormatter: (value: string | null) =>
+          value ? format.dateTime(new Date(value), "short") : "",
       },
       {
         field: "createdAt",
