@@ -1,4 +1,8 @@
-import { type components, deletedRecordTableValues } from "@/types/api";
+import {
+  type components,
+  deletedRecordFilterFieldValues,
+  deletedRecordSortFieldValues,
+} from "@/types/api";
 
 export type DeletedRecordBatch =
   components["schemas"]["DeletedRecordBatchResponseDto"];
@@ -6,4 +10,7 @@ export type DeletedRecordBatch =
 export type DeletedRecordPermission =
   components["schemas"]["DeletedRecordPermissionDto"];
 
-export type DeletedRecordTable = (typeof deletedRecordTableValues)[number];
+export type DeletedRecordFilterField =
+  (typeof deletedRecordFilterFieldValues)[number];
+export type DeletedRecordSortField =
+  (typeof deletedRecordSortFieldValues)[number];

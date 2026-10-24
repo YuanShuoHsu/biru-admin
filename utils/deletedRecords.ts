@@ -4,8 +4,12 @@ import { fetcher } from "./fetcher";
 
 import type {
   DeletedRecordBatch,
+  DeletedRecordFilterField,
   DeletedRecordPermission,
+  DeletedRecordSortField,
 } from "@/types/deletedRecords";
+
+import { type GridQuery, getGridSearchParams } from "@/utils/dataGrid";
 
 export const getDeletedRecordsPath = (organizationSlug?: string) =>
   organizationSlug
@@ -15,21 +19,15 @@ export const getDeletedRecordsPath = (organizationSlug?: string) =>
 export const getDeletedRecords = cache(
   async (
     organizationSlug: string | undefined,
-    page: number,
-    pageSize: number,
+    query: GridQuery<DeletedRecordFilterField, DeletedRecordSortField> = {},
     init?: RequestInit,
   ) => {
     try {
-      const params = new URLSearchParams({
-        limit: String(pageSize),
-        offset: String((page - 1) * pageSize),
-      });
-
       const result = await fetcher<{
         data: DeletedRecordBatch[];
         total: number;
       }>(
-        `${getDeletedRecordsPath(organizationSlug)}?${params.toString()}`,
+        `${getDeletedRecordsPath(organizationSlug)}?${getGridSearchParams(query).toString()}`,
         init,
       );
 
