@@ -4,7 +4,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 
 import InviteMemberDialog from "./InviteMemberDialog";
 import UpdateMemberRoleDialog from "./UpdateMemberRoleDialog";
@@ -14,6 +14,7 @@ import DataGrid from "@/components/DataGrid";
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { countKeys, ROLE_RANK } from "@/constants/organizations";
 
+import { useOrganizations } from "@/hooks/organizations";
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useSession } from "@/hooks/useSession";
 
@@ -56,7 +57,10 @@ import type {
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
-import { sortByCreatedAtDesc } from "@/utils/organizations";
+import {
+  defaultOrganizationSlugKey,
+  sortByCreatedAtDesc,
+} from "@/utils/organizations";
 
 const ConfirmStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(1),
@@ -149,6 +153,9 @@ const OrganizationsSlugMembers = ({
   const { slug } = useParams<{ slug: string }>();
 
   const router = useRouter();
+
+  const { mutate: mutateOrganizations } = useOrganizations();
+  const { mutate: mutateCache } = useSWRConfig();
 
   const tMembers = useTranslations("organizations.members");
   const tOrganizations = useTranslations("organizations");
@@ -389,7 +396,7 @@ const OrganizationsSlugMembers = ({
         <DialogContentText>
           {tOrganizations.rich("actions.leaveOrganization.confirm", {
             bold: (chunks) => <strong>{chunks}</strong>,
-            name: slug,
+            name: activeOrganization?.name ?? slug,
           })}
         </DialogContentText>
       ),
@@ -427,6 +434,11 @@ const OrganizationsSlugMembers = ({
                 return;
               }
 
+              await Promise.all([
+                mutateOrganizations(),
+                mutateCache(defaultOrganizationSlugKey),
+              ]);
+
               router.replace("/organizations");
             },
           },
@@ -436,6 +448,9 @@ const OrganizationsSlugMembers = ({
       title: tOrganizations("actions.leaveOrganization.title"),
     });
   }, [
+    activeOrganization?.name,
+    mutateCache,
+    mutateOrganizations,
     organizationId,
     router,
     session,
