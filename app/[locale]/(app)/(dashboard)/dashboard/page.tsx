@@ -51,7 +51,7 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
     await Promise.all([cookies(), params, searchParams]);
 
   const range = resolveDashboardRange(rangeParam);
-  const { hourly, bucketDays, buckets } = DASHBOARD_RANGES[range];
+  const { hourly, bucketDays, buckets, offsetDays } = DASHBOARD_RANGES[range];
   const trendPeriodDays = hourly ? 1 : buckets * bucketDays;
 
   const fetchOptions = {
@@ -79,11 +79,15 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
   const organizationSlug = selectedOrganization?.slug ?? "";
   const resolvedOrganizationId = selectedOrganization?.id;
 
-  const storeToday = dayjs().tz(STORE_TIMEZONE).startOf("day");
+  const lastDay = dayjs()
+    .tz(STORE_TIMEZONE)
+    .startOf("day")
+    .subtract(offsetDays, "day");
 
-  const trendEnd = storeToday.toDate();
+  const trendEnd = lastDay.toDate();
 
-  const periodStart = storeToday.subtract(trendPeriodDays - 1, "day").toDate();
+  const periodStart = lastDay.subtract(trendPeriodDays - 1, "day").toDate();
+  const periodEnd = lastDay.add(1, "day").toDate();
 
   const statsQuery = new URLSearchParams({
     since: periodStart.toISOString(),
@@ -104,7 +108,7 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
       (isAdmin || hasRolePermission(memberRole, { waitlist: ["read"] }))
         ? Promise.all([
             fetcher<WaitlistStats>(
-              `/api/organizations/${organizationSlug}/waitlist/stats?since=${periodStart.toISOString()}`,
+              `/api/organizations/${organizationSlug}/waitlist/stats?since=${periodStart.toISOString()}&until=${periodEnd.toISOString()}`,
               fetchOptions,
             ).catch(() => null),
             fetcher<WaitlistStatusResponse>(
@@ -147,7 +151,7 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
       : Promise.resolve(null),
     organizationSlug
       ? fetcher<MenuItemSalesResponse[]>(
-          `/api/organizations/${organizationSlug}/menu-item-sales?since=${periodStart.toISOString()}`,
+          `/api/organizations/${organizationSlug}/menu-item-sales?since=${periodStart.toISOString()}&until=${periodEnd.toISOString()}`,
           fetchOptions,
         ).catch(() => [])
       : Promise.resolve([]),
