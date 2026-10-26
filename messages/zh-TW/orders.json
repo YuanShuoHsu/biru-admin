@@ -163,6 +163,7 @@
       "item": "{type} {amount}",
       "label": "存提紀錄"
     },
+    "notOpen": "錢櫃尚未開帳，現金訂單無法確認付款或退回待付款。請先到「錢櫃」分頁開帳。",
     "openingFloat": "零用金",
     "openingFloatHint": "預設沿用上次關帳留下的零用金",
     "reason": "原因",
