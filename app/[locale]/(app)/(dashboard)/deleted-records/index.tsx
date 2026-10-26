@@ -8,9 +8,18 @@ import useSWR from "swr";
 import DataGrid from "@/components/DataGrid";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 
-import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+import {
+  autosizeOptions,
+  DATA_GRID_PROPS,
+  NO_VALUE_FILTER_OPERATORS,
+} from "@/constants/dataGrid";
 import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
+import {
+  useDateFilterOperators,
+  useEnumFilterOperators,
+  useStringFilterOperators,
+} from "@/hooks/useFilterOperators";
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
@@ -27,19 +36,25 @@ import {
 import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
+  GridFilterModel,
   GridPaginationModel,
   GridRenderCellParams,
+  GridSortModel,
 } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
   DeletedRecordBatch,
-  DeletedRecordTable,
+  DeletedRecordFilterField,
+  DeletedRecordSortField,
 } from "@/types/deletedRecords";
 
+import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getDeletedRecordsPath } from "@/utils/deletedRecords";
+import { getDeletedRecordEnumOptions } from "@/utils/enumOptions";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
@@ -62,29 +77,67 @@ const getLabel = (
   typeof label === "string" ? label : localize(label ?? undefined, locale);
 
 interface DeletedRecordsProps {
+  filterField?: DeletedRecordFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
   loading?: boolean;
   organizationSlug?: string;
   page?: number;
   pageSize?: number;
+  quickFilterValue?: string;
   rowCount?: number;
   rows?: DeletedRecordBatch[];
+  sortBy?: DeletedRecordSortField;
+  sortDirection?: SortDirection;
 }
 
 const DeletedRecords = ({
+  filterField: initialFilterField,
+  filterOperator: initialFilterOperator,
+  filterValue: initialFilterValue,
   loading = false,
   organizationSlug,
   page = 1,
   pageSize = DEFAULT_PAGE_SIZE,
+  quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount = 0,
   rows: initialRows = [],
+  sortBy,
+  sortDirection,
 }: DeletedRecordsProps) => {
   const [isSelectMode, setIsSelectMode] = useState(false);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
   });
+  const [sortModel, setSortModel] = useState<GridSortModel>(
+    sortBy && sortDirection ? [{ field: sortBy, sort: sortDirection }] : [],
+  );
+  const [filterModel, setFilterModel] = useState<GridFilterModel>({
+    items:
+      initialFilterField &&
+      initialFilterOperator &&
+      (initialFilterValue ||
+        NO_VALUE_FILTER_OPERATORS.includes(initialFilterOperator))
+        ? [
+            {
+              field: initialFilterField,
+              operator: initialFilterOperator,
+              value:
+                initialFilterOperator === "isAnyOf"
+                  ? initialFilterValue?.split(",")
+                  : initialFilterValue,
+            },
+          ]
+        : [],
+    quickFilterValues: initialQuickFilterValue ? [initialQuickFilterValue] : [],
+  });
 
   const { setDialog } = useDialogStore((state) => state);
+
+  const dateFilterOperators = useDateFilterOperators();
+  const enumFilterOperators = useEnumFilterOperators();
+  const stringFilterOperators = useStringFilterOperators();
 
   const format = useFormatter();
 
@@ -96,6 +149,11 @@ const DeletedRecords = ({
 
   const updateQuery = useUpdateQuery();
 
+  const enumOptions = useMemo(
+    () => getDeletedRecordEnumOptions(tDeletedRecords),
+    [tDeletedRecords],
+  );
+
   const {
     data: { data: rows, total: rowCount } = {
       data: initialRows,
@@ -106,15 +164,13 @@ const DeletedRecords = ({
   } = useSWR(
     !loading && [
       getDeletedRecordsPath(organizationSlug),
-      paginationModel.page,
-      paginationModel.pageSize,
+      paginationModel,
+      filterModel,
+      sortModel,
     ],
     () =>
       fetcher<{ data: DeletedRecordBatch[]; total: number }>(
-        `${getDeletedRecordsPath(organizationSlug)}?${new URLSearchParams({
-          limit: String(paginationModel.pageSize),
-          offset: String(paginationModel.page * paginationModel.pageSize),
-        }).toString()}`,
+        `${getDeletedRecordsPath(organizationSlug)}?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
       ),
     {
       fallbackData: { data: initialRows, total: initialRowCount },
@@ -155,6 +211,42 @@ const DeletedRecords = ({
       updateQuery({
         page: String(newModel.page + 1),
         pageSize: String(newModel.pageSize),
+      });
+    },
+    [updateQuery],
+  );
+
+  const handleSortModelChange = useCallback(
+    (newModel: GridSortModel) => {
+      setSortModel(newModel);
+      setPaginationModel((previous) => ({ ...previous, page: 0 }));
+
+      updateQuery({
+        page: "1",
+        sortBy: newModel[0]?.field ?? "",
+        sortDirection: newModel[0]?.sort ?? "",
+      });
+    },
+    [updateQuery],
+  );
+
+  const handleFilterModelChange = useCallback(
+    (newModel: GridFilterModel) => {
+      setFilterModel(newModel);
+      setPaginationModel((previous) => ({ ...previous, page: 0 }));
+
+      const {
+        filterField = "",
+        filterOperator = "",
+        filterValue = "",
+      } = getFilterItemParams(newModel.items[0]);
+
+      updateQuery({
+        filterField,
+        filterOperator,
+        filterValue,
+        page: "1",
+        quickFilterValue: (newModel.quickFilterValues ?? []).join(" ").trim(),
       });
     },
     [updateQuery],
@@ -325,20 +417,21 @@ const DeletedRecords = ({
         : []),
       {
         field: "deletedAt",
+        filterOperators: dateFilterOperators,
         headerName: tDeletedRecords("columns.deletedAt"),
-        sortable: false,
         valueFormatter: (value: string) =>
           format.dateTime(new Date(value), "short"),
       },
       {
         field: "tableName",
+        filterOperators: enumFilterOperators,
         headerName: tDeletedRecords("columns.resource"),
-        sortable: false,
-        valueFormatter: (value: DeletedRecordTable) =>
-          tDeletedRecords(`table.${value}`),
+        type: "singleSelect",
+        valueOptions: enumOptions.tableName,
       },
       {
         field: "label",
+        filterable: false,
         headerName: tDeletedRecords("columns.target"),
         renderCell: renderEmptyableCell,
         sortable: false,
@@ -350,13 +443,14 @@ const DeletedRecords = ({
         : [
             {
               field: "organizationName",
+              filterOperators: stringFilterOperators,
               headerName: tDeletedRecords("columns.organization"),
               renderCell: renderEmptyableCell,
-              sortable: false,
             },
           ]),
       {
         field: "relatedCount",
+        filterable: false,
         headerName: tDeletedRecords("columns.related"),
         renderCell: ({
           value,
@@ -366,17 +460,22 @@ const DeletedRecords = ({
       },
       {
         field: "deletedBy",
+        filterable: false,
         headerName: tDeletedRecords("columns.deletedBy"),
         renderCell: renderEmptyableCell,
         sortable: false,
       },
     ],
     [
+      dateFilterOperators,
+      enumFilterOperators,
+      enumOptions.tableName,
       format,
       handleRestore,
       isSelectMode,
       locale,
       organizationSlug,
+      stringFilterOperators,
       tDeletedRecords,
     ],
   );
@@ -425,15 +524,20 @@ const DeletedRecords = ({
         {...rowSelectionProps}
         apiRef={apiRef}
         columns={columns}
-        disableColumnFilter
+        filterMode="server"
+        filterModel={filterModel}
         getRowId={({ batchId }) => batchId}
         loading={loading || isValidating}
+        onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
+        onSortModelChange={handleSortModelChange}
         pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
         paginationMode="server"
         paginationModel={paginationModel}
         rowCount={rowCount}
         rows={rows}
+        sortingMode="server"
+        sortModel={sortModel}
       />
     </>
   );

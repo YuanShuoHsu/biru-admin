@@ -7435,6 +7435,10 @@ export interface components {
       /** @description 目前操作者可否還原（店內須具備各資料的建立權限） */
       canRestore: boolean;
     };
+    /** @enum {string} */
+    DeletedRecordFilterField: "organizationName" | "tableName" | "deletedAt";
+    /** @enum {string} */
+    DeletedRecordSortField: "organizationName" | "tableName" | "deletedAt";
     RestoreDeletedRecordsDto: {
       ids: number[];
     };
@@ -15864,8 +15868,16 @@ export interface operations {
   DeletedRecordsController_findAll: {
     parameters: {
       query?: {
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["DeletedRecordFilterField"];
+        sortBy?: components["schemas"]["DeletedRecordSortField"];
         limit?: number;
         offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
       };
       header?: never;
       path?: never;
@@ -15919,8 +15931,16 @@ export interface operations {
   OrganizationDeletedRecordsController_findAll: {
     parameters: {
       query?: {
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["DeletedRecordFilterField"];
+        sortBy?: components["schemas"]["DeletedRecordSortField"];
         limit?: number;
         offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
       };
       header?: never;
       path: {
@@ -24859,6 +24879,12 @@ export const deletedRecordTableValues: ReadonlyArray<
   "attendance_holiday_substitute",
   "payroll_earning_type",
 ];
+export const deletedRecordFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["DeletedRecordFilterField"]
+> = ["organizationName", "tableName", "deletedAt"];
+export const deletedRecordSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["DeletedRecordSortField"]
+> = ["organizationName", "tableName", "deletedAt"];
 export const payrollRuleSetResponseDtoUnconfirmedValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PayrollRuleSetResponseDto"]["unconfirmed"]
 > = ["minimumHourlyWageCents"];

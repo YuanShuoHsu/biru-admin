@@ -5,8 +5,6 @@ import { Suspense } from "react";
 
 import Admins from ".";
 
-import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
-
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -18,7 +16,11 @@ import {
 
 import type { User } from "@/types/admins";
 
-import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
+import {
+  getGridSearchParams,
+  getQuickFilterEnums,
+  resolveGridSearchParams,
+} from "@/utils/dataGrid";
 import { getAdminEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 
@@ -86,22 +88,17 @@ const AdminsContent = async ({ params, searchParams }: AdminsPageProps) => {
     },
   };
 
-  const queryParams = new URLSearchParams({
-    ...(filterField &&
-      filterOperator &&
-      (filterValue || NO_VALUE_FILTER_OPERATORS.includes(filterOperator)) && {
-        filterField,
-        filterOperator,
-        ...(filterValue && { filterValue }),
-      }),
-    limit: String(pageSize),
-    offset: String((page - 1) * pageSize),
-    ...(quickFilterValue && { quickFilterValue }),
-    sortBy: sortBy || "createdAt",
-    sortDirection: sortDirection || "desc",
+  const queryParams = getGridSearchParams({
+    page,
+    pageSize,
+    filterField,
+    filterOperator,
+    filterValue,
+    quickFilterEnums,
+    quickFilterValue,
+    sortBy,
+    sortDirection,
   });
-  for (const entry of quickFilterEnums)
-    queryParams.append("quickFilterEnums", entry);
 
   const { data, total } = await fetcher<{
     data: User[];
