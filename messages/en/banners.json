@@ -61,9 +61,6 @@
   },
   "label": "Banners",
   "reorder": "Order",
-  "schedule": {
-    "invalid": "Enter complete start and end times, with the end after the start."
-  },
   "startsAt": "Starts at",
   "status": {
     "ended": "Ended",

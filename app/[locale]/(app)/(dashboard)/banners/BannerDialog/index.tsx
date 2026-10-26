@@ -3,13 +3,18 @@
 import dayjs from "dayjs";
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent, useState } from "react";
+import { type BaseSyntheticEvent } from "react";
+import { useForm, useWatch } from "react-hook-form";
+
+import { type BannerForm, useBannerFormSchema } from "./definitions";
 
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
 import UploadAvatars from "@/components/UploadAvatars";
 
 import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { FormControlLabel, Grid, Switch, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -18,19 +23,12 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Banner } from "@/types/banners";
-import type { LocalizedText } from "@/types/locale";
 
 import { fetcher } from "@/utils/fetcher";
 
 const StyledFormControlLabel = styled(FormControlLabel)({
   alignSelf: "flex-start",
 });
-
-const toPickerValue = (value?: string | null) =>
-  value ? dayjs(value).format("YYYY-MM-DDTHH:mm") : "";
-
-const toIsoString = (value: string) =>
-  value ? new Date(value).toISOString() : null;
 
 interface BannerDialogProps {
   banner: Banner | null;
@@ -40,38 +38,47 @@ interface BannerDialogProps {
 const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
-  const [isActive, setIsActive] = useState(banner?.isActive ?? true);
-  const [alt, setAlt] = useState<LocalizedText>(banner?.alt ?? {});
-  const [url, setUrl] = useState(banner?.url ?? "");
-  const [startsAt, setStartsAt] = useState(toPickerValue(banner?.startsAt));
-  const [endsAt, setEndsAt] = useState(toPickerValue(banner?.endsAt));
-
   const tBanners = useTranslations("banners");
   const tCommon = useTranslations("common");
+
+  const bannerFormSchema = useBannerFormSchema();
+
+  const {
+    control,
+    formState: { errors, isSubmitted },
+    handleSubmit,
+    register,
+    setValue,
+  } = useForm<BannerForm>({
+    defaultValues: {
+      alt: banner?.alt ?? {},
+      endsAt: banner?.endsAt ?? "",
+      isActive: banner?.isActive ?? true,
+      startsAt: banner?.startsAt ?? "",
+      url: banner?.url ?? "",
+    },
+    resolver: zodResolver(bannerFormSchema),
+  });
+
+  const [alt, endsAt, isActive, startsAt] = useWatch({
+    control,
+    name: ["alt", "endsAt", "isActive", "startsAt"],
+  });
 
   const uploadKey = banner
     ? `update-banner-image-${banner.id}`
     : "create-banner-image";
   const imageSrc = useUploadAvatarSrc(uploadKey, banner?.image);
 
-  const handleSubmit = async (event: BaseSyntheticEvent) => {
-    event.preventDefault();
-
+  const onSubmitHandler = async ({
+    alt,
+    endsAt,
+    isActive,
+    startsAt,
+    url,
+  }: BannerForm) => {
     if (!imageSrc) {
       enqueueSnackbar(tBanners("image.notSelected"), { variant: "error" });
-
-      return;
-    }
-
-    const startsAtDate = startsAt ? dayjs(startsAt) : null;
-    const endsAtDate = endsAt ? dayjs(endsAt) : null;
-
-    if (
-      startsAtDate?.isValid() === false ||
-      endsAtDate?.isValid() === false ||
-      (startsAtDate && endsAtDate && !startsAtDate.isBefore(endsAtDate))
-    ) {
-      enqueueSnackbar(tBanners("schedule.invalid"), { variant: "error" });
 
       return;
     }
@@ -84,11 +91,11 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           alt,
-          endsAt: toIsoString(endsAt),
+          endsAt: endsAt || null,
           image: imageSrc,
           isActive,
-          startsAt: toIsoString(startsAt),
-          url: url.trim() || null,
+          startsAt: startsAt || null,
+          url: url || null,
         }),
       });
 
@@ -115,8 +122,11 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
     }
   };
 
+  const onSubmit = (event: BaseSyntheticEvent) =>
+    handleSubmit(onSubmitHandler)(event);
+
   return (
-    <FormBox id="banner-form" onSubmit={handleSubmit}>
+    <FormBox id="banner-form" onSubmit={onSubmit}>
       <UploadAvatars
         aspectRatio="16/9"
         fullWidth
@@ -129,7 +139,7 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
         control={
           <Switch
             checked={isActive}
-            onChange={(_, checked) => setIsActive(checked)}
+            onChange={(_, checked) => setValue("isActive", checked)}
           />
         }
         label={tBanners("isActive.label")}
@@ -140,19 +150,20 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
             fullWidth: true,
             helperText: tBanners("alt.helperText"),
             label: `${tBanners("alt.label")} ${tCommon("optional")}`,
-            onChange: (event) => setAlt({ ...alt, [lang]: event.target.value }),
+            onChange: (event) =>
+              setValue("alt", { ...alt, [lang]: event.target.value }),
             value: alt[lang] || "",
           },
         ]}
       />
       <TextField
+        error={!!errors.url}
         fullWidth
-        helperText={tBanners("url.helperText")}
+        helperText={errors.url?.message ?? tBanners("url.helperText")}
         label={`${tBanners("url.label")} ${tCommon("optional")}`}
-        onChange={(event) => setUrl(event.target.value)}
         placeholder="/order"
         slotProps={{ htmlInput: { maxLength: 2048 } }}
-        value={url}
+        {...register("url")}
       />
       <Grid container spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>
@@ -160,11 +171,17 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
             label={`${tBanners("startsAt")} ${tCommon("optional")}`}
             maxDateTime={endsAt ? dayjs(endsAt) : undefined}
             onChange={(date) =>
-              setStartsAt(date ? date.format("YYYY-MM-DDTHH:mm") : "")
+              setValue("startsAt", date?.isValid() ? date.toISOString() : "", {
+                shouldValidate: isSubmitted,
+              })
             }
             slotProps={{
               field: { clearable: true },
-              textField: { fullWidth: true },
+              textField: {
+                error: !!errors.startsAt,
+                fullWidth: true,
+                helperText: errors.startsAt?.message,
+              },
             }}
             value={startsAt ? dayjs(startsAt) : null}
           />
@@ -174,11 +191,17 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
             label={`${tBanners("endsAt")} ${tCommon("optional")}`}
             minDateTime={startsAt ? dayjs(startsAt) : undefined}
             onChange={(date) =>
-              setEndsAt(date ? date.format("YYYY-MM-DDTHH:mm") : "")
+              setValue("endsAt", date?.isValid() ? date.toISOString() : "", {
+                shouldValidate: isSubmitted,
+              })
             }
             slotProps={{
               field: { clearable: true },
-              textField: { fullWidth: true },
+              textField: {
+                error: !!errors.endsAt,
+                fullWidth: true,
+                helperText: errors.endsAt?.message,
+              },
             }}
             value={endsAt ? dayjs(endsAt) : null}
           />

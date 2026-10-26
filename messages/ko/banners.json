@@ -61,9 +61,6 @@
   },
   "label": "배너",
   "reorder": "순서",
-  "schedule": {
-    "invalid": "게시 시작과 종료 시간을 모두 입력하고, 종료는 시작보다 뒤여야 합니다."
-  },
   "startsAt": "게시 시작",
   "status": {
     "ended": "종료",

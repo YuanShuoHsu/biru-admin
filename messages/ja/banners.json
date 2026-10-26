@@ -61,9 +61,6 @@
   },
   "label": "バナー",
   "reorder": "並び替え",
-  "schedule": {
-    "invalid": "掲載開始と終了の日時を正しく入力し、終了は開始より後にしてください。"
-  },
   "startsAt": "掲載開始",
   "status": {
     "ended": "終了",

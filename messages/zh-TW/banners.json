@@ -61,9 +61,6 @@
   },
   "label": "輪播圖",
   "reorder": "排序",
-  "schedule": {
-    "invalid": "請輸入完整的上架與下架時間，且下架時間須晚於上架時間。"
-  },
   "startsAt": "上架時間",
   "status": {
     "ended": "已結束",
