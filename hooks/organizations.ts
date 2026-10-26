@@ -18,24 +18,30 @@ import {
 const deletedRecordPermissionKey = "deleted-record-permission";
 const organizationsKey = "organizations";
 
-export const useDefaultOrganizationSlug = () => {
-  const { data: defaultOrganizationSlug = "" } = useSWR<string>(
-    defaultOrganizationSlugKey,
-    async () => {
-      const [{ data: session }, { data: organizations }] = await Promise.all([
-        authClient.getSession(),
-        authClient.organization.list(),
-      ]);
+const fetchDefaultOrganizationSlug = async () => {
+  const [{ data: session }, { data: organizations }] = await Promise.all([
+    authClient.getSession(),
+    authClient.organization.list(),
+  ]);
 
-      return resolveDefaultOrganizationSlug(
-        session?.session?.activeOrganizationId,
-        organizations,
-      );
-    },
+  return resolveDefaultOrganizationSlug(
+    session?.session?.activeOrganizationId,
+    organizations,
   );
+};
+
+const useDefaultOrganizationSlugResponse = () =>
+  useSWR<string>(defaultOrganizationSlugKey, fetchDefaultOrganizationSlug);
+
+export const useDefaultOrganizationSlug = () => {
+  const { data: defaultOrganizationSlug = "" } =
+    useDefaultOrganizationSlugResponse();
 
   return defaultOrganizationSlug;
 };
+
+export const useMutateDefaultOrganizationSlug = () =>
+  useDefaultOrganizationSlugResponse().mutate;
 
 const useMemberRole = (organizationSlug: string) => {
   const { data: role } = useSWR(

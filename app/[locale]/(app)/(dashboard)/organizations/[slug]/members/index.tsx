@@ -4,7 +4,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR from "swr";
 
 import InviteMemberDialog from "./InviteMemberDialog";
 import UpdateMemberRoleDialog from "./UpdateMemberRoleDialog";
@@ -14,7 +14,10 @@ import DataGrid from "@/components/DataGrid";
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { countKeys, ROLE_RANK } from "@/constants/organizations";
 
-import { useOrganizations } from "@/hooks/organizations";
+import {
+  useMutateDefaultOrganizationSlug,
+  useOrganizations,
+} from "@/hooks/organizations";
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useSession } from "@/hooks/useSession";
 
@@ -58,10 +61,7 @@ import type {
 import { isActiveSession } from "@/utils/auth";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
-import {
-  defaultOrganizationSlugKey,
-  sortByCreatedAtDesc,
-} from "@/utils/organizations";
+import { sortByCreatedAtDesc } from "@/utils/organizations";
 
 const ConfirmStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(1),
@@ -156,7 +156,7 @@ const OrganizationsSlugMembers = ({
   const router = useRouter();
 
   const { mutate: mutateOrganizations } = useOrganizations();
-  const { mutate: mutateCache } = useSWRConfig();
+  const mutateDefaultOrganizationSlug = useMutateDefaultOrganizationSlug();
 
   const tMembers = useTranslations("organizations.members");
   const tOrganizations = useTranslations("organizations");
@@ -438,7 +438,7 @@ const OrganizationsSlugMembers = ({
 
               await Promise.all([
                 mutateOrganizations(),
-                mutateCache(defaultOrganizationSlugKey),
+                mutateDefaultOrganizationSlug(),
               ]);
 
               router.replace("/organizations");
@@ -451,7 +451,7 @@ const OrganizationsSlugMembers = ({
     });
   }, [
     activeOrganization?.name,
-    mutateCache,
+    mutateDefaultOrganizationSlug,
     mutateOrganizations,
     organizationId,
     router,
