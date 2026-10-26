@@ -310,14 +310,12 @@
       "selfOnly": "只有本人能開啟",
       "turnOn": {
         "title": "顯示在官網",
-        "confirm": "你的姓名、頭像、自我介紹、角色與團隊會顯示在官網「關於我們」的團隊介紹，之後可以隨時關閉。"
+        "confirm": "您的姓名、頭像、自我介紹、角色與團隊會顯示在官網「關於我們」的團隊介紹，之後可以隨時關閉。"
       },
-      "turnOff": "從官網移除",
-      "turnOffSelf": {
-        "confirm": "確定不再在官網「關於我們」顯示你的資料嗎？"
-      },
-      "turnOffOther": {
-        "confirm": "確定不再在官網顯示 <bold>{email}</bold> 嗎？之後只有本人能再次開啟。"
+      "turnOff": {
+        "title": "從官網移除",
+        "confirmSelf": "確定不再在官網「關於我們」顯示您的資料嗎？",
+        "confirmOther": "確定不再在官網顯示 <bold>{email}</bold> 嗎？之後只有本人能再次開啟。"
       },
       "turnedOn": "已顯示在官網",
       "turnedOff": "已將 {email} 從官網移除"

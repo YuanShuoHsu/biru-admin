@@ -312,12 +312,10 @@
         "title": "Show on website",
         "confirm": "Your name, photo, bio, role and teams will appear in the team section of the website's About page. You can turn this off at any time."
       },
-      "turnOff": "Remove from website",
-      "turnOffSelf": {
-        "confirm": "Stop showing your profile on the website's About page?"
-      },
-      "turnOffOther": {
-        "confirm": "Stop showing <bold>{email}</bold> on the website? Only they can turn it back on."
+      "turnOff": {
+        "title": "Remove from website",
+        "confirmSelf": "Stop showing your profile on the website's About page?",
+        "confirmOther": "Stop showing <bold>{email}</bold> on the website? Only they can turn it back on."
       },
       "turnedOn": "Now shown on the website",
       "turnedOff": "Removed {email} from the website"

@@ -455,8 +455,8 @@ const OrganizationsSlugMembers = ({
       const isCurrentUser = userId === currentUserId;
       const confirmKey = showcase
         ? isCurrentUser
-          ? "showcase.turnOffSelf.confirm"
-          : "showcase.turnOffOther.confirm"
+          ? "showcase.turnOff.confirmSelf"
+          : "showcase.turnOff.confirmOther"
         : "showcase.turnOn.confirm";
 
       setDialog({
@@ -490,7 +490,7 @@ const OrganizationsSlugMembers = ({
         },
         open: true,
         title: tMembers(
-          showcase ? "showcase.turnOff" : "showcase.turnOn.title",
+          showcase ? "showcase.turnOff.title" : "showcase.turnOn.title",
         ),
       });
     },
@@ -618,6 +618,7 @@ const OrganizationsSlugMembers = ({
       {
         field: "showcase",
         headerName: tMembers("showcase.label"),
+        type: "boolean",
         renderCell: ({ row }: GridRenderCellParams<Member>) => {
           const { canTurnOffShowcase, canTurnOnShowcase } =
             getMemberPermissions(row);
