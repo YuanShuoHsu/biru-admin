@@ -178,9 +178,13 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
             label={`${tBanners("startsAt")} ${tCommon("optional")}`}
             maxDateTime={endsAt ? dayjs(endsAt) : undefined}
             onChange={(date) =>
-              setValue("startsAt", date?.isValid() ? date.toISOString() : "", {
-                shouldValidate: isSubmitted,
-              })
+              setValue(
+                "startsAt",
+                date?.isValid() ? date.startOf("minute").toISOString() : "",
+                {
+                  shouldValidate: isSubmitted,
+                },
+              )
             }
             slotProps={{
               field: { clearable: true },
@@ -199,9 +203,13 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
             label={`${tBanners("endsAt")} ${tCommon("optional")}`}
             minDateTime={startsAt ? dayjs(startsAt) : undefined}
             onChange={(date) =>
-              setValue("endsAt", date?.isValid() ? date.toISOString() : "", {
-                shouldValidate: isSubmitted,
-              })
+              setValue(
+                "endsAt",
+                date?.isValid() ? date.startOf("minute").toISOString() : "",
+                {
+                  shouldValidate: isSubmitted,
+                },
+              )
             }
             slotProps={{
               field: { clearable: true },
