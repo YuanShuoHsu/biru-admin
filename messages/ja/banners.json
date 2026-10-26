@@ -44,7 +44,12 @@
       "title": "バナーを編集"
     }
   },
+  "alt": {
+    "helperText": "画像を表示できないときやスクリーンリーダーで読み上げる説明文",
+    "label": "代替テキスト"
+  },
   "createdAt": "作成日時",
+  "endsAt": "掲載終了",
   "image": {
     "label": "画像",
     "notSelected": "画像を選択してください"
@@ -56,5 +61,16 @@
   },
   "label": "バナー",
   "reorder": "並び替え",
-  "updatedAt": "更新日時"
+  "startsAt": "掲載開始",
+  "status": {
+    "ended": "終了",
+    "label": "ステータス",
+    "live": "掲載中",
+    "scheduled": "予約済み"
+  },
+  "updatedAt": "更新日時",
+  "url": {
+    "helperText": "サイト内パスは / で始め、外部 URL は https:// にしてください",
+    "label": "リンク先"
+  }
 }

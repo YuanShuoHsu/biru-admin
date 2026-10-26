@@ -44,7 +44,12 @@
       "title": "編輯輪播圖"
     }
   },
+  "alt": {
+    "helperText": "圖片無法顯示或使用螢幕閱讀器時的說明文字",
+    "label": "替代文字"
+  },
   "createdAt": "建立時間",
+  "endsAt": "下架時間",
   "image": {
     "label": "圖片",
     "notSelected": "請選擇您的圖片"
@@ -56,5 +61,16 @@
   },
   "label": "輪播圖",
   "reorder": "排序",
-  "updatedAt": "更新時間"
+  "startsAt": "上架時間",
+  "status": {
+    "ended": "已結束",
+    "label": "狀態",
+    "live": "上架中",
+    "scheduled": "排程中"
+  },
+  "updatedAt": "更新時間",
+  "url": {
+    "helperText": "站內路徑以 / 開頭，外部網址需為 https://",
+    "label": "點擊連結"
+  }
 }
