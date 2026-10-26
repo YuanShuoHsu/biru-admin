@@ -26,7 +26,7 @@ import { hasRolePermission } from "@/utils/organizations";
 const useNavItems = (): NavItem[][] => {
   const session = useSession();
 
-  const defaultOrganizationSlug = useDefaultOrganizationSlug();
+  const { data: defaultOrganizationSlug = "" } = useDefaultOrganizationSlug();
   const memberRole = useActiveMemberRole();
   const canRestoreDeletedRecords = useCanRestoreDeletedRecords();
 

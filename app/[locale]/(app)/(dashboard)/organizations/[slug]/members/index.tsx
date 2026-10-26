@@ -15,7 +15,7 @@ import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { countKeys, ROLE_RANK } from "@/constants/organizations";
 
 import {
-  useMutateDefaultOrganizationSlug,
+  useDefaultOrganizationSlug,
   useOrganizations,
 } from "@/hooks/organizations";
 import { useRowSelection } from "@/hooks/useRowSelection";
@@ -156,7 +156,8 @@ const OrganizationsSlugMembers = ({
   const router = useRouter();
 
   const { mutate: mutateOrganizations } = useOrganizations();
-  const mutateDefaultOrganizationSlug = useMutateDefaultOrganizationSlug();
+  const { mutate: mutateDefaultOrganizationSlug } =
+    useDefaultOrganizationSlug();
 
   const tMembers = useTranslations("organizations.members");
   const tOrganizations = useTranslations("organizations");

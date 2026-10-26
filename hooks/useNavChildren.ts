@@ -24,7 +24,8 @@ export const useNavChildren = (): Record<string, NavItem[]> => {
 
   const accountChildren = useAccountNavItems();
   const authChildren = useAuthNavItems();
-  const reviewCounts = useAttendanceReviewCounts(useDefaultOrganizationSlug());
+  const { data: defaultOrganizationSlug = "" } = useDefaultOrganizationSlug();
+  const reviewCounts = useAttendanceReviewCounts(defaultOrganizationSlug);
 
   const attendanceGroups = attendanceNavGroups(memberRole);
 

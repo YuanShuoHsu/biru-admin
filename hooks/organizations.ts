@@ -18,30 +18,18 @@ import {
 const deletedRecordPermissionKey = "deleted-record-permission";
 const organizationsKey = "organizations";
 
-const fetchDefaultOrganizationSlug = async () => {
-  const [{ data: session }, { data: organizations }] = await Promise.all([
-    authClient.getSession(),
-    authClient.organization.list(),
-  ]);
+export const useDefaultOrganizationSlug = () =>
+  useSWR<string>(defaultOrganizationSlugKey, async () => {
+    const [{ data: session }, { data: organizations }] = await Promise.all([
+      authClient.getSession(),
+      authClient.organization.list(),
+    ]);
 
-  return resolveDefaultOrganizationSlug(
-    session?.session?.activeOrganizationId,
-    organizations,
-  );
-};
-
-const useDefaultOrganizationSlugResponse = () =>
-  useSWR<string>(defaultOrganizationSlugKey, fetchDefaultOrganizationSlug);
-
-export const useDefaultOrganizationSlug = () => {
-  const { data: defaultOrganizationSlug = "" } =
-    useDefaultOrganizationSlugResponse();
-
-  return defaultOrganizationSlug;
-};
-
-export const useMutateDefaultOrganizationSlug = () =>
-  useDefaultOrganizationSlugResponse().mutate;
+    return resolveDefaultOrganizationSlug(
+      session?.session?.activeOrganizationId,
+      organizations,
+    );
+  });
 
 const useMemberRole = (organizationSlug: string) => {
   const { data: role } = useSWR(
@@ -58,11 +46,14 @@ const useMemberRole = (organizationSlug: string) => {
   return role;
 };
 
-export const useActiveMemberRole = () =>
-  useMemberRole(useDefaultOrganizationSlug());
+export const useActiveMemberRole = () => {
+  const { data: defaultOrganizationSlug = "" } = useDefaultOrganizationSlug();
+
+  return useMemberRole(defaultOrganizationSlug);
+};
 
 export const useSelectedOrganizationSlug = () => {
-  const defaultOrganizationSlug = useDefaultOrganizationSlug();
+  const { data: defaultOrganizationSlug = "" } = useDefaultOrganizationSlug();
 
   return useSearchParams().get("organization") || defaultOrganizationSlug;
 };
@@ -71,7 +62,7 @@ export const useSelectedMemberRole = () =>
   useMemberRole(useSelectedOrganizationSlug());
 
 export const useCanRestoreDeletedRecords = () => {
-  const organizationSlug = useDefaultOrganizationSlug();
+  const { data: organizationSlug = "" } = useDefaultOrganizationSlug();
 
   const { data: canRestore = false } = useSWR(
     organizationSlug ? [deletedRecordPermissionKey, organizationSlug] : null,
