@@ -1,6 +1,8 @@
 "use client";
 
 import dayjs from "dayjs";
+import timezonePlugin from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
@@ -11,6 +13,8 @@ import { type BannerForm, useBannerFormSchema } from "./definitions";
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
 import UploadAvatars from "@/components/UploadAvatars";
+
+import { PLATFORM_TIMEZONE } from "@/constants/timezone";
 
 import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
@@ -25,6 +29,9 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { Banner } from "@/types/banners";
 
 import { fetcher } from "@/utils/fetcher";
+
+dayjs.extend(utc);
+dayjs.extend(timezonePlugin);
 
 const StyledFormControlLabel = styled(FormControlLabel)({
   alignSelf: "flex-start",
@@ -183,6 +190,7 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
                 helperText: errors.startsAt?.message,
               },
             }}
+            timezone={PLATFORM_TIMEZONE}
             value={startsAt ? dayjs(startsAt) : null}
           />
         </Grid>
@@ -203,6 +211,7 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
                 helperText: errors.endsAt?.message,
               },
             }}
+            timezone={PLATFORM_TIMEZONE}
             value={endsAt ? dayjs(endsAt) : null}
           />
         </Grid>

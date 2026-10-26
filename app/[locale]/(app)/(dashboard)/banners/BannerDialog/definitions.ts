@@ -6,11 +6,11 @@ export const useBannerFormSchema = () => {
 
   return z
     .object({
-      alt: z.record(z.string(), z.string()),
+      alt: z.record(z.string(), z.string().trim()),
       endsAt: z.string(),
       isActive: z.boolean(),
       startsAt: z.string(),
-      url: z.string().trim().max(2048),
+      url: z.string().trim(),
     })
     .refine(
       ({ endsAt, startsAt }) =>
