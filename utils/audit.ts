@@ -71,15 +71,18 @@ export const getAuditLogHref = (
     case "recipe":
       return `/recipes/${resourceId}/audit-logs`;
     case "userCoupon":
-    case "coupon":
+      return rootId ? `/coupons/${rootId}/audit-logs` : null;
     case "banner":
+      return `/banners/${resourceId}/audit-logs`;
     case "waitlistTicket":
       return `/waitlist/list/${resourceId}/audit-logs`;
+    case "coupon":
     case "organization":
     case "member":
     case "invitation":
     case "user":
     case "team":
+    case "pointTransaction":
     case "employee":
     case "attendanceSetting":
     case "leaveCase":

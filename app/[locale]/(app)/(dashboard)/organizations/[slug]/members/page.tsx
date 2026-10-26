@@ -83,9 +83,11 @@ const OrganizationsSlugMembersContent = async ({
 
       return !isCurrentUser && !isOnlyOwner;
     });
-  const canLeaveOrganizations = members.some(
-    ({ userId }) => userId === session.user.id && ownerCount > 1,
-  );
+  const canLeaveOrganizations = members.some(({ role, userId }) => {
+    const isOnlyOwner = role === "owner" && ownerCount === 1;
+
+    return userId === session.user.id && !isOnlyOwner;
+  });
 
   return (
     <OrganizationsSlugMembers

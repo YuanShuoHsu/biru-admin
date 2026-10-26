@@ -34,8 +34,6 @@ export type AttendanceEmployee =
   components["schemas"]["AttendanceEmployeeResponseDto"];
 export type AttendanceEmployeeSummary =
   components["schemas"]["AttendanceEmployeeSummaryResponseDto"];
-export type AttendanceEmployment =
-  components["schemas"]["AttendanceMemberEmploymentResponseDto"];
 export type AttendanceEmployeeStatus =
   components["schemas"]["AttendanceEmployeeStatus"];
 export type AttendanceEmploymentType =
@@ -71,14 +69,10 @@ export type AttendanceEventAction =
   components["schemas"]["AttendanceEventAction"];
 export type AttendanceRequest =
   components["schemas"]["AttendanceRequestResponseDto"];
-export type AttendanceRequestKind =
-  components["schemas"]["AttendanceRequestKind"];
 export type AttendanceRequestPage =
   components["schemas"]["AttendanceRequestsResponseDto"];
 export type AttendanceLeaveType =
   components["schemas"]["AttendanceLeaveTypeResponseDto"];
-export type AttendanceEmployeePage =
-  components["schemas"]["AttendanceEmployeesResponseDto"];
 export type AttendanceLeaveTypePage =
   components["schemas"]["AttendanceLeaveTypesResponseDto"];
 export type AttendanceLeaveBalancePage =
@@ -129,16 +123,12 @@ export type PayrollEarningType =
   components["schemas"]["PayrollEarningTypeResponseDto"];
 export type PayrollEarningTypePage =
   components["schemas"]["PayrollEarningTypesResponseDto"];
-export type PayrollEarningCategory =
-  components["schemas"]["PayrollEarningCategory"];
 export type PayrollEarningInput =
   components["schemas"]["PayrollEarningInputDto"];
 export type PayrollWithholdingSummary =
   components["schemas"]["PayrollWithholdingSummaryResponseDto"];
 export type PayrollNonResidentPayment =
   components["schemas"]["PayrollNonResidentPaymentResponseDto"];
-export type ResidenceCountryCode =
-  components["schemas"]["ResidenceCountryCode"];
 export type PayrollWithholdingCertificate =
   components["schemas"]["PayrollWithholdingCertificateResponseDto"];
 export type PayrollWithholdingUnit =

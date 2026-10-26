@@ -11,13 +11,13 @@ import {
   attendanceParentalReturnStatusValues,
   attendanceRequestKindValues,
   attendanceRequestStatusValues,
-  attendanceScheduledDayKindValues,
   attendanceWorkPermitStatusValues,
   auditActionValues,
   auditResourceValues,
   baseUnitCodeValues,
   couponIssueTriggerValues,
   couponScopeValues,
+  deletedRecordTableValues,
   inventoryTransactionReasonValues,
   invoiceStatusValues,
   invoiceTypeValues,
@@ -140,6 +140,15 @@ export const getCouponRecipientEnumOptions = (
   ],
 });
 
+export const getDeletedRecordEnumOptions = (
+  tDeletedRecords: ReturnType<typeof useTranslations<"deletedRecords">>,
+) => ({
+  tableName: deletedRecordTableValues.map((value) => ({
+    label: tDeletedRecords(`table.${value}`),
+    value,
+  })),
+});
+
 export const getMenuEnumOptions = (
   tMenus: ReturnType<typeof useTranslations<"menus">>,
   tOrder: ReturnType<typeof useTranslations<"order">>,
@@ -219,15 +228,6 @@ export const getAttendanceDayKindEnumOptions = (
   tAttendance: ReturnType<typeof useTranslations<"attendance">>,
 ) => ({
   dayKind: attendanceDayKindValues.map((value) => ({
-    label: tAttendance(`dayKind.options.${value}`),
-    value,
-  })),
-});
-
-export const getAttendanceScheduledDayKindEnumOptions = (
-  tAttendance: ReturnType<typeof useTranslations<"attendance">>,
-) => ({
-  dayKind: attendanceScheduledDayKindValues.map((value) => ({
     label: tAttendance(`dayKind.options.${value}`),
     value,
   })),

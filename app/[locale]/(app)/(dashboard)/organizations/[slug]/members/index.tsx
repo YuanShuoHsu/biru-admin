@@ -55,6 +55,7 @@ import type {
   Member,
 } from "@/types/organizations";
 
+import { isActiveSession } from "@/utils/auth";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import {
@@ -181,7 +182,8 @@ const OrganizationsSlugMembers = ({
         rows: sortByCreatedAtDesc(data.members),
         teams: data.teams,
         pendingInvitationCount: data.invitations.filter(
-          ({ status }: Invitation) => status === "pending",
+          (invitation: Invitation) =>
+            invitation.status === "pending" && isActiveSession(invitation),
         ).length,
       };
     },

@@ -1150,6 +1150,74 @@ export interface paths {
     patch: operations["AdminBannersController_update"];
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/cash-drawer/current": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 目前開帳中的錢櫃與即時應有現金 */
+    get: operations["CashDrawerController_getCurrent"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/cash-drawer/sessions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 開帳 */
+    post: operations["CashDrawerController_open"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/cash-drawer/sessions/{sessionId}/movements": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 存入或提出現金 */
+    post: operations["CashDrawerController_addMovement"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/cash-drawer/sessions/{sessionId}/close": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 關帳：寫入應有現金快照，差額超過門檻時必須填寫說明 */
+    post: operations["CashDrawerController_close"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/coupons": {
     parameters: {
       query?: never;
@@ -2836,6 +2904,23 @@ export interface paths {
     get: operations["OrganizationPointsController_findAll"];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/point-transactions/adjustments": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 為會員手動補點或扣點；扣點只扣本店發出且未過期的剩餘點數 */
+    post: operations["OrganizationPointsController_adjust"];
     delete?: never;
     options?: never;
     head?: never;
@@ -6364,6 +6449,7 @@ export interface components {
       | "invitation"
       | "user"
       | "team"
+      | "pointTransaction"
       | "employee"
       | "attendanceSetting"
       | "leaveCase"
@@ -6770,7 +6856,13 @@ export interface components {
       id: string;
       /** @description 圖片來源（data URL） */
       image: string;
+      alt?: Record<string, never> | null;
+      url?: string | null;
       isActive: boolean;
+      /** Format: date-time */
+      startsAt?: string | null;
+      /** Format: date-time */
+      endsAt?: string | null;
       sortOrder: number;
       /** Format: date-time */
       createdAt: string;
@@ -6780,14 +6872,40 @@ export interface components {
     CreateBannerDto: {
       /** @description 圖片來源（data URL） */
       image: string;
+      /**
+       * @example {
+       *       "zh-TW": "秋季新品上市",
+       *       "en": "New autumn drinks"
+       *     }
+       */
+      alt?: Record<string, never> | null;
+      /**
+       * @description 點擊後前往的站內路徑（/ 開頭）或 https 網址
+       * @example /order
+       */
+      url?: string | null;
       isActive?: boolean;
+      /** Format: date-time */
+      startsAt?: string | null;
+      /** Format: date-time */
+      endsAt?: string | null;
       /** @description 未帶時排在最後 */
       sortOrder?: number;
     };
     /** @enum {string} */
-    BannerFilterField: "isActive" | "createdAt" | "updatedAt";
+    BannerFilterField:
+      | "isActive"
+      | "startsAt"
+      | "endsAt"
+      | "createdAt"
+      | "updatedAt";
     /** @enum {string} */
-    BannerSortField: "isActive" | "createdAt" | "updatedAt";
+    BannerSortField:
+      | "isActive"
+      | "startsAt"
+      | "endsAt"
+      | "createdAt"
+      | "updatedAt";
     ReorderBannersDto: {
       ids: string[];
       /** @default 0 */
@@ -6796,9 +6914,110 @@ export interface components {
     UpdateBannerDto: {
       /** @description 圖片來源（data URL） */
       image?: string;
+      /**
+       * @example {
+       *       "zh-TW": "秋季新品上市",
+       *       "en": "New autumn drinks"
+       *     }
+       */
+      alt?: Record<string, never> | null;
+      /**
+       * @description 點擊後前往的站內路徑（/ 開頭）或 https 網址
+       * @example /order
+       */
+      url?: string | null;
       isActive?: boolean;
+      /** Format: date-time */
+      startsAt?: string | null;
+      /** Format: date-time */
+      endsAt?: string | null;
       /** @description 未帶時排在最後 */
       sortOrder?: number;
+    };
+    /** @enum {string} */
+    CashDrawerSessionStatus: "open" | "closed";
+    /** @enum {string} */
+    CashDrawerMovementType: "payIn" | "payOut";
+    CashDrawerMovementDto: {
+      id: string;
+      type: components["schemas"]["CashDrawerMovementType"];
+      amount: string;
+      reason: string;
+      createdBy: string;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    CashDrawerSummaryDto: {
+      /**
+       * Format: date-time
+       * @description 計算起點：上一次關帳時間，沒有前一次時為開帳時間
+       */
+      countedSince: string;
+      /** @description 期間內現金訂單實收 */
+      cashSales: string;
+      /** @description 其中在開帳前（上次關帳後）收的現金 */
+      cashSalesBeforeOpen: string;
+      /** @description 期間內現金訂單的退款 */
+      cashRefunds: string;
+      /** @description 其中在開帳前（上次關帳後）的退款 */
+      cashRefundsBeforeOpen: string;
+      payIns: string;
+      payOuts: string;
+      /** @description 零用金＋實收−退款＋存入−提出 */
+      expectedCash: string;
+    };
+    CashDrawerSessionDto: {
+      id: string;
+      /** @example 2026-10-23 */
+      businessDate: string;
+      status: components["schemas"]["CashDrawerSessionStatus"];
+      /** Format: date-time */
+      openedAt: string;
+      openedBy: string;
+      openingFloat: string;
+      /** Format: date-time */
+      closedAt: string | null;
+      closedBy: string | null;
+      countedCash: string | null;
+      expectedCash: string | null;
+      retainedFloat: string | null;
+      varianceNote: string | null;
+      movements: components["schemas"]["CashDrawerMovementDto"][];
+      summary: components["schemas"]["CashDrawerSummaryDto"];
+    };
+    CurrentCashDrawerDto: {
+      session: components["schemas"]["CashDrawerSessionDto"] | null;
+      /** @description 下一次開帳預設沿用的零用金 */
+      suggestedOpeningFloat: string;
+      /** @description 差額在此金額內可不填說明 */
+      varianceTolerance: string;
+    };
+    OpenCashDrawerDto: {
+      /**
+       * @description 省略時沿用上一次結帳的留存零用金
+       * @example 3000.00
+       */
+      openingFloat?: string;
+    };
+    CreateCashDrawerMovementDto: {
+      type: components["schemas"]["CashDrawerMovementType"];
+      /** @example 500.00 */
+      amount: string;
+      reason: string;
+    };
+    CloseCashDrawerDto: {
+      /**
+       * @description 實點現金
+       * @example 12850.00
+       */
+      countedCash: string;
+      /**
+       * @description 留在錢櫃給下一次開帳的零用金，不可超過實點現金
+       * @example 3000.00
+       */
+      retainedFloat: string;
+      /** @description 差額超過門市設定的門檻時必填 */
+      varianceNote?: string;
     };
     /** @enum {string} */
     CouponDiscountType: "fixed" | "percentage";
@@ -7216,6 +7435,10 @@ export interface components {
       /** @description 目前操作者可否還原（店內須具備各資料的建立權限） */
       canRestore: boolean;
     };
+    /** @enum {string} */
+    DeletedRecordFilterField: "organizationName" | "tableName" | "deletedAt";
+    /** @enum {string} */
+    DeletedRecordSortField: "organizationName" | "tableName" | "deletedAt";
     RestoreDeletedRecordsDto: {
       ids: number[];
     };
@@ -9576,10 +9799,10 @@ export interface components {
       orderNumber?: string | null;
       /** @description 交易發生店家；redeem 屬品牌層為 null */
       organizationName?: string | null;
-      /** @description earn 為正、redeem 為負 */
+      /** @description earn 為正；redeem、revoke 為負；adjust 正負皆可 */
       points: number;
       /** @enum {string} */
-      type: "earn" | "redeem" | "revoke";
+      type: "earn" | "redeem" | "revoke" | "adjust";
     };
     MyPointsDto: {
       /** @description 全店家合併餘額 */
@@ -9620,18 +9843,31 @@ export interface components {
       expiresAt?: string | null;
       orderId?: string | null;
       orderNumber?: string | null;
-      /** @description earn 為正、revoke 為負 */
+      /** @description adjust 的調整原因 */
+      note?: string | null;
+      /** @description earn 為正、revoke 為負，adjust 正負皆可 */
       points: number;
-      /** @description 尚未被兌換或收回的點數 */
+      /** @description 尚未被兌換、收回或扣除的點數 */
       remainingPoints: number;
       /** @enum {string} */
-      type: "earn" | "redeem" | "revoke";
+      type: "earn" | "redeem" | "revoke" | "adjust";
       userEmail: string;
       userName: string;
     };
     OrganizationPointTransactionListResponseDto: {
       data: components["schemas"]["OrganizationPointTransactionDto"][];
       total: number;
+    };
+    AdjustPointsDto: {
+      /**
+       * Format: email
+       * @description 調整對象的會員 email
+       */
+      email: string;
+      /** @description 正數為補點、負數為扣點 */
+      points: number;
+      /** @description 調整原因 */
+      note: string;
     };
     MenuResponseDto: {
       id: string;
@@ -14987,6 +15223,126 @@ export interface operations {
       };
     };
   };
+  CashDrawerController_getCurrent: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CurrentCashDrawerDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CashDrawerController_open: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["OpenCashDrawerDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CashDrawerSessionDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CashDrawerController_addMovement: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        sessionId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateCashDrawerMovementDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CashDrawerSessionDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CashDrawerController_close: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        sessionId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CloseCashDrawerDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CashDrawerSessionDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   AdminCouponsController_findAll: {
     parameters: {
       query?: {
@@ -15512,8 +15868,16 @@ export interface operations {
   DeletedRecordsController_findAll: {
     parameters: {
       query?: {
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["DeletedRecordFilterField"];
+        sortBy?: components["schemas"]["DeletedRecordSortField"];
         limit?: number;
         offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
       };
       header?: never;
       path?: never;
@@ -15567,8 +15931,16 @@ export interface operations {
   OrganizationDeletedRecordsController_findAll: {
     parameters: {
       query?: {
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["DeletedRecordFilterField"];
+        sortBy?: components["schemas"]["DeletedRecordSortField"];
         limit?: number;
         offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
       };
       header?: never;
       path: {
@@ -18843,6 +19215,38 @@ export interface operations {
       };
     };
   };
+  OrganizationPointsController_adjust: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AdjustPointsDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrganizationPointTransactionDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   MenusController_findAllMenus: {
     parameters: {
       query?: never;
@@ -20682,7 +21086,7 @@ export interface operations {
       path: {
         organizationSlug: string;
         ticketId: string;
-        status: "called" | "cancelled" | "waiting" | "seated" | "noShow";
+        status: "cancelled" | "called" | "waiting" | "seated" | "noShow";
       };
       cookie?: never;
     };
@@ -23736,7 +24140,7 @@ export const pathsApiOrganizationsOrganizationIdOrderMenuGetParametersQueryLangV
 > = ["en", "ja", "ko", "zh-CN", "zh-TW"];
 export const pathsApiOrganizationsOrganizationSlugWaitlistTicketsTicketIdTransitionsStatusPatchParametersPathStatusValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/organizations/{organizationSlug}/waitlist/tickets/{ticketId}/transitions/{status}"]["patch"]["parameters"]["path"]["status"]
-> = ["called", "cancelled", "waiting", "seated", "noShow"];
+> = ["cancelled", "called", "waiting", "seated", "noShow"];
 export const attendanceErrorCodeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceErrorCode"]
 > = [
@@ -24263,6 +24667,7 @@ export const auditResourceValues: ReadonlyArray<
   "invitation",
   "user",
   "team",
+  "pointTransaction",
   "employee",
   "attendanceSetting",
   "leaveCase",
@@ -24365,10 +24770,16 @@ export const updateUserDtoGenderValues: ReadonlyArray<
 > = ["female", "male", "other"];
 export const bannerFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["BannerFilterField"]
-> = ["isActive", "createdAt", "updatedAt"];
+> = ["isActive", "startsAt", "endsAt", "createdAt", "updatedAt"];
 export const bannerSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["BannerSortField"]
-> = ["isActive", "createdAt", "updatedAt"];
+> = ["isActive", "startsAt", "endsAt", "createdAt", "updatedAt"];
+export const cashDrawerSessionStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CashDrawerSessionStatus"]
+> = ["open", "closed"];
+export const cashDrawerMovementTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CashDrawerMovementType"]
+> = ["payIn", "payOut"];
 export const couponDiscountTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CouponDiscountType"]
 > = ["fixed", "percentage"];
@@ -24468,6 +24879,12 @@ export const deletedRecordTableValues: ReadonlyArray<
   "attendance_holiday_substitute",
   "payroll_earning_type",
 ];
+export const deletedRecordFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["DeletedRecordFilterField"]
+> = ["organizationName", "tableName", "deletedAt"];
+export const deletedRecordSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["DeletedRecordSortField"]
+> = ["organizationName", "tableName", "deletedAt"];
 export const payrollRuleSetResponseDtoUnconfirmedValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PayrollRuleSetResponseDto"]["unconfirmed"]
 > = ["minimumHourlyWageCents"];
@@ -25203,7 +25620,7 @@ export const userOrderResponseDtoOrderStatusValues: ReadonlyArray<
 ];
 export const pointTransactionDtoTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PointTransactionDto"]["type"]
-> = ["earn", "redeem", "revoke"];
+> = ["earn", "redeem", "revoke", "adjust"];
 export const pointTransactionFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PointTransactionFilterField"]
 > = [
@@ -25230,7 +25647,7 @@ export const pointTransactionSortFieldValues: ReadonlyArray<
 ];
 export const organizationPointTransactionDtoTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrganizationPointTransactionDto"]["type"]
-> = ["earn", "redeem", "revoke"];
+> = ["earn", "redeem", "revoke", "adjust"];
 export const menuSectionFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["MenuSectionFilterField"]
 > = ["name", "description", "createdAt", "updatedAt"];

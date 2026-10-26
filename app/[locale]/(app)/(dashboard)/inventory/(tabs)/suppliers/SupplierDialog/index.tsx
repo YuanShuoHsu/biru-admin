@@ -63,6 +63,13 @@ const SupplierDialog = ({
   const assignableIngredients = ingredients.filter(
     ({ supplierId }) => !supplierId || supplierId === supplier?.id,
   );
+  const ingredientOptions = [
+    ...assignableIngredients,
+    ...(supplier?.ingredients.filter(
+      ({ id }) =>
+        !assignableIngredients.some((ingredient) => ingredient.id === id),
+    ) ?? []),
+  ];
 
   const action = supplier ? "updateSupplier" : "createSupplier";
 
@@ -146,7 +153,7 @@ const SupplierDialog = ({
             { shouldValidate: isSubmitted },
           )
         }
-        options={assignableIngredients}
+        options={ingredientOptions}
         renderInput={(params) => (
           <TextField
             {...params}
@@ -154,9 +161,7 @@ const SupplierDialog = ({
             placeholder={tInventory("suppliers.ingredients.placeholder")}
           />
         )}
-        value={assignableIngredients.filter(({ id }) =>
-          ingredientIds.includes(id),
-        )}
+        value={ingredientOptions.filter(({ id }) => ingredientIds.includes(id))}
       />
       <TextField
         error={!!errors.note}

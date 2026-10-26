@@ -194,6 +194,7 @@
       "label": "작업"
     },
     "email": "이메일",
+    "expired": "만료됨",
     "expiresAt": "만료일",
     "label": "대기 중인 초대",
     "role": "역할"
@@ -348,6 +349,25 @@
         "title": "포인트 편집"
       }
     },
+    "adjust": {
+      "email": {
+        "label": "회원 이메일",
+        "placeholder": "회원 이메일을 입력하세요"
+      },
+      "note": {
+        "label": "조정 사유",
+        "placeholder": "예: 누락된 구매 내역 반영",
+        "required": "조정 사유를 입력하세요"
+      },
+      "points": {
+        "hint": "양수는 적립, 음수는 차감입니다. 차감은 이 매장에서 적립한 만료되지 않은 포인트에서만 이루어집니다",
+        "invalid": "-{limit, number}~{limit, number} 사이의 0이 아닌 정수를 입력하세요",
+        "label": "조정 포인트",
+        "placeholder": "조정할 포인트를 입력하세요"
+      },
+      "success": "{email}의 포인트를 조정했습니다",
+      "title": "포인트 적립/차감"
+    },
     "amountPerPoint": {
       "empty": "사용 안 함",
       "hint": "설정하지 않으면 포인트가 비활성화됩니다",
@@ -366,6 +386,7 @@
     "transactions": {
       "createdAt": "생성 시간",
       "expiresAt": "만료일",
+      "note": "조정 사유",
       "orderNumber": "주문 번호",
       "points": "포인트",
       "remainingPoints": "남은 포인트",

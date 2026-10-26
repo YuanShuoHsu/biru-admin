@@ -388,5 +388,17 @@
   },
   "violationsAcknowledged": {
     "required": "请确认上述违规后再复核。"
+  },
+  "cashAmount": {
+    "required": "请输入金额。"
+  },
+  "cashDrawerReason": {
+    "required": "原因为必填。"
+  },
+  "retainedFloat": {
+    "exceedsCounted": "留存备用金不可超过实点现金。"
+  },
+  "varianceNote": {
+    "required": "差额超过门槛，请填写说明。"
   }
 }

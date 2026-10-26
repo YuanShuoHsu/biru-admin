@@ -6,6 +6,8 @@ import { authClient } from "@/lib/auth-client";
 
 import { CountStoreProvider } from "@/providers/count-store-provider";
 
+import { isActiveSession } from "@/utils/auth";
+
 interface OrganizationsSlugLayoutProps {
   children: React.ReactNode;
   params: Promise<{ locale: string; slug: string }>;
@@ -22,7 +24,10 @@ const getPendingInvitationCount = async (
   });
 
   return (
-    data?.invitations.filter(({ status }) => status === "pending").length ?? 0
+    data?.invitations.filter(
+      (invitation) =>
+        invitation.status === "pending" && isActiveSession(invitation),
+    ).length ?? 0
   );
 };
 
