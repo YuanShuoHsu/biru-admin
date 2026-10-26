@@ -305,6 +305,23 @@
       "owner": "소유자",
       "placeholder": "귀하의 역할을 선택해 주세요"
     },
+    "showcase": {
+      "label": "공식 사이트에 표시",
+      "selfOnly": "본인만 켤 수 있습니다",
+      "turnOn": {
+        "title": "공식 사이트에 표시",
+        "confirm": "이름, 사진, 자기소개, 역할과 팀이 공식 사이트 '회사 소개'의 팀 소개에 표시됩니다. 언제든지 끌 수 있습니다."
+      },
+      "turnOff": "공식 사이트에서 제외",
+      "turnOffSelf": {
+        "confirm": "공식 사이트 '회사 소개'에 내 프로필을 더 이상 표시하지 않을까요?"
+      },
+      "turnOffOther": {
+        "confirm": "<bold>{email}</bold>님을 공식 사이트에 더 이상 표시하지 않을까요? 다시 켜는 것은 본인만 할 수 있습니다."
+      },
+      "turnedOn": "공식 사이트에 표시했습니다",
+      "turnedOff": "{email}님을 공식 사이트에서 제외했습니다"
+    },
     "userId": {
       "label": "멤버",
       "option": "{name} ({email})",

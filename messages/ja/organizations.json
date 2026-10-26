@@ -305,6 +305,23 @@
       "owner": "オーナー",
       "placeholder": "あなたの役割を選択してください"
     },
+    "showcase": {
+      "label": "公式サイトに表示",
+      "selfOnly": "本人のみオンにできます",
+      "turnOn": {
+        "title": "公式サイトに表示",
+        "confirm": "氏名・写真・自己紹介・役割・チームが公式サイト「私たちについて」のチーム紹介に表示されます。いつでもオフにできます。"
+      },
+      "turnOff": "公式サイトから外す",
+      "turnOffSelf": {
+        "confirm": "公式サイト「私たちについて」へのプロフィール表示をやめますか？"
+      },
+      "turnOffOther": {
+        "confirm": "<bold>{email}</bold> を公式サイトに表示しないようにしますか？再びオンにできるのは本人のみです。"
+      },
+      "turnedOn": "公式サイトに表示しました",
+      "turnedOff": "{email} を公式サイトから外しました"
+    },
     "userId": {
       "label": "メンバー",
       "option": "{name} ({email})",

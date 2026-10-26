@@ -66,6 +66,11 @@ export const authClient = createAuthClient({
       roles: { owner, admin, member },
       teams: { enabled: true },
       schema: {
+        member: {
+          additionalFields: {
+            showcase: { type: "boolean", required: false, input: false },
+          },
+        },
         organization: {
           additionalFields: {
             // https://schema.org/PostalAddress
