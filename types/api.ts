@@ -3815,23 +3815,6 @@ export interface paths {
     patch: operations["OrganizationsController_setMemberShowcase"];
     trace?: never;
   };
-  "/api/organizations/{id}/members": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** 查詢組織成員 */
-    get: operations["OrganizationsController_findMembers"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   "/api/quant/credentials": {
     parameters: {
       query?: never;
@@ -11072,21 +11055,6 @@ export interface components {
       id: string;
       /** @description 是否顯示在官網「關於我們」的團隊介紹 */
       showcase: boolean;
-    };
-    OrganizationMemberResponseDto: {
-      bio?: string | null;
-      /** Format: date-time */
-      createdAt: string;
-      firstName: string;
-      id: string;
-      image?: string | null;
-      lastName?: string | null;
-      /** @enum {string} */
-      role: "admin" | "member" | "owner";
-      /** @description 是否顯示在官網「關於我們」的團隊介紹 */
-      showcase: boolean;
-      teams: components["schemas"]["OrganizationMemberTeamDto"][];
-      userId: string;
     };
     QuantCredentialDto: {
       id: string;
@@ -21812,34 +21780,6 @@ export interface operations {
       };
     };
   };
-  OrganizationsController_findMembers: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["OrganizationMemberResponseDto"][];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
   QuantAccountController_findAll: {
     parameters: {
       query?: never;
@@ -26144,9 +26084,6 @@ export const waitlistTicketSortFieldValues: ReadonlyArray<
 ];
 export const organizationTeamMemberResponseDtoRoleValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrganizationTeamMemberResponseDto"]["role"]
-> = ["admin", "member", "owner"];
-export const organizationMemberResponseDtoRoleValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["OrganizationMemberResponseDto"]["role"]
 > = ["admin", "member", "owner"];
 export const quantOrderSideValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantOrderSide"]

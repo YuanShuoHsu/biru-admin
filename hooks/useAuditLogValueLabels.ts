@@ -18,7 +18,7 @@ import {
   orderRefundDtoScopeValues,
   orderResponseDtoPaymentMethodValues,
   orderStatusValues,
-  organizationMemberResponseDtoRoleValues,
+  organizationTeamMemberResponseDtoRoleValues,
   payrollEarningCategoryValues,
   payrollStatementStatusValues,
   payrollViolationValues,
@@ -174,7 +174,7 @@ export const useAuditLogValueLabels = () => {
         routing.locales.map((value) => [value, tCommon(`locales.${value}`)]),
       ),
       memberRole: Object.fromEntries(
-        organizationMemberResponseDtoRoleValues.map((value) => [
+        organizationTeamMemberResponseDtoRoleValues.map((value) => [
           value,
           tOrganizations(`members.role.${value}`),
         ]),

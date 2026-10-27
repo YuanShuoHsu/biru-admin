@@ -15,8 +15,6 @@ export type InvoicePrinterStatus =
 export type MyOrganization = components["schemas"]["MyOrganizationListItemDto"];
 export type OrganizationResponse =
   components["schemas"]["OrganizationResponseDto"];
-export type OrganizationMember =
-  components["schemas"]["OrganizationMemberResponseDto"];
 export type OrganizationStats =
   components["schemas"]["OrganizationStatsResponseDto"];
 export type Printer = components["schemas"]["PrinterDto"];
