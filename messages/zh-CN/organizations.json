@@ -305,6 +305,21 @@
       "owner": "拥有者",
       "placeholder": "请选择您的角色"
     },
+    "showcase": {
+      "label": "显示在官网",
+      "selfOnly": "只有本人能开启",
+      "turnOn": {
+        "title": "显示在官网",
+        "confirm": "您的姓名、头像、自我介绍、角色与团队会显示在官网“关于我们”的团队介绍，之后可以随时关闭。"
+      },
+      "turnOff": {
+        "title": "从官网移除",
+        "confirmSelf": "确定不再在官网“关于我们”显示您的资料吗？",
+        "confirmOther": "确定不再在官网显示 <bold>{email}</bold> 吗？之后只有本人能再次开启。"
+      },
+      "turnedOn": "已显示在官网",
+      "turnedOff": "已将 {email} 从官网移除"
+    },
     "userId": {
       "label": "成员",
       "option": "{name} ({email})",

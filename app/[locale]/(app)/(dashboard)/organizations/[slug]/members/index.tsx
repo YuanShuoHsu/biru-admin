@@ -43,6 +43,7 @@ import {
   ListItemText,
   Stack,
   styled,
+  Switch,
   Tooltip,
 } from "@mui/material";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
@@ -224,6 +225,8 @@ const OrganizationsSlugMembers = ({
           canUpdateMember && !isOnlyOwner && isHigherRoleRank,
         canRemoveMember: canDeleteMember && !isCurrentUser && !isOnlyOwner,
         canLeaveOrganization: isCurrentUser && !isOnlyOwner,
+        canTurnOnShowcase: isCurrentUser,
+        canTurnOffShowcase: isCurrentUser || canUpdateMember,
       };
     },
     [
@@ -463,6 +466,53 @@ const OrganizationsSlugMembers = ({
     tOrganizations,
   ]);
 
+  const handleUpdateShowcase = useCallback(
+    ({ id, showcase, user: { email }, userId }: Member) => {
+      const isCurrentUser = userId === currentUserId;
+      const confirmKey = showcase
+        ? isCurrentUser
+          ? "showcase.turnOff.confirmSelf"
+          : "showcase.turnOff.confirmOther"
+        : "showcase.turnOn.confirm";
+
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tMembers.rich(confirmKey, {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              email,
+            })}
+          </DialogContentText>
+        ),
+        onConfirm: async () => {
+          try {
+            await fetcher(`/api/organizations/${slug}/members/${id}/showcase`, {
+              body: JSON.stringify({ showcase: !showcase }),
+              headers: { "Content-Type": "application/json" },
+              method: "PATCH",
+            });
+
+            enqueueSnackbar(
+              tMembers(showcase ? "showcase.turnedOff" : "showcase.turnedOn", {
+                email,
+              }),
+              { variant: "success" },
+            );
+          } catch (error) {
+            enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+          } finally {
+            await mutate();
+          }
+        },
+        open: true,
+        title: tMembers(
+          showcase ? "showcase.turnOff.title" : "showcase.turnOn.title",
+        ),
+      });
+    },
+    [currentUserId, mutate, setDialog, slug, tMembers],
+  );
+
   const columns = useMemo<GridColDef[]>(
     () => [
       ...((canUpdateMemberRoles || canRemoveMembers || canLeaveOrganizations) &&
@@ -582,6 +632,35 @@ const OrganizationsSlugMembers = ({
         sortComparator: (a, b) => ROLE_RANK[a] - ROLE_RANK[b],
       },
       {
+        field: "showcase",
+        headerName: tMembers("showcase.label"),
+        type: "boolean",
+        renderCell: ({ row }: GridRenderCellParams<Member>) => {
+          const { canTurnOffShowcase, canTurnOnShowcase } =
+            getMemberPermissions(row);
+          const canToggle = row.showcase
+            ? canTurnOffShowcase
+            : canTurnOnShowcase;
+
+          return (
+            <Tooltip
+              title={
+                !canToggle && !row.showcase && tMembers("showcase.selfOnly")
+              }
+            >
+              <span>
+                <Switch
+                  checked={row.showcase}
+                  disabled={isSelectMode || !canToggle}
+                  onChange={() => handleUpdateShowcase(row)}
+                  size="small"
+                />
+              </span>
+            </Tooltip>
+          );
+        },
+      },
+      {
         field: "createdAt",
         headerName: tMembers("joinedAt"),
         valueFormatter: (value: Date | string) =>
@@ -597,6 +676,7 @@ const OrganizationsSlugMembers = ({
       handleLeaveOrganization,
       handleRemoveMember,
       handleUpdateMemberRole,
+      handleUpdateShowcase,
       isSelectMode,
       tMembers,
       tOrganizations,

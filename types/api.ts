@@ -2919,7 +2919,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** 為會員手動補點或扣點；扣點只扣本店發出且未過期的剩餘點數 */
+    /** 為會員手動補點或扣點；扣點只扣本店發出且未過期的剩餘點數；單筆超過 NT$3,000 換算點數只有 owner 能做 */
     post: operations["OrganizationPointsController_adjust"];
     delete?: never;
     options?: never;
@@ -3777,6 +3777,40 @@ export interface paths {
     options?: never;
     head?: never;
     patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{slug}/team": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢組織在官網公開的團隊成員 */
+    get: operations["OrganizationsController_findTeam"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/members/{memberId}/showcase": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 設定成員是否顯示在官網的團隊介紹；只有本人能開啟，owner／admin 只能關閉其他成員 */
+    patch: operations["OrganizationsController_setMemberShowcase"];
     trace?: never;
   };
   "/api/organizations/{id}/members": {
@@ -10944,6 +10978,25 @@ export interface components {
       id: string;
       name: string;
     };
+    OrganizationTeamMemberResponseDto: {
+      bio?: string | null;
+      firstName: string;
+      id: string;
+      image?: string | null;
+      lastName?: string | null;
+      /** @enum {string} */
+      role: "admin" | "member" | "owner";
+      teams: components["schemas"]["OrganizationMemberTeamDto"][];
+    };
+    UpdateMemberShowcaseDto: {
+      /** @description 是否顯示在官網「關於我們」的團隊介紹 */
+      showcase: boolean;
+    };
+    MemberShowcaseResponseDto: {
+      id: string;
+      /** @description 是否顯示在官網「關於我們」的團隊介紹 */
+      showcase: boolean;
+    };
     OrganizationMemberResponseDto: {
       bio?: string | null;
       /** Format: date-time */
@@ -10954,6 +11007,8 @@ export interface components {
       lastName?: string | null;
       /** @enum {string} */
       role: "admin" | "member" | "owner";
+      /** @description 是否顯示在官網「關於我們」的團隊介紹 */
+      showcase: boolean;
       teams: components["schemas"]["OrganizationMemberTeamDto"][];
       userId: string;
     };
@@ -18379,6 +18434,8 @@ export interface operations {
       query?: {
         /** @description 統計起始時間；預設為近 30 天 */
         since?: string;
+        /** @description 統計結束時間（不含）；預設為現在 */
+        until?: string;
       };
       header?: never;
       path: {
@@ -20933,6 +20990,8 @@ export interface operations {
       query: {
         /** @description 統計起始時間（以取號時間計） */
         since: string;
+        /** @description 統計結束時間（不含）；預設為現在 */
+        until?: string;
       };
       header?: never;
       path: {
@@ -21541,6 +21600,66 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["OrganizationResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrganizationsController_findTeam: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrganizationTeamMemberResponseDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrganizationsController_setMemberShowcase: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        memberId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateMemberShowcaseDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MemberShowcaseResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -25850,6 +25969,9 @@ export const waitlistTicketSortFieldValues: ReadonlyArray<
   "calledAt",
   "endedAt",
 ];
+export const organizationTeamMemberResponseDtoRoleValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OrganizationTeamMemberResponseDto"]["role"]
+> = ["admin", "member", "owner"];
 export const organizationMemberResponseDtoRoleValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrganizationMemberResponseDto"]["role"]
 > = ["admin", "member", "owner"];
