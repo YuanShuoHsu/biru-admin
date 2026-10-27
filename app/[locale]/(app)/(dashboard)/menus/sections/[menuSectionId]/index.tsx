@@ -802,7 +802,11 @@ const MenusMenuIdSectionId = ({
           offer?.availability ? (
             <Chip
               color={ITEM_AVAILABILITY_COLOR_MAP[offer.availability]}
-              label={tMenus(`availability.options.${offer.availability}`)}
+              label={
+                offer.autoSoldOut && offer.availability === "SoldOut"
+                  ? tMenus("availability.autoSoldOut")
+                  : tMenus(`availability.options.${offer.availability}`)
+              }
               size="small"
               variant="outlined"
             />

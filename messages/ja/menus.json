@@ -19,6 +19,8 @@
     }
   },
   "availability": {
+    "autoSoldOut": "売り切れ（自動）",
+    "autoSoldOutHint": "残数が 0 になったか食材が足りないため、自動で売り切れにしました。補充すると自動で販売を再開します。",
     "label": "提供状況",
     "options": {
       "Discontinued": "販売終了",

@@ -550,7 +550,12 @@ const UpdateMenuItemDialog = ({
         {...register("offer.availability")}
         error={!!errors.offer?.availability}
         fullWidth
-        helperText={errors.offer?.availability?.message}
+        helperText={
+          errors.offer?.availability?.message ||
+          (item.offer?.autoSoldOut && availability === "SoldOut"
+            ? tMenus("availability.autoSoldOutHint")
+            : undefined)
+        }
         label={tMenus("availability.label")}
         required
         select

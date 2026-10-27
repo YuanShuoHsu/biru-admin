@@ -19,6 +19,8 @@
     }
   },
   "availability": {
+    "autoSoldOut": "售完（自动）",
+    "autoSoldOutHint": "剩余数量归零或食材不足，系统自动设为售完；补货后会自动恢复供应。",
     "label": "供应状态",
     "options": {
       "Discontinued": "已停售",
