@@ -22,11 +22,13 @@ import { getErrorMessage } from "@/utils/errors";
 
 interface GrantCouponDialogProps {
   coupon: Coupon;
+  mutate: () => void;
   organizationSlug?: string;
 }
 
 const GrantCouponDialog = ({
   coupon,
+  mutate,
   organizationSlug,
 }: GrantCouponDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
@@ -62,6 +64,8 @@ const GrantCouponDialog = ({
       );
 
       closeDialog();
+
+      mutate();
     } catch (error) {
       enqueueSnackbar(getErrorMessage(error), { variant: "error" });
 

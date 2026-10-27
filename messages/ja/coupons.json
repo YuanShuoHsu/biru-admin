@@ -6,20 +6,17 @@
       },
       "submit": {
         "confirm": "以下の <bold>{count} 件のクーポン</bold>を削除しますか？",
-        "error": "クーポンの一括削除に失敗しました",
         "label": "選択したクーポンを削除（{count}）",
         "success": "クーポン {count} 件を削除しました"
       },
       "title": "クーポンを一括削除"
     },
     "createCoupon": {
-      "error": "クーポンの追加に失敗しました",
       "success": "クーポン {code} を追加しました",
       "title": "クーポンを追加"
     },
     "deleteCoupon": {
       "confirm": "クーポン <bold>{code}</bold> を削除してもよろしいですか？この操作は元に戻せません。",
-      "error": "クーポンの削除に失敗しました",
       "success": "クーポン {code} を削除しました",
       "title": "クーポンを削除"
     },
@@ -35,7 +32,6 @@
     },
     "label": "操作",
     "updateCoupon": {
-      "error": "クーポンの更新に失敗しました",
       "success": "クーポン {code} を更新しました",
       "title": "クーポンを編集"
     }
