@@ -11,6 +11,7 @@ import UpdateDineInTableCountDialog from "./UpdateDineInTableCountDialog";
 import { StyledCardContent } from "@/components/FormCard";
 
 import { API_ORDER_MODE, ORDER_MODE } from "@/constants/orderMode";
+import { PRINTER_STATUS_REFRESH_MS } from "@/constants/orders";
 
 import { Download } from "@mui/icons-material";
 import {
@@ -24,8 +25,6 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-
-import { PRINTER_STATUS_REFRESH_MS } from "@/hooks/useOrderActions";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 

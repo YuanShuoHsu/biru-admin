@@ -16,6 +16,8 @@ export const INVOICE_STATUS_COLORS: Record<InvoiceStatus, ChipProps["color"]> =
     voided: "default",
   };
 
+export const PRINTER_STATUS_REFRESH_MS = 15_000;
+
 export const PRINT_JOB_STATUS_COLORS: Record<
   PrintJobStatus,
   ChipProps["color"]
