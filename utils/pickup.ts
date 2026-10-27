@@ -21,15 +21,24 @@ type PickupOrganization = Pick<
   | "pickupMaxAdvanceDays"
 >;
 
+export const getPickupLeadMinutes = (
+  organization: PickupOrganization,
+  cartLeadTimeMinutes = 0,
+): number => Math.max(organization.pickupLeadMinutes, cartLeadTimeMinutes);
+
 export const getPickupWindow = (
   organization: PickupOrganization,
   now: Dayjs,
+  cartLeadTimeMinutes = 0,
 ): PickupWindow => {
   const base = now.startOf("minute");
 
   return {
     cutoffMinutes: organization.pickupCutoffMinutes,
-    from: base.add(organization.pickupLeadMinutes, "minute"),
+    from: base.add(
+      getPickupLeadMinutes(organization, cartLeadTimeMinutes),
+      "minute",
+    ),
     openingHours: organization.openingHours || "",
     to: base.add(organization.pickupMaxAdvanceDays, "day").endOf("day"),
   };
