@@ -2,7 +2,7 @@
 
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent } from "react";
+import { type BaseSyntheticEvent, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 
@@ -22,11 +22,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { BASE_UNIT_CODES, UNIT_FACTORS } from "@/constants/inventory";
 
 import { useFormatMoney } from "@/hooks/useFormatMoney";
+import { useServerSearchOptions } from "@/hooks/useServerSearchOptions";
 import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import { apiClient } from "@/lib/api-client";
 
-import { Grid, MenuItem, TextField } from "@mui/material";
+import { Autocomplete, Grid, MenuItem, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -48,6 +49,8 @@ import { localize } from "@/utils/locale";
 
 const INGREDIENT_IMAGE_KEY = "ingredient-image";
 
+type SupplierOption = Pick<Supplier, "id" | "name">;
+
 const StyledGrid = styled(Grid)({
   width: "100%",
 });
@@ -66,7 +69,6 @@ interface IngredientDialogProps {
   ingredient: Ingredient | null;
   mutate: () => void;
   organizationSlug: string;
-  suppliers: Supplier[];
 }
 
 const IngredientDialog = ({
@@ -77,7 +79,6 @@ const IngredientDialog = ({
   ingredient,
   mutate,
   organizationSlug,
-  suppliers,
 }: IngredientDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
@@ -145,7 +146,6 @@ const IngredientDialog = ({
   const lowStockThreshold = useWatch({ control, name: "lowStockThreshold" });
   const price = useWatch({ control, name: "price" });
   const name = useWatch({ control, name: "name" });
-  const supplierId = useWatch({ control, name: "supplierId" });
   const unitCode = useWatch({ control, name: "unitCode" });
 
   const packageUnitCode =
@@ -210,6 +210,18 @@ const IngredientDialog = ({
 
   const editable = !ingredient || canWrite;
   const stockEditable = !ingredient || canRecordTransaction;
+
+  const [supplier, setSupplier] = useState<SupplierOption | null>(
+    ingredient?.supplierId
+      ? { id: ingredient.supplierId, name: ingredient.supplierName ?? "" }
+      : null,
+  );
+  const supplierSearch = useServerSearchOptions(
+    canViewPurchasing && editable
+      ? `/api/organizations/${organizationSlug}/suppliers`
+      : null,
+    supplier ? [supplier] : [],
+  );
 
   // 只認使用者親手改過的份數。改包裝內容量會讓同一個份數換算出不同的基準單位量，
   // 拿換算結果比對會把「只改了規格」誤判成盤點
@@ -542,40 +554,32 @@ const IngredientDialog = ({
       />
       {canViewPurchasing && (
         <>
-          <TextField
+          <Autocomplete
             disabled={!editable}
-            error={!!errors.supplierId}
+            filterOptions={(x) => x}
             fullWidth
-            helperText={errors.supplierId?.message}
-            label={`${tInventory("ingredients.supplierId.label")} ${tCommon("optional")}`}
-            select
-            slotProps={{
-              inputLabel: { shrink: true },
-              select: {
-                displayEmpty: true,
-                renderValue: (selected) => {
-                  const supplier = suppliers.find(({ id }) => id === selected);
-
-                  return supplier ? (
-                    supplier.name
-                  ) : (
-                    <em>{tInventory("ingredients.supplierId.placeholder")}</em>
-                  );
-                },
-              },
+            getOptionLabel={({ name }) => name}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            loading={supplierSearch.loading}
+            onChange={(_, value) => {
+              setSupplier(value);
+              setValue("supplierId", value?.id ?? "", {
+                shouldValidate: isSubmitted,
+              });
             }}
-            value={supplierId}
-            {...register("supplierId")}
-          >
-            <MenuItem value="">
-              <em>{tInventory("ingredients.supplierId.placeholder")}</em>
-            </MenuItem>
-            {suppliers.map(({ id, name }) => (
-              <MenuItem key={id} value={id}>
-                {name}
-              </MenuItem>
-            ))}
-          </TextField>
+            onInputChange={supplierSearch.onInputChange}
+            options={supplierSearch.options}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                error={!!errors.supplierId}
+                helperText={errors.supplierId?.message}
+                label={`${tInventory("ingredients.supplierId.label")} ${tCommon("optional")}`}
+                placeholder={tInventory("ingredients.supplierId.placeholder")}
+              />
+            )}
+            value={supplier}
+          />
           <TextField
             disabled={!editable}
             error={!!errors.url}

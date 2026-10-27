@@ -86,7 +86,6 @@ import type {
   Ingredient,
   IngredientFilterField,
   IngredientSortField,
-  Supplier,
 } from "@/types/inventory";
 import type { Organization } from "@/types/organizations";
 
@@ -161,7 +160,6 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 interface IngredientsProps {
   loading?: boolean;
   organization?: Organization;
-  suppliers?: Supplier[];
   canRecordTransaction?: boolean;
   canViewAuditLog?: boolean;
   canViewPurchasing?: boolean;
@@ -197,7 +195,6 @@ const Ingredients = ({
   rows: initialRows = [],
   sortBy,
   sortDirection,
-  suppliers = [],
 }: IngredientsProps) => {
   const currency = currentOrganization?.currency ?? "";
   const organizationSlug = currentOrganization?.slug ?? "";
@@ -492,7 +489,6 @@ const Ingredients = ({
           ingredient={null}
           mutate={mutate}
           organizationSlug={organizationSlug}
-          suppliers={suppliers}
         />
       ),
       formId: "ingredient-form",
@@ -507,7 +503,6 @@ const Ingredients = ({
     mutate,
     organizationSlug,
     setDialog,
-    suppliers,
     tInventory,
   ]);
 
@@ -523,7 +518,6 @@ const Ingredients = ({
             ingredient={ingredient}
             mutate={mutate}
             organizationSlug={organizationSlug}
-            suppliers={suppliers}
           />
         ),
         formId: "ingredient-form",
@@ -539,7 +533,6 @@ const Ingredients = ({
       mutate,
       organizationSlug,
       setDialog,
-      suppliers,
       tInventory,
     ],
   );
