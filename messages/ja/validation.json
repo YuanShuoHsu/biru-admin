@@ -388,17 +388,5 @@
   },
   "violationsAcknowledged": {
     "required": "上記の違反を確認してから承認してください。"
-  },
-  "cashAmount": {
-    "required": "金額を入力してください。"
-  },
-  "cashDrawerReason": {
-    "required": "理由は必須です。"
-  },
-  "retainedFloat": {
-    "exceedsCounted": "残す準備金は実査現金を超えられません。"
-  },
-  "varianceNote": {
-    "required": "過不足が許容額を超えています。説明を入力してください。"
   }
 }

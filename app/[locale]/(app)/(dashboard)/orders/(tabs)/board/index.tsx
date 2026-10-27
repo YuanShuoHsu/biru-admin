@@ -17,7 +17,6 @@ import {
   canVoidInvoice,
   canReprintOrderTicket,
   findUnresolvedOrderTicket,
-  useCashDrawerClosed,
   useOrderActions,
   useOrderTicketPrinterStatuses,
   usePrintInvoiceBlocker,
@@ -25,7 +24,6 @@ import {
 import { useOrderModeLabel } from "@/hooks/useOrderModeLabel";
 import { Person, Schedule } from "@mui/icons-material";
 import {
-  Alert,
   Button,
   Chip,
   DialogContentText,
@@ -128,8 +126,6 @@ const OrdersBoard = ({
   const { blockedBy: printInvoiceBlockedBy, tooltip: printInvoiceTooltip } =
     usePrintInvoiceBlocker(organizationSlug);
 
-  const cashDrawerClosed = useCashDrawerClosed(organizationSlug);
-
   const columns = useMemo(
     () =>
       orderFlowStatusValues.map((status) => ({
@@ -198,10 +194,6 @@ const OrdersBoard = ({
               onClick: () => handleConfirmVoidInvoice(order),
             },
             order.refundable && {
-              disabledReason:
-                order.paymentMethod === "Cash" && cashDrawerClosed
-                  ? tOrders("cashDrawer.refundNotOpen")
-                  : undefined,
               label: tOrders("actions.refund.title"),
               onClick: () => handleRefund(order),
             },
@@ -276,7 +268,6 @@ const OrdersBoard = ({
       })),
     [
       boardColumns,
-      cashDrawerClosed,
       format,
       getOrderModeLabel,
       handleCancelInvoicePrint,
@@ -338,9 +329,7 @@ const OrdersBoard = ({
     orders
       .find((order) => order.id === id)
       ?.availableTransitions.some(
-        (transition) =>
-          transition.toStatus === toStatus &&
-          !(transition.cashOnly && cashDrawerClosed),
+        (transition) => transition.toStatus === toStatus,
       ) || false;
 
   const confirmTransfer = (
@@ -413,17 +402,11 @@ const OrdersBoard = ({
     );
 
   return (
-    <>
-      {cashDrawerClosed &&
-        orders.some(({ availableTransitions }) =>
-          availableTransitions.some(({ cashOnly }) => cashOnly),
-        ) && <Alert severity="warning">{tOrders("cashDrawer.notOpen")}</Alert>}
-      <SelectAllTransferList
-        actionsAlign="start"
-        columns={columns}
-        transferActions={transferActions}
-      />
-    </>
+    <SelectAllTransferList
+      actionsAlign="start"
+      columns={columns}
+      transferActions={transferActions}
+    />
   );
 };
 

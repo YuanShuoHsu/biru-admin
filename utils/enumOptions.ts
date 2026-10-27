@@ -15,7 +15,6 @@ import {
   auditActionValues,
   auditResourceValues,
   baseUnitCodeValues,
-  cashDrawerSessionStatusValues,
   couponIssueTriggerValues,
   couponScopeValues,
   deletedRecordTableValues,
@@ -212,15 +211,6 @@ export const getInventoryTransactionEnumOptions = (
 ) => ({
   reason: inventoryTransactionReasonValues.map((value) => ({
     label: tInventory(`transactions.reason.options.${value}`),
-    value,
-  })),
-});
-
-export const getCashDrawerSessionEnumOptions = (
-  tOrders: ReturnType<typeof useTranslations<"orders">>,
-) => ({
-  status: cashDrawerSessionStatusValues.map((value) => ({
-    label: tOrders(`cashDrawer.sessions.status.${value}`),
     value,
   })),
 });

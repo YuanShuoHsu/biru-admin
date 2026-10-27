@@ -388,17 +388,5 @@
   },
   "violationsAcknowledged": {
     "required": "위 위반을 확인한 후 검토하세요."
-  },
-  "cashAmount": {
-    "required": "금액을 입력하세요."
-  },
-  "cashDrawerReason": {
-    "required": "사유는 필수입니다."
-  },
-  "retainedFloat": {
-    "exceedsCounted": "남길 시재금은 실제 현금을 초과할 수 없습니다."
-  },
-  "varianceNote": {
-    "required": "차액이 허용 범위를 넘었습니다. 설명을 입력하세요."
   }
 }

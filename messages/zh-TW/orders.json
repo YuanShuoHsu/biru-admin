@@ -130,66 +130,6 @@
     "empty": "目前沒有訂單",
     "title": "訂單看板"
   },
-  "cashDrawer": {
-    "actions": {
-      "close": {
-        "success": "已關帳",
-        "title": "關帳"
-      },
-      "movement": {
-        "success": "已{type} {amount}",
-        "title": "存入／提出"
-      },
-      "open": {
-        "success": "已開帳",
-        "title": "開帳"
-      }
-    },
-    "amount": "金額",
-    "businessDate": "營業日",
-    "cashRefunds": "現金退款",
-    "cashSales": "現金實收",
-    "countedCash": "實點現金",
-    "countedSince": "計算起點",
-    "empty": "目前沒有開帳中的錢櫃。",
-    "expectedCash": "應有現金",
-    "label": "錢櫃",
-    "movementType": {
-      "payIn": "存入",
-      "payOut": "提出"
-    },
-    "movements": {
-      "empty": "尚無存入或提出",
-      "item": "{type} {amount}",
-      "label": "存提紀錄"
-    },
-    "notOpen": "錢櫃尚未開帳，現金訂單無法確認付款或退回待付款。請先到「錢櫃」分頁開帳。",
-    "openingFloat": "零用金",
-    "openingFloatHint": "預設沿用上次關帳留下的零用金",
-    "reason": "原因",
-    "reasonPlaceholder": "例如：找零補錢、支付雜支",
-    "refundNotOpen": "錢櫃尚未開帳，現金付款的訂單無法退款。請先到「錢櫃」分頁開帳。",
-    "retainedFloat": "留存零用金",
-    "retainedFloatHint": "留在錢櫃給下一次開帳使用",
-    "sessions": {
-      "closedAt": "關帳時間",
-      "closedByName": "關帳人員",
-      "label": "開關帳紀錄",
-      "openedAt": "開帳時間",
-      "openedByName": "開帳人員",
-      "status": {
-        "closed": "已關帳",
-        "label": "狀態",
-        "open": "開帳中"
-      },
-      "variance": "差額"
-    },
-    "suggestedOpeningFloat": "預設零用金",
-    "varianceNote": "差額說明",
-    "varianceNoteHint": "差額超過 {tolerance} 時必填",
-    "varianceSummary": "應有現金 {expected}，差額 {variance}",
-    "withBeforeOpen": "{amount}（含開帳前 {beforeOpen}）"
-  },
   "confirmationNumber": "訂單編號",
   "createdAt": "成立時間",
   "customerEmail": "顧客電子信箱",

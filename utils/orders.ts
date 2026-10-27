@@ -1,18 +1,10 @@
 import { cache } from "react";
 
-import { type GridQuery, getGridSearchParams } from "./dataGrid";
 import { fetcher } from "./fetcher";
 
 import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
 
-import type {
-  AdminOrderBoardColumn,
-  AdminOrderResponse,
-  CashDrawerSessionFilterField,
-  CashDrawerSessionListItem,
-  CashDrawerSessionSortField,
-  CurrentCashDrawer,
-} from "@/types/orders";
+import type { AdminOrderBoardColumn, AdminOrderResponse } from "@/types/orders";
 
 interface GetAdminOrdersQuery {
   page?: number;
@@ -77,56 +69,6 @@ export const getAdminOrders = cache(
       };
     } catch {
       return { orders: [], total: 0 };
-    }
-  },
-);
-
-export const cashDrawerPath = (organizationSlug: string) =>
-  `/api/organizations/${organizationSlug}/cash-drawer`;
-
-export const cashDrawerSessionsPath = (organizationSlug: string) =>
-  `${cashDrawerPath(organizationSlug)}/sessions`;
-
-export const getCurrentCashDrawer = cache(
-  async (
-    organizationSlug: string,
-    init?: RequestInit,
-  ): Promise<CurrentCashDrawer | null> => {
-    try {
-      return await fetcher<CurrentCashDrawer>(
-        `${cashDrawerPath(organizationSlug)}/current`,
-        init,
-      );
-    } catch {
-      return null;
-    }
-  },
-);
-
-export const getCashDrawerSessions = cache(
-  async (
-    organizationSlug: string,
-    query: GridQuery<
-      CashDrawerSessionFilterField,
-      CashDrawerSessionSortField
-    > = {},
-    init?: RequestInit,
-  ) => {
-    try {
-      const result = await fetcher<{
-        data: CashDrawerSessionListItem[];
-        total: number;
-      }>(
-        `${cashDrawerSessionsPath(organizationSlug)}?${getGridSearchParams(query).toString()}`,
-        init,
-      );
-
-      return {
-        sessions: Array.isArray(result.data) ? result.data : [],
-        total: result.total || 0,
-      };
-    } catch {
-      return { sessions: [], total: 0 };
     }
   },
 );
