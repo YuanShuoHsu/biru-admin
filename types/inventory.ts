@@ -22,8 +22,6 @@ export type RecipeIngredient =
 export type Supplier = components["schemas"]["SupplierResponseDto"];
 
 export type CreateIngredientDto = components["schemas"]["CreateIngredientDto"];
-export type CreateInventoryTransactionDto =
-  components["schemas"]["CreateInventoryTransactionDto"];
 
 export type BaseUnitCode = (typeof baseUnitCodeValues)[number];
 export type UnitCode = components["schemas"]["UnitCode"];

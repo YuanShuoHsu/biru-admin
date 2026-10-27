@@ -27,6 +27,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
+import { apiClient } from "@/lib/api-client";
+
 import { Chip, Divider, Grid, MenuItem, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -42,15 +44,12 @@ import {
   sweetnessValues,
 } from "@/types/api";
 import type {
-  CreateMenuItemDto,
-  MenuItem as MenuItemType,
   ServingTemperature,
   ServingTemperatureLevel,
   SweetnessLevel,
 } from "@/types/menus";
 import type { ApiOrderMode } from "@/types/orderMode";
 
-import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
 const StyledGrid = styled(Grid)({
@@ -175,57 +174,53 @@ const CreateMenuItemDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher<MenuItemType>(
-        `/api/menu-sections/${menuSectionId}/menu-items`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name,
-            description,
-            ...(imageSrc && { image: imageSrc }),
-            availableModes,
-            servingTemperatures,
-            recommendedServingTemperatureLevel,
-            sweetness,
-            fixedSweetnessLevel:
-              sweetness === "Fixed" ? fixedSweetnessLevel : null,
-            recommendedSweetnessLevel:
-              sweetness === "Adjustable" ? recommendedSweetnessLevel : null,
-            orderTicketPrinterId,
-            offer: {
-              price: offer?.price,
-              availability: offer?.availability,
-              availableHours: offer?.availableHours || undefined,
-              deliveryLeadTimeMinutes: offer?.deliveryLeadTimeMinutes
-                ? Number(offer.deliveryLeadTimeMinutes)
-                : null,
-              inventoryLevel:
-                offer?.inventoryLevel?.value || offer?.inventoryLevel?.unitText
-                  ? {
-                      ...(offer.inventoryLevel.value && {
-                        value: Number(offer.inventoryLevel.value),
-                      }),
-                      ...(offer.inventoryLevel.unitText && {
-                        unitText: offer.inventoryLevel.unitText,
-                      }),
-                    }
-                  : null,
-              priceSpecification: offer?.priceSpecification?.price
+      await apiClient.POST("/api/menu-sections/{sectionId}/menu-items", {
+        params: { path: { sectionId: menuSectionId } },
+        body: {
+          name,
+          description,
+          ...(imageSrc && { image: imageSrc }),
+          availableModes,
+          servingTemperatures,
+          recommendedServingTemperatureLevel,
+          sweetness,
+          fixedSweetnessLevel:
+            sweetness === "Fixed" ? fixedSweetnessLevel : null,
+          recommendedSweetnessLevel:
+            sweetness === "Adjustable" ? recommendedSweetnessLevel : null,
+          orderTicketPrinterId,
+          offer: {
+            price: offer?.price,
+            availability: offer?.availability,
+            availableHours: offer?.availableHours || undefined,
+            deliveryLeadTimeMinutes: offer?.deliveryLeadTimeMinutes
+              ? Number(offer.deliveryLeadTimeMinutes)
+              : null,
+            inventoryLevel:
+              offer?.inventoryLevel?.value || offer?.inventoryLevel?.unitText
                 ? {
-                    price: offer.priceSpecification.price,
-                    ...(offer.priceSpecification.validFrom && {
-                      validFrom: offer.priceSpecification.validFrom,
+                    ...(offer.inventoryLevel.value && {
+                      value: Number(offer.inventoryLevel.value),
                     }),
-                    ...(offer.priceSpecification.validThrough && {
-                      validThrough: offer.priceSpecification.validThrough,
+                    ...(offer.inventoryLevel.unitText && {
+                      unitText: offer.inventoryLevel.unitText,
                     }),
                   }
                 : null,
-            },
-          } satisfies CreateMenuItemDto),
+            priceSpecification: offer?.priceSpecification?.price
+              ? {
+                  price: offer.priceSpecification.price,
+                  ...(offer.priceSpecification.validFrom && {
+                    validFrom: offer.priceSpecification.validFrom,
+                  }),
+                  ...(offer.priceSpecification.validThrough && {
+                    validThrough: offer.priceSpecification.validThrough,
+                  }),
+                }
+              : null,
+          },
         },
-      );
+      });
 
       enqueueSnackbar(
         tMenus("items.actions.createItem.success", {

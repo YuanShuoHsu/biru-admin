@@ -20,11 +20,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
+import { apiClient } from "@/lib/api-client";
+
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { CreateMenuSectionDto, MenuSection } from "@/types/menus";
-
-import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
 const CREATE_MENU_SECTION_IMAGE_KEY = "create-menu-section-image";
@@ -72,15 +71,14 @@ const CreateMenuSectionDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher<MenuSection>(`/api/menus/${menuId}/menu-sections`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      await apiClient.POST("/api/menus/{menuId}/menu-sections", {
+        params: { path: { menuId } },
+        body: {
           name,
           description,
           ...(imageSrc && { image: imageSrc }),
           orderTicketPrinterId,
-        } satisfies CreateMenuSectionDto),
+        },
       });
 
       enqueueSnackbar(

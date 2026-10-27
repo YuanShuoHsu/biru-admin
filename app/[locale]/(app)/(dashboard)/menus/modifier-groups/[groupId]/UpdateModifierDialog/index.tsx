@@ -17,19 +17,16 @@ import NumberSpinner from "@/components/NumberSpinner";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { apiClient } from "@/lib/api-client";
+
 import { MenuItem, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { itemAvailabilityValues, orderModeValues } from "@/types/api";
-import type {
-  Modifier,
-  UpdateItemAvailabilityDto,
-  UpdateModifierDto,
-} from "@/types/menus";
+import type { Modifier } from "@/types/menus";
 import type { ApiOrderMode } from "@/types/orderMode";
 
-import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
 interface UpdateModifierDialogProps {
@@ -81,27 +78,22 @@ const UpdateModifierDialog = ({
       setDialog({ confirmLoading: true });
 
       // 只有 itemAvailability 權限時打窄端點，整包 PATCH 會被後端的 menu:update 擋掉
-      await fetcher<Modifier>(
-        canWrite
-          ? `/api/modifiers/${modifier.id}`
-          : `/api/modifiers/${modifier.id}/availability`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(
-            canWrite
-              ? ({
-                  displayName,
-                  priceAdjustment: priceAdjustment?.trim()
-                    ? priceAdjustment
-                    : null,
-                  ...(availability && { availability }),
-                  availableModes,
-                } satisfies UpdateModifierDto)
-              : ({ availability } satisfies UpdateItemAvailabilityDto),
-          ),
-        },
-      );
+      if (canWrite) {
+        await apiClient.PATCH("/api/modifiers/{modifierId}", {
+          params: { path: { modifierId: modifier.id } },
+          body: {
+            displayName,
+            priceAdjustment: priceAdjustment?.trim() ? priceAdjustment : null,
+            ...(availability && { availability }),
+            availableModes,
+          },
+        });
+      } else {
+        await apiClient.PATCH("/api/modifiers/{modifierId}/availability", {
+          params: { path: { modifierId: modifier.id } },
+          body: { availability },
+        });
+      }
 
       enqueueSnackbar(
         tMenus("modifiers.actions.updateModifier.success", {

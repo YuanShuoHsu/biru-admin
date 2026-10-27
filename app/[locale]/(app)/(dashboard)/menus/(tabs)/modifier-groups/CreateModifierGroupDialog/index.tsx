@@ -16,11 +16,10 @@ import NumberSpinner from "@/components/NumberSpinner";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { apiClient } from "@/lib/api-client";
+
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { CreateModifierGroupDto, ModifierGroup } from "@/types/menus";
-
-import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
 interface CreateModifierGroupDialogProps {
@@ -65,16 +64,15 @@ const CreateModifierGroupDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher<ModifierGroup>(`/api/menus/${menuId}/modifier-groups`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      await apiClient.POST("/api/menus/{menuId}/modifier-groups", {
+        params: { path: { menuId } },
+        body: {
           displayName,
           minSelectionCount: minSelectionCount ? Number(minSelectionCount) : 0,
           ...(maxSelectionCount && {
             maxSelectionCount: Number(maxSelectionCount),
           }),
-        } satisfies CreateModifierGroupDto),
+        },
       });
 
       enqueueSnackbar(

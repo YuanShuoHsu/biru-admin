@@ -15,11 +15,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
+import { apiClient } from "@/lib/api-client";
+
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { Menu, UpdateMenuDto } from "@/types/menus";
+import type { Menu } from "@/types/menus";
 
-import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
 interface UpdateMenuDialogProps {
@@ -62,14 +63,13 @@ const UpdateMenuDialog = ({ menu, mutate }: UpdateMenuDialogProps) => {
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher(`/api/menus/${menu.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      await apiClient.PATCH("/api/menus/{menuId}", {
+        params: { path: { menuId: menu.id } },
+        body: {
           name,
           description,
           ...(imageSrc !== (menu.image || null) && { image: imageSrc }),
-        } satisfies UpdateMenuDto),
+        },
       });
 
       enqueueSnackbar(

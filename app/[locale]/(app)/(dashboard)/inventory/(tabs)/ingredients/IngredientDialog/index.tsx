@@ -24,6 +24,8 @@ import { BASE_UNIT_CODES, UNIT_FACTORS } from "@/constants/inventory";
 import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
+import { apiClient } from "@/lib/api-client";
+
 import { Grid, MenuItem, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -32,12 +34,10 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import { unitCodeValues } from "@/types/api";
 import type {
   CreateIngredientDto,
-  CreateInventoryTransactionDto,
   Ingredient,
   Supplier,
 } from "@/types/inventory";
 
-import { fetcher } from "@/utils/fetcher";
 import {
   formatUnitPriceOf,
   maxPackages,
@@ -251,67 +251,66 @@ const IngredientDialog = ({
         return;
       }
 
-      await submit(
-        `/api/ingredients/${ingredient.id}/inventory-transactions`,
-        "POST",
-        {
-          inventoryLevel: stockPayload,
-          note: values.transactionNote || null,
-        } satisfies CreateInventoryTransactionDto,
+      await submit(() =>
+        apiClient.POST(
+          "/api/ingredients/{ingredientId}/inventory-transactions",
+          {
+            params: { path: { ingredientId: ingredient.id } },
+            body: {
+              inventoryLevel: stockPayload,
+              note: values.transactionNote || null,
+            },
+          },
+        ),
       );
 
       return;
     }
 
-    await submit(
+    const body: CreateIngredientDto = {
+      name: values.name,
+      brand: values.brand || null,
+      image: imageSrc || null,
+      eligibleQuantity: values.eligibleQuantity,
+      eligibleQuantityUnitCode: values.unitCode,
+      unitCode: BASE_UNIT_CODES[values.unitCode],
+      lowStockThreshold:
+        values.lowStockThreshold === initialLowStockThreshold
+          ? (ingredient?.lowStockThreshold ?? null)
+          : values.lowStockThreshold && baseQuantity > 0
+            ? String(
+                toBaseQuantity(Number(values.lowStockThreshold), baseQuantity),
+              )
+            : null,
+      inventoryLevel: stockPayload,
+      inventoryLevelUnitText: values.inventoryLevelUnitText || null,
+      note: values.note || null,
+      ...(stockChanged && {
+        transactionNote: values.transactionNote || null,
+      }),
+      price: values.price,
+      supplierId: values.supplierId || null,
+      url: values.url || null,
+    };
+
+    await submit(() =>
       ingredient
-        ? `/api/ingredients/${ingredient.id}`
-        : `/api/organizations/${organizationSlug}/ingredients`,
-      ingredient ? "PATCH" : "POST",
-      {
-        name: values.name,
-        brand: values.brand || null,
-        image: imageSrc || null,
-        eligibleQuantity: values.eligibleQuantity,
-        eligibleQuantityUnitCode: values.unitCode,
-        unitCode: BASE_UNIT_CODES[values.unitCode],
-        lowStockThreshold:
-          values.lowStockThreshold === initialLowStockThreshold
-            ? (ingredient?.lowStockThreshold ?? null)
-            : values.lowStockThreshold && baseQuantity > 0
-              ? String(
-                  toBaseQuantity(
-                    Number(values.lowStockThreshold),
-                    baseQuantity,
-                  ),
-                )
-              : null,
-        inventoryLevel: stockPayload,
-        inventoryLevelUnitText: values.inventoryLevelUnitText || null,
-        note: values.note || null,
-        ...(stockChanged && {
-          transactionNote: values.transactionNote || null,
-        }),
-        price: values.price,
-        supplierId: values.supplierId || null,
-        url: values.url || null,
-      } satisfies CreateIngredientDto,
+        ? apiClient.PATCH("/api/ingredients/{ingredientId}", {
+            params: { path: { ingredientId: ingredient.id } },
+            body,
+          })
+        : apiClient.POST("/api/organizations/{organizationSlug}/ingredients", {
+            params: { path: { organizationSlug } },
+            body,
+          }),
     );
   };
 
-  const submit = async (
-    url: string,
-    method: string,
-    body: Record<string, unknown>,
-  ) => {
+  const submit = async (request: () => Promise<unknown>) => {
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher<Ingredient>(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+      await request();
 
       enqueueSnackbar(
         tInventory(`${action}.success`, {
