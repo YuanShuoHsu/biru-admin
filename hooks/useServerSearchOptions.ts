@@ -7,7 +7,6 @@ import type { AutocompleteInputChangeReason } from "@mui/material";
 import { debounce } from "@mui/material/utils";
 
 import { getGridSearchParams } from "@/utils/dataGrid";
-import { fetcher } from "@/utils/fetcher";
 
 const SEARCH_DEBOUNCE_MS = 400;
 const SEARCH_PAGE_SIZE = 20;
@@ -16,6 +15,7 @@ export const useServerSearchOptions = <Option extends { id: string }>(
   path: string | null,
   selected: Option[],
 ) => {
+  const [input, setInput] = useState("");
   const [keyword, setKeyword] = useState("");
 
   const search = useMemo(() => debounce(setKeyword, SEARCH_DEBOUNCE_MS), []);
@@ -31,9 +31,8 @@ export const useServerSearchOptions = <Option extends { id: string }>(
     sortDirection: "asc",
   });
 
-  const { data, isLoading } = useSWR(
+  const { data, isLoading } = useSWR<{ data: Option[]; total: number }>(
     path && `${path}?${params.toString()}`,
-    (url: string) => fetcher<{ data: Option[]; total: number }>(url),
     { keepPreviousData: true },
   );
 
@@ -44,11 +43,20 @@ export const useServerSearchOptions = <Option extends { id: string }>(
     value: string,
     reason: AutocompleteInputChangeReason,
   ) => {
-    if (reason === "input" || reason === "clear") search(value.trim());
+    if (reason === "input") {
+      setInput(value.trim());
+      search(value.trim());
+
+      return;
+    }
+
+    search.clear();
+    setInput("");
+    setKeyword("");
   };
 
   return {
-    loading: isLoading,
+    loading: !!path && (input !== keyword || isLoading),
     onInputChange,
     options: [
       ...selected,

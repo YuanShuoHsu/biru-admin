@@ -27,7 +27,13 @@ import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import { apiClient } from "@/lib/api-client";
 
-import { Autocomplete, Grid, MenuItem, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  CircularProgress,
+  Grid,
+  MenuItem,
+  TextField,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -576,6 +582,20 @@ const IngredientDialog = ({
                 helperText={errors.supplierId?.message}
                 label={`${tInventory("ingredients.supplierId.label")} ${tCommon("optional")}`}
                 placeholder={tInventory("ingredients.supplierId.placeholder")}
+                slotProps={{
+                  ...params.slotProps,
+                  input: {
+                    ...params.slotProps.input,
+                    endAdornment: (
+                      <>
+                        {supplierSearch.loading && (
+                          <CircularProgress color="inherit" size={20} />
+                        )}
+                        {params.slotProps.input.endAdornment}
+                      </>
+                    ),
+                  },
+                }}
               />
             )}
             value={supplier}
