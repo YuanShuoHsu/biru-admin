@@ -168,6 +168,7 @@
     "openingFloatHint": "Defaults to the float kept at the last close",
     "reason": "Reason",
     "reasonPlaceholder": "e.g. topping up change, petty expenses",
+    "refundNotOpen": "The cash drawer is not open, so cash payments cannot be refunded. Open it from the Cash drawer tab first.",
     "retainedFloat": "Float to keep",
     "retainedFloatHint": "Left in the drawer for the next opening",
     "suggestedOpeningFloat": "Default float",
