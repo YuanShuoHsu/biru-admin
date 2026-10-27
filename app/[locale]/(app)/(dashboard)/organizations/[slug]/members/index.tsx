@@ -14,6 +14,10 @@ import DataGrid from "@/components/DataGrid";
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { countKeys, ROLE_RANK } from "@/constants/organizations";
 
+import {
+  useDefaultOrganizationSlug,
+  useOrganizations,
+} from "@/hooks/organizations";
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useSession } from "@/hooks/useSession";
 
@@ -150,6 +154,10 @@ const OrganizationsSlugMembers = ({
   const { slug } = useParams<{ slug: string }>();
 
   const router = useRouter();
+
+  const { mutate: mutateOrganizations } = useOrganizations();
+  const { mutate: mutateDefaultOrganizationSlug } =
+    useDefaultOrganizationSlug();
 
   const tMembers = useTranslations("organizations.members");
   const tOrganizations = useTranslations("organizations");
@@ -391,7 +399,7 @@ const OrganizationsSlugMembers = ({
         <DialogContentText>
           {tOrganizations.rich("actions.leaveOrganization.confirm", {
             bold: (chunks) => <strong>{chunks}</strong>,
-            name: slug,
+            name: activeOrganization?.name ?? slug,
           })}
         </DialogContentText>
       ),
@@ -429,6 +437,11 @@ const OrganizationsSlugMembers = ({
                 return;
               }
 
+              await Promise.all([
+                mutateOrganizations(),
+                mutateDefaultOrganizationSlug(),
+              ]);
+
               router.replace("/organizations");
             },
           },
@@ -438,6 +451,9 @@ const OrganizationsSlugMembers = ({
       title: tOrganizations("actions.leaveOrganization.title"),
     });
   }, [
+    activeOrganization?.name,
+    mutateDefaultOrganizationSlug,
+    mutateOrganizations,
     organizationId,
     router,
     session,
