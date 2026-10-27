@@ -18,7 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { ModifierGroup } from "@/types/menus";
+import type { ModifierGroup, UpdateModifierGroupDto } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
@@ -77,7 +77,7 @@ const UpdateModifierGroupDialog = ({
           maxSelectionCount: maxSelectionCount
             ? Number(maxSelectionCount)
             : null,
-        }),
+        } satisfies UpdateModifierGroupDto),
       });
 
       enqueueSnackbar(

@@ -22,7 +22,7 @@ import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { MenuSection } from "@/types/menus";
+import type { CreateMenuSectionDto, MenuSection } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
@@ -80,7 +80,7 @@ const CreateMenuSectionDialog = ({
           description,
           ...(imageSrc && { image: imageSrc }),
           orderTicketPrinterId,
-        }),
+        } satisfies CreateMenuSectionDto),
       });
 
       enqueueSnackbar(
