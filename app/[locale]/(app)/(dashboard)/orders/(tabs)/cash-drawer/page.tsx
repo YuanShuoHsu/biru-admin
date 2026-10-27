@@ -66,6 +66,7 @@ const OrdersCashDrawerPage = async ({
   const memberRole = await getMemberRole(selectedOrganization.id);
 
   const canViewSessions = hasRolePermission(memberRole, {
+    cashDrawer: ["read"],
     revenue: ["read"],
   });
 
