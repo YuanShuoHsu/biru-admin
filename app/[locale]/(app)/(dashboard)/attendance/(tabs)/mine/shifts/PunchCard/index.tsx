@@ -13,6 +13,7 @@ import {
   Card,
   CardContent,
   Chip,
+  LinearProgress,
   Stack,
   Typography,
 } from "@mui/material";
@@ -78,7 +79,12 @@ const PunchCard = ({
 
   const tAttendance = useTranslations("attendance");
 
-  const { data: shifts = initialShifts, mutate } = useSWR<AttendanceShift[]>(
+  const {
+    data: shifts = initialShifts,
+    error,
+    isValidating,
+    mutate,
+  } = useSWR<AttendanceShift[]>(
     !loading && attendancePath(organizationSlug, "me", "shifts/punchable"),
     fetcher,
     { fallbackData: initialShifts },
@@ -190,44 +196,61 @@ const PunchCard = ({
           <Typography color="textSecondary" variant="body2">
             {tAttendance("locationHint")}
           </Typography>
-          {shifts.length
-            ? shifts.map((shift) => (
-                <ShiftStack direction={{ sm: "row" }} key={shift.id}>
-                  <ShiftTimeStack direction="row">
-                    <Typography>
-                      {format.dateTimeRange(
-                        new Date(shift.startsAt),
-                        new Date(shift.endsAt),
-                        "compact",
-                      )}
-                    </Typography>
-                    <Chip
-                      color={SHIFT_STATE_COLORS[shift.state]}
-                      label={tAttendance(`state.options.${shift.state}`)}
-                      size="small"
-                    />
-                  </ShiftTimeStack>
-                  <ActionsStack direction="row">
-                    {shift.availableActions.map((action) => (
-                      <Button
-                        disabled={!!busy}
-                        key={action}
-                        loading={busy === `${shift.id}:${action}`}
-                        onClick={() => void handlePunch(shift, action)}
-                        startIcon={PUNCH_ICONS[action]}
-                        variant="contained"
-                      >
-                        {tAttendance(`eventAction.options.${action}`)}
-                      </Button>
-                    ))}
-                  </ActionsStack>
-                </ShiftStack>
-              ))
-            : !loading && (
-                <Typography color="textSecondary">
-                  {tAttendance("mine.punch.empty")}
-                </Typography>
-              )}
+          {shifts.length ? (
+            shifts.map((shift) => (
+              <ShiftStack direction={{ sm: "row" }} key={shift.id}>
+                <ShiftTimeStack direction="row">
+                  <Typography>
+                    {format.dateTimeRange(
+                      new Date(shift.startsAt),
+                      new Date(shift.endsAt),
+                      "compact",
+                    )}
+                  </Typography>
+                  <Chip
+                    color={SHIFT_STATE_COLORS[shift.state]}
+                    label={tAttendance(`state.options.${shift.state}`)}
+                    size="small"
+                  />
+                </ShiftTimeStack>
+                <ActionsStack direction="row">
+                  {shift.availableActions.map((action) => (
+                    <Button
+                      disabled={!!busy}
+                      key={action}
+                      loading={busy === `${shift.id}:${action}`}
+                      onClick={() => void handlePunch(shift, action)}
+                      startIcon={PUNCH_ICONS[action]}
+                      variant="contained"
+                    >
+                      {tAttendance(`eventAction.options.${action}`)}
+                    </Button>
+                  ))}
+                </ActionsStack>
+              </ShiftStack>
+            ))
+          ) : loading ? (
+            <LinearProgress />
+          ) : error ? (
+            <ShiftStack direction={{ sm: "row" }}>
+              <ShiftTimeStack direction="row">
+                <Typography color="error">{getErrorMessage(error)}</Typography>
+              </ShiftTimeStack>
+              <ActionsStack direction="row">
+                <Button
+                  loading={isValidating}
+                  onClick={() => void mutate()}
+                  variant="outlined"
+                >
+                  {tAttendance("mine.punch.retry")}
+                </Button>
+              </ActionsStack>
+            </ShiftStack>
+          ) : (
+            <Typography color="textSecondary">
+              {tAttendance("mine.punch.empty")}
+            </Typography>
+          )}
         </ContentStack>
       </CardContent>
     </Card>
