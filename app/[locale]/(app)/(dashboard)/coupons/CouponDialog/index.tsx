@@ -41,6 +41,7 @@ import type { Coupon, CreateCouponDto } from "@/types/coupons";
 import type { OrderMenu } from "@/types/menus";
 import type { OrganizationResponse } from "@/types/organizations";
 
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { getOrganizationLabel } from "@/utils/organizations";
 
@@ -243,13 +244,8 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
       closeDialog();
 
       mutate();
-    } catch {
-      enqueueSnackbar(
-        tCoupons(
-          coupon ? "actions.updateCoupon.error" : "actions.createCoupon.error",
-        ),
-        { variant: "error" },
-      );
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
 
       setDialog({ confirmLoading: false });
     }

@@ -81,6 +81,7 @@ import type { Organization, OrganizationResponse } from "@/types/organizations";
 import { getCouponsPath } from "@/utils/coupons";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
 import { getCouponEnumOptions } from "@/utils/enumOptions";
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { getHref } from "@/utils/href";
 
@@ -371,6 +372,7 @@ const Coupons = ({
         content: (
           <GrantCouponDialog
             coupon={coupon}
+            mutate={mutate}
             organizationSlug={organization?.slug}
           />
         ),
@@ -379,7 +381,7 @@ const Coupons = ({
         title: tCoupons("actions.grantCoupon.title"),
       });
     },
-    [organization?.slug, setDialog, tCoupons],
+    [mutate, organization?.slug, setDialog, tCoupons],
   );
 
   const handleDeleteCoupon = useCallback(
@@ -403,10 +405,8 @@ const Coupons = ({
             );
 
             mutate();
-          } catch {
-            enqueueSnackbar(tCoupons("actions.deleteCoupon.error", { code }), {
-              variant: "error",
-            });
+          } catch (error) {
+            enqueueSnackbar(getErrorMessage(error), { variant: "error" });
           }
         },
         open: true,
@@ -461,10 +461,8 @@ const Coupons = ({
               variant: "success",
             },
           );
-        } catch {
-          enqueueSnackbar(tCoupons("actions.batchDeleteCoupon.submit.error"), {
-            variant: "error",
-          });
+        } catch (error) {
+          enqueueSnackbar(getErrorMessage(error), { variant: "error" });
         }
 
         mutate();

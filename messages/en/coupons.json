@@ -6,20 +6,17 @@
       },
       "submit": {
         "confirm": "Are you sure you want to delete the following <bold>{count} coupons</bold>?",
-        "error": "Failed to batch delete coupons",
         "label": "Delete Selected Coupons ({count})",
         "success": "Deleted {count} coupons"
       },
       "title": "Batch Delete Coupons"
     },
     "createCoupon": {
-      "error": "Failed to create coupon",
       "success": "Coupon {code} created",
       "title": "Create coupon"
     },
     "deleteCoupon": {
       "confirm": "Are you sure you want to delete coupon <bold>{code}</bold>? This action cannot be undone.",
-      "error": "Failed to delete coupon",
       "success": "Coupon {code} deleted",
       "title": "Delete coupon"
     },
@@ -35,7 +32,6 @@
     },
     "label": "Actions",
     "updateCoupon": {
-      "error": "Failed to update coupon",
       "success": "Coupon {code} updated",
       "title": "Edit coupon"
     }
