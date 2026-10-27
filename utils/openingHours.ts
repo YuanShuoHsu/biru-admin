@@ -452,42 +452,6 @@ export const getSingleDaySchedule = (
     : null;
 };
 
-export const isUnrestricted = (value: string): boolean =>
-  getSchedules(value).length === 0;
-
-export const isOpenOn = (value: string, at: Dayjs): boolean =>
-  isUnrestricted(value) ||
-  getDaySchedules(value, at).length > 0 ||
-  getDaySchedules(value, at.subtract(1, "day")).some(hasNextDayTail);
-
-export const getCloseTimeAt = (value: string, at: Dayjs): Dayjs | null => {
-  const minutes = at.hour() * 60 + at.minute();
-  const startOfDay = at.startOf("day");
-
-  const current = getDaySchedules(value, at).find((schedule) =>
-    isOvernight(schedule)
-      ? minutes >= toMinutes(schedule.startTime)
-      : minutes >= toMinutes(schedule.startTime) &&
-        minutes < toMinutes(schedule.endTime),
-  );
-  if (current)
-    return startOfDay
-      .add(isOvernight(current) ? 1 : 0, "day")
-      .add(toMinutes(current.endTime), "minute");
-
-  const previous = getDaySchedules(value, at.subtract(1, "day")).find(
-    (schedule) =>
-      isOvernight(schedule) && minutes < toMinutes(schedule.endTime),
-  );
-
-  return previous
-    ? startOfDay.add(toMinutes(previous.endTime), "minute")
-    : null;
-};
-
-export const isOpenAt = (value: string, at: Dayjs): boolean =>
-  isUnrestricted(value) || !!getCloseTimeAt(value, at);
-
 export interface OpeningHoursDisplayConfig {
   formatDay: (day: Day) => string;
   formatNextDayTime: (time: string) => string;
