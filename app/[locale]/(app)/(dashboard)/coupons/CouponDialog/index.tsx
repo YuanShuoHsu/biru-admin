@@ -205,23 +205,19 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
           }),
         issueTrigger:
           values.issueTrigger === "none" ? null : values.issueTrigger,
-        ...(values.scope === "item" && {
-          menuItemIds: values.menuItemIds,
-          menuSectionIds: values.menuSectionIds,
-        }),
-        ...(values.minSubtotal && { minSubtotal: Number(values.minSubtotal) }),
-        ...(values.perUserLimit && {
-          perUserLimit: Number(values.perUserLimit),
-        }),
+        menuItemIds: values.scope === "item" ? values.menuItemIds : [],
+        menuSectionIds: values.scope === "item" ? values.menuSectionIds : [],
+        minSubtotal: values.minSubtotal ? Number(values.minSubtotal) : null,
+        perUserLimit: values.perUserLimit ? Number(values.perUserLimit) : null,
         pointsCost: values.pointsCost ? Number(values.pointsCost) : null,
         scope: values.scope,
-        ...(values.totalLimit && { totalLimit: Number(values.totalLimit) }),
-        ...(values.validFrom && {
-          validFrom: new Date(values.validFrom).toISOString(),
-        }),
-        ...(values.validThrough && {
-          validThrough: new Date(values.validThrough).toISOString(),
-        }),
+        totalLimit: values.totalLimit ? Number(values.totalLimit) : null,
+        validFrom: values.validFrom
+          ? new Date(values.validFrom).toISOString()
+          : null,
+        validThrough: values.validThrough
+          ? new Date(values.validThrough).toISOString()
+          : null,
       };
 
       await fetcher(coupon ? `/api/coupons/${coupon.id}` : "/api/coupons", {
