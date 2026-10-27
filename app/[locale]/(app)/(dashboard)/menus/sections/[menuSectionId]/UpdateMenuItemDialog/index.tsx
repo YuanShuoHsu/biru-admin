@@ -27,6 +27,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
+import { apiClient } from "@/lib/api-client";
+
 import { Chip, Divider, Grid, MenuItem, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -49,7 +51,6 @@ import type {
 } from "@/types/menus";
 import type { ApiOrderMode } from "@/types/orderMode";
 
-import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
 const StyledGrid = styled(Grid)({
@@ -188,17 +189,22 @@ const UpdateMenuItemDialog = ({
       setDialog({ confirmLoading: true });
 
       if (!canWrite) {
-        await fetcher(`/api/offers/${item.offer?.id}/availability`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+        if (!item.offer) {
+          closeDialog();
+
+          return;
+        }
+
+        await apiClient.PATCH("/api/offers/{offerId}/availability", {
+          params: { path: { offerId: item.offer.id } },
+          body: {
             availability: offer?.availability,
             inventoryLevel: {
               value: offer?.inventoryLevel?.value
                 ? Number(offer.inventoryLevel.value)
                 : null,
             },
-          }),
+          },
         });
 
         enqueueSnackbar(
@@ -215,10 +221,9 @@ const UpdateMenuItemDialog = ({
         return;
       }
 
-      await fetcher(`/api/menu-items/${item.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      await apiClient.PATCH("/api/menu-items/{menuItemId}", {
+        params: { path: { menuItemId: item.id } },
+        body: {
           name,
           description,
           ...(imageSrc !== (item.image || null) && { image: imageSrc }),
@@ -261,7 +266,7 @@ const UpdateMenuItemDialog = ({
                 }
               : null,
           },
-        }),
+        },
       });
 
       enqueueSnackbar(

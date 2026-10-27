@@ -20,11 +20,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
+import { apiClient } from "@/lib/api-client";
+
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { MenuSection } from "@/types/menus";
 
-import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
 interface UpdateMenuSectionDialogProps {
@@ -75,15 +76,14 @@ const UpdateMenuSectionDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher(`/api/menu-sections/${section.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      await apiClient.PATCH("/api/menu-sections/{sectionId}", {
+        params: { path: { sectionId: section.id } },
+        body: {
           name,
           description,
           ...(imageSrc !== (section.image || null) && { image: imageSrc }),
           orderTicketPrinterId,
-        }),
+        },
       });
 
       const displayName = localize(name, locale);

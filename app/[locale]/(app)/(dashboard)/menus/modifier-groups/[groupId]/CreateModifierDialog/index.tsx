@@ -17,15 +17,15 @@ import NumberSpinner from "@/components/NumberSpinner";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { apiClient } from "@/lib/api-client";
+
 import { MenuItem, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { itemAvailabilityValues, orderModeValues } from "@/types/api";
-import type { Modifier } from "@/types/menus";
 import type { ApiOrderMode } from "@/types/orderMode";
 
-import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
 interface CreateModifierDialogProps {
@@ -74,19 +74,15 @@ const CreateModifierDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher<Modifier>(
-        `/api/modifier-groups/${modifierGroupId}/modifiers`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            displayName,
-            ...(priceAdjustment?.trim() && { priceAdjustment }),
-            ...(availability && { availability }),
-            availableModes,
-          }),
+      await apiClient.POST("/api/modifier-groups/{groupId}/modifiers", {
+        params: { path: { groupId: modifierGroupId } },
+        body: {
+          displayName,
+          ...(priceAdjustment?.trim() && { priceAdjustment }),
+          ...(availability && { availability }),
+          availableModes,
         },
-      );
+      });
 
       enqueueSnackbar(
         tMenus("modifiers.actions.createModifier.success", {
