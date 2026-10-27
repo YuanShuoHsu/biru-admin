@@ -6,7 +6,7 @@ import utc from "dayjs/plugin/utc";
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
-import useSWR from "swr";
+import useSWR, { mutate as mutateCache } from "swr";
 
 import SubstituteDialog from "./SubstituteDialog";
 
@@ -19,6 +19,7 @@ import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
+import { attendanceReviewCountsKey } from "@/hooks/useAttendanceReviewCounts";
 import {
   useDateFilterOperators,
   useStringFilterOperators,
@@ -192,6 +193,7 @@ const HolidaySubstitutes = ({
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
         }, 0);
+        mutateCache(attendanceReviewCountsKey(organizationSlug));
       },
     },
   );
