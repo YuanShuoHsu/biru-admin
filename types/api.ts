@@ -6886,11 +6886,18 @@ export interface components {
        */
       phoneNumber?: string;
     };
+    LocalizedTextDto: {
+      en?: string;
+      ja?: string;
+      ko?: string;
+      "zh-CN"?: string;
+      "zh-TW"?: string;
+    };
     BannerResponseDto: {
       id: string;
       /** @description 圖片來源（data URL） */
       image: string;
-      alt?: Record<string, never> | null;
+      alt?: components["schemas"]["LocalizedTextDto"] | null;
       url?: string | null;
       isActive: boolean;
       /** Format: date-time */
@@ -6912,7 +6919,7 @@ export interface components {
        *       "en": "New autumn drinks"
        *     }
        */
-      alt?: Record<string, never> | null;
+      alt?: components["schemas"]["LocalizedTextDto"] | null;
       /**
        * @description 點擊後前往的站內路徑（/ 開頭）或 https 網址
        * @example /order
@@ -6954,7 +6961,7 @@ export interface components {
        *       "en": "New autumn drinks"
        *     }
        */
-      alt?: Record<string, never> | null;
+      alt?: components["schemas"]["LocalizedTextDto"] | null;
       /**
        * @description 點擊後前往的站內路徑（/ 開頭）或 https 網址
        * @example /order
@@ -8841,7 +8848,7 @@ export interface components {
        *       "en": "Matcha Powder"
        *     }
        */
-      name: Record<string, never>;
+      name: components["schemas"]["LocalizedTextDto"];
       /** @example 森半宇治抹茶粉 PCT-2 茗（無糖） */
       brand?: string | null;
       image?: string | null;
@@ -8887,7 +8894,7 @@ export interface components {
     IngredientResponseDto: {
       id: string;
       organizationId: string;
-      name: Record<string, never>;
+      name: components["schemas"]["LocalizedTextDto"];
       brand?: string | null;
       image?: string | null;
       /** @description 無 purchasing 權限時不回傳 */
@@ -8954,7 +8961,7 @@ export interface components {
     };
     SupplierIngredientResponseDto: {
       id: string;
-      name: Record<string, never>;
+      name: components["schemas"]["LocalizedTextDto"];
     };
     SupplierResponseDto: {
       id: string;
@@ -8981,7 +8988,7 @@ export interface components {
        *       "en": "Matcha Panna Cotta"
        *     }
        */
-      name: Record<string, never>;
+      name: components["schemas"]["LocalizedTextDto"];
       /** @description 對應的菜單品項，一個品項只能有一份食譜 */
       menuItemId?: string | null;
       /**
@@ -8996,13 +9003,13 @@ export interface components {
        *       }
        *     ]
        */
-      recipeInstructions?: Record<string, never>[];
+      recipeInstructions?: components["schemas"]["LocalizedTextDto"][];
     };
     RecipeIngredientResponseDto: {
       id: string;
       recipeId: string;
       ingredientId: string;
-      ingredientName: Record<string, never>;
+      ingredientName: components["schemas"]["LocalizedTextDto"];
       unitCode: components["schemas"]["UnitCode"];
       requiredQuantity: string;
       /** @description 無 purchasing 權限時不回傳 */
@@ -9019,10 +9026,10 @@ export interface components {
       id: string;
       organizationId: string;
       menuItemId?: string | null;
-      menuItemName?: Record<string, never> | null;
-      name: Record<string, never>;
+      menuItemName?: components["schemas"]["LocalizedTextDto"] | null;
+      name: components["schemas"]["LocalizedTextDto"];
       recipeYield: number;
-      recipeInstructions?: Record<string, never>[] | null;
+      recipeInstructions?: components["schemas"]["LocalizedTextDto"][] | null;
       /** @description 全部材料成本合計；任一材料缺單價時為 null，無 purchasing 權限時不回傳 */
       cost?: number | null;
       /** @description 對應品項售價 */
@@ -9040,7 +9047,7 @@ export interface components {
        *       "en": "Matcha Powder"
        *     }
        */
-      name?: Record<string, never>;
+      name?: components["schemas"]["LocalizedTextDto"];
       /** @example 森半宇治抹茶粉 PCT-2 茗（無糖） */
       brand?: string | null;
       image?: string | null;
@@ -9137,7 +9144,7 @@ export interface components {
        *       "en": "Matcha Panna Cotta"
        *     }
        */
-      name?: Record<string, never>;
+      name?: components["schemas"]["LocalizedTextDto"];
       /** @description 對應的菜單品項，一個品項只能有一份食譜 */
       menuItemId?: string | null;
       /**
@@ -9152,7 +9159,7 @@ export interface components {
        *       }
        *     ]
        */
-      recipeInstructions?: Record<string, never>[];
+      recipeInstructions?: components["schemas"]["LocalizedTextDto"][];
     };
     /** @enum {string} */
     RecipeIngredientFilterField:
@@ -9906,8 +9913,8 @@ export interface components {
     MenuResponseDto: {
       id: string;
       organizationId: string;
-      name: Record<string, never>;
-      description?: Record<string, never> | null;
+      name: components["schemas"]["LocalizedTextDto"];
+      description?: components["schemas"]["LocalizedTextDto"] | null;
       image?: string | null;
       /** Format: date-time */
       createdAt: string;
@@ -9921,8 +9928,8 @@ export interface components {
        *       "en": "Lunch Menu"
        *     }
        */
-      name?: Record<string, never>;
-      description?: Record<string, never> | null;
+      name?: components["schemas"]["LocalizedTextDto"];
+      description?: components["schemas"]["LocalizedTextDto"] | null;
       image?: string;
     };
     CreateMenuSectionDto: {
@@ -9934,8 +9941,8 @@ export interface components {
        *       "en": "Main Course"
        *     }
        */
-      name: Record<string, never>;
-      description?: Record<string, never> | null;
+      name: components["schemas"]["LocalizedTextDto"];
+      description?: components["schemas"]["LocalizedTextDto"] | null;
       image?: string;
       /** @description 工作單印表機；null 時沿用上層分類，最上層也沒設就印到預設工作單印表機 */
       orderTicketPrinterId?: string | null;
@@ -9944,8 +9951,8 @@ export interface components {
       id: string;
       menuId: string;
       parentSectionId?: string | null;
-      name: Record<string, never>;
-      description?: Record<string, never> | null;
+      name: components["schemas"]["LocalizedTextDto"];
+      description?: components["schemas"]["LocalizedTextDto"] | null;
       image?: string | null;
       /** @description 工作單印表機；null 時沿用上層分類，最上層也沒設就印到預設工作單印表機 */
       orderTicketPrinterId: string | null;
@@ -9974,8 +9981,8 @@ export interface components {
        *       "en": "Main Course"
        *     }
        */
-      name?: Record<string, never>;
-      description?: Record<string, never> | null;
+      name?: components["schemas"]["LocalizedTextDto"];
+      description?: components["schemas"]["LocalizedTextDto"] | null;
       image?: string;
       /** @description 工作單印表機；null 時沿用上層分類，最上層也沒設就印到預設工作單印表機 */
       orderTicketPrinterId?: string | null;
@@ -10051,8 +10058,8 @@ export interface components {
        *       "en": "Latte"
        *     }
        */
-      name: Record<string, never>;
-      description?: Record<string, never> | null;
+      name: components["schemas"]["LocalizedTextDto"];
+      description?: components["schemas"]["LocalizedTextDto"] | null;
       image?: string;
       suitableForDiet?: (
         | "DiabeticDiet"
@@ -10111,7 +10118,7 @@ export interface components {
     };
     MenuItemRecipeResponseDto: {
       id: string;
-      name: Record<string, never>;
+      name: components["schemas"]["LocalizedTextDto"];
       recipeYield: number;
       /** @description 任一材料缺單價時為 null */
       cost?: number | null;
@@ -10122,8 +10129,8 @@ export interface components {
       menuSectionId?: string | null;
       /** @description 工作單印表機；null 時沿用所屬分類 */
       orderTicketPrinterId: string | null;
-      name: Record<string, never>;
-      description?: Record<string, never> | null;
+      name: components["schemas"]["LocalizedTextDto"];
+      description?: components["schemas"]["LocalizedTextDto"] | null;
       image?: string | null;
       suitableForDiet?:
         | (
@@ -10204,8 +10211,8 @@ export interface components {
        *       "en": "Latte"
        *     }
        */
-      name?: Record<string, never>;
-      description?: Record<string, never> | null;
+      name?: components["schemas"]["LocalizedTextDto"];
+      description?: components["schemas"]["LocalizedTextDto"] | null;
       image?: string;
       suitableForDiet?: (
         | "DiabeticDiet"
@@ -10275,11 +10282,13 @@ export interface components {
       id: string;
       menuItemId: string;
       addOnMenuItemId?: string | null;
-      addOnMenuItemName?: Record<string, never> | null;
+      addOnMenuItemName?: components["schemas"]["LocalizedTextDto"] | null;
       addOnMenuSectionId?: string | null;
-      addOnMenuSectionName?: Record<string, never> | null;
+      addOnMenuSectionName?: components["schemas"]["LocalizedTextDto"] | null;
       addOnMenuItemSectionId?: string | null;
-      addOnMenuItemSectionName?: Record<string, never> | null;
+      addOnMenuItemSectionName?:
+        | components["schemas"]["LocalizedTextDto"]
+        | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -10311,7 +10320,7 @@ export interface components {
        *       "en": "Sweetness"
        *     }
        */
-      displayName: Record<string, never>;
+      displayName: components["schemas"]["LocalizedTextDto"];
       /**
        * @description 最少選擇數量；>= 1 代表必選
        * @default 0
@@ -10323,7 +10332,7 @@ export interface components {
     ModifierResponseDto: {
       id: string;
       modifierGroupId: string;
-      displayName: Record<string, never>;
+      displayName: components["schemas"]["LocalizedTextDto"];
       /** @description 加價金額；null 代表不影響價格 */
       priceAdjustment?: string | null;
       /** @description priceAdjustment 的幣別；來自店家設定 */
@@ -10340,7 +10349,7 @@ export interface components {
     ModifierGroupResponseDto: {
       id: string;
       menuId: string;
-      displayName: Record<string, never>;
+      displayName: components["schemas"]["LocalizedTextDto"];
       /** @description 最少選擇數量；>= 1 代表必選 */
       minSelectionCount: number;
       /** @description 最多選擇數量；null 為不限 */
@@ -10369,7 +10378,7 @@ export interface components {
       | "updatedAt";
     UpdateModifierGroupDto: {
       /** @description 群組名稱 */
-      displayName?: Record<string, never>;
+      displayName?: components["schemas"]["LocalizedTextDto"];
       /** @description 最少選擇數量；>= 1 代表必選 */
       minSelectionCount?: number;
       /** @description 最多選擇數量；null 為不限 */
@@ -10383,7 +10392,7 @@ export interface components {
        *       "en": "Half Sugar"
        *     }
        */
-      displayName: Record<string, never>;
+      displayName: components["schemas"]["LocalizedTextDto"];
       /**
        * @description 加價金額；省略代表不影響價格
        * @example 10.00
@@ -10410,7 +10419,7 @@ export interface components {
       | "updatedAt";
     UpdateModifierDto: {
       /** @description 選項名稱 */
-      displayName?: Record<string, never>;
+      displayName?: components["schemas"]["LocalizedTextDto"];
       /**
        * @description 加價金額
        * @example 10.00

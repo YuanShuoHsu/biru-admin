@@ -26,7 +26,7 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { Banner } from "@/types/banners";
+import type { Banner, CreateBannerDto } from "@/types/banners";
 
 import { fetcher } from "@/utils/fetcher";
 
@@ -103,7 +103,7 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
           isActive,
           startsAt: startsAt || null,
           url: url || null,
-        }),
+        } satisfies CreateBannerDto),
       });
 
       enqueueSnackbar(
