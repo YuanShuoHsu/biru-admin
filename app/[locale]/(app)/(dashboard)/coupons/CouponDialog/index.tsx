@@ -205,8 +205,10 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
           }),
         issueTrigger:
           values.issueTrigger === "none" ? null : values.issueTrigger,
-        menuItemIds: values.scope === "item" ? values.menuItemIds : [],
-        menuSectionIds: values.scope === "item" ? values.menuSectionIds : [],
+        ...(values.scope === "item" && {
+          menuItemIds: values.menuItemIds,
+          menuSectionIds: values.menuSectionIds,
+        }),
         minSubtotal: values.minSubtotal ? Number(values.minSubtotal) : null,
         perUserLimit: values.perUserLimit ? Number(values.perUserLimit) : null,
         pointsCost: values.pointsCost ? Number(values.pointsCost) : null,
