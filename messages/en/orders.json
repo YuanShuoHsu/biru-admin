@@ -171,6 +171,19 @@
     "refundNotOpen": "The cash drawer is not open, so cash payments cannot be refunded. Open it from the Cash drawer tab first.",
     "retainedFloat": "Float to keep",
     "retainedFloatHint": "Left in the drawer for the next opening",
+    "sessions": {
+      "closedAt": "Closed at",
+      "closedByName": "Closed by",
+      "label": "Drawer history",
+      "openedAt": "Opened at",
+      "openedByName": "Opened by",
+      "status": {
+        "closed": "Closed",
+        "label": "Status",
+        "open": "Open"
+      },
+      "variance": "Variance"
+    },
     "suggestedOpeningFloat": "Default float",
     "varianceNote": "Variance note",
     "varianceNoteHint": "Required when the variance exceeds {tolerance}",

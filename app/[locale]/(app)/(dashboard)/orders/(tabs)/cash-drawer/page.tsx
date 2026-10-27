@@ -4,16 +4,37 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
 import OrdersCashDrawer from ".";
+import CashDrawerSessions from "./CashDrawerSessions";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-import { getCurrentCashDrawer } from "@/utils/orders";
-import { getResolvedAdminOrganization } from "@/utils/session";
+import {
+  cashDrawerSessionFilterFieldValues,
+  cashDrawerSessionSortFieldValues,
+  filterOperatorValues,
+} from "@/types/api";
+
+import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
+import { getCashDrawerSessionEnumOptions } from "@/utils/enumOptions";
+import { getCashDrawerSessions, getCurrentCashDrawer } from "@/utils/orders";
+import { hasRolePermission } from "@/utils/organizations";
+import { getMemberRole, getResolvedAdminOrganization } from "@/utils/session";
 
 interface OrdersCashDrawerPageProps {
   params: Promise<{ locale: Locale }>;
-  searchParams: Promise<{ organization?: string }>;
+  searchParams: Promise<{
+    filterField?: string;
+    filterOperator?: string;
+    filterValue?: string;
+    organization?: string;
+    page?: string;
+    pageSize?: string;
+    quickFilterEnums?: string | string[];
+    quickFilterValue?: string;
+    sortBy?: string;
+    sortDirection?: string;
+  }>;
 }
 
 export const generateMetadata = async ({
@@ -29,7 +50,7 @@ const OrdersCashDrawerPage = async ({
   params,
   searchParams,
 }: OrdersCashDrawerPageProps) => {
-  const [cookieStore, { locale }, { organization }] = await Promise.all([
+  const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
     searchParams,
@@ -37,24 +58,80 @@ const OrdersCashDrawerPage = async ({
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const selectedOrganization = await getResolvedAdminOrganization(organization);
+  const selectedOrganization = await getResolvedAdminOrganization(
+    rawSearchParams.organization,
+  );
   if (!selectedOrganization) notFound();
 
-  if (organization !== selectedOrganization.slug) {
-    const params = new URLSearchParams({
-      organization: selectedOrganization.slug,
+  const memberRole = await getMemberRole(selectedOrganization.id);
+
+  const canViewSessions = hasRolePermission(memberRole, {
+    revenue: ["read"],
+  });
+
+  const grid = resolveGridSearchParams({
+    searchParams: rawSearchParams,
+    sortFields: cashDrawerSessionSortFieldValues,
+    filterFields: cashDrawerSessionFilterFieldValues,
+    filterOperators: filterOperatorValues,
+    organizationSlug: selectedOrganization.slug,
+  });
+
+  if (grid.redirectParams)
+    redirect({
+      href: `/orders/cash-drawer?${grid.redirectParams.toString()}`,
+      locale,
     });
 
-    redirect({ href: `/orders/cash-drawer?${params.toString()}`, locale });
-  }
+  const quickFilterEnums = grid.quickFilterValue
+    ? getQuickFilterEnums(
+        grid.quickFilterValue,
+        getCashDrawerSessionEnumOptions(
+          await getTranslations({ locale, namespace: "orders" }),
+        ),
+      )
+    : [];
 
-  const current = await getCurrentCashDrawer(
-    selectedOrganization.slug,
-    fetchOptions,
-  );
+  const [current, sessions] = await Promise.all([
+    getCurrentCashDrawer(selectedOrganization.slug, fetchOptions),
+    canViewSessions &&
+      getCashDrawerSessions(
+        selectedOrganization.slug,
+        {
+          page: grid.page,
+          pageSize: grid.pageSize,
+          filterField: grid.filterField,
+          filterOperator: grid.filterOperator,
+          filterValue: grid.filterValue,
+          quickFilterEnums,
+          quickFilterValue: grid.quickFilterValue,
+          sortBy: grid.sortBy,
+          sortDirection: grid.sortDirection,
+        },
+        fetchOptions,
+      ),
+  ]);
 
   return (
-    <OrdersCashDrawer current={current} organization={selectedOrganization} />
+    <>
+      <OrdersCashDrawer current={current} organization={selectedOrganization} />
+      {sessions && (
+        <CashDrawerSessions
+          currency={selectedOrganization.currency}
+          filterField={grid.filterField}
+          filterOperator={grid.filterOperator}
+          filterValue={grid.filterValue}
+          organizationSlug={selectedOrganization.slug}
+          page={grid.page}
+          pageSize={grid.pageSize}
+          quickFilterValue={grid.quickFilterValue}
+          rowCount={sessions.total}
+          rows={sessions.sessions}
+          sortBy={grid.sortBy}
+          sortDirection={grid.sortDirection}
+        />
+      )}
+    </>
   );
 };
 

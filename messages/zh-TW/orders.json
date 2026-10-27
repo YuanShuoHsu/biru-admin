@@ -171,6 +171,19 @@
     "refundNotOpen": "錢櫃尚未開帳，現金付款的訂單無法退款。請先到「錢櫃」分頁開帳。",
     "retainedFloat": "留存零用金",
     "retainedFloatHint": "留在錢櫃給下一次開帳使用",
+    "sessions": {
+      "closedAt": "關帳時間",
+      "closedByName": "關帳人員",
+      "label": "開關帳紀錄",
+      "openedAt": "開帳時間",
+      "openedByName": "開帳人員",
+      "status": {
+        "closed": "已關帳",
+        "label": "狀態",
+        "open": "開帳中"
+      },
+      "variance": "差額"
+    },
     "suggestedOpeningFloat": "預設零用金",
     "varianceNote": "差額說明",
     "varianceNoteHint": "差額超過 {tolerance} 時必填",

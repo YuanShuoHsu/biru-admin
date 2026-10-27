@@ -1,4 +1,6 @@
 import {
+  cashDrawerSessionFilterFieldValues,
+  cashDrawerSessionSortFieldValues,
   type components,
   orderFilterFieldValues,
   orderSortFieldValues,
@@ -68,3 +70,9 @@ export type CurrentCashDrawer = components["schemas"]["CurrentCashDrawerDto"];
 export type CashDrawerSession = components["schemas"]["CashDrawerSessionDto"];
 export type CashDrawerMovementType =
   components["schemas"]["CashDrawerMovementType"];
+export type CashDrawerSessionListItem =
+  components["schemas"]["CashDrawerSessionListItemDto"];
+export type CashDrawerSessionFilterField =
+  (typeof cashDrawerSessionFilterFieldValues)[number];
+export type CashDrawerSessionSortField =
+  (typeof cashDrawerSessionSortFieldValues)[number];

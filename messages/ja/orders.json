@@ -171,6 +171,19 @@
     "refundNotOpen": "レジが開始されていないため、現金払いの注文は返金できません。先に「レジ現金」タブでレジを開始してください。",
     "retainedFloat": "残す準備金",
     "retainedFloatHint": "次回のレジ開始に使う分をレジに残します",
+    "sessions": {
+      "closedAt": "締め日時",
+      "closedByName": "締め担当者",
+      "label": "レジ開始・締め履歴",
+      "openedAt": "開始日時",
+      "openedByName": "開始担当者",
+      "status": {
+        "closed": "締め済み",
+        "label": "状態",
+        "open": "営業中"
+      },
+      "variance": "過不足"
+    },
     "suggestedOpeningFloat": "既定の釣り銭準備金",
     "varianceNote": "過不足の説明",
     "varianceNoteHint": "過不足が {tolerance} を超える場合は必須",

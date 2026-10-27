@@ -1174,7 +1174,8 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get?: never;
+    /** 錢櫃開關帳紀錄 */
+    get: operations["CashDrawerController_list"];
     put?: never;
     /** 開帳 */
     post: operations["CashDrawerController_open"];
@@ -2455,7 +2456,8 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get?: never;
+    /** 查詢供應商 */
+    get: operations["SuppliersController_findOne"];
     put?: never;
     post?: never;
     /** 刪除供應商 */
@@ -7033,6 +7035,57 @@ export interface components {
       /** @description 差額在此金額內可不填說明 */
       varianceTolerance: string;
     };
+    /** @enum {string} */
+    CashDrawerSessionFilterField:
+      | "openedByName"
+      | "closedByName"
+      | "varianceNote"
+      | "status"
+      | "openingFloat"
+      | "expectedCash"
+      | "countedCash"
+      | "variance"
+      | "retainedFloat"
+      | "openedAt"
+      | "closedAt"
+      | "businessDate";
+    /** @enum {string} */
+    CashDrawerSessionSortField:
+      | "openedByName"
+      | "closedByName"
+      | "varianceNote"
+      | "status"
+      | "openingFloat"
+      | "expectedCash"
+      | "countedCash"
+      | "variance"
+      | "retainedFloat"
+      | "openedAt"
+      | "closedAt"
+      | "businessDate";
+    CashDrawerSessionListItemDto: {
+      id: string;
+      /** @example 2026-10-23 */
+      businessDate: string;
+      status: components["schemas"]["CashDrawerSessionStatus"];
+      /** Format: date-time */
+      openedAt: string;
+      openedByName: string | null;
+      openingFloat: string;
+      /** Format: date-time */
+      closedAt: string | null;
+      closedByName: string | null;
+      expectedCash: string | null;
+      countedCash: string | null;
+      /** @description 實點現金−應有現金 */
+      variance: string | null;
+      retainedFloat: string | null;
+      varianceNote: string | null;
+    };
+    CashDrawerSessionListResponseDto: {
+      data: components["schemas"]["CashDrawerSessionListItemDto"][];
+      total: number;
+    };
     OpenCashDrawerDto: {
       /**
        * @description 省略時沿用上一次結帳的留存零用金
@@ -8257,6 +8310,11 @@ export interface components {
       voluntaryPensionCents: string;
       retirementIncomeCents: string;
       retirementWithholdingCents: string;
+    };
+    DonateCodeResponseDto: {
+      donateNm: string;
+      donateCode: string;
+      donateShortNm?: string;
     };
     /**
      * @description 需要人工處理的類型
@@ -9930,7 +9988,7 @@ export interface components {
        */
       name?: components["schemas"]["LocalizedTextDto"];
       description?: components["schemas"]["LocalizedTextDto"] | null;
-      image?: string;
+      image?: string | null;
     };
     CreateMenuSectionDto: {
       /** @description Parent section ID for nested sections */
@@ -9943,7 +10001,7 @@ export interface components {
        */
       name: components["schemas"]["LocalizedTextDto"];
       description?: components["schemas"]["LocalizedTextDto"] | null;
-      image?: string;
+      image?: string | null;
       /** @description 工作單印表機；null 時沿用上層分類，最上層也沒設就印到預設工作單印表機 */
       orderTicketPrinterId?: string | null;
     };
@@ -9983,7 +10041,7 @@ export interface components {
        */
       name?: components["schemas"]["LocalizedTextDto"];
       description?: components["schemas"]["LocalizedTextDto"] | null;
-      image?: string;
+      image?: string | null;
       /** @description 工作單印表機；null 時沿用上層分類，最上層也沒設就印到預設工作單印表機 */
       orderTicketPrinterId?: string | null;
     };
@@ -10041,15 +10099,17 @@ export interface components {
       price: string;
       availability?: components["schemas"]["ItemAvailability"];
       /** @description 可供應時段，格式同組織營業時間（如 "Mo-Fr 07:00-11:00"）；null 代表全時段供應 */
-      availableHours?: string;
+      availableHours?: string | null;
       /**
        * @description 預計準備時間（分鐘）
        * @example 15
        */
-      deliveryLeadTimeMinutes?: number;
+      deliveryLeadTimeMinutes?: number | null;
       /** @description 當日剩餘庫存數量 */
-      inventoryLevel?: components["schemas"]["QuantitativeValueDto"];
-      priceSpecification?: components["schemas"]["PriceSpecificationDto"];
+      inventoryLevel?: components["schemas"]["QuantitativeValueDto"] | null;
+      priceSpecification?:
+        | components["schemas"]["PriceSpecificationDto"]
+        | null;
     };
     CreateMenuItemDto: {
       /**
@@ -10060,7 +10120,7 @@ export interface components {
        */
       name: components["schemas"]["LocalizedTextDto"];
       description?: components["schemas"]["LocalizedTextDto"] | null;
-      image?: string;
+      image?: string | null;
       suitableForDiet?: (
         | "DiabeticDiet"
         | "GlutenFreeDiet"
@@ -10213,7 +10273,7 @@ export interface components {
        */
       name?: components["schemas"]["LocalizedTextDto"];
       description?: components["schemas"]["LocalizedTextDto"] | null;
-      image?: string;
+      image?: string | null;
       suitableForDiet?: (
         | "DiabeticDiet"
         | "GlutenFreeDiet"
@@ -10253,15 +10313,17 @@ export interface components {
       price?: string;
       availability?: components["schemas"]["ItemAvailability"];
       /** @description 可供應時段，格式同組織營業時間（如 "Mo-Fr 07:00-11:00"）；null 代表全時段供應 */
-      availableHours?: string;
+      availableHours?: string | null;
       /**
        * @description 預計準備時間（分鐘）
        * @example 15
        */
-      deliveryLeadTimeMinutes?: number;
+      deliveryLeadTimeMinutes?: number | null;
       /** @description 當日剩餘庫存數量 */
-      inventoryLevel?: components["schemas"]["QuantitativeValueDto"];
-      priceSpecification?: components["schemas"]["PriceSpecificationDto"];
+      inventoryLevel?: components["schemas"]["QuantitativeValueDto"] | null;
+      priceSpecification?:
+        | components["schemas"]["PriceSpecificationDto"]
+        | null;
     };
     OfferInventoryLevelValueDto: {
       /** @description 當日剩餘庫存數量；null 代表不限量 */
@@ -10397,7 +10459,7 @@ export interface components {
        * @description 加價金額；省略代表不影響價格
        * @example 10.00
        */
-      priceAdjustment?: string;
+      priceAdjustment?: string | null;
       availability?: components["schemas"]["ItemAvailability"];
       /** @description 可販售的點餐模式；省略代表四種全開 */
       availableModes?: components["schemas"]["OrderMode"][];
@@ -10424,7 +10486,7 @@ export interface components {
        * @description 加價金額
        * @example 10.00
        */
-      priceAdjustment?: string;
+      priceAdjustment?: string | null;
       availability?: components["schemas"]["ItemAvailability"];
       /** @description 可販售的點餐模式 */
       availableModes?: components["schemas"]["OrderMode"][];
@@ -10896,6 +10958,11 @@ export interface components {
        * @example 10
        */
       holdMinutes: number;
+    };
+    BusinessInfoResponseDto: {
+      name: string;
+      address: string;
+      representativeName: string;
     };
     OrganizationStatsBucketDto: {
       /** Format: date-time */
@@ -15313,6 +15380,43 @@ export interface operations {
       };
     };
   };
+  CashDrawerController_list: {
+    parameters: {
+      query?: {
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["CashDrawerSessionFilterField"];
+        sortBy?: components["schemas"]["CashDrawerSessionSortField"];
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CashDrawerSessionListResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   CashDrawerController_open: {
     parameters: {
       query?: never;
@@ -16911,7 +17015,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": Record<string, never>[];
+          "application/json": components["schemas"]["DonateCodeResponseDto"][];
         };
       };
       /** @description Internal server error */
@@ -18340,6 +18444,34 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["RecipeIngredientResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SuppliersController_findOne: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        supplierId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SupplierResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -21286,7 +21418,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": Record<string, never>;
+          "application/json": components["schemas"]["BusinessInfoResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -24908,6 +25040,38 @@ export const cashDrawerSessionStatusValues: ReadonlyArray<
 export const cashDrawerMovementTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CashDrawerMovementType"]
 > = ["payIn", "payOut"];
+export const cashDrawerSessionFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CashDrawerSessionFilterField"]
+> = [
+  "openedByName",
+  "closedByName",
+  "varianceNote",
+  "status",
+  "openingFloat",
+  "expectedCash",
+  "countedCash",
+  "variance",
+  "retainedFloat",
+  "openedAt",
+  "closedAt",
+  "businessDate",
+];
+export const cashDrawerSessionSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CashDrawerSessionSortField"]
+> = [
+  "openedByName",
+  "closedByName",
+  "varianceNote",
+  "status",
+  "openingFloat",
+  "expectedCash",
+  "countedCash",
+  "variance",
+  "retainedFloat",
+  "openedAt",
+  "closedAt",
+  "businessDate",
+];
 export const couponDiscountTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CouponDiscountType"]
 > = ["fixed", "percentage"];
