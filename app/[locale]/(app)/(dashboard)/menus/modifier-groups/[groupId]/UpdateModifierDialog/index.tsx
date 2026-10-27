@@ -22,7 +22,11 @@ import { MenuItem, TextField } from "@mui/material";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { itemAvailabilityValues, orderModeValues } from "@/types/api";
-import type { Modifier } from "@/types/menus";
+import type {
+  Modifier,
+  UpdateItemAvailabilityDto,
+  UpdateModifierDto,
+} from "@/types/menus";
 import type { ApiOrderMode } from "@/types/orderMode";
 
 import { fetcher } from "@/utils/fetcher";
@@ -86,15 +90,15 @@ const UpdateModifierDialog = ({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(
             canWrite
-              ? {
+              ? ({
                   displayName,
                   priceAdjustment: priceAdjustment?.trim()
                     ? priceAdjustment
                     : null,
                   ...(availability && { availability }),
                   availableModes,
-                }
-              : { availability },
+                } satisfies UpdateModifierDto)
+              : ({ availability } satisfies UpdateItemAvailabilityDto),
           ),
         },
       );

@@ -46,6 +46,8 @@ import type {
   ServingTemperature,
   ServingTemperatureLevel,
   SweetnessLevel,
+  UpdateMenuItemDto,
+  UpdateOfferAvailabilityDto,
 } from "@/types/menus";
 import type { ApiOrderMode } from "@/types/orderMode";
 
@@ -198,7 +200,7 @@ const UpdateMenuItemDialog = ({
                 ? Number(offer.inventoryLevel.value)
                 : null,
             },
-          }),
+          } satisfies UpdateOfferAvailabilityDto),
         });
 
         enqueueSnackbar(
@@ -261,7 +263,7 @@ const UpdateMenuItemDialog = ({
                 }
               : null,
           },
-        }),
+        } satisfies UpdateMenuItemDto),
       });
 
       enqueueSnackbar(

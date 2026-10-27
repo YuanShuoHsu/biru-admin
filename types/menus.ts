@@ -60,7 +60,20 @@ export type ServingTemperatureLevel =
 export type Sweetness = components["schemas"]["Sweetness"];
 export type SweetnessLevel = components["schemas"]["SweetnessLevel"];
 
+export type UpdateMenuDto = components["schemas"]["UpdateMenuDto"];
 export type CreateMenuSectionDto =
   components["schemas"]["CreateMenuSectionDto"];
+export type UpdateMenuSectionDto =
+  components["schemas"]["UpdateMenuSectionDto"];
+export type CreateMenuItemDto = components["schemas"]["CreateMenuItemDto"];
+export type UpdateMenuItemDto = components["schemas"]["UpdateMenuItemDto"];
+export type UpdateOfferAvailabilityDto =
+  components["schemas"]["UpdateOfferAvailabilityDto"];
+export type CreateModifierGroupDto =
+  components["schemas"]["CreateModifierGroupDto"];
 export type UpdateModifierGroupDto =
   components["schemas"]["UpdateModifierGroupDto"];
+export type CreateModifierDto = components["schemas"]["CreateModifierDto"];
+export type UpdateModifierDto = components["schemas"]["UpdateModifierDto"];
+export type UpdateItemAvailabilityDto =
+  components["schemas"]["UpdateItemAvailabilityDto"];

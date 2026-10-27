@@ -30,7 +30,12 @@ import { styled } from "@mui/material/styles";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { unitCodeValues } from "@/types/api";
-import type { Ingredient, Supplier } from "@/types/inventory";
+import type {
+  CreateIngredientDto,
+  CreateInventoryTransactionDto,
+  Ingredient,
+  Supplier,
+} from "@/types/inventory";
 
 import { fetcher } from "@/utils/fetcher";
 import {
@@ -252,7 +257,7 @@ const IngredientDialog = ({
         {
           inventoryLevel: stockPayload,
           note: values.transactionNote || null,
-        },
+        } satisfies CreateInventoryTransactionDto,
       );
 
       return;
@@ -290,7 +295,7 @@ const IngredientDialog = ({
         price: values.price,
         supplierId: values.supplierId || null,
         url: values.url || null,
-      },
+      } satisfies CreateIngredientDto,
     );
   };
 

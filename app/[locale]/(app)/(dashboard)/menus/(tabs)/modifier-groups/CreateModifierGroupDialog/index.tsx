@@ -18,7 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { ModifierGroup } from "@/types/menus";
+import type { CreateModifierGroupDto, ModifierGroup } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
@@ -70,13 +70,11 @@ const CreateModifierGroupDialog = ({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           displayName,
-          ...(minSelectionCount && {
-            minSelectionCount: Number(minSelectionCount),
-          }),
+          minSelectionCount: minSelectionCount ? Number(minSelectionCount) : 0,
           ...(maxSelectionCount && {
             maxSelectionCount: Number(maxSelectionCount),
           }),
-        }),
+        } satisfies CreateModifierGroupDto),
       });
 
       enqueueSnackbar(

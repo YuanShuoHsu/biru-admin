@@ -22,7 +22,7 @@ import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { MenuSection } from "@/types/menus";
+import type { MenuSection, UpdateMenuSectionDto } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
@@ -83,7 +83,7 @@ const UpdateMenuSectionDialog = ({
           description,
           ...(imageSrc !== (section.image || null) && { image: imageSrc }),
           orderTicketPrinterId,
-        }),
+        } satisfies UpdateMenuSectionDto),
       });
 
       const displayName = localize(name, locale);

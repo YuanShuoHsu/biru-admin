@@ -22,7 +22,7 @@ import { MenuItem, TextField } from "@mui/material";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { itemAvailabilityValues, orderModeValues } from "@/types/api";
-import type { Modifier } from "@/types/menus";
+import type { CreateModifierDto, Modifier } from "@/types/menus";
 import type { ApiOrderMode } from "@/types/orderMode";
 
 import { fetcher } from "@/utils/fetcher";
@@ -84,7 +84,7 @@ const CreateModifierDialog = ({
             ...(priceAdjustment?.trim() && { priceAdjustment }),
             ...(availability && { availability }),
             availableModes,
-          }),
+          } satisfies CreateModifierDto),
         },
       );
 

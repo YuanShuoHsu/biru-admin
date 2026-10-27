@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { orderModeValues } from "@/types/api";
+import { itemAvailabilityValues, orderModeValues } from "@/types/api";
 
 import { refineRequiredLocalizedText } from "@/utils/locale";
 
@@ -15,7 +15,7 @@ export const useUpdateModifierFormSchema = () => {
         refineRequiredLocalizedText(tValidation("localizedText.required")),
       ),
     priceAdjustment: z.string().trim().optional(),
-    availability: z.string().trim().optional(),
+    availability: z.enum(itemAvailabilityValues),
     availableModes: z
       .array(z.enum(orderModeValues))
       .min(1, { error: tValidation("availableModes.notSelected") }),

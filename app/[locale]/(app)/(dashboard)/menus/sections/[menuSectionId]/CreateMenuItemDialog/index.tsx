@@ -42,6 +42,7 @@ import {
   sweetnessValues,
 } from "@/types/api";
 import type {
+  CreateMenuItemDto,
   MenuItem as MenuItemType,
   ServingTemperature,
   ServingTemperatureLevel,
@@ -222,7 +223,7 @@ const CreateMenuItemDialog = ({
                   }
                 : null,
             },
-          }),
+          } satisfies CreateMenuItemDto),
         },
       );
 

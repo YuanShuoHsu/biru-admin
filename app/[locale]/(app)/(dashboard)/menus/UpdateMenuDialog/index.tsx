@@ -17,7 +17,7 @@ import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { Menu } from "@/types/menus";
+import type { Menu, UpdateMenuDto } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
@@ -69,7 +69,7 @@ const UpdateMenuDialog = ({ menu, mutate }: UpdateMenuDialogProps) => {
           name,
           description,
           ...(imageSrc !== (menu.image || null) && { image: imageSrc }),
-        }),
+        } satisfies UpdateMenuDto),
       });
 
       enqueueSnackbar(
