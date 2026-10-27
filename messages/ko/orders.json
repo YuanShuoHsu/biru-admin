@@ -171,6 +171,19 @@
     "refundNotOpen": "금전함이 개시되지 않아 현금 결제 주문은 환불할 수 없습니다. 먼저 「금전함」 탭에서 금전함을 개시하세요.",
     "retainedFloat": "남길 시재금",
     "retainedFloatHint": "다음 개시 때 사용할 금액을 금전함에 남깁니다",
+    "sessions": {
+      "label": "개시·마감 내역",
+      "openedAt": "개시 시각",
+      "openedByName": "개시 담당자",
+      "closedAt": "마감 시각",
+      "closedByName": "마감 담당자",
+      "variance": "차액",
+      "status": {
+        "label": "상태",
+        "open": "개시 중",
+        "closed": "마감됨"
+      }
+    },
     "suggestedOpeningFloat": "기본 시재금",
     "varianceNote": "차액 설명",
     "varianceNoteHint": "차액이 {tolerance}을(를) 넘으면 필수",

@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 
 import CloseCashDrawerDialog from "./CloseCashDrawerDialog";
 import CashDrawerMovementDialog from "./CashDrawerMovementDialog";
@@ -26,7 +26,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { CurrentCashDrawer } from "@/types/orders";
 import type { Organization } from "@/types/organizations";
 
-import { cashDrawerPath } from "@/utils/orders";
+import { cashDrawerPath, cashDrawerSessionsPath } from "@/utils/orders";
 
 const ContentStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(2),
@@ -58,6 +58,17 @@ const OrdersCashDrawer = ({
     { fallbackData: initialCurrent ?? undefined },
   );
 
+  const { mutate: mutateCache } = useSWRConfig();
+
+  const refresh = () => {
+    mutate();
+    mutateCache(
+      (key) =>
+        Array.isArray(key) &&
+        key[0] === cashDrawerSessionsPath(organizationSlug),
+    );
+  };
+
   const money = (amount: string) => formatMoney(Number(amount), currency);
 
   if (!current) return null;
@@ -68,7 +79,7 @@ const OrdersCashDrawer = ({
     setDialog({
       content: (
         <OpenCashDrawerDialog
-          mutate={mutate}
+          mutate={refresh}
           organizationSlug={organizationSlug}
           suggestedOpeningFloat={suggestedOpeningFloat}
         />
@@ -124,7 +135,7 @@ const OrdersCashDrawer = ({
       content: (
         <CloseCashDrawerDialog
           currency={currency}
-          mutate={mutate}
+          mutate={refresh}
           organizationSlug={organizationSlug}
           session={session}
           varianceTolerance={varianceTolerance}

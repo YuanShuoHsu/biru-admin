@@ -171,6 +171,19 @@
     "refundNotOpen": "钱柜尚未开账，现金付款的订单无法退款。请先到“钱柜”分页开账。",
     "retainedFloat": "留存备用金",
     "retainedFloatHint": "留在钱柜供下一次开账使用",
+    "sessions": {
+      "label": "开关账记录",
+      "openedAt": "开账时间",
+      "openedByName": "开账人员",
+      "closedAt": "关账时间",
+      "closedByName": "关账人员",
+      "variance": "差额",
+      "status": {
+        "label": "状态",
+        "open": "开账中",
+        "closed": "已关账"
+      }
+    },
     "suggestedOpeningFloat": "默认备用金",
     "varianceNote": "差额说明",
     "varianceNoteHint": "差额超过 {tolerance} 时必填",
