@@ -19,6 +19,8 @@
     }
   },
   "availability": {
+    "autoSoldOut": "售完（自動）",
+    "autoSoldOutHint": "剩餘數量歸零或食材不足，系統自動設為售完；補貨後會自動恢復供應。",
     "label": "供應狀態",
     "options": {
       "Discontinued": "已停售",

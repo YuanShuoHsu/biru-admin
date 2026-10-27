@@ -19,6 +19,8 @@
     }
   },
   "availability": {
+    "autoSoldOut": "Sold out (auto)",
+    "autoSoldOutHint": "Set to sold out automatically because the remaining quantity reached 0 or an ingredient ran short. It comes back automatically once restocked.",
     "label": "Availability",
     "options": {
       "Discontinued": "Discontinued",
