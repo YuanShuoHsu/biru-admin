@@ -163,6 +163,7 @@
       "item": "{type} {amount}",
       "label": "Pay-ins and pay-outs"
     },
+    "notOpen": "The cash drawer is not open, so cash orders cannot be marked paid or returned to awaiting payment. Open it from the Cash drawer tab first.",
     "openingFloat": "Opening float",
     "openingFloatHint": "Defaults to the float kept at the last close",
     "reason": "Reason",

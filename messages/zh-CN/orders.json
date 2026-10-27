@@ -163,6 +163,7 @@
       "item": "{type} {amount}",
       "label": "存取记录"
     },
+    "notOpen": "钱柜尚未开账，现金订单无法确认付款或退回待付款。请先到“钱柜”分页开账。",
     "openingFloat": "备用金",
     "openingFloatHint": "默认沿用上次关账留下的备用金",
     "reason": "原因",

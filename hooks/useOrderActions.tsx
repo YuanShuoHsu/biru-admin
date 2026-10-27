@@ -14,6 +14,7 @@ import { styled } from "@mui/material/styles";
 
 import type {
   AdminOrderResponse,
+  CurrentCashDrawer,
   OrderInvoice,
   OrderInvoicePrint,
   OrderStatus,
@@ -24,6 +25,7 @@ import type { InvoicePrinterStatus } from "@/types/organizations";
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
+import { cashDrawerPath } from "@/utils/orders";
 import { printDocument } from "@/utils/print";
 
 import OrderDetailDialog from "@/app/[locale]/(app)/(dashboard)/orders/OrderDetailDialog";
@@ -131,6 +133,14 @@ export const usePrintInvoiceBlocker = (organizationSlug: string) => {
   );
 
   return { blockedBy, tooltip };
+};
+
+export const useCashDrawerClosed = (organizationSlug: string) => {
+  const { data } = useSWR<CurrentCashDrawer>(
+    organizationSlug ? `${cashDrawerPath(organizationSlug)}/current` : null,
+  );
+
+  return !!data && !data.session;
 };
 
 export const canVoidInvoice = ({ invoice }: AdminOrderResponse) =>
