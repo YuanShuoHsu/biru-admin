@@ -19,7 +19,6 @@ import { DialogStoreProvider } from "@/providers/dialog-store-provider";
 import { DrawerStoreProvider } from "@/providers/drawer-store-provider";
 import SWRProvider from "@/providers/SWRProvider";
 import { UploadAvatarStoreProvider } from "@/providers/upload-avatar-store-provider";
-import { ViewStoreProvider } from "@/providers/view-store-provider";
 
 import type { Session } from "@/types/auth";
 
@@ -63,7 +62,7 @@ const AppClientProviders = ({
               <DialogStoreProvider>
                 <DrawerStoreProvider>
                   <UploadAvatarStoreProvider>
-                    <ViewStoreProvider>{children}</ViewStoreProvider>
+                    {children}
                   </UploadAvatarStoreProvider>
                 </DrawerStoreProvider>
               </DialogStoreProvider>
