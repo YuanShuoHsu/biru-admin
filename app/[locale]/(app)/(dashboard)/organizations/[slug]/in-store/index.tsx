@@ -25,6 +25,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
+import { PRINTER_STATUS_REFRESH_MS } from "@/hooks/useOrderActions";
+
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
@@ -701,7 +703,9 @@ const OrderTicketPrintersCard = ({
 
   const printersUrl = `/api/organizations/${organizationSlug}/order-ticket-printers`;
 
-  const { data: printers, mutate } = useSWR<Printer[]>(printersUrl);
+  const { data: printers, mutate } = useSWR<Printer[]>(printersUrl, {
+    refreshInterval: PRINTER_STATUS_REFRESH_MS,
+  });
 
   const [credentials, setCredentials] = useState<PrinterCredentials | null>(
     null,
