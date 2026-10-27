@@ -7081,12 +7081,12 @@ export interface components {
       issueTrigger?: components["schemas"]["CouponIssueTrigger"] | null;
       menuItemIds?: string[];
       menuSectionIds?: string[];
-      minSubtotal?: number;
-      perUserLimit?: number;
+      minSubtotal?: number | null;
+      perUserLimit?: number | null;
       /** @description 兌換所需點數；null = 不可用點數兌換 */
       pointsCost?: number | null;
       scope?: components["schemas"]["CouponScope"];
-      totalLimit?: number;
+      totalLimit?: number | null;
       /** Format: date-time */
       validFrom?: string | null;
       /** Format: date-time */
@@ -7213,12 +7213,12 @@ export interface components {
       issueTrigger?: components["schemas"]["CouponIssueTrigger"] | null;
       menuItemIds?: string[];
       menuSectionIds?: string[];
-      minSubtotal?: number;
-      perUserLimit?: number;
+      minSubtotal?: number | null;
+      perUserLimit?: number | null;
       /** @description 兌換所需點數；null = 不可用點數兌換 */
       pointsCost?: number | null;
       scope?: components["schemas"]["CouponScope"];
-      totalLimit?: number;
+      totalLimit?: number | null;
       /** Format: date-time */
       validFrom?: string | null;
       /** Format: date-time */
