@@ -13,7 +13,6 @@ import { menuSocket } from "@/app/socket";
 import RouteTabs from "@/components/RouteTabs";
 
 import { getErrorMessage } from "@/utils/errors";
-import { cashDrawerPath } from "@/utils/orders";
 
 const OrdersTabsLayout = ({ children }: { children: React.ReactNode }) => {
   const organization = useOrganization(useSearchParams().get("organization"));
@@ -38,7 +37,6 @@ const OrdersTabsLayout = ({ children }: { children: React.ReactNode }) => {
       mutate(
         (key) =>
           key === `${ordersUrl}/board/admin` ||
-          key === `${cashDrawerPath(organization.slug)}/current` ||
           (Array.isArray(key) && key[0] === ordersUrl),
       );
 
@@ -56,11 +54,7 @@ const OrdersTabsLayout = ({ children }: { children: React.ReactNode }) => {
     <>
       <RouteTabs
         ariaLabel="orders tabs"
-        tabs={[
-          { path: "/orders/board" },
-          { path: "/orders/list" },
-          { path: "/orders/cash-drawer" },
-        ]}
+        tabs={[{ path: "/orders/board" }, { path: "/orders/list" }]}
       />
       {children}
     </>

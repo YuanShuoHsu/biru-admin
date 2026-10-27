@@ -130,66 +130,6 @@
     "empty": "現在ご注文はありません",
     "title": "注文ボード"
   },
-  "cashDrawer": {
-    "actions": {
-      "close": {
-        "success": "レジを締めました",
-        "title": "レジ締め"
-      },
-      "movement": {
-        "success": "{type} {amount} を記録しました",
-        "title": "入金／出金"
-      },
-      "open": {
-        "success": "レジを開始しました",
-        "title": "レジ開始"
-      }
-    },
-    "amount": "金額",
-    "businessDate": "営業日",
-    "cashRefunds": "現金返金",
-    "cashSales": "現金売上",
-    "countedCash": "実査現金",
-    "countedSince": "集計開始",
-    "empty": "開いているレジがありません。",
-    "expectedCash": "理論在高",
-    "label": "レジ現金",
-    "movementType": {
-      "payIn": "入金",
-      "payOut": "出金"
-    },
-    "movements": {
-      "empty": "入金・出金はまだありません",
-      "item": "{type} {amount}",
-      "label": "入出金履歴"
-    },
-    "notOpen": "レジが開始されていないため、現金注文の支払い確認や支払い待ちへの差し戻しはできません。先に「レジ現金」タブでレジを開始してください。",
-    "openingFloat": "釣り銭準備金",
-    "openingFloatHint": "前回の締めで残した準備金を引き継ぎます",
-    "reason": "理由",
-    "reasonPlaceholder": "例：釣り銭の補充、雑費の支払い",
-    "refundNotOpen": "レジが開始されていないため、現金払いの注文は返金できません。先に「レジ現金」タブでレジを開始してください。",
-    "retainedFloat": "残す準備金",
-    "retainedFloatHint": "次回のレジ開始に使う分をレジに残します",
-    "sessions": {
-      "closedAt": "締め日時",
-      "closedByName": "締め担当者",
-      "label": "レジ開始・締め履歴",
-      "openedAt": "開始日時",
-      "openedByName": "開始担当者",
-      "status": {
-        "closed": "締め済み",
-        "label": "状態",
-        "open": "営業中"
-      },
-      "variance": "過不足"
-    },
-    "suggestedOpeningFloat": "既定の釣り銭準備金",
-    "varianceNote": "過不足の説明",
-    "varianceNoteHint": "過不足が {tolerance} を超える場合は必須",
-    "varianceSummary": "理論在高 {expected}、過不足 {variance}",
-    "withBeforeOpen": "{amount}（開始前 {beforeOpen} を含む）"
-  },
   "confirmationNumber": "注文番号",
   "createdAt": "作成日時",
   "customerEmail": "顧客メールアドレス",

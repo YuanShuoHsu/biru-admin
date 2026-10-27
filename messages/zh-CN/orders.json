@@ -130,66 +130,6 @@
     "empty": "目前没有订单",
     "title": "订单看板"
   },
-  "cashDrawer": {
-    "actions": {
-      "close": {
-        "success": "已关账",
-        "title": "关账"
-      },
-      "movement": {
-        "success": "已{type} {amount}",
-        "title": "存入／取出"
-      },
-      "open": {
-        "success": "已开账",
-        "title": "开账"
-      }
-    },
-    "amount": "金额",
-    "businessDate": "营业日",
-    "cashRefunds": "现金退款",
-    "cashSales": "现金实收",
-    "countedCash": "实点现金",
-    "countedSince": "计算起点",
-    "empty": "目前没有开账中的钱柜。",
-    "expectedCash": "应有现金",
-    "label": "钱柜",
-    "movementType": {
-      "payIn": "存入",
-      "payOut": "取出"
-    },
-    "movements": {
-      "empty": "尚无存入或取出",
-      "item": "{type} {amount}",
-      "label": "存取记录"
-    },
-    "notOpen": "钱柜尚未开账，现金订单无法确认付款或退回待付款。请先到“钱柜”分页开账。",
-    "openingFloat": "备用金",
-    "openingFloatHint": "默认沿用上次关账留下的备用金",
-    "reason": "原因",
-    "reasonPlaceholder": "例如：补充零钱、支付杂费",
-    "refundNotOpen": "钱柜尚未开账，现金付款的订单无法退款。请先到“钱柜”分页开账。",
-    "retainedFloat": "留存备用金",
-    "retainedFloatHint": "留在钱柜供下一次开账使用",
-    "sessions": {
-      "closedAt": "关账时间",
-      "closedByName": "关账人员",
-      "label": "开关账记录",
-      "openedAt": "开账时间",
-      "openedByName": "开账人员",
-      "status": {
-        "closed": "已关账",
-        "label": "状态",
-        "open": "开账中"
-      },
-      "variance": "差额"
-    },
-    "suggestedOpeningFloat": "默认备用金",
-    "varianceNote": "差额说明",
-    "varianceNoteHint": "差额超过 {tolerance} 时必填",
-    "varianceSummary": "应有现金 {expected}，差额 {variance}",
-    "withBeforeOpen": "{amount}（含开账前 {beforeOpen}）"
-  },
   "confirmationNumber": "订单编号",
   "createdAt": "创建时间",
   "customerEmail": "顾客电子邮箱",

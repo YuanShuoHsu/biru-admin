@@ -35,7 +35,6 @@ import {
   canReprintOrderTicket,
   canVoidInvoice,
   findUnresolvedOrderTicket,
-  useCashDrawerClosed,
   useOrderActions,
   useOrderTicketPrinterStatuses,
   usePrintInvoiceBlocker,
@@ -293,8 +292,6 @@ const Orders = ({
   const { blockedBy: printInvoiceBlockedBy, tooltip: printInvoiceTooltip } =
     usePrintInvoiceBlocker(organizationSlug);
 
-  const cashDrawerClosed = useCashDrawerClosed(organizationSlug);
-
   const hasPendingInvoice = useMemo(() => rows.some(canIssueInvoice), [rows]);
 
   const hasPrintableInvoice = useMemo(() => rows.some(canPrintInvoice), [rows]);
@@ -502,27 +499,18 @@ const Orders = ({
               </Tooltip>
             )}
             {hasRefundable && (
-              <Tooltip
-                title={
-                  row.paymentMethod === "Cash" && cashDrawerClosed
-                    ? tOrders("cashDrawer.refundNotOpen")
-                    : tOrders("actions.refund.title")
-                }
-              >
-                <span>
-                  <StyledIconButton
-                    disabled={row.paymentMethod === "Cash" && cashDrawerClosed}
-                    onClick={(event) => {
-                      event.stopPropagation();
+              <Tooltip title={tOrders("actions.refund.title")}>
+                <StyledIconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
 
-                      if (row.refundable) handleRefund(row);
-                    }}
-                    size="small"
-                    visible={row.refundable}
-                  >
-                    <CurrencyExchange fontSize="small" />
-                  </StyledIconButton>
-                </span>
+                    if (row.refundable) handleRefund(row);
+                  }}
+                  size="small"
+                  visible={row.refundable}
+                >
+                  <CurrencyExchange fontSize="small" />
+                </StyledIconButton>
               </Tooltip>
             )}
             {hasTransitions &&
@@ -536,43 +524,35 @@ const Orders = ({
                   direction === "cancel"
                     ? "error"
                     : transition && STATUS_COLORS[transition.toStatus];
-                const blocked = !!transition?.cashOnly && cashDrawerClosed;
 
                 return (
                   <Tooltip
                     key={directions[0]}
                     title={
-                      blocked
-                        ? tOrders("cashDrawer.notOpen")
-                        : transition
-                          ? tOrders.markup(
-                              `actions.updateStatus.title.${transition.direction}`,
-                              {
-                                status: tOrders(
-                                  `status.${transition.toStatus}`,
-                                ),
-                                statusText: (chunks) => chunks,
-                              },
-                            )
-                          : ""
+                      transition
+                        ? tOrders.markup(
+                            `actions.updateStatus.title.${transition.direction}`,
+                            {
+                              status: tOrders(`status.${transition.toStatus}`),
+                              statusText: (chunks) => chunks,
+                            },
+                          )
+                        : ""
                     }
                   >
-                    <span>
-                      <StyledIconButton
-                        color={color}
-                        disabled={blocked}
-                        onClick={(event) => {
-                          event.stopPropagation();
+                    <StyledIconButton
+                      color={color}
+                      onClick={(event) => {
+                        event.stopPropagation();
 
-                          if (transition)
-                            handleConfirmStatusAction(row, transition);
-                        }}
-                        size="small"
-                        visible={!!transition}
-                      >
-                        <Icon fontSize="small" />
-                      </StyledIconButton>
-                    </span>
+                        if (transition)
+                          handleConfirmStatusAction(row, transition);
+                      }}
+                      size="small"
+                      visible={!!transition}
+                    >
+                      <Icon fontSize="small" />
+                    </StyledIconButton>
                   </Tooltip>
                 );
               })}
@@ -733,7 +713,6 @@ const Orders = ({
     ],
     [
       canViewAuditLog,
-      cashDrawerClosed,
       dateFilterOperators,
       enumFilterOperators,
       enumOptions,

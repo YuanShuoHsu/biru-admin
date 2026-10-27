@@ -130,66 +130,6 @@
     "empty": "현재 주문이 없습니다",
     "title": "주문 보드"
   },
-  "cashDrawer": {
-    "actions": {
-      "close": {
-        "success": "금전함을 마감했습니다",
-        "title": "금전함 마감"
-      },
-      "movement": {
-        "success": "{type} {amount}을(를) 기록했습니다",
-        "title": "입금／출금"
-      },
-      "open": {
-        "success": "금전함을 열었습니다",
-        "title": "금전함 개시"
-      }
-    },
-    "amount": "금액",
-    "businessDate": "영업일",
-    "cashRefunds": "현금 환불",
-    "cashSales": "현금 매출",
-    "countedCash": "실제 현금",
-    "countedSince": "집계 시작",
-    "empty": "열린 금전함이 없습니다.",
-    "expectedCash": "예상 현금",
-    "label": "금전함",
-    "movementType": {
-      "payIn": "입금",
-      "payOut": "출금"
-    },
-    "movements": {
-      "empty": "입금 또는 출금 내역이 없습니다",
-      "item": "{type} {amount}",
-      "label": "입출금 내역"
-    },
-    "notOpen": "금전함이 개시되지 않아 현금 주문의 결제 확인이나 결제 대기로 되돌리기를 할 수 없습니다. 먼저 「금전함」 탭에서 금전함을 개시하세요.",
-    "openingFloat": "시재금",
-    "openingFloatHint": "지난 마감 때 남긴 시재금을 그대로 사용합니다",
-    "reason": "사유",
-    "reasonPlaceholder": "예: 거스름돈 보충, 잡비 지출",
-    "refundNotOpen": "금전함이 개시되지 않아 현금 결제 주문은 환불할 수 없습니다. 먼저 「금전함」 탭에서 금전함을 개시하세요.",
-    "retainedFloat": "남길 시재금",
-    "retainedFloatHint": "다음 개시 때 사용할 금액을 금전함에 남깁니다",
-    "sessions": {
-      "closedAt": "마감 시각",
-      "closedByName": "마감 담당자",
-      "label": "개시·마감 내역",
-      "openedAt": "개시 시각",
-      "openedByName": "개시 담당자",
-      "status": {
-        "closed": "마감됨",
-        "label": "상태",
-        "open": "개시 중"
-      },
-      "variance": "차액"
-    },
-    "suggestedOpeningFloat": "기본 시재금",
-    "varianceNote": "차액 설명",
-    "varianceNoteHint": "차액이 {tolerance}을(를) 넘으면 필수",
-    "varianceSummary": "예상 현금 {expected}, 차액 {variance}",
-    "withBeforeOpen": "{amount} (개시 전 {beforeOpen} 포함)"
-  },
   "confirmationNumber": "주문 번호",
   "createdAt": "생성 일시",
   "customerEmail": "고객 이메일",

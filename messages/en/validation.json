@@ -388,17 +388,5 @@
   },
   "violationsAcknowledged": {
     "required": "Acknowledge the violations above before review."
-  },
-  "cashAmount": {
-    "required": "Enter an amount."
-  },
-  "cashDrawerReason": {
-    "required": "Reason is required."
-  },
-  "retainedFloat": {
-    "exceedsCounted": "The float to keep cannot exceed the counted cash."
-  },
-  "varianceNote": {
-    "required": "The variance exceeds the tolerance. Please add a note."
   }
 }

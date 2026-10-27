@@ -130,66 +130,6 @@
     "empty": "No orders right now",
     "title": "Order Board"
   },
-  "cashDrawer": {
-    "actions": {
-      "close": {
-        "success": "Cash drawer closed",
-        "title": "Close drawer"
-      },
-      "movement": {
-        "success": "Recorded {type} of {amount}",
-        "title": "Pay in / out"
-      },
-      "open": {
-        "success": "Cash drawer opened",
-        "title": "Open drawer"
-      }
-    },
-    "amount": "Amount",
-    "businessDate": "Business date",
-    "cashRefunds": "Cash refunds",
-    "cashSales": "Cash sales",
-    "countedCash": "Counted cash",
-    "countedSince": "Counted since",
-    "empty": "No cash drawer is open.",
-    "expectedCash": "Expected cash",
-    "label": "Cash drawer",
-    "movementType": {
-      "payIn": "Pay in",
-      "payOut": "Pay out"
-    },
-    "movements": {
-      "empty": "No pay-ins or pay-outs yet",
-      "item": "{type} {amount}",
-      "label": "Pay-ins and pay-outs"
-    },
-    "notOpen": "The cash drawer is not open, so cash orders cannot be marked paid or returned to awaiting payment. Open it from the Cash drawer tab first.",
-    "openingFloat": "Opening float",
-    "openingFloatHint": "Defaults to the float kept at the last close",
-    "reason": "Reason",
-    "reasonPlaceholder": "e.g. topping up change, petty expenses",
-    "refundNotOpen": "The cash drawer is not open, so cash payments cannot be refunded. Open it from the Cash drawer tab first.",
-    "retainedFloat": "Float to keep",
-    "retainedFloatHint": "Left in the drawer for the next opening",
-    "sessions": {
-      "closedAt": "Closed at",
-      "closedByName": "Closed by",
-      "label": "Drawer history",
-      "openedAt": "Opened at",
-      "openedByName": "Opened by",
-      "status": {
-        "closed": "Closed",
-        "label": "Status",
-        "open": "Open"
-      },
-      "variance": "Variance"
-    },
-    "suggestedOpeningFloat": "Default float",
-    "varianceNote": "Variance note",
-    "varianceNoteHint": "Required when the variance exceeds {tolerance}",
-    "varianceSummary": "Expected cash {expected}, variance {variance}",
-    "withBeforeOpen": "{amount} (incl. {beforeOpen} before opening)"
-  },
   "confirmationNumber": "Order number",
   "createdAt": "Created at",
   "customerEmail": "Customer email",
