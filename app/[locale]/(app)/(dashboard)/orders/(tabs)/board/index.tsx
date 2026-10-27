@@ -198,6 +198,10 @@ const OrdersBoard = ({
               onClick: () => handleConfirmVoidInvoice(order),
             },
             order.refundable && {
+              disabledReason:
+                order.paymentMethod === "Cash" && cashDrawerClosed
+                  ? tOrders("cashDrawer.refundNotOpen")
+                  : undefined,
               label: tOrders("actions.refund.title"),
               onClick: () => handleRefund(order),
             },
@@ -272,6 +276,7 @@ const OrdersBoard = ({
       })),
     [
       boardColumns,
+      cashDrawerClosed,
       format,
       getOrderModeLabel,
       handleCancelInvoicePrint,

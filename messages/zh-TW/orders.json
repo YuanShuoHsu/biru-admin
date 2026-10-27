@@ -168,6 +168,7 @@
     "openingFloatHint": "預設沿用上次關帳留下的零用金",
     "reason": "原因",
     "reasonPlaceholder": "例如：找零補錢、支付雜支",
+    "refundNotOpen": "錢櫃尚未開帳，現金付款的訂單無法退款。請先到「錢櫃」分頁開帳。",
     "retainedFloat": "留存零用金",
     "retainedFloatHint": "留在錢櫃給下一次開帳使用",
     "suggestedOpeningFloat": "預設零用金",

@@ -168,6 +168,7 @@
     "openingFloatHint": "前回の締めで残した準備金を引き継ぎます",
     "reason": "理由",
     "reasonPlaceholder": "例：釣り銭の補充、雑費の支払い",
+    "refundNotOpen": "レジが開始されていないため、現金払いの注文は返金できません。先に「レジ現金」タブでレジを開始してください。",
     "retainedFloat": "残す準備金",
     "retainedFloatHint": "次回のレジ開始に使う分をレジに残します",
     "suggestedOpeningFloat": "既定の釣り銭準備金",

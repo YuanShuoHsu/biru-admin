@@ -502,18 +502,27 @@ const Orders = ({
               </Tooltip>
             )}
             {hasRefundable && (
-              <Tooltip title={tOrders("actions.refund.title")}>
-                <StyledIconButton
-                  onClick={(event) => {
-                    event.stopPropagation();
+              <Tooltip
+                title={
+                  row.paymentMethod === "Cash" && cashDrawerClosed
+                    ? tOrders("cashDrawer.refundNotOpen")
+                    : tOrders("actions.refund.title")
+                }
+              >
+                <span>
+                  <StyledIconButton
+                    disabled={row.paymentMethod === "Cash" && cashDrawerClosed}
+                    onClick={(event) => {
+                      event.stopPropagation();
 
-                    if (row.refundable) handleRefund(row);
-                  }}
-                  size="small"
-                  visible={row.refundable}
-                >
-                  <CurrencyExchange fontSize="small" />
-                </StyledIconButton>
+                      if (row.refundable) handleRefund(row);
+                    }}
+                    size="small"
+                    visible={row.refundable}
+                  >
+                    <CurrencyExchange fontSize="small" />
+                  </StyledIconButton>
+                </span>
               </Tooltip>
             )}
             {hasTransitions &&

@@ -168,6 +168,7 @@
     "openingFloatHint": "默认沿用上次关账留下的备用金",
     "reason": "原因",
     "reasonPlaceholder": "例如：补充零钱、支付杂费",
+    "refundNotOpen": "钱柜尚未开账，现金付款的订单无法退款。请先到“钱柜”分页开账。",
     "retainedFloat": "留存备用金",
     "retainedFloatHint": "留在钱柜供下一次开账使用",
     "suggestedOpeningFloat": "默认备用金",
