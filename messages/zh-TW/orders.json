@@ -172,17 +172,17 @@
     "retainedFloat": "留存零用金",
     "retainedFloatHint": "留在錢櫃給下一次開帳使用",
     "sessions": {
+      "closedAt": "關帳時間",
+      "closedByName": "關帳人員",
       "label": "開關帳紀錄",
       "openedAt": "開帳時間",
       "openedByName": "開帳人員",
-      "closedAt": "關帳時間",
-      "closedByName": "關帳人員",
-      "variance": "差額",
       "status": {
+        "closed": "已關帳",
         "label": "狀態",
-        "open": "開帳中",
-        "closed": "已關帳"
-      }
+        "open": "開帳中"
+      },
+      "variance": "差額"
     },
     "suggestedOpeningFloat": "預設零用金",
     "varianceNote": "差額說明",

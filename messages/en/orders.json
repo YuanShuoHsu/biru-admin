@@ -172,17 +172,17 @@
     "retainedFloat": "Float to keep",
     "retainedFloatHint": "Left in the drawer for the next opening",
     "sessions": {
+      "closedAt": "Closed at",
+      "closedByName": "Closed by",
       "label": "Drawer history",
       "openedAt": "Opened at",
       "openedByName": "Opened by",
-      "closedAt": "Closed at",
-      "closedByName": "Closed by",
-      "variance": "Variance",
       "status": {
+        "closed": "Closed",
         "label": "Status",
-        "open": "Open",
-        "closed": "Closed"
-      }
+        "open": "Open"
+      },
+      "variance": "Variance"
     },
     "suggestedOpeningFloat": "Default float",
     "varianceNote": "Variance note",

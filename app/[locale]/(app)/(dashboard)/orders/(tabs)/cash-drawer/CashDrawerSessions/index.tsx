@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import DataGrid from "@/components/DataGrid";
-import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
+import { renderEmptyableCell } from "@/components/EmptyCell";
 
 import {
   autosizeOptions,
@@ -23,12 +23,11 @@ import {
 import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { Chip, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import type {
   GridColDef,
   GridFilterModel,
   GridPaginationModel,
-  GridRenderCellParams,
   GridSortModel,
 } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
@@ -261,23 +260,13 @@ const CashDrawerSessions = ({
       moneyColumn("expectedCash", tOrders("cashDrawer.expectedCash")),
       moneyColumn("countedCash", tOrders("cashDrawer.countedCash")),
       {
-        field: "variance",
-        filterOperators: numberFilterOperators,
-        headerName: tOrders("cashDrawer.sessions.variance"),
-        renderCell: ({
-          row: { variance },
-        }: GridRenderCellParams<CashDrawerSessionListItem>) =>
-          variance == null ? (
-            <EmptyCell />
-          ) : (
-            <Chip
-              color={Number(variance) === 0 ? "default" : "warning"}
-              label={formatMoney(Number(variance), currency)}
-              size="small"
-              variant="outlined"
-            />
-          ),
-        type: "number",
+        ...moneyColumn("variance", tOrders("cashDrawer.sessions.variance")),
+        valueFormatter: (value: string | null) =>
+          value == null
+            ? ""
+            : formatMoney(Number(value), currency, {
+                signDisplay: "exceptZero",
+              }),
       },
       moneyColumn("retainedFloat", tOrders("cashDrawer.retainedFloat")),
       {

@@ -172,17 +172,17 @@
     "retainedFloat": "남길 시재금",
     "retainedFloatHint": "다음 개시 때 사용할 금액을 금전함에 남깁니다",
     "sessions": {
+      "closedAt": "마감 시각",
+      "closedByName": "마감 담당자",
       "label": "개시·마감 내역",
       "openedAt": "개시 시각",
       "openedByName": "개시 담당자",
-      "closedAt": "마감 시각",
-      "closedByName": "마감 담당자",
-      "variance": "차액",
       "status": {
+        "closed": "마감됨",
         "label": "상태",
-        "open": "개시 중",
-        "closed": "마감됨"
-      }
+        "open": "개시 중"
+      },
+      "variance": "차액"
     },
     "suggestedOpeningFloat": "기본 시재금",
     "varianceNote": "차액 설명",

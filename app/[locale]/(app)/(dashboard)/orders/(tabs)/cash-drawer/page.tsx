@@ -69,28 +69,21 @@ const OrdersCashDrawerPage = async ({
     revenue: ["read"],
   });
 
-  const grid = canViewSessions
-    ? resolveGridSearchParams({
-        searchParams: rawSearchParams,
-        sortFields: cashDrawerSessionSortFieldValues,
-        filterFields: cashDrawerSessionFilterFieldValues,
-        filterOperators: filterOperatorValues,
-        organizationSlug: selectedOrganization.slug,
-      })
-    : null;
+  const grid = resolveGridSearchParams({
+    searchParams: rawSearchParams,
+    sortFields: cashDrawerSessionSortFieldValues,
+    filterFields: cashDrawerSessionFilterFieldValues,
+    filterOperators: filterOperatorValues,
+    organizationSlug: selectedOrganization.slug,
+  });
 
-  const redirectParams = grid
-    ? grid.redirectParams
-    : rawSearchParams.organization !== selectedOrganization.slug &&
-      new URLSearchParams({ organization: selectedOrganization.slug });
-
-  if (redirectParams)
+  if (grid.redirectParams)
     redirect({
-      href: `/orders/cash-drawer?${redirectParams.toString()}`,
+      href: `/orders/cash-drawer?${grid.redirectParams.toString()}`,
       locale,
     });
 
-  const quickFilterEnums = grid?.quickFilterValue
+  const quickFilterEnums = grid.quickFilterValue
     ? getQuickFilterEnums(
         grid.quickFilterValue,
         getCashDrawerSessionEnumOptions(
@@ -101,7 +94,7 @@ const OrdersCashDrawerPage = async ({
 
   const [current, sessions] = await Promise.all([
     getCurrentCashDrawer(selectedOrganization.slug, fetchOptions),
-    grid &&
+    canViewSessions &&
       getCashDrawerSessions(
         selectedOrganization.slug,
         {
@@ -122,7 +115,7 @@ const OrdersCashDrawerPage = async ({
   return (
     <>
       <OrdersCashDrawer current={current} organization={selectedOrganization} />
-      {grid && sessions && (
+      {sessions && (
         <CashDrawerSessions
           currency={selectedOrganization.currency}
           filterField={grid.filterField}
