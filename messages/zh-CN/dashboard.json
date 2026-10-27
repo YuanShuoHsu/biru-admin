@@ -6,6 +6,7 @@
     "totalOrganizations": "总组织数",
     "period": {
       "today": "今日",
+      "yesterday": "昨日",
       "7d": "近 7 天",
       "30d": "近 30 天",
       "90d": "近 3 个月",

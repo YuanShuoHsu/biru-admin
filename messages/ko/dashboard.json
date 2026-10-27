@@ -6,6 +6,7 @@
     "totalOrganizations": "총 조직 수",
     "period": {
       "today": "오늘",
+      "yesterday": "어제",
       "7d": "최근 7일",
       "30d": "최근 30일",
       "90d": "최근 3개월",
