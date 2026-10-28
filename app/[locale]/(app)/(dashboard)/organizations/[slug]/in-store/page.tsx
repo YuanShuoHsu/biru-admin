@@ -40,7 +40,7 @@ const OrganizationsSlugInStorePage = async ({
 
   const [
     { data, error: fullOrganizationError },
-    { data: organization, error },
+    { data: organization, error: organizationError },
     session,
   ] = await Promise.all([
     authClient.organization.getFullOrganization({
@@ -54,10 +54,10 @@ const OrganizationsSlugInStorePage = async ({
   if (
     fullOrganizationError?.status === 400 ||
     fullOrganizationError?.status === 403 ||
-    error?.status === 404
+    organizationError?.status === 404
   )
     notFound();
-  if (fullOrganizationError || error) return <ErrorAlert />;
+  if (fullOrganizationError || organizationError) return <ErrorAlert />;
   if (!data) notFound();
 
   const currentUserRole = data.members.find(

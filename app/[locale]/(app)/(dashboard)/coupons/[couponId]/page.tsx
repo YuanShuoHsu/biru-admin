@@ -20,7 +20,7 @@ import {
 import { getCoupon, getCouponRecipients } from "@/utils/coupons";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getCouponRecipientEnumOptions } from "@/utils/enumOptions";
-import { settle } from "@/utils/fetcher";
+import { isMissingResource, settle } from "@/utils/fetcher";
 
 interface CouponRecipientsPageProps {
   params: Promise<{ couponId: string; locale: Locale }>;
@@ -108,11 +108,7 @@ const CouponRecipientsContent = async ({
         ),
       ),
     ]);
-  if (
-    couponError?.status === 403 ||
-    couponError?.status === 404 ||
-    recipientsError?.status === 403
-  )
+  if (isMissingResource(couponError) || recipientsError?.status === 403)
     notFound();
   if (couponError || recipientsError) return <ErrorAlert />;
 

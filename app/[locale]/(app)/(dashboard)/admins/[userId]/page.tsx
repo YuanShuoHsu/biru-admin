@@ -21,7 +21,7 @@ import {
 import type { UserSession } from "@/types/admins";
 
 import { getGridSearchParams, resolveGridSearchParams } from "@/utils/dataGrid";
-import { fetcher, settle } from "@/utils/fetcher";
+import { fetcher, isMissingResource, settle } from "@/utils/fetcher";
 
 interface UserSessionsPageProps {
   params: Promise<{ locale: Locale; userId: string }>;
@@ -107,9 +107,9 @@ const UserSessionsContent = async ({
     ]);
 
   if (
-    [error?.status, sessionsError?.status].some(
-      (status) => status === 403 || status === 404,
-    )
+    error?.status === 403 ||
+    error?.status === 404 ||
+    isMissingResource(sessionsError)
   )
     notFound();
   if (error || sessionsError) return <ErrorAlert />;

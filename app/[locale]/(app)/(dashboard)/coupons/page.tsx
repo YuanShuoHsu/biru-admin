@@ -106,10 +106,9 @@ const CouponsContent = async ({ params, searchParams }: CouponsPageProps) => {
     auditLog: ["read"],
   });
 
-  const { data: organizations, error: organizationsError } = await settle(
+  const organizationsPromise = settle(
     isAdmin ? getOrganizations(fetchOptions) : Promise.resolve([]),
   );
-  if (organizationsError) return <ErrorAlert />;
 
   const quickFilterEnums = quickFilterValue
     ? getQuickFilterEnums(
@@ -117,32 +116,38 @@ const CouponsContent = async ({ params, searchParams }: CouponsPageProps) => {
         getCouponEnumOptions(
           await getTranslations({ locale, namespace: "coupons" }),
           await getTranslations({ locale, namespace: "common" }),
-          organizations,
+          (await organizationsPromise).data ?? [],
         ),
       )
     : [];
 
-  const { data: coupons, error } = await settle(
-    isAdmin || selectedOrganization
-      ? getCoupons(
-          locale,
-          {
-            page,
-            pageSize,
-            filterField,
-            filterOperator,
-            filterValue,
-            organizationSlug: selectedOrganization?.slug,
-            quickFilterEnums,
-            quickFilterValue,
-            sortBy,
-            sortDirection,
-          },
-          fetchOptions,
-        )
-      : Promise.resolve({ coupons: [], total: 0 }),
-  );
-  if (error) return <ErrorAlert />;
+  const [
+    { data: coupons, error },
+    { data: organizations, error: organizationsError },
+  ] = await Promise.all([
+    settle(
+      isAdmin || selectedOrganization
+        ? getCoupons(
+            locale,
+            {
+              page,
+              pageSize,
+              filterField,
+              filterOperator,
+              filterValue,
+              organizationSlug: selectedOrganization?.slug,
+              quickFilterEnums,
+              quickFilterValue,
+              sortBy,
+              sortDirection,
+            },
+            fetchOptions,
+          )
+        : Promise.resolve({ coupons: [], total: 0 }),
+    ),
+    organizationsPromise,
+  ]);
+  if (error || organizationsError) return <ErrorAlert />;
 
   const { coupons: rows, total: rowCount } = coupons;
 

@@ -121,19 +121,18 @@ const LeaveCasesContent = async ({
       )
     : [];
 
-  const { data: context, error: contextError } = await settle(
+  const contextPromise = settle(
     getAttendanceContext(organization.slug, fetchOptions),
   );
-  if (contextError) return <ErrorAlert />;
-
-  const { employee, selfReviewAllowed } = context;
 
   const [
+    { data: context, error: contextError },
     { data: leaveCases, error },
     { data: employeePage, error: employeesError },
     { data: leaveTypePage, error: leaveTypesError },
     { data: parentalChildPage, error: parentalChildrenError },
   ] = await Promise.all([
+    contextPromise,
     settle(
       getAttendanceLeaveCases(
         organization.slug,
@@ -168,20 +167,29 @@ const LeaveCasesContent = async ({
         fetchOptions,
       ),
     ),
-    settle(
-      canViewAllParentalChildren || employee
-        ? getAttendanceParentalChildren(
-            organization.slug,
-            canViewAllParentalChildren ? "org" : "me",
-            { pageSize: MAX_PAGE_SIZE },
-            fetchOptions,
-          )
-        : Promise.resolve({ parentalChildren: [], total: 0 }),
+    contextPromise.then(({ data }) =>
+      settle(
+        canViewAllParentalChildren || data?.employee
+          ? getAttendanceParentalChildren(
+              organization.slug,
+              canViewAllParentalChildren ? "org" : "me",
+              { pageSize: MAX_PAGE_SIZE },
+              fetchOptions,
+            )
+          : Promise.resolve({ parentalChildren: [], total: 0 }),
+      ),
     ),
   ]);
-  if (error || employeesError || leaveTypesError || parentalChildrenError)
+  if (
+    contextError ||
+    error ||
+    employeesError ||
+    leaveTypesError ||
+    parentalChildrenError
+  )
     return <ErrorAlert />;
 
+  const { employee, selfReviewAllowed } = context;
   const { leaveCases: rows, total: rowCount } = leaveCases;
   const { employees } = employeePage;
   const { leaveTypes } = leaveTypePage;
