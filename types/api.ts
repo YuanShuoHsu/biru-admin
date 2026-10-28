@@ -2510,7 +2510,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** 更換店內 QR code 金鑰：已印出的桌號／櫃台／得來速 QR code 立即失效 */
+    /** 更換店內 QR code 金鑰：已印出的桌號／櫃台／得來速點餐與門市現場候位 QR code 立即失效 */
     post: operations["OrderQrController_rotateSecret"];
     delete?: never;
     options?: never;
@@ -2527,7 +2527,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** 換回上一把金鑰：更換前印出的 QR code 恢復有效 */
+    /** 換回上一把金鑰：更換前印出的點餐與門市現場候位 QR code 恢復有效 */
     post: operations["OrderQrController_restoreSecret"];
     delete?: never;
     options?: never;
@@ -2790,6 +2790,24 @@ export interface paths {
     options?: never;
     head?: never;
     patch?: never;
+    trace?: never;
+  };
+  "/api/point-settings": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 全品牌的點數規則 */
+    get: operations["AdminPointSettingsController_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 修改全品牌的點數規則；每點金額設為有值時自動記下啟用時間，設為 null 時停用並清空有效年限 */
+    patch: operations["AdminPointSettingsController_update"];
     trace?: never;
   };
   "/api/users/me/points": {
@@ -3342,6 +3360,57 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/waitlist/qr": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 掃描門市現場候位 QR code：簽章換成短效 cookie 後轉回不帶簽章的候位頁 */
+    get: operations["WaitlistController_scanQr"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/waitlist/qr-session": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 目前瀏覽器持有的門市現場取號資格 */
+    get: operations["WaitlistController_findQrSession"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/waitlist/qr-token": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 產生門市現場候位 QR code 的簽章 */
+    get: operations["WaitlistController_findQrToken"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/waitlist/tickets": {
     parameters: {
       query?: never;
@@ -3352,7 +3421,7 @@ export interface paths {
     /** 後台候位清單（進行中＋今日已結束） */
     get: operations["WaitlistController_listAdmin"];
     put?: never;
-    /** 取號 */
+    /** 取號（須先掃描門市現場候位 QR code） */
     post: operations["WaitlistController_createTicket"];
     delete?: never;
     options?: never;
@@ -3689,6 +3758,40 @@ export interface paths {
     put?: never;
     /** 復業 */
     post: operations["OrganizationClosureController_reopen"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationId}/platform-admin-membership": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 以平台管理員身分加入門市，角色為 owner */
+    post: operations["OrganizationPlatformAdminController_join"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationId}/members/{memberId}/confirm-owner": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 把以平台管理員身分加入的成員轉為真正店主；限真正店主或平台管理員 */
+    post: operations["OrganizationPlatformAdminController_confirmOwner"];
     delete?: never;
     options?: never;
     head?: never;
@@ -5061,6 +5164,7 @@ export interface components {
       | "menstrualDayLimit"
       | "monthlyOvertimeExceeded"
       | "noShifts"
+      | "notFound"
       | "outsideShiftWindow"
       | "occupationalIndustryInvalid"
       | "overlappingAttendance"
@@ -6400,6 +6504,7 @@ export interface components {
       | "user"
       | "team"
       | "pointTransaction"
+      | "pointSetting"
       | "employee"
       | "attendanceSetting"
       | "leaveCase"
@@ -9644,6 +9749,24 @@ export interface components {
       data: components["schemas"]["UserOrderResponseDto"][];
       total: number;
     };
+    PointSettingResponseDto: {
+      id: string;
+      amountPerPoint: string | null;
+      pointsValidityYears: number | null;
+      /** Format: date-time */
+      pointsEnabledAt: string | null;
+      accountingValuePerPoint: string | null;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    UpdatePointSettingDto: {
+      /** @description 消費多少元換 1 點；null = 停用點數 */
+      amountPerPoint?: number | null;
+      /** @description 點數有效年限；null = 不會到期 */
+      pointsValidityYears?: number | null;
+      /** @description 每點的會計價值（元），只用於對帳 */
+      accountingValuePerPoint?: number | null;
+    };
     PointsCouponDto: {
       id: string;
       code: string;
@@ -10464,6 +10587,7 @@ export interface components {
       | "waitlistPartySizeUnavailable"
       | "waitlistPaused"
       | "waitlistPhoneInQueue"
+      | "waitlistQrRequired"
       | "waitlistTransitionInvalid";
     WaitlistErrorResponseDto: {
       message: components["schemas"]["WaitlistErrorCode"];
@@ -10528,6 +10652,14 @@ export interface components {
       /** @description 是否在營業時間內 */
       open: boolean;
       paused: boolean;
+    };
+    WaitlistQrSessionResponseDto: {
+      /** Format: date-time */
+      expiresAt: string;
+    };
+    WaitlistQrTokenResponseDto: {
+      /** @description 印在門市現場候位 QR code 的簽章；不會過期，更換門市 QR secret 後失效 */
+      token: string;
     };
     CreateWaitlistTicketDto: {
       /** Format: email */
@@ -10829,6 +10961,19 @@ export interface components {
        * @description 停業時間；營業中為 null
        */
       closedAt?: string | null;
+    };
+    MemberResponseDto: {
+      /** Format: date-time */
+      createdAt: string;
+      id: string;
+      /** @description 以平台管理員身分加入；轉為真正店主後為 false */
+      joinedAsPlatformAdmin: boolean;
+      organizationId: string;
+      /** @enum {string} */
+      role: "admin" | "member" | "owner";
+      /** @description 是否顯示在官網「關於我們」的團隊介紹 */
+      showcase: boolean;
+      userId: string;
     };
     OrganizationMemberTeamDto: {
       id: string;
@@ -18923,6 +19068,62 @@ export interface operations {
       };
     };
   };
+  AdminPointSettingsController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PointSettingResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminPointSettingsController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdatePointSettingDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PointSettingResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   MyPointsController_getAllMine: {
     parameters: {
       query?: {
@@ -20599,6 +20800,91 @@ export interface operations {
       };
     };
   };
+  WaitlistController_scanQr: {
+    parameters: {
+      query?: {
+        /** @description 門市現場候位 QR code 的簽章 */
+        token?: string;
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  WaitlistController_findQrSession: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["WaitlistQrSessionResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  WaitlistController_findQrToken: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["WaitlistQrTokenResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   WaitlistController_listAdmin: {
     parameters: {
       query?: never;
@@ -21321,6 +21607,63 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["OrganizationResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrganizationPlatformAdminController_join: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MemberResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrganizationPlatformAdminController_confirmOwner: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationId: string;
+        memberId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MemberResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -24057,6 +24400,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "menstrualDayLimit",
   "monthlyOvertimeExceeded",
   "noShifts",
+  "notFound",
   "outsideShiftWindow",
   "occupationalIndustryInvalid",
   "overlappingAttendance",
@@ -24508,6 +24852,7 @@ export const auditResourceValues: ReadonlyArray<
   "user",
   "team",
   "pointTransaction",
+  "pointSetting",
   "employee",
   "attendanceSetting",
   "leaveCase",
@@ -25650,6 +25995,7 @@ export const waitlistErrorCodeValues: ReadonlyArray<
   "waitlistPartySizeUnavailable",
   "waitlistPaused",
   "waitlistPhoneInQueue",
+  "waitlistQrRequired",
   "waitlistTransitionInvalid",
 ];
 export const waitlistTicketStatusValues: ReadonlyArray<
@@ -25684,6 +26030,9 @@ export const waitlistTicketSortFieldValues: ReadonlyArray<
   "calledAt",
   "endedAt",
 ];
+export const memberResponseDtoRoleValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["MemberResponseDto"]["role"]
+> = ["admin", "member", "owner"];
 export const organizationTeamMemberResponseDtoRoleValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrganizationTeamMemberResponseDto"]["role"]
 > = ["admin", "member", "owner"];
