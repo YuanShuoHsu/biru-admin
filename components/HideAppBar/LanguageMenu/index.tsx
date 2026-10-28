@@ -3,12 +3,13 @@
 // https://mui.com/material-ui/react-app-bar/#system-ResponsiveAppBar.tsx
 // https://better-auth.com/docs/concepts/users-accounts#update-user
 // https://next-intl.dev/docs/routing/navigation#userouter
+// https://react.dev/reference/react/useTransition#react-doesnt-treat-my-state-update-after-await-as-a-transition
 
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
 import { LocaleEnum } from "@/enums/Locale";
 
@@ -55,6 +56,7 @@ const LanguageMenu = () => {
 
   const currentLocale = useLocale();
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const session = useSession();
 
@@ -68,25 +70,26 @@ const LanguageMenu = () => {
   const handleClose = () => setAnchorElLanguage(null);
 
   // 等寫入完成再換頁，新頁面在伺服器端取得的 session 才會是新語系
-  const handleSelect = async (locale: Locale) => {
-    if (
-      session &&
-      !session.session.impersonatedBy &&
-      session.user.lang !== locale
-    )
-      await authClient.updateUser({
-        lang: locale,
-        fetchOptions: {
-          onError: ({ error: { message } }) => {
-            enqueueSnackbar(message, {
-              variant: "error",
-            });
+  const handleSelect = (locale: Locale) =>
+    startTransition(async () => {
+      if (
+        session &&
+        !session.session.impersonatedBy &&
+        session.user.lang !== locale
+      )
+        await authClient.updateUser({
+          lang: locale,
+          fetchOptions: {
+            onError: ({ error: { message } }) => {
+              enqueueSnackbar(message, {
+                variant: "error",
+              });
+            },
           },
-        },
-      });
+        });
 
-    router.replace(href, { locale });
-  };
+      startTransition(() => router.replace(href, { locale }));
+    });
 
   return (
     <>
@@ -97,6 +100,7 @@ const LanguageMenu = () => {
           aria-haspopup="true"
           aria-label="language"
           color="inherit"
+          loading={isPending}
           onClick={handleClick}
         >
           <Language />
