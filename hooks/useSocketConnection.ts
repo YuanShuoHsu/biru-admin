@@ -22,7 +22,6 @@ export const useSocketConnection = (socket: Socket) => {
     };
 
     const onConnect = () => {
-      detachUpgrade();
       engine = socket.io.engine;
       setIsConnected(true);
       setTransport(engine.transport.name);
@@ -36,6 +35,7 @@ export const useSocketConnection = (socket: Socket) => {
     };
 
     if (socket.connected) onConnect();
+    else onDisconnect();
 
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
