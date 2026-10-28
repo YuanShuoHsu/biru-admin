@@ -3,7 +3,6 @@ import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-import OrganizationsSlugPoints from ".";
 import PointTransactions from "./PointTransactions";
 
 import { redirect } from "@/i18n/navigation";
@@ -75,18 +74,8 @@ const OrganizationsSlugPointsPage = async ({
     ({ userId }) => userId === session?.user?.id,
   )?.role;
 
-  const canUpdatePoints = hasRolePermission(currentUserRole, {
-    organization: ["update"],
-  });
-
-  const organizationsSlugPoints = (
-    <OrganizationsSlugPoints
-      activeOrganization={data}
-      canUpdatePoints={canUpdatePoints}
-    />
-  );
-
-  if (!canUpdatePoints) return organizationsSlugPoints;
+  if (!hasRolePermission(currentUserRole, { organization: ["update"] }))
+    notFound();
 
   const {
     filterField,
@@ -138,22 +127,19 @@ const OrganizationsSlugPointsPage = async ({
     );
 
   return (
-    <>
-      {organizationsSlugPoints}
-      <PointTransactions
-        filterField={filterField}
-        filterOperator={filterOperator}
-        filterValue={filterValue}
-        organizationSlug={data.slug}
-        page={page}
-        pageSize={pageSize}
-        quickFilterValue={quickFilterValue}
-        rowCount={rowCount}
-        rows={rows}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-      />
-    </>
+    <PointTransactions
+      filterField={filterField}
+      filterOperator={filterOperator}
+      filterValue={filterValue}
+      organizationSlug={data.slug}
+      page={page}
+      pageSize={pageSize}
+      quickFilterValue={quickFilterValue}
+      rowCount={rowCount}
+      rows={rows}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+    />
   );
 };
 

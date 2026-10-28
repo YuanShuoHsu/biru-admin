@@ -361,12 +361,6 @@
     }
   },
   "points": {
-    "actions": {
-      "updatePoints": {
-        "success": "{name} のポイント設定を更新しました",
-        "title": "ポイントを編集"
-      }
-    },
     "adjust": {
       "email": {
         "label": "会員のメールアドレス",
@@ -386,21 +380,7 @@
       "success": "{email} のポイントを調整しました",
       "title": "ポイント付与・減算"
     },
-    "amountPerPoint": {
-      "empty": "無効",
-      "hint": "未設定の場合、ポイントは無効になります",
-      "invalid": "1ポイント獲得に必要な金額が無効です",
-      "label": "1ポイント獲得に必要な金額",
-      "placeholder": "1ポイント獲得に必要な金額を入力してください",
-      "value": "{value, number}"
-    },
     "label": "ポイント",
-    "pointsValidityYears": {
-      "empty": "無期限",
-      "label": "ポイント有効期限（年）",
-      "placeholder": "ポイント有効期限を入力してください",
-      "value": "{value}年"
-    },
     "transactions": {
       "createdAt": "作成日時",
       "expiresAt": "有効期限",
