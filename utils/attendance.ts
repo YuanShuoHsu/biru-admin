@@ -70,7 +70,7 @@ import type {
 } from "@/types/attendance";
 
 import { getGridSearchParams, type GridQuery } from "@/utils/dataGrid";
-import { fetcher } from "@/utils/fetcher";
+import { type FetchError, fetcher } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 
 dayjs.extend(utc);
@@ -209,8 +209,9 @@ export const getAttendanceSettings = cache(
         attendancePath(organizationSlug, "org", "settings"),
         init,
       );
-    } catch {
-      return null;
+    } catch (error) {
+      if ((error as FetchError).status === 404) return null;
+      throw error;
     }
   },
 );
