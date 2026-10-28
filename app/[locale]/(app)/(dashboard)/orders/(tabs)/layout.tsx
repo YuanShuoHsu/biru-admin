@@ -8,7 +8,7 @@ import { useSWRConfig } from "swr";
 import { useOrganization } from "@/hooks/organizations";
 import { useSocketConnection } from "@/hooks/useSocketConnection";
 
-import { menuSocket } from "@/app/socket";
+import { emitMenuWithAck, menuSocket } from "@/app/socket";
 
 import RouteTabs from "@/components/RouteTabs";
 
@@ -24,12 +24,11 @@ const OrdersTabsLayout = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (!isConnected || !organization) return;
 
-    menuSocket
-      .timeout(5000)
-      .emitWithAck("joinOrdersBoard", { organizationId: organization.id })
-      .catch((error) =>
-        enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
-      );
+    emitMenuWithAck("joinOrdersBoard", {
+      organizationId: organization.id,
+    }).catch((error) =>
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
+    );
 
     const ordersUrl = `/api/organizations/${organization.slug}/orders`;
 
