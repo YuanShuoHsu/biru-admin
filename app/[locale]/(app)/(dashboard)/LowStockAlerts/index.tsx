@@ -70,7 +70,7 @@ const LowStockAlerts = () => {
 
     return () => {
       menuSocket.off("lowStockReached", handleLowStock);
-      menuSocket.volatile.emit("leaveInventory", {
+      menuSocket.emit("leaveInventory", {
         organizationId: organization.id,
       });
     };

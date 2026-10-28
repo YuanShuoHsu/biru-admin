@@ -595,7 +595,7 @@ const StoreLayout = ({
 
     return () => {
       menuSocket.off("orderUpdated", mutate);
-      menuSocket.volatile.emit("leaveOrdersBoard", { organizationId });
+      menuSocket.emit("leaveOrdersBoard", { organizationId });
     };
   }, [hasBoard, isConnected, mutate, organizationId]);
 
