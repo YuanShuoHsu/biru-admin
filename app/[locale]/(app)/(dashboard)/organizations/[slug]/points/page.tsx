@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 
 import OrganizationsSlugPoints from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
@@ -33,7 +35,7 @@ const OrganizationsSlugPointsPage = async ({
 }: OrganizationsSlugPointsPageProps) => {
   const [cookieStore, { slug }] = await Promise.all([cookies(), params]);
 
-  const [{ data }, session] = await Promise.all([
+  const [{ data, error }, session] = await Promise.all([
     authClient.organization.getFullOrganization({
       query: { organizationSlug: decodeURIComponent(slug) },
       fetchOptions: { headers: { cookie: cookieStore.toString() } },
@@ -41,6 +43,8 @@ const OrganizationsSlugPointsPage = async ({
     getSession(),
   ]);
 
+  if (error?.status === 400 || error?.status === 403) notFound();
+  if (error) return <ErrorAlert />;
   if (!data) notFound();
 
   const currentUserRole = data.members.find(

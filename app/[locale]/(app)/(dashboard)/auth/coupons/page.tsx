@@ -6,11 +6,13 @@ import { notFound } from "next/navigation";
 
 import Coupons from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { routing } from "@/i18n/routing";
 
 import type { MyClaimableCoupon, MyCoupon } from "@/types/coupons";
 
-import { fetcher } from "@/utils/fetcher";
+import { fetcher, settle } from "@/utils/fetcher";
 
 export const generateMetadata = async ({
   params,
@@ -26,14 +28,20 @@ export const generateMetadata = async ({
 const AuthCouponsPage = async () => {
   const reqHeaders = await headers();
   const cookie = reqHeaders.get("cookie") || "";
-  const [claimableCoupons, coupons] = await Promise.all([
-    fetcher<MyClaimableCoupon[]>("/api/users/me/coupons/claimable", {
-      headers: { cookie },
-    }).catch(() => []),
-    fetcher<MyCoupon[]>("/api/users/me/coupons", {
-      headers: { cookie },
-    }).catch(() => []),
+  const [
+    { data: claimableCoupons, error: claimableError },
+    { data: coupons, error },
+  ] = await Promise.all([
+    settle(
+      fetcher<MyClaimableCoupon[]>("/api/users/me/coupons/claimable", {
+        headers: { cookie },
+      }),
+    ),
+    settle(
+      fetcher<MyCoupon[]>("/api/users/me/coupons", { headers: { cookie } }),
+    ),
   ]);
+  if (claimableError || error) return <ErrorAlert />;
 
   const availableCoupons = coupons.filter(
     ({ coupon, usedAt }) =>

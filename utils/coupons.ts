@@ -62,50 +62,42 @@ export const getCoupons = cache(
     }: GetCouponsQuery = {},
     init?: RequestInit,
   ) => {
-    try {
-      const offset = (page - 1) * pageSize;
-      const isNoValueOperator =
-        filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
-      const params = new URLSearchParams({
-        lang: locale,
-        limit: String(pageSize),
-        offset: String(offset),
-        ...(sortBy && { sortBy }),
-        ...(sortDirection && { sortDirection }),
-        ...(filterField &&
-          filterOperator &&
-          (filterValue || isNoValueOperator) && {
-            filterField,
-            filterOperator,
-            ...(filterValue && { filterValue }),
-          }),
-        ...(quickFilterValue && { quickFilterValue }),
-      });
-      for (const entry of quickFilterEnums || [])
-        params.append("quickFilterEnums", entry);
+    const offset = (page - 1) * pageSize;
+    const isNoValueOperator =
+      filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
+    const params = new URLSearchParams({
+      lang: locale,
+      limit: String(pageSize),
+      offset: String(offset),
+      ...(sortBy && { sortBy }),
+      ...(sortDirection && { sortDirection }),
+      ...(filterField &&
+        filterOperator &&
+        (filterValue || isNoValueOperator) && {
+          filterField,
+          filterOperator,
+          ...(filterValue && { filterValue }),
+        }),
+      ...(quickFilterValue && { quickFilterValue }),
+    });
+    for (const entry of quickFilterEnums || [])
+      params.append("quickFilterEnums", entry);
 
-      const result = await fetcher<CouponListResponse>(
-        `${getCouponsPath(organizationSlug)}?${params.toString()}`,
-        init,
-      );
+    const result = await fetcher<CouponListResponse>(
+      `${getCouponsPath(organizationSlug)}?${params.toString()}`,
+      init,
+    );
 
-      return {
-        coupons: Array.isArray(result.data) ? result.data : [],
-        total: result.total || 0,
-      };
-    } catch {
-      return { coupons: [], total: 0 };
-    }
+    return {
+      coupons: Array.isArray(result.data) ? result.data : [],
+      total: result.total || 0,
+    };
   },
 );
 
-export const getCoupon = cache(async (couponId: string, init?: RequestInit) => {
-  try {
-    return await fetcher<Coupon>(`/api/coupons/${couponId}`, init);
-  } catch {
-    return null;
-  }
-});
+export const getCoupon = cache((couponId: string, init?: RequestInit) =>
+  fetcher<Coupon>(`/api/coupons/${couponId}`, init),
+);
 
 export const getCouponRecipients = cache(
   async (
@@ -123,38 +115,34 @@ export const getCouponRecipients = cache(
     }: GetCouponRecipientsQuery = {},
     init?: RequestInit,
   ) => {
-    try {
-      const offset = (page - 1) * pageSize;
-      const isNoValueOperator =
-        filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
-      const params = new URLSearchParams({
-        limit: String(pageSize),
-        offset: String(offset),
-        ...(sortBy && { sortBy }),
-        ...(sortDirection && { sortDirection }),
-        ...(filterField &&
-          filterOperator &&
-          (filterValue || isNoValueOperator) && {
-            filterField,
-            filterOperator,
-            ...(filterValue && { filterValue }),
-          }),
-        ...(quickFilterValue && { quickFilterValue }),
-      });
-      for (const entry of quickFilterEnums || [])
-        params.append("quickFilterEnums", entry);
+    const offset = (page - 1) * pageSize;
+    const isNoValueOperator =
+      filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
+    const params = new URLSearchParams({
+      limit: String(pageSize),
+      offset: String(offset),
+      ...(sortBy && { sortBy }),
+      ...(sortDirection && { sortDirection }),
+      ...(filterField &&
+        filterOperator &&
+        (filterValue || isNoValueOperator) && {
+          filterField,
+          filterOperator,
+          ...(filterValue && { filterValue }),
+        }),
+      ...(quickFilterValue && { quickFilterValue }),
+    });
+    for (const entry of quickFilterEnums || [])
+      params.append("quickFilterEnums", entry);
 
-      const result = await fetcher<{ data: CouponRecipient[]; total: number }>(
-        `/api/coupons/${couponId}/recipients?${params.toString()}`,
-        init,
-      );
+    const result = await fetcher<{ data: CouponRecipient[]; total: number }>(
+      `/api/coupons/${couponId}/recipients?${params.toString()}`,
+      init,
+    );
 
-      return {
-        recipients: Array.isArray(result.data) ? result.data : [],
-        total: result.total || 0,
-      };
-    } catch {
-      return { recipients: [], total: 0 };
-    }
+    return {
+      recipients: Array.isArray(result.data) ? result.data : [],
+      total: result.total || 0,
+    };
   },
 );

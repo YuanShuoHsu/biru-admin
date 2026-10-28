@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import WaitlistTickets from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -17,6 +19,7 @@ import {
 
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getWaitlistEnumOptions } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getMemberRole, getResolvedAdminOrganization } from "@/utils/session";
 import { getWaitlistTickets } from "@/utils/waitlist";
@@ -90,24 +93,29 @@ const WaitlistListContent = async ({
     ? getQuickFilterEnums(quickFilterValue, getWaitlistEnumOptions(tWaitlist))
     : [];
 
-  const [memberRole, { tickets: rows, total: rowCount }] = await Promise.all([
+  const [memberRole, { data: tickets, error }] = await Promise.all([
     getMemberRole(selectedOrganization.id),
-    getWaitlistTickets(
-      selectedOrganization.slug,
-      {
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterEnums,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-      },
-      fetchOptions,
+    settle(
+      getWaitlistTickets(
+        selectedOrganization.slug,
+        {
+          page,
+          pageSize,
+          filterField,
+          filterOperator,
+          filterValue,
+          quickFilterEnums,
+          quickFilterValue,
+          sortBy,
+          sortDirection,
+        },
+        fetchOptions,
+      ),
     ),
   ]);
+  if (error) return <ErrorAlert />;
+
+  const { tickets: rows, total: rowCount } = tickets;
 
   const canViewAuditLog = hasRolePermission(memberRole, {
     auditLog: ["read"],

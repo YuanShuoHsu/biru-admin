@@ -6,11 +6,14 @@ import { Suspense } from "react";
 
 import MenuItemRecipe from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
+import { isMissingResource, settle } from "@/utils/fetcher";
 import { getHref } from "@/utils/href";
 import { getIngredients, getRecipeByMenuItem } from "@/utils/inventory";
 import {
@@ -47,19 +50,25 @@ const MenuItemRecipeContent = async ({
     await Promise.all([cookies(), params, searchParams]);
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
-  const section = await getAdminMenuSection(menuSectionId, fetchOptions);
+  const { data: section, error: sectionError } = await settle(
+    getAdminMenuSection(menuSectionId, fetchOptions),
+  );
+  if (isMissingResource(sectionError)) notFound();
+  if (sectionError) return <ErrorAlert />;
 
-  if (!section?.menuId) notFound();
-
-  const [menu, menuItem] = await Promise.all([
-    getAdminMenu(section.menuId, fetchOptions),
-    getAdminMenuItem(menuItemId, fetchOptions),
+  const [
+    { data: menu, error: menuError },
+    { data: menuItem, error: menuItemError },
+  ] = await Promise.all([
+    settle(getAdminMenu(section.menuId, fetchOptions)),
+    settle(getAdminMenuItem(menuItemId, fetchOptions)),
   ]);
-
-  if (!menuItem) notFound();
+  if (isMissingResource(menuError) || isMissingResource(menuItemError))
+    notFound();
+  if (menuError || menuItemError) return <ErrorAlert />;
 
   const selectedOrganization = await getAdminOrganization(
-    menu?.organizationId,
+    menu.organizationId,
     rawSearchParams.organization,
   );
   if (!selectedOrganization) notFound();
@@ -75,17 +84,24 @@ const MenuItemRecipeContent = async ({
       locale,
     });
 
-  const [memberRole, { ingredients }, recipe] = await Promise.all([
+  const [
+    memberRole,
+    { data: ingredientOptions, error: ingredientsError },
+    { data: recipe, error: recipeError },
+  ] = await Promise.all([
     getMemberRole(selectedOrganization.id),
-    menuItem.recipe
-      ? { ingredients: [], total: 0 }
-      : getIngredients(
-          selectedOrganization.slug,
-          { pageSize: MAX_PAGE_SIZE },
-          fetchOptions,
-        ),
-    getRecipeByMenuItem(menuItemId, fetchOptions),
+    settle(
+      menuItem.recipe
+        ? Promise.resolve({ ingredients: [], total: 0 })
+        : getIngredients(
+            selectedOrganization.slug,
+            { pageSize: MAX_PAGE_SIZE },
+            fetchOptions,
+          ),
+    ),
+    settle(getRecipeByMenuItem(menuItemId, fetchOptions)),
   ]);
+  if (ingredientsError || recipeError) return <ErrorAlert />;
 
   if (menuItem.recipe && !recipe) notFound();
 
@@ -108,7 +124,7 @@ const MenuItemRecipeContent = async ({
       canViewAuditLog={canViewAuditLog}
       canViewPurchasing={canViewPurchasing}
       canWrite={canWrite}
-      ingredients={ingredients}
+      ingredients={ingredientOptions.ingredients}
       menuItem={menuItem}
       organization={selectedOrganization}
       recipe={recipe}

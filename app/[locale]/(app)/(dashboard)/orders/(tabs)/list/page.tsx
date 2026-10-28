@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import Orders from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -17,6 +19,7 @@ import {
 
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getOrderEnumOptions } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 import { getAdminOrders } from "@/utils/orders";
 import { hasRolePermission } from "@/utils/organizations";
 import { getMemberRole, getResolvedAdminOrganization } from "@/utils/session";
@@ -98,21 +101,26 @@ const OrdersContent = async ({ params, searchParams }: OrdersPageProps) => {
     auditLog: ["read"],
   });
 
-  const { orders: rows, total: rowCount } = await getAdminOrders(
-    selectedOrganization.slug,
-    {
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterEnums,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-    },
-    fetchOptions,
+  const { data: orders, error } = await settle(
+    getAdminOrders(
+      selectedOrganization.slug,
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterEnums,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
+      fetchOptions,
+    ),
   );
+  if (error) return <ErrorAlert />;
+
+  const { orders: rows, total: rowCount } = orders;
 
   return (
     <Orders

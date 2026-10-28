@@ -8,6 +8,7 @@ import useSWR from "swr";
 import OtherSessionItem from "./OtherSessionItem";
 import SessionItem from "./SessionItem";
 
+import ErrorAlert from "@/components/ErrorAlert";
 import FormCard, {
   StyledCardContent,
   StyledCardHeader,
@@ -58,14 +59,16 @@ const Sessions = () => {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const { data: sessions = [], mutate } = useSWR<UserSession[]>(
-    session ? sessionsKey : null,
-    async () => {
-      const { data } = await authClient.listSessions();
+  const {
+    data: sessions = [],
+    error,
+    mutate,
+  } = useSWR<UserSession[]>(session ? sessionsKey : null, async () => {
+    const { data, error } = await authClient.listSessions();
+    if (error) throw error;
 
-      return data || [];
-    },
-  );
+    return data;
+  });
   const otherSessions = sessions.filter(
     ({ token }) => token !== session?.session.token,
   );
@@ -147,6 +150,7 @@ const Sessions = () => {
               session={session.session}
             />
           )}
+          {error && <ErrorAlert onRetry={() => mutate()} />}
           {otherSessions.map((session) => (
             <Fragment key={session.token}>
               <Divider flexItem />

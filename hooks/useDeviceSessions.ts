@@ -16,9 +16,11 @@ const useDeviceSessions = () => {
   return useSWR<DeviceSession[]>(
     session ? deviceSessionsKey : null,
     async () => {
-      const { data } = await authClient.multiSession.listDeviceSessions();
+      const { data, error } =
+        await authClient.multiSession.listDeviceSessions();
+      if (error) throw error;
 
-      return data || [];
+      return data;
     },
   );
 };

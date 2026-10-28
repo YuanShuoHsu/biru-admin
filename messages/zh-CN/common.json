@@ -7,6 +7,12 @@
   "delimiter": "、",
   "discontinued": "已停售",
   "empty": "尚无商品",
+  "error": {
+    "description": "请稍后再试。",
+    "digest": "错误代码：{digest}",
+    "retry": "重试",
+    "title": "加载失败"
+  },
   "from": "起",
   "imageProcessingFailed": "图片处理失败",
   "increase": "增加",
@@ -36,6 +42,11 @@
   "maxQuantity": "每项商品最多只能购买 {quantity} 件",
   "middleDot": "・",
   "multiply": "×",
+  "notFound": {
+    "description": "找不到您要的页面。",
+    "home": "返回首页",
+    "title": "找不到页面"
+  },
   "optional": "（选填）",
   "organization": {
     "closed": "{name}（已停业）",

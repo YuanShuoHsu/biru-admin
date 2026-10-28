@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import AnnualLeaveNotices from "../../../AnnualLeaveNotices";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -18,6 +20,7 @@ import {
 import { getAttendanceAnnualLeaveNotices } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceAnnualLeaveNoticeEnumOptions } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -109,8 +112,8 @@ const AnnualLeaveNoticesContent = async ({
       )
     : [];
 
-  const { notices: rows, total: rowCount } =
-    await getAttendanceAnnualLeaveNotices(
+  const { data: notices, error } = await settle(
+    getAttendanceAnnualLeaveNotices(
       organization.slug,
       "org",
       {
@@ -125,7 +128,11 @@ const AnnualLeaveNoticesContent = async ({
         sortDirection,
       },
       { headers: { cookie: cookieStore.toString() } },
-    );
+    ),
+  );
+  if (error) return <ErrorAlert />;
+
+  const { notices: rows, total: rowCount } = notices;
 
   return (
     <AnnualLeaveNotices

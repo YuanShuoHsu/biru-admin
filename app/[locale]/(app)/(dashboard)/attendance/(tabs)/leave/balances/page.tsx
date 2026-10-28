@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import Balances from "../../../LeaveBalances";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
@@ -24,6 +26,7 @@ import {
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceLeaveTypeNameEnumOptions } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -118,8 +121,12 @@ const BalancesContent = async ({ params, searchParams }: BalancesPageProps) => {
       )
     : [];
 
-  const [{ balances: rows, total: rowCount }, { employees }, { leaveTypes }] =
-    await Promise.all([
+  const [
+    { data: balances, error },
+    { data: employeePage, error: employeesError },
+    { data: leaveTypePage, error: leaveTypesError },
+  ] = await Promise.all([
+    settle(
       getAttendanceLeaveBalances(
         organization.slug,
         "org",
@@ -136,21 +143,31 @@ const BalancesContent = async ({ params, searchParams }: BalancesPageProps) => {
         },
         fetchOptions,
       ),
+    ),
+    settle(
       canWrite
         ? getAttendanceEmployees(
             organization.slug,
             { pageSize: MAX_PAGE_SIZE },
             fetchOptions,
           )
-        : { employees: [] },
+        : Promise.resolve({ employees: [], total: 0 }),
+    ),
+    settle(
       canWrite
         ? getAttendanceLeaveTypes(
             organization.slug,
             { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
             fetchOptions,
           )
-        : { leaveTypes: [] },
-    ]);
+        : Promise.resolve({ leaveTypes: [], total: 0 }),
+    ),
+  ]);
+  if (error || employeesError || leaveTypesError) return <ErrorAlert />;
+
+  const { balances: rows, total: rowCount } = balances;
+  const { employees } = employeePage;
+  const { leaveTypes } = leaveTypePage;
 
   return (
     <Balances

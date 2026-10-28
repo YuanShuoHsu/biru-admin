@@ -56,7 +56,7 @@ const StyledCardActions = styled(CardActions)(({ theme }) => ({
 }));
 
 interface StoreProps {
-  points: MyPoints | null;
+  points: MyPoints;
 }
 
 const Store = ({ points }: StoreProps) => {
@@ -73,7 +73,7 @@ const Store = ({ points }: StoreProps) => {
   const tAuth = useTranslations("auth");
   const tCommon = useTranslations("common");
 
-  const coupons = points?.redeemableCoupons || [];
+  const coupons = points.redeemableCoupons;
 
   const handleRedeem = async (coupon: PointsCoupon) => {
     try {
@@ -123,36 +123,29 @@ const Store = ({ points }: StoreProps) => {
         }
       />
       <StyledCardContent>
-        {!points && (
-          <Typography color="textSecondary" variant="body2">
-            {tAuth("points.empty")}
-          </Typography>
-        )}
-        {points && (
-          <List disablePadding>
-            <ListItem
-              disableGutters
-              secondaryAction={
-                <StyledTypography color="primary" variant="h5">
-                  {tAuth("points.points", {
-                    points: format.number(points.balance),
-                  })}
-                </StyledTypography>
-              }
-            >
-              <ListItemAvatar>
-                <StyledAvatar>
-                  <Stars fontSize="small" />
-                </StyledAvatar>
-              </ListItemAvatar>
-              <StyledListItemText
-                primary={tAuth("points.balance")}
-                slotProps={{ primary: { variant: "subtitle2" } }}
-              />
-            </ListItem>
-          </List>
-        )}
-        {points && coupons.length === 0 && (
+        <List disablePadding>
+          <ListItem
+            disableGutters
+            secondaryAction={
+              <StyledTypography color="primary" variant="h5">
+                {tAuth("points.points", {
+                  points: format.number(points.balance),
+                })}
+              </StyledTypography>
+            }
+          >
+            <ListItemAvatar>
+              <StyledAvatar>
+                <Stars fontSize="small" />
+              </StyledAvatar>
+            </ListItemAvatar>
+            <StyledListItemText
+              primary={tAuth("points.balance")}
+              slotProps={{ primary: { variant: "subtitle2" } }}
+            />
+          </ListItem>
+        </List>
+        {coupons.length === 0 && (
           <Typography color="textSecondary" variant="body2">
             {tAuth("points.redeemableEmpty")}
           </Typography>

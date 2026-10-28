@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import LeaveTypes from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -21,6 +23,7 @@ import {
   getAttendanceLeaveTypeEnumOptions,
   getAttendanceLeaveTypeNameEnumOptions,
 } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -112,21 +115,26 @@ const LeaveTypesContent = async ({
       })
     : [];
 
-  const { leaveTypes: rows, total: rowCount } = await getAttendanceLeaveTypes(
-    organization.slug,
-    {
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterEnums,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-    },
-    fetchOptions,
+  const { data: leaveTypes, error } = await settle(
+    getAttendanceLeaveTypes(
+      organization.slug,
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterEnums,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
+      fetchOptions,
+    ),
   );
+  if (error) return <ErrorAlert />;
+
+  const { leaveTypes: rows, total: rowCount } = leaveTypes;
 
   return (
     <LeaveTypes

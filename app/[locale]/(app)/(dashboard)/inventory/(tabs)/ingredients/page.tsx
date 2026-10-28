@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import Ingredients from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
@@ -19,6 +21,7 @@ import {
 
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getIngredientEnumOptions } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 import { getIngredients, getSuppliers } from "@/utils/inventory";
 import { hasRolePermission } from "@/utils/organizations";
 import { getMemberRole, getResolvedAdminOrganization } from "@/utils/session";
@@ -122,8 +125,11 @@ const IngredientsContent = async ({
 
   const lowStock = rawSearchParams.lowStock === "true";
 
-  const [{ ingredients: rows, total: rowCount }, { suppliers }] =
-    await Promise.all([
+  const [
+    { data: ingredients, error: ingredientsError },
+    { data: supplierOptions, error: suppliersError },
+  ] = await Promise.all([
+    settle(
       getIngredients(
         organization.slug,
         {
@@ -140,14 +146,20 @@ const IngredientsContent = async ({
         fetchOptions,
         lowStock,
       ),
+    ),
+    settle(
       canViewPurchasing
         ? getSuppliers(
             organization.slug,
             { pageSize: MAX_PAGE_SIZE, sortBy: "name", sortDirection: "asc" },
             fetchOptions,
           )
-        : { suppliers: [] },
-    ]);
+        : Promise.resolve({ suppliers: [], total: 0 }),
+    ),
+  ]);
+  if (ingredientsError || suppliersError) return <ErrorAlert />;
+
+  const { ingredients: rows, total: rowCount } = ingredients;
 
   return (
     <Ingredients
@@ -167,7 +179,7 @@ const IngredientsContent = async ({
       rows={rows}
       sortBy={sortBy}
       sortDirection={sortDirection}
-      suppliers={suppliers}
+      suppliers={supplierOptions.suppliers}
     />
   );
 };

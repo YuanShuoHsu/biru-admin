@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import Mine from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
@@ -26,6 +28,7 @@ import {
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceDayKindEnumOptions } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 import { getAttendanceAccess } from "@/utils/session";
 
 interface MinePageProps {
@@ -107,50 +110,72 @@ const MineContent = async ({ params, searchParams }: MinePageProps) => {
       )
     : [];
 
-  const { employee } = await getAttendanceContext(
-    organization.slug,
-    fetchOptions,
+  const { data: context, error: contextError } = await settle(
+    getAttendanceContext(organization.slug, fetchOptions),
   );
+  if (contextError) return <ErrorAlert />;
+
+  const { employee } = context;
 
   const enabled = employee?.status === "active";
 
   const [
-    { shifts: rows, total: rowCount },
-    punchableShifts,
-    { leaveTypes },
-    { leaveCases },
-  ] = enabled
-    ? await Promise.all([
-        getAttendanceShifts(
-          organization.slug,
-          "me",
-          {
-            page,
-            pageSize,
-            filterField,
-            filterOperator,
-            filterValue,
-            quickFilterEnums,
-            quickFilterValue,
-            sortBy,
-            sortDirection,
-          },
-          fetchOptions,
-        ),
-        getAttendancePunchableShifts(organization.slug, fetchOptions),
-        getAttendanceLeaveTypes(
-          organization.slug,
-          { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
-          fetchOptions,
-        ),
-        getAttendanceLeaveCases(
-          organization.slug,
-          "me",
-          { pageSize: MAX_PAGE_SIZE },
-          fetchOptions,
-        ),
-      ])
-    : [{ shifts: [], total: 0 }, [], { leaveTypes: [] }, { leaveCases: [] }];
+    { data: shifts, error },
+    { data: punchableShifts, error: punchableShiftsError },
+    { data: leaveTypePage, error: leaveTypesError },
+    { data: leaveCasePage, error: leaveCasesError },
+  ] = await Promise.all([
+    settle(
+      enabled
+        ? getAttendanceShifts(
+            organization.slug,
+            "me",
+            {
+              page,
+              pageSize,
+              filterField,
+              filterOperator,
+              filterValue,
+              quickFilterEnums,
+              quickFilterValue,
+              sortBy,
+              sortDirection,
+            },
+            fetchOptions,
+          )
+        : Promise.resolve({ shifts: [], total: 0 }),
+    ),
+    settle(
+      enabled
+        ? getAttendancePunchableShifts(organization.slug, fetchOptions)
+        : Promise.resolve([]),
+    ),
+    settle(
+      enabled
+        ? getAttendanceLeaveTypes(
+            organization.slug,
+            { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
+            fetchOptions,
+          )
+        : Promise.resolve({ leaveTypes: [], total: 0 }),
+    ),
+    settle(
+      enabled
+        ? getAttendanceLeaveCases(
+            organization.slug,
+            "me",
+            { pageSize: MAX_PAGE_SIZE },
+            fetchOptions,
+          )
+        : Promise.resolve({ leaveCases: [], total: 0 }),
+    ),
+  ]);
+  if (error || punchableShiftsError || leaveTypesError || leaveCasesError)
+    return <ErrorAlert />;
+
+  const { shifts: rows, total: rowCount } = shifts;
+  const { leaveTypes } = leaveTypePage;
+  const { leaveCases } = leaveCasePage;
 
   return (
     <Mine
