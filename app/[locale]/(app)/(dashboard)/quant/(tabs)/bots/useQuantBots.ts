@@ -3,6 +3,7 @@
 import { useEffect, useMemo } from "react";
 
 import { useMessages, useTranslations } from "next-intl";
+import { enqueueSnackbar } from "notistack";
 import { useSWRConfig } from "swr";
 
 import { useSocketConnection } from "@/hooks/useSocketConnection";
@@ -10,6 +11,8 @@ import { useSocketConnection } from "@/hooks/useSocketConnection";
 import { quantSocket } from "@/app/socket";
 
 import type { QuantBot } from "@/types/quant";
+
+import { getErrorMessage } from "@/utils/errors";
 
 export const QUANT_BOTS_URL = "/api/quant/bots";
 
@@ -38,10 +41,12 @@ export const useBotStream = () => {
       }, REVALIDATE_DELAY_MS);
     };
 
-    void quantSocket
+    quantSocket
       .timeout(10000)
       .emitWithAck("watchBots")
-      .catch(() => {});
+      .catch((error) =>
+        enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
+      );
     quantSocket.on("bot", revalidate);
 
     return () => {

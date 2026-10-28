@@ -23,6 +23,8 @@ import useSWR from "swr";
 import { useChartPalette } from "../../../useChartPalette";
 import { QUANT_BOTS_URL } from "../../useQuantBots";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { isIntradayInterval } from "@/constants/quant";
 
 import { Box } from "@mui/material";
@@ -75,7 +77,11 @@ const BotChart = ({ bot, pricePrecision }: BotChartProps) => {
   const markersRef = useRef<ISeriesMarkersPluginApi<Time> | null>(null);
   const linesRef = useRef<IPriceLine[]>([]);
 
-  const { data: candles } = useSWR<QuantCandle[]>(
+  const {
+    data: candles,
+    error: candlesError,
+    mutate: mutateCandles,
+  } = useSWR<QuantCandle[]>(
     `/api/quant/markets/${bot.symbol}/candles?interval=${interval}&limit=${CHART_CANDLES}`,
     fetcher,
     { refreshInterval: 60_000 },
@@ -83,7 +89,11 @@ const BotChart = ({ bot, pricePrecision }: BotChartProps) => {
   const since = candles?.length
     ? new Date(candles[0].time).toISOString()
     : null;
-  const { data: fills = [] } = useSWR<QuantBotFillMarker[]>(
+  const {
+    data: fills = [],
+    error: fillsError,
+    mutate: mutateFills,
+  } = useSWR<QuantBotFillMarker[]>(
     since
       ? `${QUANT_BOTS_URL}/${bot.id}/fill-markers?since=${encodeURIComponent(since)}`
       : null,
@@ -224,7 +234,22 @@ const BotChart = ({ bot, pricePrecision }: BotChartProps) => {
     );
   }, [bot, candles, fills, palette]);
 
-  return <Box ref={containerRef} sx={{ height: 420 }} />;
+  return (
+    <>
+      {(candlesError || fillsError) && (
+        <ErrorAlert
+          onRetry={() => (candlesError ? mutateCandles() : mutateFills())}
+        />
+      )}
+      <Box
+        ref={containerRef}
+        sx={{
+          display: candlesError || fillsError ? "none" : undefined,
+          height: 420,
+        }}
+      />
+    </>
+  );
 };
 
 export default BotChart;

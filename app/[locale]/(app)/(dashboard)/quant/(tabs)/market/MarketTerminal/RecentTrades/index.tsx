@@ -3,6 +3,8 @@
 import { useFormatter, useTranslations } from "next-intl";
 import useSWR from "swr";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { Box, Skeleton, Stack, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -31,11 +33,13 @@ const RecentTrades = ({ liveTrades, market, symbol }: RecentTradesProps) => {
   const tQuant = useTranslations("quant");
   const format = useFormatter();
 
-  const { data: initialTrades } = useSWR<QuantTrade[]>(
-    `/api/quant/markets/${symbol}/trades`,
-    fetcher,
-    { revalidateOnFocus: false },
-  );
+  const {
+    data: initialTrades,
+    error: initialTradesError,
+    mutate: mutateInitialTrades,
+  } = useSWR<QuantTrade[]>(`/api/quant/markets/${symbol}/trades`, fetcher, {
+    revalidateOnFocus: false,
+  });
 
   const seen = new Set(liveTrades.map(({ id }) => id));
   const trades = [
@@ -59,7 +63,9 @@ const RecentTrades = ({ liveTrades, market, symbol }: RecentTradesProps) => {
         </span>
         <span>{tQuant("trades.time")}</span>
       </Row>
-      {!market || !initialTrades ? (
+      {initialTradesError ? (
+        <ErrorAlert onRetry={() => mutateInitialTrades()} />
+      ) : !market || !initialTrades ? (
         <Skeleton height={400} variant="rounded" />
       ) : (
         trades.map(({ id, price, side, size, time }) => (

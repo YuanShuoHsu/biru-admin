@@ -19,6 +19,8 @@ import { Board, Panel, SidePanel } from "./styled";
 import { useAccountStream } from "./useAccountStream";
 import { useMarketStream } from "./useMarketStream";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { DEFAULT_QUANT_SYMBOLS, quantMarketTypeOf } from "@/constants/quant";
 
 import { useRouter } from "@/i18n/navigation";
@@ -54,11 +56,13 @@ const MarketTerminal = ({ interval, symbol }: MarketTerminalProps) => {
 
   const marketType = quantMarketTypeOf(symbol);
 
-  const { data: markets } = useSWR<QuantMarket[]>(
-    `/api/quant/markets?type=${marketType}`,
-    fetcher,
-    { refreshInterval: MARKETS_REFRESH_MS },
-  );
+  const {
+    data: markets,
+    error: marketsError,
+    mutate: mutateMarkets,
+  } = useSWR<QuantMarket[]>(`/api/quant/markets?type=${marketType}`, fetcher, {
+    refreshInterval: MARKETS_REFRESH_MS,
+  });
   const market = markets?.find((m) => m.symbol === symbol);
   const { data: perpInfo } = useSWR<QuantPerpInfo>(
     marketType === "PERP" ? `/api/quant/markets/${symbol}/perp` : null,
@@ -97,7 +101,13 @@ const MarketTerminal = ({ interval, symbol }: MarketTerminalProps) => {
       ),
   });
 
-  const { credential, credentials, selectCredential } = useQuantCredentials();
+  const {
+    credential,
+    credentials,
+    error: credentialsError,
+    mutate: mutateCredentials,
+    selectCredential,
+  } = useQuantCredentials();
   useAccountStream(credential?.id, symbol, isConnected);
 
   const lastPrice = liveTrades[0]?.price ?? market?.close ?? 0;
@@ -130,6 +140,8 @@ const MarketTerminal = ({ interval, symbol }: MarketTerminalProps) => {
           openInterest={perpInfo?.openInterest}
           perpIndex={liveIndex ?? perpInfo}
         />
+      ) : marketsError ? (
+        <ErrorAlert onRetry={() => mutateMarkets()} />
       ) : (
         <Skeleton height={72} variant="rounded" />
       )}
@@ -171,28 +183,33 @@ const MarketTerminal = ({ interval, symbol }: MarketTerminalProps) => {
               onPriceClick={(price) => setPickedPrice({ price })}
             />
           </Panel>
-          {market && credentials && (
-            <Panel>
-              {market.type === "PERP" ? (
-                <FuturesTradePanel
-                  credential={credential}
-                  credentials={credentials}
-                  lastPrice={lastPrice}
-                  market={market}
-                  onCredentialChange={selectCredential}
-                  pickedPrice={pickedPrice}
-                />
-              ) : (
-                <TradePanel
-                  credential={credential}
-                  credentials={credentials}
-                  lastPrice={lastPrice}
-                  market={market}
-                  onCredentialChange={selectCredential}
-                  pickedPrice={pickedPrice}
-                />
-              )}
-            </Panel>
+          {credentialsError ? (
+            <ErrorAlert onRetry={() => mutateCredentials()} />
+          ) : (
+            market &&
+            credentials && (
+              <Panel>
+                {market.type === "PERP" ? (
+                  <FuturesTradePanel
+                    credential={credential}
+                    credentials={credentials}
+                    lastPrice={lastPrice}
+                    market={market}
+                    onCredentialChange={selectCredential}
+                    pickedPrice={pickedPrice}
+                  />
+                ) : (
+                  <TradePanel
+                    credential={credential}
+                    credentials={credentials}
+                    lastPrice={lastPrice}
+                    market={market}
+                    onCredentialChange={selectCredential}
+                    pickedPrice={pickedPrice}
+                  />
+                )}
+              </Panel>
+            )
           )}
           <Panel>
             <RecentTrades

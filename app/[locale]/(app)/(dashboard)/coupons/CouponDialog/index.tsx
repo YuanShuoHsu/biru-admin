@@ -10,6 +10,7 @@ import useSWR from "swr";
 
 import { type CouponFormValues, useCouponFormSchema } from "../definitions";
 
+import ErrorAlert from "@/components/ErrorAlert";
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 
@@ -154,7 +155,11 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
   // 品項券限定單一店家：菜單依所選店家載入（品項 ID 各店不同）
   const itemOrganizationId =
     scope === "item" ? applicableOrganizationIds[0] || "" : "";
-  const { data: menu = null } = useSWR<OrderMenu | null>(
+  const {
+    data: menu = null,
+    error: menuError,
+    mutate: mutateMenu,
+  } = useSWR<OrderMenu | null>(
     itemOrganizationId
       ? `/api/organizations/${itemOrganizationId}/order-menu?lang=${locale}`
       : null,
@@ -355,56 +360,61 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
               ) || null
             }
           />
-          <Autocomplete
-            fullWidth
-            getOptionLabel={({ name }) => name}
-            isOptionEqualToValue={(option, value) => option.id === value.id}
-            multiple
-            onChange={(_, value) =>
-              setValue(
-                "menuSectionIds",
-                value.map(({ id }) => id),
-                { shouldValidate: isSubmitted },
-              )
-            }
-            options={sectionOptions}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                error={!!errors.menuSectionIds}
-                helperText={tCoupons("scope.itemHint")}
-                label={tCoupons("menuSectionIds.label")}
-                placeholder={tCoupons("menuSectionIds.placeholder")}
+          {menuError && <ErrorAlert onRetry={() => mutateMenu()} />}
+          {!menuError && (
+            <>
+              <Autocomplete
+                fullWidth
+                getOptionLabel={({ name }) => name}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                multiple
+                onChange={(_, value) =>
+                  setValue(
+                    "menuSectionIds",
+                    value.map(({ id }) => id),
+                    { shouldValidate: isSubmitted },
+                  )
+                }
+                options={sectionOptions}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    error={!!errors.menuSectionIds}
+                    helperText={tCoupons("scope.itemHint")}
+                    label={tCoupons("menuSectionIds.label")}
+                    placeholder={tCoupons("menuSectionIds.placeholder")}
+                  />
+                )}
+                value={sectionOptions.filter(({ id }) =>
+                  menuSectionIds.includes(id),
+                )}
               />
-            )}
-            value={sectionOptions.filter(({ id }) =>
-              menuSectionIds.includes(id),
-            )}
-          />
-          <Autocomplete
-            fullWidth
-            getOptionLabel={({ name }) => name}
-            isOptionEqualToValue={(option, value) => option.id === value.id}
-            multiple
-            onChange={(_, value) =>
-              setValue(
-                "menuItemIds",
-                value.map(({ id }) => id),
-                { shouldValidate: isSubmitted },
-              )
-            }
-            options={itemOptions}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                error={!!errors.menuItemIds}
-                helperText={tCoupons("scope.itemHint")}
-                label={tCoupons("menuItemIds.label")}
-                placeholder={tCoupons("menuItemIds.placeholder")}
+              <Autocomplete
+                fullWidth
+                getOptionLabel={({ name }) => name}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                multiple
+                onChange={(_, value) =>
+                  setValue(
+                    "menuItemIds",
+                    value.map(({ id }) => id),
+                    { shouldValidate: isSubmitted },
+                  )
+                }
+                options={itemOptions}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    error={!!errors.menuItemIds}
+                    helperText={tCoupons("scope.itemHint")}
+                    label={tCoupons("menuItemIds.label")}
+                    placeholder={tCoupons("menuItemIds.placeholder")}
+                  />
+                )}
+                value={itemOptions.filter(({ id }) => menuItemIds.includes(id))}
               />
-            )}
-            value={itemOptions.filter(({ id }) => menuItemIds.includes(id))}
-          />
+            </>
+          )}
         </>
       )}
       <StyledGrid container spacing={2}>

@@ -11,6 +11,8 @@ import BacktestResultView from "./BacktestResultView";
 import { toConfig } from "./definitions";
 import type { BotForm } from "./fields";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import {
   Alert,
   Button,
@@ -59,21 +61,25 @@ const AiBacktestPanel = ({ form, market }: AiBacktestPanelProps) => {
 
   const symbol = useWatch({ control: form.control, name: "symbol" });
 
-  const { data: run, mutate } = useSWR<QuantAiBacktest>(
+  const {
+    data: run,
+    error: runError,
+    mutate,
+  } = useSWR<QuantAiBacktest>(
     runId ? `${AI_BACKTESTS_URL}/${runId}` : null,
     fetcher,
     {
       refreshInterval: (latest) => (latest?.status === "running" ? POLL_MS : 0),
     },
   );
-  const { data: history, mutate: mutateHistory } = useSWR<QuantAiBacktest[]>(
-    AI_BACKTESTS_URL,
-    fetcher,
-    {
-      refreshInterval: (rows) =>
-        rows?.some(({ status }) => status === "running") ? POLL_MS : 0,
-    },
-  );
+  const {
+    data: history,
+    error: historyError,
+    mutate: mutateHistory,
+  } = useSWR<QuantAiBacktest[]>(AI_BACKTESTS_URL, fetcher, {
+    refreshInterval: (rows) =>
+      rows?.some(({ status }) => status === "running") ? POLL_MS : 0,
+  });
   const runs = history?.filter((item) => item.symbol === symbol) ?? [];
 
   const select = (item: QuantAiBacktest) => {
@@ -226,7 +232,8 @@ const AiBacktestPanel = ({ form, market }: AiBacktestPanelProps) => {
           {tBacktest("run")}
         </Button>
       )}
-      {run && (
+      {runError && <ErrorAlert onRetry={() => mutate()} />}
+      {!runError && run && (
         <Stack sx={{ gap: 1 }}>
           <Typography color="text.secondary" variant="body2">
             {tBacktest("period", {
@@ -284,7 +291,7 @@ const AiBacktestPanel = ({ form, market }: AiBacktestPanelProps) => {
           )}
         </Stack>
       )}
-      {run?.result && (
+      {!runError && run?.result && (
         <>
           {run.status !== "completed" && (
             <Typography color="text.secondary" variant="caption">
@@ -297,7 +304,8 @@ const AiBacktestPanel = ({ form, market }: AiBacktestPanelProps) => {
           />
         </>
       )}
-      {runs.length > 0 && (
+      {historyError && <ErrorAlert onRetry={() => mutateHistory()} />}
+      {!historyError && runs.length > 0 && (
         <Stack sx={{ gap: 1 }}>
           <Typography variant="subtitle1">
             {tAiBacktest("history.label")}

@@ -12,6 +12,8 @@ import parse from "autosuggest-highlight/parse";
 import React, { useRef, useState } from "react";
 import useSWR from "swr";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import {
   Autocomplete,
   Box,
@@ -116,7 +118,11 @@ const DonateCodeAutocomplete = ({
   value: donateCode,
   ...textFieldProps
 }: DonateCodeAutocompleteProps) => {
-  const { data = [] } = useSWR<DonateCodeType[]>("/api/donate-codes");
+  const {
+    data = [],
+    error,
+    mutate,
+  } = useSWR<DonateCodeType[]>("/api/donate-codes");
   const options = [...data].sort((a, b) =>
     a.donateNm.localeCompare(b.donateNm),
   );
@@ -127,6 +133,8 @@ const DonateCodeAutocomplete = ({
   const [inputValue, setInputValue] = useState(currentInputValue);
 
   const hint = useRef("");
+
+  if (error) return <ErrorAlert onRetry={() => mutate()} />;
 
   return (
     <Autocomplete

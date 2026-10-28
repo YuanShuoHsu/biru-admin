@@ -11,6 +11,7 @@ import {
   useAttachModifierGroupFormSchema,
 } from "./definitions";
 
+import ErrorAlert from "@/components/ErrorAlert";
 import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -53,15 +54,21 @@ const AttachModifierGroupDialog = ({
 
   const modifierGroupId = useWatch({ control, name: "modifierGroupId" });
 
-  const { data: groups = [] } = useSWR(
-    `/api/menus/${menuId}/modifier-groups?limit=100&offset=0`,
-    () =>
-      fetcher<{ data: ModifierGroup[] }>(
-        `/api/menus/${menuId}/modifier-groups?limit=100&offset=0`,
-      ).then(({ data }) => data || []),
+  const {
+    data: groups = [],
+    error: groupsError,
+    mutate: mutateGroups,
+  } = useSWR(`/api/menus/${menuId}/modifier-groups?limit=100&offset=0`, () =>
+    fetcher<{ data: ModifierGroup[] }>(
+      `/api/menus/${menuId}/modifier-groups?limit=100&offset=0`,
+    ).then(({ data }) => data || []),
   );
 
-  const { data: links = [] } = useSWR(
+  const {
+    data: links = [],
+    error: linksError,
+    mutate: mutateLinks,
+  } = useSWR(
     `/api/menu-items/${menuItemId}/modifier-groups?limit=100&offset=0`,
     () =>
       fetcher<{ data: MenuItemModifierGroup[] }>(
@@ -115,40 +122,44 @@ const AttachModifierGroupDialog = ({
 
   return (
     <FormBox id="attach-modifier-group-form" onSubmit={onSubmit}>
-      <TextField
-        error={!!errors.modifierGroupId}
-        fullWidth
-        helperText={errors.modifierGroupId?.message}
-        label={tMenus("items.modifierGroups.group.label")}
-        required
-        select
-        slotProps={{
-          inputLabel: { shrink: true },
-          select: {
-            displayEmpty: true,
-            renderValue: (selected) => {
-              const group = groups.find(({ id }) => id === selected);
+      {groupsError && <ErrorAlert onRetry={() => mutateGroups()} />}
+      {linksError && <ErrorAlert onRetry={() => mutateLinks()} />}
+      {!groupsError && !linksError && (
+        <TextField
+          error={!!errors.modifierGroupId}
+          fullWidth
+          helperText={errors.modifierGroupId?.message}
+          label={tMenus("items.modifierGroups.group.label")}
+          required
+          select
+          slotProps={{
+            inputLabel: { shrink: true },
+            select: {
+              displayEmpty: true,
+              renderValue: (selected) => {
+                const group = groups.find(({ id }) => id === selected);
 
-              return group ? (
-                localize(group.displayName, locale)
-              ) : (
-                <em>{tMenus("items.modifierGroups.group.placeholder")}</em>
-              );
+                return group ? (
+                  localize(group.displayName, locale)
+                ) : (
+                  <em>{tMenus("items.modifierGroups.group.placeholder")}</em>
+                );
+              },
             },
-          },
-        }}
-        value={modifierGroupId}
-        {...register("modifierGroupId")}
-      >
-        <MenuItem disabled value="">
-          <em>{tMenus("items.modifierGroups.group.placeholder")}</em>
-        </MenuItem>
-        {groups.map(({ id, displayName }) => (
-          <MenuItem disabled={usedGroupIds.has(id)} key={id} value={id}>
-            {localize(displayName, locale)}
+          }}
+          value={modifierGroupId}
+          {...register("modifierGroupId")}
+        >
+          <MenuItem disabled value="">
+            <em>{tMenus("items.modifierGroups.group.placeholder")}</em>
           </MenuItem>
-        ))}
-      </TextField>
+          {groups.map(({ id, displayName }) => (
+            <MenuItem disabled={usedGroupIds.has(id)} key={id} value={id}>
+              {localize(displayName, locale)}
+            </MenuItem>
+          ))}
+        </TextField>
+      )}
     </FormBox>
   );
 };

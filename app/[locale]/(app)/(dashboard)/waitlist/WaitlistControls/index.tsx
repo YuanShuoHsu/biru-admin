@@ -6,6 +6,8 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useEffect, useState } from "react";
 import useSWR, { useSWRConfig } from "swr";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { useOrganization } from "@/hooks/organizations";
 import { useSocketConnection } from "@/hooks/useSocketConnection";
 
@@ -59,7 +61,11 @@ const WaitlistControls = () => {
 
   const waitlistUrl = `/api/organizations/${organizationSlug}/waitlist`;
 
-  const { data: waitlist, mutate } = useSWR<AdminWaitlistResponse>(
+  const {
+    data: waitlist,
+    error,
+    mutate,
+  } = useSWR<AdminWaitlistResponse>(
     organizationSlug ? `${waitlistUrl}/tickets` : null,
   );
 
@@ -92,7 +98,11 @@ const WaitlistControls = () => {
     };
   }, [isConnected, organization, refreshWaitlist]);
 
-  if (!organizationSlug || !waitlist?.enabled) return null;
+  if (!organizationSlug) return null;
+
+  if (error) return <ErrorAlert onRetry={() => mutate()} />;
+
+  if (!waitlist?.enabled) return null;
 
   const showError = (error: unknown) => {
     enqueueSnackbar(getErrorMessage(error), { variant: "error" });

@@ -3,6 +3,8 @@
 import { useTranslations } from "next-intl";
 import useSWR from "swr";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { MenuItem, TextField } from "@mui/material";
 
 import type { OrderTicketPrinterOption } from "@/types/orders";
@@ -25,9 +27,15 @@ const OrderTicketPrinterField = ({
   const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
 
-  const { data: printers } = useSWR<OrderTicketPrinterOption[]>(
+  const {
+    data: printers,
+    error,
+    mutate,
+  } = useSWR<OrderTicketPrinterOption[]>(
     `/api/menus/${menuId}/order-ticket-printers`,
   );
+
+  if (error) return <ErrorAlert onRetry={() => mutate()} />;
 
   // 只有一台時每個品項都印到它，不需要指定
   if (!printers || printers.length < 2) return null;

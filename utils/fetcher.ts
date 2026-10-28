@@ -82,7 +82,11 @@ export const settle = async <T>(
   } catch (error) {
     unstable_rethrow(error);
 
-    return { error: error as FetchError };
+    const fetchError = error as FetchError;
+    if (fetchError.status !== 403 && fetchError.status !== 404)
+      console.error(fetchError);
+
+    return { error: fetchError };
   }
 };
 

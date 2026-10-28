@@ -5,6 +5,7 @@ import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import useSWR from "swr";
 
+import ErrorAlert from "@/components/ErrorAlert";
 import OrderTicketJobChips from "@/components/OrderTicketJobChips";
 import PrintJobChip from "@/components/PrintJobChip";
 
@@ -147,12 +148,20 @@ const OrderDetailDialog = ({
   const tOrder = useTranslations("order");
   const tOrders = useTranslations("orders");
 
-  const { data: refunds } = useSWR<OrderRefund[]>(
+  const {
+    data: refunds,
+    error: refundsError,
+    mutate: mutateRefunds,
+  } = useSWR<OrderRefund[]>(
     `/api/organizations/${organizationSlug}/orders/${order.id}/refunds`,
     fetcher,
   );
 
-  const { data: notifications } = useSWR<OrderPaymentNotification[]>(
+  const {
+    data: notifications,
+    error: notificationsError,
+    mutate: mutateNotifications,
+  } = useSWR<OrderPaymentNotification[]>(
     `/api/organizations/${organizationSlug}/orders/${order.id}/payment-notifications`,
     fetcher,
   );
@@ -477,7 +486,12 @@ const OrderDetailDialog = ({
           )}
         </Section>
       )}
-      {!!refunds?.length && (
+      {refundsError && (
+        <Section title={tOrders("detail.refunds.title")}>
+          <ErrorAlert onRetry={() => mutateRefunds()} />
+        </Section>
+      )}
+      {!refundsError && !!refunds?.length && (
         <Section title={tOrders("detail.refunds.title")}>
           {refunds.map((refund) => (
             <EntryStack key={refund.id}>
@@ -553,7 +567,12 @@ const OrderDetailDialog = ({
           ))}
         </Section>
       )}
-      {!!notifications?.length && (
+      {notificationsError && (
+        <Section title={tOrders("detail.notifications.title")}>
+          <ErrorAlert onRetry={() => mutateNotifications()} />
+        </Section>
+      )}
+      {!notificationsError && !!notifications?.length && (
         <Section title={tOrders("detail.notifications.title")}>
           {notifications.map((notification) => (
             <InfoRow

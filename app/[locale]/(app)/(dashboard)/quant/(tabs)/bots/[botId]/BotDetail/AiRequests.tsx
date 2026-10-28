@@ -5,6 +5,8 @@ import useSWR from "swr";
 
 import { QUANT_BOTS_URL } from "../../useQuantBots";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { Alert, Stack, Typography } from "@mui/material";
 
 import type { QuantAiRequest, QuantBot } from "@/types/quant";
@@ -18,7 +20,11 @@ const AiRequests = ({ bot }: { bot: QuantBot }) => {
   const format = useFormatter();
 
   const url = `${QUANT_BOTS_URL}/${bot.id}/ai-requests`;
-  const { data: requests = [] } = useSWR<QuantAiRequest[]>(url, fetcher, {
+  const {
+    data: requests = [],
+    error,
+    mutate,
+  } = useSWR<QuantAiRequest[]>(url, fetcher, {
     refreshInterval: REFRESH_MS,
   });
 
@@ -28,6 +34,7 @@ const AiRequests = ({ bot }: { bot: QuantBot }) => {
   return (
     <Stack sx={{ gap: 1.5 }}>
       <Typography variant="h6">{tAi("request.title")}</Typography>
+      {error && <ErrorAlert onRetry={() => mutate()} />}
       {latest?.status === "pending" && latest.expiresAt && (
         <Alert severity="info">
           {tAi("request.pending", {
@@ -38,7 +45,7 @@ const AiRequests = ({ bot }: { bot: QuantBot }) => {
       {lastResolved?.status === "expired" && !lastResolved.answeredAt && (
         <Alert severity="warning">{tAi("request.noResponse")}</Alert>
       )}
-      {!requests.length && (
+      {!error && !requests.length && (
         <Typography color="text.secondary" variant="body2">
           {tAi("request.empty")}
         </Typography>

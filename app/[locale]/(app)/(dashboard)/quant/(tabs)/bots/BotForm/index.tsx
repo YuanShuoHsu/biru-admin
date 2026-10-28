@@ -1,6 +1,11 @@
 "use client";
 
-import { type BaseSyntheticEvent, useCallback, useState } from "react";
+import {
+  type BaseSyntheticEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
@@ -29,6 +34,7 @@ import SignalFields from "./SignalFields";
 
 import FuturesGridFields from "./FuturesGridFields";
 
+import ErrorAlert from "@/components/ErrorAlert";
 import FormBox from "@/components/FormBox";
 
 import {
@@ -149,7 +155,11 @@ const BotFormFields = ({
     type === "indicator" ||
     type === "webhook" ||
     type === "ai";
-  const { credentials } = useQuantCredentials();
+  const {
+    credentials,
+    error: credentialsError,
+    mutate: mutateCredentials,
+  } = useQuantCredentials();
 
   const schema = useBotFormSchema(type);
   const form: BotForm = useForm<BotFormValues>({
@@ -174,10 +184,11 @@ const BotFormFields = ({
       ? quantMarketTypeOf(symbol)
       : "SPOT";
   const isFuturesStrategy = canChooseMarket && marketType === "PERP";
-  const { data: markets } = useSWR<QuantMarket[]>(
-    `/api/quant/markets?type=${marketType}`,
-    fetcher,
-  );
+  const {
+    data: markets,
+    error: marketsError,
+    mutate: mutateMarkets,
+  } = useSWR<QuantMarket[]>(`/api/quant/markets?type=${marketType}`, fetcher);
   const market = markets?.find((item) => item.symbol === symbol);
   const quote = market?.quoteCurrency ?? "";
   const isLiveGrid = mode === "live" && type === "grid";
@@ -186,6 +197,10 @@ const BotFormFields = ({
     isLocalBackend && mode === "live" && canChooseMarket;
   const hasOrderLimit =
     type === "dca" || type === "indicator" || type === "webhook";
+
+  useEffect(() => {
+    setDialog({ confirmDisabled: !!marketsError });
+  }, [marketsError, setDialog]);
 
   const onSubmitHandler = async (values: BotFormValues) => {
     setDialog({ confirmLoading: true });
@@ -287,24 +302,28 @@ const BotFormFields = ({
               />
             </Grid>
             <Grid size={{ sm: 6, xs: 12 }}>
-              <Autocomplete
-                disableClearable
-                getOptionLabel={quantPairOf}
-                onChange={(_, value) => setValue("symbol", value, setOptions)}
-                options={(markets ?? [])
-                  .toSorted((a, b) => b.quoteVolume - a.quoteVolume)
-                  .map((item) => item.symbol)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    error={!!errors.symbol}
-                    helperText={errors.symbol?.message}
-                    label={tForm("symbol")}
-                    required
-                  />
-                )}
-                value={symbol}
-              />
+              {marketsError ? (
+                <ErrorAlert onRetry={() => mutateMarkets()} />
+              ) : (
+                <Autocomplete
+                  disableClearable
+                  getOptionLabel={quantPairOf}
+                  onChange={(_, value) => setValue("symbol", value, setOptions)}
+                  options={(markets ?? [])
+                    .toSorted((a, b) => b.quoteVolume - a.quoteVolume)
+                    .map((item) => item.symbol)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      error={!!errors.symbol}
+                      helperText={errors.symbol?.message}
+                      label={tForm("symbol")}
+                      required
+                    />
+                  )}
+                  value={symbol}
+                />
+              )}
             </Grid>
             {canChooseMarket && (
               <Grid size={12}>
@@ -367,7 +386,13 @@ const BotFormFields = ({
                 <Alert severity="warning">{tForm("futuresAiLiveNote")}</Alert>
               </Grid>
             )}
+            {mode === "live" && credentialsError && (
+              <Grid size={12}>
+                <ErrorAlert onRetry={() => mutateCredentials()} />
+              </Grid>
+            )}
             {mode === "live" &&
+              !credentialsError &&
               (credentials?.length ? (
                 <Grid size={12}>
                   <SelectField
@@ -505,13 +530,16 @@ const newBotValues = (type: QuantBotType, locale: Locale): BotFormValues => ({
 const BotForm = ({ fromId }: BotFormProps) => {
   const locale = useLocale();
   const [type, setType] = useState<QuantBotType>(quantBotTypeValues[0]);
-  const { data: source, error } = useSWR<QuantBot>(
-    fromId ? `${QUANT_BOTS_URL}/${fromId}` : null,
-    fetcher,
-  );
+  const {
+    data: source,
+    error,
+    mutate,
+  } = useSWR<QuantBot>(fromId ? `${QUANT_BOTS_URL}/${fromId}` : null, fetcher);
 
   if (fromId && !source && !error)
     return <Skeleton height={480} variant="rounded" />;
+
+  if (error) return <ErrorAlert onRetry={() => mutate()} />;
 
   return source ? (
     <BotFormFields

@@ -10,6 +10,8 @@ import useSWR from "swr";
 
 import { CopyField } from "../../bots/WebhookSetup";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { Terminal } from "@mui/icons-material";
 import {
   Button,
@@ -57,6 +59,7 @@ const AgentTokenSettings = () => {
 
   const {
     data: agentToken,
+    error,
     isLoading,
     mutate,
   } = useSWR<QuantAgentToken>(AGENT_TOKEN_URL, fetcher);
@@ -119,6 +122,8 @@ const AgentTokenSettings = () => {
     });
 
   if (isLoading) return <Skeleton height={30} variant="rounded" width={180} />;
+
+  if (error) return <ErrorAlert onRetry={() => mutate()} />;
 
   if (agentToken?.claudeCodeLocal)
     return (

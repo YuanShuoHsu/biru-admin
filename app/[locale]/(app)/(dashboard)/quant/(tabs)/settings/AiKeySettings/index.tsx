@@ -6,6 +6,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import useSWR from "swr";
 
+import ErrorAlert from "@/components/ErrorAlert";
 import FormBox from "@/components/FormBox";
 
 import { Psychology } from "@mui/icons-material";
@@ -86,6 +87,7 @@ const AiKeySettings = () => {
 
   const {
     data: aiKey,
+    error,
     isLoading,
     mutate,
   } = useSWR<QuantAiKey>(AI_KEY_URL, fetcher);
@@ -116,6 +118,8 @@ const AiKeySettings = () => {
     });
 
   if (isLoading) return <Skeleton height={30} variant="rounded" width={180} />;
+
+  if (error) return <ErrorAlert onRetry={() => mutate()} />;
 
   return aiKey?.configured ? (
     <Tooltip title={tAi("replace")}>

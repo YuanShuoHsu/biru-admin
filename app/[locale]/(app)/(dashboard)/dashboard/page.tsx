@@ -95,11 +95,11 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
   });
 
   const [
-    userStatsResult,
-    organizationStatsResult,
-    orderStatsResult,
-    orderMenuResult,
-    salesResult,
+    { data: userStats, error: userStatsError },
+    { data: organizationStats, error: organizationStatsError },
+    { data: orderStats, error: orderStatsError },
+    { data: orderMenu, error: orderMenuError },
+    { data: sales, error: salesError },
     memberRole,
   ] = await Promise.all([
     settle(
@@ -148,7 +148,10 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
   const canViewWaitlist =
     isAdmin || hasRolePermission(memberRole, { waitlist: ["read"] });
 
-  const [waitlistStatsResult, waitlistStatusResult] = await Promise.all([
+  const [
+    { data: waitlistStats, error: waitlistStatsError },
+    { data: waitlistStatus, error: waitlistStatusError },
+  ] = await Promise.all([
     settle(
       organizationSlug && canViewWaitlist
         ? fetcher<WaitlistStats>(
@@ -168,23 +171,15 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
   ]);
 
   if (
-    userStatsResult.error ||
-    organizationStatsResult.error ||
-    orderStatsResult.error ||
-    orderMenuResult.error ||
-    salesResult.error ||
-    waitlistStatsResult.error ||
-    waitlistStatusResult.error
+    userStatsError ||
+    organizationStatsError ||
+    orderStatsError ||
+    orderMenuError ||
+    salesError ||
+    waitlistStatsError ||
+    waitlistStatusError
   )
     return <ErrorAlert />;
-
-  const userStats = userStatsResult.data;
-  const organizationStats = organizationStatsResult.data;
-  const orderStats = orderStatsResult.data;
-  const orderMenu = orderMenuResult.data;
-  const sales = salesResult.data;
-  const waitlistStats = waitlistStatsResult.data;
-  const waitlistStatus = waitlistStatusResult.data;
 
   const topItems = [...sales]
     .sort((a, b) => b.sold - a.sold)

@@ -5,6 +5,8 @@ import useSWR from "swr";
 
 import { QUANT_BOTS_URL } from "../../useQuantBots";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { LineChart } from "@mui/x-charts/LineChart";
@@ -23,7 +25,11 @@ const EquityChart = ({ bot, quote }: EquityChartProps) => {
   const format = useFormatter();
   const theme = useTheme();
 
-  const { data: points = [] } = useSWR<QuantBotEquityPoint[]>(
+  const {
+    data: points = [],
+    error,
+    mutate,
+  } = useSWR<QuantBotEquityPoint[]>(
     `${QUANT_BOTS_URL}/${bot.id}/equity`,
     fetcher,
   );
@@ -31,7 +37,9 @@ const EquityChart = ({ bot, quote }: EquityChartProps) => {
   return (
     <Stack sx={{ gap: 1 }}>
       <Typography variant="h6">{tDetail("equityCurve")}</Typography>
-      {points.length < 2 ? (
+      {error ? (
+        <ErrorAlert onRetry={() => mutate()} />
+      ) : points.length < 2 ? (
         <Typography color="text.secondary" variant="body2">
           {tDetail("equityCurveEmpty")}
         </Typography>

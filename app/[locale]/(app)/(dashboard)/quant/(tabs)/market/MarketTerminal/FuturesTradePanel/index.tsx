@@ -29,6 +29,7 @@ import {
   PositionModeDialog,
 } from "./SettingsDialogs";
 
+import ErrorAlert from "@/components/ErrorAlert";
 import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -127,15 +128,24 @@ const FuturesTradePanel = ({
     credential ? quantAccountUrl(credential.id, `futures${path}`) : null;
   const symbolQuery = `?symbol=${market.symbol}`;
 
-  const { data: account } = useSWR<QuantFuturesAccount>(url(""), fetcher);
-  const { data: settings } = useSWR<QuantFuturesSymbolSettings>(
+  const {
+    data: account,
+    error: accountError,
+    mutate: mutateAccount,
+  } = useSWR<QuantFuturesAccount>(url(""), fetcher);
+  const {
+    data: settings,
+    error: settingsError,
+    mutate: mutateSettings,
+  } = useSWR<QuantFuturesSymbolSettings>(
     url(`/settings${symbolQuery}`),
     fetcher,
   );
-  const { data: positions } = useSWR<QuantPosition[]>(
-    url(`/positions${symbolQuery}`),
-    fetcher,
-  );
+  const {
+    data: positions,
+    error: positionsError,
+    mutate: mutatePositions,
+  } = useSWR<QuantPosition[]>(url(`/positions${symbolQuery}`), fetcher);
 
   const type: QuantFuturesOrderType =
     priceType === "LIMIT" ? timeInForce : "MARKET_QTY";
@@ -196,6 +206,15 @@ const FuturesTradePanel = ({
   }, [market.pricePrecision, pickedPrice, setValue]);
 
   if (!credential) return <NoCredential />;
+  if (accountError || settingsError)
+    return (
+      <ErrorAlert
+        onRetry={() => {
+          void mutateAccount();
+          void mutateSettings();
+        }}
+      />
+    );
   if (!account || !settings) return <Skeleton height={360} variant="rounded" />;
 
   const isHedge = account.positionMode === "OPENCLOSE";
@@ -502,39 +521,43 @@ const FuturesTradePanel = ({
           label={tQuant("futures.reduceOnly")}
         />
       )}
-      <Typography color="text.secondary" variant="body2">
-        {isClosing
-          ? tQuant("futures.closable", {
-              long: format.number(
-                closableSizeOf(positions, {
-                  positionSide: isHedge ? "LONG" : "BOTH",
-                  reduceOnly: true,
-                  side: "SELL",
-                }),
-                { maximumFractionDigits: market.sizePrecision },
-              ),
-              short: format.number(
-                closableSizeOf(positions, {
-                  positionSide: isHedge ? "SHORT" : "BOTH",
-                  reduceOnly: true,
-                  side: "BUY",
-                }),
-                { maximumFractionDigits: market.sizePrecision },
-              ),
-            })
-          : tQuant("futures.margin", {
-              margin:
-                Number(size) > 0
-                  ? format.number(
-                      (Number(size) * orderPrice) / settings.leverage,
-                      {
-                        maximumFractionDigits: market.pricePrecision,
-                      },
-                    )
-                  : "—",
-              quote: market.quoteCurrency,
-            })}
-      </Typography>
+      {isClosing && positionsError ? (
+        <ErrorAlert onRetry={() => mutatePositions()} />
+      ) : (
+        <Typography color="text.secondary" variant="body2">
+          {isClosing
+            ? tQuant("futures.closable", {
+                long: format.number(
+                  closableSizeOf(positions, {
+                    positionSide: isHedge ? "LONG" : "BOTH",
+                    reduceOnly: true,
+                    side: "SELL",
+                  }),
+                  { maximumFractionDigits: market.sizePrecision },
+                ),
+                short: format.number(
+                  closableSizeOf(positions, {
+                    positionSide: isHedge ? "SHORT" : "BOTH",
+                    reduceOnly: true,
+                    side: "BUY",
+                  }),
+                  { maximumFractionDigits: market.sizePrecision },
+                ),
+              })
+            : tQuant("futures.margin", {
+                margin:
+                  Number(size) > 0
+                    ? format.number(
+                        (Number(size) * orderPrice) / settings.leverage,
+                        {
+                          maximumFractionDigits: market.pricePrecision,
+                        },
+                      )
+                    : "—",
+                quote: market.quoteCurrency,
+              })}
+        </Typography>
+      )}
       {!isClosing && preview && previewBody === debouncedPreview && (
         <Stack sx={{ gap: 0.5 }}>
           {(["long", "short"] as const).map((direction) => {
@@ -573,7 +596,10 @@ const FuturesTradePanel = ({
         {actions.map((action) => (
           <Button
             color={action.side === "BUY" ? "success" : "error"}
-            disabled={!!submittingKey && submittingKey !== actionKey(action)}
+            disabled={
+              (isClosing && !!positionsError) ||
+              (!!submittingKey && submittingKey !== actionKey(action))
+            }
             fullWidth
             key={actionKey(action)}
             loading={submittingKey === actionKey(action)}

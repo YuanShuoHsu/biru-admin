@@ -63,7 +63,7 @@ export const useAccountHistory = <Row>(
     }),
     ...(endTime !== undefined && { endTime: String(endTime) }),
   });
-  const { data, isLoading } = useSWR<HistoryPage<Row>>(
+  const { data, error, isLoading, mutate } = useSWR<HistoryPage<Row>>(
     url && `${url}${url.includes("?") ? "&" : "?"}${params.toString()}`,
     fetcher,
     { onSuccess },
@@ -101,6 +101,7 @@ export const useAccountHistory = <Row>(
   };
 
   return {
+    error,
     gridProps: {
       disableColumnFilter: true,
       disableColumnSorting: true,
@@ -116,6 +117,7 @@ export const useAccountHistory = <Row>(
       rows,
       showToolbar: false,
     },
+    mutate,
     onRangeChange: handleRangeChange,
     range: range.key,
   };

@@ -11,6 +11,7 @@ import useSWR from "swr";
 
 import { type LeaveForm, useLeaveFormSchema } from "./definitions";
 
+import ErrorAlert from "@/components/ErrorAlert";
 import FormBox from "@/components/FormBox";
 
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
@@ -104,7 +105,11 @@ const LeaveDialog = ({
     name: ["endsAt", "leaveCaseId", "leaveTypeId", "startsAt"],
   });
 
-  const { data: { data: balances } = { data: [] } } = useSWR(
+  const {
+    data: { data: balances } = { data: [] },
+    error: balancesError,
+    mutate: mutateBalances,
+  } = useSWR(
     `${attendancePath(organizationSlug, "me", "leave-balances")}?limit=${MAX_PAGE_SIZE}`,
     (url: string) => fetcher<AttendanceLeaveBalancePage>(url),
   );
@@ -299,6 +304,7 @@ const LeaveDialog = ({
           )),
         ])}
       </TextField>
+      {balancesError && <ErrorAlert onRetry={() => mutateBalances()} />}
       {leaveHint && (
         <Alert severity="info">
           {tAttendance(`leaveRequestHint.${leaveHint}`)}

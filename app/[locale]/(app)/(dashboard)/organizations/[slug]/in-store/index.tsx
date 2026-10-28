@@ -8,6 +8,7 @@ import useSWR, { useSWRConfig } from "swr";
 
 import UpdateDineInTableCountDialog from "./UpdateDineInTableCountDialog";
 
+import ErrorAlert from "@/components/ErrorAlert";
 import { StyledCardContent } from "@/components/FormCard";
 
 import { API_ORDER_MODE, ORDER_MODE } from "@/constants/orderMode";
@@ -148,7 +149,7 @@ const DineInQrCodeCard = ({
       title: tOrganizations("inStore.dineIn.actions.updateTableCount.title"),
     });
 
-  const { data } = useSWR<DineInTableTokenResponse>(
+  const { data, error, mutate } = useSWR<DineInTableTokenResponse>(
     isValidTableNumber
       ? `/api/organizations/${organizationSlug}/dine-in-tables/${tableNumber}/token`
       : null,
@@ -201,7 +202,8 @@ const DineInQrCodeCard = ({
             value={tableNumber}
           />
         )}
-        {orderUrl && (
+        {error && <ErrorAlert onRetry={() => mutate()} />}
+        {!error && orderUrl && (
           <OrderQrCode
             fileName={`table-${tableNumber}-${organizationSlug}.png`}
             orderUrl={orderUrl}
@@ -225,7 +227,7 @@ const OrderModeQrCodeCard = ({
 }: OrderModeQrCodeCardProps) => {
   const apiMode = API_ORDER_MODE[mode];
 
-  const { data } = useSWR<OrderModeTokenResponse>(
+  const { data, error, mutate } = useSWR<OrderModeTokenResponse>(
     `/api/organizations/${organizationSlug}/order-modes/${apiMode}/token`,
   );
 
@@ -239,7 +241,8 @@ const OrderModeQrCodeCard = ({
         <BoldTypography color="textSecondary" variant="subtitle2">
           {label}
         </BoldTypography>
-        {orderUrl && (
+        {error && <ErrorAlert onRetry={() => mutate()} />}
+        {!error && orderUrl && (
           <OrderQrCode
             fileName={`${mode}-${organizationSlug}.png`}
             orderUrl={orderUrl}
@@ -265,7 +268,7 @@ const OrderQrSecretCard = ({ organizationSlug }: OrderQrSecretCardProps) => {
 
   const secretUrl = `/api/organizations/${organizationSlug}/order-qr-secret`;
 
-  const { data, mutate } = useSWR<OrderQrSecretResponse>(secretUrl);
+  const { data, error, mutate } = useSWR<OrderQrSecretResponse>(secretUrl);
 
   const updateSecret = async (
     action: "restore" | "rotate",
@@ -327,7 +330,8 @@ const OrderQrSecretCard = ({ organizationSlug }: OrderQrSecretCardProps) => {
         <Typography variant="body2">
           {tOrganizations("inStore.qrSecret.description")}
         </Typography>
-        {data && (
+        {error && <ErrorAlert onRetry={() => mutate()} />}
+        {!error && data && (
           <>
             <Typography color="textSecondary" variant="body2">
               {tOrganizations("inStore.qrSecret.rotatedAt")}
@@ -366,7 +370,7 @@ const InvoicePrinterCard = ({ organizationSlug }: InvoicePrinterCardProps) => {
 
   const printerUrl = `/api/organizations/${organizationSlug}/invoice-printer`;
 
-  const { data, mutate } = useSWR<InvoicePrinterSetting>(printerUrl);
+  const { data, error, mutate } = useSWR<InvoicePrinterSetting>(printerUrl);
 
   const [credentials, setCredentials] = useState<PrinterCredentials | null>(
     null,
@@ -501,6 +505,8 @@ const InvoicePrinterCard = ({ organizationSlug }: InvoicePrinterCardProps) => {
               </Button>
             </ActionsStack>
           </>
+        ) : error ? (
+          <ErrorAlert onRetry={() => mutate()} />
         ) : (
           data && (
             <ActionsStack direction="row">
@@ -701,7 +707,7 @@ const OrderTicketPrintersCard = ({
 
   const printersUrl = `/api/organizations/${organizationSlug}/order-ticket-printers`;
 
-  const { data: printers, mutate } = useSWR<Printer[]>(printersUrl);
+  const { data: printers, error, mutate } = useSWR<Printer[]>(printersUrl);
 
   const [credentials, setCredentials] = useState<PrinterCredentials | null>(
     null,
@@ -757,7 +763,9 @@ const OrderTicketPrintersCard = ({
         <Typography variant="body2">
           {tOrganizations("inStore.orderTicketPrinters.description")}
         </Typography>
-        {printers &&
+        {error && <ErrorAlert onRetry={() => mutate()} />}
+        {!error &&
+          printers &&
           (printers.length ? (
             <>
               <Alert severity="info">
@@ -782,7 +790,7 @@ const OrderTicketPrintersCard = ({
               {tOrganizations("inStore.orderTicketPrinters.empty")}
             </Typography>
           ))}
-        {printers && (
+        {!error && printers && (
           <ActionsStack direction="row">
             <TextField
               label={tOrganizations("inStore.orderTicketPrinters.name.label")}

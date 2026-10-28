@@ -7,6 +7,8 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import useSWR from "swr";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { useFormatMoney } from "@/hooks/useFormatMoney";
@@ -50,7 +52,7 @@ const EmployerSupplementDialog = ({
     dayjs().tz(STORE_TIMEZONE).subtract(1, "month").format("YYYY-MM"),
   );
 
-  const { data } = useSWR(
+  const { data, error, mutate } = useSWR(
     `${payrollPath(organizationSlug, "org", "employer-health-supplement")}?${new URLSearchParams({ month })}`,
     (url: string) => fetcher<EmployerHealthSupplement>(url),
   );
@@ -68,28 +70,30 @@ const EmployerSupplementDialog = ({
         value={dayjs.tz(`${month}-01`, STORE_TIMEZONE)}
         views={["year", "month"]}
       />
-      {AMOUNT_FIELDS.map((field) => (
-        <TextField
-          fullWidth
-          helperText={
-            field === "insuredCents" && data?.unpublishedEmployees
-              ? tAttendance("employerSupplement.unpublished", {
-                  count: data.unpublishedEmployees,
-                })
-              : undefined
-          }
-          key={field}
-          label={tAttendance(`employerSupplement.${field}`)}
-          slotProps={{ input: { readOnly: true } }}
-          value={
-            data
-              ? formatMoney(fromCents(data[field]), currency, {
-                  minimumFractionDigits: 2,
-                })
-              : ""
-          }
-        />
-      ))}
+      {error && <ErrorAlert onRetry={() => mutate()} />}
+      {!error &&
+        AMOUNT_FIELDS.map((field) => (
+          <TextField
+            fullWidth
+            helperText={
+              field === "insuredCents" && data?.unpublishedEmployees
+                ? tAttendance("employerSupplement.unpublished", {
+                    count: data.unpublishedEmployees,
+                  })
+                : undefined
+            }
+            key={field}
+            label={tAttendance(`employerSupplement.${field}`)}
+            slotProps={{ input: { readOnly: true } }}
+            value={
+              data
+                ? formatMoney(fromCents(data[field]), currency, {
+                    minimumFractionDigits: 2,
+                  })
+                : ""
+            }
+          />
+        ))}
     </StyledStack>
   );
 };

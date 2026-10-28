@@ -19,6 +19,7 @@ import IsolatedMarginDialog, {
 } from "./IsolatedMarginDialog";
 
 import DataGrid from "@/components/DataGrid";
+import ErrorAlert from "@/components/ErrorAlert";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -112,12 +113,22 @@ const FuturesAccount = ({
   const symbolQuery = `?symbol=${market.symbol}`;
 
   const { data: account } = useSWR<QuantFuturesAccount>(url(""), fetcher);
-  const { data: positions, isLoading: positionsLoading } = useSWR<
-    QuantPosition[]
-  >(url("/positions"), fetcher, autosizeOnData);
-  const { data: openOrders, isLoading: openOrdersLoading } = useSWR<
-    QuantFuturesOrder[]
-  >(url(`/open-orders${symbolQuery}`), fetcher, autosizeOnData);
+  const {
+    data: positions,
+    error: positionsError,
+    isLoading: positionsLoading,
+    mutate: mutatePositions,
+  } = useSWR<QuantPosition[]>(url("/positions"), fetcher, autosizeOnData);
+  const {
+    data: openOrders,
+    error: openOrdersError,
+    isLoading: openOrdersLoading,
+    mutate: mutateOpenOrders,
+  } = useSWR<QuantFuturesOrder[]>(
+    url(`/open-orders${symbolQuery}`),
+    fetcher,
+    autosizeOnData,
+  );
   const ordersHistory = useAccountHistory<QuantFuturesOrder>(
     tab === "orders" ? url(`/orders${symbolQuery}`) : null,
     autosizeOnData.onSuccess,
@@ -132,16 +143,26 @@ const FuturesAccount = ({
   );
   const history =
     tab === "orders" ? ordersHistory : tab === "fills" ? fillsHistory : null;
-  const { data: positionHistory, isLoading: positionHistoryLoading } = useSWR<
-    QuantPositionHistory[]
-  >(
+  const {
+    data: positionHistory,
+    error: positionHistoryError,
+    isLoading: positionHistoryLoading,
+    mutate: mutatePositionHistory,
+  } = useSWR<QuantPositionHistory[]>(
     tab === "positionHistory" ? url("/position-history") : null,
     fetcher,
     autosizeOnData,
   );
-  const { data: fundingFees, isLoading: fundingLoading } = useSWR<
-    QuantFundingFee[]
-  >(tab === "funding" ? url("/funding-fees") : null, fetcher, autosizeOnData);
+  const {
+    data: fundingFees,
+    error: fundingError,
+    isLoading: fundingLoading,
+    mutate: mutateFunding,
+  } = useSWR<QuantFundingFee[]>(
+    tab === "funding" ? url("/funding-fees") : null,
+    fetcher,
+    autosizeOnData,
+  );
 
   const revalidate = () => mutate(isQuantAccountKey(credential.id));
 
@@ -740,9 +761,16 @@ const FuturesAccount = ({
   ]);
 
   const grids = {
-    fills: { ...fillsHistory.gridProps, columns: fillColumns },
+    fills: {
+      ...fillsHistory.gridProps,
+      columns: fillColumns,
+      error: fillsHistory.error,
+      onRetry: fillsHistory.mutate,
+    },
     funding: {
       columns: fundingColumns,
+      error: fundingError,
+      onRetry: mutateFunding,
       loading: fundingLoading,
       rows: fundingFees?.map((fee) => ({
         ...fee,
@@ -751,12 +779,16 @@ const FuturesAccount = ({
     },
     openOrders: {
       columns: openOrderColumns,
+      error: openOrdersError,
+      onRetry: mutateOpenOrders,
       loading: openOrdersLoading,
       rows: openOrders?.map((order) => ({ ...order, id: order.orderId })),
     },
     orders: {
       ...ordersHistory.gridProps,
       columns: historyColumns,
+      error: ordersHistory.error,
+      onRetry: ordersHistory.mutate,
       rows: ordersHistory.gridProps.rows.map((order) => ({
         ...order,
         id: order.orderId,
@@ -764,6 +796,8 @@ const FuturesAccount = ({
     },
     positionHistory: {
       columns: positionHistoryColumns,
+      error: positionHistoryError,
+      onRetry: mutatePositionHistory,
       loading: positionHistoryLoading,
       rows: positionHistory?.map((position) => ({
         ...position,
@@ -772,6 +806,8 @@ const FuturesAccount = ({
     },
     positions: {
       columns: positionColumns,
+      error: positionsError,
+      onRetry: mutatePositions,
       loading: positionsLoading,
       rows: positions?.map((position) => ({
         ...position,
@@ -781,13 +817,15 @@ const FuturesAccount = ({
     transfers: {
       ...transfersHistory.gridProps,
       columns: transferColumns,
+      error: transfersHistory.error,
+      onRetry: transfersHistory.mutate,
       rows: transfersHistory.gridProps.rows.map((transfer) => ({
         ...transfer,
         id: transfer.transferId,
       })),
     },
   };
-  const grid = grids[tab];
+  const { error, onRetry, ...grid } = grids[tab];
 
   return (
     <Stack sx={{ gap: 1 }}>
@@ -835,13 +873,17 @@ const FuturesAccount = ({
         )}
       </Stack>
       <Box sx={{ height: GRID_HEIGHT }}>
-        <DataGrid
-          {...DATA_GRID_PROPS}
-          {...grid}
-          apiRef={apiRef}
-          key={tab}
-          rows={grid.rows ?? []}
-        />
+        {error ? (
+          <ErrorAlert onRetry={() => onRetry()} />
+        ) : (
+          <DataGrid
+            {...DATA_GRID_PROPS}
+            {...grid}
+            apiRef={apiRef}
+            key={tab}
+            rows={grid.rows ?? []}
+          />
+        )}
       </Box>
     </Stack>
   );

@@ -34,6 +34,8 @@ import {
   computeRsi,
 } from "./indicators";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { isIntradayInterval } from "@/constants/quant";
 
 import {
@@ -123,7 +125,11 @@ const CandleChart = ({
     useState<Indicator[]>(readStoredIndicators);
   const [hovered, setHovered] = useState<QuantCandle | null>(null);
 
-  const { data: candles } = useSWR<QuantCandle[]>(
+  const {
+    data: candles,
+    error: candlesError,
+    mutate: mutateCandles,
+  } = useSWR<QuantCandle[]>(
     `/api/quant/markets/${symbol}/candles?interval=${interval}`,
     fetcher,
     { revalidateOnFocus: false },
@@ -470,7 +476,8 @@ const CandleChart = ({
           ))}
         </ToggleButtonGroup>
       </Stack>
-      <ChartContainer ref={containerRef}>
+      {candlesError && <ErrorAlert onRetry={() => mutateCandles()} />}
+      <ChartContainer hidden={!!candlesError} ref={containerRef}>
         {legendCandle && (
           <Legend>
             {(["open", "high", "low", "close"] as const).map((key) => (

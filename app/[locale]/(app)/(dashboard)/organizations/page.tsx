@@ -5,11 +5,13 @@ import { Suspense } from "react";
 
 import Organizations from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import type { Locale } from "@/i18n/routing";
 
 import type { MyOrganization } from "@/types/organizations";
 
-import { fetcher } from "@/utils/fetcher";
+import { fetcher, settle } from "@/utils/fetcher";
 
 interface OrganizationsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -30,9 +32,12 @@ export const generateMetadata = async ({
 const OrganizationsContent = async () => {
   const cookieStore = await cookies();
 
-  const rows = await fetcher<MyOrganization[]>("/api/users/me/organizations", {
-    headers: { cookie: cookieStore.toString() },
-  });
+  const { data: rows, error } = await settle(
+    fetcher<MyOrganization[]>("/api/users/me/organizations", {
+      headers: { cookie: cookieStore.toString() },
+    }),
+  );
+  if (error) return <ErrorAlert />;
 
   return <Organizations rows={rows} />;
 };

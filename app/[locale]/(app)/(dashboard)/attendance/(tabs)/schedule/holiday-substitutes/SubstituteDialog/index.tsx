@@ -5,12 +5,13 @@ import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent } from "react";
+import { type BaseSyntheticEvent, useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 
 import { type SubstituteForm, useSubstituteFormSchema } from "./definitions";
 
+import ErrorAlert from "@/components/ErrorAlert";
 import FormBox from "@/components/FormBox";
 
 import { STORE_TIMEZONE } from "@/constants/timezone";
@@ -64,10 +65,18 @@ const SubstituteDialog = ({
   const earliestSuggestion = holiday.isAfter(today) ? holiday : today;
   const to = earliestSuggestion.add(SUBSTITUTE_SEARCH_DAYS, "day");
 
-  const { data: shifts } = useSWR(
+  const {
+    data: shifts,
+    error: shiftsError,
+    mutate: mutateShifts,
+  } = useSWR(
     attendanceCalendarPath(organizationSlug, "shifts", from, to.toISOString()),
     (url: string) => fetcher<AttendanceShift[]>(url),
   );
+
+  useEffect(() => {
+    setDialog({ confirmDisabled: !!shiftsError });
+  }, [setDialog, shiftsError]);
 
   const options = (shifts ?? [])
     .filter(
@@ -146,34 +155,37 @@ const SubstituteDialog = ({
         slotProps={{ input: { readOnly: true } }}
         value={row.employeeName}
       />
-      <TextField
-        error={!!errors.shiftId}
-        fullWidth
-        helperText={
-          errors.shiftId?.message ??
-          (shifts && !options.length
-            ? tAttendance("holidaySubstitutes.noWorkdayShifts", {
-                date: format.dateTime(to.toDate(), "date"),
-              })
-            : undefined)
-        }
-        label={tAttendance("holidaySubstitutes.substituteShift")}
-        onChange={(event) =>
-          setValue("shiftId", event.target.value, {
-            shouldDirty: true,
-            shouldValidate: isSubmitted,
-          })
-        }
-        required
-        select
-        value={shiftId}
-      >
-        {options.map((shift) => (
-          <MenuItem key={shift.id} value={shift.id}>
-            {formatScheduledShift(format, shift)}
-          </MenuItem>
-        ))}
-      </TextField>
+      {shiftsError && <ErrorAlert onRetry={() => mutateShifts()} />}
+      {!shiftsError && (
+        <TextField
+          error={!!errors.shiftId}
+          fullWidth
+          helperText={
+            errors.shiftId?.message ??
+            (shifts && !options.length
+              ? tAttendance("holidaySubstitutes.noWorkdayShifts", {
+                  date: format.dateTime(to.toDate(), "date"),
+                })
+              : undefined)
+          }
+          label={tAttendance("holidaySubstitutes.substituteShift")}
+          onChange={(event) =>
+            setValue("shiftId", event.target.value, {
+              shouldDirty: true,
+              shouldValidate: isSubmitted,
+            })
+          }
+          required
+          select
+          value={shiftId}
+        >
+          {options.map((shift) => (
+            <MenuItem key={shift.id} value={shift.id}>
+              {formatScheduledShift(format, shift)}
+            </MenuItem>
+          ))}
+        </TextField>
+      )}
     </FormBox>
   );
 };

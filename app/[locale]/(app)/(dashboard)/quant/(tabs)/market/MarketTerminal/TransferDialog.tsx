@@ -1,6 +1,6 @@
 "use client";
 
-import { type BaseSyntheticEvent, useState } from "react";
+import { type BaseSyntheticEvent, useEffect, useState } from "react";
 
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
@@ -9,6 +9,7 @@ import useSWR from "swr";
 import { quantAccountUrl } from "../../useQuantCredentials";
 import { floorToPrecision } from "./TradePanel/definitions";
 
+import ErrorAlert from "@/components/ErrorAlert";
 import FormBox from "@/components/FormBox";
 
 import { SwapVert } from "@mui/icons-material";
@@ -57,11 +58,19 @@ const TransferDialog = ({
   const [fromAccount, setFromAccount] = useState<QuantTransferAccount>("MAIN");
   const [amount, setAmount] = useState("");
 
-  const { data: spotBalances } = useSWR<QuantBalance[]>(
+  const {
+    data: spotBalances,
+    error: spotBalancesError,
+    mutate: mutateSpotBalances,
+  } = useSWR<QuantBalance[]>(
     quantAccountUrl(credentialId, "balances"),
     fetcher,
   );
-  const { data: futuresAccount } = useSWR<QuantFuturesAccount>(
+  const {
+    data: futuresAccount,
+    error: futuresAccountError,
+    mutate: mutateFuturesAccount,
+  } = useSWR<QuantFuturesAccount>(
     quantAccountUrl(credentialId, "futures"),
     fetcher,
   );
@@ -71,8 +80,14 @@ const TransferDialog = ({
       ? spotBalances?.find(({ coin }) => coin === currency)?.free
       : futuresAccount?.balances.find(({ coin }) => coin === currency)
           ?.transferable;
+  const availableError =
+    fromAccount === "MAIN" ? spotBalancesError : futuresAccountError;
   const toAccount: QuantTransferAccount =
     fromAccount === "MAIN" ? "TRADE" : "MAIN";
+
+  useEffect(() => {
+    setDialog({ confirmDisabled: !!availableError });
+  }, [availableError, setDialog]);
 
   const invalid =
     !DECIMAL_PATTERN.test(amount) ||
@@ -81,7 +96,7 @@ const TransferDialog = ({
 
   const onSubmit = async (event: BaseSyntheticEvent) => {
     event.preventDefault();
-    if (invalid) return;
+    if (invalid || availableError) return;
 
     setDialog({ confirmLoading: true });
     try {
@@ -129,6 +144,15 @@ const TransferDialog = ({
           </IconButton>
         </Tooltip>
       </Stack>
+      {availableError && (
+        <ErrorAlert
+          onRetry={() =>
+            fromAccount === "MAIN"
+              ? mutateSpotBalances()
+              : mutateFuturesAccount()
+          }
+        />
+      )}
       <TextField
         error={amount !== "" && invalid}
         helperText={tTransfer("available", {

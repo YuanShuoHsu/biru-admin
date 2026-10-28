@@ -19,6 +19,7 @@ import {
   useOrderFormSchema,
 } from "./definitions";
 
+import ErrorAlert from "@/components/ErrorAlert";
 import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -77,7 +78,11 @@ const TradePanel = ({
   const [side, setSide] = useState<QuantOrderSide>("BUY");
   const [type, setType] = useState<QuantOrderType>("LIMIT");
 
-  const { data: balances } = useSWR<QuantBalance[]>(
+  const {
+    data: balances,
+    error: balancesError,
+    mutate: mutateBalances,
+  } = useSWR<QuantBalance[]>(
     credential ? quantAccountUrl(credential.id, "balances") : null,
     fetcher,
   );
@@ -262,14 +267,18 @@ const TradePanel = ({
         <Tab label={tQuant("order.type.LIMIT")} value="LIMIT" />
         <Tab label={tQuant("order.type.MARKET")} value="MARKET" />
       </Tabs>
-      <Typography color="text.secondary" variant="body2">
-        {tQuant("order.available")}{" "}
-        {format.number(side === "BUY" ? quoteAvailable : baseAvailable, {
-          maximumFractionDigits:
-            side === "BUY" ? market.pricePrecision : market.sizePrecision,
-        })}{" "}
-        {availableCoin}
-      </Typography>
+      {balancesError ? (
+        <ErrorAlert onRetry={() => mutateBalances()} />
+      ) : (
+        <Typography color="text.secondary" variant="body2">
+          {tQuant("order.available")}{" "}
+          {format.number(side === "BUY" ? quoteAvailable : baseAvailable, {
+            maximumFractionDigits:
+              side === "BUY" ? market.pricePrecision : market.sizePrecision,
+          })}{" "}
+          {availableCoin}
+        </Typography>
+      )}
       {type === "LIMIT" && (
         <TextField
           {...register("price")}
@@ -349,6 +358,7 @@ const TradePanel = ({
       )}
       <Button
         color={side === "BUY" ? "success" : "error"}
+        disabled={!!balancesError}
         loading={isSubmitting}
         type="submit"
         variant="contained"

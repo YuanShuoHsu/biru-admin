@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import Admins from ".";
+
+import ErrorAlert from "@/components/ErrorAlert";
 
 import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
 
@@ -20,7 +23,7 @@ import type { User } from "@/types/admins";
 
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAdminEnumOptions } from "@/utils/enumOptions";
-import { fetcher } from "@/utils/fetcher";
+import { fetcher, settle } from "@/utils/fetcher";
 
 interface AdminsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -103,13 +106,15 @@ const AdminsContent = async ({ params, searchParams }: AdminsPageProps) => {
   for (const entry of quickFilterEnums)
     queryParams.append("quickFilterEnums", entry);
 
-  const { data, total } = await fetcher<{
-    data: User[];
-    total: number;
-  }>(`/api/users/list?${queryParams}`, { headers: fetchOptions.headers });
+  const { data: users, error } = await settle(
+    fetcher<{ data: User[]; total: number }>(`/api/users/list?${queryParams}`, {
+      headers: fetchOptions.headers,
+    }),
+  );
+  if (error?.status === 403) notFound();
+  if (error) return <ErrorAlert />;
 
-  const rows: User[] = data || [];
-  const rowCount = total || 0;
+  const { data: rows, total: rowCount } = users;
 
   return (
     <Admins

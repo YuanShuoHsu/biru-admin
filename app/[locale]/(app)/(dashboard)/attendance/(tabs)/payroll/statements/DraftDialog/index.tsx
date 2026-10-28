@@ -5,13 +5,14 @@ import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent } from "react";
+import { type BaseSyntheticEvent, useEffect } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 
 import BatchSkippedList from "../../../../BatchSkippedList";
 import { type DraftForm, useDraftFormSchema } from "./definitions";
 
+import ErrorAlert from "@/components/ErrorAlert";
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 
@@ -117,7 +118,7 @@ const DraftDialog = ({
     name: "earnings",
   });
 
-  useSWR(
+  const { error: earningsError, mutate: mutateEarnings } = useSWR(
     earningTypes.length && employeeId && month
       ? `${payrollPath(organizationSlug, "org", "earnings")}?${new URLSearchParams({ employeeId, month })}`
       : null,
@@ -133,6 +134,10 @@ const DraftDialog = ({
       revalidateOnFocus: false,
     },
   );
+
+  useEffect(() => {
+    setDialog({ confirmDisabled: !!earningsError });
+  }, [earningsError, setDialog]);
 
   const onSubmitHandler = async (values: DraftForm) => {
     try {
@@ -280,7 +285,8 @@ const DraftDialog = ({
         multiline
         {...register("reason")}
       />
-      {earningTypes.length > 0 && !!employeeId && (
+      {earningsError && <ErrorAlert onRetry={() => mutateEarnings()} />}
+      {!earningsError && earningTypes.length > 0 && !!employeeId && (
         <StyledFormControl component="fieldset" variant="standard">
           <FormLabel component="legend">
             {tAttendance("earnings.label")}

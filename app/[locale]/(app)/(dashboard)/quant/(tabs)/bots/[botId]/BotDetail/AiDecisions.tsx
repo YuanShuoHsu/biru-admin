@@ -5,6 +5,8 @@ import useSWR from "swr";
 
 import { QUANT_BOTS_URL, useBotLabels } from "../../useQuantBots";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import {
@@ -34,7 +36,11 @@ const AiDecisions = ({ bot }: { bot: QuantBot }) => {
 
   const params = new URLSearchParams({ limit: String(MAX_PAGE_SIZE) });
   for (const kind of AI_EVENT_KINDS) params.append("kinds", kind);
-  const { data: { data: decisions } = { data: [] } } = useSWR<{
+  const {
+    data: { data: decisions } = { data: [] },
+    error,
+    mutate,
+  } = useSWR<{
     data: QuantBotEvent[];
   }>(`${QUANT_BOTS_URL}/${bot.id}/events?${params}`, fetcher);
 
@@ -65,75 +71,79 @@ const AiDecisions = ({ bot }: { bot: QuantBot }) => {
           />
         </Stack>
       )}
-      {!decisions.length && (
+      {error && <ErrorAlert onRetry={() => mutate()} />}
+      {!error && !decisions.length && (
         <Typography color="text.secondary" variant="body2">
           {tAi("empty")}
         </Typography>
       )}
-      {decisions.map(({ createdAt, id, kind, payload = {} }, index) => {
-        const action = payload.action as keyof typeof ACTION_COLORS | undefined;
+      {!error &&
+        decisions.map(({ createdAt, id, kind, payload = {} }, index) => {
+          const action = payload.action as
+            | keyof typeof ACTION_COLORS
+            | undefined;
 
-        return (
-          <Stack key={id} sx={{ gap: 0.5 }}>
-            {index > 0 && <Divider />}
-            <Stack
-              sx={{
-                alignItems: "center",
-                flexDirection: "row",
-                flexWrap: "wrap",
-                gap: 1,
-              }}
-            >
-              <Typography color="text.secondary" variant="caption">
-                {format.dateTime(new Date(createdAt), "dateTime")}
-              </Typography>
-              {kind === "ai_decision" && action && (
-                <Chip
-                  color={ACTION_COLORS[action]}
-                  label={tAi(`actions.${action}`)}
-                  size="small"
-                />
-              )}
-              {kind === "ai_decision" &&
-                typeof payload.confidence === "number" && (
-                  <Typography variant="caption">
-                    {tAi("confidence", {
-                      value: format.number(payload.confidence, {
-                        style: "percent",
-                      }),
-                    })}
+          return (
+            <Stack key={id} sx={{ gap: 0.5 }}>
+              {index > 0 && <Divider />}
+              <Stack
+                sx={{
+                  alignItems: "center",
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  gap: 1,
+                }}
+              >
+                <Typography color="text.secondary" variant="caption">
+                  {format.dateTime(new Date(createdAt), "dateTime")}
+                </Typography>
+                {kind === "ai_decision" && action && (
+                  <Chip
+                    color={ACTION_COLORS[action]}
+                    label={tAi(`actions.${action}`)}
+                    size="small"
+                  />
+                )}
+                {kind === "ai_decision" &&
+                  typeof payload.confidence === "number" && (
+                    <Typography variant="caption">
+                      {tAi("confidence", {
+                        value: format.number(payload.confidence, {
+                          style: "percent",
+                        }),
+                      })}
+                    </Typography>
+                  )}
+                {kind === "ai_decision" && action !== "hold" && (
+                  <Typography
+                    color={payload.executed ? "success.main" : "warning.main"}
+                    variant="caption"
+                  >
+                    {payload.executed
+                      ? tAi("executed")
+                      : tAi("skipped", {
+                          reason: labels.skipReason(
+                            String(payload.skipReason ?? ""),
+                          ),
+                        })}
                   </Typography>
                 )}
-              {kind === "ai_decision" && action !== "hold" && (
-                <Typography
-                  color={payload.executed ? "success.main" : "warning.main"}
-                  variant="caption"
-                >
-                  {payload.executed
-                    ? tAi("executed")
-                    : tAi("skipped", {
-                        reason: labels.skipReason(
-                          String(payload.skipReason ?? ""),
-                        ),
-                      })}
-                </Typography>
-              )}
-              {typeof payload.cost === "number" && payload.cost > 0 && (
-                <Typography color="text.secondary" variant="caption">
-                  ${usd(payload.cost)}
-                </Typography>
-              )}
+                {typeof payload.cost === "number" && payload.cost > 0 && (
+                  <Typography color="text.secondary" variant="caption">
+                    ${usd(payload.cost)}
+                  </Typography>
+                )}
+              </Stack>
+              <Typography variant="body2">
+                {kind === "ai_refusal"
+                  ? tAi("refusal", { reason: String(payload.reason ?? "") })
+                  : kind === "ai_error"
+                    ? tAi("error", { message: String(payload.message ?? "") })
+                    : String(payload.reasoning ?? "")}
+              </Typography>
             </Stack>
-            <Typography variant="body2">
-              {kind === "ai_refusal"
-                ? tAi("refusal", { reason: String(payload.reason ?? "") })
-                : kind === "ai_error"
-                  ? tAi("error", { message: String(payload.message ?? "") })
-                  : String(payload.reasoning ?? "")}
-            </Typography>
-          </Stack>
-        );
-      })}
+          );
+        })}
     </Stack>
   );
 };

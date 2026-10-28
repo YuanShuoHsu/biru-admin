@@ -15,6 +15,7 @@ import OrderFills from "../OrderFills";
 import { useAccountHistory } from "../useAccountHistory";
 
 import DataGrid from "@/components/DataGrid";
+import ErrorAlert from "@/components/ErrorAlert";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -87,9 +88,12 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
   const symbolQuery = `?symbol=${market.symbol}`;
   const openOrdersUrl = `${quantAccountUrl(credential.id, "open-orders")}${symbolQuery}`;
 
-  const { data: openOrders, isLoading: openOrdersLoading } = useSWR<
-    QuantOrder[]
-  >(openOrdersUrl, fetcher, autosizeOnData);
+  const {
+    data: openOrders,
+    error: openOrdersError,
+    isLoading: openOrdersLoading,
+    mutate: mutateOpenOrders,
+  } = useSWR<QuantOrder[]>(openOrdersUrl, fetcher, autosizeOnData);
   const ordersHistory = useAccountHistory<QuantOrder>(
     tab === "orders"
       ? `${quantAccountUrl(credential.id, "orders")}${symbolQuery}`
@@ -390,7 +394,11 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
         {tQuant("account.botOrdersHint")}
       </Typography>
       <Box sx={{ height: GRID_HEIGHT }}>
-        {tab === "openOrders" ? (
+        {tab === "openOrders" && openOrdersError ? (
+          <ErrorAlert onRetry={() => mutateOpenOrders()} />
+        ) : history?.error ? (
+          <ErrorAlert onRetry={() => history.mutate()} />
+        ) : tab === "openOrders" ? (
           <DataGrid
             {...DATA_GRID_PROPS}
             apiRef={apiRef}

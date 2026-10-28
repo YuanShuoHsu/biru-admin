@@ -2,12 +2,13 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent } from "react";
+import { type BaseSyntheticEvent, useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 
 import { type CreateAddOnForm, useCreateAddOnFormSchema } from "./definitions";
 
+import ErrorAlert from "@/components/ErrorAlert";
 import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -71,15 +72,17 @@ const CreateAddOnDialog = ({
   const addOnMenuSectionId = useWatch({ control, name: "addOnMenuSectionId" });
   const addOnMenuItemId = useWatch({ control, name: "addOnMenuItemId" });
 
-  const { data: addOns = [] } = useSWR(
-    `/api/menu-items/${menuItemId}/add-ons?limit=100&offset=0`,
-    () =>
-      fetcher<{
-        data: MenuItemAddOn[];
-        total: number;
-      }>(`/api/menu-items/${menuItemId}/add-ons?limit=100&offset=0`).then(
-        ({ data }) => data,
-      ),
+  const {
+    data: addOns = [],
+    error: addOnsError,
+    mutate: mutateAddOns,
+  } = useSWR(`/api/menu-items/${menuItemId}/add-ons?limit=100&offset=0`, () =>
+    fetcher<{
+      data: MenuItemAddOn[];
+      total: number;
+    }>(`/api/menu-items/${menuItemId}/add-ons?limit=100&offset=0`).then(
+      ({ data }) => data,
+    ),
   );
 
   const usedSectionIds = new Set(
@@ -89,15 +92,21 @@ const CreateAddOnDialog = ({
     addOns.flatMap(({ addOnMenuItemId }) => addOnMenuItemId || []),
   );
 
-  const { data: sections = [] } = useSWR(
-    `/api/menus/${menuId}/menu-sections?limit=100&offset=0`,
-    () =>
-      fetcher<{ data: MenuSection[] }>(
-        `/api/menus/${menuId}/menu-sections?limit=100&offset=0`,
-      ).then(({ data }) => data || []),
+  const {
+    data: sections = [],
+    error: sectionsError,
+    mutate: mutateSections,
+  } = useSWR(`/api/menus/${menuId}/menu-sections?limit=100&offset=0`, () =>
+    fetcher<{ data: MenuSection[] }>(
+      `/api/menus/${menuId}/menu-sections?limit=100&offset=0`,
+    ).then(({ data }) => data || []),
   );
 
-  const { data: sectionItems = [] } = useSWR(
+  const {
+    data: sectionItems = [],
+    error: sectionItemsError,
+    mutate: mutateSectionItems,
+  } = useSWR(
     addOnMenuSectionId
       ? `/api/menu-sections/${addOnMenuSectionId}/menu-items?limit=100&offset=0`
       : null,
@@ -106,6 +115,12 @@ const CreateAddOnDialog = ({
         `/api/menu-sections/${addOnMenuSectionId}/menu-items?limit=100&offset=0`,
       ).then(({ data }) => data || []),
   );
+
+  useEffect(() => {
+    setDialog({
+      confirmDisabled: !!(addOnsError || sectionsError || sectionItemsError),
+    });
+  }, [addOnsError, sectionsError, sectionItemsError, setDialog]);
 
   const onSubmitHandler = async ({
     addOnMenuSectionId,
@@ -160,70 +175,25 @@ const CreateAddOnDialog = ({
 
   return (
     <FormBox id="create-add-on-form" onSubmit={onSubmit}>
-      <TextField
-        error={!!errors.addOnMenuSectionId}
-        fullWidth
-        helperText={errors.addOnMenuSectionId?.message}
-        label={tMenus("items.addOns.addOnMenuSectionId.label")}
-        required
-        select
-        slotProps={{
-          input: {
-            endAdornment: addOnMenuSectionId && (
-              <StyledInputAdornment position="end">
-                <IconButton
-                  onClick={() => {
-                    setValue("addOnMenuSectionId", "");
-                    setValue("addOnMenuItemId", "");
-                  }}
-                  size="small"
-                >
-                  <Clear fontSize="small" />
-                </IconButton>
-              </StyledInputAdornment>
-            ),
-          },
-          inputLabel: { shrink: true },
-          select: {
-            displayEmpty: true,
-            renderValue: (selected) =>
-              selected ? (
-                localize(
-                  sections.find(({ id }) => id === selected)?.name,
-                  locale,
-                )
-              ) : (
-                <em>{tMenus("items.addOns.addOnMenuSectionId.placeholder")}</em>
-              ),
-          },
-        }}
-        value={addOnMenuSectionId}
-        {...register("addOnMenuSectionId", {
-          onChange: () => setValue("addOnMenuItemId", ""),
-        })}
-      >
-        <MenuItem disabled value="">
-          <em>{tMenus("items.addOns.addOnMenuSectionId.placeholder")}</em>
-        </MenuItem>
-        {sections.map(({ id, name }) => (
-          <MenuItem disabled={usedSectionIds.has(id)} key={id} value={id}>
-            {localize(name, locale)}
-          </MenuItem>
-        ))}
-      </TextField>
-      {addOnMenuSectionId && (
+      {addOnsError && <ErrorAlert onRetry={() => mutateAddOns()} />}
+      {sectionsError && <ErrorAlert onRetry={() => mutateSections()} />}
+      {!addOnsError && !sectionsError && (
         <TextField
-          error={!!errors.addOnMenuItemId}
+          error={!!errors.addOnMenuSectionId}
           fullWidth
-          helperText={errors.addOnMenuItemId?.message}
-          label={`${tMenus("items.addOns.addOnMenuItemId.label")} ${tCommon("optional")}`}
+          helperText={errors.addOnMenuSectionId?.message}
+          label={tMenus("items.addOns.addOnMenuSectionId.label")}
+          required
           select
           slotProps={{
             input: {
-              endAdornment: addOnMenuItemId && (
+              endAdornment: addOnMenuSectionId && (
                 <StyledInputAdornment position="end">
                   <IconButton
-                    onClick={() => setValue("addOnMenuItemId", "")}
+                    onClick={() => {
+                      setValue("addOnMenuSectionId", "");
+                      setValue("addOnMenuItemId", "");
+                    }}
                     size="small"
                   >
                     <Clear fontSize="small" />
@@ -237,31 +207,89 @@ const CreateAddOnDialog = ({
               renderValue: (selected) =>
                 selected ? (
                   localize(
-                    sectionItems.find(({ id }) => id === selected)?.name,
+                    sections.find(({ id }) => id === selected)?.name,
                     locale,
                   )
                 ) : (
-                  <em>{tMenus("items.addOns.addOnMenuItemId.placeholder")}</em>
+                  <em>
+                    {tMenus("items.addOns.addOnMenuSectionId.placeholder")}
+                  </em>
                 ),
             },
           }}
-          value={addOnMenuItemId}
-          {...register("addOnMenuItemId")}
+          value={addOnMenuSectionId}
+          {...register("addOnMenuSectionId", {
+            onChange: () => setValue("addOnMenuItemId", ""),
+          })}
         >
           <MenuItem disabled value="">
-            <em>{tMenus("items.addOns.addOnMenuItemId.placeholder")}</em>
+            <em>{tMenus("items.addOns.addOnMenuSectionId.placeholder")}</em>
           </MenuItem>
-          {sectionItems.map(({ id, name }) => (
-            <MenuItem
-              disabled={id === menuItemId || usedItemIds.has(id)}
-              key={id}
-              value={id}
-            >
+          {sections.map(({ id, name }) => (
+            <MenuItem disabled={usedSectionIds.has(id)} key={id} value={id}>
               {localize(name, locale)}
             </MenuItem>
           ))}
         </TextField>
       )}
+      {addOnMenuSectionId &&
+        !addOnsError &&
+        !sectionsError &&
+        (sectionItemsError ? (
+          <ErrorAlert onRetry={() => mutateSectionItems()} />
+        ) : (
+          <TextField
+            error={!!errors.addOnMenuItemId}
+            fullWidth
+            helperText={errors.addOnMenuItemId?.message}
+            label={`${tMenus("items.addOns.addOnMenuItemId.label")} ${tCommon("optional")}`}
+            select
+            slotProps={{
+              input: {
+                endAdornment: addOnMenuItemId && (
+                  <StyledInputAdornment position="end">
+                    <IconButton
+                      onClick={() => setValue("addOnMenuItemId", "")}
+                      size="small"
+                    >
+                      <Clear fontSize="small" />
+                    </IconButton>
+                  </StyledInputAdornment>
+                ),
+              },
+              inputLabel: { shrink: true },
+              select: {
+                displayEmpty: true,
+                renderValue: (selected) =>
+                  selected ? (
+                    localize(
+                      sectionItems.find(({ id }) => id === selected)?.name,
+                      locale,
+                    )
+                  ) : (
+                    <em>
+                      {tMenus("items.addOns.addOnMenuItemId.placeholder")}
+                    </em>
+                  ),
+              },
+            }}
+            value={addOnMenuItemId}
+            {...register("addOnMenuItemId")}
+          >
+            <MenuItem disabled value="">
+              <em>{tMenus("items.addOns.addOnMenuItemId.placeholder")}</em>
+            </MenuItem>
+            {sectionItems.map(({ id, name }) => (
+              <MenuItem
+                disabled={id === menuItemId || usedItemIds.has(id)}
+                key={id}
+                value={id}
+              >
+                {localize(name, locale)}
+              </MenuItem>
+            ))}
+          </TextField>
+        ))}
     </FormBox>
   );
 };

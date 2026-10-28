@@ -15,6 +15,7 @@ import CredentialAssets from "./CredentialAssets";
 import CredentialDialog, { CREDENTIAL_FORM_ID } from "./CredentialDialog";
 
 import DataGrid from "@/components/DataGrid";
+import ErrorAlert from "@/components/ErrorAlert";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -52,7 +53,7 @@ const CredentialSettings = () => {
 
   const apiRef = useGridApiRef();
 
-  const { credentials, mutate, selectCredential } = useQuantCredentials({
+  const { credentials, error, mutate, selectCredential } = useQuantCredentials({
     onSuccess: () => {
       setTimeout(() => {
         apiRef.current?.autosizeColumns(autosizeOptions);
@@ -173,13 +174,16 @@ const CredentialSettings = () => {
         <AiKeySettings />
         <AgentTokenSettings />
       </ToolbarStack>
-      <DataGrid
-        {...DATA_GRID_PROPS}
-        apiRef={apiRef}
-        columns={columns}
-        loading={!credentials}
-        rows={credentials ?? []}
-      />
+      {error && <ErrorAlert onRetry={() => mutate()} />}
+      {!error && (
+        <DataGrid
+          {...DATA_GRID_PROPS}
+          apiRef={apiRef}
+          columns={columns}
+          loading={!credentials}
+          rows={credentials ?? []}
+        />
+      )}
     </>
   );
 };

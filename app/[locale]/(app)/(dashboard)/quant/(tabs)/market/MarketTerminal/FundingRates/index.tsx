@@ -3,6 +3,8 @@
 import { useFormatter, useTranslations } from "next-intl";
 import useSWR from "swr";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { Box, Skeleton, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { BarChart } from "@mui/x-charts/BarChart";
@@ -19,7 +21,11 @@ const FundingRates = ({ symbol }: { symbol: string }) => {
   const format = useFormatter();
   const theme = useTheme();
 
-  const { data: rates } = useSWR<QuantFundingRate[]>(
+  const {
+    data: rates,
+    error: ratesError,
+    mutate: mutateRates,
+  } = useSWR<QuantFundingRate[]>(
     `/api/quant/markets/${symbol}/funding-rates?limit=${FUNDING_HISTORY_LIMIT}`,
     fetcher,
   );
@@ -51,7 +57,9 @@ const FundingRates = ({ symbol }: { symbol: string }) => {
           </Typography>
         )}
       </Stack>
-      {rates ? (
+      {ratesError ? (
+        <ErrorAlert onRetry={() => mutateRates()} />
+      ) : rates ? (
         <Box sx={{ height: CHART_HEIGHT }}>
           <BarChart
             dataset={rates.map(({ rate, time }) => ({ rate, time }))}

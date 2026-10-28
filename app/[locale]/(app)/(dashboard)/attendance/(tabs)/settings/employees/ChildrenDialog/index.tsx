@@ -11,6 +11,7 @@ import useSWR from "swr";
 
 import { type ChildForm, useChildFormSchema } from "./definitions";
 
+import ErrorAlert from "@/components/ErrorAlert";
 import FormBox from "@/components/FormBox";
 
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
@@ -77,16 +78,19 @@ const ChildrenDialog = ({
 
   const base = attendancePath(organizationSlug, "org", "children");
 
-  const { data: { data: children } = { data: [] }, mutate: mutateChildren } =
-    useSWR(
-      `${base}?${new URLSearchParams({
-        filterField: "employeeEmail",
-        filterOperator: "equals",
-        filterValue: employee.email,
-        limit: String(MAX_PAGE_SIZE),
-      }).toString()}`,
-      (url: string) => fetcher<AttendanceParentalChildPage>(url),
-    );
+  const {
+    data: { data: children } = { data: [] },
+    error: childrenError,
+    mutate: mutateChildren,
+  } = useSWR(
+    `${base}?${new URLSearchParams({
+      filterField: "employeeEmail",
+      filterOperator: "equals",
+      filterValue: employee.email,
+      limit: String(MAX_PAGE_SIZE),
+    }).toString()}`,
+    (url: string) => fetcher<AttendanceParentalChildPage>(url),
+  );
 
   const {
     control,
@@ -220,6 +224,7 @@ const ChildrenDialog = ({
 
   return (
     <FormBox id="attendance-child-form" onSubmit={onSubmit}>
+      {childrenError && <ErrorAlert onRetry={() => mutateChildren()} />}
       {children.length > 0 && (
         <List dense disablePadding>
           {children.map((child) => (

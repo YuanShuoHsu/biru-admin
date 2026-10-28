@@ -32,6 +32,7 @@ import EquityChart from "./EquityChart";
 import SignalPanel from "./SignalPanel";
 
 import DataGrid from "@/components/DataGrid";
+import ErrorAlert from "@/components/ErrorAlert";
 
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
@@ -149,7 +150,11 @@ const BotDetail = ({ botId }: { botId: string }) => {
 
   const botUrl = `${QUANT_BOTS_URL}/${botId}`;
   const { data: bot, error } = useSWR<QuantBot>(botUrl, fetcher);
-  const { data: markets } = useSWR<QuantMarket[]>(
+  const {
+    data: markets,
+    error: marketsError,
+    mutate: mutateMarkets,
+  } = useSWR<QuantMarket[]>(
     bot ? `/api/quant/markets?type=${quantMarketTypeOf(bot.symbol)}` : null,
     fetcher,
   );
@@ -164,7 +169,9 @@ const BotDetail = ({ botId }: { botId: string }) => {
 
   const {
     data: { data: rows, total: rowCount } = { data: [], total: 0 },
+    error: rowsError,
     isLoading: rowsLoading,
+    mutate: mutateRows,
   } = useSWR(
     [
       `${botUrl}/${tab}`,
@@ -577,6 +584,7 @@ const BotDetail = ({ botId }: { botId: string }) => {
             )}
             {canOperate && (
               <Button
+                disabled={!!marketsError}
                 onClick={(event) => setOperationAnchor(event.currentTarget)}
                 startIcon={<Tune />}
                 variant="outlined"
@@ -646,10 +654,13 @@ const BotDetail = ({ botId }: { botId: string }) => {
         {bot.status === "running" && labels.pause(bot.statusReason) && (
           <Alert severity="warning">{labels.pause(bot.statusReason)}</Alert>
         )}
+        {marketsError && <ErrorAlert onRetry={() => mutateMarkets()} />}
         <Grid
           container
           spacing={2}
-          sx={{ display: summary.pionexError ? "none" : undefined }}
+          sx={{
+            display: summary.pionexError || marketsError ? "none" : undefined,
+          }}
         >
           <Grid size={{ md: 2, sm: 4, xs: 6 }}>
             <Stat
@@ -845,34 +856,37 @@ const BotDetail = ({ botId }: { botId: string }) => {
             <Tab label={tBots("detail.fills")} value="fills" />
             <Tab label={tBots("detail.events")} value="events" />
           </Tabs>
-          <Box sx={{ height: GRID_HEIGHT }}>
-            <DataGrid
-              {...DATA_GRID_PROPS}
-              columns={
-                tab === "orders"
-                  ? orderColumns
-                  : tab === "fills"
-                    ? fillColumns
-                    : eventColumns
-              }
-              disableColumnFilter
-              key={tab}
-              loading={rowsLoading}
-              onPaginationModelChange={setPaginationModel}
-              onSortModelChange={(newModel) => {
-                setSortModel(newModel);
-                setPaginationModel((previous) => ({ ...previous, page: 0 }));
-              }}
-              pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
-              paginationMode="server"
-              paginationModel={paginationModel}
-              rowCount={rowCount}
-              rows={rows}
-              showToolbar={false}
-              sortingMode="server"
-              sortModel={sortModel}
-            />
-          </Box>
+          {rowsError && <ErrorAlert onRetry={() => mutateRows()} />}
+          {!rowsError && (
+            <Box sx={{ height: GRID_HEIGHT }}>
+              <DataGrid
+                {...DATA_GRID_PROPS}
+                columns={
+                  tab === "orders"
+                    ? orderColumns
+                    : tab === "fills"
+                      ? fillColumns
+                      : eventColumns
+                }
+                disableColumnFilter
+                key={tab}
+                loading={rowsLoading}
+                onPaginationModelChange={setPaginationModel}
+                onSortModelChange={(newModel) => {
+                  setSortModel(newModel);
+                  setPaginationModel((previous) => ({ ...previous, page: 0 }));
+                }}
+                pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
+                paginationMode="server"
+                paginationModel={paginationModel}
+                rowCount={rowCount}
+                rows={rows}
+                showToolbar={false}
+                sortingMode="server"
+                sortModel={sortModel}
+              />
+            </Box>
+          )}
         </Panel>
       )}
     </Stack>
