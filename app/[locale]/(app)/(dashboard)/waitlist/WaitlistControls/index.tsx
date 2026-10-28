@@ -9,7 +9,7 @@ import useSWR, { useSWRConfig } from "swr";
 import { useOrganization } from "@/hooks/organizations";
 import { useSocketConnection } from "@/hooks/useSocketConnection";
 
-import { menuSocket } from "@/app/socket";
+import { emitMenuWithAck, menuSocket } from "@/app/socket";
 
 import { Add } from "@mui/icons-material";
 import {
@@ -78,12 +78,9 @@ const WaitlistControls = () => {
   useEffect(() => {
     if (!isConnected || !organization) return;
 
-    menuSocket
-      .timeout(5000)
-      .emitWithAck("joinWaitlist", { organizationId: organization.id })
-      .catch((error) =>
-        enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
-      );
+    emitMenuWithAck("joinWaitlist", { organizationId: organization.id }).catch(
+      (error) => enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
+    );
 
     menuSocket.on("waitlistUpdated", refreshWaitlist);
 

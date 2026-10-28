@@ -12,7 +12,7 @@ import {
 } from "@/hooks/organizations";
 import { useSocketConnection } from "@/hooks/useSocketConnection";
 
-import { menuSocket } from "@/app/socket";
+import { emitMenuWithAck, menuSocket } from "@/app/socket";
 
 import type { LocalizedText } from "@/types/locale";
 
@@ -37,12 +37,9 @@ const LowStockAlerts = () => {
   useEffect(() => {
     if (!isConnected || !organization || !canReadInventory) return;
 
-    menuSocket
-      .timeout(5000)
-      .emitWithAck("joinInventory", { organizationId: organization.id })
-      .catch((error) =>
-        enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
-      );
+    emitMenuWithAck("joinInventory", { organizationId: organization.id }).catch(
+      (error) => enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
+    );
 
     const ingredientsUrl = `/api/organizations/${organization.slug}/ingredients`;
 

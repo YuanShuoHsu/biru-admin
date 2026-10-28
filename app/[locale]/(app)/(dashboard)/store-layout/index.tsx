@@ -18,7 +18,7 @@ import { STATUS_COLORS, STATUS_TEXT_COLORS } from "@/constants/orders";
 
 import { useSocketConnection } from "@/hooks/useSocketConnection";
 
-import { menuSocket } from "@/app/socket";
+import { emitMenuWithAck, menuSocket } from "@/app/socket";
 
 import Avatar from "./Avatar";
 import { createAvatarState } from "./Avatar/movement";
@@ -584,12 +584,9 @@ const StoreLayout = ({
   useEffect(() => {
     if (!hasBoard || !isConnected) return;
 
-    menuSocket
-      .timeout(5000)
-      .emitWithAck("joinOrdersBoard", { organizationId })
-      .catch((error) =>
-        enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
-      );
+    emitMenuWithAck("joinOrdersBoard", { organizationId }).catch((error) =>
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
+    );
 
     menuSocket.on("orderUpdated", mutate);
 
