@@ -561,20 +561,17 @@ const IngredientDialog = ({
       {canViewPurchasing && (
         <>
           <Autocomplete
+            {...supplierSearch}
             disabled={!editable}
-            filterOptions={(x) => x}
             fullWidth
             getOptionLabel={({ name }) => name}
             isOptionEqualToValue={(option, value) => option.id === value.id}
-            loading={supplierSearch.loading}
             onChange={(_, value) => {
               setSupplier(value);
               setValue("supplierId", value?.id ?? "", {
                 shouldValidate: isSubmitted,
               });
             }}
-            onInputChange={supplierSearch.onInputChange}
-            options={supplierSearch.options}
             renderInput={(params) => (
               <TextField
                 {...params}

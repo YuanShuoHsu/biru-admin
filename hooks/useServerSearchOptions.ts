@@ -1,63 +1,66 @@
 "use client";
 
-import { type SyntheticEvent, useEffect, useMemo, useState } from "react";
+import { type SyntheticEvent, useEffect, useState } from "react";
 import useSWR from "swr";
 
 import type { AutocompleteInputChangeReason } from "@mui/material";
-import { debounce } from "@mui/material/utils";
 
 import { getGridSearchParams } from "@/utils/dataGrid";
 
 const SEARCH_DEBOUNCE_MS = 400;
 const SEARCH_PAGE_SIZE = 20;
 
-export const useServerSearchOptions = <Option extends { id: string }>(
+export const useServerSearchOptions = <
+  Option extends { id: string; name: unknown },
+>(
   path: string | null,
-  selected: Option[],
+  selected: readonly Option[],
 ) => {
-  const [input, setInput] = useState("");
+  const [open, setOpen] = useState(false);
   const [keyword, setKeyword] = useState("");
+  const [debouncedKeyword, setDebouncedKeyword] = useState("");
 
-  const search = useMemo(() => debounce(setKeyword, SEARCH_DEBOUNCE_MS), []);
+  useEffect(() => {
+    const timer = setTimeout(
+      () => setDebouncedKeyword(keyword),
+      SEARCH_DEBOUNCE_MS,
+    );
 
-  useEffect(() => () => search.clear(), [search]);
+    return () => clearTimeout(timer);
+  }, [keyword]);
 
   const params = getGridSearchParams({
     pageSize: SEARCH_PAGE_SIZE,
     filterField: "name",
     filterOperator: "contains",
-    filterValue: keyword,
+    filterValue: debouncedKeyword,
     sortBy: "name",
     sortDirection: "asc",
   });
 
   const { data, isLoading } = useSWR<{ data: Option[]; total: number }>(
-    path && `${path}?${params.toString()}`,
+    path && open ? `${path}?${params.toString()}` : null,
     { keepPreviousData: true },
   );
 
   const selectedIds = new Set(selected.map(({ id }) => id));
 
-  const onInputChange = (
-    _event: SyntheticEvent,
-    value: string,
-    reason: AutocompleteInputChangeReason,
-  ) => {
-    if (reason === "input") {
-      setInput(value.trim());
-      search(value.trim());
-
-      return;
-    }
-
-    search.clear();
-    setInput("");
-    setKeyword("");
-  };
-
   return {
-    loading: !!path && (input !== keyword || isLoading),
-    onInputChange,
+    filterOptions: (options: Option[]) => options,
+    loading: open && (keyword !== debouncedKeyword || isLoading),
+    onClose: () => setOpen(false),
+    onInputChange: (
+      _event: SyntheticEvent,
+      value: string,
+      reason: AutocompleteInputChangeReason,
+    ) => {
+      const nextKeyword = reason === "input" ? value.trim() : "";
+
+      setKeyword(nextKeyword);
+      if (!nextKeyword) setDebouncedKeyword("");
+    },
+    onOpen: () => setOpen(true),
+    open,
     options: [
       ...selected,
       ...(data?.data ?? []).filter(({ id }) => !selectedIds.has(id)),
