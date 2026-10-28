@@ -87,29 +87,27 @@ const CouponRecipientsContent = async ({
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const [
-    { data: coupon, error: couponError },
-    { data: recipients, error: recipientsError },
-  ] = await Promise.all([
-    settle(getCoupon(couponId, fetchOptions)),
-    settle(
-      getCouponRecipients(
-        couponId,
-        {
-          page,
-          pageSize,
-          filterField,
-          filterOperator,
-          filterValue,
-          quickFilterEnums,
-          quickFilterValue,
-          sortBy,
-          sortDirection,
-        },
-        fetchOptions,
+  const [{ error: couponError }, { data: recipients, error: recipientsError }] =
+    await Promise.all([
+      settle(getCoupon(couponId, fetchOptions)),
+      settle(
+        getCouponRecipients(
+          couponId,
+          {
+            page,
+            pageSize,
+            filterField,
+            filterOperator,
+            filterValue,
+            quickFilterEnums,
+            quickFilterValue,
+            sortBy,
+            sortDirection,
+          },
+          fetchOptions,
+        ),
       ),
-    ),
-  ]);
+    ]);
   if (couponError?.status === 404) notFound();
   if (couponError || recipientsError) return <ErrorAlert />;
 

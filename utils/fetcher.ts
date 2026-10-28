@@ -82,6 +82,10 @@ export const settle = async <T>(
   }
 };
 
+// 帶資源 id 的端點在資源不存在時，RolesGuard 查不到所屬店家會先回 403，到不了 404
+export const isMissingResource = (error?: FetchError) =>
+  error?.status === 403 || error?.status === 404;
+
 export const sendRequest =
   <TRes = unknown, TReq = void>(init?: RequestInit) =>
   async (url: string, { arg }: { arg?: TReq } = {}): Promise<TRes> =>

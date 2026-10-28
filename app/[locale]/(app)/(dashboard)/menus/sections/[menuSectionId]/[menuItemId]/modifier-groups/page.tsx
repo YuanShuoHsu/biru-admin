@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import MenuItemModifierGroups from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -16,6 +18,7 @@ import {
 } from "@/types/api";
 
 import { resolveGridSearchParams } from "@/utils/dataGrid";
+import { isMissingResource, settle } from "@/utils/fetcher";
 import {
   getAdminMenu,
   getAdminMenuItemModifierGroups,
@@ -60,13 +63,20 @@ const MenuItemModifierGroupsContent = async ({
     await Promise.all([cookies(), params, searchParams]);
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
-  const section = await getAdminMenuSection(menuSectionId, fetchOptions);
+  const { data: section, error: sectionError } = await settle(
+    getAdminMenuSection(menuSectionId, fetchOptions),
+  );
+  if (isMissingResource(sectionError)) notFound();
+  if (sectionError) return <ErrorAlert />;
 
-  if (!section?.menuId) notFound();
+  const { data: menu, error: menuError } = await settle(
+    getAdminMenu(section.menuId, fetchOptions),
+  );
+  if (isMissingResource(menuError)) notFound();
+  if (menuError) return <ErrorAlert />;
 
-  const menu = await getAdminMenu(section.menuId, fetchOptions);
   const selectedOrganization = await getAdminOrganization(
-    menu?.organizationId,
+    menu.organizationId,
     rawSearchParams.organization,
   );
   if (!selectedOrganization) notFound();
@@ -95,21 +105,26 @@ const MenuItemModifierGroupsContent = async ({
       locale,
     });
 
-  const [{ links: rows, total: rowCount }, role] = await Promise.all([
-    getAdminMenuItemModifierGroups(
-      menuItemId,
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-      fetchOptions,
+  const [{ data: links, error: linksError }, role] = await Promise.all([
+    settle(
+      getAdminMenuItemModifierGroups(
+        menuItemId,
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+        fetchOptions,
+      ),
     ),
     getMemberRole(selectedOrganization.id),
   ]);
+  if (linksError) return <ErrorAlert />;
+
+  const { links: rows, total: rowCount } = links;
 
   const canWrite = hasRolePermission(role, { menu: ["update"] });
   const canViewAuditLog = hasRolePermission(role, {

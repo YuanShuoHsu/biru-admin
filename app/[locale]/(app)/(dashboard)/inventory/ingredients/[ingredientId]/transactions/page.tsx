@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import IngredientTransactions from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -17,6 +19,7 @@ import {
 
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getInventoryTransactionEnumOptions } from "@/utils/enumOptions";
+import { isMissingResource, settle } from "@/utils/fetcher";
 import { getIngredient, getInventoryTransactions } from "@/utils/inventory";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAdminOrganization, getMemberRole } from "@/utils/session";
@@ -55,9 +58,11 @@ const IngredientTransactionsContent = async ({
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const ingredient = await getIngredient(ingredientId, fetchOptions);
-
-  if (!ingredient) notFound();
+  const { data: ingredient, error: ingredientError } = await settle(
+    getIngredient(ingredientId, fetchOptions),
+  );
+  if (isMissingResource(ingredientError)) notFound();
+  if (ingredientError) return <ErrorAlert />;
 
   const organization = await getAdminOrganization(
     ingredient.organizationId,
@@ -104,8 +109,8 @@ const IngredientTransactionsContent = async ({
       )
     : [];
 
-  const { transactions: rows, total: rowCount } =
-    await getInventoryTransactions(
+  const { data: transactions, error: transactionsError } = await settle(
+    getInventoryTransactions(
       ingredientId,
       {
         page,
@@ -119,7 +124,11 @@ const IngredientTransactionsContent = async ({
         sortDirection,
       },
       fetchOptions,
-    );
+    ),
+  );
+  if (transactionsError) return <ErrorAlert />;
+
+  const { transactions: rows, total: rowCount } = transactions;
 
   return (
     <IngredientTransactions

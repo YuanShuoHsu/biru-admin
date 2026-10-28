@@ -27,10 +27,7 @@ export const getDeletedRecords = cache(
     const result = await fetcher<{
       data: DeletedRecordBatch[];
       total: number;
-    }>(
-      `${getDeletedRecordsPath(organizationSlug)}?${params.toString()}`,
-      init,
-    );
+    }>(`${getDeletedRecordsPath(organizationSlug)}?${params.toString()}`, init);
 
     return {
       deletedRecords: Array.isArray(result.data) ? result.data : [],
