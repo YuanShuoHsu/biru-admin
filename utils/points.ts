@@ -4,11 +4,16 @@ import { fetcher } from "./fetcher";
 
 import type {
   OrganizationPointTransaction,
+  PointSetting,
   PointTransactionFilterField,
   PointTransactionSortField,
 } from "@/types/points";
 
 import { type GridQuery, getGridSearchParams } from "@/utils/dataGrid";
+
+export const getPointSetting = cache((init?: RequestInit) =>
+  fetcher<PointSetting>("/api/point-settings", init),
+);
 
 export const getOrganizationPointTransactions = cache(
   async (

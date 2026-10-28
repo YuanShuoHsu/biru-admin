@@ -203,6 +203,7 @@ const FIELD_LABEL_KEYS = {
   allowanceNo: "field.allowanceNo",
   amountPerPoint: "field.amountPerPoint",
   pointsValidityYears: "field.pointsValidityYears",
+  accountingValuePerPoint: "field.accountingValuePerPoint",
   deliveryLeadTimeMinutes: "field.deliveryLeadTimeMinutes",
   url: "field.url",
   telephone: "field.telephone",

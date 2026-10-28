@@ -18,6 +18,7 @@
   "changes": "変更内容",
   "createdAt": "日時",
   "field": {
+    "accountingValuePerPoint": "1ポイントの会計上の価値",
     "addOnMenuItem": "追加品目",
     "addOnMenuSection": "追加セクション",
     "addressCountry": "国/地域",

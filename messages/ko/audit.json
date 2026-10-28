@@ -18,6 +18,7 @@
   "changes": "변경 내용",
   "createdAt": "일시",
   "field": {
+    "accountingValuePerPoint": "포인트당 회계 가치",
     "addOnMenuItem": "추가 항목",
     "addOnMenuSection": "추가 섹션",
     "addressCountry": "국가/지역",

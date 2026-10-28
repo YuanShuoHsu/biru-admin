@@ -727,6 +727,11 @@ const routes: Route[] = [
     segment: "admins",
   },
   {
+    icon: Stars,
+    label: "pointSettings.label",
+    segment: "point-settings",
+  },
+  {
     icon: RestoreFromTrash,
     label: "deletedRecords.label",
     query: ["organization", "page", "pageSize"],

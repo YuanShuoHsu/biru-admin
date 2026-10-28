@@ -1,0 +1,33 @@
+{
+  "accountingValuePerPoint": {
+    "empty": "未設定",
+    "hint": "照合専用で、会員の獲得・交換には影響しません",
+    "label": "1ポイントの会計上の価値",
+    "placeholder": "1ポイントの会計上の価値を入力してください",
+    "value": "{value, number}"
+  },
+  "amountPerPoint": {
+    "empty": "無効",
+    "hint": "全店舗共通。空欄にするとポイントを無効にします",
+    "invalid": "1ポイント獲得に必要な金額が無効です",
+    "label": "1ポイント獲得に必要な金額",
+    "placeholder": "1ポイント獲得に必要な金額を入力してください",
+    "value": "{value, number}"
+  },
+  "label": "ポイント設定",
+  "pointsEnabledAt": {
+    "empty": "無効",
+    "label": "ポイント有効化日時"
+  },
+  "pointsValidityYears": {
+    "disabled": "ポイントを有効にすると有効期限を設定できます",
+    "empty": "無期限",
+    "label": "ポイント有効期限（年）",
+    "placeholder": "ポイント有効期限を入力してください",
+    "value": "{value}年"
+  },
+  "update": {
+    "success": "ポイント設定を更新しました",
+    "title": "ポイント設定を編集"
+  }
+}

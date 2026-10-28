@@ -1,0 +1,33 @@
+{
+  "accountingValuePerPoint": {
+    "empty": "未设置",
+    "hint": "仅用于对账，不影响会员累点与兑换",
+    "label": "每点会计价值",
+    "placeholder": "请输入每点会计价值",
+    "value": "{value, number}"
+  },
+  "amountPerPoint": {
+    "empty": "未启用",
+    "hint": "全品牌通用；清空即停用点数",
+    "invalid": "累积 1 点所需消费金额格式无效",
+    "label": "累积 1 点所需消费金额",
+    "placeholder": "请输入累积 1 点所需消费金额",
+    "value": "{value, number}"
+  },
+  "label": "点数设置",
+  "pointsEnabledAt": {
+    "empty": "未启用",
+    "label": "点数启用时间"
+  },
+  "pointsValidityYears": {
+    "disabled": "启用点数后才能设置效期",
+    "empty": "永久有效",
+    "label": "点数效期（年）",
+    "placeholder": "请输入点数效期",
+    "value": "{value} 年"
+  },
+  "update": {
+    "success": "已更新点数设置",
+    "title": "编辑点数设置"
+  }
+}
