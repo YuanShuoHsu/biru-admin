@@ -225,9 +225,7 @@ const ControlRail = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(1),
 }));
 
-const GridLegend = styled(Stack, {
-  shouldForwardProp: (prop) => prop !== "shown",
-})<{ shown: boolean }>(({ shown, theme }) => ({
+const GridLegend = styled(Stack)(({ theme }) => ({
   padding: theme.spacing(0.5, 1),
   gridRow: 3,
   gridColumn: 1,
@@ -239,7 +237,6 @@ const GridLegend = styled(Stack, {
   backdropFilter: "blur(24px)",
   border: `1px solid ${theme.vars.palette.divider}`,
   borderRadius: theme.shape.borderRadius,
-  ...(!shown && { display: "none" }),
   transition: theme.transitions.create(["background-color", "border-color"]),
 }));
 
@@ -1498,23 +1495,22 @@ const StoreLayout = ({
                 {view !== "first" && <ZoomLever inputRef={touchRef} />}
                 <JumpButton inputRef={touchRef} />
               </ControlRail>
-              <GridLegend
-                aria-label={tStoreLayout("gridScale")}
-                shown={!realistic}
-              >
-                <LegendStack direction="row">
-                  <GridCellLine />
-                  <Typography color="textSecondary" variant="caption">
-                    {tStoreLayout("gridLegend.cell")}
-                  </Typography>
-                </LegendStack>
-                <LegendStack direction="row">
-                  <GridSectionLine />
-                  <Typography color="textSecondary" variant="caption">
-                    {tStoreLayout("gridLegend.section")}
-                  </Typography>
-                </LegendStack>
-              </GridLegend>
+              {!realistic && (
+                <GridLegend aria-label={tStoreLayout("gridScale")}>
+                  <LegendStack direction="row">
+                    <GridCellLine />
+                    <Typography color="textSecondary" variant="caption">
+                      {tStoreLayout("gridLegend.cell")}
+                    </Typography>
+                  </LegendStack>
+                  <LegendStack direction="row">
+                    <GridSectionLine />
+                    <Typography color="textSecondary" variant="caption">
+                      {tStoreLayout("gridLegend.section")}
+                    </Typography>
+                  </LegendStack>
+                </GridLegend>
+              )}
               {elevatorStop && (
                 <ElevatorPanel
                   aria-label={tStoreLayout("elevatorFloors")}
