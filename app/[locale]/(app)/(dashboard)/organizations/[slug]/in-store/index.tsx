@@ -11,6 +11,7 @@ import UpdateDineInTableCountDialog from "./UpdateDineInTableCountDialog";
 import { StyledCardContent } from "@/components/FormCard";
 
 import { API_ORDER_MODE, ORDER_MODE } from "@/constants/orderMode";
+import { PRINTER_STATUS_REFRESH_MS } from "@/constants/orders";
 
 import { Download } from "@mui/icons-material";
 import {
@@ -701,7 +702,9 @@ const OrderTicketPrintersCard = ({
 
   const printersUrl = `/api/organizations/${organizationSlug}/order-ticket-printers`;
 
-  const { data: printers, mutate } = useSWR<Printer[]>(printersUrl);
+  const { data: printers, mutate } = useSWR<Printer[]>(printersUrl, {
+    refreshInterval: PRINTER_STATUS_REFRESH_MS,
+  });
 
   const [credentials, setCredentials] = useState<PrinterCredentials | null>(
     null,
