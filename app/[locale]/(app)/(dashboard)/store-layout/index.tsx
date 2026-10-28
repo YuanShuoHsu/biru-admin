@@ -239,14 +239,8 @@ const GridLegend = styled(Stack, {
   backdropFilter: "blur(24px)",
   border: `1px solid ${theme.vars.palette.divider}`,
   borderRadius: theme.shape.borderRadius,
-  opacity: shown ? 1 : 0,
-  visibility: shown ? "visible" : "hidden",
-  transition: theme.transitions.create([
-    "background-color",
-    "border-color",
-    "opacity",
-    "visibility",
-  ]),
+  ...(!shown && { display: "none" }),
+  transition: theme.transitions.create(["background-color", "border-color"]),
 }));
 
 const LegendStack = styled(Stack)(({ theme }) => ({
