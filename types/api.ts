@@ -5085,6 +5085,77 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/store-photos/active": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得前台門市照片 */
+    get: operations["StorePhotosController_findAllActive"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/store-photos": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢門市照片列表 */
+    get: operations["AdminStorePhotosController_findAll"];
+    put?: never;
+    /** 建立門市照片 */
+    post: operations["AdminStorePhotosController_create"];
+    /** 批次刪除門市照片 */
+    delete: operations["AdminStorePhotosController_removeMany"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/store-photos/reorder": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 重新排序門市照片 */
+    patch: operations["AdminStorePhotosController_reorder"];
+    trace?: never;
+  };
+  "/api/store-photos/{storePhotoId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 刪除門市照片 */
+    delete: operations["AdminStorePhotosController_remove"];
+    options?: never;
+    head?: never;
+    /** 更新門市照片 */
+    patch: operations["AdminStorePhotosController_update"];
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -6505,6 +6576,7 @@ export interface components {
       | "team"
       | "pointTransaction"
       | "pointSetting"
+      | "storePhoto"
       | "employee"
       | "attendanceSetting"
       | "leaveCase"
@@ -7376,6 +7448,7 @@ export interface components {
       | "menu_item_modifier_group"
       | "coupon"
       | "banner"
+      | "store_photo"
       | "supplier"
       | "ingredient"
       | "recipe"
@@ -12334,6 +12407,64 @@ export interface components {
       amount?: number;
       /** @description 訊號 id，重送同一個 id 只會執行一次 */
       id?: string;
+    };
+    PublicStorePhotoResponseDto: {
+      id: string;
+      /** @description 圖片來源（data URL） */
+      image: string;
+      /** @description 依 lang 取出的替代文字 */
+      alt: string;
+    };
+    CreateStorePhotoDto: {
+      /** @description 圖片來源（data URL） */
+      image: string;
+      /**
+       * @description 替代文字
+       * @example {
+       *       "zh-TW": "門市外觀",
+       *       "en": "Storefront"
+       *     }
+       */
+      alt: Record<string, never>;
+      isActive?: boolean;
+      /** @description 未帶時排在最後 */
+      sortOrder?: number;
+    };
+    StorePhotoResponseDto: {
+      id: string;
+      /** @description 圖片來源（data URL） */
+      image: string;
+      alt: Record<string, never>;
+      isActive: boolean;
+      sortOrder: number;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    /** @enum {string} */
+    StorePhotoFilterField: "alt" | "isActive" | "createdAt" | "updatedAt";
+    /** @enum {string} */
+    StorePhotoSortField: "alt" | "isActive" | "createdAt" | "updatedAt";
+    ReorderStorePhotosDto: {
+      ids: string[];
+      /** @default 0 */
+      offset: number;
+    };
+    UpdateStorePhotoDto: {
+      /** @description 圖片來源（data URL） */
+      image?: string;
+      /**
+       * @description 替代文字
+       * @example {
+       *       "zh-TW": "門市外觀",
+       *       "en": "Storefront"
+       *     }
+       */
+      alt?: Record<string, never>;
+      isActive?: boolean;
+      /** @description 未帶時排在最後 */
+      sortOrder?: number;
     };
   };
   responses: never;
@@ -24260,6 +24391,213 @@ export interface operations {
       };
     };
   };
+  StorePhotosController_findAllActive: {
+    parameters: {
+      query: {
+        lang: "en" | "ja" | "ko" | "zh-CN" | "zh-TW";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PublicStorePhotoResponseDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminStorePhotosController_findAll: {
+    parameters: {
+      query?: {
+        filterField?: components["schemas"]["StorePhotoFilterField"];
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortBy?: components["schemas"]["StorePhotoSortField"];
+        sortDirection?: components["schemas"]["SortDirection"];
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminStorePhotosController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateStorePhotoDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StorePhotoResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminStorePhotosController_removeMany: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["IdsDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminStorePhotosController_reorder: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReorderStorePhotosDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminStorePhotosController_remove: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        storePhotoId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminStorePhotosController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        storePhotoId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateStorePhotoDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StorePhotoResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
 }
 type FlattenedDeepRequired<T> = {
   [K in keyof T]-?: FlattenedDeepRequired<
@@ -24324,6 +24662,9 @@ export const pathsApiOrganizationsOrganizationIdOrderMenuGetParametersQueryLangV
 export const pathsApiOrganizationsOrganizationSlugWaitlistTicketsTicketIdTransitionsStatusPatchParametersPathStatusValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/organizations/{organizationSlug}/waitlist/tickets/{ticketId}/transitions/{status}"]["patch"]["parameters"]["path"]["status"]
 > = ["cancelled", "called", "waiting", "seated", "noShow"];
+export const pathsApiStorePhotosActiveGetParametersQueryLangValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/store-photos/active"]["get"]["parameters"]["query"]["lang"]
+> = ["en", "ja", "ko", "zh-CN", "zh-TW"];
 export const attendanceErrorCodeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AttendanceErrorCode"]
 > = [
@@ -24853,6 +25194,7 @@ export const auditResourceValues: ReadonlyArray<
   "team",
   "pointTransaction",
   "pointSetting",
+  "storePhoto",
   "employee",
   "attendanceSetting",
   "leaveCase",
@@ -25045,6 +25387,7 @@ export const deletedRecordTableValues: ReadonlyArray<
   "menu_item_modifier_group",
   "coupon",
   "banner",
+  "store_photo",
   "supplier",
   "ingredient",
   "recipe",
@@ -26220,3 +26563,9 @@ export const quantFeeTypeValues: ReadonlyArray<
 export const quantWebhookActionValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantWebhookAction"]
 > = ["buy", "sell", "close"];
+export const storePhotoFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["StorePhotoFilterField"]
+> = ["alt", "isActive", "createdAt", "updatedAt"];
+export const storePhotoSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["StorePhotoSortField"]
+> = ["alt", "isActive", "createdAt", "updatedAt"];

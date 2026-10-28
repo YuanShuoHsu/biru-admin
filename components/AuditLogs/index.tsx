@@ -139,6 +139,7 @@ const FIELD_LABEL_KEYS = {
   displayName: "field.displayName",
   description: "field.description",
   image: "field.image",
+  alt: "field.alt",
   brand: "field.brand",
   nutrition: "field.nutrition",
   suitableForDiet: "field.suitableForDiet",
@@ -358,6 +359,7 @@ const FIELD_RANK = new Map(
 const LOCALES = new Set<string>(routing.locales);
 
 const LOCALIZED_FIELDS = new Set([
+  "alt",
   "description",
   "displayName",
   "name",

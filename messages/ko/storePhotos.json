@@ -1,0 +1,65 @@
+{
+  "actions": {
+    "batchDeleteStorePhoto": {
+      "cancel": {
+        "label": "매장 사진 일괄 삭제 취소"
+      },
+      "submit": {
+        "confirm": "다음 <bold>{count}개의 매장 사진</bold>을 삭제하시겠습니까?",
+        "error": "매장 사진 일괄 삭제에 실패했습니다",
+        "label": "선택한 매장 사진 삭제 ({count})",
+        "success": "매장 사진 {count}개를 삭제했습니다"
+      },
+      "title": "매장 사진 일괄 삭제"
+    },
+    "createStorePhoto": {
+      "error": "매장 사진 추가에 실패했습니다",
+      "success": "매장 사진을 추가했습니다",
+      "title": "매장 사진 추가"
+    },
+    "deleteStorePhoto": {
+      "confirm": "이 <bold>매장 사진</bold>을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+      "error": "매장 사진 삭제에 실패했습니다",
+      "success": "매장 사진을 삭제했습니다",
+      "title": "매장 사진 삭제"
+    },
+    "label": "작업",
+    "reorderStorePhoto": {
+      "cancel": {
+        "confirm": "<bold>매장 사진</bold> 정렬을 취소하시겠습니까? 저장되지 않은 변경 사항은 사라집니다.",
+        "label": "매장 사진 정렬 취소"
+      },
+      "confirm": "<bold>매장 사진</bold>을 정렬하시겠습니까?",
+      "save": {
+        "confirm": "<bold>매장 사진</bold> 정렬을 저장하시겠습니까?",
+        "error": "정렬 저장에 실패했습니다",
+        "label": "매장 사진 정렬 저장",
+        "success": "정렬이 저장되었습니다"
+      },
+      "title": "매장 사진 정렬"
+    },
+    "updateStorePhoto": {
+      "error": "매장 사진 업데이트에 실패했습니다",
+      "success": "매장 사진을 업데이트했습니다",
+      "title": "매장 사진 편집"
+    }
+  },
+  "alt": {
+    "label": "대체 텍스트",
+    "placeholder": "예: 매장 외관, 커피 바, 시그니처 라테",
+    "helperText": "이미지를 볼 수 없는 방문자와 검색 엔진을 위해 사진 내용을 설명합니다"
+  },
+  "createdAt": "생성일",
+  "image": {
+    "label": "이미지",
+    "notSelected": "이미지를 선택해 주세요"
+  },
+  "isActive": {
+    "active": "활성",
+    "inactive": "비활성",
+    "label": "활성화"
+  },
+  "label": "매장 사진",
+  "reorder": "순서",
+  "updatedAt": "수정일"
+}

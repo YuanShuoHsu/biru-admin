@@ -1,0 +1,65 @@
+{
+  "actions": {
+    "batchDeleteStorePhoto": {
+      "cancel": {
+        "label": "店舗写真の一括削除をキャンセル"
+      },
+      "submit": {
+        "confirm": "以下の <bold>{count} 件の店舗写真</bold>を削除しますか？",
+        "error": "店舗写真の一括削除に失敗しました",
+        "label": "選択した店舗写真を削除（{count}）",
+        "success": "店舗写真 {count} 件を削除しました"
+      },
+      "title": "店舗写真を一括削除"
+    },
+    "createStorePhoto": {
+      "error": "店舗写真の追加に失敗しました",
+      "success": "店舗写真を追加しました",
+      "title": "店舗写真を追加"
+    },
+    "deleteStorePhoto": {
+      "confirm": "この<bold>店舗写真</bold>を削除してもよろしいですか？この操作は元に戻せません。",
+      "error": "店舗写真の削除に失敗しました",
+      "success": "店舗写真を削除しました",
+      "title": "店舗写真を削除"
+    },
+    "label": "操作",
+    "reorderStorePhoto": {
+      "cancel": {
+        "confirm": "<bold>店舗写真</bold>の並び替えをキャンセルしますか？保存されていない変更は失われます。",
+        "label": "店舗写真の並び替えをキャンセル"
+      },
+      "confirm": "<bold>店舗写真</bold>を並び替えますか？",
+      "save": {
+        "confirm": "<bold>店舗写真</bold>の並び順を保存しますか？",
+        "error": "並び替えの保存に失敗しました",
+        "label": "店舗写真の並び順を保存",
+        "success": "並び替えを保存しました"
+      },
+      "title": "店舗写真を並び替え"
+    },
+    "updateStorePhoto": {
+      "error": "店舗写真の更新に失敗しました",
+      "success": "店舗写真を更新しました",
+      "title": "店舗写真を編集"
+    }
+  },
+  "alt": {
+    "label": "代替テキスト",
+    "placeholder": "例：店舗外観、バーカウンター、看板ラテ",
+    "helperText": "画像を見られない訪問者や検索エンジン向けに、写真の内容を説明します"
+  },
+  "createdAt": "作成日時",
+  "image": {
+    "label": "画像",
+    "notSelected": "画像を選択してください"
+  },
+  "isActive": {
+    "active": "有効",
+    "inactive": "無効",
+    "label": "有効"
+  },
+  "label": "店舗写真",
+  "reorder": "並び替え",
+  "updatedAt": "更新日時"
+}

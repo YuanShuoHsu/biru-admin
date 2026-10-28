@@ -20,6 +20,7 @@ import orders from "./en/orders.json";
 import organizations from "./en/organizations.json";
 import quant from "./en/quant.json";
 import storeLayout from "./en/storeLayout.json";
+import storePhotos from "./en/storePhotos.json";
 import validation from "./en/validation.json";
 import waitlist from "./en/waitlist.json";
 
@@ -46,6 +47,7 @@ const messages = {
   organizations,
   quant,
   storeLayout,
+  storePhotos,
   validation,
   waitlist,
 };

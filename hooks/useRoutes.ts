@@ -79,6 +79,7 @@ import {
   People,
   Person,
   PersonAdd,
+  PhotoLibrary,
   Policy,
   PunchClock,
   ReceiptLong,
@@ -718,6 +719,27 @@ const routes: Route[] = [
     label: "banners.label",
     query: ["page", "pageSize"],
     segment: "banners",
+  },
+  {
+    children: [
+      {
+        children: [
+          {
+            icon: History,
+            label: "audit.title",
+            query: ["page", "pageSize"],
+            segment: "audit-logs",
+          },
+        ],
+        icon: PhotoLibrary,
+        segment: "[storePhotoId]",
+        to: null,
+      },
+    ],
+    icon: PhotoLibrary,
+    label: "storePhotos.label",
+    query: ["page", "pageSize"],
+    segment: "store-photos",
   },
   {
     children: [{ icon: Devices, segment: "[userId]" }],
