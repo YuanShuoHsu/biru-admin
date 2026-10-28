@@ -146,6 +146,9 @@ const SupplierDialog = ({
         {...ingredientSearch}
         disableCloseOnSelect
         fullWidth
+        getOptionDisabled={({ supplierId }) =>
+          !!supplierId && supplierId !== supplier?.id
+        }
         getOptionLabel={({ name }) => localize(name, locale)}
         isOptionEqualToValue={(option, value) => option.id === value.id}
         multiple
@@ -157,9 +160,6 @@ const SupplierDialog = ({
             { shouldValidate: isSubmitted },
           );
         }}
-        options={ingredientSearch.options.filter(
-          ({ supplierId }) => !supplierId || supplierId === supplier?.id,
-        )}
         renderInput={(params) => (
           <TextField
             {...params}
