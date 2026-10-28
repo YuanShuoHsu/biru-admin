@@ -10,7 +10,7 @@ import { useRouter } from "@/i18n/navigation";
 import { useAuthStore } from "@/providers/auth-store-provider";
 
 import { getErrorMessage } from "@/utils/errors";
-import { fetcher } from "@/utils/fetcher";
+import { type FetchError, fetcher } from "@/utils/fetcher";
 
 interface SWRProviderProps {
   children: React.ReactNode;
@@ -44,6 +44,7 @@ const SWRProvider = ({ children, fallback }: SWRProviderProps) => {
             });
           }
         },
+        shouldRetryOnError: (error: FetchError) => error.status !== 401,
       }}
     >
       {children}
