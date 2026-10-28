@@ -2,8 +2,8 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { type BaseSyntheticEvent, useState } from "react";
+import { useForm } from "react-hook-form";
 
 import { useSupplierFormSchema, type SupplierForm } from "./definitions";
 
@@ -11,7 +11,9 @@ import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Autocomplete, TextField } from "@mui/material";
+import { useServerSearchOptions } from "@/hooks/useServerSearchOptions";
+
+import { Autocomplete, CircularProgress, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -20,15 +22,15 @@ import type { Ingredient, Supplier } from "@/types/inventory";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
+type IngredientOption = Pick<Ingredient, "id" | "name" | "supplierId">;
+
 interface SupplierDialogProps {
-  ingredients: Ingredient[];
   mutate: () => void;
   organizationSlug: string;
   supplier: Supplier | null;
 }
 
 const SupplierDialog = ({
-  ingredients,
   mutate,
   organizationSlug,
   supplier,
@@ -42,7 +44,6 @@ const SupplierDialog = ({
 
   const supplierFormSchema = useSupplierFormSchema();
   const {
-    control,
     formState: { errors, isSubmitted },
     handleSubmit,
     register,
@@ -58,18 +59,19 @@ const SupplierDialog = ({
     resolver: zodResolver(supplierFormSchema),
   });
 
-  const ingredientIds = useWatch({ control, name: "ingredientIds" });
-
-  const assignableIngredients = ingredients.filter(
-    ({ supplierId }) => !supplierId || supplierId === supplier?.id,
+  const [selectedIngredients, setSelectedIngredients] = useState<
+    IngredientOption[]
+  >(
+    supplier?.ingredients.map(({ id, name }) => ({
+      id,
+      name,
+      supplierId: supplier.id,
+    })) ?? [],
   );
-  const ingredientOptions = [
-    ...assignableIngredients,
-    ...(supplier?.ingredients.filter(
-      ({ id }) =>
-        !assignableIngredients.some((ingredient) => ingredient.id === id),
-    ) ?? []),
-  ];
+  const ingredientSearch = useServerSearchOptions(
+    `/api/organizations/${organizationSlug}/ingredients`,
+    selectedIngredients,
+  );
 
   const action = supplier ? "updateSupplier" : "createSupplier";
 
@@ -141,27 +143,45 @@ const SupplierDialog = ({
         {...register("telephone")}
       />
       <Autocomplete
+        {...ingredientSearch}
         disableCloseOnSelect
         fullWidth
+        getOptionDisabled={({ supplierId }) =>
+          !!supplierId && supplierId !== supplier?.id
+        }
         getOptionLabel={({ name }) => localize(name, locale)}
         isOptionEqualToValue={(option, value) => option.id === value.id}
         multiple
-        onChange={(_, value) =>
+        onChange={(_, value) => {
+          setSelectedIngredients(value);
           setValue(
             "ingredientIds",
             value.map(({ id }) => id),
             { shouldValidate: isSubmitted },
-          )
-        }
-        options={ingredientOptions}
+          );
+        }}
         renderInput={(params) => (
           <TextField
             {...params}
             label={`${tInventory("suppliers.ingredients.label")} ${tCommon("optional")}`}
             placeholder={tInventory("suppliers.ingredients.placeholder")}
+            slotProps={{
+              ...params.slotProps,
+              input: {
+                ...params.slotProps.input,
+                endAdornment: (
+                  <>
+                    {ingredientSearch.loading && (
+                      <CircularProgress color="inherit" size={20} />
+                    )}
+                    {params.slotProps.input.endAdornment}
+                  </>
+                ),
+              },
+            }}
           />
         )}
-        value={ingredientOptions.filter(({ id }) => ingredientIds.includes(id))}
+        value={selectedIngredients}
       />
       <TextField
         error={!!errors.note}

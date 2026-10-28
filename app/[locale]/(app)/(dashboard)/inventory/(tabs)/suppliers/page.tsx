@@ -9,8 +9,6 @@ import Suppliers from ".";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-import { MAX_PAGE_SIZE } from "@/constants/pagination";
-
 import {
   filterOperatorValues,
   supplierFilterFieldValues,
@@ -18,7 +16,7 @@ import {
 } from "@/types/api";
 
 import { resolveGridSearchParams } from "@/utils/dataGrid";
-import { getIngredients, getSuppliers } from "@/utils/inventory";
+import { getSuppliers } from "@/utils/inventory";
 import { hasRolePermission } from "@/utils/organizations";
 import { getMemberRole, getResolvedAdminOrganization } from "@/utils/session";
 
@@ -56,7 +54,9 @@ const SuppliersContent = async ({
     searchParams,
   ]);
 
-  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
+  const fetchOptions = {
+    headers: { "Accept-Language": locale, cookie: cookieStore.toString() },
+  };
 
   const organization = await getResolvedAdminOrganization(
     rawSearchParams.organization,
@@ -118,14 +118,6 @@ const SuppliersContent = async ({
 
   if (!canViewPurchasing) notFound();
 
-  const { ingredients } = canWrite
-    ? await getIngredients(
-        organization.slug,
-        { pageSize: MAX_PAGE_SIZE, sortBy: "name", sortDirection: "asc" },
-        fetchOptions,
-      )
-    : { ingredients: [] };
-
   return (
     <Suppliers
       canViewAuditLog={canViewAuditLog}
@@ -133,7 +125,6 @@ const SuppliersContent = async ({
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
-      ingredients={ingredients}
       organization={organization}
       page={page}
       pageSize={pageSize}

@@ -9,10 +9,8 @@ import MenuItemRecipe from ".";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-import { MAX_PAGE_SIZE } from "@/constants/pagination";
-
 import { getHref } from "@/utils/href";
-import { getIngredients, getRecipeByMenuItem } from "@/utils/inventory";
+import { getRecipeByMenuItem } from "@/utils/inventory";
 import {
   getAdminMenu,
   getAdminMenuItem,
@@ -75,15 +73,8 @@ const MenuItemRecipeContent = async ({
       locale,
     });
 
-  const [memberRole, { ingredients }, recipe] = await Promise.all([
+  const [memberRole, recipe] = await Promise.all([
     getMemberRole(selectedOrganization.id),
-    menuItem.recipe
-      ? { ingredients: [], total: 0 }
-      : getIngredients(
-          selectedOrganization.slug,
-          { pageSize: MAX_PAGE_SIZE },
-          fetchOptions,
-        ),
     getRecipeByMenuItem(menuItemId, fetchOptions),
   ]);
 
@@ -108,7 +99,6 @@ const MenuItemRecipeContent = async ({
       canViewAuditLog={canViewAuditLog}
       canViewPurchasing={canViewPurchasing}
       canWrite={canWrite}
-      ingredients={ingredients}
       menuItem={menuItem}
       organization={selectedOrganization}
       recipe={recipe}

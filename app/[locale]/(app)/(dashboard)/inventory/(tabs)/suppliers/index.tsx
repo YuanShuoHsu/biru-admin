@@ -52,7 +52,6 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
-  Ingredient,
   Supplier,
   SupplierFilterField,
   SupplierSortField,
@@ -91,7 +90,6 @@ interface SuppliersProps {
   filterField?: SupplierFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  ingredients?: Ingredient[];
   loading?: boolean;
   organization?: Organization;
   page?: number;
@@ -109,7 +107,6 @@ const Suppliers = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  ingredients = [],
   loading = false,
   organization,
   page = 1,
@@ -257,7 +254,6 @@ const Suppliers = ({
     setDialog({
       content: (
         <SupplierDialog
-          ingredients={ingredients}
           mutate={mutate}
           organizationSlug={organizationSlug}
           supplier={null}
@@ -267,14 +263,13 @@ const Suppliers = ({
       open: true,
       title: tInventory("suppliers.actions.createSupplier.title"),
     });
-  }, [ingredients, mutate, organizationSlug, setDialog, tInventory]);
+  }, [mutate, organizationSlug, setDialog, tInventory]);
 
   const handleUpdateSupplier = useCallback(
     (supplier: Supplier) => {
       setDialog({
         content: (
           <SupplierDialog
-            ingredients={ingredients}
             mutate={mutate}
             organizationSlug={organizationSlug}
             supplier={supplier}
@@ -285,7 +280,7 @@ const Suppliers = ({
         title: tInventory("suppliers.actions.updateSupplier.title"),
       });
     },
-    [ingredients, mutate, organizationSlug, setDialog, tInventory],
+    [mutate, organizationSlug, setDialog, tInventory],
   );
 
   const handleDeleteSupplier = useCallback(

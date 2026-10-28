@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent } from "react";
+import { type BaseSyntheticEvent, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 import {
@@ -15,7 +15,9 @@ import NumberSpinner from "@/components/NumberSpinner";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { MenuItem, TextField } from "@mui/material";
+import { useServerSearchOptions } from "@/hooks/useServerSearchOptions";
+
+import { Autocomplete, CircularProgress, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -24,19 +26,21 @@ import type { Ingredient, Recipe, RecipeIngredient } from "@/types/inventory";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
+type IngredientOption = Pick<Ingredient, "id" | "name" | "unitCode">;
+
 interface RecipeIngredientDialogProps {
-  ingredients: Ingredient[];
   material: RecipeIngredient | null;
   materials: RecipeIngredient[];
   mutate: () => void;
+  organizationSlug: string;
   recipe: Recipe;
 }
 
 const RecipeIngredientDialog = ({
-  ingredients,
   material,
   materials,
   mutate,
+  organizationSlug,
   recipe,
 }: RecipeIngredientDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
@@ -49,7 +53,6 @@ const RecipeIngredientDialog = ({
     control,
     formState: { errors, isSubmitted },
     handleSubmit,
-    register,
     setValue,
   } = useForm<RecipeIngredientForm>({
     defaultValues: {
@@ -59,16 +62,28 @@ const RecipeIngredientDialog = ({
     resolver: zodResolver(recipeIngredientFormSchema),
   });
 
-  const ingredientId = useWatch({ control, name: "ingredientId" });
   const requiredQuantity = useWatch({ control, name: "requiredQuantity" });
 
   const action = material ? "updateRecipeIngredient" : "createRecipeIngredient";
-  const unitCode = ingredients.find(({ id }) => id === ingredientId)?.unitCode;
   // 同一個食材在一份食譜裡只能有一列，否則兩列的用量會各自扣一次庫存
   const usedIngredientIds = new Set(
     materials.flatMap(({ id, ingredientId }) =>
       id === material?.id ? [] : ingredientId,
     ),
+  );
+
+  const [ingredient, setIngredient] = useState<IngredientOption | null>(
+    material
+      ? {
+          id: material.ingredientId,
+          name: material.ingredientName,
+          unitCode: material.unitCode,
+        }
+      : null,
+  );
+  const ingredientSearch = useServerSearchOptions(
+    `/api/organizations/${organizationSlug}/ingredients`,
+    ingredient ? [ingredient] : [],
   );
 
   const onSubmitHandler = async (values: RecipeIngredientForm) => {
@@ -109,48 +124,52 @@ const RecipeIngredientDialog = ({
 
   return (
     <FormBox id="recipe-ingredient-form" onSubmit={onSubmit}>
-      <TextField
-        error={!!errors.ingredientId}
+      <Autocomplete
+        {...ingredientSearch}
         fullWidth
-        helperText={errors.ingredientId?.message}
-        label={tInventory("recipes.ingredients.ingredientId.label")}
-        required
-        select
-        slotProps={{
-          inputLabel: { shrink: true },
-          select: {
-            displayEmpty: true,
-            renderValue: (selected) => {
-              const ingredient = ingredients.find(({ id }) => id === selected);
-
-              return ingredient ? (
-                localize(ingredient.name, locale)
-              ) : (
-                <em>
-                  {tInventory("recipes.ingredients.ingredientId.placeholder")}
-                </em>
-              );
-            },
-          },
+        getOptionDisabled={({ id }) => usedIngredientIds.has(id)}
+        getOptionLabel={({ name }) => localize(name, locale)}
+        isOptionEqualToValue={(option, value) => option.id === value.id}
+        onChange={(_, value) => {
+          setIngredient(value);
+          setValue("ingredientId", value?.id ?? "", {
+            shouldValidate: isSubmitted,
+          });
         }}
-        value={ingredientId}
-        {...register("ingredientId")}
-      >
-        <MenuItem disabled value="">
-          <em>{tInventory("recipes.ingredients.ingredientId.placeholder")}</em>
-        </MenuItem>
-        {ingredients.map(({ id, name }) => (
-          <MenuItem disabled={usedIngredientIds.has(id)} key={id} value={id}>
-            {localize(name, locale)}
-          </MenuItem>
-        ))}
-      </TextField>
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            error={!!errors.ingredientId}
+            helperText={errors.ingredientId?.message}
+            label={tInventory("recipes.ingredients.ingredientId.label")}
+            placeholder={tInventory(
+              "recipes.ingredients.ingredientId.placeholder",
+            )}
+            required
+            slotProps={{
+              ...params.slotProps,
+              input: {
+                ...params.slotProps.input,
+                endAdornment: (
+                  <>
+                    {ingredientSearch.loading && (
+                      <CircularProgress color="inherit" size={20} />
+                    )}
+                    {params.slotProps.input.endAdornment}
+                  </>
+                ),
+              },
+            }}
+          />
+        )}
+        value={ingredient}
+      />
       <NumberSpinner
         error={!!errors.requiredQuantity}
         fullWidth
         helperText={
           errors.requiredQuantity?.message ||
-          (unitCode && tInventory(`units.${unitCode}`))
+          (ingredient?.unitCode && tInventory(`units.${ingredient.unitCode}`))
         }
         label={tInventory("recipes.ingredients.requiredQuantity.label")}
         min={0}

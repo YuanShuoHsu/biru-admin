@@ -60,7 +60,6 @@ import type {
   ToolbarMode,
 } from "@/types/dataGrid";
 import type {
-  Ingredient,
   MenuItemRecipeDetail,
   Recipe,
   RecipeIngredient,
@@ -102,9 +101,9 @@ interface RecipeIngredientsProps {
   filterField?: RecipeIngredientFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
-  ingredients?: Ingredient[];
   loading?: boolean;
   menuItem?: MenuItem;
+  organizationSlug?: string;
   page?: number;
   pageSize?: number;
   quickFilterValue?: string;
@@ -123,9 +122,9 @@ const RecipeIngredients = ({
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
-  ingredients = [],
   loading = false,
   menuItem,
+  organizationSlug = "",
   page = 1,
   pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
@@ -416,10 +415,10 @@ const RecipeIngredients = ({
     setDialog({
       content: (
         <RecipeIngredientDialog
-          ingredients={ingredients}
           material={null}
           materials={recipe.recipeIngredients || []}
           mutate={handleMutate}
+          organizationSlug={organizationSlug}
           recipe={recipe}
         />
       ),
@@ -429,7 +428,7 @@ const RecipeIngredients = ({
         "recipes.ingredients.actions.createRecipeIngredient.title",
       ),
     });
-  }, [handleMutate, ingredients, recipe, setDialog, tInventory]);
+  }, [handleMutate, organizationSlug, recipe, setDialog, tInventory]);
 
   const handleUpdateRecipeIngredient = useCallback(
     (material: RecipeIngredient) => {
@@ -438,10 +437,10 @@ const RecipeIngredients = ({
       setDialog({
         content: (
           <RecipeIngredientDialog
-            ingredients={ingredients}
             material={material}
             materials={recipe.recipeIngredients || []}
             mutate={handleMutate}
+            organizationSlug={organizationSlug}
             recipe={recipe}
           />
         ),
@@ -452,7 +451,7 @@ const RecipeIngredients = ({
         ),
       });
     },
-    [handleMutate, ingredients, recipe, setDialog, tInventory],
+    [handleMutate, organizationSlug, recipe, setDialog, tInventory],
   );
 
   const handleDeleteRecipeIngredient = useCallback(
