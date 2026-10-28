@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import Balances from "../../../LeaveBalances";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -15,9 +17,13 @@ import {
   filterOperatorValues,
 } from "@/types/api";
 
-import { getAttendanceLeaveBalances } from "@/utils/attendance";
+import {
+  getAttendanceContext,
+  getAttendanceLeaveBalances,
+} from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceLeaveTypeNameEnumOptions } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 import { getAttendanceAccess } from "@/utils/session";
 
 interface MyLeavePageProps {
@@ -99,22 +105,36 @@ const MyLeaveContent = async ({ params, searchParams }: MyLeavePageProps) => {
       )
     : [];
 
-  const { balances: rows, total: rowCount } = await getAttendanceLeaveBalances(
-    organization.slug,
-    "me",
-    {
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterEnums,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-    },
-    fetchOptions,
+  const { data: context, error: contextError } = await settle(
+    getAttendanceContext(organization.slug, fetchOptions),
   );
+  if (contextError) return <ErrorAlert />;
+
+  const { employee } = context;
+
+  const { data: balances, error } = await settle(
+    employee
+      ? getAttendanceLeaveBalances(
+          organization.slug,
+          "me",
+          {
+            page,
+            pageSize,
+            filterField,
+            filterOperator,
+            filterValue,
+            quickFilterEnums,
+            quickFilterValue,
+            sortBy,
+            sortDirection,
+          },
+          fetchOptions,
+        )
+      : Promise.resolve({ balances: [], total: 0 }),
+  );
+  if (error) return <ErrorAlert />;
+
+  const { balances: rows, total: rowCount } = balances;
 
   return (
     <Balances

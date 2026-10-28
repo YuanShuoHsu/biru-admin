@@ -22,10 +22,16 @@ export const useDefaultOrganizationSlug = () => {
   const { data: defaultOrganizationSlug = "" } = useSWR<string>(
     defaultOrganizationSlugKey,
     async () => {
-      const [{ data: session }, { data: organizations }] = await Promise.all([
+      const [
+        { data: session, error: sessionError },
+        { data: organizations, error: organizationsError },
+      ] = await Promise.all([
         authClient.getSession(),
         authClient.organization.list(),
       ]);
+      if (sessionError) throw sessionError;
+      if (organizationsError && organizationsError.status !== 401)
+        throw organizationsError;
 
       return resolveDefaultOrganizationSlug(
         session?.session?.activeOrganizationId,
@@ -41,11 +47,13 @@ const useMemberRole = (organizationSlug: string) => {
   const { data: role } = useSWR(
     organizationSlug ? [activeMemberRoleKey, organizationSlug] : null,
     async ([, slug]: [string, string]) => {
-      const { data } = await authClient.organization.getActiveMemberRole({
-        query: { organizationSlug: slug },
-      });
+      const { data, error } = await authClient.organization.getActiveMemberRole(
+        { query: { organizationSlug: slug } },
+      );
+      if (error?.status === 400 || error?.status === 403) return null;
+      if (error) throw error;
 
-      return data?.role ?? null;
+      return data.role;
     },
   );
 

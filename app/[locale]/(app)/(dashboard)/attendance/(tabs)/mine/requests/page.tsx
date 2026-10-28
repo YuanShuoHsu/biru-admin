@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import Requests from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
@@ -28,6 +30,7 @@ import {
   getAttendanceLeaveTypeNameEnumOptions,
   getAttendanceRequestEnumOptions,
 } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 import { getAttendanceAccess } from "@/utils/session";
 
 interface RequestsPageProps {
@@ -109,15 +112,21 @@ const RequestsContent = async ({ params, searchParams }: RequestsPageProps) => {
       })
     : [];
 
-  const { employee } = await getAttendanceContext(
-    organization.slug,
-    fetchOptions,
+  const { data: context, error: contextError } = await settle(
+    getAttendanceContext(organization.slug, fetchOptions),
   );
+  if (contextError) return <ErrorAlert />;
+
+  const { employee } = context;
 
   const enabled = employee?.status === "active";
 
-  const [{ requests: rows, total: rowCount }, { leaveTypes }, { leaveCases }] =
-    await Promise.all([
+  const [
+    { data: requests, error },
+    { data: leaveTypePage, error: leaveTypesError },
+    { data: leaveCasePage, error: leaveCasesError },
+  ] = await Promise.all([
+    settle(
       enabled
         ? getAttendanceRequests(
             organization.slug,
@@ -135,14 +144,18 @@ const RequestsContent = async ({ params, searchParams }: RequestsPageProps) => {
             },
             fetchOptions,
           )
-        : { requests: [], total: 0 },
+        : Promise.resolve({ requests: [], total: 0 }),
+    ),
+    settle(
       enabled
         ? getAttendanceLeaveTypes(
             organization.slug,
             { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
             fetchOptions,
           )
-        : { leaveTypes: [] },
+        : Promise.resolve({ leaveTypes: [], total: 0 }),
+    ),
+    settle(
       enabled
         ? getAttendanceLeaveCases(
             organization.slug,
@@ -150,8 +163,14 @@ const RequestsContent = async ({ params, searchParams }: RequestsPageProps) => {
             { pageSize: MAX_PAGE_SIZE },
             fetchOptions,
           )
-        : { leaveCases: [] },
-    ]);
+        : Promise.resolve({ leaveCases: [], total: 0 }),
+    ),
+  ]);
+  if (error || leaveTypesError || leaveCasesError) return <ErrorAlert />;
+
+  const { requests: rows, total: rowCount } = requests;
+  const { leaveTypes } = leaveTypePage;
+  const { leaveCases } = leaveCasePage;
 
   return (
     <Requests

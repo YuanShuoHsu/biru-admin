@@ -7,6 +7,12 @@
   "delimiter": ", ",
   "discontinued": "Discontinued",
   "empty": "No items yet",
+  "error": {
+    "description": "Please try again later.",
+    "digest": "Error code: {digest}",
+    "retry": "Retry",
+    "title": "Failed to load"
+  },
   "from": "from",
   "imageProcessingFailed": "Failed to process image",
   "increase": "Increase",
@@ -36,6 +42,11 @@
   "maxQuantity": "You can buy up to {quantity} per item",
   "middleDot": " · ",
   "multiply": "×",
+  "notFound": {
+    "description": "The page you are looking for could not be found.",
+    "home": "Back to home",
+    "title": "Page not found"
+  },
   "optional": "(optional)",
   "organization": {
     "closed": "{name} (closed)",

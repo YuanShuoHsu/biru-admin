@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import DeletedRecords from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -14,6 +16,7 @@ import {
   getDeletedRecords,
 } from "@/utils/deletedRecords";
 import { resolveGridSearchParams } from "@/utils/dataGrid";
+import { settle } from "@/utils/fetcher";
 import { getResolvedAdminOrganization, getSession } from "@/utils/session";
 
 interface DeletedRecordsPageProps {
@@ -52,12 +55,15 @@ const DeletedRecordsContent = async ({
   const organization = isPlatformAdmin
     ? undefined
     : await getResolvedAdminOrganization(rawSearchParams.organization);
-  if (
-    !isPlatformAdmin &&
-    (!organization ||
-      !(await canRestoreDeletedRecords(organization.slug, init)))
-  )
-    notFound();
+  if (!isPlatformAdmin) {
+    if (!organization) notFound();
+
+    const { data: canRestore, error } = await settle(
+      canRestoreDeletedRecords(organization.slug, init),
+    );
+    if (error) return <ErrorAlert />;
+    if (!canRestore) notFound();
+  }
 
   const { page, pageSize, redirectParams } = resolveGridSearchParams({
     searchParams: rawSearchParams,
@@ -70,12 +76,12 @@ const DeletedRecordsContent = async ({
   if (redirectParams)
     redirect({ href: `/deleted-records?${redirectParams.toString()}`, locale });
 
-  const { deletedRecords: rows, total: rowCount } = await getDeletedRecords(
-    organization?.slug,
-    page,
-    pageSize,
-    init,
+  const { data: deletedRecords, error } = await settle(
+    getDeletedRecords(organization?.slug, page, pageSize, init),
   );
+  if (error) return <ErrorAlert />;
+
+  const { deletedRecords: rows, total: rowCount } = deletedRecords;
 
   return (
     <DeletedRecords

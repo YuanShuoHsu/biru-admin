@@ -1,18 +1,24 @@
 // https://github.com/vercel/next.js/tree/canary/examples/i18n-routing
 // https://mui.com/material-ui/react-app-bar/#system-MenuAppBar.tsx
 // https://mui.com/material-ui/react-app-bar/#system-ResponsiveAppBar.tsx
+// https://better-auth.com/docs/concepts/users-accounts#update-user
+// https://next-intl.dev/docs/routing/navigation#userouter
 
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
+import { useSnackbar } from "notistack";
 import { useState } from "react";
 
 import { LocaleEnum } from "@/enums/Locale";
 
 import { useHref } from "@/hooks/useHref";
+import { useSession } from "@/hooks/useSession";
 
-import { Link } from "@/i18n/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { type Locale, routing } from "@/i18n/routing";
+
+import { authClient } from "@/lib/auth-client";
 
 import { Language } from "@mui/icons-material";
 import { IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
@@ -48,6 +54,11 @@ const LanguageMenu = () => {
   const href = useHref();
 
   const currentLocale = useLocale();
+  const router = useRouter();
+
+  const session = useSession();
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const tAppBar = useTranslations("appBar");
 
@@ -55,6 +66,27 @@ const LanguageMenu = () => {
     setAnchorElLanguage(event.currentTarget);
 
   const handleClose = () => setAnchorElLanguage(null);
+
+  // 等寫入完成再換頁，新頁面在伺服器端取得的 session 才會是新語系
+  const handleSelect = async (locale: Locale) => {
+    if (
+      session &&
+      !session.session.impersonatedBy &&
+      session.user.lang !== locale
+    )
+      await authClient.updateUser({
+        lang: locale,
+        fetchOptions: {
+          onError: ({ error: { message } }) => {
+            enqueueSnackbar(message, {
+              variant: "error",
+            });
+          },
+        },
+      });
+
+    router.replace(href, { locale });
+  };
 
   return (
     <>
@@ -88,12 +120,8 @@ const LanguageMenu = () => {
       >
         {languages.map(({ label, locale }) => (
           <MenuItem
-            component={Link}
-            href={href}
             key={locale}
-            locale={locale}
-            onClick={handleClose}
-            replace
+            onClick={() => handleSelect(locale)}
             selected={locale === currentLocale}
           >
             {label}

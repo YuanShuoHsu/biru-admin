@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import Suppliers from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -18,6 +20,7 @@ import {
 } from "@/types/api";
 
 import { resolveGridSearchParams } from "@/utils/dataGrid";
+import { settle } from "@/utils/fetcher";
 import { getIngredients, getSuppliers } from "@/utils/inventory";
 import { hasRolePermission } from "@/utils/organizations";
 import { getMemberRole, getResolvedAdminOrganization } from "@/utils/session";
@@ -88,8 +91,21 @@ const SuppliersContent = async ({
       locale,
     });
 
-  const [memberRole, { suppliers: rows, total: rowCount }] = await Promise.all([
-    getMemberRole(organization.id),
+  const memberRole = await getMemberRole(organization.id);
+
+  const canViewAuditLog = hasRolePermission(memberRole, {
+    auditLog: ["read"],
+  });
+  const canViewPurchasing = hasRolePermission(memberRole, {
+    purchasing: ["read"],
+  });
+  const canWrite = hasRolePermission(memberRole, {
+    purchasing: ["update"],
+  });
+
+  if (!canViewPurchasing) notFound();
+
+  const { data: suppliers, error: suppliersError } = await settle(
     getSuppliers(
       organization.slug,
       {
@@ -104,27 +120,21 @@ const SuppliersContent = async ({
       },
       fetchOptions,
     ),
-  ]);
+  );
+  if (suppliersError) return <ErrorAlert />;
 
-  const canViewAuditLog = hasRolePermission(memberRole, {
-    auditLog: ["read"],
-  });
-  const canViewPurchasing = hasRolePermission(memberRole, {
-    purchasing: ["read"],
-  });
-  const canWrite = hasRolePermission(memberRole, {
-    purchasing: ["update"],
-  });
+  const { suppliers: rows, total: rowCount } = suppliers;
 
-  if (!canViewPurchasing) notFound();
-
-  const { ingredients } = canWrite
-    ? await getIngredients(
-        organization.slug,
-        { pageSize: MAX_PAGE_SIZE, sortBy: "name", sortDirection: "asc" },
-        fetchOptions,
-      )
-    : { ingredients: [] };
+  const { data: ingredientOptions, error: ingredientsError } = await settle(
+    canWrite
+      ? getIngredients(
+          organization.slug,
+          { pageSize: MAX_PAGE_SIZE, sortBy: "name", sortDirection: "asc" },
+          fetchOptions,
+        )
+      : Promise.resolve({ ingredients: [], total: 0 }),
+  );
+  if (ingredientsError) return <ErrorAlert />;
 
   return (
     <Suppliers
@@ -133,7 +143,7 @@ const SuppliersContent = async ({
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
-      ingredients={ingredients}
+      ingredients={ingredientOptions.ingredients}
       organization={organization}
       page={page}
       pageSize={pageSize}

@@ -10,6 +10,7 @@ import {
   useChangePasswordFormSchema,
 } from "./definitions";
 
+import ErrorAlert from "@/components/ErrorAlert";
 import FormCard, {
   StyledCardContent,
   StyledCardHeader,
@@ -100,7 +101,7 @@ const ChangePassword = () => {
     passwordRules,
   } = usePasswordValidation(newPassword, confirmNewPassword, currentPassword);
 
-  const { data: accounts } = useListAccounts();
+  const { data: accounts, error, mutate } = useListAccounts();
 
   const locale = useLocale();
 
@@ -192,7 +193,9 @@ const ChangePassword = () => {
         }
       />
       <StyledCardContent>
-        {hasCredential ? (
+        {error ? (
+          <ErrorAlert onRetry={() => mutate()} />
+        ) : hasCredential ? (
           <>
             <TextField
               autoComplete="current-password"

@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import OrganizationsSlugInvitations from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
@@ -36,7 +38,7 @@ const OrganizationsSlugInvitationsContent = async ({
 
   const cookieHeader = cookieStore.toString();
 
-  const [{ data }, session] = await Promise.all([
+  const [{ data, error }, session] = await Promise.all([
     authClient.organization.getFullOrganization({
       query: { organizationSlug: decodeURIComponent(slug) },
       fetchOptions: { headers: { cookie: cookieHeader } },
@@ -44,6 +46,8 @@ const OrganizationsSlugInvitationsContent = async ({
     getSession(),
   ]);
 
+  if (error?.status === 400 || error?.status === 403) notFound();
+  if (error) return <ErrorAlert />;
   if (!data) notFound();
 
   const currentUserRole = data.members.find(

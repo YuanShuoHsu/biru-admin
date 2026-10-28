@@ -6,11 +6,13 @@ import { notFound } from "next/navigation";
 
 import Store from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { routing } from "@/i18n/routing";
 
 import type { MyPoints } from "@/types/points";
 
-import { fetcher } from "@/utils/fetcher";
+import { fetcher, settle } from "@/utils/fetcher";
 
 export const generateMetadata = async ({
   params,
@@ -26,9 +28,10 @@ export const generateMetadata = async ({
 const AuthPointsStorePage = async () => {
   const reqHeaders = await headers();
   const cookie = reqHeaders.get("cookie") || "";
-  const points = await fetcher<MyPoints>("/api/users/me/points", {
-    headers: { cookie },
-  }).catch(() => null);
+  const { data: points, error } = await settle(
+    fetcher<MyPoints>("/api/users/me/points", { headers: { cookie } }),
+  );
+  if (error) return <ErrorAlert />;
 
   return <Store points={points} />;
 };

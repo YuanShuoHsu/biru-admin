@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import ModifierGroups from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -16,6 +18,7 @@ import {
 } from "@/types/api";
 
 import { resolveGridSearchParams } from "@/utils/dataGrid";
+import { settle } from "@/utils/fetcher";
 import { getAdminModifierGroups } from "@/utils/menus";
 import { hasRolePermission } from "@/utils/organizations";
 import {
@@ -59,9 +62,12 @@ const ModifierGroupsContent = async ({
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const { organization: selectedOrganization, menu } =
-    await getResolvedAdminOrganizationMenu(rawSearchParams.organization);
+  const { data: resolved, error: resolvedError } = await settle(
+    getResolvedAdminOrganizationMenu(rawSearchParams.organization),
+  );
+  if (resolvedError) return <ErrorAlert />;
 
+  const { organization: selectedOrganization, menu } = resolved;
   if (!selectedOrganization || !menu) notFound();
 
   const {
@@ -88,21 +94,26 @@ const ModifierGroupsContent = async ({
       locale,
     });
 
-  const [{ groups: rows, total: rowCount }, role] = await Promise.all([
-    getAdminModifierGroups(
-      menu.id,
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-      fetchOptions,
+  const [{ data: groups, error: groupsError }, role] = await Promise.all([
+    settle(
+      getAdminModifierGroups(
+        menu.id,
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+        fetchOptions,
+      ),
     ),
     getMemberRole(menu.organizationId),
   ]);
+  if (groupsError) return <ErrorAlert />;
+
+  const { groups: rows, total: rowCount } = groups;
 
   const canWrite = hasRolePermission(role, { menu: ["update"] });
   const canViewAuditLog = hasRolePermission(role, {

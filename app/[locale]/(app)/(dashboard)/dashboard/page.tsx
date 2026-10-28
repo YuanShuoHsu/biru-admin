@@ -9,6 +9,8 @@ import { notFound } from "next/navigation";
 import Dashboard from ".";
 import { DASHBOARD_RANGES, resolveDashboardRange } from "./definitions";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { redirect } from "@/i18n/navigation";
@@ -21,7 +23,7 @@ import type { OrganizationStats } from "@/types/organizations";
 import type { WaitlistStats, WaitlistStatusResponse } from "@/types/waitlist";
 
 import { getChangePercent } from "@/utils/dashboard";
-import { fetcher } from "@/utils/fetcher";
+import { fetcher, settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import {
   getMemberRole,
@@ -93,41 +95,51 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
   });
 
   const [
-    userStats,
-    organizationStats,
-    orderStats,
-    orderMenu,
-    sales,
+    userStatsResult,
+    organizationStatsResult,
+    orderStatsResult,
+    orderMenuResult,
+    salesResult,
     memberRole,
   ] = await Promise.all([
-    isAdmin
-      ? fetcher<UserStatsResponse>(
-          `/api/users/stats?${statsQuery}`,
-          fetchOptions,
-        ).catch(() => null)
-      : Promise.resolve(null),
-    fetcher<OrganizationStats>(
-      `/api/users/me/organization-stats?${statsQuery}`,
-      fetchOptions,
-    ).catch(() => null),
-    organizationSlug
-      ? fetcher<OrderStatsResponse>(
-          `/api/organizations/${organizationSlug}/order-stats?${statsQuery}`,
-          fetchOptions,
-        ).catch(() => null)
-      : Promise.resolve(null),
-    resolvedOrganizationId
-      ? fetcher<OrderMenu>(
-          `/api/organizations/${resolvedOrganizationId}/order-menu?lang=${locale}`,
-          fetchOptions,
-        ).catch(() => null)
-      : Promise.resolve(null),
-    organizationSlug
-      ? fetcher<MenuItemSalesResponse[]>(
-          `/api/organizations/${organizationSlug}/menu-item-sales?since=${periodStart.toISOString()}`,
-          fetchOptions,
-        ).catch(() => [])
-      : Promise.resolve([]),
+    settle(
+      isAdmin
+        ? fetcher<UserStatsResponse>(
+            `/api/users/stats?${statsQuery}`,
+            fetchOptions,
+          )
+        : Promise.resolve(null),
+    ),
+    settle(
+      fetcher<OrganizationStats>(
+        `/api/users/me/organization-stats?${statsQuery}`,
+        fetchOptions,
+      ),
+    ),
+    settle(
+      organizationSlug
+        ? fetcher<OrderStatsResponse>(
+            `/api/organizations/${organizationSlug}/order-stats?${statsQuery}`,
+            fetchOptions,
+          )
+        : Promise.resolve(null),
+    ),
+    settle(
+      resolvedOrganizationId
+        ? fetcher<OrderMenu | null>(
+            `/api/organizations/${resolvedOrganizationId}/order-menu?lang=${locale}`,
+            fetchOptions,
+          )
+        : Promise.resolve(null),
+    ),
+    settle(
+      organizationSlug
+        ? fetcher<MenuItemSalesResponse[]>(
+            `/api/organizations/${organizationSlug}/menu-item-sales?since=${periodStart.toISOString()}`,
+            fetchOptions,
+          )
+        : Promise.resolve([]),
+    ),
     resolvedOrganizationId
       ? getMemberRole(resolvedOrganizationId)
       : Promise.resolve(null),
@@ -136,19 +148,43 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
   const canViewWaitlist =
     isAdmin || hasRolePermission(memberRole, { waitlist: ["read"] });
 
-  const [waitlistStats, waitlistStatus] =
-    organizationSlug && canViewWaitlist
-      ? await Promise.all([
-          fetcher<WaitlistStats>(
+  const [waitlistStatsResult, waitlistStatusResult] = await Promise.all([
+    settle(
+      organizationSlug && canViewWaitlist
+        ? fetcher<WaitlistStats>(
             `/api/organizations/${organizationSlug}/waitlist/stats?since=${periodStart.toISOString()}`,
             fetchOptions,
-          ).catch(() => null),
-          fetcher<WaitlistStatusResponse>(
+          )
+        : Promise.resolve(null),
+    ),
+    settle(
+      organizationSlug && canViewWaitlist
+        ? fetcher<WaitlistStatusResponse>(
             `/api/organizations/${organizationSlug}/waitlist`,
             fetchOptions,
-          ).catch(() => null),
-        ])
-      : [null, null];
+          )
+        : Promise.resolve(null),
+    ),
+  ]);
+
+  if (
+    userStatsResult.error ||
+    organizationStatsResult.error ||
+    orderStatsResult.error ||
+    orderMenuResult.error ||
+    salesResult.error ||
+    waitlistStatsResult.error ||
+    waitlistStatusResult.error
+  )
+    return <ErrorAlert />;
+
+  const userStats = userStatsResult.data;
+  const organizationStats = organizationStatsResult.data;
+  const orderStats = orderStatsResult.data;
+  const orderMenu = orderMenuResult.data;
+  const sales = salesResult.data;
+  const waitlistStats = waitlistStatsResult.data;
+  const waitlistStatus = waitlistStatusResult.data;
 
   const topItems = [...sales]
     .sort((a, b) => b.sold - a.sold)
