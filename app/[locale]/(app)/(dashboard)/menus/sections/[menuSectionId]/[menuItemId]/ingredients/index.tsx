@@ -25,11 +25,7 @@ import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type {
-  Ingredient,
-  MenuItemRecipeDetail,
-  Recipe,
-} from "@/types/inventory";
+import type { MenuItemRecipeDetail, Recipe } from "@/types/inventory";
 import type { MenuItem } from "@/types/menus";
 import type { Organization } from "@/types/organizations";
 
@@ -58,7 +54,6 @@ interface MenuItemRecipeProps {
   canViewAuditLog?: boolean;
   canViewPurchasing?: boolean;
   canWrite?: boolean;
-  ingredients?: Ingredient[];
   loading?: boolean;
   menuItem?: MenuItem;
   organization?: Organization;
@@ -70,7 +65,6 @@ const MenuItemRecipe = ({
   canViewAuditLog = false,
   canViewPurchasing = false,
   canWrite = false,
-  ingredients = [],
   loading = false,
   menuItem,
   organization,
@@ -151,10 +145,10 @@ const MenuItemRecipe = ({
     setDialog({
       content: (
         <RecipeIngredientDialog
-          ingredients={ingredients}
           material={null}
           materials={target.recipeIngredients || []}
           mutate={mutateRecipe}
+          organizationSlug={organizationSlug}
           recipe={target}
         />
       ),
@@ -164,15 +158,7 @@ const MenuItemRecipe = ({
         "recipes.ingredients.actions.createRecipeIngredient.title",
       ),
     });
-  }, [
-    ingredients,
-    menuItem,
-    mutateRecipe,
-    organizationSlug,
-    recipe,
-    setDialog,
-    tInventory,
-  ]);
+  }, [menuItem, mutateRecipe, organizationSlug, recipe, setDialog, tInventory]);
 
   const columns = useMemo<GridColDef[]>(() => {
     const unavailable = tInventory("recipes.cost.unavailable");

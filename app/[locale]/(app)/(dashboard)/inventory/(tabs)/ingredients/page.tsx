@@ -57,7 +57,9 @@ const IngredientsContent = async ({
     searchParams,
   ]);
 
-  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
+  const fetchOptions = {
+    headers: { "Accept-Language": locale, cookie: cookieStore.toString() },
+  };
 
   const organization = await getResolvedAdminOrganization(
     rawSearchParams.organization,

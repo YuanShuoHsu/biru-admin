@@ -9,8 +9,6 @@ import RecipeIngredients from ".";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-import { MAX_PAGE_SIZE } from "@/constants/pagination";
-
 import {
   filterOperatorValues,
   recipeIngredientFilterFieldValues,
@@ -18,11 +16,7 @@ import {
 } from "@/types/api";
 
 import { resolveGridSearchParams } from "@/utils/dataGrid";
-import {
-  getIngredients,
-  getRecipeByMenuItem,
-  getRecipeIngredients,
-} from "@/utils/inventory";
+import { getRecipeByMenuItem, getRecipeIngredients } from "@/utils/inventory";
 import {
   getAdminMenu,
   getAdminMenuItem,
@@ -70,7 +64,9 @@ const RecipeIngredientsContent = async ({
     rawSearchParams,
   ] = await Promise.all([cookies(), params, searchParams]);
 
-  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
+  const fetchOptions = {
+    headers: { "Accept-Language": locale, cookie: cookieStore.toString() },
+  };
   const section = await getAdminMenuSection(menuSectionId, fetchOptions);
 
   if (!section?.menuId) notFound();
@@ -88,13 +84,8 @@ const RecipeIngredientsContent = async ({
   );
   if (!selectedOrganization) notFound();
 
-  const [memberRole, { ingredients }, recipe] = await Promise.all([
+  const [memberRole, recipe] = await Promise.all([
     getMemberRole(selectedOrganization.id),
-    getIngredients(
-      selectedOrganization.slug,
-      { pageSize: MAX_PAGE_SIZE },
-      fetchOptions,
-    ),
     getRecipeByMenuItem(menuItemId, fetchOptions),
   ]);
 
@@ -161,8 +152,8 @@ const RecipeIngredientsContent = async ({
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
-      ingredients={ingredients}
       menuItem={menuItem}
+      organizationSlug={selectedOrganization.slug}
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}
