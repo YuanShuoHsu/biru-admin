@@ -154,7 +154,7 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
   // 品項券限定單一店家：菜單依所選店家載入（品項 ID 各店不同）
   const itemOrganizationId =
     scope === "item" ? applicableOrganizationIds[0] || "" : "";
-  const { data: menu = null } = useSWR<OrderMenu>(
+  const { data: menu = null } = useSWR<OrderMenu | null>(
     itemOrganizationId
       ? `/api/organizations/${itemOrganizationId}/order-menu?lang=${locale}`
       : null,

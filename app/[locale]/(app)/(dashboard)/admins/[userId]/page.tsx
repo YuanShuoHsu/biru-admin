@@ -21,7 +21,7 @@ import {
 import type { UserSession } from "@/types/admins";
 
 import { getGridSearchParams, resolveGridSearchParams } from "@/utils/dataGrid";
-import { fetcher } from "@/utils/fetcher";
+import { fetcher, settle } from "@/utils/fetcher";
 
 interface UserSessionsPageProps {
   params: Promise<{ locale: Locale; userId: string }>;
@@ -81,7 +81,7 @@ const UserSessionsContent = async ({
 
   const cookie = cookieStore.toString();
 
-  const [{ data: user, error }, { data: rows, total: rowCount }] =
+  const [{ data: user, error }, { data: sessions, error: sessionsError }] =
     await Promise.all([
       authClient.admin.getUser({
         query: { id: userId },
@@ -89,24 +89,33 @@ const UserSessionsContent = async ({
           headers: { cookie, origin: process.env.NEXT_PUBLIC_ADMIN_URL! },
         },
       }),
-      fetcher<{ data: UserSession[]; total: number }>(
-        `/api/users/${userId}/sessions?${getGridSearchParams({
-          page,
-          pageSize,
-          filterField,
-          filterOperator,
-          filterValue,
-          quickFilterValue,
-          sortBy,
-          sortDirection,
-        })}`,
-        { headers: { cookie } },
+      settle(
+        fetcher<{ data: UserSession[]; total: number }>(
+          `/api/users/${userId}/sessions?${getGridSearchParams({
+            page,
+            pageSize,
+            filterField,
+            filterOperator,
+            filterValue,
+            quickFilterValue,
+            sortBy,
+            sortDirection,
+          })}`,
+          { headers: { cookie } },
+        ),
       ),
     ]);
 
-  if (error?.status === 403 || error?.status === 404) notFound();
-  if (error) return <ErrorAlert />;
+  if (
+    [error?.status, sessionsError?.status].some(
+      (status) => status === 403 || status === 404,
+    )
+  )
+    notFound();
+  if (error || sessionsError) return <ErrorAlert />;
   if (!user) notFound();
+
+  const { data: rows, total: rowCount } = sessions;
 
   return (
     <UserSessions

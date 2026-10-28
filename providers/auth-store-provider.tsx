@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, type ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { type StoreApi, useStore } from "zustand";
 
 import { type AuthStore, createAuthStore } from "@/stores/auth-store";
@@ -21,6 +27,10 @@ export const AuthStoreProvider = ({
   sessionPromise,
 }: AuthStoreProviderProps) => {
   const [store] = useState(() => createAuthStore({ sessionPromise }));
+
+  useEffect(() => {
+    store.setState({ session: undefined, sessionPromise });
+  }, [sessionPromise, store]);
 
   return (
     <AuthStoreContext.Provider value={store}>

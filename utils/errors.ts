@@ -10,13 +10,19 @@ export const getErrorMessage = (error: unknown): string =>
     : "An error occurred while fetching the data.";
 
 export const toFetchError = ({
+  code,
   message,
   status,
 }: {
+  code?: string;
   message?: string;
   status: number;
-}): FetchError =>
-  Object.assign(
-    new Error(message || "An error occurred while fetching the data."),
-    { status },
-  );
+}): FetchError => {
+  const fallbackMessage =
+    message || "An error occurred while fetching the data.";
+
+  return Object.assign(new Error(fallbackMessage), {
+    info: { code, message: fallbackMessage },
+    status,
+  });
+};
