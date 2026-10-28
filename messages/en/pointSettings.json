@@ -1,0 +1,33 @@
+{
+  "accountingValuePerPoint": {
+    "empty": "Not set",
+    "hint": "Used for reconciliation only; does not affect earning or redeeming",
+    "label": "Accounting value per point",
+    "placeholder": "Please enter the accounting value per point",
+    "value": "{value, number}"
+  },
+  "amountPerPoint": {
+    "empty": "Disabled",
+    "hint": "Applies to all stores; clear to disable points",
+    "invalid": "Spend per point is invalid",
+    "label": "Spend per point",
+    "placeholder": "Please enter the spend per point",
+    "value": "{value, number}"
+  },
+  "label": "Point settings",
+  "pointsEnabledAt": {
+    "empty": "Disabled",
+    "label": "Points enabled at"
+  },
+  "pointsValidityYears": {
+    "disabled": "Enable points to set the points validity",
+    "empty": "Never expires",
+    "label": "Points validity (years)",
+    "placeholder": "Please enter the points validity",
+    "value": "{value, plural, one {# year} other {# years}}"
+  },
+  "update": {
+    "success": "Point settings updated",
+    "title": "Edit point settings"
+  }
+}

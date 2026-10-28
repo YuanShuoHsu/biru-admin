@@ -18,6 +18,7 @@
   "changes": "異動內容",
   "createdAt": "時間",
   "field": {
+    "accountingValuePerPoint": "每點會計價值",
     "addOnMenuItem": "加購品項",
     "addOnMenuSection": "加購分組",
     "addressCountry": "國家/地區",

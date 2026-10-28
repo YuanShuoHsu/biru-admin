@@ -18,6 +18,7 @@
   "changes": "Changes",
   "createdAt": "Time",
   "field": {
+    "accountingValuePerPoint": "Accounting value per point",
     "addOnMenuItem": "Add-on item",
     "addOnMenuSection": "Add-on section",
     "addressCountry": "Country",

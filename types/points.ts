@@ -7,6 +7,7 @@ import {
 export type MyPoints = components["schemas"]["MyPointsDto"];
 export type OrganizationPointTransaction =
   components["schemas"]["OrganizationPointTransactionDto"];
+export type PointSetting = components["schemas"]["PointSettingResponseDto"];
 export type PointTransaction = components["schemas"]["PointTransactionDto"];
 export type PointTransactionFilterField =
   (typeof pointTransactionFilterFieldValues)[number];

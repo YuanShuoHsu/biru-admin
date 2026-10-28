@@ -81,6 +81,7 @@ const useNavItems = (): NavItem[][] => {
           [
             navItem("/banners"),
             navItem("/admins"),
+            navItem("/point-settings"),
             navItem("/deleted-records"),
             { ...navItem("/quant"), children: navChildren["/quant"] },
           ],

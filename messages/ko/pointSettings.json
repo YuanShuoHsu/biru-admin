@@ -1,0 +1,33 @@
+{
+  "accountingValuePerPoint": {
+    "empty": "미설정",
+    "hint": "정산용으로만 사용되며 적립·사용에는 영향을 주지 않습니다",
+    "label": "포인트당 회계 가치",
+    "placeholder": "포인트당 회계 가치를 입력해 주세요",
+    "value": "{value, number}"
+  },
+  "amountPerPoint": {
+    "empty": "사용 안 함",
+    "hint": "전체 매장 공통이며, 비우면 포인트가 비활성화됩니다",
+    "invalid": "1포인트 적립에 필요한 금액이 유효하지 않습니다",
+    "label": "1포인트 적립에 필요한 금액",
+    "placeholder": "1포인트 적립에 필요한 금액을 입력해 주세요",
+    "value": "{value, number}"
+  },
+  "label": "포인트 설정",
+  "pointsEnabledAt": {
+    "empty": "사용 안 함",
+    "label": "포인트 활성화 시각"
+  },
+  "pointsValidityYears": {
+    "disabled": "포인트를 활성화해야 유효기간을 설정할 수 있습니다",
+    "empty": "무기한",
+    "label": "포인트 유효기간(년)",
+    "placeholder": "포인트 유효기간을 입력해 주세요",
+    "value": "{value}년"
+  },
+  "update": {
+    "success": "포인트 설정을 업데이트했습니다",
+    "title": "포인트 설정 편집"
+  }
+}
