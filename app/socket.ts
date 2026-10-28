@@ -20,7 +20,7 @@ export const quantSocket = manager.socket("/quant");
 interface PendingEmit {
   event: string;
   payload: Record<string, unknown>;
-  reject: (error: Error) => void;
+  reject: (reason: unknown) => void;
 }
 
 const pendingEmits = new Set<PendingEmit>();
@@ -34,18 +34,16 @@ const matchesPayload = (pending: PendingEmit, data: unknown) =>
   );
 
 menuSocket.on("exception", (exception: SocketException) => {
-  const candidates = [...pendingEmits].filter(
-    (pending) => pending.event === exception.cause?.pattern,
+  const pending = [...pendingEmits].find(
+    (candidate) =>
+      candidate.event === exception.cause?.pattern &&
+      matchesPayload(candidate, exception.cause.data),
   );
-  const pending =
-    candidates.find((candidate) =>
-      matchesPayload(candidate, exception.cause?.data),
-    ) ?? candidates[0];
   const message = exception.message ?? exception.error;
 
   if (pending) {
     pendingEmits.delete(pending);
-    pending.reject(new Error(message));
+    pending.reject(message ? new Error(message) : exception);
   } else if (message) {
     enqueueSnackbar(message, { variant: "error" });
   }
