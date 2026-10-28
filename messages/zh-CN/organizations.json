@@ -361,12 +361,6 @@
     }
   },
   "points": {
-    "actions": {
-      "updatePoints": {
-        "success": "成功更新 {name} 的点数设置",
-        "title": "编辑点数"
-      }
-    },
     "adjust": {
       "email": {
         "label": "会员 Email",
@@ -386,21 +380,7 @@
       "success": "已调整 {email} 的点数",
       "title": "补点／扣点"
     },
-    "amountPerPoint": {
-      "empty": "未启用",
-      "hint": "未设置时不启用点数",
-      "invalid": "累积 1 点所需消费金额格式无效",
-      "label": "累积 1 点所需消费金额",
-      "placeholder": "请输入您的累积 1 点所需消费金额",
-      "value": "{value, number}"
-    },
     "label": "点数",
-    "pointsValidityYears": {
-      "empty": "永久有效",
-      "label": "点数效期（年）",
-      "placeholder": "请输入您的点数效期",
-      "value": "{value} 年"
-    },
     "transactions": {
       "createdAt": "建立时间",
       "expiresAt": "到期日",
