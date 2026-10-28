@@ -5,7 +5,7 @@ import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent } from "react";
+import { type BaseSyntheticEvent, useEffect } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 
@@ -117,22 +117,30 @@ const DraftDialog = ({
     name: "earnings",
   });
 
-  useSWR(
+  const {
+    data: entered,
+    error: enteredError,
+    isLoading: enteredLoading,
+  } = useSWR(
     earningTypes.length && employeeId && month
       ? `${payrollPath(organizationSlug, "org", "earnings")}?${new URLSearchParams({ employeeId, month })}`
       : null,
     (key: string) => fetcher<PayrollEarningInput[]>(key),
-    {
-      onSuccess: (entered) =>
-        replace(
-          entered.map(({ amountCents, earningTypeId }) => ({
-            amount: fromCents(amountCents),
-            earningTypeId,
-          })),
-        ),
-      revalidateOnFocus: false,
-    },
+    { revalidateOnFocus: false },
   );
+
+  useEffect(() => {
+    replace(
+      (entered ?? []).map(({ amountCents, earningTypeId }) => ({
+        amount: fromCents(amountCents),
+        earningTypeId,
+      })),
+    );
+  }, [entered, replace]);
+
+  useEffect(() => {
+    setDialog({ confirmDisabled: enteredLoading || !!enteredError });
+  }, [enteredError, enteredLoading, setDialog]);
 
   const onSubmitHandler = async (values: DraftForm) => {
     try {
