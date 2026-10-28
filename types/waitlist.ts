@@ -9,6 +9,8 @@ export type CreateWaitlistTicketDto =
 export type UpdateWaitlistSettingsDto =
   components["schemas"]["UpdateWaitlistSettingsDto"];
 export type WaitlistGroup = components["schemas"]["WaitlistGroupDto"];
+export type WaitlistQrTokenResponse =
+  components["schemas"]["WaitlistQrTokenResponseDto"];
 export type WaitlistSettingsResponse =
   components["schemas"]["WaitlistSettingsResponseDto"];
 export type WaitlistStats = components["schemas"]["WaitlistStatsResponseDto"];

@@ -159,16 +159,19 @@
       "username": "ID"
     },
     "qrSecret": {
-      "description": "QR code 外流（例如被拍下來貼到網路上）時才需要更換。更換後，所有已印出的桌面、櫃台、得來速 QR code 立即失效，要重新下載換上；已掃碼的顧客也要重新掃描。",
+      "description": "QR code 外流（例如被拍下來貼到網路上）時才需要更換。更換後，所有已印出的桌面、櫃台、得來速、候位入口 QR code 立即失效，要重新下載換上；已掃碼的顧客也要重新掃描。",
       "label": "QR code 更換",
       "neverRotated": "尚未更換過",
       "restore": "換回上一組",
       "restoreConfirm": "換回後，上次更換前印出的 QR code 恢復有效，目前的 QR code 立即失效。確定要換回嗎？",
       "restoreSuccess": "已換回上一組 QR code",
       "rotate": "更換 QR code",
-      "rotateConfirm": "更換後，所有已印出的桌面、櫃台、得來速 QR code 立即失效，要重新下載換上；換好之前顧客無法掃碼點餐。按錯可以再換回上一組。確定要更換嗎？",
+      "rotateConfirm": "更換後，所有已印出的桌面、櫃台、得來速、候位入口 QR code 立即失效，要重新下載換上；換好之前顧客無法掃碼點餐或取號。按錯可以再換回上一組。確定要更換嗎？",
       "rotateSuccess": "已更換 QR code，請重新下載並換上",
       "rotatedAt": "上次更換"
+    },
+    "waitlist": {
+      "label": "候位入口 QR code"
     }
   },
   "invitations": {

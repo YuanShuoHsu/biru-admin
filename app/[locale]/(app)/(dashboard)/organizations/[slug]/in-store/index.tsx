@@ -40,6 +40,7 @@ import type {
   Printer,
   PrinterCredentials,
 } from "@/types/organizations";
+import type { WaitlistQrTokenResponse } from "@/types/waitlist";
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
@@ -251,6 +252,38 @@ const OrderModeQrCodeCard = ({
   );
 };
 
+interface WaitlistQrCodeCardProps {
+  organizationSlug: string;
+}
+
+const WaitlistQrCodeCard = ({ organizationSlug }: WaitlistQrCodeCardProps) => {
+  const tOrganizations = useTranslations("organizations");
+
+  const { data } = useSWR<WaitlistQrTokenResponse>(
+    `/api/organizations/${organizationSlug}/waitlist/qr-token`,
+  );
+
+  const waitlistUrl =
+    data &&
+    `${process.env.NEXT_PUBLIC_NEXT_URL}/api/organizations/${organizationSlug}/waitlist/qr?${new URLSearchParams({ token: data.token })}`;
+
+  return (
+    <Card variant="outlined">
+      <StyledCardContent>
+        <BoldTypography color="textSecondary" variant="subtitle2">
+          {tOrganizations("inStore.waitlist.label")}
+        </BoldTypography>
+        {waitlistUrl && (
+          <OrderQrCode
+            fileName={`waitlist-${organizationSlug}.png`}
+            orderUrl={waitlistUrl}
+          />
+        )}
+      </StyledCardContent>
+    </Card>
+  );
+};
+
 interface OrderQrSecretCardProps {
   organizationSlug: string;
 }
@@ -282,7 +315,7 @@ const OrderQrSecretCard = ({ organizationSlug }: OrderQrSecretCardProps) => {
       (key) =>
         typeof key === "string" &&
         key.startsWith(`/api/organizations/${organizationSlug}/`) &&
-        key.endsWith("/token"),
+        key.endsWith("token"),
     );
     enqueueSnackbar(successMessage, { variant: "success" });
   };
@@ -836,6 +869,7 @@ const OrganizationsSlugInStore = ({
         mode={ORDER_MODE.DriveThru}
         organizationSlug={organizationSlug}
       />
+      <WaitlistQrCodeCard organizationSlug={organizationSlug} />
       <OrderQrSecretCard organizationSlug={organizationSlug} />
       <InvoicePrinterCard organizationSlug={organizationSlug} />
       <OrderTicketPrintersCard organizationSlug={organizationSlug} />
