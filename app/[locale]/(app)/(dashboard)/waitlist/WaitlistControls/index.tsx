@@ -89,6 +89,9 @@ const WaitlistControls = () => {
 
     return () => {
       menuSocket.off("waitlistUpdated", refreshWaitlist);
+      menuSocket.emit("leaveWaitlist", {
+        organizationId: organization.id,
+      });
     };
   }, [isConnected, organization, refreshWaitlist]);
 
