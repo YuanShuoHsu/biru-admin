@@ -6,8 +6,6 @@ import { Suspense } from "react";
 
 import Ingredients from ".";
 
-import { MAX_PAGE_SIZE } from "@/constants/pagination";
-
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -19,7 +17,7 @@ import {
 
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getIngredientEnumOptions } from "@/utils/enumOptions";
-import { getIngredients, getSuppliers } from "@/utils/inventory";
+import { getIngredients } from "@/utils/inventory";
 import { hasRolePermission } from "@/utils/organizations";
 import { getMemberRole, getResolvedAdminOrganization } from "@/utils/session";
 
@@ -122,32 +120,22 @@ const IngredientsContent = async ({
 
   const lowStock = rawSearchParams.lowStock === "true";
 
-  const [{ ingredients: rows, total: rowCount }, { suppliers }] =
-    await Promise.all([
-      getIngredients(
-        organization.slug,
-        {
-          page,
-          pageSize,
-          filterField,
-          filterOperator,
-          filterValue,
-          quickFilterEnums,
-          quickFilterValue,
-          sortBy,
-          sortDirection,
-        },
-        fetchOptions,
-        lowStock,
-      ),
-      canViewPurchasing
-        ? getSuppliers(
-            organization.slug,
-            { pageSize: MAX_PAGE_SIZE, sortBy: "name", sortDirection: "asc" },
-            fetchOptions,
-          )
-        : { suppliers: [] },
-    ]);
+  const { ingredients: rows, total: rowCount } = await getIngredients(
+    organization.slug,
+    {
+      page,
+      pageSize,
+      filterField,
+      filterOperator,
+      filterValue,
+      quickFilterEnums,
+      quickFilterValue,
+      sortBy,
+      sortDirection,
+    },
+    fetchOptions,
+    lowStock,
+  );
 
   return (
     <Ingredients
@@ -167,7 +155,6 @@ const IngredientsContent = async ({
       rows={rows}
       sortBy={sortBy}
       sortDirection={sortDirection}
-      suppliers={suppliers}
     />
   );
 };
