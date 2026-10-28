@@ -159,16 +159,19 @@
       "username": "ID"
     },
     "qrSecret": {
-      "description": "Only replace QR codes if they have leaked, for example if someone photographed one and posted it online. Replacing them immediately invalidates every printed table, counter, and drive-thru QR code, so download and put up new ones. Customers who already scanned will need to scan again.",
+      "description": "Only replace QR codes if they have leaked, for example if someone photographed one and posted it online. Replacing them immediately invalidates every printed table, counter, drive-thru, and waitlist QR code, so download and put up new ones. Customers who already scanned will need to scan again.",
       "label": "Replace QR codes",
       "neverRotated": "Never replaced",
       "restore": "Restore previous codes",
       "restoreConfirm": "QR codes printed before the last replacement will work again, and the current ones will stop working immediately. Restore the previous codes?",
       "restoreSuccess": "Previous QR codes restored",
       "rotate": "Replace QR codes",
-      "rotateConfirm": "Every printed table, counter, and drive-thru QR code will stop working immediately. Download and put up the new ones; customers can't order by scanning until you do. If this was a mistake, you can restore the previous codes. Replace QR codes?",
+      "rotateConfirm": "Every printed table, counter, drive-thru, and waitlist QR code will stop working immediately. Download and put up the new ones; customers can't order or join the waitlist by scanning until you do. If this was a mistake, you can restore the previous codes. Replace QR codes?",
       "rotateSuccess": "QR codes replaced. Download and put up the new ones.",
       "rotatedAt": "Last replaced"
+    },
+    "waitlist": {
+      "label": "Waitlist entrance QR code"
     }
   },
   "invitations": {
@@ -486,6 +489,7 @@
       "off": "Off",
       "on": "On"
     },
+    "entranceQrCode": "Download the waitlist entrance QR code from the <link>In-store ordering</link> page, then print and post it at the entrance",
     "graceMinutes": {
       "helperText": "How long to wait after the hold expires before skipping automatically, even for confirmed parties. Set to 0 to skip manually",
       "label": "Grace period (minutes)",
@@ -514,11 +518,6 @@
       "placeholder": "Enter the hold time",
       "value": "{value, plural, one {# minute} other {# minutes}}"
     },
-    "label": "Waitlist",
-    "qrCode": {
-      "download": "Download",
-      "helperText": "Print and post this at the entrance so guests can scan it to join the waitlist",
-      "label": "Entrance QR code"
-    }
+    "label": "Waitlist"
   }
 }
