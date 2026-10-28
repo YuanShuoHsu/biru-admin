@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import Employees from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -23,6 +25,7 @@ import {
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceEmployeeEnumOptions } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -119,32 +122,46 @@ const EmployeesContent = async ({
   });
 
   const [
-    { members: rows, total: rowCount },
-    legalStatusObligations,
-    terms,
-    context,
+    { data: members, error },
+    { data: legalStatusObligations, error: legalStatusObligationsError },
+    { data: terms, error: termsError },
+    { data: context, error: contextError },
   ] = await Promise.all([
-    getAttendanceMembers(
-      organization.slug,
-      {
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterEnums,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-      },
-      fetchOptions,
+    settle(
+      getAttendanceMembers(
+        organization.slug,
+        {
+          page,
+          pageSize,
+          filterField,
+          filterOperator,
+          filterValue,
+          quickFilterEnums,
+          quickFilterValue,
+          sortBy,
+          sortDirection,
+        },
+        fetchOptions,
+      ),
     ),
-    getAttendanceLegalStatusObligations(organization.slug, fetchOptions),
-    canManageTerms ? getPayrollTerms(organization.slug, fetchOptions) : [],
-    canManageChildren
-      ? getAttendanceContext(organization.slug, fetchOptions)
-      : null,
+    settle(
+      getAttendanceLegalStatusObligations(organization.slug, fetchOptions),
+    ),
+    settle(
+      canManageTerms
+        ? getPayrollTerms(organization.slug, fetchOptions)
+        : Promise.resolve([]),
+    ),
+    settle(
+      canManageChildren
+        ? getAttendanceContext(organization.slug, fetchOptions)
+        : Promise.resolve(null),
+    ),
   ]);
+  if (error || legalStatusObligationsError || termsError || contextError)
+    return <ErrorAlert />;
+
+  const { members: rows, total: rowCount } = members;
 
   return (
     <Employees

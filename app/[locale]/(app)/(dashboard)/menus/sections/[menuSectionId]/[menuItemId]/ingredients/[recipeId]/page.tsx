@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import RecipeIngredients from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -16,6 +18,7 @@ import {
 } from "@/types/api";
 
 import { resolveGridSearchParams } from "@/utils/dataGrid";
+import { isMissingResource, settle } from "@/utils/fetcher";
 import { getRecipeByMenuItem, getRecipeIngredients } from "@/utils/inventory";
 import {
   getAdminMenu,
@@ -67,27 +70,34 @@ const RecipeIngredientsContent = async ({
   const fetchOptions = {
     headers: { "Accept-Language": locale, cookie: cookieStore.toString() },
   };
-  const section = await getAdminMenuSection(menuSectionId, fetchOptions);
+  const { data: section, error: sectionError } = await settle(
+    getAdminMenuSection(menuSectionId, fetchOptions),
+  );
+  if (isMissingResource(sectionError)) notFound();
+  if (sectionError) return <ErrorAlert />;
 
-  if (!section?.menuId) notFound();
-
-  const [menu, menuItem] = await Promise.all([
-    getAdminMenu(section.menuId, fetchOptions),
-    getAdminMenuItem(menuItemId, fetchOptions),
+  const [
+    { data: menu, error: menuError },
+    { data: menuItem, error: menuItemError },
+  ] = await Promise.all([
+    settle(getAdminMenu(section.menuId, fetchOptions)),
+    settle(getAdminMenuItem(menuItemId, fetchOptions)),
   ]);
-
-  if (!menuItem) notFound();
+  if (isMissingResource(menuError) || isMissingResource(menuItemError))
+    notFound();
+  if (menuError || menuItemError) return <ErrorAlert />;
 
   const selectedOrganization = await getAdminOrganization(
-    menu?.organizationId,
+    menu.organizationId,
     rawSearchParams.organization,
   );
   if (!selectedOrganization) notFound();
 
-  const [memberRole, recipe] = await Promise.all([
+  const [memberRole, { data: recipe, error: recipeError }] = await Promise.all([
     getMemberRole(selectedOrganization.id),
-    getRecipeByMenuItem(menuItemId, fetchOptions),
+    settle(getRecipeByMenuItem(menuItemId, fetchOptions)),
   ]);
+  if (recipeError) return <ErrorAlert />;
 
   if (recipe?.id !== recipeId) notFound();
 
@@ -115,20 +125,25 @@ const RecipeIngredientsContent = async ({
       locale,
     });
 
-  const { materials: rows, total: rowCount } = await getRecipeIngredients(
-    recipe.id,
-    {
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-    },
-    fetchOptions,
+  const { data: materials, error: materialsError } = await settle(
+    getRecipeIngredients(
+      recipe.id,
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
+      fetchOptions,
+    ),
   );
+  if (materialsError) return <ErrorAlert />;
+
+  const { materials: rows, total: rowCount } = materials;
 
   const canCreate = hasRolePermission(memberRole, {
     inventory: ["create"],

@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import Payslips from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -17,6 +19,7 @@ import {
 
 import { getPayrollStatements } from "@/utils/attendance";
 import { resolveGridSearchParams } from "@/utils/dataGrid";
+import { settle } from "@/utils/fetcher";
 import { getAttendanceAccess } from "@/utils/session";
 
 interface PayslipsPageProps {
@@ -86,21 +89,26 @@ const PayslipsContent = async ({ params, searchParams }: PayslipsPageProps) => {
       locale,
     });
 
-  const { statements: rows, total: rowCount } = await getPayrollStatements(
-    organization.slug,
-    "me",
-    {
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-    },
-    fetchOptions,
+  const { data: statements, error } = await settle(
+    getPayrollStatements(
+      organization.slug,
+      "me",
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
+      fetchOptions,
+    ),
   );
+  if (error) return <ErrorAlert />;
+
+  const { statements: rows, total: rowCount } = statements;
 
   return (
     <Payslips

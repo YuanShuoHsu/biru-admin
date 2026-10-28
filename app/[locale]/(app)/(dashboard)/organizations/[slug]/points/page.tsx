@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 
 import PointTransactions from "./PointTransactions";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -18,6 +20,7 @@ import {
 
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getPointTransactionEnumOptions } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getOrganizationPointTransactions } from "@/utils/points";
 import { getSession } from "@/utils/session";
@@ -60,7 +63,7 @@ const OrganizationsSlugPointsPage = async ({
   ]);
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const [{ data }, session] = await Promise.all([
+  const [{ data, error }, session] = await Promise.all([
     authClient.organization.getFullOrganization({
       query: { organizationSlug: decodeURIComponent(slug) },
       fetchOptions,
@@ -68,6 +71,8 @@ const OrganizationsSlugPointsPage = async ({
     getSession(),
   ]);
 
+  if (error?.status === 400 || error?.status === 403) notFound();
+  if (error) return <ErrorAlert />;
   if (!data) notFound();
 
   const currentUserRole = data.members.find(
@@ -109,8 +114,8 @@ const OrganizationsSlugPointsPage = async ({
       )
     : [];
 
-  const { transactions: rows, total: rowCount } =
-    await getOrganizationPointTransactions(
+  const { data: transactions, error: transactionsError } = await settle(
+    getOrganizationPointTransactions(
       data.slug,
       {
         page,
@@ -124,7 +129,11 @@ const OrganizationsSlugPointsPage = async ({
         sortDirection,
       },
       fetchOptions,
-    );
+    ),
+  );
+  if (transactionsError) return <ErrorAlert />;
+
+  const { transactions: rows, total: rowCount } = transactions;
 
   return (
     <PointTransactions

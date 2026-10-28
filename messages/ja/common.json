@@ -7,6 +7,12 @@
   "delimiter": "、",
   "discontinued": "販売終了",
   "empty": "商品がありません",
+  "error": {
+    "description": "しばらくしてからもう一度お試しください。",
+    "digest": "エラーコード：{digest}",
+    "retry": "再試行",
+    "title": "読み込みに失敗しました"
+  },
   "from": "〜",
   "imageProcessingFailed": "画像の処理に失敗しました",
   "increase": "増やす",
@@ -36,6 +42,11 @@
   "maxQuantity": "各商品は最大 {quantity} 個まで購入できます",
   "middleDot": "・",
   "multiply": "×",
+  "notFound": {
+    "description": "お探しのページが見つかりませんでした。",
+    "home": "ホームに戻る",
+    "title": "ページが見つかりません"
+  },
   "optional": "（任意）",
   "organization": {
     "closed": "{name}（営業終了）",

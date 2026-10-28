@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import EarningTypes from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -18,6 +20,7 @@ import {
 import { getPayrollEarningTypes } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getPayrollEarningTypeEnumOptions } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -105,21 +108,26 @@ const EarningTypesContent = async ({
       )
     : [];
 
-  const { earningTypes: rows, total: rowCount } = await getPayrollEarningTypes(
-    organization.slug,
-    {
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterEnums,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-    },
-    fetchOptions,
+  const { data: earningTypes, error } = await settle(
+    getPayrollEarningTypes(
+      organization.slug,
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterEnums,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
+      fetchOptions,
+    ),
   );
+  if (error) return <ErrorAlert />;
+
+  const { earningTypes: rows, total: rowCount } = earningTypes;
 
   return (
     <EarningTypes

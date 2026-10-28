@@ -9,6 +9,8 @@ import { Suspense } from "react";
 
 import HolidaySubstitutes from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { redirect } from "@/i18n/navigation";
@@ -22,6 +24,7 @@ import {
 
 import { getAttendanceHolidaySubstitutes } from "@/utils/attendance";
 import { resolveGridSearchParams } from "@/utils/dataGrid";
+import { settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -104,8 +107,8 @@ const HolidaySubstitutesContent = async ({
       locale,
     });
 
-  const { substitutes: rows, total: rowCount } =
-    await getAttendanceHolidaySubstitutes(
+  const { data: substitutes, error } = await settle(
+    getAttendanceHolidaySubstitutes(
       organization.slug,
       resolvedYear,
       {
@@ -119,7 +122,11 @@ const HolidaySubstitutesContent = async ({
         sortDirection,
       },
       { headers: { cookie: cookieStore.toString() } },
-    );
+    ),
+  );
+  if (error) return <ErrorAlert />;
+
+  const { substitutes: rows, total: rowCount } = substitutes;
 
   return (
     <HolidaySubstitutes

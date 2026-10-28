@@ -24,21 +24,17 @@ export const getOrganizationPointTransactions = cache(
     > = {},
     init?: RequestInit,
   ) => {
-    try {
-      const result = await fetcher<{
-        data: OrganizationPointTransaction[];
-        total: number;
-      }>(
-        `/api/organizations/${organizationSlug}/point-transactions?${getGridSearchParams(query).toString()}`,
-        init,
-      );
+    const result = await fetcher<{
+      data: OrganizationPointTransaction[];
+      total: number;
+    }>(
+      `/api/organizations/${organizationSlug}/point-transactions?${getGridSearchParams(query).toString()}`,
+      init,
+    );
 
-      return {
-        transactions: Array.isArray(result.data) ? result.data : [],
-        total: result.total || 0,
-      };
-    } catch {
-      return { transactions: [], total: 0 };
-    }
+    return {
+      transactions: Array.isArray(result.data) ? result.data : [],
+      total: result.total || 0,
+    };
   },
 );

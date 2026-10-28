@@ -22,22 +22,18 @@ export const getDeletedRecords = cache(
     query: GridQuery<DeletedRecordFilterField, DeletedRecordSortField> = {},
     init?: RequestInit,
   ) => {
-    try {
-      const result = await fetcher<{
-        data: DeletedRecordBatch[];
-        total: number;
-      }>(
-        `${getDeletedRecordsPath(organizationSlug)}?${getGridSearchParams(query).toString()}`,
-        init,
-      );
+    const result = await fetcher<{
+      data: DeletedRecordBatch[];
+      total: number;
+    }>(
+      `${getDeletedRecordsPath(organizationSlug)}?${getGridSearchParams(query).toString()}`,
+      init,
+    );
 
-      return {
-        deletedRecords: Array.isArray(result.data) ? result.data : [],
-        total: result.total || 0,
-      };
-    } catch {
-      return { deletedRecords: [], total: 0 };
-    }
+    return {
+      deletedRecords: Array.isArray(result.data) ? result.data : [],
+      total: result.total || 0,
+    };
   },
 );
 
@@ -45,14 +41,10 @@ export const canRestoreDeletedRecords = async (
   organizationSlug: string,
   init?: RequestInit,
 ) => {
-  try {
-    const { canRestore } = await fetcher<DeletedRecordPermission>(
-      `/api/organizations/${organizationSlug}/deleted-records/permission`,
-      init,
-    );
+  const { canRestore } = await fetcher<DeletedRecordPermission>(
+    `/api/organizations/${organizationSlug}/deleted-records/permission`,
+    init,
+  );
 
-    return canRestore;
-  } catch {
-    return false;
-  }
+  return canRestore;
 };

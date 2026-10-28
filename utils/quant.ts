@@ -15,18 +15,14 @@ export const getQuantBots = cache(
     query: GridQuery<QuantBotFilterField, QuantBotSortField> = {},
     init?: RequestInit,
   ) => {
-    try {
-      const result = await fetcher<{ data: QuantBot[]; total: number }>(
-        `/api/quant/bots?${getGridSearchParams(query).toString()}`,
-        init,
-      );
+    const result = await fetcher<{ data: QuantBot[]; total: number }>(
+      `/api/quant/bots?${getGridSearchParams(query).toString()}`,
+      init,
+    );
 
-      return {
-        bots: Array.isArray(result.data) ? result.data : [],
-        total: result.total || 0,
-      };
-    } catch {
-      return { bots: [], total: 0 };
-    }
+    return {
+      bots: Array.isArray(result.data) ? result.data : [],
+      total: result.total || 0,
+    };
   },
 );

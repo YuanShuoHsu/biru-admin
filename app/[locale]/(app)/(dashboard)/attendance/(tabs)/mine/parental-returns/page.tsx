@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import ParentalReturns from "../../../ParentalReturns";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -21,6 +23,7 @@ import {
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceParentalReturnEnumOptions } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 import { getAttendanceAccess } from "@/utils/session";
 
 interface MyMyParentalReturnsPageProps {
@@ -105,26 +108,36 @@ const MyParentalReturnsContent = async ({
       )
     : [];
 
-  const [{ parentalReturns: rows, total: rowCount }, { employee }] =
-    await Promise.all([
-      getAttendanceParentalReturns(
-        organization.slug,
-        "me",
-        {
-          page,
-          pageSize,
-          filterField,
-          filterOperator,
-          filterValue,
-          quickFilterEnums,
-          quickFilterValue,
-          sortBy,
-          sortDirection,
-        },
-        fetchOptions,
-      ),
-      getAttendanceContext(organization.slug, fetchOptions),
-    ]);
+  const { data: context, error: contextError } = await settle(
+    getAttendanceContext(organization.slug, fetchOptions),
+  );
+  if (contextError) return <ErrorAlert />;
+
+  const { employee } = context;
+
+  const { data: parentalReturns, error } = await settle(
+    employee
+      ? getAttendanceParentalReturns(
+          organization.slug,
+          "me",
+          {
+            page,
+            pageSize,
+            filterField,
+            filterOperator,
+            filterValue,
+            quickFilterEnums,
+            quickFilterValue,
+            sortBy,
+            sortDirection,
+          },
+          fetchOptions,
+        )
+      : Promise.resolve({ parentalReturns: [], total: 0 }),
+  );
+  if (error) return <ErrorAlert />;
+
+  const { parentalReturns: rows, total: rowCount } = parentalReturns;
 
   return (
     <ParentalReturns

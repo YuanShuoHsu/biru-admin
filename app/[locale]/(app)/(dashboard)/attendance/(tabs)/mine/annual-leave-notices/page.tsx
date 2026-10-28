@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import AnnualLeaveNotices from "../../../AnnualLeaveNotices";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -15,9 +17,13 @@ import {
   filterOperatorValues,
 } from "@/types/api";
 
-import { getAttendanceAnnualLeaveNotices } from "@/utils/attendance";
+import {
+  getAttendanceAnnualLeaveNotices,
+  getAttendanceContext,
+} from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceAnnualLeaveNoticeEnumOptions } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 import { getAttendanceAccess } from "@/utils/session";
 
 interface MyAnnualLeaveNoticesPageProps {
@@ -57,6 +63,8 @@ const MyAnnualLeaveNoticesContent = async ({
     params,
     searchParams,
   ]);
+
+  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
   const access = await getAttendanceAccess(rawSearchParams.organization);
 
@@ -100,23 +108,36 @@ const MyAnnualLeaveNoticesContent = async ({
       )
     : [];
 
-  const { notices: rows, total: rowCount } =
-    await getAttendanceAnnualLeaveNotices(
-      organization.slug,
-      "me",
-      {
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterEnums,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-      },
-      { headers: { cookie: cookieStore.toString() } },
-    );
+  const { data: context, error: contextError } = await settle(
+    getAttendanceContext(organization.slug, fetchOptions),
+  );
+  if (contextError) return <ErrorAlert />;
+
+  const { employee } = context;
+
+  const { data: notices, error } = await settle(
+    employee
+      ? getAttendanceAnnualLeaveNotices(
+          organization.slug,
+          "me",
+          {
+            page,
+            pageSize,
+            filterField,
+            filterOperator,
+            filterValue,
+            quickFilterEnums,
+            quickFilterValue,
+            sortBy,
+            sortDirection,
+          },
+          fetchOptions,
+        )
+      : Promise.resolve({ notices: [], total: 0 }),
+  );
+  if (error) return <ErrorAlert />;
+
+  const { notices: rows, total: rowCount } = notices;
 
   return (
     <AnnualLeaveNotices

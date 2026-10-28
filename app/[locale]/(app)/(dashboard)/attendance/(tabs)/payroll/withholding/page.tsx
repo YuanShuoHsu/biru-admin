@@ -9,12 +9,15 @@ import { Suspense } from "react";
 
 import Withholding from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import { getPayrollWithholdingSummary } from "@/utils/attendance";
+import { settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -84,11 +87,10 @@ const WithholdingContent = async ({
         ? now.year() - 1
         : now.year();
 
-  const summary = await getPayrollWithholdingSummary(
-    organization.slug,
-    year,
-    fetchOptions,
+  const { data: summary, error } = await settle(
+    getPayrollWithholdingSummary(organization.slug, year, fetchOptions),
   );
+  if (error) return <ErrorAlert />;
 
   return (
     <Withholding

@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 
 import Settings from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -12,6 +14,7 @@ import {
   getAttendanceSettings,
   getOccupationalIndustryRates,
 } from "@/utils/attendance";
+import { settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -56,10 +59,14 @@ const SettingsPage = async ({ params, searchParams }: SettingsPageProps) => {
 
   const init = { headers: { cookie: cookieStore.toString() } };
 
-  const [settings, occupationalIndustryRates] = await Promise.all([
-    getAttendanceSettings(organization.slug, init),
-    getOccupationalIndustryRates(organization.slug, init),
+  const [
+    { data: settings, error },
+    { data: occupationalIndustryRates, error: occupationalIndustryRatesError },
+  ] = await Promise.all([
+    settle(getAttendanceSettings(organization.slug, init)),
+    settle(getOccupationalIndustryRates(organization.slug, init)),
   ]);
+  if (error || occupationalIndustryRatesError) return <ErrorAlert />;
 
   return (
     <Settings

@@ -58,7 +58,7 @@ const ItemRowStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface OrdersProps {
-  orders: UserOrderListResponse | null;
+  orders: UserOrderListResponse;
   page: number;
   pageSize: number;
 }
@@ -82,9 +82,9 @@ const Orders = ({ orders: data, page, pageSize }: OrdersProps) => {
   const tCommon = useTranslations("common");
   const tOrder = useTranslations("order");
 
-  const orders = data?.data || [];
+  const orders = data.data;
   const rowsPerPageOptions = getPageSizeOptions(pageSize);
-  const total = data?.total || 0;
+  const total = data.total;
 
   const handleChange =
     (panel: string) => (_: React.SyntheticEvent, newExpanded: boolean) =>
