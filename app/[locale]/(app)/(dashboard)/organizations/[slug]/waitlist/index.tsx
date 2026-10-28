@@ -1,39 +1,22 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { QRCodeCanvas } from "qrcode.react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 import UpdateWaitlistDialog from "./UpdateWaitlistDialog";
 
 import DetailsCard from "@/components/DetailsCard";
-import { StyledCardContent } from "@/components/FormCard";
 
-import { Download } from "@mui/icons-material";
-import { Button, Card, Stack, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { Link as MuiLink, Typography } from "@mui/material";
+
+import { Link } from "@/i18n/navigation";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { WaitlistSettingsResponse } from "@/types/waitlist";
 
-const QR_CODE_DISPLAY_SIZE = 240;
-const QR_CODE_DOWNLOAD_SIZE = 1024;
-
-const BoldTypography = styled(Typography)({
-  fontWeight: "bold",
-});
-
-const UrlTypography = styled(Typography)({
-  wordBreak: "break-all",
-});
-
-const ActionsStack = styled(Stack)(({ theme }) => ({
-  flexWrap: "wrap",
-  gap: theme.spacing(1),
-}));
-
 interface OrganizationsSlugWaitlistProps {
+  canUpdateOrganization: boolean;
   canUpdateWaitlist: boolean;
   organizationName: string;
   organizationSlug: string;
@@ -41,6 +24,7 @@ interface OrganizationsSlugWaitlistProps {
 }
 
 const OrganizationsSlugWaitlist = ({
+  canUpdateOrganization,
   canUpdateWaitlist,
   organizationName,
   organizationSlug,
@@ -48,15 +32,11 @@ const OrganizationsSlugWaitlist = ({
 }: OrganizationsSlugWaitlistProps) => {
   const [settings, setSettings] = useState(initialSettings);
 
-  const qrCodeRef = useRef<HTMLCanvasElement>(null);
-
   const { setDialog } = useDialogStore((state) => state);
 
   const tCommon = useTranslations("common");
   const tOrganizations = useTranslations("organizations");
   const tWaitlist = useTranslations("waitlist");
-
-  const waitlistUrl = `${process.env.NEXT_PUBLIC_NEXT_URL}/waitlist/${organizationSlug}`;
 
   const handleUpdateWaitlist = () => {
     setDialog({
@@ -72,13 +52,6 @@ const OrganizationsSlugWaitlist = ({
       open: true,
       title: tOrganizations("waitlist.actions.updateWaitlist.title"),
     });
-  };
-
-  const handleDownload = () => {
-    const link = document.createElement("a");
-    link.download = `waitlist-${organizationSlug}.png`;
-    link.href = qrCodeRef.current?.toDataURL("image/png") || "";
-    link.click();
   };
 
   const items = [
@@ -140,37 +113,19 @@ const OrganizationsSlugWaitlist = ({
         }
         items={items}
       />
-      {settings.enabled && (
-        <Card variant="outlined">
-          <StyledCardContent>
-            <BoldTypography color="textSecondary" variant="subtitle2">
-              {tOrganizations("waitlist.qrCode.label")}
-            </BoldTypography>
-            <QRCodeCanvas
-              marginSize={2}
-              ref={qrCodeRef}
-              size={QR_CODE_DOWNLOAD_SIZE}
-              style={{
-                height: QR_CODE_DISPLAY_SIZE,
-                width: QR_CODE_DISPLAY_SIZE,
-              }}
-              value={waitlistUrl}
-            />
-            <UrlTypography variant="body2">{waitlistUrl}</UrlTypography>
-            <Typography color="textSecondary" variant="body2">
-              {tOrganizations("waitlist.qrCode.helperText")}
-            </Typography>
-            <ActionsStack direction="row">
-              <Button
-                onClick={handleDownload}
-                startIcon={<Download />}
-                variant="outlined"
+      {settings.enabled && canUpdateOrganization && (
+        <Typography color="textSecondary" variant="body2">
+          {tOrganizations.rich("waitlist.entranceQrCode", {
+            link: (chunks) => (
+              <MuiLink
+                component={Link}
+                href={`/organizations/${organizationSlug}/in-store`}
               >
-                {tOrganizations("waitlist.qrCode.download")}
-              </Button>
-            </ActionsStack>
-          </StyledCardContent>
-        </Card>
+                {chunks}
+              </MuiLink>
+            ),
+          })}
+        </Typography>
       )}
     </>
   );

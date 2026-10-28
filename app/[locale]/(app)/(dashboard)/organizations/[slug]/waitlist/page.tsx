@@ -65,6 +65,9 @@ const OrganizationsSlugWaitlistPage = async ({
 
   return (
     <OrganizationsSlugWaitlist
+      canUpdateOrganization={hasRolePermission(currentUserRole, {
+        organization: ["update"],
+      })}
       canUpdateWaitlist={hasRolePermission(currentUserRole, {
         waitlistSetting: ["update"],
       })}

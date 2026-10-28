@@ -489,6 +489,7 @@
       "off": "Off",
       "on": "On"
     },
+    "entranceQrCode": "Download the waitlist entrance QR code from the <link>In-store ordering</link> page, then print and post it at the entrance",
     "graceMinutes": {
       "helperText": "How long to wait after the hold expires before skipping automatically, even for confirmed parties. Set to 0 to skip manually",
       "label": "Grace period (minutes)",
@@ -517,11 +518,6 @@
       "placeholder": "Enter the hold time",
       "value": "{value, plural, one {# minute} other {# minutes}}"
     },
-    "label": "Waitlist",
-    "qrCode": {
-      "download": "Download",
-      "helperText": "Print and post this at the entrance so guests can scan it to join the waitlist",
-      "label": "Entrance QR code"
-    }
+    "label": "Waitlist"
   }
 }

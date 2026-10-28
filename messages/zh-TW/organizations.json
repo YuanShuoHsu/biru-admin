@@ -489,6 +489,7 @@
       "off": "未開啟",
       "on": "已開啟"
     },
+    "entranceQrCode": "候位入口 QR code 請到「<link>現場點餐</link>」頁下載，列印後張貼在門口",
     "graceMinutes": {
       "helperText": "保留時間到期後再等多久自動過號，已確認前往的客人也一樣；設為 0 則不自動過號，由店員手動處理",
       "label": "逾時寬限（分鐘）",
@@ -517,11 +518,6 @@
       "placeholder": "請輸入叫號保留時間",
       "value": "{value} 分鐘"
     },
-    "label": "現場候位",
-    "qrCode": {
-      "download": "下載",
-      "helperText": "列印後張貼在門口，客人用手機掃碼即可取號",
-      "label": "門口取號 QR code"
-    }
+    "label": "現場候位"
   }
 }
