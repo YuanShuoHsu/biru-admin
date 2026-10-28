@@ -19,9 +19,15 @@ import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import { authClient } from "@/lib/auth-client";
 
-import { TextField } from "@mui/material";
+import { Chip, Divider, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
+
+import {
+  type UpdateLocationForm,
+  useUpdateLocationFormSchema,
+} from "@/app/[locale]/(app)/(dashboard)/organizations/[slug]/location/UpdateLocationDialog/definitions";
+import AddressFields from "@/app/[locale]/(app)/(dashboard)/organizations/AddressFields";
 
 const CREATE_ORGANIZATION_AVATAR_KEY = "create-organization-avatar";
 
@@ -50,9 +56,55 @@ const CreateOrganizationDialog = ({
     resolver: zodResolver(createOrganizationFormSchema),
   });
 
-  const onSubmitHandler = async ({ name, slug }: CreateOrganizationForm) => {
+  const locationFormSchema = useUpdateLocationFormSchema();
+  const {
+    control: locationControl,
+    formState: { errors: locationErrors },
+    getValues: getLocationValues,
+    handleSubmit: handleLocationSubmit,
+    register: registerLocation,
+    setValue: setLocationValue,
+  } = useForm<UpdateLocationForm>({
+    defaultValues: {
+      addressCountry: "",
+      currency: "TWD",
+      addressLocality: "",
+      addressRegion: "",
+      extendedAddress: "",
+      postalCode: "",
+      streetAddress: "",
+      hasMap: "",
+      openingHours: "",
+      telephone: "",
+    },
+    resolver: zodResolver(locationFormSchema),
+  });
+
+  const onSubmitHandler = async (
+    { name, slug }: CreateOrganizationForm,
+    {
+      addressCountry,
+      currency,
+      addressLocality,
+      addressRegion,
+      extendedAddress,
+      postalCode,
+      streetAddress,
+    }: UpdateLocationForm,
+  ) => {
     await authClient.organization.create(
-      { logo, name, slug },
+      {
+        logo,
+        name,
+        slug,
+        addressCountry,
+        currency,
+        addressLocality,
+        addressRegion,
+        extendedAddress,
+        postalCode,
+        streetAddress,
+      },
       {
         onError: ({ error: { message } }) => {
           enqueueSnackbar(message, { variant: "error" });
@@ -74,8 +126,16 @@ const CreateOrganizationDialog = ({
     );
   };
 
-  const onSubmit = (event: BaseSyntheticEvent) =>
-    handleSubmit(onSubmitHandler)(event);
+  const onSubmit = async (event: BaseSyntheticEvent) => {
+    let location: UpdateLocationForm | undefined;
+    await handleLocationSubmit((values) => {
+      location = values;
+    })(event);
+
+    await handleSubmit(async (values) => {
+      if (location) await onSubmitHandler(values, location);
+    })(event);
+  };
 
   return (
     <FormBox id="create-organization-form" onSubmit={onSubmit}>
@@ -98,6 +158,16 @@ const CreateOrganizationDialog = ({
         placeholder={tOrganizations("slug.placeholder")}
         required
         {...register("slug")}
+      />
+      <Divider flexItem>
+        <Chip label={tOrganizations("address.label")} size="small" />
+      </Divider>
+      <AddressFields
+        control={locationControl}
+        errors={locationErrors}
+        getValues={getLocationValues}
+        register={registerLocation}
+        setValue={setLocationValue}
       />
     </FormBox>
   );

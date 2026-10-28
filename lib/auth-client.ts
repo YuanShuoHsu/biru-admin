@@ -76,14 +76,14 @@ export const authClient = createAuthClient({
             // https://schema.org/PostalAddress
             addressCountry: {
               type: "string",
-              required: false,
+              required: true,
             },
-            addressLocality: { type: "string", required: false },
-            addressRegion: { type: "string", required: false },
+            addressLocality: { type: "string", required: true },
+            addressRegion: { type: "string", required: true },
             extendedAddress: { type: "string", required: false },
             postOfficeBoxNumber: { type: "string", required: false },
             postalCode: { type: "string", required: false },
-            streetAddress: { type: "string", required: false },
+            streetAddress: { type: "string", required: true },
 
             // https://schema.org/LocalBusiness
             hasMap: { type: "string", required: false },

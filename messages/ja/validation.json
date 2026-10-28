@@ -2,6 +2,15 @@
   "addOnMenuSectionId": {
     "required": "アドオンセクションを選択してください。"
   },
+  "addressCountry": {
+    "notSelected": "国・地域を選択してください。"
+  },
+  "addressLocality": {
+    "required": "市区町村は必須です。"
+  },
+  "addressRegion": {
+    "required": "都道府県・州は必須です。"
+  },
   "allowedIps": {
     "max": "固定公開IPは最大 {max} 件です。",
     "required": "固定公開IPは必須です。"
@@ -286,6 +295,9 @@
   },
   "startsAt": {
     "required": "開始日時は必須です。"
+  },
+  "streetAddress": {
+    "required": "番地は必須です。"
   },
   "studentVacation": {
     "required": "冬休み・夏休みの開始日と終了日を選択してください。",

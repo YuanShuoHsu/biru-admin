@@ -10896,12 +10896,12 @@ export interface components {
       /** Format: date-time */
       createdAt: string;
       metadata?: string | null;
-      addressCountry?: string | null;
-      addressLocality?: string | null;
-      addressRegion?: string | null;
+      addressCountry: string;
+      addressLocality: string;
+      addressRegion: string;
       extendedAddress?: string | null;
       postalCode?: string | null;
-      streetAddress?: string | null;
+      streetAddress: string;
       hasMap?: string | null;
       openingHours?: string | null;
       telephone?: string | null;
@@ -10935,12 +10935,12 @@ export interface components {
       /** Format: date-time */
       createdAt: string;
       metadata?: string | null;
-      addressCountry?: string | null;
-      addressLocality?: string | null;
-      addressRegion?: string | null;
+      addressCountry: string;
+      addressLocality: string;
+      addressRegion: string;
       extendedAddress?: string | null;
       postalCode?: string | null;
-      streetAddress?: string | null;
+      streetAddress: string;
       hasMap?: string | null;
       openingHours?: string | null;
       telephone?: string | null;

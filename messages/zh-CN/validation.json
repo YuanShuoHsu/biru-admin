@@ -2,6 +2,15 @@
   "addOnMenuSectionId": {
     "required": "请选择加购区块。"
   },
+  "addressCountry": {
+    "notSelected": "请选择国家/地区。"
+  },
+  "addressLocality": {
+    "required": "城市/区乡镇为必填。"
+  },
+  "addressRegion": {
+    "required": "县市/州省为必填。"
+  },
   "allowedIps": {
     "max": "最多 {max} 个固定公网 IP。",
     "required": "固定公网 IP 为必填。"
@@ -286,6 +295,9 @@
   },
   "startsAt": {
     "required": "开始时间为必填。"
+  },
+  "streetAddress": {
+    "required": "街道地址为必填。"
   },
   "studentVacation": {
     "required": "请选择寒暑假起讫日。",

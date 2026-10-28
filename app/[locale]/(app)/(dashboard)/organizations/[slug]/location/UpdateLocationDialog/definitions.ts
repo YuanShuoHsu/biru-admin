@@ -13,13 +13,22 @@ export const useUpdateLocationFormSchema = () => {
   return z
     .object({
       // https://schema.org/PostalAddress
-      addressCountry: z.string().trim().optional(),
+      addressCountry: z
+        .string()
+        .trim()
+        .min(1, { error: tValidation("addressCountry.notSelected") }),
       currency: z
         .string()
         .trim()
         .min(1, { error: tValidation("currency.notSelected") }),
-      addressLocality: z.string().trim().optional(),
-      addressRegion: z.string().trim().optional(),
+      addressLocality: z
+        .string()
+        .trim()
+        .min(1, { error: tValidation("addressLocality.required") }),
+      addressRegion: z
+        .string()
+        .trim()
+        .min(1, { error: tValidation("addressRegion.required") }),
       extendedAddress: z.string().trim().optional(),
       postalCode: z
         .string()
@@ -28,7 +37,10 @@ export const useUpdateLocationFormSchema = () => {
           error: tValidation("postalCode.format"),
         })
         .optional(),
-      streetAddress: z.string().trim().optional(),
+      streetAddress: z
+        .string()
+        .trim()
+        .min(1, { error: tValidation("streetAddress.required") }),
 
       // https://schema.org/LocalBusiness
       hasMap: z.string().trim().optional(),

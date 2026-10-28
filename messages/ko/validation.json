@@ -2,6 +2,15 @@
   "addOnMenuSectionId": {
     "required": "추가 섹션을 선택해 주세요."
   },
+  "addressCountry": {
+    "notSelected": "국가/지역을 선택해 주세요."
+  },
+  "addressLocality": {
+    "required": "시/군/구는 필수입니다."
+  },
+  "addressRegion": {
+    "required": "시/도는 필수입니다."
+  },
   "allowedIps": {
     "max": "고정 공인 IP는 최대 {max}개입니다.",
     "required": "고정 공인 IP는 필수입니다."
@@ -286,6 +295,9 @@
   },
   "startsAt": {
     "required": "시작 시간은 필수입니다."
+  },
+  "streetAddress": {
+    "required": "도로명 주소는 필수입니다."
   },
   "studentVacation": {
     "required": "방학 시작일과 종료일을 선택하세요.",
