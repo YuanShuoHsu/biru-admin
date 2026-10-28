@@ -122,8 +122,9 @@ const AddressFields = ({
         error={!!errors.streetAddress}
         fullWidth
         helperText={errors.streetAddress?.message}
-        label={`${tOrganizations("address.streetAddress.label")} ${tCommon("optional")}`}
+        label={tOrganizations("address.streetAddress.label")}
         placeholder={tOrganizations("address.streetAddress.placeholder")}
+        required
         {...register("streetAddress")}
       />
       <TextField
@@ -142,8 +143,9 @@ const AddressFields = ({
           fullWidth
           helperText={errors.addressLocality?.message}
           slotProps={{ inputLabel: { shrink: !!addressLocality } }}
-          label={`${tOrganizations("address.addressLocality.label")} ${tCommon("optional")}`}
+          label={tOrganizations("address.addressLocality.label")}
           placeholder={tOrganizations("address.addressLocality.placeholder")}
+          required
           {...register("addressLocality", {
             onChange: (e) => handleAddressLocalityChange(e.target.value),
           })}
@@ -154,8 +156,9 @@ const AddressFields = ({
           fullWidth
           helperText={errors.addressRegion?.message}
           slotProps={{ inputLabel: { shrink: !!addressRegion } }}
-          label={`${tOrganizations("address.addressRegion.label")} ${tCommon("optional")}`}
+          label={tOrganizations("address.addressRegion.label")}
           placeholder={tOrganizations("address.addressRegion.placeholder")}
+          required
           {...register("addressRegion", {
             onChange: (e) => handleAddressRegionChange(e.target.value),
           })}
@@ -176,9 +179,10 @@ const AddressFields = ({
       <CountryAutocomplete
         error={!!errors.addressCountry}
         helperText={errors.addressCountry?.message}
-        label={`${tOrganizations("address.addressCountry.label")} ${tCommon("optional")}`}
+        label={tOrganizations("address.addressCountry.label")}
         mode="country"
         placeholder={tOrganizations("address.addressCountry.placeholder")}
+        required
         value={addressCountry || ""}
         {...register("addressCountry", {
           onChange: (e) => handleAddressCountryChange(e.target.value),

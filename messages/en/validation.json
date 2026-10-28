@@ -2,6 +2,15 @@
   "addOnMenuSectionId": {
     "required": "Please select an add-on section."
   },
+  "addressCountry": {
+    "notSelected": "Please select a country."
+  },
+  "addressLocality": {
+    "required": "City / Town is required."
+  },
+  "addressRegion": {
+    "required": "State / Province is required."
+  },
   "allowedIps": {
     "max": "At most {max} public IPs.",
     "required": "Public IPs are required."
@@ -286,6 +295,9 @@
   },
   "startsAt": {
     "required": "Start time is required."
+  },
+  "streetAddress": {
+    "required": "Street address is required."
   },
   "studentVacation": {
     "required": "Select the vacation start and end dates.",
