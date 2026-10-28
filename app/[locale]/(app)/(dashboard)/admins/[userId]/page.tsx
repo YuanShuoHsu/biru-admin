@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import UserSessions from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -79,28 +81,31 @@ const UserSessionsContent = async ({
 
   const cookie = cookieStore.toString();
 
-  const [{ data: user }, { data: rows, total: rowCount }] = await Promise.all([
-    authClient.admin.getUser({
-      query: { id: userId },
-      fetchOptions: {
-        headers: { cookie, origin: process.env.NEXT_PUBLIC_ADMIN_URL! },
-      },
-    }),
-    fetcher<{ data: UserSession[]; total: number }>(
-      `/api/users/${userId}/sessions?${getGridSearchParams({
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-      })}`,
-      { headers: { cookie } },
-    ),
-  ]);
+  const [{ data: user, error }, { data: rows, total: rowCount }] =
+    await Promise.all([
+      authClient.admin.getUser({
+        query: { id: userId },
+        fetchOptions: {
+          headers: { cookie, origin: process.env.NEXT_PUBLIC_ADMIN_URL! },
+        },
+      }),
+      fetcher<{ data: UserSession[]; total: number }>(
+        `/api/users/${userId}/sessions?${getGridSearchParams({
+          page,
+          pageSize,
+          filterField,
+          filterOperator,
+          filterValue,
+          quickFilterValue,
+          sortBy,
+          sortDirection,
+        })}`,
+        { headers: { cookie } },
+      ),
+    ]);
 
+  if (error?.status === 403 || error?.status === 404) notFound();
+  if (error) return <ErrorAlert />;
   if (!user) notFound();
 
   return (

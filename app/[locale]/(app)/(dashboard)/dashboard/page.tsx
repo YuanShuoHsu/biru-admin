@@ -126,7 +126,7 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
     ),
     settle(
       resolvedOrganizationId
-        ? fetcher<OrderMenu>(
+        ? fetcher<OrderMenu | null>(
             `/api/organizations/${resolvedOrganizationId}/order-menu?lang=${locale}`,
             fetchOptions,
           )

@@ -38,7 +38,11 @@ const OrganizationsSlugInStorePage = async ({
 
   const organizationSlug = decodeURIComponent(slug);
 
-  const [{ data }, { data: organization, error }, session] = await Promise.all([
+  const [
+    { data, error: fullOrganizationError },
+    { data: organization, error },
+    session,
+  ] = await Promise.all([
     authClient.organization.getFullOrganization({
       query: { organizationSlug },
       fetchOptions: { headers: { cookie: cookieStore.toString() } },
@@ -47,8 +51,14 @@ const OrganizationsSlugInStorePage = async ({
     getSession(),
   ]);
 
-  if (!data || error?.status === 404) notFound();
-  if (error) return <ErrorAlert />;
+  if (
+    fullOrganizationError?.status === 400 ||
+    fullOrganizationError?.status === 403 ||
+    error?.status === 404
+  )
+    notFound();
+  if (fullOrganizationError || error) return <ErrorAlert />;
+  if (!data) notFound();
 
   const currentUserRole = data.members.find(
     ({ userId }) => userId === session?.user?.id,

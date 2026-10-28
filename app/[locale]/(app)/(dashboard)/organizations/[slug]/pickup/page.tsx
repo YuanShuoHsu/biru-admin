@@ -36,7 +36,11 @@ const OrganizationsSlugPickupPage = async ({
 }: OrganizationsSlugPickupPageProps) => {
   const [cookieStore, { slug }] = await Promise.all([cookies(), params]);
 
-  const [{ data }, { data: organization, error }, session] = await Promise.all([
+  const [
+    { data, error: fullOrganizationError },
+    { data: organization, error },
+    session,
+  ] = await Promise.all([
     authClient.organization.getFullOrganization({
       query: { organizationSlug: decodeURIComponent(slug) },
       fetchOptions: { headers: { cookie: cookieStore.toString() } },
@@ -45,8 +49,14 @@ const OrganizationsSlugPickupPage = async ({
     getSession(),
   ]);
 
-  if (!data || error?.status === 404) notFound();
-  if (error) return <ErrorAlert />;
+  if (
+    fullOrganizationError?.status === 400 ||
+    fullOrganizationError?.status === 403 ||
+    error?.status === 404
+  )
+    notFound();
+  if (fullOrganizationError || error) return <ErrorAlert />;
+  if (!data) notFound();
 
   const currentUserRole = data.members.find(
     ({ userId }) => userId === session?.user?.id,

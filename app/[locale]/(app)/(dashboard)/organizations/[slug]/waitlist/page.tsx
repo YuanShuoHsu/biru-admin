@@ -41,7 +41,7 @@ const OrganizationsSlugWaitlistPage = async ({
   const organizationSlug = decodeURIComponent(slug);
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const [{ data }, session] = await Promise.all([
+  const [{ data, error: organizationError }, session] = await Promise.all([
     authClient.organization.getFullOrganization({
       query: { organizationSlug },
       fetchOptions,
@@ -49,6 +49,9 @@ const OrganizationsSlugWaitlistPage = async ({
     getSession(),
   ]);
 
+  if (organizationError?.status === 400 || organizationError?.status === 403)
+    notFound();
+  if (organizationError) return <ErrorAlert />;
   if (!data) notFound();
 
   const currentUserRole = data.members.find(

@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import OrganizationsSlugTeamsTeamId from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
@@ -40,23 +42,35 @@ const OrganizationsSlugTeamsTeamIdContent = async ({
 
   const cookieHeader = { cookie: cookieStore.toString() };
 
-  const [{ data: activeOrganization }, { data: teamMemberData }, session] =
-    await Promise.all([
-      authClient.organization.getFullOrganization({
-        query: { organizationSlug: decodeURIComponent(slug) },
-        fetchOptions: { headers: cookieHeader },
-      }),
-      authClient.organization.listTeamMembers({
-        query: { teamId },
-        fetchOptions: { headers: cookieHeader },
-      }),
-      getSession(),
-    ]);
+  const [
+    { data: activeOrganization, error: organizationError },
+    { data: teamMemberData, error: teamMembersError },
+    session,
+  ] = await Promise.all([
+    authClient.organization.getFullOrganization({
+      query: { organizationSlug: decodeURIComponent(slug) },
+      fetchOptions: { headers: cookieHeader },
+    }),
+    authClient.organization.listTeamMembers({
+      query: { teamId },
+      fetchOptions: { headers: cookieHeader },
+    }),
+    getSession(),
+  ]);
 
+  if (organizationError?.status === 400 || organizationError?.status === 403)
+    notFound();
+  if (organizationError) return <ErrorAlert />;
   if (!activeOrganization || !session?.user?.id) notFound();
 
   const team = activeOrganization.teams.find(({ id }) => id === teamId);
   if (!team) notFound();
+
+  if (
+    teamMembersError &&
+    teamMembersError.code !== "USER_IS_NOT_A_MEMBER_OF_THE_TEAM"
+  )
+    return <ErrorAlert />;
 
   const teamMembers = buildTeamMembers(
     teamMemberData || [],

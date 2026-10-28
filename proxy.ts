@@ -29,18 +29,23 @@ const fetchWithCookies = (url: string, request: NextRequest) =>
     },
   });
 
+// 查不到時回 undefined，交給頁面顯示錯誤，不要誤判成沒有權限
 const isOrganizationMember = async (request: NextRequest) => {
   const baseURL = process.env.NEXT_PUBLIC_NEST_URL;
 
   try {
-    const organizations = await fetchWithCookies(
+    const res = await fetchWithCookies(
       `${baseURL}/api/auth/organization/list`,
       request,
-    ).then((res) => (res.ok ? res.json() : null));
+    );
+    if (res.status === 401) return false;
+    if (!res.ok) return undefined;
+
+    const organizations = await res.json();
 
     return Array.isArray(organizations) && organizations.length > 0;
   } catch {
-    return false;
+    return undefined;
   }
 };
 
@@ -93,10 +98,12 @@ export const proxy = async (request: NextRequest) => {
     return NextResponse.redirect(url);
   };
 
-  const [{ data: session }, isMember] = await Promise.all([
+  const [{ data: session, error: sessionError }, isMember] = await Promise.all([
     authClient.getSession({ fetchOptions: { headers: request.headers } }),
     needsAdminAccess || isNoAccessPage ? isOrganizationMember(request) : false,
   ]);
+
+  if (sessionError) return response;
 
   if (!session && !isPublicPage) return redirectWithReturn("/auth/sign-in");
 
@@ -106,9 +113,10 @@ export const proxy = async (request: NextRequest) => {
     );
   }
 
-  const canAccessAdmin = session?.user.role === "admin" || isMember;
+  const isPlatformAdmin = session?.user.role === "admin";
+  const canAccessAdmin = isPlatformAdmin || isMember;
 
-  if (session && needsAdminAccess && !canAccessAdmin)
+  if (session && needsAdminAccess && !isPlatformAdmin && isMember === false)
     return redirectWithReturn(NO_ADMIN_ACCESS_ROUTE);
 
   if (session && isNoAccessPage && canAccessAdmin) {

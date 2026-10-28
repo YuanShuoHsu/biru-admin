@@ -53,7 +53,7 @@ export const fetcher = async <T = unknown>(
     }
   } else {
     const text = await res.text();
-    data = { message: text };
+    data = res.ok && !text ? null : { message: text };
   }
 
   if (!res.ok) {
