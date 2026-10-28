@@ -22,6 +22,8 @@ export type WaitlistTicketFilterField =
   components["schemas"]["WaitlistTicketFilterField"];
 export type WaitlistTicketListItem =
   components["schemas"]["WaitlistTicketListItemDto"];
+export type WaitlistTicketListResponse =
+  components["schemas"]["WaitlistTicketListResponseDto"];
 export type WaitlistTicketResponse =
   components["schemas"]["WaitlistTicketResponseDto"];
 export type WaitlistTicketSortField =

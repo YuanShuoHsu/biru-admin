@@ -49,6 +49,7 @@ import type {
   AdminWaitlistResponse,
   WaitlistTicketFilterField,
   WaitlistTicketListItem,
+  WaitlistTicketListResponse,
   WaitlistTicketSortField,
 } from "@/types/waitlist";
 
@@ -166,7 +167,7 @@ const WaitlistTickets = ({
       sortModel,
     ],
     async ([url]) =>
-      fetcher<{ data: WaitlistTicketListItem[]; total: number }>(
+      fetcher<WaitlistTicketListResponse>(
         `${url}?${getDataGridSearchParams(
           paginationModel,
           filterModel,

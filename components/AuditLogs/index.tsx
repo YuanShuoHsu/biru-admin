@@ -52,6 +52,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 import type {
   AuditAction,
   AuditLogFilterField,
+  AuditLogListResponse,
   AuditLogResponse,
   AuditLogSortField,
   AuditResource,
@@ -576,9 +577,7 @@ const AuditLogs = ({
       if (resourceId) params.set("resourceId", resourceId);
       if (ancestorId) params.set("ancestorId", ancestorId);
 
-      return fetcher<{ data: AuditLogResponse[]; total: number }>(
-        `${path}?${params.toString()}`,
-      );
+      return fetcher<AuditLogListResponse>(`${path}?${params.toString()}`);
     },
     {
       fallbackData: { data: initialLogs, total: initialRowCount },

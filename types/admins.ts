@@ -8,6 +8,7 @@ import {
 } from "@/types/api";
 
 export type User = components["schemas"]["UserListItemDto"];
+export type UserListResponse = components["schemas"]["UserListResponseDto"];
 export type UserRole = NonNullable<User["role"]>;
 export type UserStatsResponse = components["schemas"]["UserStatsResponseDto"];
 
@@ -16,6 +17,8 @@ export type UserFilterOperator = (typeof userFilterOperatorValues)[number];
 export type UserSortField = (typeof userSortFieldValues)[number];
 
 export type UserSession = components["schemas"]["UserSessionResponseDto"];
+export type UserSessionListResponse =
+  components["schemas"]["UserSessionListResponseDto"];
 export type UserSessionFilterField =
   (typeof userSessionFilterFieldValues)[number];
 export type UserSessionSortField = (typeof userSessionSortFieldValues)[number];

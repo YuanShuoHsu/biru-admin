@@ -14,8 +14,14 @@ import {
 
 export type Menu = components["schemas"]["MenuResponseDto"];
 export type MenuSection = components["schemas"]["MenuSectionResponseDto"];
+export type MenuSectionListResponse =
+  components["schemas"]["MenuSectionListResponseDto"];
 export type MenuItem = components["schemas"]["MenuItemResponseDto"];
+export type MenuItemListResponse =
+  components["schemas"]["MenuItemListResponseDto"];
 export type MenuItemAddOn = components["schemas"]["MenuItemAddOnResponseDto"];
+export type MenuItemAddOnListResponse =
+  components["schemas"]["MenuItemAddOnListResponseDto"];
 
 export type OrderMenu = components["schemas"]["OrderMenuResponseDto"];
 export type OrderMenuSection =
@@ -31,9 +37,15 @@ export type OrderMenuModifier =
   components["schemas"]["OrderMenuModifierResponseDto"];
 
 export type ModifierGroup = components["schemas"]["ModifierGroupResponseDto"];
+export type ModifierGroupListResponse =
+  components["schemas"]["ModifierGroupListResponseDto"];
 export type Modifier = components["schemas"]["ModifierResponseDto"];
+export type ModifierListResponse =
+  components["schemas"]["ModifierListResponseDto"];
 export type MenuItemModifierGroup =
   components["schemas"]["MenuItemModifierGroupResponseDto"];
+export type MenuItemModifierGroupListResponse =
+  components["schemas"]["MenuItemModifierGroupListResponseDto"];
 
 export type ItemAvailability = components["schemas"]["ItemAvailability"];
 

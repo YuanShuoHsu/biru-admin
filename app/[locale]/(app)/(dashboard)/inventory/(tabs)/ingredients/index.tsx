@@ -85,6 +85,7 @@ import type {
 import type {
   Ingredient,
   IngredientFilterField,
+  IngredientListResponse,
   IngredientSortField,
 } from "@/types/inventory";
 import type { Organization } from "@/types/organizations";
@@ -287,7 +288,7 @@ const Ingredients = ({
 
       if (lowStock) params.set("lowStock", "true");
 
-      return fetcher<{ data: Ingredient[]; total: number }>(
+      return fetcher<IngredientListResponse>(
         `/api/organizations/${organizationSlug}/ingredients?${params}`,
       );
     },

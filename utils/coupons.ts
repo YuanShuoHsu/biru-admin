@@ -8,8 +8,8 @@ import type {
   Coupon,
   CouponFilterField,
   CouponListResponse,
-  CouponRecipient,
   CouponRecipientFilterField,
+  CouponRecipientListResponse,
   CouponRecipientSortField,
   CouponSortField,
 } from "@/types/coupons";
@@ -144,7 +144,7 @@ export const getCouponRecipients = cache(
       for (const entry of quickFilterEnums || [])
         params.append("quickFilterEnums", entry);
 
-      const result = await fetcher<{ data: CouponRecipient[]; total: number }>(
+      const result = await fetcher<CouponRecipientListResponse>(
         `/api/coupons/${couponId}/recipients?${params.toString()}`,
         init,
       );

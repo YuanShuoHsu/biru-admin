@@ -71,6 +71,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
+  AdminOrderListResponse,
   AdminOrderResponse,
   OrderFilterField,
   OrderSortField,
@@ -199,7 +200,7 @@ const Orders = ({
       sortModel,
     ],
     async () =>
-      fetcher<{ data: AdminOrderResponse[]; total: number }>(
+      fetcher<AdminOrderListResponse>(
         `/api/organizations/${organizationSlug}/orders?${getDataGridSearchParams(
           paginationModel,
           filterModel,

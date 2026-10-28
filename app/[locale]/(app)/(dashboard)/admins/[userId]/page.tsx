@@ -16,7 +16,7 @@ import {
   userSessionFilterFieldValues,
   userSessionSortFieldValues,
 } from "@/types/api";
-import type { UserSession } from "@/types/admins";
+import type { UserSessionListResponse } from "@/types/admins";
 
 import { getGridSearchParams, resolveGridSearchParams } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
@@ -86,7 +86,7 @@ const UserSessionsContent = async ({
         headers: { cookie, origin: process.env.NEXT_PUBLIC_ADMIN_URL! },
       },
     }),
-    fetcher<{ data: UserSession[]; total: number }>(
+    fetcher<UserSessionListResponse>(
       `/api/users/${userId}/sessions?${getGridSearchParams({
         page,
         pageSize,

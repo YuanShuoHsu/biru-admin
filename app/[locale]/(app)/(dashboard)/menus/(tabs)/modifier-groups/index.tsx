@@ -78,6 +78,7 @@ import type {
   Menu,
   ModifierGroup,
   ModifierGroupFilterField,
+  ModifierGroupListResponse,
   ModifierGroupSortField,
 } from "@/types/menus";
 
@@ -211,7 +212,7 @@ const ModifierGroups = ({
       sortModel,
     ],
     async () => {
-      return fetcher<{ data: ModifierGroup[]; total: number }>(
+      return fetcher<ModifierGroupListResponse>(
         `/api/menus/${menuId}/modifier-groups?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
       );
     },

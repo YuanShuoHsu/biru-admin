@@ -64,6 +64,7 @@ import type {
   Recipe,
   RecipeIngredient,
   RecipeIngredientFilterField,
+  RecipeIngredientListResponse,
   RecipeIngredientSortField,
 } from "@/types/inventory";
 import type { MenuItem } from "@/types/menus";
@@ -215,7 +216,7 @@ const RecipeIngredients = ({
       sortModel,
     ],
     async ([url]) =>
-      fetcher<{ data: RecipeIngredient[]; total: number }>(
+      fetcher<RecipeIngredientListResponse>(
         `${url}?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
       ),
     {
