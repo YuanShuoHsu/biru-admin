@@ -17,7 +17,7 @@ import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { MenuItem, TextField } from "@mui/material";
+import { LinearProgress, MenuItem, TextField, Typography } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -64,9 +64,14 @@ const SubstituteDialog = ({
   const earliestSuggestion = holiday.isAfter(today) ? holiday : today;
   const to = earliestSuggestion.add(SUBSTITUTE_SEARCH_DAYS, "day");
 
-  const { data: shifts } = useSWR(
+  const {
+    data: shifts,
+    error,
+    isLoading,
+  } = useSWR(
     attendanceCalendarPath(organizationSlug, "shifts", from, to.toISOString()),
     (url: string) => fetcher<AttendanceShift[]>(url),
+    { onError: () => undefined },
   );
 
   const options = (shifts ?? [])
@@ -174,6 +179,8 @@ const SubstituteDialog = ({
           </MenuItem>
         ))}
       </TextField>
+      {isLoading && <LinearProgress />}
+      {error && <Typography color="error">{getErrorMessage(error)}</Typography>}
     </FormBox>
   );
 };
