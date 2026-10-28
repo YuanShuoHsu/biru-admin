@@ -61,6 +61,7 @@ import type {
   PayrollEarningType,
   PayrollEarningTypeFilterField,
   PayrollEarningTypeSortField,
+  PayrollRuleSet,
   PayrollStatement,
   PayrollStatementListItem,
   PayrollStatementFilterField,
@@ -559,6 +560,12 @@ export const payrollPath = (
   resource: string,
 ) =>
   `/api/organizations/${organizationSlug}/payroll/${scope === "me" ? "me/" : ""}${resource}`;
+
+export const PAYROLL_RULE_SETS_PATH = "/api/payroll/rule-sets";
+
+export const getPayrollRuleSets = cache((init?: RequestInit) =>
+  fetcher<PayrollRuleSet[]>(PAYROLL_RULE_SETS_PATH, init),
+);
 
 export const getPayrollEarningTypes = cache(
   async (
