@@ -24,7 +24,6 @@ import type {
   AttendanceEmployeeSummary,
   AttendanceEmployeeFilterField,
   AttendanceEmployeeSortField,
-  AttendanceHolidaySubstitute,
   AttendanceHolidaySubstituteFilterField,
   AttendanceHolidaySubstitutePage,
   AttendanceHolidaySubstituteSortField,
@@ -70,7 +69,7 @@ import type {
 } from "@/types/attendance";
 
 import { getGridSearchParams, type GridQuery } from "@/utils/dataGrid";
-import { fetcher } from "@/utils/fetcher";
+import { type FetchError, fetcher } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 
 dayjs.extend(utc);
@@ -148,24 +147,20 @@ const getGrid = async <
   init?: RequestInit,
   extraParams?: Record<string, string>,
 ) => {
-  try {
-    const params = getGridSearchParams(query);
+  const params = getGridSearchParams(query);
 
-    for (const [key, value] of Object.entries(extraParams ?? {}))
-      params.set(key, value);
+  for (const [key, value] of Object.entries(extraParams ?? {}))
+    params.set(key, value);
 
-    const result = await fetcher<{ data: Row[]; total: number }>(
-      `${path}?${params.toString()}`,
-      init,
-    );
+  const result = await fetcher<{ data: Row[]; total: number }>(
+    `${path}?${params.toString()}`,
+    init,
+  );
 
-    return {
-      data: Array.isArray(result.data) ? result.data : [],
-      total: result.total || 0,
-    };
-  } catch {
-    return { data: [] as Row[], total: 0 };
-  }
+  return {
+    data: Array.isArray(result.data) ? result.data : [],
+    total: result.total || 0,
+  };
 };
 
 export const attendancePath = (
@@ -209,8 +204,9 @@ export const getAttendanceSettings = cache(
         attendancePath(organizationSlug, "org", "settings"),
         init,
       );
-    } catch {
-      return null;
+    } catch (error) {
+      if ((error as FetchError).status === 404) return null;
+      throw error;
     }
   },
 );
@@ -315,35 +311,24 @@ export const getAttendanceShiftTypes = cache(
 );
 
 export const getAttendanceTeams = cache(
-  async (organizationSlug: string, init?: RequestInit) => {
-    try {
-      return await fetcher<AttendanceTeam[]>(
-        attendancePath(organizationSlug, "org", "teams"),
-        init,
-      );
-    } catch {
-      return [];
-    }
-  },
+  (organizationSlug: string, init?: RequestInit) =>
+    fetcher<AttendanceTeam[]>(
+      attendancePath(organizationSlug, "org", "teams"),
+      init,
+    ),
 );
 
-const getAttendanceCalendar = async <T>(
+const getAttendanceCalendar = <T>(
   organizationSlug: string,
   resource: Parameters<typeof attendanceCalendarPath>[1],
   from: string,
   to: string,
-  fallback: T,
   init?: RequestInit,
-) => {
-  try {
-    return await fetcher<T>(
-      attendanceCalendarPath(organizationSlug, resource, from, to),
-      init,
-    );
-  } catch {
-    return fallback;
-  }
-};
+) =>
+  fetcher<T>(
+    attendanceCalendarPath(organizationSlug, resource, from, to),
+    init,
+  );
 
 export const getAttendanceCalendarShifts = cache(
   (organizationSlug: string, from: string, to: string, init?: RequestInit) =>
@@ -352,7 +337,6 @@ export const getAttendanceCalendarShifts = cache(
       "shifts",
       from,
       to,
-      [],
       init,
     ),
 );
@@ -364,7 +348,6 @@ export const getAttendanceCalendarDayKinds = cache(
       "day-kinds",
       from,
       to,
-      { dayKinds: [], holidays: [], pendingSubstitutes: [] },
       init,
     ),
 );
@@ -376,22 +359,16 @@ export const getAttendanceCalendarLeaves = cache(
       "leaves",
       from,
       to,
-      [],
       init,
     ),
 );
 
 export const getAttendancePunchableShifts = cache(
-  async (organizationSlug: string, init?: RequestInit) => {
-    try {
-      return await fetcher<AttendanceShift[]>(
-        attendancePath(organizationSlug, "me", "shifts/punchable"),
-        init,
-      );
-    } catch {
-      return [];
-    }
-  },
+  (organizationSlug: string, init?: RequestInit) =>
+    fetcher<AttendanceShift[]>(
+      attendancePath(organizationSlug, "me", "shifts/punchable"),
+      init,
+    ),
 );
 
 export const getAttendanceRequests = cache(
@@ -439,17 +416,13 @@ export const getAttendanceHolidaySubstitutes = cache(
     > = {},
     init?: RequestInit,
   ) => {
-    try {
-      const { data: substitutes, total } =
-        await fetcher<AttendanceHolidaySubstitutePage>(
-          attendanceHolidaySubstitutesPath(organizationSlug, year, query),
-          init,
-        );
+    const { data: substitutes, total } =
+      await fetcher<AttendanceHolidaySubstitutePage>(
+        attendanceHolidaySubstitutesPath(organizationSlug, year, query),
+        init,
+      );
 
-      return { substitutes, total };
-    } catch {
-      return { substitutes: [] as AttendanceHolidaySubstitute[], total: 0 };
-    }
+    return { substitutes, total };
   },
 );
 
@@ -639,16 +612,11 @@ export const getMyWithholdingCertificates = cache(
 );
 
 export const getPayrollTerms = cache(
-  async (organizationSlug: string, init?: RequestInit) => {
-    try {
-      return await fetcher<PayrollTerms[]>(
-        payrollPath(organizationSlug, "org", "terms"),
-        init,
-      );
-    } catch {
-      return [];
-    }
-  },
+  (organizationSlug: string, init?: RequestInit) =>
+    fetcher<PayrollTerms[]>(
+      payrollPath(organizationSlug, "org", "terms"),
+      init,
+    ),
 );
 
 type Formatter = ReturnType<typeof useFormatter>;

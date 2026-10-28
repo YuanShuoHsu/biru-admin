@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import ShiftTypes from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -17,6 +19,7 @@ import {
 
 import { getAttendanceShiftTypes } from "@/utils/attendance";
 import { resolveGridSearchParams } from "@/utils/dataGrid";
+import { settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -92,20 +95,25 @@ const ShiftTypesContent = async ({
       locale,
     });
 
-  const { shiftTypes: rows, total: rowCount } = await getAttendanceShiftTypes(
-    organization.slug,
-    {
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-    },
-    fetchOptions,
+  const { data: shiftTypes, error } = await settle(
+    getAttendanceShiftTypes(
+      organization.slug,
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
+      fetchOptions,
+    ),
   );
+  if (error) return <ErrorAlert />;
+
+  const { shiftTypes: rows, total: rowCount } = shiftTypes;
 
   return (
     <ShiftTypes

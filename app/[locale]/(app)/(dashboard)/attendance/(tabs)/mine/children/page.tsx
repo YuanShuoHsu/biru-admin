@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import MyChildren from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -15,8 +17,12 @@ import {
   filterOperatorValues,
 } from "@/types/api";
 
-import { getAttendanceParentalChildren } from "@/utils/attendance";
+import {
+  getAttendanceContext,
+  getAttendanceParentalChildren,
+} from "@/utils/attendance";
 import { resolveGridSearchParams } from "@/utils/dataGrid";
+import { settle } from "@/utils/fetcher";
 import { getAttendanceAccess } from "@/utils/session";
 
 interface MyChildrenPageProps {
@@ -56,6 +62,8 @@ const MyChildrenContent = async ({
     searchParams,
   ]);
 
+  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
+
   const access = await getAttendanceAccess(rawSearchParams.organization);
 
   if (!access) notFound();
@@ -86,22 +94,35 @@ const MyChildrenContent = async ({
       locale,
     });
 
-  const { parentalChildren: rows, total: rowCount } =
-    await getAttendanceParentalChildren(
-      organization.slug,
-      "me",
-      {
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-      },
-      { headers: { cookie: cookieStore.toString() } },
-    );
+  const { data: context, error: contextError } = await settle(
+    getAttendanceContext(organization.slug, fetchOptions),
+  );
+  if (contextError) return <ErrorAlert />;
+
+  const { employee } = context;
+
+  const { data: parentalChildren, error } = await settle(
+    employee
+      ? getAttendanceParentalChildren(
+          organization.slug,
+          "me",
+          {
+            page,
+            pageSize,
+            filterField,
+            filterOperator,
+            filterValue,
+            quickFilterValue,
+            sortBy,
+            sortDirection,
+          },
+          fetchOptions,
+        )
+      : Promise.resolve({ parentalChildren: [], total: 0 }),
+  );
+  if (error) return <ErrorAlert />;
+
+  const { parentalChildren: rows, total: rowCount } = parentalChildren;
 
   return (
     <MyChildren
