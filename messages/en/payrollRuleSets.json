@@ -16,7 +16,7 @@
   },
   "confirm": {
     "title": "Confirm minimum wage",
-    "hint": "The minimum wage has no official data API. Enter the hourly minimum wage the Ministry of Labor announced for {period} onward.",
+    "hint": "The official minimum wage data has not been updated for {period} onward yet. Enter the hourly minimum wage announced by the Ministry of Labor.",
     "minimumHourlyWage": "Announced hourly minimum wage (NT$)",
     "sourceLabel": {
       "label": "Announcement title",

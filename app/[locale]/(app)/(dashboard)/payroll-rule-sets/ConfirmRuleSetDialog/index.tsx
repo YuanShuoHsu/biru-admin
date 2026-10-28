@@ -16,13 +16,14 @@ import NumberSpinner from "@/components/NumberSpinner";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { apiClient } from "@/lib/api-client";
+
 import { DialogContentText, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { PAYROLL_RULE_SETS_PATH, toCents } from "@/utils/attendance";
+import { toCents } from "@/utils/attendance";
 import { getErrorMessage } from "@/utils/errors";
-import { fetcher } from "@/utils/fetcher";
 
 interface ConfirmRuleSetDialogProps {
   effectiveFrom: string;
@@ -62,14 +63,13 @@ const ConfirmRuleSetDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await fetcher(`${PAYROLL_RULE_SETS_PATH}/${effectiveFrom}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      await apiClient.PATCH("/api/payroll/rule-sets/{effectiveFrom}", {
+        body: {
           minimumHourlyWageCents: toCents(minimumHourlyWage),
           sourceLabel,
           sourceUrl,
-        }),
+        },
+        params: { path: { effectiveFrom } },
       });
 
       enqueueSnackbar(tPayrollRuleSets("confirm.success", { period }), {

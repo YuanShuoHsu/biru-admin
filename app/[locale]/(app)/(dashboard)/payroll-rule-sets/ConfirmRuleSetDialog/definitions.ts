@@ -1,11 +1,13 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
+import { MONEY_FRACTION_DIGITS } from "@/constants/attendance";
+
 import { isMoney } from "@/utils/attendance";
 
 export const MINIMUM_HOURLY_WAGE_MAX = 9_999_999.99;
 
-export const SOURCE_LABEL_MAX_LENGTH = 200;
+const SOURCE_LABEL_MAX_LENGTH = 200;
 
 export const useConfirmRuleSetFormSchema = () => {
   const tPayrollRuleSets = useTranslations("payrollRuleSets");
@@ -19,7 +21,9 @@ export const useConfirmRuleSetFormSchema = () => {
         error: tValidation("number.max", { max: MINIMUM_HOURLY_WAGE_MAX }),
       })
       .refine(isMoney, {
-        error: tValidation("number.maxFractionDigits", { digits: 2 }),
+        error: tValidation("number.maxFractionDigits", {
+          digits: MONEY_FRACTION_DIGITS,
+        }),
       }),
     sourceLabel: z
       .string()
@@ -30,15 +34,11 @@ export const useConfirmRuleSetFormSchema = () => {
           max: SOURCE_LABEL_MAX_LENGTH,
         }),
       }),
-    sourceUrl: z
-      .string()
-      .trim()
-      .pipe(
-        z.url({
-          error: tPayrollRuleSets("confirm.sourceUrl.invalid"),
-          protocol: /^https$/,
-        }),
-      ),
+    sourceUrl: z.url({
+      error: tPayrollRuleSets("confirm.sourceUrl.invalid"),
+      hostname: z.regexes.domain,
+      protocol: /^https$/,
+    }),
   });
 };
 
