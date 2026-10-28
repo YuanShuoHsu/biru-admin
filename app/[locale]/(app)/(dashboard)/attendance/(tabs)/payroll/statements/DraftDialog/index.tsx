@@ -120,7 +120,7 @@ const DraftDialog = ({
   const {
     data: entered,
     error: enteredError,
-    isLoading: enteredLoading,
+    isValidating: enteredValidating,
   } = useSWR(
     earningTypes.length && employeeId && month
       ? `${payrollPath(organizationSlug, "org", "earnings")}?${new URLSearchParams({ employeeId, month })}`
@@ -139,8 +139,8 @@ const DraftDialog = ({
   }, [entered, replace]);
 
   useEffect(() => {
-    setDialog({ confirmDisabled: enteredLoading || !!enteredError });
-  }, [enteredError, enteredLoading, setDialog]);
+    setDialog({ confirmDisabled: enteredValidating || !!enteredError });
+  }, [enteredError, enteredValidating, setDialog]);
 
   const onSubmitHandler = async (values: DraftForm) => {
     try {
