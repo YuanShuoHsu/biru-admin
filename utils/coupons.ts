@@ -95,9 +95,9 @@ export const getCoupons = cache(
   },
 );
 
-export const getCoupon = cache(async (couponId: string, init?: RequestInit) => {
-  return await fetcher<Coupon>(`/api/coupons/${couponId}`, init);
-});
+export const getCoupon = cache((couponId: string, init?: RequestInit) =>
+  fetcher<Coupon>(`/api/coupons/${couponId}`, init),
+);
 
 export const getCouponRecipients = cache(
   async (

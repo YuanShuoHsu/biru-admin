@@ -122,6 +122,7 @@ const MenuItemModifierGroupsContent = async ({
     ),
     getMemberRole(selectedOrganization.id),
   ]);
+  if (isMissingResource(linksError)) notFound();
   if (linksError) return <ErrorAlert />;
 
   const { links: rows, total: rowCount } = links;

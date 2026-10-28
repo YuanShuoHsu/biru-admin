@@ -122,6 +122,7 @@ const MenuItemAddOnsContent = async ({
     ),
     getMemberRole(selectedOrganization.id),
   ]);
+  if (isMissingResource(addOnsError)) notFound();
   if (addOnsError) return <ErrorAlert />;
 
   const { addOns: rows, total: rowCount } = addOns;

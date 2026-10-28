@@ -108,7 +108,12 @@ const CouponRecipientsContent = async ({
         ),
       ),
     ]);
-  if (couponError?.status === 404) notFound();
+  if (
+    couponError?.status === 403 ||
+    couponError?.status === 404 ||
+    recipientsError?.status === 403
+  )
+    notFound();
   if (couponError || recipientsError) return <ErrorAlert />;
 
   const { recipients: rows, total: rowCount } = recipients;

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import Banners from ".";
@@ -94,6 +95,7 @@ const BannersContent = async ({ params, searchParams }: BannersPageProps) => {
       { headers: { cookie: cookieStore.toString() } },
     ),
   );
+  if (error?.status === 403) notFound();
   if (error) return <ErrorAlert />;
 
   const { banners: rows, total: rowCount } = banners;

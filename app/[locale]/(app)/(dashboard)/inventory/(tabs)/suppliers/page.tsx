@@ -91,29 +91,7 @@ const SuppliersContent = async ({
       locale,
     });
 
-  const [memberRole, { data: suppliers, error: suppliersError }] =
-    await Promise.all([
-      getMemberRole(organization.id),
-      settle(
-        getSuppliers(
-          organization.slug,
-          {
-            page,
-            pageSize,
-            filterField,
-            filterOperator,
-            filterValue,
-            quickFilterValue,
-            sortBy,
-            sortDirection,
-          },
-          fetchOptions,
-        ),
-      ),
-    ]);
-  if (suppliersError) return <ErrorAlert />;
-
-  const { suppliers: rows, total: rowCount } = suppliers;
+  const memberRole = await getMemberRole(organization.id);
 
   const canViewAuditLog = hasRolePermission(memberRole, {
     auditLog: ["read"],
@@ -126,6 +104,26 @@ const SuppliersContent = async ({
   });
 
   if (!canViewPurchasing) notFound();
+
+  const { data: suppliers, error: suppliersError } = await settle(
+    getSuppliers(
+      organization.slug,
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
+      fetchOptions,
+    ),
+  );
+  if (suppliersError) return <ErrorAlert />;
+
+  const { suppliers: rows, total: rowCount } = suppliers;
 
   const { data: ingredientOptions, error: ingredientsError } = await settle(
     canWrite
