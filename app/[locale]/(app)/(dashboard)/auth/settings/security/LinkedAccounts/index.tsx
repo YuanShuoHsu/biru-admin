@@ -5,6 +5,7 @@ import { Fragment, type ComponentType } from "react";
 
 import ProviderRow from "./ProviderRow";
 
+import ErrorAlert from "@/components/ErrorAlert";
 import FormCard, {
   StyledCardContent,
   StyledCardHeader,
@@ -13,6 +14,8 @@ import GoogleIcon from "@/components/GoogleIcon";
 
 import { Divider, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
+
+import useListAccounts from "@/hooks/useListAccounts";
 
 const StyledTypography = styled(Typography)({
   fontWeight: "bold",
@@ -29,6 +32,8 @@ const providers: Provider[] = [
 ];
 
 const LinkedAccounts = () => {
+  const { error, mutate } = useListAccounts();
+
   const tAuth = useTranslations("auth");
 
   return (
@@ -41,12 +46,14 @@ const LinkedAccounts = () => {
         }
       />
       <StyledCardContent>
-        {providers.map(({ id, Icon, label }, index) => (
-          <Fragment key={id}>
-            {index > 0 && <Divider flexItem />}
-            <ProviderRow id={id} Icon={Icon} label={label} />
-          </Fragment>
-        ))}
+        {error && <ErrorAlert onRetry={() => mutate()} />}
+        {!error &&
+          providers.map(({ id, Icon, label }, index) => (
+            <Fragment key={id}>
+              {index > 0 && <Divider flexItem />}
+              <ProviderRow id={id} Icon={Icon} label={label} />
+            </Fragment>
+          ))}
       </StyledCardContent>
     </FormCard>
   );

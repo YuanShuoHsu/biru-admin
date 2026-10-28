@@ -12,7 +12,8 @@ const useListAccounts = () => {
   return useSWR(
     session ? [listAccountsKey, session.user.id] : null,
     async () => {
-      const { data } = await authClient.listAccounts();
+      const { data, error } = await authClient.listAccounts();
+      if (error) throw error;
 
       return data;
     },

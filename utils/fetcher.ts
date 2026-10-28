@@ -3,6 +3,8 @@
 // https://github.com/vercel/swr/discussions/939
 // https://github.com/vercel/swr/blob/main/examples/basic-typescript/libs/fetch.ts
 
+import { unstable_rethrow } from "next/navigation";
+
 interface ErrorInfo {
   message: string;
   code?: string;
@@ -78,6 +80,8 @@ export const settle = async <T>(
   try {
     return { data: await promise };
   } catch (error) {
+    unstable_rethrow(error);
+
     return { error: error as FetchError };
   }
 };

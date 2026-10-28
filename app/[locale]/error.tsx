@@ -2,6 +2,8 @@
 
 "use client";
 
+import { useEffect } from "react";
+
 import ErrorAlert from "@/components/ErrorAlert";
 
 interface ErrorPageProps {
@@ -9,13 +11,21 @@ interface ErrorPageProps {
   retry: () => void;
 }
 
-const ErrorPage = ({ error, retry }: ErrorPageProps) => (
-  <ErrorAlert
-    digest={
-      error instanceof Error ? (error as { digest?: string }).digest : undefined
-    }
-    onRetry={retry}
-  />
-);
+const ErrorPage = ({ error, retry }: ErrorPageProps) => {
+  useEffect(() => {
+    console.error(error);
+  }, [error]);
+
+  return (
+    <ErrorAlert
+      digest={
+        error instanceof Error
+          ? (error as { digest?: string }).digest
+          : undefined
+      }
+      onRetry={retry}
+    />
+  );
+};
 
 export default ErrorPage;
