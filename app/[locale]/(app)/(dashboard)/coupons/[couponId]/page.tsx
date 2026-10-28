@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import CouponRecipients from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -18,6 +20,7 @@ import {
 import { getCoupon, getCouponRecipients } from "@/utils/coupons";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getCouponRecipientEnumOptions } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 
 interface CouponRecipientsPageProps {
   params: Promise<{ couponId: string; locale: Locale }>;
@@ -84,26 +87,33 @@ const CouponRecipientsContent = async ({
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const [coupon, { recipients: rows, total: rowCount }] = await Promise.all([
-    getCoupon(couponId, fetchOptions),
-    getCouponRecipients(
-      couponId,
-      {
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterEnums,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-      },
-      fetchOptions,
+  const [
+    { data: coupon, error: couponError },
+    { data: recipients, error: recipientsError },
+  ] = await Promise.all([
+    settle(getCoupon(couponId, fetchOptions)),
+    settle(
+      getCouponRecipients(
+        couponId,
+        {
+          page,
+          pageSize,
+          filterField,
+          filterOperator,
+          filterValue,
+          quickFilterEnums,
+          quickFilterValue,
+          sortBy,
+          sortDirection,
+        },
+        fetchOptions,
+      ),
     ),
   ]);
+  if (couponError?.status === 404) notFound();
+  if (couponError || recipientsError) return <ErrorAlert />;
 
-  if (!coupon) notFound();
+  const { recipients: rows, total: rowCount } = recipients;
 
   return (
     <CouponRecipients

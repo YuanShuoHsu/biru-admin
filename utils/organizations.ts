@@ -9,24 +9,16 @@ import type { Organization, OrganizationResponse } from "@/types/organizations";
 
 export const getOrganization = cache(
   async (slug: OrganizationResponse["slug"]) => {
-    try {
-      return await fetcher<OrganizationResponse>(`/api/organizations/${slug}`);
-    } catch {
-      return null;
-    }
+    return await fetcher<OrganizationResponse>(`/api/organizations/${slug}`);
   },
 );
 
 export const getOrganizations = cache(
   async (fetchOptions?: { headers: { cookie: string } }) => {
-    try {
-      return await fetcher<OrganizationResponse[]>(
-        "/api/organizations?includeClosed=true",
-        fetchOptions,
-      );
-    } catch {
-      return [];
-    }
+    return await fetcher<OrganizationResponse[]>(
+      "/api/organizations?includeClosed=true",
+      fetchOptions,
+    );
   },
 );
 

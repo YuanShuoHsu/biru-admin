@@ -67,6 +67,21 @@ export const fetcher = async <T = unknown>(
   return data;
 };
 
+export type FetchResult<T> =
+  | { data: T; error?: undefined }
+  | { data?: undefined; error: FetchError };
+
+// https://nextjs.org/docs/app/getting-started/error-handling#server-components
+export const settle = async <T>(
+  promise: Promise<T>,
+): Promise<FetchResult<T>> => {
+  try {
+    return { data: await promise };
+  } catch (error) {
+    return { error: error as FetchError };
+  }
+};
+
 export const sendRequest =
   <TRes = unknown, TReq = void>(init?: RequestInit) =>
   async (url: string, { arg }: { arg?: TReq } = {}): Promise<TRes> =>

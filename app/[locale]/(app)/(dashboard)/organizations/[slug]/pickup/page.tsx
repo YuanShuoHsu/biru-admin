@@ -5,10 +5,13 @@ import { notFound } from "next/navigation";
 
 import OrganizationsSlugPickup from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
+import { settle } from "@/utils/fetcher";
 import { getOrganization, hasRolePermission } from "@/utils/organizations";
 import { getSession } from "@/utils/session";
 
@@ -33,16 +36,17 @@ const OrganizationsSlugPickupPage = async ({
 }: OrganizationsSlugPickupPageProps) => {
   const [cookieStore, { slug }] = await Promise.all([cookies(), params]);
 
-  const [{ data }, organization, session] = await Promise.all([
+  const [{ data }, { data: organization, error }, session] = await Promise.all([
     authClient.organization.getFullOrganization({
       query: { organizationSlug: decodeURIComponent(slug) },
       fetchOptions: { headers: { cookie: cookieStore.toString() } },
     }),
-    getOrganization(decodeURIComponent(slug)),
+    settle(getOrganization(decodeURIComponent(slug))),
     getSession(),
   ]);
 
-  if (!data || !organization) notFound();
+  if (!data || error?.status === 404) notFound();
+  if (error) return <ErrorAlert />;
 
   const currentUserRole = data.members.find(
     ({ userId }) => userId === session?.user?.id,

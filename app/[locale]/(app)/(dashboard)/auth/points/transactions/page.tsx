@@ -7,6 +7,8 @@ import { notFound } from "next/navigation";
 import Points from ".";
 import { getPointsKey } from "./constants";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
@@ -14,7 +16,7 @@ import { routing } from "@/i18n/routing";
 
 import type { MyPoints } from "@/types/points";
 
-import { fetcher } from "@/utils/fetcher";
+import { fetcher, settle } from "@/utils/fetcher";
 
 export const generateMetadata = async ({
   params,
@@ -55,9 +57,12 @@ const AuthPointsPage = async ({
   }
 
   const reqHeaders = await headers();
-  const points = await fetcher<MyPoints>(getPointsKey(page, pageSize), {
-    headers: { cookie: reqHeaders.get("cookie") || "" },
-  }).catch(() => null);
+  const { data: points, error } = await settle(
+    fetcher<MyPoints>(getPointsKey(page, pageSize), {
+      headers: { cookie: reqHeaders.get("cookie") || "" },
+    }),
+  );
+  if (error) return <ErrorAlert />;
 
   return <Points page={page} pageSize={pageSize} points={points} />;
 };

@@ -7,6 +7,12 @@
   "delimiter": "、",
   "discontinued": "已停售",
   "empty": "尚未有商品",
+  "error": {
+    "description": "請稍後再試。",
+    "digest": "錯誤代碼：{digest}",
+    "retry": "重試",
+    "title": "載入失敗"
+  },
   "from": "起",
   "imageProcessingFailed": "圖片處理失敗",
   "increase": "增加",
@@ -36,6 +42,11 @@
   "maxQuantity": "每項商品最多只能購買 {quantity} 件",
   "middleDot": "・",
   "multiply": "×",
+  "notFound": {
+    "description": "找不到您要的頁面。",
+    "home": "回到首頁",
+    "title": "找不到頁面"
+  },
   "optional": "（選填）",
   "organization": {
     "closed": "{name}（已停業）",

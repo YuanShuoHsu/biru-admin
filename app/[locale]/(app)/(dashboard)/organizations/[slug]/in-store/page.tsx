@@ -5,10 +5,13 @@ import { notFound } from "next/navigation";
 
 import OrganizationsSlugInStore from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
+import { settle } from "@/utils/fetcher";
 import { getOrganization, hasRolePermission } from "@/utils/organizations";
 import { getSession } from "@/utils/session";
 
@@ -35,16 +38,17 @@ const OrganizationsSlugInStorePage = async ({
 
   const organizationSlug = decodeURIComponent(slug);
 
-  const [{ data }, organization, session] = await Promise.all([
+  const [{ data }, { data: organization, error }, session] = await Promise.all([
     authClient.organization.getFullOrganization({
       query: { organizationSlug },
       fetchOptions: { headers: { cookie: cookieStore.toString() } },
     }),
-    getOrganization(organizationSlug),
+    settle(getOrganization(organizationSlug)),
     getSession(),
   ]);
 
-  if (!data || !organization) notFound();
+  if (!data || error?.status === 404) notFound();
+  if (error) return <ErrorAlert />;
 
   const currentUserRole = data.members.find(
     ({ userId }) => userId === session?.user?.id,

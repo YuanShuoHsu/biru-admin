@@ -7,6 +7,8 @@ import { notFound } from "next/navigation";
 import Orders from ".";
 import { getOrdersKey } from "./constants";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
@@ -14,7 +16,7 @@ import { routing } from "@/i18n/routing";
 
 import type { UserOrderListResponse } from "@/types/orders";
 
-import { fetcher } from "@/utils/fetcher";
+import { fetcher, settle } from "@/utils/fetcher";
 
 export const generateMetadata = async ({
   params,
@@ -55,12 +57,12 @@ const AuthOrdersPage = async ({
   }
 
   const reqHeaders = await headers();
-  const orders = await fetcher<UserOrderListResponse>(
-    getOrdersKey(page, pageSize),
-    {
+  const { data: orders, error } = await settle(
+    fetcher<UserOrderListResponse>(getOrdersKey(page, pageSize), {
       headers: { cookie: reqHeaders.get("cookie") || "" },
-    },
-  ).catch(() => null);
+    }),
+  );
+  if (error) return <ErrorAlert />;
 
   return <Orders orders={orders} page={page} pageSize={pageSize} />;
 };
