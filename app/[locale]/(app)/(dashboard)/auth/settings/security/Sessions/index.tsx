@@ -33,6 +33,8 @@ import { useSession } from "@/hooks/useSession";
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
+import { toFetchError } from "@/utils/errors";
+
 const StyledTypography = styled(Typography)({
   fontWeight: "bold",
 });
@@ -65,7 +67,7 @@ const Sessions = () => {
     mutate,
   } = useSWR<UserSession[]>(session ? sessionsKey : null, async () => {
     const { data, error } = await authClient.listSessions();
-    if (error) throw error;
+    if (error) throw toFetchError(error);
 
     return data;
   });

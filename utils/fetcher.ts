@@ -2,6 +2,7 @@
 // https://swr.vercel.app/docs/error-handling
 // https://github.com/vercel/swr/discussions/939
 // https://github.com/vercel/swr/blob/main/examples/basic-typescript/libs/fetch.ts
+// https://nextjs.org/docs/app/getting-started/error-handling#server-components
 
 import { unstable_rethrow } from "next/navigation";
 
@@ -73,7 +74,6 @@ export type FetchResult<T> =
   | { data: T; error?: undefined }
   | { data?: undefined; error: FetchError };
 
-// https://nextjs.org/docs/app/getting-started/error-handling#server-components
 export const settle = async <T>(
   promise: Promise<T>,
 ): Promise<FetchResult<T>> => {
@@ -86,7 +86,7 @@ export const settle = async <T>(
   }
 };
 
-// 帶資源 id 的端點在資源不存在時，RolesGuard 查不到所屬店家會先回 403，到不了 404
+// 帶資源 id 的端點在資源不存在時，後端查不到所屬店家會先回 403，到不了 404
 export const isMissingResource = (error?: FetchError) =>
   error?.status === 403 || error?.status === 404;
 

@@ -1,3 +1,3 @@
 "use client";
 
-export { default } from "@/app/[locale]/error";
+export { default } from "@/components/ErrorPage";

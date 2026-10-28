@@ -29,6 +29,8 @@ export const AuthStoreProvider = ({
   const [store] = useState(() => createAuthStore({ sessionPromise }));
 
   useEffect(() => {
+    if (store.getState().sessionPromise === sessionPromise) return;
+
     store.setState({ session: undefined, sessionPromise });
   }, [sessionPromise, store]);
 

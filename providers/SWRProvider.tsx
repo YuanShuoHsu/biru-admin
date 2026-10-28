@@ -44,6 +44,17 @@ const SWRProvider = ({ children, fallback }: SWRProviderProps) => {
             });
           }
         },
+        onErrorRetry: (error, key, config, revalidate, revalidateOpts) => {
+          if (error.status === 401) return;
+
+          SWRConfig.defaultValue.onErrorRetry(
+            error,
+            key,
+            config,
+            revalidate,
+            revalidateOpts,
+          );
+        },
       }}
     >
       {children}
