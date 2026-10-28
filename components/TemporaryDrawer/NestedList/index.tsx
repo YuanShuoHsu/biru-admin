@@ -80,6 +80,7 @@ const useNavItems = (): NavItem[][] => {
       ? [
           [
             navItem("/banners"),
+            navItem("/store-photos"),
             navItem("/admins"),
             navItem("/point-settings"),
             navItem("/deleted-records"),

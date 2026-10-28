@@ -1,0 +1,65 @@
+{
+  "actions": {
+    "batchDeleteStorePhoto": {
+      "cancel": {
+        "label": "取消批量删除门店照片"
+      },
+      "submit": {
+        "confirm": "确定要删除以下 <bold>{count} 张门店照片</bold>吗？",
+        "error": "批量删除门店照片失败",
+        "label": "删除所选门店照片（{count}）",
+        "success": "已删除 {count} 张门店照片"
+      },
+      "title": "批量删除门店照片"
+    },
+    "createStorePhoto": {
+      "error": "新增门店照片失败",
+      "success": "已新增门店照片",
+      "title": "新增门店照片"
+    },
+    "deleteStorePhoto": {
+      "confirm": "确定要删除这张<bold>门店照片</bold>吗？此操作无法撤销。",
+      "error": "删除门店照片失败",
+      "success": "已删除门店照片",
+      "title": "删除门店照片"
+    },
+    "label": "操作",
+    "reorderStorePhoto": {
+      "cancel": {
+        "confirm": "确定要取消<bold>门店照片</bold>排序吗？未保存的更改将会丢失。",
+        "label": "取消门店照片排序"
+      },
+      "confirm": "确定要进行<bold>门店照片</bold>排序吗？",
+      "save": {
+        "confirm": "确定要保存<bold>门店照片</bold>排序吗？",
+        "error": "排序保存失败",
+        "label": "保存门店照片排序",
+        "success": "排序已保存"
+      },
+      "title": "门店照片排序"
+    },
+    "updateStorePhoto": {
+      "error": "更新门店照片失败",
+      "success": "已更新门店照片",
+      "title": "编辑门店照片"
+    }
+  },
+  "alt": {
+    "label": "替代文本",
+    "placeholder": "例如：门店外观、吧台、招牌拿铁",
+    "helperText": "描述照片内容，供看不到图片的访客与搜索引擎使用"
+  },
+  "createdAt": "创建时间",
+  "image": {
+    "label": "图片",
+    "notSelected": "请选择您的图片"
+  },
+  "isActive": {
+    "active": "启用中",
+    "inactive": "已停用",
+    "label": "启用"
+  },
+  "label": "门店照片",
+  "reorder": "排序",
+  "updatedAt": "更新时间"
+}

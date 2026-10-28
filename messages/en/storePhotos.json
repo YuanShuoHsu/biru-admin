@@ -1,0 +1,65 @@
+{
+  "actions": {
+    "batchDeleteStorePhoto": {
+      "cancel": {
+        "label": "Cancel Batch Delete Store Photos"
+      },
+      "submit": {
+        "confirm": "Are you sure you want to delete the following <bold>{count} store photos</bold>?",
+        "error": "Failed to batch delete store photos",
+        "label": "Delete Selected Store Photos ({count})",
+        "success": "Deleted {count} store photos"
+      },
+      "title": "Batch Delete Store Photos"
+    },
+    "createStorePhoto": {
+      "error": "Failed to create store photo",
+      "success": "Store photo created",
+      "title": "Create store photo"
+    },
+    "deleteStorePhoto": {
+      "confirm": "Are you sure you want to delete this <bold>store photo</bold>? This action cannot be undone.",
+      "error": "Failed to delete store photo",
+      "success": "Store photo deleted",
+      "title": "Delete store photo"
+    },
+    "label": "Actions",
+    "reorderStorePhoto": {
+      "cancel": {
+        "confirm": "Are you sure you want to cancel <bold>store photos</bold> reorder? Unsaved changes will be lost.",
+        "label": "Cancel Store Photos Reorder"
+      },
+      "confirm": "Are you sure you want to reorder <bold>store photos</bold>?",
+      "save": {
+        "confirm": "Are you sure you want to save <bold>store photos</bold> reorder?",
+        "error": "Failed to save reorder",
+        "label": "Save Store Photos Reorder",
+        "success": "Reorder saved"
+      },
+      "title": "Reorder Store Photos"
+    },
+    "updateStorePhoto": {
+      "error": "Failed to update store photo",
+      "success": "Store photo updated",
+      "title": "Edit store photo"
+    }
+  },
+  "alt": {
+    "label": "Alt text",
+    "placeholder": "e.g. Storefront, coffee bar, signature latte",
+    "helperText": "Describes the photo for visitors who can’t see it and for search engines"
+  },
+  "createdAt": "Created",
+  "image": {
+    "label": "Image",
+    "notSelected": "Please select your image"
+  },
+  "isActive": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "label": "Active"
+  },
+  "label": "Store Photos",
+  "reorder": "Order",
+  "updatedAt": "Updated"
+}

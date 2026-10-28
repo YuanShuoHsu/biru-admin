@@ -97,6 +97,15 @@ export const getBannerEnumOptions = (
   ],
 });
 
+export const getStorePhotoEnumOptions = (
+  tStorePhotos: ReturnType<typeof useTranslations<"storePhotos">>,
+) => ({
+  isActive: [
+    { label: tStorePhotos("isActive.active"), value: "true" },
+    { label: tStorePhotos("isActive.inactive"), value: "false" },
+  ],
+});
+
 export const getCouponEnumOptions = (
   tCoupons: ReturnType<typeof useTranslations<"coupons">>,
   tCommon: ReturnType<typeof useTranslations<"common">>,

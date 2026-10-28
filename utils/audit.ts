@@ -70,6 +70,8 @@ export const getAuditLogHref = (
       return `/inventory/ingredients/${resourceId}/audit-logs`;
     case "recipe":
       return `/recipes/${resourceId}/audit-logs`;
+    case "storePhoto":
+      return `/store-photos/${resourceId}/audit-logs`;
     case "userCoupon":
       return rootId ? `/coupons/${rootId}/audit-logs` : null;
     case "banner":

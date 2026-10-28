@@ -21,6 +21,7 @@ import organizations from "./en/organizations.json";
 import pointSettings from "./en/pointSettings.json";
 import quant from "./en/quant.json";
 import storeLayout from "./en/storeLayout.json";
+import storePhotos from "./en/storePhotos.json";
 import validation from "./en/validation.json";
 import waitlist from "./en/waitlist.json";
 
@@ -48,6 +49,7 @@ const messages = {
   pointSettings,
   quant,
   storeLayout,
+  storePhotos,
   validation,
   waitlist,
 };
