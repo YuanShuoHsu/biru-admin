@@ -145,7 +145,7 @@ const BotDetail = ({ botId }: { botId: string }) => {
   const labels = useBotLabels();
   const openBotForm = useBotFormDialog();
 
-  useBotStream();
+  useBotStream(botId);
 
   const botUrl = `${QUANT_BOTS_URL}/${botId}`;
   const { data: bot, error } = useSWR<QuantBot>(botUrl, fetcher);
