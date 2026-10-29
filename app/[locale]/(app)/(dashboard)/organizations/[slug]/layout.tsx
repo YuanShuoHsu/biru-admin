@@ -1,12 +1,9 @@
-import { cookies } from "next/headers";
-
 import OrganizationsSlugTabs from "./OrganizationsSlugTabs";
-
-import { authClient } from "@/lib/auth-client";
 
 import { CountStoreProvider } from "@/providers/count-store-provider";
 
 import { isActiveSession } from "@/utils/auth";
+import { getFullOrganization } from "@/utils/session";
 
 interface OrganizationsSlugLayoutProps {
   children: React.ReactNode;
@@ -16,12 +13,9 @@ interface OrganizationsSlugLayoutProps {
 const getPendingInvitationCount = async (
   params: OrganizationsSlugLayoutProps["params"],
 ) => {
-  const [cookieStore, { slug }] = await Promise.all([cookies(), params]);
+  const { slug } = await params;
 
-  const { data } = await authClient.organization.getFullOrganization({
-    query: { organizationSlug: decodeURIComponent(slug) },
-    fetchOptions: { headers: { cookie: cookieStore.toString() } },
-  });
+  const data = await getFullOrganization(decodeURIComponent(slug));
 
   return (
     data?.invitations.filter(

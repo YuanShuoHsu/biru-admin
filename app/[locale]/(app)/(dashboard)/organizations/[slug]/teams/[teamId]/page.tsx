@@ -11,7 +11,7 @@ import type { Locale } from "@/i18n/routing";
 import { authClient } from "@/lib/auth-client";
 
 import { hasRolePermission } from "@/utils/organizations";
-import { getSession } from "@/utils/session";
+import { getFullOrganization, getSession } from "@/utils/session";
 import { buildTeamMembers } from "@/utils/teams";
 
 interface OrganizationsSlugTeamsTeamIdPageProps {
@@ -40,12 +40,9 @@ const OrganizationsSlugTeamsTeamIdContent = async ({
 
   const cookieHeader = { cookie: cookieStore.toString() };
 
-  const [{ data: activeOrganization }, { data: teamMemberData }, session] =
+  const [activeOrganization, { data: teamMemberData }, session] =
     await Promise.all([
-      authClient.organization.getFullOrganization({
-        query: { organizationSlug: decodeURIComponent(slug) },
-        fetchOptions: { headers: cookieHeader },
-      }),
+      getFullOrganization(decodeURIComponent(slug)),
       authClient.organization.listTeamMembers({
         query: { teamId },
         fetchOptions: { headers: cookieHeader },
