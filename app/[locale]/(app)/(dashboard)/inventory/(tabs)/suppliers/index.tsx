@@ -8,6 +8,10 @@ import useSWR from "swr";
 import SupplierDialog from "./SupplierDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -288,12 +292,17 @@ const Suppliers = ({
     ({ id, name }: Supplier) => {
       setDialog({
         content: (
-          <DialogContentText>
-            {tInventory.rich("suppliers.actions.deleteSupplier.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              name,
-            })}
-          </DialogContentText>
+          <>
+            <CustomizedDialogContent>
+              <DialogContentText>
+                {tInventory.rich("suppliers.actions.deleteSupplier.confirm", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  name,
+                })}
+              </DialogContentText>
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         onConfirm: async () => {
           try {
@@ -329,24 +338,29 @@ const Suppliers = ({
 
     setDialog({
       content: (
-        <ConfirmStack>
-          <DialogContentText>
-            {tInventory.rich(
-              "suppliers.actions.batchDeleteSupplier.submit.confirm",
-              {
-                bold: (chunks) => <strong>{chunks}</strong>,
-                count,
-              },
-            )}
-          </DialogContentText>
-          <List dense disablePadding>
-            {selectedRows.map(({ id, name }) => (
-              <ListItem disableGutters key={id}>
-                <ListItemText primary={name} />
-              </ListItem>
-            ))}
-          </List>
-        </ConfirmStack>
+        <>
+          <CustomizedDialogContent>
+            <ConfirmStack>
+              <DialogContentText>
+                {tInventory.rich(
+                  "suppliers.actions.batchDeleteSupplier.submit.confirm",
+                  {
+                    bold: (chunks) => <strong>{chunks}</strong>,
+                    count,
+                  },
+                )}
+              </DialogContentText>
+              <List dense disablePadding>
+                {selectedRows.map(({ id, name }) => (
+                  <ListItem disableGutters key={id}>
+                    <ListItemText primary={name} />
+                  </ListItem>
+                ))}
+              </List>
+            </ConfirmStack>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         try {

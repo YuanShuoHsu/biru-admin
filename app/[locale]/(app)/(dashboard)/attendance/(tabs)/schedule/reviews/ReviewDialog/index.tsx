@@ -11,6 +11,10 @@ import { useForm, useWatch } from "react-hook-form";
 import EventList from "../../../../EventsDialogContent/EventList";
 import { type ReviewForm, useReviewFormSchema } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { STORE_TIMEZONE } from "@/constants/timezone";
@@ -225,156 +229,163 @@ const ReviewDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="attendance-review-form" onSubmit={onSubmit}>
-      <StyledStack>
-        <Typography>
-          {extraWork ? extraWork.shift.employeeName : request.employeeName} ·{" "}
-          {date(extraWork ? extraWork.startsAt : request.startsAt)} –{" "}
-          {date(extraWork ? extraWork.endsAt : request.endsAt)}
-        </Typography>
-        {request && <Typography>{request.reason}</Typography>}
-        {request?.parentalMode && (
-          <Typography variant="body2">
-            {tAttendance(
-              request.parentalMode === "daily"
-                ? "parentalDaily"
-                : "parentalContinuous",
-            )}
-          </Typography>
-        )}
-      </StyledStack>
-      {request?.correctedEvents && (
-        <DetailStack divider={<Divider />}>
-          {request.shiftStartsAt && request.shiftEndsAt && (
-            <StyledStack>
-              <StyledTypography color="textSecondary" variant="subtitle2">
-                {tAttendance("scheduledTime")}
-              </StyledTypography>
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="attendance-review-form" onSubmit={onSubmit}>
+          <StyledStack>
+            <Typography>
+              {extraWork ? extraWork.shift.employeeName : request.employeeName}{" "}
+              · {date(extraWork ? extraWork.startsAt : request.startsAt)} –{" "}
+              {date(extraWork ? extraWork.endsAt : request.endsAt)}
+            </Typography>
+            {request && <Typography>{request.reason}</Typography>}
+            {request?.parentalMode && (
               <Typography variant="body2">
-                {formatScheduledShift(format, {
-                  endsAt: request.shiftEndsAt,
-                  startsAt: request.shiftStartsAt,
-                })}
+                {tAttendance(
+                  request.parentalMode === "daily"
+                    ? "parentalDaily"
+                    : "parentalContinuous",
+                )}
               </Typography>
-            </StyledStack>
+            )}
+          </StyledStack>
+          {request?.correctedEvents && (
+            <DetailStack divider={<Divider />}>
+              {request.shiftStartsAt && request.shiftEndsAt && (
+                <StyledStack>
+                  <StyledTypography color="textSecondary" variant="subtitle2">
+                    {tAttendance("scheduledTime")}
+                  </StyledTypography>
+                  <Typography variant="body2">
+                    {formatScheduledShift(format, {
+                      endsAt: request.shiftEndsAt,
+                      startsAt: request.shiftStartsAt,
+                    })}
+                  </Typography>
+                </StyledStack>
+              )}
+              <EventList
+                events={request.originalEvents ?? []}
+                title={tAttendance("originalEvents")}
+              />
+              <EventList
+                events={request.correctedEvents}
+                title={tAttendance("kind.options.correction")}
+              />
+            </DetailStack>
           )}
-          <EventList
-            events={request.originalEvents ?? []}
-            title={tAttendance("originalEvents")}
-          />
-          <EventList
-            events={request.correctedEvents}
-            title={tAttendance("kind.options.correction")}
-          />
-        </DetailStack>
-      )}
-      <TextField
-        error={!!errors.reason}
-        fullWidth
-        helperText={errors.reason?.message}
-        label={tAttendance("reviewReason")}
-        minRows={3}
-        multiline
-        required={status === "rejected"}
-        {...register("reason")}
-      />
-      {isMedicalLeave && (
-        <StyledFormControlLabel
-          control={
-            <Checkbox
-              checked={medicalCertified}
-              onChange={(_, checked) => setValue("medicalCertified", checked)}
-            />
-          }
-          label={tAttendance("medicalCertified")}
-        />
-      )}
-      {isEmergencyWork && (
-        <>
-          <StyledTypography color="textSecondary" variant="subtitle2">
-            {tAttendance("emergencyWork")}
-          </StyledTypography>
           <TextField
-            error={!!errors.cause}
+            error={!!errors.reason}
             fullWidth
-            helperText={errors.cause?.message}
-            label={tAttendance("cause.label")}
-            required
-            select
-            value={cause}
-            {...register("cause")}
-          >
-            {attendanceEmergencyCauseValues.map((value) => (
-              <MenuItem key={value} value={value}>
-                {tAttendance(`cause.options.${value}`)}
-              </MenuItem>
-            ))}
-          </TextField>
-          <DateTimePicker
-            label={tAttendance("reportedAt")}
-            onChange={(value) =>
-              setValue(
-                "reportedAt",
-                value?.isValid() ? value.toISOString() : "",
-                { shouldValidate: isSubmitted },
-              )
-            }
-            slotProps={{
-              textField: {
-                error: !!errors.reportedAt,
-                fullWidth: true,
-                helperText: errors.reportedAt?.message,
-                required: true,
-              },
-            }}
-            timezone={STORE_TIMEZONE}
-            value={reportedAt ? dayjs(reportedAt) : null}
+            helperText={errors.reason?.message}
+            label={tAttendance("reviewReason")}
+            minRows={3}
+            multiline
+            required={status === "rejected"}
+            {...register("reason")}
           />
-          <DateTimePicker
-            label={tAttendance("makeupStartsAt")}
-            maxDateTime={makeupEndsAt ? dayjs(makeupEndsAt) : undefined}
-            onChange={(value) =>
-              setValue(
-                "makeupStartsAt",
-                value?.isValid() ? value.toISOString() : "",
-                { shouldValidate: isSubmitted },
-              )
-            }
-            slotProps={{
-              textField: {
-                error: !!errors.makeupStartsAt,
-                fullWidth: true,
-                helperText: errors.makeupStartsAt?.message,
-                required: true,
-              },
-            }}
-            timezone={STORE_TIMEZONE}
-            value={makeupStartsAt ? dayjs(makeupStartsAt) : null}
-          />
-          <DateTimePicker
-            label={tAttendance("makeupEndsAt")}
-            minDateTime={makeupStartsAt ? dayjs(makeupStartsAt) : undefined}
-            onChange={(value) =>
-              setValue(
-                "makeupEndsAt",
-                value?.isValid() ? value.toISOString() : "",
-                { shouldValidate: isSubmitted },
-              )
-            }
-            slotProps={{
-              textField: {
-                error: !!errors.makeupEndsAt,
-                fullWidth: true,
-                helperText: errors.makeupEndsAt?.message,
-                required: true,
-              },
-            }}
-            timezone={STORE_TIMEZONE}
-            value={makeupEndsAt ? dayjs(makeupEndsAt) : null}
-          />
-        </>
-      )}
-    </FormBox>
+          {isMedicalLeave && (
+            <StyledFormControlLabel
+              control={
+                <Checkbox
+                  checked={medicalCertified}
+                  onChange={(_, checked) =>
+                    setValue("medicalCertified", checked)
+                  }
+                />
+              }
+              label={tAttendance("medicalCertified")}
+            />
+          )}
+          {isEmergencyWork && (
+            <>
+              <StyledTypography color="textSecondary" variant="subtitle2">
+                {tAttendance("emergencyWork")}
+              </StyledTypography>
+              <TextField
+                error={!!errors.cause}
+                fullWidth
+                helperText={errors.cause?.message}
+                label={tAttendance("cause.label")}
+                required
+                select
+                value={cause}
+                {...register("cause")}
+              >
+                {attendanceEmergencyCauseValues.map((value) => (
+                  <MenuItem key={value} value={value}>
+                    {tAttendance(`cause.options.${value}`)}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <DateTimePicker
+                label={tAttendance("reportedAt")}
+                onChange={(value) =>
+                  setValue(
+                    "reportedAt",
+                    value?.isValid() ? value.toISOString() : "",
+                    { shouldValidate: isSubmitted },
+                  )
+                }
+                slotProps={{
+                  textField: {
+                    error: !!errors.reportedAt,
+                    fullWidth: true,
+                    helperText: errors.reportedAt?.message,
+                    required: true,
+                  },
+                }}
+                timezone={STORE_TIMEZONE}
+                value={reportedAt ? dayjs(reportedAt) : null}
+              />
+              <DateTimePicker
+                label={tAttendance("makeupStartsAt")}
+                maxDateTime={makeupEndsAt ? dayjs(makeupEndsAt) : undefined}
+                onChange={(value) =>
+                  setValue(
+                    "makeupStartsAt",
+                    value?.isValid() ? value.toISOString() : "",
+                    { shouldValidate: isSubmitted },
+                  )
+                }
+                slotProps={{
+                  textField: {
+                    error: !!errors.makeupStartsAt,
+                    fullWidth: true,
+                    helperText: errors.makeupStartsAt?.message,
+                    required: true,
+                  },
+                }}
+                timezone={STORE_TIMEZONE}
+                value={makeupStartsAt ? dayjs(makeupStartsAt) : null}
+              />
+              <DateTimePicker
+                label={tAttendance("makeupEndsAt")}
+                minDateTime={makeupStartsAt ? dayjs(makeupStartsAt) : undefined}
+                onChange={(value) =>
+                  setValue(
+                    "makeupEndsAt",
+                    value?.isValid() ? value.toISOString() : "",
+                    { shouldValidate: isSubmitted },
+                  )
+                }
+                slotProps={{
+                  textField: {
+                    error: !!errors.makeupEndsAt,
+                    fullWidth: true,
+                    helperText: errors.makeupEndsAt?.message,
+                    required: true,
+                  },
+                }}
+                timezone={STORE_TIMEZONE}
+                value={makeupEndsAt ? dayjs(makeupEndsAt) : null}
+              />
+            </>
+          )}
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

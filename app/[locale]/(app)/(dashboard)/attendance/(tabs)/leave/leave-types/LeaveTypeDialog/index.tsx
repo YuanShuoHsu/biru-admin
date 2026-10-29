@@ -7,6 +7,10 @@ import { useForm, useWatch } from "react-hook-form";
 
 import { type LeaveTypeForm, useLeaveTypeFormSchema } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 
@@ -136,83 +140,93 @@ const LeaveTypeDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="attendance-leave-type-form" onSubmit={onSubmit}>
-      {statutoryPaidPercent === null ? (
-        <TextField
-          error={!!errors.name}
-          fullWidth
-          helperText={errors.name?.message}
-          label={tAttendance("name")}
-          required
-          {...register("name")}
-        />
-      ) : (
-        <>
-          <TextField
-            fullWidth
-            label={tAttendance("name")}
-            required
-            slotProps={{ input: { readOnly: true } }}
-            value={leaveType && getStatutoryLeaveName(tAttendance, leaveType)}
-          />
-          <Typography color="textSecondary" variant="body2">
-            {tAttendance("statutoryPaidPercent", {
-              percent: statutoryPaidPercent,
-            })}
-          </Typography>
-          <StyledFormControlLabel
-            control={
-              <Checkbox
-                checked={overridden}
-                onChange={(_, checked) => {
-                  setValue("overridden", checked);
-                  if (!checked) setValue("paidPercent", statutoryPaidPercent);
-                }}
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="attendance-leave-type-form" onSubmit={onSubmit}>
+          {statutoryPaidPercent === null ? (
+            <TextField
+              error={!!errors.name}
+              fullWidth
+              helperText={errors.name?.message}
+              label={tAttendance("name")}
+              required
+              {...register("name")}
+            />
+          ) : (
+            <>
+              <TextField
+                fullWidth
+                label={tAttendance("name")}
+                required
+                slotProps={{ input: { readOnly: true } }}
+                value={
+                  leaveType && getStatutoryLeaveName(tAttendance, leaveType)
+                }
               />
-            }
-            label={tAttendance("aboveStatutory")}
-          />
-        </>
-      )}
-      {(statutoryPaidPercent === null || overridden) && (
-        <NumberSpinner
-          error={!!errors.paidPercent}
-          fullWidth
-          helperText={errors.paidPercent?.message}
-          label={tAttendance("paidPercent")}
-          max={100}
-          min={statutoryPaidPercent ?? 0}
-          onValueChange={(value) =>
-            setValue("paidPercent", value ?? statutoryPaidPercent ?? 0, {
-              shouldValidate: isSubmitted,
-            })
-          }
-          value={paidPercent}
-        />
-      )}
-      {statutoryPaidPercent === null && (
-        <>
-          <StyledFormControlLabel
-            control={
-              <Checkbox
-                checked={requiresBalance}
-                onChange={(_, checked) => setValue("requiresBalance", checked)}
+              <Typography color="textSecondary" variant="body2">
+                {tAttendance("statutoryPaidPercent", {
+                  percent: statutoryPaidPercent,
+                })}
+              </Typography>
+              <StyledFormControlLabel
+                control={
+                  <Checkbox
+                    checked={overridden}
+                    onChange={(_, checked) => {
+                      setValue("overridden", checked);
+                      if (!checked)
+                        setValue("paidPercent", statutoryPaidPercent);
+                    }}
+                  />
+                }
+                label={tAttendance("aboveStatutory")}
               />
-            }
-            label={tAttendance("requiresBalance")}
-          />
-          <StyledFormControlLabel
-            control={
-              <Checkbox
-                checked={enabled}
-                onChange={(_, checked) => setValue("enabled", checked)}
+            </>
+          )}
+          {(statutoryPaidPercent === null || overridden) && (
+            <NumberSpinner
+              error={!!errors.paidPercent}
+              fullWidth
+              helperText={errors.paidPercent?.message}
+              label={tAttendance("paidPercent")}
+              max={100}
+              min={statutoryPaidPercent ?? 0}
+              onValueChange={(value) =>
+                setValue("paidPercent", value ?? statutoryPaidPercent ?? 0, {
+                  shouldValidate: isSubmitted,
+                })
+              }
+              value={paidPercent}
+            />
+          )}
+          {statutoryPaidPercent === null && (
+            <>
+              <StyledFormControlLabel
+                control={
+                  <Checkbox
+                    checked={requiresBalance}
+                    onChange={(_, checked) =>
+                      setValue("requiresBalance", checked)
+                    }
+                  />
+                }
+                label={tAttendance("requiresBalance")}
               />
-            }
-            label={tAttendance("enabled")}
-          />
-        </>
-      )}
-    </FormBox>
+              <StyledFormControlLabel
+                control={
+                  <Checkbox
+                    checked={enabled}
+                    onChange={(_, checked) => setValue("enabled", checked)}
+                  />
+                }
+                label={tAttendance("enabled")}
+              />
+            </>
+          )}
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

@@ -7,6 +7,11 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import useSWR from "swr";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
+
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { useFormatMoney } from "@/hooks/useFormatMoney";
@@ -56,41 +61,46 @@ const EmployerSupplementDialog = ({
   );
 
   return (
-    <StyledStack>
-      <DatePicker
-        format={monthFormat}
-        label={tAttendance("month")}
-        onChange={(value) => {
-          if (value?.isValid()) setMonth(value.format("YYYY-MM"));
-        }}
-        slotProps={{ textField: { fullWidth: true } }}
-        timezone={STORE_TIMEZONE}
-        value={dayjs.tz(`${month}-01`, STORE_TIMEZONE)}
-        views={["year", "month"]}
-      />
-      {AMOUNT_FIELDS.map((field) => (
-        <TextField
-          fullWidth
-          helperText={
-            field === "insuredCents" && data?.unpublishedEmployees
-              ? tAttendance("employerSupplement.unpublished", {
-                  count: data.unpublishedEmployees,
-                })
-              : undefined
-          }
-          key={field}
-          label={tAttendance(`employerSupplement.${field}`)}
-          slotProps={{ input: { readOnly: true } }}
-          value={
-            data
-              ? formatMoney(fromCents(data[field]), currency, {
-                  minimumFractionDigits: 2,
-                })
-              : ""
-          }
-        />
-      ))}
-    </StyledStack>
+    <>
+      <CustomizedDialogContent>
+        <StyledStack>
+          <DatePicker
+            format={monthFormat}
+            label={tAttendance("month")}
+            onChange={(value) => {
+              if (value?.isValid()) setMonth(value.format("YYYY-MM"));
+            }}
+            slotProps={{ textField: { fullWidth: true } }}
+            timezone={STORE_TIMEZONE}
+            value={dayjs.tz(`${month}-01`, STORE_TIMEZONE)}
+            views={["year", "month"]}
+          />
+          {AMOUNT_FIELDS.map((field) => (
+            <TextField
+              fullWidth
+              helperText={
+                field === "insuredCents" && data?.unpublishedEmployees
+                  ? tAttendance("employerSupplement.unpublished", {
+                      count: data.unpublishedEmployees,
+                    })
+                  : undefined
+              }
+              key={field}
+              label={tAttendance(`employerSupplement.${field}`)}
+              slotProps={{ input: { readOnly: true } }}
+              value={
+                data
+                  ? formatMoney(fromCents(data[field]), currency, {
+                      minimumFractionDigits: 2,
+                    })
+                  : ""
+              }
+            />
+          ))}
+        </StyledStack>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

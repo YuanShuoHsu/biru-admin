@@ -14,6 +14,10 @@ import HistoryRangeToggle from "../HistoryRangeToggle";
 import OrderFills from "../OrderFills";
 import { useAccountHistory } from "../useAccountHistory";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
@@ -110,13 +114,18 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
   const handleCancelAll = () =>
     setDialog({
       content: (
-        <DialogContentText>
-          {tQuant.rich("account.cancelAll.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-            count: openOrders?.length ?? 0,
-            symbol: `${market.baseCurrency}/${market.quoteCurrency}`,
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tQuant.rich("account.cancelAll.confirm", {
+                bold: (chunks) => <strong>{chunks}</strong>,
+                count: openOrders?.length ?? 0,
+                symbol: `${market.baseCurrency}/${market.quoteCurrency}`,
+              })}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         try {
@@ -247,11 +256,16 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
     const showFills = (order: QuantOrder) =>
       setDialog({
         content: (
-          <OrderFills
-            pricePrecision={market.pricePrecision}
-            sizePrecision={market.sizePrecision}
-            url={`${quantAccountUrl(credential.id, `orders/${order.orderId}/fills`)}${symbolQuery}`}
-          />
+          <>
+            <CustomizedDialogContent>
+              <OrderFills
+                pricePrecision={market.pricePrecision}
+                sizePrecision={market.sizePrecision}
+                url={`${quantAccountUrl(credential.id, `orders/${order.orderId}/fills`)}${symbolQuery}`}
+              />
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         maxWidth: "md",
         open: true,

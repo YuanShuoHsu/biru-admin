@@ -9,6 +9,10 @@ import useSWR from "swr";
 import LeaveDialog from "./LeaveDialog";
 import ReturnDialog from "./ReturnDialog";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -306,12 +310,17 @@ const Requests = ({
 
       setDialog({
         content: (
-          <DialogContentText>
-            {tAttendance.rich(`requests.actions.${action}.confirm`, {
-              ...values,
-              bold: (chunks) => <strong>{chunks}</strong>,
-            })}
-          </DialogContentText>
+          <>
+            <CustomizedDialogContent>
+              <DialogContentText>
+                {tAttendance.rich(`requests.actions.${action}.confirm`, {
+                  ...values,
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                })}
+              </DialogContentText>
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         onConfirm: async () => {
           try {

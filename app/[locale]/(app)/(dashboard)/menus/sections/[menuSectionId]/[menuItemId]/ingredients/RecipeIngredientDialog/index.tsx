@@ -10,6 +10,10 @@ import {
   type RecipeIngredientForm,
 } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 
@@ -123,68 +127,74 @@ const RecipeIngredientDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="recipe-ingredient-form" onSubmit={onSubmit}>
-      <Autocomplete
-        {...ingredientSearch}
-        fullWidth
-        getOptionDisabled={({ id }) => usedIngredientIds.has(id)}
-        getOptionLabel={({ name }) => localize(name, locale)}
-        isOptionEqualToValue={(option, value) => option.id === value.id}
-        onChange={(_, value) => {
-          setIngredient(value);
-          setValue("ingredientId", value?.id ?? "", {
-            shouldValidate: isSubmitted,
-          });
-        }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            error={!!errors.ingredientId}
-            helperText={errors.ingredientId?.message}
-            label={tInventory("recipes.ingredients.ingredientId.label")}
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="recipe-ingredient-form" onSubmit={onSubmit}>
+          <Autocomplete
+            {...ingredientSearch}
+            fullWidth
+            getOptionDisabled={({ id }) => usedIngredientIds.has(id)}
+            getOptionLabel={({ name }) => localize(name, locale)}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            onChange={(_, value) => {
+              setIngredient(value);
+              setValue("ingredientId", value?.id ?? "", {
+                shouldValidate: isSubmitted,
+              });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                error={!!errors.ingredientId}
+                helperText={errors.ingredientId?.message}
+                label={tInventory("recipes.ingredients.ingredientId.label")}
+                placeholder={tInventory(
+                  "recipes.ingredients.ingredientId.placeholder",
+                )}
+                required
+                slotProps={{
+                  ...params.slotProps,
+                  input: {
+                    ...params.slotProps.input,
+                    endAdornment: (
+                      <>
+                        {ingredientSearch.loading && (
+                          <CircularProgress color="inherit" size={20} />
+                        )}
+                        {params.slotProps.input.endAdornment}
+                      </>
+                    ),
+                  },
+                }}
+              />
+            )}
+            value={ingredient}
+          />
+          <NumberSpinner
+            error={!!errors.requiredQuantity}
+            fullWidth
+            helperText={
+              errors.requiredQuantity?.message ||
+              (ingredient?.unitCode &&
+                tInventory(`units.${ingredient.unitCode}`))
+            }
+            label={tInventory("recipes.ingredients.requiredQuantity.label")}
+            min={0}
+            onValueChange={(value) =>
+              setValue("requiredQuantity", value != null ? String(value) : "", {
+                shouldValidate: isSubmitted,
+              })
+            }
             placeholder={tInventory(
-              "recipes.ingredients.ingredientId.placeholder",
+              "recipes.ingredients.requiredQuantity.placeholder",
             )}
             required
-            slotProps={{
-              ...params.slotProps,
-              input: {
-                ...params.slotProps.input,
-                endAdornment: (
-                  <>
-                    {ingredientSearch.loading && (
-                      <CircularProgress color="inherit" size={20} />
-                    )}
-                    {params.slotProps.input.endAdornment}
-                  </>
-                ),
-              },
-            }}
+            value={requiredQuantity ? Number(requiredQuantity) : null}
           />
-        )}
-        value={ingredient}
-      />
-      <NumberSpinner
-        error={!!errors.requiredQuantity}
-        fullWidth
-        helperText={
-          errors.requiredQuantity?.message ||
-          (ingredient?.unitCode && tInventory(`units.${ingredient.unitCode}`))
-        }
-        label={tInventory("recipes.ingredients.requiredQuantity.label")}
-        min={0}
-        onValueChange={(value) =>
-          setValue("requiredQuantity", value != null ? String(value) : "", {
-            shouldValidate: isSubmitted,
-          })
-        }
-        placeholder={tInventory(
-          "recipes.ingredients.requiredQuantity.placeholder",
-        )}
-        required
-        value={requiredQuantity ? Number(requiredQuantity) : null}
-      />
-    </FormBox>
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

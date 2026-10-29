@@ -7,6 +7,10 @@ import { useForm } from "react-hook-form";
 
 import { type EmailForm, useEmailFormSchema } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormCard, {
   StyledCardContent,
   StyledCardHeader,
@@ -91,12 +95,17 @@ const Email = () => {
   const onSubmit = handleSubmit(async ({ email }: EmailForm) => {
     setDialog({
       content: (
-        <DialogContentText>
-          {tAuth.rich("settings.email.confirmContentText", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-            email,
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tAuth.rich("settings.email.confirmContentText", {
+                bold: (chunks) => <strong>{chunks}</strong>,
+                email,
+              })}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: () => changeEmail(email),
       open: true,

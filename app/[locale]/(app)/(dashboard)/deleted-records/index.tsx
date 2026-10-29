@@ -5,6 +5,10 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -271,13 +275,18 @@ const DeletedRecords = ({
 
       setDialog({
         content: (
-          <DialogContentText>
-            {tDeletedRecords.rich("restore.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              count: relatedCount,
-              name,
-            })}
-          </DialogContentText>
+          <>
+            <CustomizedDialogContent>
+              <DialogContentText>
+                {tDeletedRecords.rich("restore.confirm", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  count: relatedCount,
+                  name,
+                })}
+              </DialogContentText>
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         onConfirm: async () => {
           try {
@@ -302,11 +311,16 @@ const DeletedRecords = ({
   const handleEnterDeletedRecordBatchRestoreMode = useCallback(() => {
     setDialog({
       content: (
-        <DialogContentText>
-          {tDeletedRecords.rich("batchRestore.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tDeletedRecords.rich("batchRestore.confirm", {
+                bold: (chunks) => <strong>{chunks}</strong>,
+              })}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         setIsSelectMode(true);
@@ -322,12 +336,17 @@ const DeletedRecords = ({
 
     setDialog({
       content: (
-        <DialogContentText>
-          {tDeletedRecords.rich("batchRestore.submit.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-            count,
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tDeletedRecords.rich("batchRestore.submit.confirm", {
+                bold: (chunks) => <strong>{chunks}</strong>,
+                count,
+              })}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         try {
@@ -366,11 +385,16 @@ const DeletedRecords = ({
   const handleCancelDeletedRecordBatchRestore = useCallback(() => {
     setDialog({
       content: (
-        <DialogContentText>
-          {tDeletedRecords.rich("batchRestore.cancel.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tDeletedRecords.rich("batchRestore.cancel.confirm", {
+                bold: (chunks) => <strong>{chunks}</strong>,
+              })}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         setIsSelectMode(false);

@@ -7,6 +7,10 @@ import { Controller, useForm } from "react-hook-form";
 
 import { type UpdateUserForm, useUpdateUserFormSchema } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import UploadAvatars from "@/components/UploadAvatars";
 
@@ -126,70 +130,81 @@ const UpdateUserDialogContent = ({
     )(event);
 
   return (
-    <FormBox id="update-user-form" onSubmit={onSubmit}>
-      <UploadAvatars initialSrc={user.image} uploadKey={uploadKey} />
-      <NameStack direction={locale === LocaleEnum.En ? "row-reverse" : "row"}>
-        <TextField
-          autoComplete="family-name"
-          error={!!errors.lastName}
-          fullWidth
-          helperText={errors.lastName?.message}
-          label={`${tAdmins("actions.updateUser.lastName.label")} ${tCommon("optional")}`}
-          placeholder={tAdmins("actions.updateUser.lastName.placeholder")}
-          {...register("lastName")}
-        />
-        <TextField
-          autoComplete="given-name"
-          error={!!errors.firstName}
-          fullWidth
-          helperText={errors.firstName?.message}
-          label={tAdmins("actions.updateUser.firstName.label")}
-          placeholder={tAdmins("actions.updateUser.firstName.placeholder")}
-          required
-          {...register("firstName")}
-        />
-      </NameStack>
-      <TextField
-        autoComplete="email"
-        error={!!errors.email}
-        fullWidth
-        helperText={errors.email?.message}
-        label={tAdmins("email.label")}
-        placeholder={tAdmins("email.placeholder")}
-        required
-        type="email"
-        {...register("email")}
-      />
-      <TextField
-        error={!!errors.bio}
-        fullWidth
-        helperText={errors.bio?.message}
-        label={`${tAdmins("actions.updateUser.bio.label")} ${tCommon("optional")}`}
-        maxRows={4}
-        multiline
-        placeholder={tAdmins("actions.updateUser.bio.placeholder")}
-        slotProps={{ htmlInput: { maxLength: 160 } }}
-        {...register("bio")}
-      />
-      <OptionsStack>
-        <FormControlLabel
-          control={
-            <Controller
-              control={control}
-              name="emailSubscribed"
-              render={({ field: { onChange, value } }) => (
-                <Checkbox checked={value} onChange={onChange} size="small" />
-              )}
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="update-user-form" onSubmit={onSubmit}>
+          <UploadAvatars initialSrc={user.image} uploadKey={uploadKey} />
+          <NameStack
+            direction={locale === LocaleEnum.En ? "row-reverse" : "row"}
+          >
+            <TextField
+              autoComplete="family-name"
+              error={!!errors.lastName}
+              fullWidth
+              helperText={errors.lastName?.message}
+              label={`${tAdmins("actions.updateUser.lastName.label")} ${tCommon("optional")}`}
+              placeholder={tAdmins("actions.updateUser.lastName.placeholder")}
+              {...register("lastName")}
             />
-          }
-          label={
-            <Typography variant="body2">
-              {tAdmins("emailSubscribed.checkbox")}
-            </Typography>
-          }
-        />
-      </OptionsStack>
-    </FormBox>
+            <TextField
+              autoComplete="given-name"
+              error={!!errors.firstName}
+              fullWidth
+              helperText={errors.firstName?.message}
+              label={tAdmins("actions.updateUser.firstName.label")}
+              placeholder={tAdmins("actions.updateUser.firstName.placeholder")}
+              required
+              {...register("firstName")}
+            />
+          </NameStack>
+          <TextField
+            autoComplete="email"
+            error={!!errors.email}
+            fullWidth
+            helperText={errors.email?.message}
+            label={tAdmins("email.label")}
+            placeholder={tAdmins("email.placeholder")}
+            required
+            type="email"
+            {...register("email")}
+          />
+          <TextField
+            error={!!errors.bio}
+            fullWidth
+            helperText={errors.bio?.message}
+            label={`${tAdmins("actions.updateUser.bio.label")} ${tCommon("optional")}`}
+            maxRows={4}
+            multiline
+            placeholder={tAdmins("actions.updateUser.bio.placeholder")}
+            slotProps={{ htmlInput: { maxLength: 160 } }}
+            {...register("bio")}
+          />
+          <OptionsStack>
+            <FormControlLabel
+              control={
+                <Controller
+                  control={control}
+                  name="emailSubscribed"
+                  render={({ field: { onChange, value } }) => (
+                    <Checkbox
+                      checked={value}
+                      onChange={onChange}
+                      size="small"
+                    />
+                  )}
+                />
+              }
+              label={
+                <Typography variant="body2">
+                  {tAdmins("emailSubscribed.checkbox")}
+                </Typography>
+              }
+            />
+          </OptionsStack>
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

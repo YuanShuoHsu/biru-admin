@@ -11,6 +11,10 @@ import {
   useSetRoleFormSchema,
 } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { userRoleValues } from "@/types/api";
@@ -78,56 +82,61 @@ const SetRoleDialogContent = ({
     })(event);
 
   return (
-    <FormBox id="set-role-form" onSubmit={onSubmit}>
-      <TextField
-        autoComplete="email"
-        error={!!errors.email}
-        fullWidth
-        helperText={errors.email?.message}
-        label={tAdmins("email.label")}
-        placeholder={tAdmins("email.placeholder")}
-        required
-        slotProps={{ input: { readOnly: true } }}
-        type="email"
-        {...register("email")}
-      />
-      <TextField
-        error={!!errors.role}
-        fullWidth
-        helperText={errors.role?.message}
-        label={tAdmins("role.label")}
-        required
-        select
-        slotProps={{
-          inputLabel: { shrink: true },
-          select: {
-            displayEmpty: true,
-            renderValue: (selected) => {
-              const selectedRole = userRoleValues.find(
-                (role) => role === selected,
-              );
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="set-role-form" onSubmit={onSubmit}>
+          <TextField
+            autoComplete="email"
+            error={!!errors.email}
+            fullWidth
+            helperText={errors.email?.message}
+            label={tAdmins("email.label")}
+            placeholder={tAdmins("email.placeholder")}
+            required
+            slotProps={{ input: { readOnly: true } }}
+            type="email"
+            {...register("email")}
+          />
+          <TextField
+            error={!!errors.role}
+            fullWidth
+            helperText={errors.role?.message}
+            label={tAdmins("role.label")}
+            required
+            select
+            slotProps={{
+              inputLabel: { shrink: true },
+              select: {
+                displayEmpty: true,
+                renderValue: (selected) => {
+                  const selectedRole = userRoleValues.find(
+                    (role) => role === selected,
+                  );
 
-              return selectedRole ? (
-                tAdmins(`role.${selectedRole}`)
-              ) : (
-                <em>{tAdmins("role.placeholder")}</em>
-              );
-            },
-          },
-        }}
-        value={role}
-        {...register("role")}
-      >
-        <MenuItem disabled value="">
-          <em>{tAdmins("role.placeholder")}</em>
-        </MenuItem>
-        {userRoleValues.map((role) => (
-          <MenuItem key={role} value={role}>
-            {tAdmins(`role.${role}`)}
-          </MenuItem>
-        ))}
-      </TextField>
-    </FormBox>
+                  return selectedRole ? (
+                    tAdmins(`role.${selectedRole}`)
+                  ) : (
+                    <em>{tAdmins("role.placeholder")}</em>
+                  );
+                },
+              },
+            }}
+            value={role}
+            {...register("role")}
+          >
+            <MenuItem disabled value="">
+              <em>{tAdmins("role.placeholder")}</em>
+            </MenuItem>
+            {userRoleValues.map((role) => (
+              <MenuItem key={role} value={role}>
+                {tAdmins(`role.${role}`)}
+              </MenuItem>
+            ))}
+          </TextField>
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

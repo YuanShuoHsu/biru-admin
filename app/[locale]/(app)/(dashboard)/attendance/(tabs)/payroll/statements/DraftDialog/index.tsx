@@ -12,6 +12,10 @@ import useSWR from "swr";
 import BatchSkippedList from "../../../../BatchSkippedList";
 import { type DraftForm, useDraftFormSchema } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 
@@ -166,12 +170,17 @@ const DraftDialog = ({
           setDialog({
             confirmLoading: false,
             content: (
-              <BatchSkippedList
-                labels={Object.fromEntries(
-                  employees.map(({ id, name }) => [id, name]),
-                )}
-                skipped={skipped}
-              />
+              <>
+                <CustomizedDialogContent>
+                  <BatchSkippedList
+                    labels={Object.fromEntries(
+                      employees.map(({ id, name }) => [id, name]),
+                    )}
+                    skipped={skipped}
+                  />
+                </CustomizedDialogContent>
+                <CustomizedDialogActions />
+              </>
             ),
             formId: undefined,
             showConfirm: false,
@@ -222,127 +231,138 @@ const DraftDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="payroll-draft-form" onSubmit={onSubmit}>
-      <TextField
-        error={!!errors.employeeId}
-        fullWidth
-        helperText={errors.employeeId?.message}
-        label={tAttendance("employee")}
-        onChange={(event) =>
-          setValue("employeeId", event.target.value, {
-            shouldValidate: isSubmitted,
-          })
-        }
-        select
-        slotProps={{
-          inputLabel: { shrink: true },
-          select: { displayEmpty: true },
-        }}
-        value={employeeId}
-      >
-        <MenuItem value="">{tAttendance("allEmployees")}</MenuItem>
-        {employees.map(({ email, id, name }) => (
-          <MenuItem key={id} value={id}>
-            <ListItemText
-              primary={name}
-              secondary={email}
-              slotProps={{ secondary: { variant: "caption" } }}
-            />
-          </MenuItem>
-        ))}
-      </TextField>
-      <DatePicker
-        format={monthFormat}
-        label={tAttendance("month")}
-        onChange={(value) =>
-          setValue("month", value?.isValid() ? value.format("YYYY-MM") : "", {
-            shouldValidate: isSubmitted,
-          })
-        }
-        slotProps={{
-          textField: {
-            error: !!errors.month,
-            fullWidth: true,
-            helperText: errors.month?.message,
-            required: true,
-          },
-        }}
-        timezone={STORE_TIMEZONE}
-        value={month ? dayjs(month, "YYYY-MM") : null}
-        views={["year", "month"]}
-      />
-      <TextField
-        error={!!errors.reason}
-        fullWidth
-        helperText={errors.reason?.message}
-        label={tAttendance("payroll.draftReason")}
-        minRows={3}
-        multiline
-        {...register("reason")}
-      />
-      {earningTypes.length > 0 && !!employeeId && (
-        <StyledFormControl component="fieldset" variant="standard">
-          <FormLabel component="legend">
-            {tAttendance("earnings.label")}
-          </FormLabel>
-          {fields.map(({ id }, index) => (
-            <EarningRowStack direction="row" key={id}>
-              <TextField
-                error={!!errors.earnings?.[index]?.earningTypeId}
-                fullWidth
-                helperText={errors.earnings?.[index]?.earningTypeId?.message}
-                label={tAttendance("earningTypes.item")}
-                onChange={(event) =>
-                  setValue(
-                    `earnings.${index}.earningTypeId`,
-                    event.target.value,
-                    { shouldValidate: isSubmitted },
-                  )
-                }
-                required
-                select
-                value={earnings?.[index]?.earningTypeId ?? ""}
-              >
-                {earningTypes.map(({ category, id: typeId, name }) => (
-                  <MenuItem key={typeId} value={typeId}>
-                    {`${name}（${tAttendance(`earningCategory.options.${category}`)}）`}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <NumberSpinner
-                error={!!errors.earnings?.[index]?.amount}
-                fullWidth
-                helperText={errors.earnings?.[index]?.amount?.message}
-                label={tAttendance("amount", { currency })}
-                min={0}
-                onValueChange={(value) =>
-                  setValue(`earnings.${index}.amount`, value ?? 0, {
-                    shouldValidate: isSubmitted,
-                  })
-                }
-                required
-                step={0.01}
-                value={earnings?.[index]?.amount ?? 0}
-              />
-              <IconButton
-                color="error"
-                onClick={() => remove(index)}
-                size="small"
-              >
-                <DeleteOutlined fontSize="small" />
-              </IconButton>
-            </EarningRowStack>
-          ))}
-          <StyledButton
-            onClick={() => append({ amount: 0, earningTypeId: "" })}
-            startIcon={<Add />}
-            variant="outlined"
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="payroll-draft-form" onSubmit={onSubmit}>
+          <TextField
+            error={!!errors.employeeId}
+            fullWidth
+            helperText={errors.employeeId?.message}
+            label={tAttendance("employee")}
+            onChange={(event) =>
+              setValue("employeeId", event.target.value, {
+                shouldValidate: isSubmitted,
+              })
+            }
+            select
+            slotProps={{
+              inputLabel: { shrink: true },
+              select: { displayEmpty: true },
+            }}
+            value={employeeId}
           >
-            {tAttendance("add")}
-          </StyledButton>
-        </StyledFormControl>
-      )}
-    </FormBox>
+            <MenuItem value="">{tAttendance("allEmployees")}</MenuItem>
+            {employees.map(({ email, id, name }) => (
+              <MenuItem key={id} value={id}>
+                <ListItemText
+                  primary={name}
+                  secondary={email}
+                  slotProps={{ secondary: { variant: "caption" } }}
+                />
+              </MenuItem>
+            ))}
+          </TextField>
+          <DatePicker
+            format={monthFormat}
+            label={tAttendance("month")}
+            onChange={(value) =>
+              setValue(
+                "month",
+                value?.isValid() ? value.format("YYYY-MM") : "",
+                {
+                  shouldValidate: isSubmitted,
+                },
+              )
+            }
+            slotProps={{
+              textField: {
+                error: !!errors.month,
+                fullWidth: true,
+                helperText: errors.month?.message,
+                required: true,
+              },
+            }}
+            timezone={STORE_TIMEZONE}
+            value={month ? dayjs(month, "YYYY-MM") : null}
+            views={["year", "month"]}
+          />
+          <TextField
+            error={!!errors.reason}
+            fullWidth
+            helperText={errors.reason?.message}
+            label={tAttendance("payroll.draftReason")}
+            minRows={3}
+            multiline
+            {...register("reason")}
+          />
+          {earningTypes.length > 0 && !!employeeId && (
+            <StyledFormControl component="fieldset" variant="standard">
+              <FormLabel component="legend">
+                {tAttendance("earnings.label")}
+              </FormLabel>
+              {fields.map(({ id }, index) => (
+                <EarningRowStack direction="row" key={id}>
+                  <TextField
+                    error={!!errors.earnings?.[index]?.earningTypeId}
+                    fullWidth
+                    helperText={
+                      errors.earnings?.[index]?.earningTypeId?.message
+                    }
+                    label={tAttendance("earningTypes.item")}
+                    onChange={(event) =>
+                      setValue(
+                        `earnings.${index}.earningTypeId`,
+                        event.target.value,
+                        { shouldValidate: isSubmitted },
+                      )
+                    }
+                    required
+                    select
+                    value={earnings?.[index]?.earningTypeId ?? ""}
+                  >
+                    {earningTypes.map(({ category, id: typeId, name }) => (
+                      <MenuItem key={typeId} value={typeId}>
+                        {`${name}（${tAttendance(`earningCategory.options.${category}`)}）`}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                  <NumberSpinner
+                    error={!!errors.earnings?.[index]?.amount}
+                    fullWidth
+                    helperText={errors.earnings?.[index]?.amount?.message}
+                    label={tAttendance("amount", { currency })}
+                    min={0}
+                    onValueChange={(value) =>
+                      setValue(`earnings.${index}.amount`, value ?? 0, {
+                        shouldValidate: isSubmitted,
+                      })
+                    }
+                    required
+                    step={0.01}
+                    value={earnings?.[index]?.amount ?? 0}
+                  />
+                  <IconButton
+                    color="error"
+                    onClick={() => remove(index)}
+                    size="small"
+                  >
+                    <DeleteOutlined fontSize="small" />
+                  </IconButton>
+                </EarningRowStack>
+              ))}
+              <StyledButton
+                onClick={() => append({ amount: 0, earningTypeId: "" })}
+                startIcon={<Add />}
+                variant="outlined"
+              >
+                {tAttendance("add")}
+              </StyledButton>
+            </StyledFormControl>
+          )}
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

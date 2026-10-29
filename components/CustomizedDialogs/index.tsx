@@ -5,7 +5,6 @@
 
 import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
-import { useState } from "react";
 
 import Transition from "@/components/CustomizedDialogs/Transition";
 
@@ -48,56 +47,77 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
   color: theme.palette.grey[500],
 }));
 
-const CustomizedDialogs = () => {
-  const [cancelLoading, setCancelLoading] = useState(false);
-
-  const {
-    cancelText,
-    closeDialog,
-    confirmDisabled,
-    confirmLoading,
-    confirmText,
-    container,
-    content,
-    contentText,
-    formId,
-    maxWidth,
-    onCancel,
-    onConfirm,
-    onExited,
-    open,
-    resetDialog,
-    setDialog,
-    showCancel,
-    showConfirm,
-    title,
-  } = useDialogStore((state) => state);
-  const { resetUploadAvatar } = useUploadAvatarStore((state) => state);
-
-  const loading = cancelLoading || confirmLoading;
+const useHandleClose = () => {
+  const { cancelLoading, closeDialog, confirmLoading, onCancel, setDialog } =
+    useDialogStore((state) => state);
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const tDialog = useTranslations("dialog");
+  return async () => {
+    if (cancelLoading || confirmLoading) return;
 
-  const handleClose = async () => {
-    if (loading) return;
-
-    setCancelLoading(true);
+    setDialog({ cancelLoading: true });
 
     try {
       await onCancel?.();
       closeDialog();
     } catch (error) {
-      const message = getErrorMessage(error);
-      enqueueSnackbar(message, { variant: "error" });
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
     } finally {
-      setCancelLoading(false);
+      setDialog({ cancelLoading: false });
     }
   };
+};
+
+interface CustomizedDialogContentProps {
+  children?: React.ReactNode;
+}
+
+export const CustomizedDialogContent = ({
+  children,
+}: CustomizedDialogContentProps) => {
+  const { contentText } = useDialogStore((state) => state);
+
+  return (
+    <DialogContent dividers>
+      {contentText && (
+        <DialogContentText id="customized-dialog-description">
+          {contentText}
+        </DialogContentText>
+      )}
+      {children}
+    </DialogContent>
+  );
+};
+
+interface CustomizedDialogActionsProps {
+  confirmDisabled?: boolean;
+}
+
+export const CustomizedDialogActions = ({
+  confirmDisabled = false,
+}: CustomizedDialogActionsProps) => {
+  const {
+    cancelLoading,
+    cancelText,
+    closeDialog,
+    confirmLoading,
+    confirmText,
+    formId,
+    onConfirm,
+    setDialog,
+    showCancel,
+    showConfirm,
+  } = useDialogStore((state) => state);
+
+  const handleClose = useHandleClose();
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const tDialog = useTranslations("dialog");
 
   const handleConfirm = async () => {
-    if (loading) return;
+    if (cancelLoading || confirmLoading) return;
 
     setDialog({ confirmLoading: true });
 
@@ -110,6 +130,49 @@ const CustomizedDialogs = () => {
       setDialog({ confirmLoading: false });
     }
   };
+
+  return (
+    <DialogActions>
+      {showCancel && (
+        <Button
+          loading={cancelLoading}
+          loadingPosition="end"
+          onClick={handleClose}
+        >
+          {cancelText || tDialog("cancel")}
+        </Button>
+      )}
+      {showConfirm && (
+        <Button
+          autoFocus={!formId}
+          disabled={confirmDisabled}
+          form={formId}
+          loading={confirmLoading}
+          loadingPosition="end"
+          onClick={formId ? undefined : handleConfirm}
+          type={formId ? "submit" : "button"}
+        >
+          {confirmText || tDialog("confirm")}
+        </Button>
+      )}
+    </DialogActions>
+  );
+};
+
+const CustomizedDialogs = () => {
+  const {
+    container,
+    content,
+    contentText,
+    maxWidth,
+    onExited,
+    open,
+    resetDialog,
+    title,
+  } = useDialogStore((state) => state);
+  const { resetUploadAvatar } = useUploadAvatarStore((state) => state);
+
+  const handleClose = useHandleClose();
 
   const handleExited = () => {
     resetDialog();
@@ -138,38 +201,7 @@ const CustomizedDialogs = () => {
       <StyledIconButton aria-label="close" onClick={handleClose}>
         <Close />
       </StyledIconButton>
-      <DialogContent dividers>
-        {contentText && (
-          <DialogContentText id="customized-dialog-description">
-            {contentText}
-          </DialogContentText>
-        )}
-        {content}
-      </DialogContent>
-      <DialogActions>
-        {showCancel && (
-          <Button
-            loading={cancelLoading}
-            loadingPosition="end"
-            onClick={handleClose}
-          >
-            {cancelText || tDialog("cancel")}
-          </Button>
-        )}
-        {showConfirm && (
-          <Button
-            autoFocus={!formId}
-            disabled={confirmDisabled}
-            form={formId}
-            loading={confirmLoading}
-            loadingPosition="end"
-            onClick={formId ? undefined : handleConfirm}
-            type={formId ? "submit" : "button"}
-          >
-            {confirmText || tDialog("confirm")}
-          </Button>
-        )}
-      </DialogActions>
+      {content}
     </BootstrapDialog>
   );
 };

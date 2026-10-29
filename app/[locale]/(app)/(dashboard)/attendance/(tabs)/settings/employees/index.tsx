@@ -11,6 +11,10 @@ import ChildrenDialog from "./ChildrenDialog";
 import EmployeeDialog from "./EmployeeDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -439,12 +443,17 @@ const Employees = ({
       employee &&
       setDialog({
         content: (
-          <DialogContentText>
-            {tAttendance.rich("employees.actions.delete.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              name,
-            })}
-          </DialogContentText>
+          <>
+            <CustomizedDialogContent>
+              <DialogContentText>
+                {tAttendance.rich("employees.actions.delete.confirm", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  name,
+                })}
+              </DialogContentText>
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         onConfirm: async () => {
           try {
@@ -485,21 +494,29 @@ const Employees = ({
 
     setDialog({
       content: (
-        <ConfirmStack>
-          <DialogContentText>
-            {tAttendance.rich("employees.actions.batchDelete.submit.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              count,
-            })}
-          </DialogContentText>
-          <List dense disablePadding>
-            {selectedRows.map(({ name, userId }) => (
-              <ListItem disableGutters key={userId}>
-                <ListItemText primary={name} />
-              </ListItem>
-            ))}
-          </List>
-        </ConfirmStack>
+        <>
+          <CustomizedDialogContent>
+            <ConfirmStack>
+              <DialogContentText>
+                {tAttendance.rich(
+                  "employees.actions.batchDelete.submit.confirm",
+                  {
+                    bold: (chunks) => <strong>{chunks}</strong>,
+                    count,
+                  },
+                )}
+              </DialogContentText>
+              <List dense disablePadding>
+                {selectedRows.map(({ name, userId }) => (
+                  <ListItem disableGutters key={userId}>
+                    <ListItemText primary={name} />
+                  </ListItem>
+                ))}
+              </List>
+            </ConfirmStack>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         try {

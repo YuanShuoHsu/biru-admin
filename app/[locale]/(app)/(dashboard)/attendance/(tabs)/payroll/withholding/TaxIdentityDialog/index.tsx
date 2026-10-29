@@ -12,6 +12,10 @@ import {
   useTaxIdentityFormSchema,
 } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -125,64 +129,73 @@ const TaxIdentityDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="payroll-tax-identity-form" onSubmit={onSubmit}>
-      <TextField
-        autoComplete="off"
-        error={!!errors.taxId}
-        fullWidth
-        helperText={errors.taxId?.message}
-        label={tAttendance(
-          foreign ? "withholding.residentCertificateId" : "withholding.taxId",
-        )}
-        required
-        slotProps={{ htmlInput: { maxLength: 10 } }}
-        {...register("taxId")}
-      />
-      <TextField
-        error={!!errors.address}
-        fullWidth
-        helperText={errors.address?.message}
-        label={tAttendance("withholding.address")}
-        required
-        slotProps={{
-          htmlInput: { maxLength: TAX_IDENTITY_ADDRESS_MAX_LENGTH },
-        }}
-        {...register("address")}
-      />
-      {foreign && (
-        <>
-          <Autocomplete
-            getOptionLabel={countryLabel}
-            onChange={(_event, value) =>
-              setValue("residenceCountryCode", value, {
-                shouldValidate: isSubmitted,
-              })
-            }
-            options={residenceCountryCodeValues}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                error={!!errors.residenceCountryCode}
-                helperText={errors.residenceCountryCode?.message}
-                label={tAttendance("withholding.residenceCountry")}
-                required
-              />
-            )}
-            value={residenceCountryCode}
-          />
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="payroll-tax-identity-form" onSubmit={onSubmit}>
           <TextField
             autoComplete="off"
-            error={!!errors.foreignTaxId}
+            error={!!errors.taxId}
             fullWidth
-            helperText={errors.foreignTaxId?.message}
-            label={tAttendance("withholding.foreignTaxId")}
+            helperText={errors.taxId?.message}
+            label={tAttendance(
+              foreign
+                ? "withholding.residentCertificateId"
+                : "withholding.taxId",
+            )}
             required
-            slotProps={{ htmlInput: { maxLength: FOREIGN_TAX_ID_MAX_LENGTH } }}
-            {...register("foreignTaxId")}
+            slotProps={{ htmlInput: { maxLength: 10 } }}
+            {...register("taxId")}
           />
-        </>
-      )}
-    </FormBox>
+          <TextField
+            error={!!errors.address}
+            fullWidth
+            helperText={errors.address?.message}
+            label={tAttendance("withholding.address")}
+            required
+            slotProps={{
+              htmlInput: { maxLength: TAX_IDENTITY_ADDRESS_MAX_LENGTH },
+            }}
+            {...register("address")}
+          />
+          {foreign && (
+            <>
+              <Autocomplete
+                getOptionLabel={countryLabel}
+                onChange={(_event, value) =>
+                  setValue("residenceCountryCode", value, {
+                    shouldValidate: isSubmitted,
+                  })
+                }
+                options={residenceCountryCodeValues}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    error={!!errors.residenceCountryCode}
+                    helperText={errors.residenceCountryCode?.message}
+                    label={tAttendance("withholding.residenceCountry")}
+                    required
+                  />
+                )}
+                value={residenceCountryCode}
+              />
+              <TextField
+                autoComplete="off"
+                error={!!errors.foreignTaxId}
+                fullWidth
+                helperText={errors.foreignTaxId?.message}
+                label={tAttendance("withholding.foreignTaxId")}
+                required
+                slotProps={{
+                  htmlInput: { maxLength: FOREIGN_TAX_ID_MAX_LENGTH },
+                }}
+                {...register("foreignTaxId")}
+              />
+            </>
+          )}
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

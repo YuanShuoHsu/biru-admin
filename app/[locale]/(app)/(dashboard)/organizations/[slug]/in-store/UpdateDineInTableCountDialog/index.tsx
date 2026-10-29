@@ -10,6 +10,10 @@ import {
   useDineInTableCountFormSchema,
 } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 
@@ -87,28 +91,35 @@ const UpdateDineInTableCountDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="update-dine-in-table-count-form" onSubmit={onSubmit}>
-      <NumberSpinner
-        error={!!errors.dineInTableCount}
-        fullWidth
-        helperText={
-          errors.dineInTableCount?.message ||
-          tOrganizations("inStore.dineIn.tableCount.helperText", {
-            max: DINE_IN_MAX_TABLE_COUNT,
-          })
-        }
-        label={tOrganizations("inStore.dineIn.tableCount.label")}
-        max={DINE_IN_MAX_TABLE_COUNT}
-        min={1}
-        onValueChange={(value) =>
-          setValue("dineInTableCount", value != null ? String(value) : "", {
-            shouldValidate: isSubmitted,
-          })
-        }
-        placeholder={tOrganizations("inStore.dineIn.tableCount.placeholder")}
-        value={dineInTableCount !== "" ? Number(dineInTableCount) : null}
-      />
-    </FormBox>
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="update-dine-in-table-count-form" onSubmit={onSubmit}>
+          <NumberSpinner
+            error={!!errors.dineInTableCount}
+            fullWidth
+            helperText={
+              errors.dineInTableCount?.message ||
+              tOrganizations("inStore.dineIn.tableCount.helperText", {
+                max: DINE_IN_MAX_TABLE_COUNT,
+              })
+            }
+            label={tOrganizations("inStore.dineIn.tableCount.label")}
+            max={DINE_IN_MAX_TABLE_COUNT}
+            min={1}
+            onValueChange={(value) =>
+              setValue("dineInTableCount", value != null ? String(value) : "", {
+                shouldValidate: isSubmitted,
+              })
+            }
+            placeholder={tOrganizations(
+              "inStore.dineIn.tableCount.placeholder",
+            )}
+            value={dineInTableCount !== "" ? Number(dineInTableCount) : null}
+          />
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

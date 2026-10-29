@@ -11,6 +11,10 @@ import {
   useWaitlistFormSchema,
 } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import NumberField from "@/components/NumberField";
 import NumberSpinner from "@/components/NumberSpinner";
@@ -174,128 +178,135 @@ const UpdateWaitlistDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="update-waitlist-form" onSubmit={onSubmit}>
-      <FormControlLabel
-        control={
-          <Switch
-            checked={enabled}
-            onChange={(_event, checked) => setValue("enabled", checked)}
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="update-waitlist-form" onSubmit={onSubmit}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={enabled}
+                onChange={(_event, checked) => setValue("enabled", checked)}
+              />
+            }
+            label={tOrganizations("waitlist.enabled.label")}
           />
-        }
-        label={tOrganizations("waitlist.enabled.label")}
-      />
-      <NumberSpinner
-        error={!!errors.holdMinutes}
-        fullWidth
-        helperText={
-          errors.holdMinutes?.message ||
-          tOrganizations("waitlist.holdMinutes.helperText")
-        }
-        label={tOrganizations("waitlist.holdMinutes.label")}
-        max={HOLD_MINUTES_MAX}
-        min={1}
-        onValueChange={(value) =>
-          setValue("holdMinutes", value != null ? String(value) : "", {
-            shouldValidate: isSubmitted,
-          })
-        }
-        placeholder={tOrganizations("waitlist.holdMinutes.placeholder")}
-        value={holdMinutes !== "" ? Number(holdMinutes) : null}
-      />
-      <NumberSpinner
-        error={!!errors.graceMinutes}
-        fullWidth
-        helperText={
-          errors.graceMinutes?.message ||
-          tOrganizations("waitlist.graceMinutes.helperText")
-        }
-        label={tOrganizations("waitlist.graceMinutes.label")}
-        max={GRACE_MINUTES_MAX}
-        min={0}
-        onValueChange={(value) =>
-          setValue("graceMinutes", value != null ? String(value) : "", {
-            shouldValidate: isSubmitted,
-          })
-        }
-        placeholder={tOrganizations("waitlist.graceMinutes.placeholder")}
-        value={graceMinutes !== "" ? Number(graceMinutes) : null}
-      />
-      <NumberSpinner
-        error={!!errors.cutoffMinutes}
-        fullWidth
-        helperText={
-          errors.cutoffMinutes?.message ||
-          tOrganizations("waitlist.cutoffMinutes.helperText")
-        }
-        label={tOrganizations("waitlist.cutoffMinutes.label")}
-        max={CUTOFF_MINUTES_MAX}
-        min={0}
-        onValueChange={(value) =>
-          setValue("cutoffMinutes", value != null ? String(value) : "", {
-            shouldValidate: isSubmitted,
-          })
-        }
-        placeholder={tOrganizations("waitlist.cutoffMinutes.placeholder")}
-        value={cutoffMinutes !== "" ? Number(cutoffMinutes) : null}
-      />
-      <FormLabel component="legend">
-        {tOrganizations("waitlist.groups.label")}
-      </FormLabel>
-      {fields.map(({ id }, index) => {
-        const minPartySize = getMinPartySize(groups, index);
+          <NumberSpinner
+            error={!!errors.holdMinutes}
+            fullWidth
+            helperText={
+              errors.holdMinutes?.message ||
+              tOrganizations("waitlist.holdMinutes.helperText")
+            }
+            label={tOrganizations("waitlist.holdMinutes.label")}
+            max={HOLD_MINUTES_MAX}
+            min={1}
+            onValueChange={(value) =>
+              setValue("holdMinutes", value != null ? String(value) : "", {
+                shouldValidate: isSubmitted,
+              })
+            }
+            placeholder={tOrganizations("waitlist.holdMinutes.placeholder")}
+            value={holdMinutes !== "" ? Number(holdMinutes) : null}
+          />
+          <NumberSpinner
+            error={!!errors.graceMinutes}
+            fullWidth
+            helperText={
+              errors.graceMinutes?.message ||
+              tOrganizations("waitlist.graceMinutes.helperText")
+            }
+            label={tOrganizations("waitlist.graceMinutes.label")}
+            max={GRACE_MINUTES_MAX}
+            min={0}
+            onValueChange={(value) =>
+              setValue("graceMinutes", value != null ? String(value) : "", {
+                shouldValidate: isSubmitted,
+              })
+            }
+            placeholder={tOrganizations("waitlist.graceMinutes.placeholder")}
+            value={graceMinutes !== "" ? Number(graceMinutes) : null}
+          />
+          <NumberSpinner
+            error={!!errors.cutoffMinutes}
+            fullWidth
+            helperText={
+              errors.cutoffMinutes?.message ||
+              tOrganizations("waitlist.cutoffMinutes.helperText")
+            }
+            label={tOrganizations("waitlist.cutoffMinutes.label")}
+            max={CUTOFF_MINUTES_MAX}
+            min={0}
+            onValueChange={(value) =>
+              setValue("cutoffMinutes", value != null ? String(value) : "", {
+                shouldValidate: isSubmitted,
+              })
+            }
+            placeholder={tOrganizations("waitlist.cutoffMinutes.placeholder")}
+            value={cutoffMinutes !== "" ? Number(cutoffMinutes) : null}
+          />
+          <FormLabel component="legend">
+            {tOrganizations("waitlist.groups.label")}
+          </FormLabel>
+          {fields.map(({ id }, index) => {
+            const minPartySize = getMinPartySize(groups, index);
 
-        return (
-          <GroupRowStack direction="row" key={id}>
-            <PrefixTextField
-              disabled
-              label={tOrganizations("waitlist.groups.prefix.label")}
-              value={String.fromCharCode(65 + index)}
-            />
-            <TextField
-              disabled
-              fullWidth
-              label={tOrganizations("waitlist.groups.minPartySize.label")}
-              value={Number.isNaN(minPartySize) ? "" : minPartySize}
-            />
-            <NumberField
-              error={!!errors.groups?.[index]?.maxPartySize}
-              fullWidth
-              helperText={errors.groups?.[index]?.maxPartySize?.message}
-              label={tOrganizations("waitlist.groups.maxPartySize.label")}
-              max={PARTY_SIZE_MAX}
-              min={Number.isNaN(minPartySize) ? 1 : minPartySize}
-              onValueChange={(value) => handleMaxPartySizeChange(index, value)}
-              required
-              value={
-                groups[index]?.maxPartySize
-                  ? Number(groups[index].maxPartySize)
-                  : null
-              }
-            />
-            <StyledIconButton
-              aria-label={tOrganizations("waitlist.groups.remove")}
-              color="error"
-              disabled={fields.length === 1}
-              onClick={() => remove(index)}
-              size="small"
-            >
-              <DeleteOutlined fontSize="small" />
-            </StyledIconButton>
-          </GroupRowStack>
-        );
-      })}
-      <FormHelperText>
-        {tOrganizations("waitlist.groups.helperText")}
-      </FormHelperText>
-      <Button
-        disabled={fields.length >= GROUPS_MAX}
-        onClick={() => append({ maxPartySize: "" })}
-        startIcon={<Add />}
-        variant="outlined"
-      >
-        {tOrganizations("waitlist.groups.add")}
-      </Button>
-    </FormBox>
+            return (
+              <GroupRowStack direction="row" key={id}>
+                <PrefixTextField
+                  disabled
+                  label={tOrganizations("waitlist.groups.prefix.label")}
+                  value={String.fromCharCode(65 + index)}
+                />
+                <TextField
+                  disabled
+                  fullWidth
+                  label={tOrganizations("waitlist.groups.minPartySize.label")}
+                  value={Number.isNaN(minPartySize) ? "" : minPartySize}
+                />
+                <NumberField
+                  error={!!errors.groups?.[index]?.maxPartySize}
+                  fullWidth
+                  helperText={errors.groups?.[index]?.maxPartySize?.message}
+                  label={tOrganizations("waitlist.groups.maxPartySize.label")}
+                  max={PARTY_SIZE_MAX}
+                  min={Number.isNaN(minPartySize) ? 1 : minPartySize}
+                  onValueChange={(value) =>
+                    handleMaxPartySizeChange(index, value)
+                  }
+                  required
+                  value={
+                    groups[index]?.maxPartySize
+                      ? Number(groups[index].maxPartySize)
+                      : null
+                  }
+                />
+                <StyledIconButton
+                  aria-label={tOrganizations("waitlist.groups.remove")}
+                  color="error"
+                  disabled={fields.length === 1}
+                  onClick={() => remove(index)}
+                  size="small"
+                >
+                  <DeleteOutlined fontSize="small" />
+                </StyledIconButton>
+              </GroupRowStack>
+            );
+          })}
+          <FormHelperText>
+            {tOrganizations("waitlist.groups.helperText")}
+          </FormHelperText>
+          <Button
+            disabled={fields.length >= GROUPS_MAX}
+            onClick={() => append({ maxPartySize: "" })}
+            startIcon={<Add />}
+            variant="outlined"
+          >
+            {tOrganizations("waitlist.groups.add")}
+          </Button>
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

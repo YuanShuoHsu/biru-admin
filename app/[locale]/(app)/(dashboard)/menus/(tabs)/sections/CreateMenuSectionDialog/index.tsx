@@ -12,6 +12,10 @@ import {
 
 import OrderTicketPrinterField from "@/app/[locale]/(app)/(dashboard)/menus/OrderTicketPrinterField";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
 import UploadAvatars from "@/components/UploadAvatars";
@@ -104,51 +108,59 @@ const CreateMenuSectionDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="create-section-form" onSubmit={onSubmit}>
-      <UploadAvatars
-        aspectRatio="16/9"
-        fullWidth
-        shape="square"
-        uploadKey={CREATE_MENU_SECTION_IMAGE_KEY}
-      />
-      <LocalizedTextFields
-        fields={(lang) => [
-          {
-            error: !!errors.name?.[lang],
-            fullWidth: true,
-            helperText: errors.name?.[lang]?.message,
-            label: tMenus("sections.name.label"),
-            onChange: (event) =>
-              setValue("name", { ...nameValue, [lang]: event.target.value }),
-            placeholder: tMenus("sections.name.placeholder"),
-            required: true,
-            value: nameValue?.[lang] || "",
-          },
-          {
-            error: !!errors.description?.[lang],
-            fullWidth: true,
-            helperText: errors.description?.[lang]?.message,
-            label: `${tMenus("sections.description.label")} ${tCommon("optional")}`,
-            maxRows: 4,
-            multiline: true,
-            onChange: (event) =>
-              setValue("description", {
-                ...descriptionValue,
-                [lang]: event.target.value,
-              }),
-            placeholder: tMenus("sections.description.placeholder"),
-            slotProps: { htmlInput: { maxLength: 160 } },
-            value: descriptionValue?.[lang] || "",
-          },
-        ]}
-      />
-      <OrderTicketPrinterField
-        menuId={menuId}
-        onChange={(value) => setValue("orderTicketPrinterId", value)}
-        scope="section"
-        value={orderTicketPrinterId}
-      />
-    </FormBox>
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="create-section-form" onSubmit={onSubmit}>
+          <UploadAvatars
+            aspectRatio="16/9"
+            fullWidth
+            shape="square"
+            uploadKey={CREATE_MENU_SECTION_IMAGE_KEY}
+          />
+          <LocalizedTextFields
+            fields={(lang) => [
+              {
+                error: !!errors.name?.[lang],
+                fullWidth: true,
+                helperText: errors.name?.[lang]?.message,
+                label: tMenus("sections.name.label"),
+                onChange: (event) =>
+                  setValue("name", {
+                    ...nameValue,
+                    [lang]: event.target.value,
+                  }),
+                placeholder: tMenus("sections.name.placeholder"),
+                required: true,
+                value: nameValue?.[lang] || "",
+              },
+              {
+                error: !!errors.description?.[lang],
+                fullWidth: true,
+                helperText: errors.description?.[lang]?.message,
+                label: `${tMenus("sections.description.label")} ${tCommon("optional")}`,
+                maxRows: 4,
+                multiline: true,
+                onChange: (event) =>
+                  setValue("description", {
+                    ...descriptionValue,
+                    [lang]: event.target.value,
+                  }),
+                placeholder: tMenus("sections.description.placeholder"),
+                slotProps: { htmlInput: { maxLength: 160 } },
+                value: descriptionValue?.[lang] || "",
+              },
+            ]}
+          />
+          <OrderTicketPrinterField
+            menuId={menuId}
+            onChange={(value) => setValue("orderTicketPrinterId", value)}
+            scope="section"
+            value={orderTicketPrinterId}
+          />
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

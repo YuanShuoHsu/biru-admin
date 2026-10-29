@@ -7,6 +7,10 @@ import useSWR from "swr";
 
 import AddTeamMemberDialog from "./AddTeamMemberDialog";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
@@ -184,13 +188,18 @@ const OrganizationsSlugTeamsTeamId = ({
 
       setDialog({
         content: (
-          <DialogContentText>
-            {tMembers.rich("actions.removeTeamMember.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              email: member?.user.email || "",
-              team: teamName,
-            })}
-          </DialogContentText>
+          <>
+            <CustomizedDialogContent>
+              <DialogContentText>
+                {tMembers.rich("actions.removeTeamMember.confirm", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  email: member?.user.email || "",
+                  team: teamName,
+                })}
+              </DialogContentText>
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         onConfirm: async () => {
           await authClient.organization.removeTeamMember(
@@ -232,21 +241,26 @@ const OrganizationsSlugTeamsTeamId = ({
 
     setDialog({
       content: (
-        <ConfirmStack>
-          <DialogContentText>
-            {tMembers.rich("actions.batchRemoveTeamMember.submit.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              count,
-            })}
-          </DialogContentText>
-          <List dense disablePadding>
-            {selectedRows.map(({ id, user: { email } }) => (
-              <ListItem disableGutters key={id}>
-                <ListItemText primary={email} />
-              </ListItem>
-            ))}
-          </List>
-        </ConfirmStack>
+        <>
+          <CustomizedDialogContent>
+            <ConfirmStack>
+              <DialogContentText>
+                {tMembers.rich("actions.batchRemoveTeamMember.submit.confirm", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  count,
+                })}
+              </DialogContentText>
+              <List dense disablePadding>
+                {selectedRows.map(({ id, user: { email } }) => (
+                  <ListItem disableGutters key={id}>
+                    <ListItemText primary={email} />
+                  </ListItem>
+                ))}
+              </List>
+            </ConfirmStack>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         try {

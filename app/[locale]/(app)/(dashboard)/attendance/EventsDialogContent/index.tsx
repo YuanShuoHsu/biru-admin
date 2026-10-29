@@ -4,6 +4,11 @@ import { useTranslations } from "next-intl";
 
 import EventList from "./EventList";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
+
 import { Divider, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -20,16 +25,26 @@ interface EventsDialogContentProps {
 const EventsDialogContent = ({ shift }: EventsDialogContentProps) => {
   const tAttendance = useTranslations("attendance");
 
-  return shift.originalEvents ? (
-    <StyledStack divider={<Divider />}>
-      <EventList
-        events={shift.originalEvents}
-        title={tAttendance("originalEvents")}
-      />
-      <EventList events={shift.events} title={tAttendance("effectiveEvents")} />
-    </StyledStack>
-  ) : (
-    <EventList events={shift.events} />
+  return (
+    <>
+      <CustomizedDialogContent>
+        {shift.originalEvents ? (
+          <StyledStack divider={<Divider />}>
+            <EventList
+              events={shift.originalEvents}
+              title={tAttendance("originalEvents")}
+            />
+            <EventList
+              events={shift.events}
+              title={tAttendance("effectiveEvents")}
+            />
+          </StyledStack>
+        ) : (
+          <EventList events={shift.events} />
+        )}
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

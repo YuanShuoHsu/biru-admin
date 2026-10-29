@@ -12,6 +12,10 @@ import {
   useInviteMemberFormSchema,
 } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { roles } from "@/constants/organizations";
@@ -91,82 +95,91 @@ const InviteMemberDialog = ({
   );
 
   return (
-    <FormBox id="invite-member-form" onSubmit={onSubmit}>
-      <TextField
-        autoComplete="email"
-        error={!!errors.email}
-        fullWidth
-        helperText={errors.email?.message}
-        label={tMembers("actions.inviteMember.email.label")}
-        placeholder={tMembers("actions.inviteMember.email.placeholder")}
-        required
-        type="email"
-        {...register("email")}
-      />
-      <TextField
-        error={!!errors.role}
-        fullWidth
-        helperText={errors.role?.message}
-        label={tMembers("role.label")}
-        required
-        select
-        slotProps={{
-          inputLabel: { shrink: true },
-          select: {
-            displayEmpty: true,
-            renderValue: (selected) => {
-              const selectedRole = roles.find((role) => role === selected);
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="invite-member-form" onSubmit={onSubmit}>
+          <TextField
+            autoComplete="email"
+            error={!!errors.email}
+            fullWidth
+            helperText={errors.email?.message}
+            label={tMembers("actions.inviteMember.email.label")}
+            placeholder={tMembers("actions.inviteMember.email.placeholder")}
+            required
+            type="email"
+            {...register("email")}
+          />
+          <TextField
+            error={!!errors.role}
+            fullWidth
+            helperText={errors.role?.message}
+            label={tMembers("role.label")}
+            required
+            select
+            slotProps={{
+              inputLabel: { shrink: true },
+              select: {
+                displayEmpty: true,
+                renderValue: (selected) => {
+                  const selectedRole = roles.find((role) => role === selected);
 
-              return selectedRole ? (
-                tMembers(`role.${selectedRole}`)
-              ) : (
-                <em>{tMembers("role.placeholder")}</em>
-              );
-            },
-          },
-        }}
-        value={role}
-        {...register("role")}
-      >
-        <MenuItem disabled value="">
-          <em>{tMembers("role.placeholder")}</em>
-        </MenuItem>
-        {roles.map((role) => (
-          <MenuItem key={role} value={role}>
-            {tMembers(`role.${role}`)}
-          </MenuItem>
-        ))}
-      </TextField>
-      <TextField
-        error={!!errors.teamId}
-        fullWidth
-        helperText={errors.teamId?.message}
-        label={`${tTeams("teamId.label")} ${tCommon("optional")}`}
-        select
-        slotProps={{
-          inputLabel: { shrink: true },
-          select: {
-            displayEmpty: true,
-            renderValue: (selected) => {
-              const team = teams.find(({ id }) => id === selected);
+                  return selectedRole ? (
+                    tMembers(`role.${selectedRole}`)
+                  ) : (
+                    <em>{tMembers("role.placeholder")}</em>
+                  );
+                },
+              },
+            }}
+            value={role}
+            {...register("role")}
+          >
+            <MenuItem disabled value="">
+              <em>{tMembers("role.placeholder")}</em>
+            </MenuItem>
+            {roles.map((role) => (
+              <MenuItem key={role} value={role}>
+                {tMembers(`role.${role}`)}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            error={!!errors.teamId}
+            fullWidth
+            helperText={errors.teamId?.message}
+            label={`${tTeams("teamId.label")} ${tCommon("optional")}`}
+            select
+            slotProps={{
+              inputLabel: { shrink: true },
+              select: {
+                displayEmpty: true,
+                renderValue: (selected) => {
+                  const team = teams.find(({ id }) => id === selected);
 
-              return team ? team.name : <em>{tTeams("teamId.placeholder")}</em>;
-            },
-          },
-        }}
-        value={teamId}
-        {...register("teamId")}
-      >
-        <MenuItem disabled value="">
-          <em>{tTeams("teamId.placeholder")}</em>
-        </MenuItem>
-        {teams.map(({ id, name }) => (
-          <MenuItem key={id} value={id}>
-            {name}
-          </MenuItem>
-        ))}
-      </TextField>
-    </FormBox>
+                  return team ? (
+                    team.name
+                  ) : (
+                    <em>{tTeams("teamId.placeholder")}</em>
+                  );
+                },
+              },
+            }}
+            value={teamId}
+            {...register("teamId")}
+          >
+            <MenuItem disabled value="">
+              <em>{tTeams("teamId.placeholder")}</em>
+            </MenuItem>
+            {teams.map(({ id, name }) => (
+              <MenuItem key={id} value={id}>
+                {name}
+              </MenuItem>
+            ))}
+          </TextField>
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

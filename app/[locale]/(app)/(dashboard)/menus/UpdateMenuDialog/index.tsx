@@ -7,6 +7,10 @@ import { useForm, useWatch } from "react-hook-form";
 
 import { type UpdateMenuForm, useUpdateMenuFormSchema } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
 import UploadAvatars from "@/components/UploadAvatars";
@@ -93,46 +97,54 @@ const UpdateMenuDialog = ({ menu, mutate }: UpdateMenuDialogProps) => {
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="update-menu-form" onSubmit={onSubmit}>
-      <UploadAvatars
-        aspectRatio="16/9"
-        fullWidth
-        initialSrc={menu.image ?? undefined}
-        shape="square"
-        uploadKey={uploadKey}
-      />
-      <LocalizedTextFields
-        fields={(lang) => [
-          {
-            error: !!errors.name?.[lang],
-            fullWidth: true,
-            helperText: errors.name?.[lang]?.message,
-            label: tMenus("name.label"),
-            onChange: (event) =>
-              setValue("name", { ...nameValue, [lang]: event.target.value }),
-            placeholder: tMenus("name.placeholder"),
-            required: true,
-            value: nameValue?.[lang] || "",
-          },
-          {
-            error: !!errors.description?.[lang],
-            fullWidth: true,
-            helperText: errors.description?.[lang]?.message,
-            label: `${tMenus("description.label")} ${tCommon("optional")}`,
-            maxRows: 4,
-            multiline: true,
-            onChange: (event) =>
-              setValue("description", {
-                ...descriptionValue,
-                [lang]: event.target.value,
-              }),
-            placeholder: tMenus("description.placeholder"),
-            slotProps: { htmlInput: { maxLength: 160 } },
-            value: descriptionValue?.[lang] || "",
-          },
-        ]}
-      />
-    </FormBox>
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="update-menu-form" onSubmit={onSubmit}>
+          <UploadAvatars
+            aspectRatio="16/9"
+            fullWidth
+            initialSrc={menu.image ?? undefined}
+            shape="square"
+            uploadKey={uploadKey}
+          />
+          <LocalizedTextFields
+            fields={(lang) => [
+              {
+                error: !!errors.name?.[lang],
+                fullWidth: true,
+                helperText: errors.name?.[lang]?.message,
+                label: tMenus("name.label"),
+                onChange: (event) =>
+                  setValue("name", {
+                    ...nameValue,
+                    [lang]: event.target.value,
+                  }),
+                placeholder: tMenus("name.placeholder"),
+                required: true,
+                value: nameValue?.[lang] || "",
+              },
+              {
+                error: !!errors.description?.[lang],
+                fullWidth: true,
+                helperText: errors.description?.[lang]?.message,
+                label: `${tMenus("description.label")} ${tCommon("optional")}`,
+                maxRows: 4,
+                multiline: true,
+                onChange: (event) =>
+                  setValue("description", {
+                    ...descriptionValue,
+                    [lang]: event.target.value,
+                  }),
+                placeholder: tMenus("description.placeholder"),
+                slotProps: { htmlInput: { maxLength: 160 } },
+                value: descriptionValue?.[lang] || "",
+              },
+            ]}
+          />
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

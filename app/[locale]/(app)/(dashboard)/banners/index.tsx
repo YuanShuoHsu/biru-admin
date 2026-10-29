@@ -8,6 +8,10 @@ import useSWR from "swr";
 import BannerDialog from "./BannerDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 import { DragHandle, Sortable } from "@/components/Sortable";
@@ -266,11 +270,16 @@ const Banners = ({
   const handleEnterReorderMode = useCallback(() => {
     setDialog({
       content: (
-        <DialogContentText>
-          {tBanners.rich("actions.reorderBanner.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tBanners.rich("actions.reorderBanner.confirm", {
+                bold: (chunks) => <strong>{chunks}</strong>,
+              })}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         setToolbarMode("reorder");
@@ -284,11 +293,16 @@ const Banners = ({
   const handleSaveReorder = useCallback(() => {
     setDialog({
       content: (
-        <DialogContentText>
-          {tBanners.rich("actions.reorderBanner.save.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tBanners.rich("actions.reorderBanner.save.confirm", {
+                bold: (chunks) => <strong>{chunks}</strong>,
+              })}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         try {
@@ -332,11 +346,16 @@ const Banners = ({
   const handleCancelReorder = useCallback(() => {
     setDialog({
       content: (
-        <DialogContentText>
-          {tBanners.rich("actions.reorderBanner.cancel.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tBanners.rich("actions.reorderBanner.cancel.confirm", {
+                bold: (chunks) => <strong>{chunks}</strong>,
+              })}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         setToolbarMode(null);
@@ -387,11 +406,16 @@ const Banners = ({
     ({ id }: Banner) => {
       setDialog({
         content: (
-          <DialogContentText>
-            {tBanners.rich("actions.deleteBanner.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-            })}
-          </DialogContentText>
+          <>
+            <CustomizedDialogContent>
+              <DialogContentText>
+                {tBanners.rich("actions.deleteBanner.confirm", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                })}
+              </DialogContentText>
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         onConfirm: async () => {
           try {
@@ -425,25 +449,30 @@ const Banners = ({
 
     setDialog({
       content: (
-        <ConfirmStack>
-          <DialogContentText>
-            {tBanners.rich("actions.batchDeleteBanner.submit.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              count,
-            })}
-          </DialogContentText>
-          <List dense disablePadding>
-            {selectedRows.map(({ id, image }) => (
-              <ListItem disableGutters key={id}>
-                <StyledAvatar
-                  alt={tBanners("image.label")}
-                  src={image}
-                  variant="rounded"
-                />
-              </ListItem>
-            ))}
-          </List>
-        </ConfirmStack>
+        <>
+          <CustomizedDialogContent>
+            <ConfirmStack>
+              <DialogContentText>
+                {tBanners.rich("actions.batchDeleteBanner.submit.confirm", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  count,
+                })}
+              </DialogContentText>
+              <List dense disablePadding>
+                {selectedRows.map(({ id, image }) => (
+                  <ListItem disableGutters key={id}>
+                    <StyledAvatar
+                      alt={tBanners("image.label")}
+                      src={image}
+                      variant="rounded"
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            </ConfirmStack>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         try {

@@ -34,6 +34,10 @@ import WaitlistTicketDialog, {
   WAITLIST_TICKET_FORM_ID,
 } from "../../WaitlistTicketDialog";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import SelectAllTransferList, {
   type SelectAllTransferListAction,
 } from "@/components/SelectAllTransferList";
@@ -181,13 +185,18 @@ const AdminWaitlist = ({
 
     setDialog({
       content: (
-        <DialogContentText>
-          {tWaitlist.rich(`actions.${label}Confirm`, {
-            bold: (chunks) => <strong>{chunks}</strong>,
-            name: ticket.name ?? "",
-            ticketNumber: ticket.ticketNumber,
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tWaitlist.rich(`actions.${label}Confirm`, {
+                bold: (chunks) => <strong>{chunks}</strong>,
+                name: ticket.name ?? "",
+                ticketNumber: ticket.ticketNumber,
+              })}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: () => handleTransition(ticket, status),
       open: true,
@@ -258,21 +267,26 @@ const AdminWaitlist = ({
     new Promise<boolean>((resolve) => {
       setDialog({
         content: (
-          <DialogContentText>
-            {tWaitlist.rich("actions.transfer.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              status: tWaitlist(`status.${status}`),
-              statusText: (chunks) => (
-                <StatusText as="strong" status={status}>
-                  {chunks}
-                </StatusText>
-              ),
-              ticketNumbers: waitlist.tickets
-                .filter(({ id }) => ids.includes(id))
-                .map(({ ticketNumber }) => ticketNumber)
-                .join(tCommon("delimiter")),
-            })}
-          </DialogContentText>
+          <>
+            <CustomizedDialogContent>
+              <DialogContentText>
+                {tWaitlist.rich("actions.transfer.confirm", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  status: tWaitlist(`status.${status}`),
+                  statusText: (chunks) => (
+                    <StatusText as="strong" status={status}>
+                      {chunks}
+                    </StatusText>
+                  ),
+                  ticketNumbers: waitlist.tickets
+                    .filter(({ id }) => ids.includes(id))
+                    .map(({ ticketNumber }) => ticketNumber)
+                    .join(tCommon("delimiter")),
+                })}
+              </DialogContentText>
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         onCancel: async () => resolve(false),
         onConfirm: async () => {

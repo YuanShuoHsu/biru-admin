@@ -6,6 +6,11 @@ import { useCallback, useRef, useState } from "react";
 import useSWR from "swr";
 
 import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
+
+import {
   PRINTER_STATUS_REFRESH_MS,
   STATUS_TEXT_COLORS,
 } from "@/constants/orders";
@@ -203,10 +208,15 @@ export const useOrderActions = (
     (order: AdminOrderResponse) => {
       setDialog({
         content: (
-          <OrderDetailDialog
-            order={order}
-            organizationSlug={organizationSlug}
-          />
+          <>
+            <CustomizedDialogContent>
+              <OrderDetailDialog
+                order={order}
+                organizationSlug={organizationSlug}
+              />
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         open: true,
         title: tOrders("actions.viewOrder.title"),
@@ -268,24 +278,29 @@ export const useOrderActions = (
 
       setDialog({
         content: (
-          <DialogContentText>
-            {tOrders.rich(
-              direction === "cancel"
-                ? "actions.updateStatus.confirm.cancel"
-                : "actions.updateStatus.confirm.default",
-              {
-                bold: (chunks) => <strong>{chunks}</strong>,
-                count: 1,
-                orderNumbers: order.orderNumber,
-                status,
-                statusText: (chunks) => (
-                  <StatusText as="strong" status={toStatus}>
-                    {chunks}
-                  </StatusText>
-                ),
-              },
-            )}
-          </DialogContentText>
+          <>
+            <CustomizedDialogContent>
+              <DialogContentText>
+                {tOrders.rich(
+                  direction === "cancel"
+                    ? "actions.updateStatus.confirm.cancel"
+                    : "actions.updateStatus.confirm.default",
+                  {
+                    bold: (chunks) => <strong>{chunks}</strong>,
+                    count: 1,
+                    orderNumbers: order.orderNumber,
+                    status,
+                    statusText: (chunks) => (
+                      <StatusText as="strong" status={toStatus}>
+                        {chunks}
+                      </StatusText>
+                    ),
+                  },
+                )}
+              </DialogContentText>
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         onConfirm: () => handleStatusAction(order, toStatus),
         open: true,
@@ -346,12 +361,17 @@ export const useOrderActions = (
     (order: AdminOrderResponse) => {
       setDialog({
         content: (
-          <DialogContentText>
-            {tOrders.rich("actions.issueInvoice.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              orderNumber: order.orderNumber,
-            })}
-          </DialogContentText>
+          <>
+            <CustomizedDialogContent>
+              <DialogContentText>
+                {tOrders.rich("actions.issueInvoice.confirm", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  orderNumber: order.orderNumber,
+                })}
+              </DialogContentText>
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         onConfirm: () => handleIssueInvoice(order),
         open: true,
@@ -422,12 +442,17 @@ export const useOrderActions = (
 
       setDialog({
         content: (
-          <DialogContentText>
-            {tOrders.rich("actions.printInvoice.reprintConfirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              orderNumber: order.orderNumber,
-            })}
-          </DialogContentText>
+          <>
+            <CustomizedDialogContent>
+              <DialogContentText>
+                {tOrders.rich("actions.printInvoice.reprintConfirm", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  orderNumber: order.orderNumber,
+                })}
+              </DialogContentText>
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         onConfirm: () => handlePrintInvoice(order),
         open: true,

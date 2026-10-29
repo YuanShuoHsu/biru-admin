@@ -22,6 +22,10 @@ import SetRoleDialogContent from "./SetRoleDialogContent";
 import SetUserPasswordDialogContent from "./SetUserPasswordDialogContent";
 import UpdateUserDialogContent from "./UpdateUserDialogContent";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -413,12 +417,17 @@ const Admins = ({
     ({ id, email }: User) => {
       setDialog({
         content: (
-          <DialogContentText>
-            {tAdmins.rich("actions.unbanUser.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              email,
-            })}
-          </DialogContentText>
+          <>
+            <CustomizedDialogContent>
+              <DialogContentText>
+                {tAdmins.rich("actions.unbanUser.confirm", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  email,
+                })}
+              </DialogContentText>
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         onConfirm: async () => {
           await authClient.admin.unbanUser(
@@ -447,12 +456,17 @@ const Admins = ({
     (user: User) => {
       setDialog({
         content: (
-          <DialogContentText>
-            {tAdmins.rich("actions.impersonateUser.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              email: user.email,
-            })}
-          </DialogContentText>
+          <>
+            <CustomizedDialogContent>
+              <DialogContentText>
+                {tAdmins.rich("actions.impersonateUser.confirm", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  email: user.email,
+                })}
+              </DialogContentText>
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         onConfirm: async () => {
           await authClient.admin.impersonateUser(
@@ -503,12 +517,17 @@ const Admins = ({
     ({ id, email }: User) => {
       setDialog({
         content: (
-          <DialogContentText>
-            {tAdmins.rich("actions.removeUser.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              email,
-            })}
-          </DialogContentText>
+          <>
+            <CustomizedDialogContent>
+              <DialogContentText>
+                {tAdmins.rich("actions.removeUser.confirm", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  email,
+                })}
+              </DialogContentText>
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         onConfirm: async () => {
           await authClient.admin.removeUser(
@@ -546,21 +565,26 @@ const Admins = ({
 
     setDialog({
       content: (
-        <ConfirmStack>
-          <DialogContentText>
-            {tAdmins.rich("actions.batchRemoveUser.submit.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              count,
-            })}
-          </DialogContentText>
-          <List dense disablePadding>
-            {selectedRows.map(({ email, id }) => (
-              <ListItem disableGutters key={id}>
-                <ListItemText primary={email} />
-              </ListItem>
-            ))}
-          </List>
-        </ConfirmStack>
+        <>
+          <CustomizedDialogContent>
+            <ConfirmStack>
+              <DialogContentText>
+                {tAdmins.rich("actions.batchRemoveUser.submit.confirm", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  count,
+                })}
+              </DialogContentText>
+              <List dense disablePadding>
+                {selectedRows.map(({ email, id }) => (
+                  <ListItem disableGutters key={id}>
+                    <ListItemText primary={email} />
+                  </ListItem>
+                ))}
+              </List>
+            </ConfirmStack>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         try {

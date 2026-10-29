@@ -10,6 +10,10 @@ import { useForm, useWatch } from "react-hook-form";
 
 import { type BalanceForm, useBalanceFormSchema } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 
@@ -112,99 +116,104 @@ const BalanceDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="attendance-balance-form" onSubmit={onSubmit}>
-      <TextField
-        error={!!errors.employeeId}
-        fullWidth
-        helperText={errors.employeeId?.message}
-        label={tAttendance("employee")}
-        onChange={(event) =>
-          setValue("employeeId", event.target.value, {
-            shouldValidate: isSubmitted,
-          })
-        }
-        required
-        select
-        value={employeeId}
-      >
-        {employees.map(({ email, id, name }) => (
-          <MenuItem key={id} value={id}>
-            <ListItemText
-              primary={name}
-              secondary={email}
-              slotProps={{ secondary: { variant: "caption" } }}
-            />
-          </MenuItem>
-        ))}
-      </TextField>
-      <TextField
-        error={!!errors.leaveTypeId}
-        fullWidth
-        helperText={errors.leaveTypeId?.message}
-        label={tAttendance("leaveType.label")}
-        onChange={(event) =>
-          setValue("leaveTypeId", event.target.value, {
-            shouldValidate: isSubmitted,
-          })
-        }
-        required
-        select
-        value={leaveTypeId}
-      >
-        {leaveTypes
-          .filter(({ statutoryKind }) => statutoryKind === "custom")
-          .map(({ id, name }) => (
-            <MenuItem key={id} value={id}>
-              {name}
-            </MenuItem>
-          ))}
-      </TextField>
-      <NumberSpinner
-        error={!!errors.year}
-        fullWidth
-        helperText={errors.year?.message}
-        label={tAttendance("year")}
-        max={2099}
-        min={2026}
-        onValueChange={(value) =>
-          setValue("year", value ?? 2026, { shouldValidate: isSubmitted })
-        }
-        value={year}
-      />
-      <NumberSpinner
-        error={!!errors.grantedMinutes}
-        fullWidth
-        helperText={errors.grantedMinutes?.message}
-        label={tAttendance("balances.grantedHours")}
-        max={8760}
-        min={0}
-        onValueChange={(value) =>
-          setValue(
-            "grantedMinutes",
-            (value ?? 0) * 60 + (grantedMinutes % 60),
-            {
-              shouldValidate: isSubmitted,
-            },
-          )
-        }
-        value={Math.floor(grantedMinutes / 60)}
-      />
-      <NumberSpinner
-        error={!!errors.grantedMinutes}
-        fullWidth
-        label={tAttendance("balances.grantedMinutes")}
-        max={59}
-        min={0}
-        onValueChange={(value) =>
-          setValue(
-            "grantedMinutes",
-            Math.floor(grantedMinutes / 60) * 60 + (value ?? 0),
-            { shouldValidate: isSubmitted },
-          )
-        }
-        value={grantedMinutes % 60}
-      />
-    </FormBox>
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="attendance-balance-form" onSubmit={onSubmit}>
+          <TextField
+            error={!!errors.employeeId}
+            fullWidth
+            helperText={errors.employeeId?.message}
+            label={tAttendance("employee")}
+            onChange={(event) =>
+              setValue("employeeId", event.target.value, {
+                shouldValidate: isSubmitted,
+              })
+            }
+            required
+            select
+            value={employeeId}
+          >
+            {employees.map(({ email, id, name }) => (
+              <MenuItem key={id} value={id}>
+                <ListItemText
+                  primary={name}
+                  secondary={email}
+                  slotProps={{ secondary: { variant: "caption" } }}
+                />
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            error={!!errors.leaveTypeId}
+            fullWidth
+            helperText={errors.leaveTypeId?.message}
+            label={tAttendance("leaveType.label")}
+            onChange={(event) =>
+              setValue("leaveTypeId", event.target.value, {
+                shouldValidate: isSubmitted,
+              })
+            }
+            required
+            select
+            value={leaveTypeId}
+          >
+            {leaveTypes
+              .filter(({ statutoryKind }) => statutoryKind === "custom")
+              .map(({ id, name }) => (
+                <MenuItem key={id} value={id}>
+                  {name}
+                </MenuItem>
+              ))}
+          </TextField>
+          <NumberSpinner
+            error={!!errors.year}
+            fullWidth
+            helperText={errors.year?.message}
+            label={tAttendance("year")}
+            max={2099}
+            min={2026}
+            onValueChange={(value) =>
+              setValue("year", value ?? 2026, { shouldValidate: isSubmitted })
+            }
+            value={year}
+          />
+          <NumberSpinner
+            error={!!errors.grantedMinutes}
+            fullWidth
+            helperText={errors.grantedMinutes?.message}
+            label={tAttendance("balances.grantedHours")}
+            max={8760}
+            min={0}
+            onValueChange={(value) =>
+              setValue(
+                "grantedMinutes",
+                (value ?? 0) * 60 + (grantedMinutes % 60),
+                {
+                  shouldValidate: isSubmitted,
+                },
+              )
+            }
+            value={Math.floor(grantedMinutes / 60)}
+          />
+          <NumberSpinner
+            error={!!errors.grantedMinutes}
+            fullWidth
+            label={tAttendance("balances.grantedMinutes")}
+            max={59}
+            min={0}
+            onValueChange={(value) =>
+              setValue(
+                "grantedMinutes",
+                Math.floor(grantedMinutes / 60) * 60 + (value ?? 0),
+                { shouldValidate: isSubmitted },
+              )
+            }
+            value={grantedMinutes % 60}
+          />
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

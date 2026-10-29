@@ -11,6 +11,10 @@ import {
   useAttachModifierGroupFormSchema,
 } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -114,42 +118,47 @@ const AttachModifierGroupDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="attach-modifier-group-form" onSubmit={onSubmit}>
-      <TextField
-        error={!!errors.modifierGroupId}
-        fullWidth
-        helperText={errors.modifierGroupId?.message}
-        label={tMenus("items.modifierGroups.group.label")}
-        required
-        select
-        slotProps={{
-          inputLabel: { shrink: true },
-          select: {
-            displayEmpty: true,
-            renderValue: (selected) => {
-              const group = groups.find(({ id }) => id === selected);
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="attach-modifier-group-form" onSubmit={onSubmit}>
+          <TextField
+            error={!!errors.modifierGroupId}
+            fullWidth
+            helperText={errors.modifierGroupId?.message}
+            label={tMenus("items.modifierGroups.group.label")}
+            required
+            select
+            slotProps={{
+              inputLabel: { shrink: true },
+              select: {
+                displayEmpty: true,
+                renderValue: (selected) => {
+                  const group = groups.find(({ id }) => id === selected);
 
-              return group ? (
-                localize(group.displayName, locale)
-              ) : (
-                <em>{tMenus("items.modifierGroups.group.placeholder")}</em>
-              );
-            },
-          },
-        }}
-        value={modifierGroupId}
-        {...register("modifierGroupId")}
-      >
-        <MenuItem disabled value="">
-          <em>{tMenus("items.modifierGroups.group.placeholder")}</em>
-        </MenuItem>
-        {groups.map(({ id, displayName }) => (
-          <MenuItem disabled={usedGroupIds.has(id)} key={id} value={id}>
-            {localize(displayName, locale)}
-          </MenuItem>
-        ))}
-      </TextField>
-    </FormBox>
+                  return group ? (
+                    localize(group.displayName, locale)
+                  ) : (
+                    <em>{tMenus("items.modifierGroups.group.placeholder")}</em>
+                  );
+                },
+              },
+            }}
+            value={modifierGroupId}
+            {...register("modifierGroupId")}
+          >
+            <MenuItem disabled value="">
+              <em>{tMenus("items.modifierGroups.group.placeholder")}</em>
+            </MenuItem>
+            {groups.map(({ id, displayName }) => (
+              <MenuItem disabled={usedGroupIds.has(id)} key={id} value={id}>
+                {localize(displayName, locale)}
+              </MenuItem>
+            ))}
+          </TextField>
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

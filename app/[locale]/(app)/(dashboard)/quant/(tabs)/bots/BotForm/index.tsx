@@ -29,6 +29,10 @@ import SignalFields from "./SignalFields";
 
 import FuturesGridFields from "./FuturesGridFields";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import {
@@ -221,7 +225,12 @@ const BotFormFields = ({
           confirmLoading: false,
           confirmText: "",
           content: (
-            <WebhookSetup botId={created.id} token={created.webhookToken} />
+            <>
+              <CustomizedDialogContent>
+                <WebhookSetup botId={created.id} token={created.webhookToken} />
+              </CustomizedDialogContent>
+              <CustomizedDialogActions />
+            </>
           ),
           formId: undefined,
           maxWidth: undefined,
@@ -540,7 +549,14 @@ export const useBotFormDialog = () => {
     (props: BotFormProps) =>
       setDialog({
         confirmText: tBots("new.submit"),
-        content: <BotForm {...props} />,
+        content: (
+          <>
+            <CustomizedDialogContent>
+              <BotForm {...props} />
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
+        ),
         formId: BOT_FORM_ID,
         maxWidth: "lg",
         open: true,

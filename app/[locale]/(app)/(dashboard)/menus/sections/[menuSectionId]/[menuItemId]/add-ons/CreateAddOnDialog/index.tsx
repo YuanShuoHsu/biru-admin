@@ -8,6 +8,10 @@ import useSWR from "swr";
 
 import { type CreateAddOnForm, useCreateAddOnFormSchema } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -157,110 +161,119 @@ const CreateAddOnDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="create-add-on-form" onSubmit={onSubmit}>
-      <TextField
-        error={!!errors.addOnMenuSectionId}
-        fullWidth
-        helperText={errors.addOnMenuSectionId?.message}
-        label={tMenus("items.addOns.addOnMenuSectionId.label")}
-        required
-        select
-        slotProps={{
-          input: {
-            endAdornment: addOnMenuSectionId && (
-              <StyledInputAdornment position="end">
-                <IconButton
-                  onClick={() => {
-                    setValue("addOnMenuSectionId", "");
-                    setValue("addOnMenuItemId", "");
-                  }}
-                  size="small"
-                >
-                  <Clear fontSize="small" />
-                </IconButton>
-              </StyledInputAdornment>
-            ),
-          },
-          inputLabel: { shrink: true },
-          select: {
-            displayEmpty: true,
-            renderValue: (selected) =>
-              selected ? (
-                localize(
-                  sections.find(({ id }) => id === selected)?.name,
-                  locale,
-                )
-              ) : (
-                <em>{tMenus("items.addOns.addOnMenuSectionId.placeholder")}</em>
-              ),
-          },
-        }}
-        value={addOnMenuSectionId}
-        {...register("addOnMenuSectionId", {
-          onChange: () => setValue("addOnMenuItemId", ""),
-        })}
-      >
-        <MenuItem disabled value="">
-          <em>{tMenus("items.addOns.addOnMenuSectionId.placeholder")}</em>
-        </MenuItem>
-        {sections.map(({ id, name }) => (
-          <MenuItem disabled={usedSectionIds.has(id)} key={id} value={id}>
-            {localize(name, locale)}
-          </MenuItem>
-        ))}
-      </TextField>
-      {addOnMenuSectionId && (
-        <TextField
-          error={!!errors.addOnMenuItemId}
-          fullWidth
-          helperText={errors.addOnMenuItemId?.message}
-          label={`${tMenus("items.addOns.addOnMenuItemId.label")} ${tCommon("optional")}`}
-          select
-          slotProps={{
-            input: {
-              endAdornment: addOnMenuItemId && (
-                <StyledInputAdornment position="end">
-                  <IconButton
-                    onClick={() => setValue("addOnMenuItemId", "")}
-                    size="small"
-                  >
-                    <Clear fontSize="small" />
-                  </IconButton>
-                </StyledInputAdornment>
-              ),
-            },
-            inputLabel: { shrink: true },
-            select: {
-              displayEmpty: true,
-              renderValue: (selected) =>
-                selected ? (
-                  localize(
-                    sectionItems.find(({ id }) => id === selected)?.name,
-                    locale,
-                  )
-                ) : (
-                  <em>{tMenus("items.addOns.addOnMenuItemId.placeholder")}</em>
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="create-add-on-form" onSubmit={onSubmit}>
+          <TextField
+            error={!!errors.addOnMenuSectionId}
+            fullWidth
+            helperText={errors.addOnMenuSectionId?.message}
+            label={tMenus("items.addOns.addOnMenuSectionId.label")}
+            required
+            select
+            slotProps={{
+              input: {
+                endAdornment: addOnMenuSectionId && (
+                  <StyledInputAdornment position="end">
+                    <IconButton
+                      onClick={() => {
+                        setValue("addOnMenuSectionId", "");
+                        setValue("addOnMenuItemId", "");
+                      }}
+                      size="small"
+                    >
+                      <Clear fontSize="small" />
+                    </IconButton>
+                  </StyledInputAdornment>
                 ),
-            },
-          }}
-          value={addOnMenuItemId}
-          {...register("addOnMenuItemId")}
-        >
-          <MenuItem disabled value="">
-            <em>{tMenus("items.addOns.addOnMenuItemId.placeholder")}</em>
-          </MenuItem>
-          {sectionItems.map(({ id, name }) => (
-            <MenuItem
-              disabled={id === menuItemId || usedItemIds.has(id)}
-              key={id}
-              value={id}
-            >
-              {localize(name, locale)}
+              },
+              inputLabel: { shrink: true },
+              select: {
+                displayEmpty: true,
+                renderValue: (selected) =>
+                  selected ? (
+                    localize(
+                      sections.find(({ id }) => id === selected)?.name,
+                      locale,
+                    )
+                  ) : (
+                    <em>
+                      {tMenus("items.addOns.addOnMenuSectionId.placeholder")}
+                    </em>
+                  ),
+              },
+            }}
+            value={addOnMenuSectionId}
+            {...register("addOnMenuSectionId", {
+              onChange: () => setValue("addOnMenuItemId", ""),
+            })}
+          >
+            <MenuItem disabled value="">
+              <em>{tMenus("items.addOns.addOnMenuSectionId.placeholder")}</em>
             </MenuItem>
-          ))}
-        </TextField>
-      )}
-    </FormBox>
+            {sections.map(({ id, name }) => (
+              <MenuItem disabled={usedSectionIds.has(id)} key={id} value={id}>
+                {localize(name, locale)}
+              </MenuItem>
+            ))}
+          </TextField>
+          {addOnMenuSectionId && (
+            <TextField
+              error={!!errors.addOnMenuItemId}
+              fullWidth
+              helperText={errors.addOnMenuItemId?.message}
+              label={`${tMenus("items.addOns.addOnMenuItemId.label")} ${tCommon("optional")}`}
+              select
+              slotProps={{
+                input: {
+                  endAdornment: addOnMenuItemId && (
+                    <StyledInputAdornment position="end">
+                      <IconButton
+                        onClick={() => setValue("addOnMenuItemId", "")}
+                        size="small"
+                      >
+                        <Clear fontSize="small" />
+                      </IconButton>
+                    </StyledInputAdornment>
+                  ),
+                },
+                inputLabel: { shrink: true },
+                select: {
+                  displayEmpty: true,
+                  renderValue: (selected) =>
+                    selected ? (
+                      localize(
+                        sectionItems.find(({ id }) => id === selected)?.name,
+                        locale,
+                      )
+                    ) : (
+                      <em>
+                        {tMenus("items.addOns.addOnMenuItemId.placeholder")}
+                      </em>
+                    ),
+                },
+              }}
+              value={addOnMenuItemId}
+              {...register("addOnMenuItemId")}
+            >
+              <MenuItem disabled value="">
+                <em>{tMenus("items.addOns.addOnMenuItemId.placeholder")}</em>
+              </MenuItem>
+              {sectionItems.map(({ id, name }) => (
+                <MenuItem
+                  disabled={id === menuItemId || usedItemIds.has(id)}
+                  key={id}
+                  value={id}
+                >
+                  {localize(name, locale)}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

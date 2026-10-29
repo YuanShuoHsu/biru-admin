@@ -9,6 +9,10 @@ import {
   useAddTeamMemberFormSchema,
 } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -79,47 +83,54 @@ const AddTeamMemberDialog = ({
   });
 
   return (
-    <FormBox id="add-team-member-form" onSubmit={onSubmit}>
-      <TextField
-        error={!!errors.userId}
-        fullWidth
-        helperText={errors.userId?.message}
-        label={tMembers("userId.label")}
-        required
-        select
-        slotProps={{
-          inputLabel: { shrink: true },
-          select: {
-            displayEmpty: true,
-            renderValue: (selected) => {
-              const member = availableMembers.find(
-                ({ userId }) => userId === selected,
-              );
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="add-team-member-form" onSubmit={onSubmit}>
+          <TextField
+            error={!!errors.userId}
+            fullWidth
+            helperText={errors.userId?.message}
+            label={tMembers("userId.label")}
+            required
+            select
+            slotProps={{
+              inputLabel: { shrink: true },
+              select: {
+                displayEmpty: true,
+                renderValue: (selected) => {
+                  const member = availableMembers.find(
+                    ({ userId }) => userId === selected,
+                  );
 
-              return member ? (
-                tMembers("userId.option", {
-                  email: member.user.email,
-                  name: member.user.name,
-                })
-              ) : (
-                <em>{tMembers("userId.placeholder")}</em>
-              );
-            },
-          },
-        }}
-        value={userId}
-        {...register("userId")}
-      >
-        <MenuItem disabled value="">
-          <em>{tMembers("userId.placeholder")}</em>
-        </MenuItem>
-        {availableMembers.map(({ userId: memberId, user: { email, name } }) => (
-          <MenuItem key={memberId} value={memberId}>
-            {tMembers("userId.option", { email, name })}
-          </MenuItem>
-        ))}
-      </TextField>
-    </FormBox>
+                  return member ? (
+                    tMembers("userId.option", {
+                      email: member.user.email,
+                      name: member.user.name,
+                    })
+                  ) : (
+                    <em>{tMembers("userId.placeholder")}</em>
+                  );
+                },
+              },
+            }}
+            value={userId}
+            {...register("userId")}
+          >
+            <MenuItem disabled value="">
+              <em>{tMembers("userId.placeholder")}</em>
+            </MenuItem>
+            {availableMembers.map(
+              ({ userId: memberId, user: { email, name } }) => (
+                <MenuItem key={memberId} value={memberId}>
+                  {tMembers("userId.option", { email, name })}
+                </MenuItem>
+              ),
+            )}
+          </TextField>
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

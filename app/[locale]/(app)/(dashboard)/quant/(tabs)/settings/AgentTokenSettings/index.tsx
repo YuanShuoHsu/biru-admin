@@ -10,6 +10,11 @@ import useSWR from "swr";
 
 import { CopyField } from "../../bots/WebhookSetup";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
+
 import { Terminal } from "@mui/icons-material";
 import {
   Button,
@@ -72,9 +77,14 @@ const AgentTokenSettings = () => {
 
     setDialog({
       content: (
-        <DialogContentText>
-          {tAgent("approve.confirm", { code: agentCode })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tAgent("approve.confirm", { code: agentCode })}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         await fetcher(`${AGENT_TOKEN_URL}/approve`, {
@@ -93,7 +103,14 @@ const AgentTokenSettings = () => {
 
   const showSetup = () =>
     setDialog({
-      content: <AgentSetup />,
+      content: (
+        <>
+          <CustomizedDialogContent>
+            <AgentSetup />
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
+      ),
       open: true,
       showCancel: false,
       title: tAgent("setup.title"),
@@ -102,7 +119,12 @@ const AgentTokenSettings = () => {
   const handleRemove = () =>
     setDialog({
       content: (
-        <DialogContentText>{tAgent("remove.confirm")}</DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>{tAgent("remove.confirm")}</DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         try {

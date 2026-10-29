@@ -8,6 +8,10 @@ import useSWR from "swr";
 
 import UpdateTeamDialog from "./UpdateTeamDialog";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
@@ -173,12 +177,17 @@ const OrganizationsSlugTeams = ({
     ({ id: teamId, name }: Team) => {
       setDialog({
         content: (
-          <DialogContentText>
-            {tTeams.rich("actions.removeTeam.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              name,
-            })}
-          </DialogContentText>
+          <>
+            <CustomizedDialogContent>
+              <DialogContentText>
+                {tTeams.rich("actions.removeTeam.confirm", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  name,
+                })}
+              </DialogContentText>
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         onConfirm: async () => {
           await authClient.organization.removeTeam(
@@ -218,21 +227,26 @@ const OrganizationsSlugTeams = ({
 
     setDialog({
       content: (
-        <ConfirmStack>
-          <DialogContentText>
-            {tTeams.rich("actions.batchRemoveTeam.submit.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              count,
-            })}
-          </DialogContentText>
-          <List dense disablePadding>
-            {selectedRows.map(({ id, name }) => (
-              <ListItem disableGutters key={id}>
-                <ListItemText primary={name} />
-              </ListItem>
-            ))}
-          </List>
-        </ConfirmStack>
+        <>
+          <CustomizedDialogContent>
+            <ConfirmStack>
+              <DialogContentText>
+                {tTeams.rich("actions.batchRemoveTeam.submit.confirm", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  count,
+                })}
+              </DialogContentText>
+              <List dense disablePadding>
+                {selectedRows.map(({ id, name }) => (
+                  <ListItem disableGutters key={id}>
+                    <ListItemText primary={name} />
+                  </ListItem>
+                ))}
+              </List>
+            </ConfirmStack>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         try {

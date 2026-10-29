@@ -6,6 +6,11 @@ import useSWR from "swr";
 import { quantAccountUrl } from "../../useQuantCredentials";
 
 import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
+
+import {
   Button,
   Skeleton,
   Stack,
@@ -91,7 +96,14 @@ const CredentialAssets = ({ credentialId }: { credentialId: string }) => {
         event.stopPropagation();
 
         setDialog({
-          content: <AssetsBreakdown assets={assets} />,
+          content: (
+            <>
+              <CustomizedDialogContent>
+                <AssetsBreakdown assets={assets} />
+              </CustomizedDialogContent>
+              <CustomizedDialogActions />
+            </>
+          ),
           open: true,
           showCancel: false,
           title: tAssets("title"),

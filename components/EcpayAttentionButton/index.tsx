@@ -3,6 +3,11 @@
 import { useFormatter, useTranslations } from "next-intl";
 import useSWR from "swr";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
+
 import { ReportProblemOutlined } from "@mui/icons-material";
 import {
   Badge,
@@ -50,29 +55,42 @@ const EcpayAttentionButton = ({
   const handleClick = () =>
     setDialog({
       content: (
-        <ListStack divider={<Divider />}>
-          {items.map(
-            ({ confirmationNumber, detail, occurredAt, orderNumber, type }) => (
-              <ItemStack key={`${type}-${confirmationNumber}-${occurredAt}`}>
-                <Typography variant="subtitle2">
-                  {tOrders(`attention.type.${type}`)}
-                </Typography>
-                <Typography color="textSecondary" variant="body2">
-                  {tOrders("attention.orderLabel", {
-                    orderNumber: orderNumber || "-",
-                  })}
-                  {tCommon("delimiter")}
-                  {format.dateTime(new Date(occurredAt), "short")}
-                </Typography>
-                {!!detail && (
-                  <Typography color="error" variant="caption">
-                    {detail}
-                  </Typography>
-                )}
-              </ItemStack>
-            ),
-          )}
-        </ListStack>
+        <>
+          <CustomizedDialogContent>
+            <ListStack divider={<Divider />}>
+              {items.map(
+                ({
+                  confirmationNumber,
+                  detail,
+                  occurredAt,
+                  orderNumber,
+                  type,
+                }) => (
+                  <ItemStack
+                    key={`${type}-${confirmationNumber}-${occurredAt}`}
+                  >
+                    <Typography variant="subtitle2">
+                      {tOrders(`attention.type.${type}`)}
+                    </Typography>
+                    <Typography color="textSecondary" variant="body2">
+                      {tOrders("attention.orderLabel", {
+                        orderNumber: orderNumber || "-",
+                      })}
+                      {tCommon("delimiter")}
+                      {format.dateTime(new Date(occurredAt), "short")}
+                    </Typography>
+                    {!!detail && (
+                      <Typography color="error" variant="caption">
+                        {detail}
+                      </Typography>
+                    )}
+                  </ItemStack>
+                ),
+              )}
+            </ListStack>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       open: true,
       showConfirm: false,

@@ -10,6 +10,10 @@ import {
   useUpdateModifierGroupFormSchema,
 } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
 import NumberSpinner from "@/components/NumberSpinner";
@@ -101,53 +105,58 @@ const UpdateModifierGroupDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="update-modifier-group-form" onSubmit={onSubmit}>
-      <LocalizedTextFields
-        fields={(lang) => [
-          {
-            error: !!errors.displayName?.[lang],
-            fullWidth: true,
-            helperText: errors.displayName?.[lang]?.message,
-            label: tMenus("modifierGroups.displayName.label"),
-            onChange: (event) =>
-              setValue("displayName", {
-                ...displayNameValue,
-                [lang]: event.target.value,
-              }),
-            placeholder: tMenus("modifierGroups.displayName.placeholder"),
-            required: true,
-            value: displayNameValue?.[lang] || "",
-          },
-        ]}
-      />
-      <NumberSpinner
-        clearable
-        error={!!errors.minSelectionCount}
-        fullWidth
-        helperText={errors.minSelectionCount?.message}
-        label={`${tMenus("modifierGroups.minSelectionCount.label")} ${tCommon("optional")}`}
-        max={Number(maxSelectionCount) || undefined}
-        min={0}
-        placeholder={tMenus("modifierGroups.minSelectionCount.placeholder")}
-        value={minSelectionCount !== "" ? Number(minSelectionCount) : null}
-        onValueChange={(value) =>
-          setValue("minSelectionCount", value != null ? String(value) : "")
-        }
-      />
-      <NumberSpinner
-        clearable
-        error={!!errors.maxSelectionCount}
-        fullWidth
-        helperText={errors.maxSelectionCount?.message}
-        label={`${tMenus("modifierGroups.maxSelectionCount.label")} ${tCommon("optional")}`}
-        min={Math.max(1, Number(minSelectionCount) || 0)}
-        placeholder={tMenus("modifierGroups.maxSelectionCount.placeholder")}
-        value={maxSelectionCount !== "" ? Number(maxSelectionCount) : null}
-        onValueChange={(value) =>
-          setValue("maxSelectionCount", value != null ? String(value) : "")
-        }
-      />
-    </FormBox>
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="update-modifier-group-form" onSubmit={onSubmit}>
+          <LocalizedTextFields
+            fields={(lang) => [
+              {
+                error: !!errors.displayName?.[lang],
+                fullWidth: true,
+                helperText: errors.displayName?.[lang]?.message,
+                label: tMenus("modifierGroups.displayName.label"),
+                onChange: (event) =>
+                  setValue("displayName", {
+                    ...displayNameValue,
+                    [lang]: event.target.value,
+                  }),
+                placeholder: tMenus("modifierGroups.displayName.placeholder"),
+                required: true,
+                value: displayNameValue?.[lang] || "",
+              },
+            ]}
+          />
+          <NumberSpinner
+            clearable
+            error={!!errors.minSelectionCount}
+            fullWidth
+            helperText={errors.minSelectionCount?.message}
+            label={`${tMenus("modifierGroups.minSelectionCount.label")} ${tCommon("optional")}`}
+            max={Number(maxSelectionCount) || undefined}
+            min={0}
+            placeholder={tMenus("modifierGroups.minSelectionCount.placeholder")}
+            value={minSelectionCount !== "" ? Number(minSelectionCount) : null}
+            onValueChange={(value) =>
+              setValue("minSelectionCount", value != null ? String(value) : "")
+            }
+          />
+          <NumberSpinner
+            clearable
+            error={!!errors.maxSelectionCount}
+            fullWidth
+            helperText={errors.maxSelectionCount?.message}
+            label={`${tMenus("modifierGroups.maxSelectionCount.label")} ${tCommon("optional")}`}
+            min={Math.max(1, Number(minSelectionCount) || 0)}
+            placeholder={tMenus("modifierGroups.maxSelectionCount.placeholder")}
+            value={maxSelectionCount !== "" ? Number(maxSelectionCount) : null}
+            onValueChange={(value) =>
+              setValue("maxSelectionCount", value != null ? String(value) : "")
+            }
+          />
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

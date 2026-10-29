@@ -15,6 +15,10 @@ import {
 import CheckboxesGroup from "@/components/CheckboxesGroup";
 import OrderTicketPrinterField from "@/app/[locale]/(app)/(dashboard)/menus/OrderTicketPrinterField";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
 import NumberSpinner from "@/components/NumberSpinner";
@@ -246,455 +250,473 @@ const CreateMenuItemDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="create-menu-item-form" onSubmit={onSubmit}>
-      <UploadAvatars
-        aspectRatio="16/9"
-        fullWidth
-        shape="square"
-        uploadKey={CREATE_MENU_ITEM_IMAGE_KEY}
-      />
-      <LocalizedTextFields
-        fields={(lang) => [
-          {
-            error: !!errors.name?.[lang],
-            fullWidth: true,
-            helperText: errors.name?.[lang]?.message,
-            label: tMenus("items.name.label"),
-            onChange: (event) =>
-              setValue("name", { ...nameValue, [lang]: event.target.value }),
-            placeholder: tMenus("items.name.placeholder"),
-            required: true,
-            value: nameValue?.[lang] || "",
-          },
-          {
-            error: !!errors.description?.[lang],
-            fullWidth: true,
-            helperText: errors.description?.[lang]?.message,
-            label: `${tMenus("items.description.label")} ${tCommon("optional")}`,
-            maxRows: 4,
-            multiline: true,
-            onChange: (event) =>
-              setValue("description", {
-                ...descriptionValue,
-                [lang]: event.target.value,
-              }),
-            placeholder: tMenus("items.description.placeholder"),
-            slotProps: { htmlInput: { maxLength: 160 } },
-            value: descriptionValue?.[lang] || "",
-          },
-        ]}
-      />
-      <CheckboxesGroup
-        error={!!errors.servingTemperatures}
-        fullWidth
-        helperText={
-          errors.servingTemperatures?.message ||
-          tMenus("items.servingTemperatures.helperText")
-        }
-        label={`${tMenus("items.servingTemperatures.label")} ${tCommon("optional")}`}
-        onChange={(event, value) => {
-          const next = value as ServingTemperature[];
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="create-menu-item-form" onSubmit={onSubmit}>
+          <UploadAvatars
+            aspectRatio="16/9"
+            fullWidth
+            shape="square"
+            uploadKey={CREATE_MENU_ITEM_IMAGE_KEY}
+          />
+          <LocalizedTextFields
+            fields={(lang) => [
+              {
+                error: !!errors.name?.[lang],
+                fullWidth: true,
+                helperText: errors.name?.[lang]?.message,
+                label: tMenus("items.name.label"),
+                onChange: (event) =>
+                  setValue("name", {
+                    ...nameValue,
+                    [lang]: event.target.value,
+                  }),
+                placeholder: tMenus("items.name.placeholder"),
+                required: true,
+                value: nameValue?.[lang] || "",
+              },
+              {
+                error: !!errors.description?.[lang],
+                fullWidth: true,
+                helperText: errors.description?.[lang]?.message,
+                label: `${tMenus("items.description.label")} ${tCommon("optional")}`,
+                maxRows: 4,
+                multiline: true,
+                onChange: (event) =>
+                  setValue("description", {
+                    ...descriptionValue,
+                    [lang]: event.target.value,
+                  }),
+                placeholder: tMenus("items.description.placeholder"),
+                slotProps: { htmlInput: { maxLength: 160 } },
+                value: descriptionValue?.[lang] || "",
+              },
+            ]}
+          />
+          <CheckboxesGroup
+            error={!!errors.servingTemperatures}
+            fullWidth
+            helperText={
+              errors.servingTemperatures?.message ||
+              tMenus("items.servingTemperatures.helperText")
+            }
+            label={`${tMenus("items.servingTemperatures.label")} ${tCommon("optional")}`}
+            onChange={(event, value) => {
+              const next = value as ServingTemperature[];
 
-          setValue("servingTemperatures", next);
+              setValue("servingTemperatures", next);
 
-          if (
-            recommendedServingTemperatureLevel &&
-            !next.includes(
-              SERVING_TEMPERATURE_OF_LEVEL[recommendedServingTemperatureLevel],
-            )
-          )
-            setValue("recommendedServingTemperatureLevel", null);
-        }}
-        options={servingTemperatureValues.map((value) => ({
-          children: null,
-          label: tMenus(`items.servingTemperatures.options.${value}`),
-          value,
-        }))}
-        value={servingTemperatures}
-      />
-      {servingTemperatures.length > 0 && (
-        <TextField
-          error={!!errors.recommendedServingTemperatureLevel}
-          fullWidth
-          helperText={
-            errors.recommendedServingTemperatureLevel?.message ||
-            tMenus("items.recommendedServingTemperatureLevel.helperText")
-          }
-          label={`${tMenus("items.recommendedServingTemperatureLevel.label")} ${tCommon("optional")}`}
-          onChange={(event) =>
-            setValue(
-              "recommendedServingTemperatureLevel",
-              (event.target.value || null) as ServingTemperatureLevel | null,
-            )
-          }
-          select
-          slotProps={{
-            inputLabel: { shrink: true },
-            select: {
-              displayEmpty: true,
-              renderValue: () =>
-                recommendedServingTemperatureLevel ? (
-                  tOrder(
-                    `menuItem.servingTemperatureLevels.${recommendedServingTemperatureLevel}`,
-                  )
-                ) : (
-                  <em>
-                    {tMenus(
-                      "items.recommendedServingTemperatureLevel.placeholder",
-                    )}
-                  </em>
-                ),
-            },
-          }}
-          value={recommendedServingTemperatureLevel || ""}
-        >
-          <MenuItem value="">
-            <em>
-              {tMenus("items.recommendedServingTemperatureLevel.placeholder")}
-            </em>
-          </MenuItem>
-          {servingTemperatureLevelValues
-            .filter((value) =>
-              servingTemperatures.includes(SERVING_TEMPERATURE_OF_LEVEL[value]),
-            )
-            .map((value) => (
+              if (
+                recommendedServingTemperatureLevel &&
+                !next.includes(
+                  SERVING_TEMPERATURE_OF_LEVEL[
+                    recommendedServingTemperatureLevel
+                  ],
+                )
+              )
+                setValue("recommendedServingTemperatureLevel", null);
+            }}
+            options={servingTemperatureValues.map((value) => ({
+              children: null,
+              label: tMenus(`items.servingTemperatures.options.${value}`),
+              value,
+            }))}
+            value={servingTemperatures}
+          />
+          {servingTemperatures.length > 0 && (
+            <TextField
+              error={!!errors.recommendedServingTemperatureLevel}
+              fullWidth
+              helperText={
+                errors.recommendedServingTemperatureLevel?.message ||
+                tMenus("items.recommendedServingTemperatureLevel.helperText")
+              }
+              label={`${tMenus("items.recommendedServingTemperatureLevel.label")} ${tCommon("optional")}`}
+              onChange={(event) =>
+                setValue(
+                  "recommendedServingTemperatureLevel",
+                  (event.target.value ||
+                    null) as ServingTemperatureLevel | null,
+                )
+              }
+              select
+              slotProps={{
+                inputLabel: { shrink: true },
+                select: {
+                  displayEmpty: true,
+                  renderValue: () =>
+                    recommendedServingTemperatureLevel ? (
+                      tOrder(
+                        `menuItem.servingTemperatureLevels.${recommendedServingTemperatureLevel}`,
+                      )
+                    ) : (
+                      <em>
+                        {tMenus(
+                          "items.recommendedServingTemperatureLevel.placeholder",
+                        )}
+                      </em>
+                    ),
+                },
+              }}
+              value={recommendedServingTemperatureLevel || ""}
+            >
+              <MenuItem value="">
+                <em>
+                  {tMenus(
+                    "items.recommendedServingTemperatureLevel.placeholder",
+                  )}
+                </em>
+              </MenuItem>
+              {servingTemperatureLevelValues
+                .filter((value) =>
+                  servingTemperatures.includes(
+                    SERVING_TEMPERATURE_OF_LEVEL[value],
+                  ),
+                )
+                .map((value) => (
+                  <MenuItem key={value} value={value}>
+                    {tOrder(`menuItem.servingTemperatureLevels.${value}`)}
+                  </MenuItem>
+                ))}
+            </TextField>
+          )}
+          <TextField
+            {...register("sweetness")}
+            error={!!errors.sweetness}
+            fullWidth
+            helperText={
+              errors.sweetness?.message || tMenus("items.sweetness.helperText")
+            }
+            label={tMenus("items.sweetness.label")}
+            required
+            select
+            value={sweetness}
+          >
+            {sweetnessValues.map((value) => (
               <MenuItem key={value} value={value}>
-                {tOrder(`menuItem.servingTemperatureLevels.${value}`)}
+                {tMenus(`items.sweetness.options.${value}`)}
               </MenuItem>
             ))}
-        </TextField>
-      )}
-      <TextField
-        {...register("sweetness")}
-        error={!!errors.sweetness}
-        fullWidth
-        helperText={
-          errors.sweetness?.message || tMenus("items.sweetness.helperText")
-        }
-        label={tMenus("items.sweetness.label")}
-        required
-        select
-        value={sweetness}
-      >
-        {sweetnessValues.map((value) => (
-          <MenuItem key={value} value={value}>
-            {tMenus(`items.sweetness.options.${value}`)}
-          </MenuItem>
-        ))}
-      </TextField>
-      {sweetness === "Fixed" && (
-        <TextField
-          {...register("fixedSweetnessLevel")}
-          error={!!errors.fixedSweetnessLevel}
-          fullWidth
-          helperText={errors.fixedSweetnessLevel?.message}
-          label={tMenus("items.fixedSweetnessLevel.label")}
-          required
-          select
-          slotProps={{
-            inputLabel: { shrink: true },
-            select: {
-              displayEmpty: true,
-              renderValue: () =>
-                fixedSweetnessLevel ? (
-                  tOrder(`menuItem.sweetnessLevels.${fixedSweetnessLevel}`)
-                ) : (
-                  <em>{tMenus("items.fixedSweetnessLevel.placeholder")}</em>
-                ),
-            },
-          }}
-          value={fixedSweetnessLevel || ""}
-        >
-          <MenuItem disabled value="">
-            <em>{tMenus("items.fixedSweetnessLevel.placeholder")}</em>
-          </MenuItem>
-          {sweetnessLevelValues.map((value) => (
-            <MenuItem key={value} value={value}>
-              {tOrder(`menuItem.sweetnessLevels.${value}`)}
-            </MenuItem>
-          ))}
-        </TextField>
-      )}
-      {sweetness === "Adjustable" && (
-        <TextField
-          error={!!errors.recommendedSweetnessLevel}
-          fullWidth
-          helperText={
-            errors.recommendedSweetnessLevel?.message ||
-            tMenus("items.recommendedSweetnessLevel.helperText")
-          }
-          label={`${tMenus("items.recommendedSweetnessLevel.label")} ${tCommon("optional")}`}
-          onChange={(event) =>
-            setValue(
-              "recommendedSweetnessLevel",
-              (event.target.value || null) as SweetnessLevel | null,
-            )
-          }
-          select
-          slotProps={{
-            inputLabel: { shrink: true },
-            select: {
-              displayEmpty: true,
-              renderValue: () =>
-                recommendedSweetnessLevel ? (
-                  tOrder(
-                    `menuItem.sweetnessLevels.${recommendedSweetnessLevel}`,
-                  )
-                ) : (
-                  <em>
-                    {tMenus("items.recommendedSweetnessLevel.placeholder")}
-                  </em>
-                ),
-            },
-          }}
-          value={recommendedSweetnessLevel || ""}
-        >
-          <MenuItem value="">
-            <em>{tMenus("items.recommendedSweetnessLevel.placeholder")}</em>
-          </MenuItem>
-          {sweetnessLevelValues.map((value) => (
-            <MenuItem key={value} value={value}>
-              {tOrder(`menuItem.sweetnessLevels.${value}`)}
-            </MenuItem>
-          ))}
-        </TextField>
-      )}
-      <OrderTicketPrinterField
-        menuId={menuId}
-        onChange={(value) => setValue("orderTicketPrinterId", value)}
-        scope="item"
-        value={orderTicketPrinterId}
-      />
-      <Divider flexItem>
-        <Chip label={tMenus("items.offers.label")} size="small" />
-      </Divider>
-      <NumericFormat
-        allowNegative={false}
-        customInput={TextField}
-        decimalScale={2}
-        error={!!errors.offer?.price}
-        fullWidth
-        helperText={errors.offer?.price?.message}
-        isAllowed={({ floatValue }) =>
-          floatValue === undefined || floatValue <= 99999999.99
-        }
-        label={tMenus("items.offers.price.label")}
-        name="offer.price"
-        onBlur={register("offer.price").onBlur}
-        onValueChange={({ value }) => setValue("offer.price", value)}
-        placeholder={tMenus("items.offers.price.placeholder")}
-        required
-        thousandSeparator=","
-        value={price}
-        valueIsNumericString
-      />
-      <TextField
-        {...register("offer.availability")}
-        error={!!errors.offer?.availability}
-        fullWidth
-        helperText={errors.offer?.availability?.message}
-        label={tMenus("availability.label")}
-        required
-        select
-        slotProps={{
-          inputLabel: { shrink: true },
-          select: {
-            displayEmpty: true,
-            renderValue: () =>
-              availability ? (
-                tMenus(`availability.options.${availability}`)
-              ) : (
-                <em>{tMenus("availability.placeholder")}</em>
-              ),
-          },
-        }}
-        value={availability}
-      >
-        <MenuItem disabled value="">
-          <em>{tMenus("availability.placeholder")}</em>
-        </MenuItem>
-        {itemAvailabilityValues.map((value) => (
-          <MenuItem key={value} value={value}>
-            {tMenus(`availability.options.${value}`)}
-          </MenuItem>
-        ))}
-      </TextField>
-      <CheckboxesGroup
-        error={!!errors.availableModes}
-        fullWidth
-        helperText={
-          errors.availableModes?.message || tMenus("availableModes.helperText")
-        }
-        label={tMenus("availableModes.label")}
-        onChange={(event, value) =>
-          setValue("availableModes", value as ApiOrderMode[])
-        }
-        options={orderModeValues.map((value) => ({
-          children: null,
-          label: tOrder(`mode.${value}.label`),
-          value,
-        }))}
-        required
-        value={availableModes}
-      />
-      <StyledGrid container spacing={2}>
-        <Grid size={{ xs: 12 }}>
+          </TextField>
+          {sweetness === "Fixed" && (
+            <TextField
+              {...register("fixedSweetnessLevel")}
+              error={!!errors.fixedSweetnessLevel}
+              fullWidth
+              helperText={errors.fixedSweetnessLevel?.message}
+              label={tMenus("items.fixedSweetnessLevel.label")}
+              required
+              select
+              slotProps={{
+                inputLabel: { shrink: true },
+                select: {
+                  displayEmpty: true,
+                  renderValue: () =>
+                    fixedSweetnessLevel ? (
+                      tOrder(`menuItem.sweetnessLevels.${fixedSweetnessLevel}`)
+                    ) : (
+                      <em>{tMenus("items.fixedSweetnessLevel.placeholder")}</em>
+                    ),
+                },
+              }}
+              value={fixedSweetnessLevel || ""}
+            >
+              <MenuItem disabled value="">
+                <em>{tMenus("items.fixedSweetnessLevel.placeholder")}</em>
+              </MenuItem>
+              {sweetnessLevelValues.map((value) => (
+                <MenuItem key={value} value={value}>
+                  {tOrder(`menuItem.sweetnessLevels.${value}`)}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
+          {sweetness === "Adjustable" && (
+            <TextField
+              error={!!errors.recommendedSweetnessLevel}
+              fullWidth
+              helperText={
+                errors.recommendedSweetnessLevel?.message ||
+                tMenus("items.recommendedSweetnessLevel.helperText")
+              }
+              label={`${tMenus("items.recommendedSweetnessLevel.label")} ${tCommon("optional")}`}
+              onChange={(event) =>
+                setValue(
+                  "recommendedSweetnessLevel",
+                  (event.target.value || null) as SweetnessLevel | null,
+                )
+              }
+              select
+              slotProps={{
+                inputLabel: { shrink: true },
+                select: {
+                  displayEmpty: true,
+                  renderValue: () =>
+                    recommendedSweetnessLevel ? (
+                      tOrder(
+                        `menuItem.sweetnessLevels.${recommendedSweetnessLevel}`,
+                      )
+                    ) : (
+                      <em>
+                        {tMenus("items.recommendedSweetnessLevel.placeholder")}
+                      </em>
+                    ),
+                },
+              }}
+              value={recommendedSweetnessLevel || ""}
+            >
+              <MenuItem value="">
+                <em>{tMenus("items.recommendedSweetnessLevel.placeholder")}</em>
+              </MenuItem>
+              {sweetnessLevelValues.map((value) => (
+                <MenuItem key={value} value={value}>
+                  {tOrder(`menuItem.sweetnessLevels.${value}`)}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
+          <OrderTicketPrinterField
+            menuId={menuId}
+            onChange={(value) => setValue("orderTicketPrinterId", value)}
+            scope="item"
+            value={orderTicketPrinterId}
+          />
+          <Divider flexItem>
+            <Chip label={tMenus("items.offers.label")} size="small" />
+          </Divider>
           <NumericFormat
             allowNegative={false}
             customInput={TextField}
             decimalScale={2}
-            error={!!errors.offer?.priceSpecification?.price}
+            error={!!errors.offer?.price}
             fullWidth
-            helperText={errors.offer?.priceSpecification?.price?.message}
+            helperText={errors.offer?.price?.message}
             isAllowed={({ floatValue }) =>
               floatValue === undefined || floatValue <= 99999999.99
             }
-            label={`${tMenus("items.offers.priceSpecification.price.label")} ${tCommon("optional")}`}
-            name="offer.priceSpecification.price"
-            onBlur={register("offer.priceSpecification.price").onBlur}
-            onValueChange={({ value }) =>
-              setValue("offer.priceSpecification.price", value)
-            }
-            placeholder={tMenus(
-              "items.offers.priceSpecification.price.placeholder",
-            )}
+            label={tMenus("items.offers.price.label")}
+            name="offer.price"
+            onBlur={register("offer.price").onBlur}
+            onValueChange={({ value }) => setValue("offer.price", value)}
+            placeholder={tMenus("items.offers.price.placeholder")}
+            required
             thousandSeparator=","
-            value={priceSpecificationPrice}
+            value={price}
             valueIsNumericString
           />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <DatePicker
-            label={`${tMenus("items.offers.priceSpecification.validFrom.label")} ${tCommon("optional")}`}
-            maxDate={
-              priceSpecificationValidThrough
-                ? dayjs(priceSpecificationValidThrough)
-                : undefined
-            }
-            slotProps={{
-              field: { clearable: true },
-              textField: {
-                error: !!errors.offer?.priceSpecification?.validFrom,
-                fullWidth: true,
-                helperText:
-                  errors.offer?.priceSpecification?.validFrom?.message,
-              },
-            }}
-            value={
-              priceSpecificationValidFrom
-                ? dayjs(priceSpecificationValidFrom)
-                : null
-            }
-            {...register("offer.priceSpecification.validFrom")}
-            onChange={(date) =>
-              setValue(
-                "offer.priceSpecification.validFrom",
-                date ? date.format("YYYY-MM-DD") : "",
-              )
-            }
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <DatePicker
-            label={`${tMenus("items.offers.priceSpecification.validThrough.label")} ${tCommon("optional")}`}
-            minDate={
-              priceSpecificationValidFrom
-                ? dayjs(priceSpecificationValidFrom)
-                : undefined
-            }
-            slotProps={{
-              field: { clearable: true },
-              textField: {
-                error: !!errors.offer?.priceSpecification?.validThrough,
-                fullWidth: true,
-                helperText:
-                  errors.offer?.priceSpecification?.validThrough?.message,
-              },
-            }}
-            value={
-              priceSpecificationValidThrough
-                ? dayjs(priceSpecificationValidThrough)
-                : null
-            }
-            {...register("offer.priceSpecification.validThrough")}
-            onChange={(date) =>
-              setValue(
-                "offer.priceSpecification.validThrough",
-                date ? date.format("YYYY-MM-DD") : "",
-              )
-            }
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <NumberSpinner
-            clearable
-            error={!!errors.offer?.inventoryLevel?.value}
-            fullWidth
-            helperText={errors.offer?.inventoryLevel?.value?.message}
-            label={`${tMenus("items.offers.inventoryLevel.value.label")} ${tCommon("optional")}`}
-            min={0}
-            placeholder={tMenus(
-              "items.offers.inventoryLevel.value.placeholder",
-            )}
-            value={
-              inventoryLevelValue !== "" ? Number(inventoryLevelValue) : null
-            }
-            onValueChange={(value) =>
-              setValue(
-                "offer.inventoryLevel.value",
-                value != null ? String(value) : "",
-              )
-            }
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
-            error={!!errors.offer?.inventoryLevel?.unitText}
+            {...register("offer.availability")}
+            error={!!errors.offer?.availability}
             fullWidth
-            helperText={errors.offer?.inventoryLevel?.unitText?.message}
-            label={`${tMenus("items.offers.inventoryLevel.unitText.label")} ${tCommon("optional")}`}
-            placeholder={tMenus(
-              "items.offers.inventoryLevel.unitText.placeholder",
-            )}
-            {...register("offer.inventoryLevel.unitText")}
-          />
-        </Grid>
-        <Grid size={{ xs: 12 }}>
-          <NumberSpinner
-            clearable
-            error={!!errors.offer?.deliveryLeadTimeMinutes}
-            format={{ maximumFractionDigits: 0 }}
+            helperText={errors.offer?.availability?.message}
+            label={tMenus("availability.label")}
+            required
+            select
+            slotProps={{
+              inputLabel: { shrink: true },
+              select: {
+                displayEmpty: true,
+                renderValue: () =>
+                  availability ? (
+                    tMenus(`availability.options.${availability}`)
+                  ) : (
+                    <em>{tMenus("availability.placeholder")}</em>
+                  ),
+              },
+            }}
+            value={availability}
+          >
+            <MenuItem disabled value="">
+              <em>{tMenus("availability.placeholder")}</em>
+            </MenuItem>
+            {itemAvailabilityValues.map((value) => (
+              <MenuItem key={value} value={value}>
+                {tMenus(`availability.options.${value}`)}
+              </MenuItem>
+            ))}
+          </TextField>
+          <CheckboxesGroup
+            error={!!errors.availableModes}
             fullWidth
-            helperText={errors.offer?.deliveryLeadTimeMinutes?.message}
-            label={`${tMenus("items.offers.deliveryLeadTimeMinutes.label")}${tCommon("parenthesisOpen")}${tMenus("items.offers.deliveryLeadTimeMinutes.unit")}${tCommon("parenthesisClose")} ${tCommon("optional")}`}
-            min={0}
-            placeholder={tMenus(
-              "items.offers.deliveryLeadTimeMinutes.placeholder",
-            )}
-            smallStep={1}
-            value={
-              deliveryLeadTimeMinutes !== ""
-                ? Number(deliveryLeadTimeMinutes)
-                : null
+            helperText={
+              errors.availableModes?.message ||
+              tMenus("availableModes.helperText")
             }
-            onValueChange={(value) =>
-              setValue(
-                "offer.deliveryLeadTimeMinutes",
-                value != null ? String(value) : "",
-              )
+            label={tMenus("availableModes.label")}
+            onChange={(event, value) =>
+              setValue("availableModes", value as ApiOrderMode[])
             }
+            options={orderModeValues.map((value) => ({
+              children: null,
+              label: tOrder(`mode.${value}.label`),
+              value,
+            }))}
+            required
+            value={availableModes}
           />
-        </Grid>
-      </StyledGrid>
-      <OpeningHoursField
-        error={!!errors.offer?.availableHours}
-        fullWidth
-        label={`${tMenus("items.offers.availableHours.label")} ${tCommon("optional")}`}
-        onChange={(value) => setValue("offer.availableHours", value)}
-        openingHours={openingHours}
-        value={availableHours}
-      />
-    </FormBox>
+          <StyledGrid container spacing={2}>
+            <Grid size={{ xs: 12 }}>
+              <NumericFormat
+                allowNegative={false}
+                customInput={TextField}
+                decimalScale={2}
+                error={!!errors.offer?.priceSpecification?.price}
+                fullWidth
+                helperText={errors.offer?.priceSpecification?.price?.message}
+                isAllowed={({ floatValue }) =>
+                  floatValue === undefined || floatValue <= 99999999.99
+                }
+                label={`${tMenus("items.offers.priceSpecification.price.label")} ${tCommon("optional")}`}
+                name="offer.priceSpecification.price"
+                onBlur={register("offer.priceSpecification.price").onBlur}
+                onValueChange={({ value }) =>
+                  setValue("offer.priceSpecification.price", value)
+                }
+                placeholder={tMenus(
+                  "items.offers.priceSpecification.price.placeholder",
+                )}
+                thousandSeparator=","
+                value={priceSpecificationPrice}
+                valueIsNumericString
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <DatePicker
+                label={`${tMenus("items.offers.priceSpecification.validFrom.label")} ${tCommon("optional")}`}
+                maxDate={
+                  priceSpecificationValidThrough
+                    ? dayjs(priceSpecificationValidThrough)
+                    : undefined
+                }
+                slotProps={{
+                  field: { clearable: true },
+                  textField: {
+                    error: !!errors.offer?.priceSpecification?.validFrom,
+                    fullWidth: true,
+                    helperText:
+                      errors.offer?.priceSpecification?.validFrom?.message,
+                  },
+                }}
+                value={
+                  priceSpecificationValidFrom
+                    ? dayjs(priceSpecificationValidFrom)
+                    : null
+                }
+                {...register("offer.priceSpecification.validFrom")}
+                onChange={(date) =>
+                  setValue(
+                    "offer.priceSpecification.validFrom",
+                    date ? date.format("YYYY-MM-DD") : "",
+                  )
+                }
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <DatePicker
+                label={`${tMenus("items.offers.priceSpecification.validThrough.label")} ${tCommon("optional")}`}
+                minDate={
+                  priceSpecificationValidFrom
+                    ? dayjs(priceSpecificationValidFrom)
+                    : undefined
+                }
+                slotProps={{
+                  field: { clearable: true },
+                  textField: {
+                    error: !!errors.offer?.priceSpecification?.validThrough,
+                    fullWidth: true,
+                    helperText:
+                      errors.offer?.priceSpecification?.validThrough?.message,
+                  },
+                }}
+                value={
+                  priceSpecificationValidThrough
+                    ? dayjs(priceSpecificationValidThrough)
+                    : null
+                }
+                {...register("offer.priceSpecification.validThrough")}
+                onChange={(date) =>
+                  setValue(
+                    "offer.priceSpecification.validThrough",
+                    date ? date.format("YYYY-MM-DD") : "",
+                  )
+                }
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <NumberSpinner
+                clearable
+                error={!!errors.offer?.inventoryLevel?.value}
+                fullWidth
+                helperText={errors.offer?.inventoryLevel?.value?.message}
+                label={`${tMenus("items.offers.inventoryLevel.value.label")} ${tCommon("optional")}`}
+                min={0}
+                placeholder={tMenus(
+                  "items.offers.inventoryLevel.value.placeholder",
+                )}
+                value={
+                  inventoryLevelValue !== ""
+                    ? Number(inventoryLevelValue)
+                    : null
+                }
+                onValueChange={(value) =>
+                  setValue(
+                    "offer.inventoryLevel.value",
+                    value != null ? String(value) : "",
+                  )
+                }
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField
+                error={!!errors.offer?.inventoryLevel?.unitText}
+                fullWidth
+                helperText={errors.offer?.inventoryLevel?.unitText?.message}
+                label={`${tMenus("items.offers.inventoryLevel.unitText.label")} ${tCommon("optional")}`}
+                placeholder={tMenus(
+                  "items.offers.inventoryLevel.unitText.placeholder",
+                )}
+                {...register("offer.inventoryLevel.unitText")}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <NumberSpinner
+                clearable
+                error={!!errors.offer?.deliveryLeadTimeMinutes}
+                format={{ maximumFractionDigits: 0 }}
+                fullWidth
+                helperText={errors.offer?.deliveryLeadTimeMinutes?.message}
+                label={`${tMenus("items.offers.deliveryLeadTimeMinutes.label")}${tCommon("parenthesisOpen")}${tMenus("items.offers.deliveryLeadTimeMinutes.unit")}${tCommon("parenthesisClose")} ${tCommon("optional")}`}
+                min={0}
+                placeholder={tMenus(
+                  "items.offers.deliveryLeadTimeMinutes.placeholder",
+                )}
+                smallStep={1}
+                value={
+                  deliveryLeadTimeMinutes !== ""
+                    ? Number(deliveryLeadTimeMinutes)
+                    : null
+                }
+                onValueChange={(value) =>
+                  setValue(
+                    "offer.deliveryLeadTimeMinutes",
+                    value != null ? String(value) : "",
+                  )
+                }
+              />
+            </Grid>
+          </StyledGrid>
+          <OpeningHoursField
+            error={!!errors.offer?.availableHours}
+            fullWidth
+            label={`${tMenus("items.offers.availableHours.label")} ${tCommon("optional")}`}
+            onChange={(value) => setValue("offer.availableHours", value)}
+            openingHours={openingHours}
+            value={availableHours}
+          />
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

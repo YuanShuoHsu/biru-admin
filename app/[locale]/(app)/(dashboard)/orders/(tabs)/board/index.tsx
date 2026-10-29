@@ -33,6 +33,10 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import OrderTicketJobChips from "@/components/OrderTicketJobChips";
 import PrintJobChip from "@/components/PrintJobChip";
 import SelectAllTransferList, {
@@ -346,19 +350,24 @@ const OrdersBoard = ({
     new Promise<boolean>((resolve) => {
       setDialog({
         content: (
-          <DialogContentText>
-            {tOrders.rich("actions.updateStatus.confirm.default", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              count: ids.length,
-              orderNumbers: getOrderNumbers(ids),
-              status: tOrders(`status.${toStatus}`),
-              statusText: (chunks) => (
-                <StatusText as="strong" status={toStatus}>
-                  {chunks}
-                </StatusText>
-              ),
-            })}
-          </DialogContentText>
+          <>
+            <CustomizedDialogContent>
+              <DialogContentText>
+                {tOrders.rich("actions.updateStatus.confirm.default", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  count: ids.length,
+                  orderNumbers: getOrderNumbers(ids),
+                  status: tOrders(`status.${toStatus}`),
+                  statusText: (chunks) => (
+                    <StatusText as="strong" status={toStatus}>
+                      {chunks}
+                    </StatusText>
+                  ),
+                })}
+              </DialogContentText>
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         onCancel: async () => resolve(false),
         onConfirm: async () => {

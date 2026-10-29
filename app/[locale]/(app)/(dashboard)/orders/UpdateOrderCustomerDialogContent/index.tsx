@@ -12,6 +12,10 @@ import {
 } from "./definitions";
 
 import CountryAutocomplete from "@/components/CountryAutocomplete";
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import TextMaskCustom from "@/components/TextMaskCustom";
 
@@ -127,72 +131,79 @@ const UpdateOrderCustomerDialogContent = ({
     )(event);
 
   return (
-    <FormBox id={UPDATE_ORDER_CUSTOMER_FORM_ID} onSubmit={onSubmit}>
-      <TextField
-        autoComplete="name"
-        error={!!errors.name}
-        fullWidth
-        helperText={errors.name?.message}
-        label={tOrder("checkout.customer.name.label")}
-        placeholder={tOrder("checkout.customer.name.placeholder")}
-        required
-        {...register("name")}
-      />
-      <StyledGrid container spacing={2}>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <CountryAutocomplete
-            error={!!errors.countryCode}
-            helperText={errors.countryCode?.message}
-            label={tOrder("checkout.customer.countryCode.label")}
-            mode="country"
-            placeholder={tOrder("checkout.customer.countryCode.placeholder")}
-            required
-            value={countryCode}
-            {...register("countryCode")}
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
+    <>
+      <CustomizedDialogContent>
+        <FormBox id={UPDATE_ORDER_CUSTOMER_FORM_ID} onSubmit={onSubmit}>
           <TextField
-            autoComplete="tel"
-            error={!!errors.telephone}
+            autoComplete="name"
+            error={!!errors.name}
             fullWidth
-            helperText={errors.telephone?.message}
-            label={`${tOrder("checkout.customer.telephone.label")} ${tCommon("optional")}`}
-            slotProps={{
-              input: {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                inputComponent: TextMaskCustom as any,
-                inputProps: { mask, placeholder },
-              },
-            }}
-            type="tel"
-            value={telephone}
-            {...register("telephone")}
+            helperText={errors.name?.message}
+            label={tOrder("checkout.customer.name.label")}
+            placeholder={tOrder("checkout.customer.name.placeholder")}
+            required
+            {...register("name")}
           />
-        </Grid>
-      </StyledGrid>
-      <TextField
-        autoComplete="email"
-        error={!!errors.email}
-        fullWidth
-        helperText={errors.email?.message}
-        label={`${tOrder("checkout.customer.email.label")} ${tCommon("optional")}`}
-        placeholder={tOrder("checkout.customer.email.placeholder")}
-        type="email"
-        {...register("email")}
-      />
-      <TextField
-        error={!!errors.remark}
-        fullWidth
-        helperText={errors.remark?.message}
-        label={`${tOrder("checkout.customer.remark.label")} ${tCommon("optional")}`}
-        maxRows={4}
-        multiline
-        placeholder={tOrder("checkout.customer.remark.placeholder")}
-        slotProps={{ htmlInput: { maxLength: 160 } }}
-        {...register("remark")}
-      />
-    </FormBox>
+          <StyledGrid container spacing={2}>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <CountryAutocomplete
+                error={!!errors.countryCode}
+                helperText={errors.countryCode?.message}
+                label={tOrder("checkout.customer.countryCode.label")}
+                mode="country"
+                placeholder={tOrder(
+                  "checkout.customer.countryCode.placeholder",
+                )}
+                required
+                value={countryCode}
+                {...register("countryCode")}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField
+                autoComplete="tel"
+                error={!!errors.telephone}
+                fullWidth
+                helperText={errors.telephone?.message}
+                label={`${tOrder("checkout.customer.telephone.label")} ${tCommon("optional")}`}
+                slotProps={{
+                  input: {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    inputComponent: TextMaskCustom as any,
+                    inputProps: { mask, placeholder },
+                  },
+                }}
+                type="tel"
+                value={telephone}
+                {...register("telephone")}
+              />
+            </Grid>
+          </StyledGrid>
+          <TextField
+            autoComplete="email"
+            error={!!errors.email}
+            fullWidth
+            helperText={errors.email?.message}
+            label={`${tOrder("checkout.customer.email.label")} ${tCommon("optional")}`}
+            placeholder={tOrder("checkout.customer.email.placeholder")}
+            type="email"
+            {...register("email")}
+          />
+          <TextField
+            error={!!errors.remark}
+            fullWidth
+            helperText={errors.remark?.message}
+            label={`${tOrder("checkout.customer.remark.label")} ${tCommon("optional")}`}
+            maxRows={4}
+            multiline
+            placeholder={tOrder("checkout.customer.remark.placeholder")}
+            slotProps={{ htmlInput: { maxLength: 160 } }}
+            {...register("remark")}
+          />
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

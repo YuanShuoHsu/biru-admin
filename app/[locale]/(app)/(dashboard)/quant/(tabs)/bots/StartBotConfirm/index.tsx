@@ -2,6 +2,11 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
+
 import { quantPairOf } from "@/constants/quant";
 
 import { DialogContentText } from "@mui/material";
@@ -19,21 +24,26 @@ const StartBotConfirm = ({ bot }: { bot: QuantBot }) => {
   const quote = pair.split("/")[1];
 
   return (
-    <DialogContentText>
-      {tBots.rich("actions.start.confirm", {
-        bold: (chunks) => <strong>{chunks}</strong>,
-        name: bot.name,
-        pair,
-        type: tBots(`types.${bot.type}`),
-      })}
-      <br />
-      {tBots(`actions.start.consequences.${consequenceOf(bot)}`, {
-        investment: format.number(bot.investment, {
-          maximumFractionDigits: 2,
-        }),
-        quote,
-      })}
-    </DialogContentText>
+    <>
+      <CustomizedDialogContent>
+        <DialogContentText>
+          {tBots.rich("actions.start.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            name: bot.name,
+            pair,
+            type: tBots(`types.${bot.type}`),
+          })}
+          <br />
+          {tBots(`actions.start.consequences.${consequenceOf(bot)}`, {
+            investment: format.number(bot.investment, {
+              maximumFractionDigits: 2,
+            }),
+            quote,
+          })}
+        </DialogContentText>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

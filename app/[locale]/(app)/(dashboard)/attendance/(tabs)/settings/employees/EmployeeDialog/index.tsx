@@ -17,6 +17,10 @@ import {
 
 import { type EmployeeForm, useEmployeeFormSchema } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { NOTICE_TERMINATION_REASONS } from "@/constants/attendance";
@@ -378,235 +382,244 @@ const EmployeeDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="attendance-employee-form" onSubmit={onSubmit}>
-      <TextField
-        fullWidth
-        label={tAttendance("employee")}
-        select
-        slotProps={{
-          input: { readOnly: true },
-          select: { IconComponent: NoSelectIcon },
-        }}
-        value={member.userId}
-      >
-        <MenuItem value={member.userId}>
-          <ListItemText
-            primary={member.name}
-            secondary={member.email}
-            slotProps={{ secondary: { variant: "caption" } }}
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="attendance-employee-form" onSubmit={onSubmit}>
+          <TextField
+            fullWidth
+            label={tAttendance("employee")}
+            select
+            slotProps={{
+              input: { readOnly: true },
+              select: { IconComponent: NoSelectIcon },
+            }}
+            value={member.userId}
+          >
+            <MenuItem value={member.userId}>
+              <ListItemText
+                primary={member.name}
+                secondary={member.email}
+                slotProps={{ secondary: { variant: "caption" } }}
+              />
+            </MenuItem>
+          </TextField>
+          <TextField
+            fullWidth
+            label={tAttendance("legalStatus.label")}
+            onChange={(event) =>
+              setValue(
+                "legalStatus",
+                event.target.value as EmployeeForm["legalStatus"],
+              )
+            }
+            required
+            select
+            value={legalStatus}
+          >
+            {attendanceLegalStatusValues.map((value) => (
+              <MenuItem key={value} value={value}>
+                {tAttendance(`legalStatus.options.${value}`)}
+              </MenuItem>
+            ))}
+          </TextField>
+          <DatePicker
+            label={tAttendance("birthDate")}
+            disableFuture
+            onChange={(date) =>
+              setValue(
+                "birthDate",
+                date?.isValid() ? date.format("YYYY-MM-DD") : "",
+                { shouldValidate: isSubmitted },
+              )
+            }
+            slotProps={{
+              textField: {
+                error: !!errors.birthDate,
+                fullWidth: true,
+                helperText: errors.birthDate?.message,
+                required: true,
+              },
+            }}
+            timezone={STORE_TIMEZONE}
+            value={birthDate ? dayjs.tz(birthDate, STORE_TIMEZONE) : null}
           />
-        </MenuItem>
-      </TextField>
-      <TextField
-        fullWidth
-        label={tAttendance("legalStatus.label")}
-        onChange={(event) =>
-          setValue(
-            "legalStatus",
-            event.target.value as EmployeeForm["legalStatus"],
-          )
-        }
-        required
-        select
-        value={legalStatus}
-      >
-        {attendanceLegalStatusValues.map((value) => (
-          <MenuItem key={value} value={value}>
-            {tAttendance(`legalStatus.options.${value}`)}
-          </MenuItem>
-        ))}
-      </TextField>
-      <DatePicker
-        label={tAttendance("birthDate")}
-        disableFuture
-        onChange={(date) =>
-          setValue(
-            "birthDate",
-            date?.isValid() ? date.format("YYYY-MM-DD") : "",
-            { shouldValidate: isSubmitted },
-          )
-        }
-        slotProps={{
-          textField: {
-            error: !!errors.birthDate,
-            fullWidth: true,
-            helperText: errors.birthDate?.message,
-            required: true,
-          },
-        }}
-        timezone={STORE_TIMEZONE}
-        value={birthDate ? dayjs.tz(birthDate, STORE_TIMEZONE) : null}
-      />
-      {legalStatus !== "national" && (
-        <DatePicker
-          label={tAttendance("taiwanStaySince")}
-          onChange={(date) =>
-            setValue(
-              "taiwanStaySince",
-              date?.isValid() ? date.format("YYYY-MM-DD") : "",
-              { shouldValidate: isSubmitted },
-            )
-          }
-          slotProps={{
-            textField: {
-              error: !!errors.taiwanStaySince,
-              fullWidth: true,
-              helperText: errors.taiwanStaySince?.message,
-              required: true,
-            },
-          }}
-          timezone={STORE_TIMEZONE}
-          value={
-            taiwanStaySince ? dayjs.tz(taiwanStaySince, STORE_TIMEZONE) : null
-          }
-        />
-      )}
-      {workPermitRequired && (
-        <PeriodFields name="workPermits" {...periodFieldsProps} />
-      )}
-      {legalStatus === "foreignStudent" && (
-        <PeriodFields name="studentVacations" {...periodFieldsProps} />
-      )}
-      <PeriodFields name="pregnancyPeriods" {...periodFieldsProps} />
-      <PeriodFields name="nursingPeriods" {...periodFieldsProps} />
-      {!!employee && (
-        <PeriodFields
-          hint={tAttendance("childcareReductionPeriods.hint")}
-          name="childcareReductionPeriods"
-          {...periodFieldsProps}
-        />
-      )}
-      <IndigenousHolidayFields {...periodFieldsProps} />
-      {(["regularLeaveWeekday", "restDayWeekday"] as const).map((name) => (
-        <TextField
-          error={!!errors[name]}
-          fullWidth
-          helperText={errors[name]?.message}
-          key={name}
-          label={tAttendance(`restWeekdays.${name}`)}
-          onChange={(event) =>
-            setValue(
-              name,
-              event.target.value === "" ? null : Number(event.target.value),
-              { shouldValidate: isSubmitted },
-            )
-          }
-          select
-          slotProps={{
-            inputLabel: { shrink: true },
-            select: { displayEmpty: true },
-          }}
-          value={
-            (name === "regularLeaveWeekday"
-              ? regularLeaveWeekday
-              : restDayWeekday) ?? ""
-          }
-        >
-          <MenuItem value="">{tAttendance("restWeekdays.rotating")}</MenuItem>
-          {Array.from({ length: WEEK_DAYS }, (_, day) => (
-            <MenuItem key={day} value={day}>
-              {format.dateTime(weekdayDate(day), "weekdayLong")}
-            </MenuItem>
+          {legalStatus !== "national" && (
+            <DatePicker
+              label={tAttendance("taiwanStaySince")}
+              onChange={(date) =>
+                setValue(
+                  "taiwanStaySince",
+                  date?.isValid() ? date.format("YYYY-MM-DD") : "",
+                  { shouldValidate: isSubmitted },
+                )
+              }
+              slotProps={{
+                textField: {
+                  error: !!errors.taiwanStaySince,
+                  fullWidth: true,
+                  helperText: errors.taiwanStaySince?.message,
+                  required: true,
+                },
+              }}
+              timezone={STORE_TIMEZONE}
+              value={
+                taiwanStaySince
+                  ? dayjs.tz(taiwanStaySince, STORE_TIMEZONE)
+                  : null
+              }
+            />
+          )}
+          {workPermitRequired && (
+            <PeriodFields name="workPermits" {...periodFieldsProps} />
+          )}
+          {legalStatus === "foreignStudent" && (
+            <PeriodFields name="studentVacations" {...periodFieldsProps} />
+          )}
+          <PeriodFields name="pregnancyPeriods" {...periodFieldsProps} />
+          <PeriodFields name="nursingPeriods" {...periodFieldsProps} />
+          {!!employee && (
+            <PeriodFields
+              hint={tAttendance("childcareReductionPeriods.hint")}
+              name="childcareReductionPeriods"
+              {...periodFieldsProps}
+            />
+          )}
+          <IndigenousHolidayFields {...periodFieldsProps} />
+          {(["regularLeaveWeekday", "restDayWeekday"] as const).map((name) => (
+            <TextField
+              error={!!errors[name]}
+              fullWidth
+              helperText={errors[name]?.message}
+              key={name}
+              label={tAttendance(`restWeekdays.${name}`)}
+              onChange={(event) =>
+                setValue(
+                  name,
+                  event.target.value === "" ? null : Number(event.target.value),
+                  { shouldValidate: isSubmitted },
+                )
+              }
+              select
+              slotProps={{
+                inputLabel: { shrink: true },
+                select: { displayEmpty: true },
+              }}
+              value={
+                (name === "regularLeaveWeekday"
+                  ? regularLeaveWeekday
+                  : restDayWeekday) ?? ""
+              }
+            >
+              <MenuItem value="">
+                {tAttendance("restWeekdays.rotating")}
+              </MenuItem>
+              {Array.from({ length: WEEK_DAYS }, (_, day) => (
+                <MenuItem key={day} value={day}>
+                  {format.dateTime(weekdayDate(day), "weekdayLong")}
+                </MenuItem>
+              ))}
+            </TextField>
           ))}
-        </TextField>
-      ))}
-      <DatePicker
-        label={tAttendance("hiredAt")}
-        maxDate={
-          terminatedAt ? dayjs(terminatedAt).subtract(1, "day") : undefined
-        }
-        onChange={(date) =>
-          setValue(
-            "hiredAt",
-            date?.isValid() ? date.startOf("day").toISOString() : "",
-            { shouldValidate: isSubmitted },
-          )
-        }
-        slotProps={{
-          textField: {
-            error: !!errors.hiredAt,
-            fullWidth: true,
-            helperText: errors.hiredAt?.message,
-            required: true,
-          },
-        }}
-        timezone={STORE_TIMEZONE}
-        value={hiredAt ? dayjs(hiredAt) : null}
-      />
-      <DatePicker
-        label={`${tAttendance("terminatedAt")} ${tCommon("optional")}`}
-        minDate={hiredAt ? dayjs(hiredAt).add(1, "day") : undefined}
-        onChange={(date) =>
-          setValue(
-            "terminatedAt",
-            date?.isValid() ? date.startOf("day").toISOString() : "",
-            { shouldValidate: isSubmitted },
-          )
-        }
-        slotProps={{
-          field: { clearable: true },
-          textField: {
-            error: !!errors.terminatedAt,
-            fullWidth: true,
-            helperText: errors.terminatedAt?.message,
-          },
-        }}
-        timezone={STORE_TIMEZONE}
-        value={terminatedAt ? dayjs(terminatedAt) : null}
-      />
-      {terminatedAt && (
-        <TextField
-          error={!!errors.terminationReason}
-          fullWidth
-          helperText={errors.terminationReason?.message}
-          label={tAttendance("terminationReason.label")}
-          onChange={(event) =>
-            setValue(
-              "terminationReason",
-              attendanceTerminationReasonValues.find(
-                (value) => value === event.target.value,
-              ) ?? null,
-              { shouldValidate: isSubmitted },
-            )
-          }
-          required
-          select
-          value={terminationReason ?? ""}
-        >
-          {attendanceTerminationReasonValues.map((value) => (
-            <MenuItem key={value} value={value}>
-              {tAttendance(`terminationReason.options.${value}`)}
-            </MenuItem>
-          ))}
-        </TextField>
-      )}
-      {terminatedAt && noticeRequired && (
-        <DatePicker
-          label={tAttendance("terminationNoticedAt")}
-          maxDate={dayjs(terminatedAt)}
-          minDate={hiredAt ? dayjs(hiredAt) : undefined}
-          onChange={(date) =>
-            setValue(
-              "terminationNoticedAt",
-              date?.isValid() ? date.startOf("day").toISOString() : "",
-              { shouldValidate: isSubmitted },
-            )
-          }
-          slotProps={{
-            field: { clearable: true },
-            textField: {
-              error: !!errors.terminationNoticedAt,
-              fullWidth: true,
-              helperText:
-                errors.terminationNoticedAt?.message ??
-                tAttendance("terminationNoticeHint"),
-            },
-          }}
-          timezone={STORE_TIMEZONE}
-          value={terminationNoticedAt ? dayjs(terminationNoticedAt) : null}
-        />
-      )}
-    </FormBox>
+          <DatePicker
+            label={tAttendance("hiredAt")}
+            maxDate={
+              terminatedAt ? dayjs(terminatedAt).subtract(1, "day") : undefined
+            }
+            onChange={(date) =>
+              setValue(
+                "hiredAt",
+                date?.isValid() ? date.startOf("day").toISOString() : "",
+                { shouldValidate: isSubmitted },
+              )
+            }
+            slotProps={{
+              textField: {
+                error: !!errors.hiredAt,
+                fullWidth: true,
+                helperText: errors.hiredAt?.message,
+                required: true,
+              },
+            }}
+            timezone={STORE_TIMEZONE}
+            value={hiredAt ? dayjs(hiredAt) : null}
+          />
+          <DatePicker
+            label={`${tAttendance("terminatedAt")} ${tCommon("optional")}`}
+            minDate={hiredAt ? dayjs(hiredAt).add(1, "day") : undefined}
+            onChange={(date) =>
+              setValue(
+                "terminatedAt",
+                date?.isValid() ? date.startOf("day").toISOString() : "",
+                { shouldValidate: isSubmitted },
+              )
+            }
+            slotProps={{
+              field: { clearable: true },
+              textField: {
+                error: !!errors.terminatedAt,
+                fullWidth: true,
+                helperText: errors.terminatedAt?.message,
+              },
+            }}
+            timezone={STORE_TIMEZONE}
+            value={terminatedAt ? dayjs(terminatedAt) : null}
+          />
+          {terminatedAt && (
+            <TextField
+              error={!!errors.terminationReason}
+              fullWidth
+              helperText={errors.terminationReason?.message}
+              label={tAttendance("terminationReason.label")}
+              onChange={(event) =>
+                setValue(
+                  "terminationReason",
+                  attendanceTerminationReasonValues.find(
+                    (value) => value === event.target.value,
+                  ) ?? null,
+                  { shouldValidate: isSubmitted },
+                )
+              }
+              required
+              select
+              value={terminationReason ?? ""}
+            >
+              {attendanceTerminationReasonValues.map((value) => (
+                <MenuItem key={value} value={value}>
+                  {tAttendance(`terminationReason.options.${value}`)}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
+          {terminatedAt && noticeRequired && (
+            <DatePicker
+              label={tAttendance("terminationNoticedAt")}
+              maxDate={dayjs(terminatedAt)}
+              minDate={hiredAt ? dayjs(hiredAt) : undefined}
+              onChange={(date) =>
+                setValue(
+                  "terminationNoticedAt",
+                  date?.isValid() ? date.startOf("day").toISOString() : "",
+                  { shouldValidate: isSubmitted },
+                )
+              }
+              slotProps={{
+                field: { clearable: true },
+                textField: {
+                  error: !!errors.terminationNoticedAt,
+                  fullWidth: true,
+                  helperText:
+                    errors.terminationNoticedAt?.message ??
+                    tAttendance("terminationNoticeHint"),
+                },
+              }}
+              timezone={STORE_TIMEZONE}
+              value={terminationNoticedAt ? dayjs(terminationNoticedAt) : null}
+            />
+          )}
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

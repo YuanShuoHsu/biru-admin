@@ -10,6 +10,10 @@ import {
   useReturnReviewFormSchema,
 } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -98,22 +102,27 @@ const ReturnReviewDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="attendance-return-review-form" onSubmit={onSubmit}>
-      <Typography>
-        {parentalReturn.employeeName} · {tAttendance("returnsAt")}:{" "}
-        {date(parentalReturn.returnsAt)} · {parentalReturn.reason}
-      </Typography>
-      <TextField
-        error={!!errors.reason}
-        fullWidth
-        helperText={errors.reason?.message}
-        label={tAttendance("reviewReason")}
-        minRows={3}
-        multiline
-        required={status === "rejected"}
-        {...register("reason")}
-      />
-    </FormBox>
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="attendance-return-review-form" onSubmit={onSubmit}>
+          <Typography>
+            {parentalReturn.employeeName} · {tAttendance("returnsAt")}:{" "}
+            {date(parentalReturn.returnsAt)} · {parentalReturn.reason}
+          </Typography>
+          <TextField
+            error={!!errors.reason}
+            fullWidth
+            helperText={errors.reason?.message}
+            label={tAttendance("reviewReason")}
+            minRows={3}
+            multiline
+            required={status === "rejected"}
+            {...register("reason")}
+          />
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

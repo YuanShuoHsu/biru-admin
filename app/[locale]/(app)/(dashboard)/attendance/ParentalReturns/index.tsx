@@ -8,6 +8,10 @@ import useSWR, { mutate as mutateCache } from "swr";
 import ReturnReviewDialog from "./ReturnReviewDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -272,12 +276,17 @@ const ParentalReturns = ({
     ({ employeeName, id }: AttendanceParentalReturn) =>
       setDialog({
         content: (
-          <DialogContentText>
-            {tAttendance.rich("parentalReturns.withdrawConfirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              name: employeeName,
-            })}
-          </DialogContentText>
+          <>
+            <CustomizedDialogContent>
+              <DialogContentText>
+                {tAttendance.rich("parentalReturns.withdrawConfirm", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  name: employeeName,
+                })}
+              </DialogContentText>
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         onConfirm: async () => {
           try {

@@ -11,6 +11,10 @@ import {
   useCreateUserFormSchema,
 } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import PasswordRuleList from "@/components/PasswordRuleList";
 import UploadAvatars from "@/components/UploadAvatars";
@@ -169,172 +173,189 @@ const CreateUserDialogContent = ({
     )(event);
 
   return (
-    <FormBox id="create-user-form" onSubmit={onSubmit}>
-      <UploadAvatars uploadKey={CREATE_USER_AVATAR_KEY} />
-      <NameStack direction={locale === LocaleEnum.En ? "row-reverse" : "row"}>
-        <TextField
-          autoComplete="family-name"
-          error={!!errors.lastName}
-          fullWidth
-          helperText={errors.lastName?.message}
-          label={`${tAdmins("actions.createUser.lastName.label")} ${tCommon("optional")}`}
-          placeholder={tAdmins("actions.createUser.lastName.placeholder")}
-          {...register("lastName")}
-        />
-        <TextField
-          autoComplete="given-name"
-          error={!!errors.firstName}
-          fullWidth
-          helperText={errors.firstName?.message}
-          label={tAdmins("actions.createUser.firstName.label")}
-          placeholder={tAdmins("actions.createUser.firstName.placeholder")}
-          required
-          {...register("firstName")}
-        />
-      </NameStack>
-      <TextField
-        autoComplete="email"
-        error={!!errors.email}
-        fullWidth
-        helperText={errors.email?.message}
-        label={tAdmins("email.label")}
-        placeholder={tAdmins("email.placeholder")}
-        required
-        type="email"
-        {...register("email")}
-      />
-      <TextField
-        autoComplete="new-password"
-        error={isPasswordError}
-        fullWidth
-        helperText={
-          <PasswordRuleList hasValue={hasPassword} rules={passwordRules} />
-        }
-        label={tAdmins("actions.createUser.password.label")}
-        placeholder={tAdmins("actions.createUser.password.placeholder")}
-        required
-        slotProps={{
-          formHelperText: { component: "div" },
-          input: {
-            endAdornment: (
-              <InputAdornment position="start">
-                <IconButton
-                  aria-label={
-                    showPassword.password
-                      ? tAuth("hidePassword")
-                      : tAuth("showPassword")
-                  }
-                  onClick={handleClickShowPassword("password")}
-                  onMouseDown={handleMouseDownPassword}
-                  onMouseUp={handleMouseUpPassword}
-                  edge="end"
-                >
-                  {showPassword.password ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          },
-        }}
-        type={showPassword.password ? "text" : "password"}
-        {...register("password")}
-      />
-      <TextField
-        autoComplete="new-password"
-        error={isConfirmPasswordError}
-        fullWidth
-        helperText={
-          <PasswordRuleList
-            hasValue={hasConfirmPassword}
-            rules={confirmPasswordRules}
-          />
-        }
-        label={tAdmins("actions.createUser.confirmPassword.label")}
-        placeholder={tAdmins("actions.createUser.confirmPassword.placeholder")}
-        required
-        slotProps={{
-          formHelperText: { component: "div" },
-          input: {
-            endAdornment: (
-              <InputAdornment position="start">
-                <IconButton
-                  aria-label={
-                    showPassword.confirmPassword
-                      ? tAuth("hidePassword")
-                      : tAuth("showPassword")
-                  }
-                  onClick={handleClickShowPassword("confirmPassword")}
-                  onMouseDown={handleMouseDownPassword}
-                  onMouseUp={handleMouseUpPassword}
-                  edge="end"
-                >
-                  {showPassword.confirmPassword ? (
-                    <VisibilityOff />
-                  ) : (
-                    <Visibility />
-                  )}
-                </IconButton>
-              </InputAdornment>
-            ),
-          },
-        }}
-        type={showPassword.confirmPassword ? "text" : "password"}
-        {...register("confirmPassword")}
-      />
-      <OptionsStack>
-        <FormControlLabel
-          control={
-            <Controller
-              control={control}
-              name="emailSubscribed"
-              render={({ field: { onChange, value } }) => (
-                <Checkbox checked={value} onChange={onChange} size="small" />
-              )}
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="create-user-form" onSubmit={onSubmit}>
+          <UploadAvatars uploadKey={CREATE_USER_AVATAR_KEY} />
+          <NameStack
+            direction={locale === LocaleEnum.En ? "row-reverse" : "row"}
+          >
+            <TextField
+              autoComplete="family-name"
+              error={!!errors.lastName}
+              fullWidth
+              helperText={errors.lastName?.message}
+              label={`${tAdmins("actions.createUser.lastName.label")} ${tCommon("optional")}`}
+              placeholder={tAdmins("actions.createUser.lastName.placeholder")}
+              {...register("lastName")}
             />
-          }
-          label={
-            <Typography variant="body2">
-              {tAdmins("emailSubscribed.checkbox")}
-            </Typography>
-          }
-        />
-      </OptionsStack>
-      <TextField
-        error={!!errors.role}
-        fullWidth
-        helperText={errors.role?.message}
-        label={tAdmins("role.label")}
-        required
-        select
-        slotProps={{
-          inputLabel: { shrink: true },
-          select: {
-            displayEmpty: true,
-            renderValue: (selected) => {
-              const selectedRole = userRoleValues.find(
-                (role) => role === selected,
-              );
+            <TextField
+              autoComplete="given-name"
+              error={!!errors.firstName}
+              fullWidth
+              helperText={errors.firstName?.message}
+              label={tAdmins("actions.createUser.firstName.label")}
+              placeholder={tAdmins("actions.createUser.firstName.placeholder")}
+              required
+              {...register("firstName")}
+            />
+          </NameStack>
+          <TextField
+            autoComplete="email"
+            error={!!errors.email}
+            fullWidth
+            helperText={errors.email?.message}
+            label={tAdmins("email.label")}
+            placeholder={tAdmins("email.placeholder")}
+            required
+            type="email"
+            {...register("email")}
+          />
+          <TextField
+            autoComplete="new-password"
+            error={isPasswordError}
+            fullWidth
+            helperText={
+              <PasswordRuleList hasValue={hasPassword} rules={passwordRules} />
+            }
+            label={tAdmins("actions.createUser.password.label")}
+            placeholder={tAdmins("actions.createUser.password.placeholder")}
+            required
+            slotProps={{
+              formHelperText: { component: "div" },
+              input: {
+                endAdornment: (
+                  <InputAdornment position="start">
+                    <IconButton
+                      aria-label={
+                        showPassword.password
+                          ? tAuth("hidePassword")
+                          : tAuth("showPassword")
+                      }
+                      onClick={handleClickShowPassword("password")}
+                      onMouseDown={handleMouseDownPassword}
+                      onMouseUp={handleMouseUpPassword}
+                      edge="end"
+                    >
+                      {showPassword.password ? (
+                        <VisibilityOff />
+                      ) : (
+                        <Visibility />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
+            }}
+            type={showPassword.password ? "text" : "password"}
+            {...register("password")}
+          />
+          <TextField
+            autoComplete="new-password"
+            error={isConfirmPasswordError}
+            fullWidth
+            helperText={
+              <PasswordRuleList
+                hasValue={hasConfirmPassword}
+                rules={confirmPasswordRules}
+              />
+            }
+            label={tAdmins("actions.createUser.confirmPassword.label")}
+            placeholder={tAdmins(
+              "actions.createUser.confirmPassword.placeholder",
+            )}
+            required
+            slotProps={{
+              formHelperText: { component: "div" },
+              input: {
+                endAdornment: (
+                  <InputAdornment position="start">
+                    <IconButton
+                      aria-label={
+                        showPassword.confirmPassword
+                          ? tAuth("hidePassword")
+                          : tAuth("showPassword")
+                      }
+                      onClick={handleClickShowPassword("confirmPassword")}
+                      onMouseDown={handleMouseDownPassword}
+                      onMouseUp={handleMouseUpPassword}
+                      edge="end"
+                    >
+                      {showPassword.confirmPassword ? (
+                        <VisibilityOff />
+                      ) : (
+                        <Visibility />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
+            }}
+            type={showPassword.confirmPassword ? "text" : "password"}
+            {...register("confirmPassword")}
+          />
+          <OptionsStack>
+            <FormControlLabel
+              control={
+                <Controller
+                  control={control}
+                  name="emailSubscribed"
+                  render={({ field: { onChange, value } }) => (
+                    <Checkbox
+                      checked={value}
+                      onChange={onChange}
+                      size="small"
+                    />
+                  )}
+                />
+              }
+              label={
+                <Typography variant="body2">
+                  {tAdmins("emailSubscribed.checkbox")}
+                </Typography>
+              }
+            />
+          </OptionsStack>
+          <TextField
+            error={!!errors.role}
+            fullWidth
+            helperText={errors.role?.message}
+            label={tAdmins("role.label")}
+            required
+            select
+            slotProps={{
+              inputLabel: { shrink: true },
+              select: {
+                displayEmpty: true,
+                renderValue: (selected) => {
+                  const selectedRole = userRoleValues.find(
+                    (role) => role === selected,
+                  );
 
-              return selectedRole ? (
-                tAdmins(`role.${selectedRole}`)
-              ) : (
-                <em>{tAdmins("role.placeholder")}</em>
-              );
-            },
-          },
-        }}
-        value={role}
-        {...register("role")}
-      >
-        <MenuItem disabled value="">
-          <em>{tAdmins("role.placeholder")}</em>
-        </MenuItem>
-        {userRoleValues.map((role) => (
-          <MenuItem key={role} value={role}>
-            {tAdmins(`role.${role}`)}
-          </MenuItem>
-        ))}
-      </TextField>
-    </FormBox>
+                  return selectedRole ? (
+                    tAdmins(`role.${selectedRole}`)
+                  ) : (
+                    <em>{tAdmins("role.placeholder")}</em>
+                  );
+                },
+              },
+            }}
+            value={role}
+            {...register("role")}
+          >
+            <MenuItem disabled value="">
+              <em>{tAdmins("role.placeholder")}</em>
+            </MenuItem>
+            {userRoleValues.map((role) => (
+              <MenuItem key={role} value={role}>
+                {tAdmins(`role.${role}`)}
+              </MenuItem>
+            ))}
+          </TextField>
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

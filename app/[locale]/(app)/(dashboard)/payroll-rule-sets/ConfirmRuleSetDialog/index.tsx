@@ -11,6 +11,10 @@ import {
   useConfirmRuleSetFormSchema,
 } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 
@@ -90,46 +94,51 @@ const ConfirmRuleSetDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="confirm-rule-set-form" onSubmit={onSubmit}>
-      <DialogContentText>
-        {tPayrollRuleSets("confirm.hint", { period })}
-      </DialogContentText>
-      <NumberSpinner
-        error={!!errors.minimumHourlyWage}
-        fullWidth
-        helperText={errors.minimumHourlyWage?.message}
-        label={tPayrollRuleSets("confirm.minimumHourlyWage")}
-        max={MINIMUM_HOURLY_WAGE_MAX}
-        min={0}
-        onValueChange={(value) =>
-          setValue("minimumHourlyWage", value ?? 0, {
-            shouldValidate: isSubmitted,
-          })
-        }
-        required
-        step={0.01}
-        value={minimumHourlyWage || null}
-      />
-      <TextField
-        error={!!errors.sourceLabel}
-        fullWidth
-        helperText={errors.sourceLabel?.message}
-        label={tPayrollRuleSets("confirm.sourceLabel.label")}
-        placeholder={tPayrollRuleSets("confirm.sourceLabel.placeholder")}
-        required
-        {...register("sourceLabel")}
-      />
-      <TextField
-        error={!!errors.sourceUrl}
-        fullWidth
-        helperText={errors.sourceUrl?.message}
-        label={tPayrollRuleSets("confirm.sourceUrl.label")}
-        placeholder="https://"
-        required
-        type="url"
-        {...register("sourceUrl")}
-      />
-    </FormBox>
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="confirm-rule-set-form" onSubmit={onSubmit}>
+          <DialogContentText>
+            {tPayrollRuleSets("confirm.hint", { period })}
+          </DialogContentText>
+          <NumberSpinner
+            error={!!errors.minimumHourlyWage}
+            fullWidth
+            helperText={errors.minimumHourlyWage?.message}
+            label={tPayrollRuleSets("confirm.minimumHourlyWage")}
+            max={MINIMUM_HOURLY_WAGE_MAX}
+            min={0}
+            onValueChange={(value) =>
+              setValue("minimumHourlyWage", value ?? 0, {
+                shouldValidate: isSubmitted,
+              })
+            }
+            required
+            step={0.01}
+            value={minimumHourlyWage || null}
+          />
+          <TextField
+            error={!!errors.sourceLabel}
+            fullWidth
+            helperText={errors.sourceLabel?.message}
+            label={tPayrollRuleSets("confirm.sourceLabel.label")}
+            placeholder={tPayrollRuleSets("confirm.sourceLabel.placeholder")}
+            required
+            {...register("sourceLabel")}
+          />
+          <TextField
+            error={!!errors.sourceUrl}
+            fullWidth
+            helperText={errors.sourceUrl?.message}
+            label={tPayrollRuleSets("confirm.sourceUrl.label")}
+            placeholder="https://"
+            required
+            type="url"
+            {...register("sourceUrl")}
+          />
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

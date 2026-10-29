@@ -6,6 +6,10 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 import EmptyCell from "@/components/EmptyCell";
 
@@ -149,12 +153,17 @@ const OrganizationsSlugInvitations = ({
     ({ id: invitationId, email }: Invitation) => {
       setDialog({
         content: (
-          <DialogContentText>
-            {tInvitations.rich("actions.cancelInvitation.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              email,
-            })}
-          </DialogContentText>
+          <>
+            <CustomizedDialogContent>
+              <DialogContentText>
+                {tInvitations.rich("actions.cancelInvitation.confirm", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  email,
+                })}
+              </DialogContentText>
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         onConfirm: async () => {
           await authClient.organization.cancelInvitation(
@@ -186,11 +195,16 @@ const OrganizationsSlugInvitations = ({
   const handleEnterInvitationBatchCancelMode = useCallback(() => {
     setDialog({
       content: (
-        <DialogContentText>
-          {tInvitations.rich("actions.batchCancelInvitation.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tInvitations.rich("actions.batchCancelInvitation.confirm", {
+                bold: (chunks) => <strong>{chunks}</strong>,
+              })}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         setIsSelectMode(true);
@@ -206,12 +220,20 @@ const OrganizationsSlugInvitations = ({
 
     setDialog({
       content: (
-        <DialogContentText>
-          {tInvitations.rich("actions.batchCancelInvitation.submit.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-            count,
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tInvitations.rich(
+                "actions.batchCancelInvitation.submit.confirm",
+                {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  count,
+                },
+              )}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         try {
@@ -260,11 +282,19 @@ const OrganizationsSlugInvitations = ({
   const handleCancelInvitationBatchCancel = useCallback(() => {
     setDialog({
       content: (
-        <DialogContentText>
-          {tInvitations.rich("actions.batchCancelInvitation.cancel.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tInvitations.rich(
+                "actions.batchCancelInvitation.cancel.confirm",
+                {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                },
+              )}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         setIsSelectMode(false);

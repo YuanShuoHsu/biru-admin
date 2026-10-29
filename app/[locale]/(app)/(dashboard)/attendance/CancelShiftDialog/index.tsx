@@ -6,6 +6,10 @@ import { useForm } from "react-hook-form";
 
 import { type CancelShiftForm, useCancelShiftFormSchema } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -53,21 +57,26 @@ const CancelShiftDialog = ({ onConfirm, shift }: CancelShiftDialogProps) => {
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="attendance-cancel-shift-form" onSubmit={onSubmit}>
-      <Typography>
-        {shift.employeeName} · {formatScheduledShift(format, shift)}
-      </Typography>
-      <TextField
-        error={!!errors.reason}
-        fullWidth
-        helperText={errors.reason?.message}
-        label={tAttendance("cancelReason")}
-        minRows={3}
-        multiline
-        required
-        {...register("reason")}
-      />
-    </FormBox>
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="attendance-cancel-shift-form" onSubmit={onSubmit}>
+          <Typography>
+            {shift.employeeName} · {formatScheduledShift(format, shift)}
+          </Typography>
+          <TextField
+            error={!!errors.reason}
+            fullWidth
+            helperText={errors.reason?.message}
+            label={tAttendance("cancelReason")}
+            minRows={3}
+            multiline
+            required
+            {...register("reason")}
+          />
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

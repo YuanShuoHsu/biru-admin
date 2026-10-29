@@ -8,6 +8,10 @@ import useSWR from "swr";
 import AttachModifierGroupDialog from "./AttachModifierGroupDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 import { DragHandle, Sortable } from "@/components/Sortable";
@@ -274,12 +278,17 @@ const MenuItemModifierGroups = ({
 
       setDialog({
         content: (
-          <DialogContentText>
-            {tMenus.rich("items.modifierGroups.actions.detach.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              name: displayName,
-            })}
-          </DialogContentText>
+          <>
+            <CustomizedDialogContent>
+              <DialogContentText>
+                {tMenus.rich("items.modifierGroups.actions.detach.confirm", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  name: displayName,
+                })}
+              </DialogContentText>
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         onConfirm: async () => {
           try {
@@ -315,11 +324,16 @@ const MenuItemModifierGroups = ({
   const handleEnterBatchDetachMode = useCallback(() => {
     setDialog({
       content: (
-        <DialogContentText>
-          {tMenus.rich("items.modifierGroups.actions.batchDetach.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tMenus.rich("items.modifierGroups.actions.batchDetach.confirm", {
+                bold: (chunks) => <strong>{chunks}</strong>,
+              })}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         setToolbarMode("select");
@@ -335,15 +349,20 @@ const MenuItemModifierGroups = ({
 
     setDialog({
       content: (
-        <DialogContentText>
-          {tMenus.rich(
-            "items.modifierGroups.actions.batchDetach.submit.confirm",
-            {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              count,
-            },
-          )}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tMenus.rich(
+                "items.modifierGroups.actions.batchDetach.submit.confirm",
+                {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  count,
+                },
+              )}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         try {
@@ -393,14 +412,19 @@ const MenuItemModifierGroups = ({
   const handleCancelBatchDetach = useCallback(() => {
     setDialog({
       content: (
-        <DialogContentText>
-          {tMenus.rich(
-            "items.modifierGroups.actions.batchDetach.cancel.confirm",
-            {
-              bold: (chunks) => <strong>{chunks}</strong>,
-            },
-          )}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tMenus.rich(
+                "items.modifierGroups.actions.batchDetach.cancel.confirm",
+                {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                },
+              )}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         setToolbarMode(null);
@@ -416,11 +440,16 @@ const MenuItemModifierGroups = ({
   const handleEnterReorderMode = useCallback(() => {
     setDialog({
       content: (
-        <DialogContentText>
-          {tMenus.rich("items.modifierGroups.actions.reorder.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tMenus.rich("items.modifierGroups.actions.reorder.confirm", {
+                bold: (chunks) => <strong>{chunks}</strong>,
+              })}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         setToolbarMode("reorder");
@@ -434,11 +463,19 @@ const MenuItemModifierGroups = ({
   const handleSaveReorder = useCallback(() => {
     setDialog({
       content: (
-        <DialogContentText>
-          {tMenus.rich("items.modifierGroups.actions.reorder.save.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tMenus.rich(
+                "items.modifierGroups.actions.reorder.save.confirm",
+                {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                },
+              )}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         try {
@@ -487,11 +524,19 @@ const MenuItemModifierGroups = ({
   const handleCancelReorder = useCallback(() => {
     setDialog({
       content: (
-        <DialogContentText>
-          {tMenus.rich("items.modifierGroups.actions.reorder.cancel.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tMenus.rich(
+                "items.modifierGroups.actions.reorder.cancel.confirm",
+                {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                },
+              )}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         setToolbarMode(null);

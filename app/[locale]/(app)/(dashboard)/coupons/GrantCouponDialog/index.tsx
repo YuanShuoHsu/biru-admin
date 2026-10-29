@@ -10,6 +10,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { TextField } from "@mui/material";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -77,20 +81,26 @@ const GrantCouponDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="grant-coupon-form" onSubmit={onSubmit}>
-      <TextField
-        error={!!errors.email}
-        fullWidth
-        helperText={
-          errors.email?.message || tCoupons("actions.grantCoupon.email.hint")
-        }
-        label={tCoupons("actions.grantCoupon.email.label")}
-        placeholder={tCoupons("actions.grantCoupon.email.placeholder")}
-        required
-        type="email"
-        {...register("email")}
-      />
-    </FormBox>
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="grant-coupon-form" onSubmit={onSubmit}>
+          <TextField
+            error={!!errors.email}
+            fullWidth
+            helperText={
+              errors.email?.message ||
+              tCoupons("actions.grantCoupon.email.hint")
+            }
+            label={tCoupons("actions.grantCoupon.email.label")}
+            placeholder={tCoupons("actions.grantCoupon.email.placeholder")}
+            required
+            type="email"
+            {...register("email")}
+          />
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

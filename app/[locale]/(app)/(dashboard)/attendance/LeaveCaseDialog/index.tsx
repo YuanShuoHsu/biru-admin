@@ -10,6 +10,10 @@ import { useForm, useWatch } from "react-hook-form";
 
 import { type LeaveCaseForm, useLeaveCaseFormSchema } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { STORE_TIMEZONE } from "@/constants/timezone";
@@ -243,209 +247,216 @@ const LeaveCaseDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="attendance-leave-case-form" onSubmit={onSubmit}>
-      <TextField
-        disabled={!!leaveCase || !!request}
-        error={!!errors.employeeId}
-        fullWidth
-        helperText={errors.employeeId?.message}
-        label={tAttendance("employee")}
-        onChange={(event) => {
-          setValue("employeeId", event.target.value, {
-            shouldValidate: isSubmitted,
-          });
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="attendance-leave-case-form" onSubmit={onSubmit}>
+          <TextField
+            disabled={!!leaveCase || !!request}
+            error={!!errors.employeeId}
+            fullWidth
+            helperText={errors.employeeId?.message}
+            label={tAttendance("employee")}
+            onChange={(event) => {
+              setValue("employeeId", event.target.value, {
+                shouldValidate: isSubmitted,
+              });
 
-          setValue("childId", "");
-        }}
-        required
-        select
-        value={employeeId}
-      >
-        {employees
-          .filter(({ id }) => id !== selfEmployeeId)
-          .map(({ email, id, name }) => (
-            <MenuItem key={id} value={id}>
-              <ListItemText
-                primary={name}
-                secondary={email}
-                slotProps={{ secondary: { variant: "caption" } }}
-              />
-            </MenuItem>
-          ))}
-      </TextField>
-      <TextField
-        disabled={!!leaveCase || !!request}
-        error={!!errors.leaveTypeId}
-        fullWidth
-        helperText={errors.leaveTypeId?.message}
-        label={tAttendance("leaveType.label")}
-        onChange={(event) => {
-          setValue("leaveTypeId", event.target.value, {
-            shouldValidate: isSubmitted,
-          });
+              setValue("childId", "");
+            }}
+            required
+            select
+            value={employeeId}
+          >
+            {employees
+              .filter(({ id }) => id !== selfEmployeeId)
+              .map(({ email, id, name }) => (
+                <MenuItem key={id} value={id}>
+                  <ListItemText
+                    primary={name}
+                    secondary={email}
+                    slotProps={{ secondary: { variant: "caption" } }}
+                  />
+                </MenuItem>
+              ))}
+          </TextField>
+          <TextField
+            disabled={!!leaveCase || !!request}
+            error={!!errors.leaveTypeId}
+            fullWidth
+            helperText={errors.leaveTypeId?.message}
+            label={tAttendance("leaveType.label")}
+            onChange={(event) => {
+              setValue("leaveTypeId", event.target.value, {
+                shouldValidate: isSubmitted,
+              });
 
-          setValue("childId", "");
-          setValue("earlyParentalAgreed", false);
-          setValue("extensionAgreed", false);
-        }}
-        required
-        select
-        value={leaveTypeId}
-      >
-        {leaveTypes
-          .filter(({ enabled, eventLeave }) => enabled && eventLeave)
-          .map((leaveType) => (
-            <MenuItem key={leaveType.id} value={leaveType.id}>
-              {getStatutoryLeaveName(tAttendance, leaveType)}
-            </MenuItem>
-          ))}
-      </TextField>
-      {leaveCaseHint && (
-        <Alert severity="info">
-          {tAttendance(`leaveCaseHint.${leaveCaseHint}`)}
-        </Alert>
-      )}
-      {!isParentalLeave && (
-        <TextField
-          error={!!errors.reference}
-          fullWidth
-          helperText={
-            errors.reference?.message ?? tAttendance("caseReference.helper")
-          }
-          label={tAttendance("caseReference.label")}
-          required
-          {...register("reference")}
-        />
-      )}
-      {isParentalLeave && (
-        <TextField
-          error={!!errors.childId}
-          fullWidth
-          helperText={
-            errors.childId?.message ??
-            (employeeId &&
-              !employeeChildren.length &&
-              tAttendance("parentalChildMissing"))
-          }
-          label={tAttendance("parentalChild")}
-          onChange={(event) =>
-            setValue("childId", event.target.value, {
-              shouldValidate: isSubmitted,
-            })
-          }
-          required
-          select
-          value={childId}
-        >
-          {employeeChildren.map(({ id, label, reference }) => (
-            <MenuItem key={id} value={id}>
-              {label} · {reference}
-            </MenuItem>
-          ))}
-        </TextField>
-      )}
-      {!isParentalLeave && (
-        <DatePicker
-          label={tAttendance("eventDate")}
-          onChange={(value) =>
-            setValue(
-              "eventDate",
-              value?.isValid() ? value.startOf("day").toISOString() : "",
-              { shouldValidate: isSubmitted },
-            )
-          }
-          slotProps={{
-            textField: {
-              error: !!errors.eventDate,
-              fullWidth: true,
-              helperText: errors.eventDate?.message,
-              required: true,
-            },
-          }}
-          timezone={STORE_TIMEZONE}
-          value={eventDate ? dayjs(eventDate) : null}
-        />
-      )}
-      <DatePicker
-        label={tAttendance("startsAt")}
-        maxDate={fixedCalendarDays || !endsAt ? undefined : dayjs(endsAt)}
-        onChange={(value) =>
-          setValue(
-            "startsAt",
-            value?.isValid() ? value.startOf("day").toISOString() : "",
-            { shouldValidate: isSubmitted },
-          )
-        }
-        slotProps={{
-          textField: {
-            error: !!errors.startsAt,
-            fullWidth: true,
-            helperText: errors.startsAt?.message,
-            required: true,
-          },
-        }}
-        timezone={STORE_TIMEZONE}
-        value={startsAt ? dayjs(startsAt) : null}
-      />
-      <DatePicker
-        disabled={!!fixedCalendarDays}
-        label={tAttendance("endsAt")}
-        minDate={startsAt ? dayjs(startsAt) : undefined}
-        onChange={(value) =>
-          setValue(
-            "endsAt",
-            value?.isValid() ? value.startOf("day").toISOString() : "",
-            { shouldValidate: isSubmitted },
-          )
-        }
-        slotProps={{
-          textField: {
-            error: !!errors.endsAt,
-            fullWidth: true,
-            helperText: errors.endsAt?.message,
-            required: !fixedCalendarDays,
-          },
-        }}
-        timezone={STORE_TIMEZONE}
-        value={shownEndsAt}
-      />
-      {isMarriageLeave && (
-        <StyledFormControlLabel
-          control={
-            <Checkbox
-              checked={extensionAgreed}
-              onChange={(_, checked) => setValue("extensionAgreed", checked)}
-            />
-          }
-          label={tAttendance("extensionAgreed")}
-        />
-      )}
-      {isParentalLeave && (
-        <StyledFormControlLabel
-          control={
-            <Checkbox
-              checked={earlyParentalAgreed}
-              onChange={(_, checked) =>
-                setValue("earlyParentalAgreed", checked)
+              setValue("childId", "");
+              setValue("earlyParentalAgreed", false);
+              setValue("extensionAgreed", false);
+            }}
+            required
+            select
+            value={leaveTypeId}
+          >
+            {leaveTypes
+              .filter(({ enabled, eventLeave }) => enabled && eventLeave)
+              .map((leaveType) => (
+                <MenuItem key={leaveType.id} value={leaveType.id}>
+                  {getStatutoryLeaveName(tAttendance, leaveType)}
+                </MenuItem>
+              ))}
+          </TextField>
+          {leaveCaseHint && (
+            <Alert severity="info">
+              {tAttendance(`leaveCaseHint.${leaveCaseHint}`)}
+            </Alert>
+          )}
+          {!isParentalLeave && (
+            <TextField
+              error={!!errors.reference}
+              fullWidth
+              helperText={
+                errors.reference?.message ?? tAttendance("caseReference.helper")
               }
+              label={tAttendance("caseReference.label")}
+              required
+              {...register("reference")}
             />
-          }
-          label={tAttendance("earlyParentalAgreed")}
-        />
-      )}
-      {!request && (
-        <TextField
-          error={!!errors.reason}
-          fullWidth
-          helperText={errors.reason?.message}
-          label={tAttendance("reason.label")}
-          minRows={3}
-          multiline
-          required
-          {...register("reason")}
-        />
-      )}
-    </FormBox>
+          )}
+          {isParentalLeave && (
+            <TextField
+              error={!!errors.childId}
+              fullWidth
+              helperText={
+                errors.childId?.message ??
+                (employeeId &&
+                  !employeeChildren.length &&
+                  tAttendance("parentalChildMissing"))
+              }
+              label={tAttendance("parentalChild")}
+              onChange={(event) =>
+                setValue("childId", event.target.value, {
+                  shouldValidate: isSubmitted,
+                })
+              }
+              required
+              select
+              value={childId}
+            >
+              {employeeChildren.map(({ id, label, reference }) => (
+                <MenuItem key={id} value={id}>
+                  {label} · {reference}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
+          {!isParentalLeave && (
+            <DatePicker
+              label={tAttendance("eventDate")}
+              onChange={(value) =>
+                setValue(
+                  "eventDate",
+                  value?.isValid() ? value.startOf("day").toISOString() : "",
+                  { shouldValidate: isSubmitted },
+                )
+              }
+              slotProps={{
+                textField: {
+                  error: !!errors.eventDate,
+                  fullWidth: true,
+                  helperText: errors.eventDate?.message,
+                  required: true,
+                },
+              }}
+              timezone={STORE_TIMEZONE}
+              value={eventDate ? dayjs(eventDate) : null}
+            />
+          )}
+          <DatePicker
+            label={tAttendance("startsAt")}
+            maxDate={fixedCalendarDays || !endsAt ? undefined : dayjs(endsAt)}
+            onChange={(value) =>
+              setValue(
+                "startsAt",
+                value?.isValid() ? value.startOf("day").toISOString() : "",
+                { shouldValidate: isSubmitted },
+              )
+            }
+            slotProps={{
+              textField: {
+                error: !!errors.startsAt,
+                fullWidth: true,
+                helperText: errors.startsAt?.message,
+                required: true,
+              },
+            }}
+            timezone={STORE_TIMEZONE}
+            value={startsAt ? dayjs(startsAt) : null}
+          />
+          <DatePicker
+            disabled={!!fixedCalendarDays}
+            label={tAttendance("endsAt")}
+            minDate={startsAt ? dayjs(startsAt) : undefined}
+            onChange={(value) =>
+              setValue(
+                "endsAt",
+                value?.isValid() ? value.startOf("day").toISOString() : "",
+                { shouldValidate: isSubmitted },
+              )
+            }
+            slotProps={{
+              textField: {
+                error: !!errors.endsAt,
+                fullWidth: true,
+                helperText: errors.endsAt?.message,
+                required: !fixedCalendarDays,
+              },
+            }}
+            timezone={STORE_TIMEZONE}
+            value={shownEndsAt}
+          />
+          {isMarriageLeave && (
+            <StyledFormControlLabel
+              control={
+                <Checkbox
+                  checked={extensionAgreed}
+                  onChange={(_, checked) =>
+                    setValue("extensionAgreed", checked)
+                  }
+                />
+              }
+              label={tAttendance("extensionAgreed")}
+            />
+          )}
+          {isParentalLeave && (
+            <StyledFormControlLabel
+              control={
+                <Checkbox
+                  checked={earlyParentalAgreed}
+                  onChange={(_, checked) =>
+                    setValue("earlyParentalAgreed", checked)
+                  }
+                />
+              }
+              label={tAttendance("earlyParentalAgreed")}
+            />
+          )}
+          {!request && (
+            <TextField
+              error={!!errors.reason}
+              fullWidth
+              helperText={errors.reason?.message}
+              label={tAttendance("reason.label")}
+              minRows={3}
+              multiline
+              required
+              {...register("reason")}
+            />
+          )}
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

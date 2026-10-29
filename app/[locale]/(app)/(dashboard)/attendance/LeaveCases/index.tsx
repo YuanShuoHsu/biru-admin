@@ -9,6 +9,10 @@ import AssignChildDialog from "./AssignChildDialog";
 import LeaveCaseDialog from "../LeaveCaseDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -316,16 +320,21 @@ const LeaveCases = ({
     }: AttendanceLeaveCase) =>
       setDialog({
         content: (
-          <DialogContentText>
-            {tAttendance.rich("leaveCases.deleteConfirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              leaveType: getStatutoryLeaveName(tAttendance, {
-                name: leaveTypeName,
-                statutoryKind: leaveTypeStatutoryKind,
-              }),
-              name: employeeName,
-            })}
-          </DialogContentText>
+          <>
+            <CustomizedDialogContent>
+              <DialogContentText>
+                {tAttendance.rich("leaveCases.deleteConfirm", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  leaveType: getStatutoryLeaveName(tAttendance, {
+                    name: leaveTypeName,
+                    statutoryKind: leaveTypeStatutoryKind,
+                  }),
+                  name: employeeName,
+                })}
+              </DialogContentText>
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         onConfirm: async () => {
           try {
@@ -433,31 +442,44 @@ const LeaveCases = ({
 
     setDialog({
       content: (
-        <ConfirmStack>
-          <DialogContentText>
-            {tAttendance.rich("leaveCases.actions.batchDelete.submit.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              count,
-            })}
-          </DialogContentText>
-          <List dense disablePadding>
-            {selectedRows.map(
-              ({ employeeName, id, leaveTypeName, leaveTypeStatutoryKind }) => (
-                <ListItem disableGutters key={id}>
-                  <ListItemText
-                    primary={`${employeeName} · ${getStatutoryLeaveName(
-                      tAttendance,
-                      {
-                        name: leaveTypeName,
-                        statutoryKind: leaveTypeStatutoryKind,
-                      },
-                    )}`}
-                  />
-                </ListItem>
-              ),
-            )}
-          </List>
-        </ConfirmStack>
+        <>
+          <CustomizedDialogContent>
+            <ConfirmStack>
+              <DialogContentText>
+                {tAttendance.rich(
+                  "leaveCases.actions.batchDelete.submit.confirm",
+                  {
+                    bold: (chunks) => <strong>{chunks}</strong>,
+                    count,
+                  },
+                )}
+              </DialogContentText>
+              <List dense disablePadding>
+                {selectedRows.map(
+                  ({
+                    employeeName,
+                    id,
+                    leaveTypeName,
+                    leaveTypeStatutoryKind,
+                  }) => (
+                    <ListItem disableGutters key={id}>
+                      <ListItemText
+                        primary={`${employeeName} · ${getStatutoryLeaveName(
+                          tAttendance,
+                          {
+                            name: leaveTypeName,
+                            statutoryKind: leaveTypeStatutoryKind,
+                          },
+                        )}`}
+                      />
+                    </ListItem>
+                  ),
+                )}
+              </List>
+            </ConfirmStack>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         try {

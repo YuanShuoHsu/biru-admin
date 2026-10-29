@@ -5,6 +5,10 @@ import { type BaseSyntheticEvent, useState } from "react";
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import {
@@ -83,36 +87,41 @@ export const LeverageDialog = ({
   };
 
   return (
-    <FormBox id={FUTURES_SETTINGS_FORM_ID} noValidate onSubmit={onSubmit}>
-      <Stack sx={{ alignItems: "center", flexDirection: "row", gap: 2 }}>
-        <Slider
-          max={max}
-          min={1}
-          onChange={(_, next) => setValue(next)}
-          sx={{ flex: 1 }}
-          value={value}
-        />
-        <TextField
-          label={tQuant("futures.leverage")}
-          onChange={(event) =>
-            setValue(
-              Math.min(
-                max,
-                Math.max(1, Math.floor(Number(event.target.value))),
-              ),
-            )
-          }
-          slotProps={{ htmlInput: { inputMode: "numeric", max, min: 1 } }}
-          sx={{ width: 100 }}
-          type="number"
-          value={value}
-        />
-      </Stack>
-      <Typography color="text.secondary" variant="body2">
-        {tQuant("futures.leverageMax", { max: maxLeverage })}
-      </Typography>
-      <Alert severity="warning">{tQuant("futures.leverageWarning")}</Alert>
-    </FormBox>
+    <>
+      <CustomizedDialogContent>
+        <FormBox id={FUTURES_SETTINGS_FORM_ID} noValidate onSubmit={onSubmit}>
+          <Stack sx={{ alignItems: "center", flexDirection: "row", gap: 2 }}>
+            <Slider
+              max={max}
+              min={1}
+              onChange={(_, next) => setValue(next)}
+              sx={{ flex: 1 }}
+              value={value}
+            />
+            <TextField
+              label={tQuant("futures.leverage")}
+              onChange={(event) =>
+                setValue(
+                  Math.min(
+                    max,
+                    Math.max(1, Math.floor(Number(event.target.value))),
+                  ),
+                )
+              }
+              slotProps={{ htmlInput: { inputMode: "numeric", max, min: 1 } }}
+              sx={{ width: 100 }}
+              type="number"
+              value={value}
+            />
+          </Stack>
+          <Typography color="text.secondary" variant="body2">
+            {tQuant("futures.leverageMax", { max: maxLeverage })}
+          </Typography>
+          <Alert severity="warning">{tQuant("futures.leverageWarning")}</Alert>
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 
@@ -139,23 +148,30 @@ export const MarginModeDialog = ({
   };
 
   return (
-    <FormBox id={FUTURES_SETTINGS_FORM_ID} noValidate onSubmit={onSubmit}>
-      <ToggleButtonGroup
-        exclusive
-        fullWidth
-        onChange={(_, next: QuantMarginMode | null) => next && setValue(next)}
-        value={value}
-      >
-        {quantMarginModeValues.map((mode) => (
-          <ToggleButton key={mode} value={mode}>
-            {tQuant(`futures.marginModes.${mode}`)}
-          </ToggleButton>
-        ))}
-      </ToggleButtonGroup>
-      <Typography color="text.secondary" variant="body2">
-        {tQuant(`futures.marginModeDescriptions.${value}`)}
-      </Typography>
-    </FormBox>
+    <>
+      <CustomizedDialogContent>
+        <FormBox id={FUTURES_SETTINGS_FORM_ID} noValidate onSubmit={onSubmit}>
+          <ToggleButtonGroup
+            exclusive
+            fullWidth
+            onChange={(_, next: QuantMarginMode | null) =>
+              next && setValue(next)
+            }
+            value={value}
+          >
+            {quantMarginModeValues.map((mode) => (
+              <ToggleButton key={mode} value={mode}>
+                {tQuant(`futures.marginModes.${mode}`)}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+          <Typography color="text.secondary" variant="body2">
+            {tQuant(`futures.marginModeDescriptions.${value}`)}
+          </Typography>
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 
@@ -180,23 +196,32 @@ export const PositionModeDialog = ({
   };
 
   return (
-    <FormBox id={FUTURES_SETTINGS_FORM_ID} noValidate onSubmit={onSubmit}>
-      <ToggleButtonGroup
-        exclusive
-        fullWidth
-        onChange={(_, next: QuantPositionMode | null) => next && setValue(next)}
-        value={value}
-      >
-        {quantPositionModeValues.map((mode) => (
-          <ToggleButton key={mode} value={mode}>
-            {tQuant(`futures.positionModes.${mode}`)}
-          </ToggleButton>
-        ))}
-      </ToggleButtonGroup>
-      <Typography color="text.secondary" variant="body2">
-        {tQuant(`futures.positionModeDescriptions.${value}`)}
-      </Typography>
-      <Alert severity="warning">{tQuant("futures.positionModeWarning")}</Alert>
-    </FormBox>
+    <>
+      <CustomizedDialogContent>
+        <FormBox id={FUTURES_SETTINGS_FORM_ID} noValidate onSubmit={onSubmit}>
+          <ToggleButtonGroup
+            exclusive
+            fullWidth
+            onChange={(_, next: QuantPositionMode | null) =>
+              next && setValue(next)
+            }
+            value={value}
+          >
+            {quantPositionModeValues.map((mode) => (
+              <ToggleButton key={mode} value={mode}>
+                {tQuant(`futures.positionModes.${mode}`)}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+          <Typography color="text.secondary" variant="body2">
+            {tQuant(`futures.positionModeDescriptions.${value}`)}
+          </Typography>
+          <Alert severity="warning">
+            {tQuant("futures.positionModeWarning")}
+          </Alert>
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };

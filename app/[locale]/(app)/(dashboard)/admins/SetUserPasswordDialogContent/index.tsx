@@ -10,6 +10,10 @@ import {
   useSetUserPasswordFormSchema,
 } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import PasswordRuleList from "@/components/PasswordRuleList";
 
@@ -103,103 +107,110 @@ const SetUserPasswordDialogContent = ({
     })(event);
 
   return (
-    <FormBox id="set-user-password-form" onSubmit={onSubmit}>
-      <TextField
-        autoComplete="email"
-        error={!!errors.email}
-        fullWidth
-        helperText={errors.email?.message}
-        label={tAdmins("email.label")}
-        placeholder={tAdmins("email.placeholder")}
-        required
-        slotProps={{ input: { readOnly: true } }}
-        type="email"
-        {...register("email")}
-      />
-      <TextField
-        autoComplete="new-password"
-        error={isPasswordError}
-        fullWidth
-        helperText={
-          <PasswordRuleList hasValue={hasPassword} rules={passwordRules} />
-        }
-        label={tAdmins("actions.setUserPassword.newPassword.label")}
-        placeholder={tAdmins("actions.setUserPassword.newPassword.placeholder")}
-        required
-        slotProps={{
-          formHelperText: { component: "div" },
-          input: {
-            endAdornment: (
-              <InputAdornment position="start">
-                <IconButton
-                  aria-label={
-                    showPassword.newPassword
-                      ? tAuth("hidePassword")
-                      : tAuth("showPassword")
-                  }
-                  edge="end"
-                  onClick={handleClickShowPassword("newPassword")}
-                  onMouseDown={handleMouseDownPassword}
-                  onMouseUp={handleMouseUpPassword}
-                >
-                  {showPassword.newPassword ? (
-                    <VisibilityOff />
-                  ) : (
-                    <Visibility />
-                  )}
-                </IconButton>
-              </InputAdornment>
-            ),
-          },
-        }}
-        type={showPassword.newPassword ? "text" : "password"}
-        {...register("newPassword")}
-      />
-      <TextField
-        autoComplete="new-password"
-        error={isConfirmPasswordError}
-        fullWidth
-        helperText={
-          <PasswordRuleList
-            hasValue={hasConfirmPassword}
-            rules={confirmPasswordRules}
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="set-user-password-form" onSubmit={onSubmit}>
+          <TextField
+            autoComplete="email"
+            error={!!errors.email}
+            fullWidth
+            helperText={errors.email?.message}
+            label={tAdmins("email.label")}
+            placeholder={tAdmins("email.placeholder")}
+            required
+            slotProps={{ input: { readOnly: true } }}
+            type="email"
+            {...register("email")}
           />
-        }
-        label={tAdmins("actions.setUserPassword.confirmPassword.label")}
-        placeholder={tAdmins(
-          "actions.setUserPassword.confirmPassword.placeholder",
-        )}
-        required
-        slotProps={{
-          formHelperText: { component: "div" },
-          input: {
-            endAdornment: (
-              <InputAdornment position="start">
-                <IconButton
-                  aria-label={
-                    showPassword.confirmPassword
-                      ? tAuth("hidePassword")
-                      : tAuth("showPassword")
-                  }
-                  edge="end"
-                  onClick={handleClickShowPassword("confirmPassword")}
-                  onMouseDown={handleMouseDownPassword}
-                  onMouseUp={handleMouseUpPassword}
-                >
-                  {showPassword.confirmPassword ? (
-                    <VisibilityOff />
-                  ) : (
-                    <Visibility />
-                  )}
-                </IconButton>
-              </InputAdornment>
-            ),
-          },
-        }}
-        type={showPassword.confirmPassword ? "text" : "password"}
-        {...register("confirmPassword")}
-      />
-    </FormBox>
+          <TextField
+            autoComplete="new-password"
+            error={isPasswordError}
+            fullWidth
+            helperText={
+              <PasswordRuleList hasValue={hasPassword} rules={passwordRules} />
+            }
+            label={tAdmins("actions.setUserPassword.newPassword.label")}
+            placeholder={tAdmins(
+              "actions.setUserPassword.newPassword.placeholder",
+            )}
+            required
+            slotProps={{
+              formHelperText: { component: "div" },
+              input: {
+                endAdornment: (
+                  <InputAdornment position="start">
+                    <IconButton
+                      aria-label={
+                        showPassword.newPassword
+                          ? tAuth("hidePassword")
+                          : tAuth("showPassword")
+                      }
+                      edge="end"
+                      onClick={handleClickShowPassword("newPassword")}
+                      onMouseDown={handleMouseDownPassword}
+                      onMouseUp={handleMouseUpPassword}
+                    >
+                      {showPassword.newPassword ? (
+                        <VisibilityOff />
+                      ) : (
+                        <Visibility />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
+            }}
+            type={showPassword.newPassword ? "text" : "password"}
+            {...register("newPassword")}
+          />
+          <TextField
+            autoComplete="new-password"
+            error={isConfirmPasswordError}
+            fullWidth
+            helperText={
+              <PasswordRuleList
+                hasValue={hasConfirmPassword}
+                rules={confirmPasswordRules}
+              />
+            }
+            label={tAdmins("actions.setUserPassword.confirmPassword.label")}
+            placeholder={tAdmins(
+              "actions.setUserPassword.confirmPassword.placeholder",
+            )}
+            required
+            slotProps={{
+              formHelperText: { component: "div" },
+              input: {
+                endAdornment: (
+                  <InputAdornment position="start">
+                    <IconButton
+                      aria-label={
+                        showPassword.confirmPassword
+                          ? tAuth("hidePassword")
+                          : tAuth("showPassword")
+                      }
+                      edge="end"
+                      onClick={handleClickShowPassword("confirmPassword")}
+                      onMouseDown={handleMouseDownPassword}
+                      onMouseUp={handleMouseUpPassword}
+                    >
+                      {showPassword.confirmPassword ? (
+                        <VisibilityOff />
+                      ) : (
+                        <Visibility />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
+            }}
+            type={showPassword.confirmPassword ? "text" : "password"}
+            {...register("confirmPassword")}
+          />
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

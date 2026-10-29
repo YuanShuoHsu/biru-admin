@@ -9,6 +9,11 @@ import {
   revokeUserSessionFormSchema,
 } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Stack, TextField } from "@mui/material";
@@ -41,28 +46,33 @@ const RevokeUserSessionDialogContent = ({
   });
 
   return (
-    <StyledStack>
-      <TextField
-        error={!!errors.userAgent}
-        fullWidth
-        helperText={errors.userAgent?.message}
-        label={tUserSessions("userAgent.label")}
-        placeholder={tUserSessions("userAgent.placeholder")}
-        required
-        slotProps={{ input: { readOnly: true } }}
-        {...register("userAgent")}
-      />
-      <TextField
-        error={!!errors.ipAddress}
-        fullWidth
-        helperText={errors.ipAddress?.message}
-        label={tUserSessions("ipAddress.label")}
-        placeholder={tUserSessions("ipAddress.placeholder")}
-        required
-        slotProps={{ input: { readOnly: true } }}
-        {...register("ipAddress")}
-      />
-    </StyledStack>
+    <>
+      <CustomizedDialogContent>
+        <StyledStack>
+          <TextField
+            error={!!errors.userAgent}
+            fullWidth
+            helperText={errors.userAgent?.message}
+            label={tUserSessions("userAgent.label")}
+            placeholder={tUserSessions("userAgent.placeholder")}
+            required
+            slotProps={{ input: { readOnly: true } }}
+            {...register("userAgent")}
+          />
+          <TextField
+            error={!!errors.ipAddress}
+            fullWidth
+            helperText={errors.ipAddress?.message}
+            label={tUserSessions("ipAddress.label")}
+            placeholder={tUserSessions("ipAddress.placeholder")}
+            required
+            slotProps={{ input: { readOnly: true } }}
+            {...register("ipAddress")}
+          />
+        </StyledStack>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

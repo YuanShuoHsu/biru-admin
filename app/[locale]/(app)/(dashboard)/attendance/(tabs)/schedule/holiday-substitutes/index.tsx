@@ -11,6 +11,10 @@ import useSWR, { mutate as mutateCache } from "swr";
 import SubstituteDialog from "./SubstituteDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -298,13 +302,18 @@ const HolidaySubstitutes = ({
     }: AttendanceHolidaySubstitute) =>
       setDialog({
         content: (
-          <DialogContentText>
-            {tAttendance.rich("holidaySubstitutes.revokeConfirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              holiday: holidayName,
-              name: employeeName,
-            })}
-          </DialogContentText>
+          <>
+            <CustomizedDialogContent>
+              <DialogContentText>
+                {tAttendance.rich("holidaySubstitutes.revokeConfirm", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  holiday: holidayName,
+                  name: employeeName,
+                })}
+              </DialogContentText>
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         onConfirm: async () => {
           try {
@@ -340,11 +349,19 @@ const HolidaySubstitutes = ({
   const handleEnterHolidaySubstituteBatchRevokeMode = useCallback(() => {
     setDialog({
       content: (
-        <DialogContentText>
-          {tAttendance.rich("holidaySubstitutes.actions.batchRevoke.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tAttendance.rich(
+                "holidaySubstitutes.actions.batchRevoke.confirm",
+                {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                },
+              )}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         setIsSelectMode(true);
@@ -360,15 +377,20 @@ const HolidaySubstitutes = ({
 
     setDialog({
       content: (
-        <DialogContentText>
-          {tAttendance.rich(
-            "holidaySubstitutes.actions.batchRevoke.submit.confirm",
-            {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              count,
-            },
-          )}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tAttendance.rich(
+                "holidaySubstitutes.actions.batchRevoke.submit.confirm",
+                {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  count,
+                },
+              )}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         try {
@@ -426,14 +448,19 @@ const HolidaySubstitutes = ({
   const handleCancelHolidaySubstituteBatchRevoke = useCallback(() => {
     setDialog({
       content: (
-        <DialogContentText>
-          {tAttendance.rich(
-            "holidaySubstitutes.actions.batchRevoke.cancel.confirm",
-            {
-              bold: (chunks) => <strong>{chunks}</strong>,
-            },
-          )}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tAttendance.rich(
+                "holidaySubstitutes.actions.batchRevoke.cancel.confirm",
+                {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                },
+              )}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         setIsSelectMode(false);

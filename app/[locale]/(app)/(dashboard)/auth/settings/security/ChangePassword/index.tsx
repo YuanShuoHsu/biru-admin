@@ -10,6 +10,10 @@ import {
   useChangePasswordFormSchema,
 } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import ErrorAlert from "@/components/ErrorAlert";
 import FormCard, {
   StyledCardContent,
@@ -144,12 +148,17 @@ const ChangePassword = () => {
   const onSubmit = handleSubmit((values: ChangePasswordForm) => {
     setDialog({
       content: (
-        <DialogContentText>
-          {tAuth.rich("settings.password.confirmContentText", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-            email: session?.user.email || "",
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tAuth.rich("settings.password.confirmContentText", {
+                bold: (chunks) => <strong>{chunks}</strong>,
+                email: session?.user.email || "",
+              })}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: () => changePassword(values),
       open: true,

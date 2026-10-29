@@ -7,6 +7,10 @@ import { useForm } from "react-hook-form";
 
 import { useSupplierFormSchema, type SupplierForm } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -116,82 +120,87 @@ const SupplierDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="supplier-form" onSubmit={onSubmit}>
-      <TextField
-        error={!!errors.name}
-        fullWidth
-        helperText={errors.name?.message}
-        label={tInventory("suppliers.name.label")}
-        placeholder={tInventory("suppliers.name.placeholder")}
-        required
-        {...register("name")}
-      />
-      <TextField
-        error={!!errors.url}
-        fullWidth
-        helperText={errors.url?.message}
-        label={`${tInventory("suppliers.url.label")} ${tCommon("optional")}`}
-        placeholder={tInventory("suppliers.url.placeholder")}
-        {...register("url")}
-      />
-      <TextField
-        error={!!errors.telephone}
-        fullWidth
-        helperText={errors.telephone?.message}
-        label={`${tInventory("suppliers.telephone.label")} ${tCommon("optional")}`}
-        placeholder={tInventory("suppliers.telephone.placeholder")}
-        {...register("telephone")}
-      />
-      <Autocomplete
-        {...ingredientSearch}
-        disableCloseOnSelect
-        fullWidth
-        getOptionDisabled={({ supplierId }) =>
-          !!supplierId && supplierId !== supplier?.id
-        }
-        getOptionLabel={({ name }) => localize(name, locale)}
-        isOptionEqualToValue={(option, value) => option.id === value.id}
-        multiple
-        onChange={(_, value) => {
-          setSelectedIngredients(value);
-          setValue(
-            "ingredientIds",
-            value.map(({ id }) => id),
-            { shouldValidate: isSubmitted },
-          );
-        }}
-        renderInput={(params) => (
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="supplier-form" onSubmit={onSubmit}>
           <TextField
-            {...params}
-            label={`${tInventory("suppliers.ingredients.label")} ${tCommon("optional")}`}
-            placeholder={tInventory("suppliers.ingredients.placeholder")}
-            slotProps={{
-              ...params.slotProps,
-              input: {
-                ...params.slotProps.input,
-                endAdornment: (
-                  <>
-                    {ingredientSearch.loading && (
-                      <CircularProgress color="inherit" size={20} />
-                    )}
-                    {params.slotProps.input.endAdornment}
-                  </>
-                ),
-              },
-            }}
+            error={!!errors.name}
+            fullWidth
+            helperText={errors.name?.message}
+            label={tInventory("suppliers.name.label")}
+            placeholder={tInventory("suppliers.name.placeholder")}
+            required
+            {...register("name")}
           />
-        )}
-        value={selectedIngredients}
-      />
-      <TextField
-        error={!!errors.note}
-        fullWidth
-        helperText={errors.note?.message}
-        label={`${tInventory("suppliers.note.label")} ${tCommon("optional")}`}
-        placeholder={tInventory("suppliers.note.placeholder")}
-        {...register("note")}
-      />
-    </FormBox>
+          <TextField
+            error={!!errors.url}
+            fullWidth
+            helperText={errors.url?.message}
+            label={`${tInventory("suppliers.url.label")} ${tCommon("optional")}`}
+            placeholder={tInventory("suppliers.url.placeholder")}
+            {...register("url")}
+          />
+          <TextField
+            error={!!errors.telephone}
+            fullWidth
+            helperText={errors.telephone?.message}
+            label={`${tInventory("suppliers.telephone.label")} ${tCommon("optional")}`}
+            placeholder={tInventory("suppliers.telephone.placeholder")}
+            {...register("telephone")}
+          />
+          <Autocomplete
+            {...ingredientSearch}
+            disableCloseOnSelect
+            fullWidth
+            getOptionDisabled={({ supplierId }) =>
+              !!supplierId && supplierId !== supplier?.id
+            }
+            getOptionLabel={({ name }) => localize(name, locale)}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            multiple
+            onChange={(_, value) => {
+              setSelectedIngredients(value);
+              setValue(
+                "ingredientIds",
+                value.map(({ id }) => id),
+                { shouldValidate: isSubmitted },
+              );
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={`${tInventory("suppliers.ingredients.label")} ${tCommon("optional")}`}
+                placeholder={tInventory("suppliers.ingredients.placeholder")}
+                slotProps={{
+                  ...params.slotProps,
+                  input: {
+                    ...params.slotProps.input,
+                    endAdornment: (
+                      <>
+                        {ingredientSearch.loading && (
+                          <CircularProgress color="inherit" size={20} />
+                        )}
+                        {params.slotProps.input.endAdornment}
+                      </>
+                    ),
+                  },
+                }}
+              />
+            )}
+            value={selectedIngredients}
+          />
+          <TextField
+            error={!!errors.note}
+            fullWidth
+            helperText={errors.note?.message}
+            label={`${tInventory("suppliers.note.label")} ${tCommon("optional")}`}
+            placeholder={tInventory("suppliers.note.placeholder")}
+            {...register("note")}
+          />
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

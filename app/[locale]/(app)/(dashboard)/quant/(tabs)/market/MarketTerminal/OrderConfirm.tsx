@@ -2,6 +2,11 @@
 
 import { useTranslations } from "next-intl";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
+
 import { DialogContentText, Stack, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -26,19 +31,26 @@ const OrderConfirm = ({ rows }: OrderConfirmProps) => {
   const tQuant = useTranslations("quant");
 
   return (
-    <StyledStack>
-      <DialogContentText>{tQuant("order.confirm.message")}</DialogContentText>
-      <Rows>
-        {rows.map(({ label, value }) => (
-          <Row key={label}>
-            <Typography color="textSecondary" variant="body2">
-              {label}
-            </Typography>
-            <Typography variant="body2">{value}</Typography>
-          </Row>
-        ))}
-      </Rows>
-    </StyledStack>
+    <>
+      <CustomizedDialogContent>
+        <StyledStack>
+          <DialogContentText>
+            {tQuant("order.confirm.message")}
+          </DialogContentText>
+          <Rows>
+            {rows.map(({ label, value }) => (
+              <Row key={label}>
+                <Typography color="textSecondary" variant="body2">
+                  {label}
+                </Typography>
+                <Typography variant="body2">{value}</Typography>
+              </Row>
+            ))}
+          </Rows>
+        </StyledStack>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

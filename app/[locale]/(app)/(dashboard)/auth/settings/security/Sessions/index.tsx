@@ -8,6 +8,10 @@ import useSWR from "swr";
 import OtherSessionItem from "./OtherSessionItem";
 import SessionItem from "./SessionItem";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import ErrorAlert from "@/components/ErrorAlert";
 import FormCard, {
   StyledCardContent,
@@ -109,12 +113,17 @@ const Sessions = () => {
   const handleSignOutDialog = () =>
     setDialog({
       content: (
-        <DialogContentText>
-          {tAuth.rich("signOut.confirmContentText", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-            email: session?.user.email || "",
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tAuth.rich("signOut.confirmContentText", {
+                bold: (chunks) => <strong>{chunks}</strong>,
+                email: session?.user.email || "",
+              })}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: handleRevokeCurrentConfirm,
       open: true,

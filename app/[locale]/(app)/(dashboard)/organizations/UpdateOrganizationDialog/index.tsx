@@ -10,6 +10,10 @@ import {
   useUpdateOrganizationFormSchema,
 } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import UploadAvatars from "@/components/UploadAvatars";
 
@@ -85,28 +89,33 @@ const UpdateOrganizationDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="update-organization-form" onSubmit={onSubmit}>
-      <UploadAvatars initialSrc={organization.logo} uploadKey={uploadKey} />
-      <TextField
-        autoComplete="organization"
-        error={!!errors.name}
-        fullWidth
-        helperText={errors.name?.message}
-        label={tOrganizations("name.label")}
-        placeholder={tOrganizations("name.placeholder")}
-        required
-        {...register("name")}
-      />
-      <TextField
-        error={!!errors.slug}
-        fullWidth
-        helperText={errors.slug?.message}
-        label={tOrganizations("slug.label")}
-        placeholder={tOrganizations("slug.placeholder")}
-        required
-        {...register("slug")}
-      />
-    </FormBox>
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="update-organization-form" onSubmit={onSubmit}>
+          <UploadAvatars initialSrc={organization.logo} uploadKey={uploadKey} />
+          <TextField
+            autoComplete="organization"
+            error={!!errors.name}
+            fullWidth
+            helperText={errors.name?.message}
+            label={tOrganizations("name.label")}
+            placeholder={tOrganizations("name.placeholder")}
+            required
+            {...register("name")}
+          />
+          <TextField
+            error={!!errors.slug}
+            fullWidth
+            helperText={errors.slug?.message}
+            label={tOrganizations("slug.label")}
+            placeholder={tOrganizations("slug.placeholder")}
+            required
+            {...register("slug")}
+          />
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

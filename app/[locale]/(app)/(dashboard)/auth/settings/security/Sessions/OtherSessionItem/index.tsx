@@ -5,6 +5,11 @@ import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { useSWRConfig } from "swr";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
+
 import { useSession } from "@/hooks/useSession";
 
 import { authClient } from "@/lib/auth-client";
@@ -62,12 +67,17 @@ const OtherSessionItem = ({ session }: OtherSessionItemProps) => {
   const handleRevokeDialog = () =>
     setDialog({
       content: (
-        <DialogContentText>
-          {tAuth.rich("settings.sessions.revoke.confirmContentText", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-            email: authSession?.user.email || "",
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tAuth.rich("settings.sessions.revoke.confirmContentText", {
+                bold: (chunks) => <strong>{chunks}</strong>,
+                email: authSession?.user.email || "",
+              })}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: handleRevokeConfirm,
       open: true,

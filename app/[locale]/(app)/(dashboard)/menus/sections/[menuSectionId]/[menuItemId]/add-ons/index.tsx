@@ -9,6 +9,10 @@ import CreateAddOnDialog from "./CreateAddOnDialog";
 import UpdateAddOnDialog from "./UpdateAddOnDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 import { DragHandle, Sortable } from "@/components/Sortable";
@@ -314,12 +318,17 @@ const MenuItemAddOns = ({
 
       setDialog({
         content: (
-          <DialogContentText>
-            {tMenus.rich("items.addOns.actions.deleteAddOn.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              name: displayName,
-            })}
-          </DialogContentText>
+          <>
+            <CustomizedDialogContent>
+              <DialogContentText>
+                {tMenus.rich("items.addOns.actions.deleteAddOn.confirm", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  name: displayName,
+                })}
+              </DialogContentText>
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         onConfirm: async () => {
           try {
@@ -361,24 +370,29 @@ const MenuItemAddOns = ({
 
     setDialog({
       content: (
-        <ConfirmStack>
-          <DialogContentText>
-            {tMenus.rich(
-              "items.addOns.actions.batchDeleteAddOn.submit.confirm",
-              {
-                bold: (chunks) => <strong>{chunks}</strong>,
-                count,
-              },
-            )}
-          </DialogContentText>
-          <List dense disablePadding>
-            {selectedRows.map((addOn) => (
-              <ListItem disableGutters key={addOn.id}>
-                <ListItemText primary={getAddOnDisplayName(addOn)} />
-              </ListItem>
-            ))}
-          </List>
-        </ConfirmStack>
+        <>
+          <CustomizedDialogContent>
+            <ConfirmStack>
+              <DialogContentText>
+                {tMenus.rich(
+                  "items.addOns.actions.batchDeleteAddOn.submit.confirm",
+                  {
+                    bold: (chunks) => <strong>{chunks}</strong>,
+                    count,
+                  },
+                )}
+              </DialogContentText>
+              <List dense disablePadding>
+                {selectedRows.map((addOn) => (
+                  <ListItem disableGutters key={addOn.id}>
+                    <ListItemText primary={getAddOnDisplayName(addOn)} />
+                  </ListItem>
+                ))}
+              </List>
+            </ConfirmStack>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         try {
@@ -436,11 +450,16 @@ const MenuItemAddOns = ({
   const handleEnterReorderMode = useCallback(() => {
     setDialog({
       content: (
-        <DialogContentText>
-          {tMenus.rich("items.addOns.actions.reorderAddOn.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tMenus.rich("items.addOns.actions.reorderAddOn.confirm", {
+                bold: (chunks) => <strong>{chunks}</strong>,
+              })}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         setToolbarMode("reorder");
@@ -454,11 +473,16 @@ const MenuItemAddOns = ({
   const handleSaveReorder = useCallback(() => {
     setDialog({
       content: (
-        <DialogContentText>
-          {tMenus.rich("items.addOns.actions.reorderAddOn.save.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tMenus.rich("items.addOns.actions.reorderAddOn.save.confirm", {
+                bold: (chunks) => <strong>{chunks}</strong>,
+              })}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         try {
@@ -508,11 +532,16 @@ const MenuItemAddOns = ({
   const handleCancelReorder = useCallback(() => {
     setDialog({
       content: (
-        <DialogContentText>
-          {tMenus.rich("items.addOns.actions.reorderAddOn.cancel.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tMenus.rich("items.addOns.actions.reorderAddOn.cancel.confirm", {
+                bold: (chunks) => <strong>{chunks}</strong>,
+              })}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         setToolbarMode(null);

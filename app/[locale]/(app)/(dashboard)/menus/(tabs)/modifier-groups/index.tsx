@@ -10,6 +10,10 @@ import CreateModifierGroupDialog from "./CreateModifierGroupDialog";
 import UpdateModifierGroupDialog from "./UpdateModifierGroupDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
@@ -287,11 +291,16 @@ const ModifierGroups = ({
   const handleEnterModifierGroupReorderMode = useCallback(() => {
     setDialog({
       content: (
-        <DialogContentText>
-          {tMenus.rich("modifierGroups.actions.reorderGroup.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tMenus.rich("modifierGroups.actions.reorderGroup.confirm", {
+                bold: (chunks) => <strong>{chunks}</strong>,
+              })}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         setToolbarMode("reorder");
@@ -305,11 +314,16 @@ const ModifierGroups = ({
   const handleSaveModifierGroupReorder = useCallback(() => {
     setDialog({
       content: (
-        <DialogContentText>
-          {tMenus.rich("modifierGroups.actions.reorderGroup.save.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tMenus.rich("modifierGroups.actions.reorderGroup.save.confirm", {
+                bold: (chunks) => <strong>{chunks}</strong>,
+              })}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         try {
@@ -356,11 +370,19 @@ const ModifierGroups = ({
   const handleCancelModifierGroupReorder = useCallback(() => {
     setDialog({
       content: (
-        <DialogContentText>
-          {tMenus.rich("modifierGroups.actions.reorderGroup.cancel.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tMenus.rich(
+                "modifierGroups.actions.reorderGroup.cancel.confirm",
+                {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                },
+              )}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         setToolbarMode(null);
@@ -424,12 +446,17 @@ const ModifierGroups = ({
 
       setDialog({
         content: (
-          <DialogContentText>
-            {tMenus.rich("modifierGroups.actions.deleteGroup.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              name,
-            })}
-          </DialogContentText>
+          <>
+            <CustomizedDialogContent>
+              <DialogContentText>
+                {tMenus.rich("modifierGroups.actions.deleteGroup.confirm", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  name,
+                })}
+              </DialogContentText>
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         onConfirm: async () => {
           try {
@@ -469,24 +496,29 @@ const ModifierGroups = ({
 
     setDialog({
       content: (
-        <ConfirmStack>
-          <DialogContentText>
-            {tMenus.rich(
-              "modifierGroups.actions.batchDeleteGroup.submit.confirm",
-              {
-                bold: (chunks) => <strong>{chunks}</strong>,
-                count,
-              },
-            )}
-          </DialogContentText>
-          <List dense disablePadding>
-            {selectedRows.map(({ displayName, id }) => (
-              <ListItem disableGutters key={id}>
-                <ListItemText primary={localize(displayName, locale)} />
-              </ListItem>
-            ))}
-          </List>
-        </ConfirmStack>
+        <>
+          <CustomizedDialogContent>
+            <ConfirmStack>
+              <DialogContentText>
+                {tMenus.rich(
+                  "modifierGroups.actions.batchDeleteGroup.submit.confirm",
+                  {
+                    bold: (chunks) => <strong>{chunks}</strong>,
+                    count,
+                  },
+                )}
+              </DialogContentText>
+              <List dense disablePadding>
+                {selectedRows.map(({ displayName, id }) => (
+                  <ListItem disableGutters key={id}>
+                    <ListItemText primary={localize(displayName, locale)} />
+                  </ListItem>
+                ))}
+              </List>
+            </ConfirmStack>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: async () => {
         try {

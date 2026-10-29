@@ -11,6 +11,10 @@ import useSWR from "swr";
 
 import { type LeaveForm, useLeaveFormSchema } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
@@ -256,149 +260,156 @@ const LeaveDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="attendance-leave-form" onSubmit={onSubmit}>
-      <TextField
-        error={!!errors.leaveTypeId}
-        fullWidth
-        helperText={errors.leaveTypeId?.message ?? balanceHint}
-        label={tAttendance("leaveType.label")}
-        onChange={(event) => {
-          setValue("leaveTypeId", event.target.value, {
-            shouldValidate: isSubmitted,
-          });
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="attendance-leave-form" onSubmit={onSubmit}>
+          <TextField
+            error={!!errors.leaveTypeId}
+            fullWidth
+            helperText={errors.leaveTypeId?.message ?? balanceHint}
+            label={tAttendance("leaveType.label")}
+            onChange={(event) => {
+              setValue("leaveTypeId", event.target.value, {
+                shouldValidate: isSubmitted,
+              });
 
-          setValue("leaveCaseId", "");
-        }}
-        required
-        select
-        slotProps={{
-          inputLabel: { shrink: true },
-          select: {
-            displayEmpty: true,
-            renderValue: () =>
-              leaveType ? (
-                getStatutoryLeaveName(tAttendance, leaveType)
-              ) : (
-                <em>{tAttendance("leaveType.placeholder")}</em>
-              ),
-          },
-        }}
-        value={leaveTypeId}
-      >
-        <MenuItem disabled value="">
-          <em>{tAttendance("leaveType.placeholder")}</em>
-        </MenuItem>
-        {leaveTypeGroups.flatMap(({ group, items }) => [
-          <ListSubheader key={group}>
-            {tAttendance(`leaveTypeGroups.${group}`)}
-          </ListSubheader>,
-          ...items.map((leaveType) => (
-            <MenuItem key={leaveType.id} value={leaveType.id}>
-              {getStatutoryLeaveName(tAttendance, leaveType)}
-            </MenuItem>
-          )),
-        ])}
-      </TextField>
-      {leaveHint && (
-        <Alert severity="info">
-          {tAttendance(`leaveRequestHint.${leaveHint}`)}
-        </Alert>
-      )}
-      {(isParentalLeave || selectableLeaveCases.length > 0) && (
-        <TextField
-          error={!!errors.leaveCaseId}
-          fullWidth
-          helperText={errors.leaveCaseId?.message}
-          label={tAttendance("leaveCase.label")}
-          onChange={(event) =>
-            setValue("leaveCaseId", event.target.value, {
-              shouldValidate: isSubmitted,
-            })
-          }
-          required={isParentalLeave}
-          select
-          slotProps={{
-            inputLabel: { shrink: true },
-            select: {
-              displayEmpty: true,
-              renderValue: (selected) => {
-                const leaveCase = leaveCases.find(({ id }) => id === selected);
-
-                return leaveCase ? (
-                  leaveCaseLabel(leaveCase)
-                ) : (
-                  <em>
-                    {tAttendance(
-                      isParentalLeave
-                        ? "leaveCase.placeholder"
-                        : "leaveCase.new",
-                    )}
-                  </em>
-                );
+              setValue("leaveCaseId", "");
+            }}
+            required
+            select
+            slotProps={{
+              inputLabel: { shrink: true },
+              select: {
+                displayEmpty: true,
+                renderValue: () =>
+                  leaveType ? (
+                    getStatutoryLeaveName(tAttendance, leaveType)
+                  ) : (
+                    <em>{tAttendance("leaveType.placeholder")}</em>
+                  ),
               },
-            },
-          }}
-          value={leaveCaseId}
-        >
-          <MenuItem disabled={isParentalLeave} value="">
-            <em>
-              {tAttendance(
-                isParentalLeave ? "leaveCase.placeholder" : "leaveCase.new",
-              )}
-            </em>
-          </MenuItem>
-          {selectableLeaveCases.map((leaveCase) => (
-            <MenuItem key={leaveCase.id} value={leaveCase.id}>
-              {leaveCaseLabel(leaveCase)}
+            }}
+            value={leaveTypeId}
+          >
+            <MenuItem disabled value="">
+              <em>{tAttendance("leaveType.placeholder")}</em>
             </MenuItem>
-          ))}
-        </TextField>
-      )}
-      <DateTimePicker
-        label={tAttendance("startsAt")}
-        onChange={handleStartsAtChange}
-        slotProps={{
-          textField: {
-            error: !!errors.startsAt,
-            fullWidth: true,
-            helperText: errors.startsAt?.message,
-            required: true,
-          },
-        }}
-        timezone={STORE_TIMEZONE}
-        value={startsAt ? dayjs(startsAt) : null}
-      />
-      <DateTimePicker
-        label={tAttendance("endsAt")}
-        minDateTime={startsAt ? dayjs(startsAt) : undefined}
-        onChange={(date) =>
-          setValue("endsAt", date?.isValid() ? date.toISOString() : "", {
-            shouldValidate: isSubmitted,
-          })
-        }
-        slotProps={{
-          textField: {
-            error: !!errors.endsAt,
-            fullWidth: true,
-            helperText: errors.endsAt?.message,
-            required: true,
-          },
-        }}
-        timezone={STORE_TIMEZONE}
-        value={endsAt ? dayjs(endsAt) : null}
-      />
-      <TextField
-        error={!!errors.reason}
-        fullWidth
-        helperText={errors.reason?.message}
-        label={tAttendance("reason.label")}
-        minRows={3}
-        multiline
-        placeholder={tAttendance("reason.placeholder")}
-        required
-        {...register("reason")}
-      />
-    </FormBox>
+            {leaveTypeGroups.flatMap(({ group, items }) => [
+              <ListSubheader key={group}>
+                {tAttendance(`leaveTypeGroups.${group}`)}
+              </ListSubheader>,
+              ...items.map((leaveType) => (
+                <MenuItem key={leaveType.id} value={leaveType.id}>
+                  {getStatutoryLeaveName(tAttendance, leaveType)}
+                </MenuItem>
+              )),
+            ])}
+          </TextField>
+          {leaveHint && (
+            <Alert severity="info">
+              {tAttendance(`leaveRequestHint.${leaveHint}`)}
+            </Alert>
+          )}
+          {(isParentalLeave || selectableLeaveCases.length > 0) && (
+            <TextField
+              error={!!errors.leaveCaseId}
+              fullWidth
+              helperText={errors.leaveCaseId?.message}
+              label={tAttendance("leaveCase.label")}
+              onChange={(event) =>
+                setValue("leaveCaseId", event.target.value, {
+                  shouldValidate: isSubmitted,
+                })
+              }
+              required={isParentalLeave}
+              select
+              slotProps={{
+                inputLabel: { shrink: true },
+                select: {
+                  displayEmpty: true,
+                  renderValue: (selected) => {
+                    const leaveCase = leaveCases.find(
+                      ({ id }) => id === selected,
+                    );
+
+                    return leaveCase ? (
+                      leaveCaseLabel(leaveCase)
+                    ) : (
+                      <em>
+                        {tAttendance(
+                          isParentalLeave
+                            ? "leaveCase.placeholder"
+                            : "leaveCase.new",
+                        )}
+                      </em>
+                    );
+                  },
+                },
+              }}
+              value={leaveCaseId}
+            >
+              <MenuItem disabled={isParentalLeave} value="">
+                <em>
+                  {tAttendance(
+                    isParentalLeave ? "leaveCase.placeholder" : "leaveCase.new",
+                  )}
+                </em>
+              </MenuItem>
+              {selectableLeaveCases.map((leaveCase) => (
+                <MenuItem key={leaveCase.id} value={leaveCase.id}>
+                  {leaveCaseLabel(leaveCase)}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
+          <DateTimePicker
+            label={tAttendance("startsAt")}
+            onChange={handleStartsAtChange}
+            slotProps={{
+              textField: {
+                error: !!errors.startsAt,
+                fullWidth: true,
+                helperText: errors.startsAt?.message,
+                required: true,
+              },
+            }}
+            timezone={STORE_TIMEZONE}
+            value={startsAt ? dayjs(startsAt) : null}
+          />
+          <DateTimePicker
+            label={tAttendance("endsAt")}
+            minDateTime={startsAt ? dayjs(startsAt) : undefined}
+            onChange={(date) =>
+              setValue("endsAt", date?.isValid() ? date.toISOString() : "", {
+                shouldValidate: isSubmitted,
+              })
+            }
+            slotProps={{
+              textField: {
+                error: !!errors.endsAt,
+                fullWidth: true,
+                helperText: errors.endsAt?.message,
+                required: true,
+              },
+            }}
+            timezone={STORE_TIMEZONE}
+            value={endsAt ? dayjs(endsAt) : null}
+          />
+          <TextField
+            error={!!errors.reason}
+            fullWidth
+            helperText={errors.reason?.message}
+            label={tAttendance("reason.label")}
+            minRows={3}
+            multiline
+            placeholder={tAttendance("reason.placeholder")}
+            required
+            {...register("reason")}
+          />
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

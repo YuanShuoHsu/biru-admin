@@ -14,6 +14,10 @@ import EmployerSupplementDialog from "./EmployerSupplementDialog";
 import TermsDialog from "./TermsDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -402,15 +406,20 @@ const Payroll = ({
     (statement: PayrollStatement) =>
       setDialog({
         content: (
-          <BlockerList
-            codes={statement.snapshot.blockers}
-            employeeName={statement.employeeName}
-            onEditTerms={
-              canManageTerms
-                ? () => handleTermsDialog(statement.employeeId)
-                : undefined
-            }
-          />
+          <>
+            <CustomizedDialogContent>
+              <BlockerList
+                codes={statement.snapshot.blockers}
+                employeeName={statement.employeeName}
+                onEditTerms={
+                  canManageTerms
+                    ? () => handleTermsDialog(statement.employeeId)
+                    : undefined
+                }
+              />
+            </CustomizedDialogContent>
+            <CustomizedDialogActions />
+          </>
         ),
         open: true,
         showConfirm: false,

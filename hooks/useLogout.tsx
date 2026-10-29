@@ -2,6 +2,11 @@ import { useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import { useSWRConfig } from "swr";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
+
 import { deviceSessionsKey } from "@/hooks/useDeviceSessions";
 import { useSession } from "@/hooks/useSession";
 
@@ -60,12 +65,17 @@ export const useLogout = () => {
   const handleLogoutDialog = () =>
     setDialog({
       content: (
-        <DialogContentText>
-          {tAuth.rich("signOut.confirmContentText", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-            email: session?.user.email || "",
-          })}
-        </DialogContentText>
+        <>
+          <CustomizedDialogContent>
+            <DialogContentText>
+              {tAuth.rich("signOut.confirmContentText", {
+                bold: (chunks) => <strong>{chunks}</strong>,
+                email: session?.user.email || "",
+              })}
+            </DialogContentText>
+          </CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
       ),
       onConfirm: handleLogout,
       open: true,

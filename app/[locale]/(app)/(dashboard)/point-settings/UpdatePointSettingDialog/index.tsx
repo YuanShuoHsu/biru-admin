@@ -11,6 +11,10 @@ import {
   useUpdatePointSettingFormSchema,
 } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 
@@ -111,74 +115,85 @@ const UpdatePointSettingDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="update-point-setting-form" onSubmit={onSubmit}>
-      <NumericFormat
-        allowNegative={false}
-        customInput={TextField}
-        decimalScale={2}
-        error={!!errors.amountPerPoint}
-        fullWidth
-        helperText={
-          errors.amountPerPoint?.message ||
-          tPointSettings("amountPerPoint.hint")
-        }
-        isAllowed={({ floatValue }) =>
-          floatValue === undefined || floatValue <= 99999999.99
-        }
-        label={`${tPointSettings("amountPerPoint.label")} ${tCommon("optional")}`}
-        name="amountPerPoint"
-        onValueChange={({ value }) =>
-          setValue("amountPerPoint", value, { shouldValidate: isSubmitted })
-        }
-        placeholder={tPointSettings("amountPerPoint.placeholder")}
-        thousandSeparator=","
-        value={amountPerPoint}
-        valueIsNumericString
-      />
-      <NumberSpinner
-        clearable
-        disabled={!enabled}
-        fullWidth
-        helperText={
-          enabled ? undefined : tPointSettings("pointsValidityYears.disabled")
-        }
-        label={`${tPointSettings("pointsValidityYears.label")} ${tCommon("optional")}`}
-        max={100}
-        min={1}
-        onValueChange={(value) =>
-          setValue("pointsValidityYears", value != null ? String(value) : "", {
-            shouldValidate: isSubmitted,
-          })
-        }
-        placeholder={tPointSettings("pointsValidityYears.placeholder")}
-        value={
-          enabled && pointsValidityYears !== ""
-            ? Number(pointsValidityYears)
-            : null
-        }
-      />
-      <NumericFormat
-        allowNegative={false}
-        customInput={TextField}
-        decimalScale={2}
-        fullWidth
-        helperText={tPointSettings("accountingValuePerPoint.hint")}
-        isAllowed={({ floatValue }) =>
-          floatValue === undefined || floatValue <= 99999999.99
-        }
-        label={`${tPointSettings("accountingValuePerPoint.label")} ${tCommon("optional")}`}
-        name="accountingValuePerPoint"
-        onValueChange={({ value }) =>
-          setValue("accountingValuePerPoint", value, {
-            shouldValidate: isSubmitted,
-          })
-        }
-        placeholder={tPointSettings("accountingValuePerPoint.placeholder")}
-        thousandSeparator=","
-        value={accountingValuePerPoint}
-        valueIsNumericString
-      />
-    </FormBox>
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="update-point-setting-form" onSubmit={onSubmit}>
+          <NumericFormat
+            allowNegative={false}
+            customInput={TextField}
+            decimalScale={2}
+            error={!!errors.amountPerPoint}
+            fullWidth
+            helperText={
+              errors.amountPerPoint?.message ||
+              tPointSettings("amountPerPoint.hint")
+            }
+            isAllowed={({ floatValue }) =>
+              floatValue === undefined || floatValue <= 99999999.99
+            }
+            label={`${tPointSettings("amountPerPoint.label")} ${tCommon("optional")}`}
+            name="amountPerPoint"
+            onValueChange={({ value }) =>
+              setValue("amountPerPoint", value, { shouldValidate: isSubmitted })
+            }
+            placeholder={tPointSettings("amountPerPoint.placeholder")}
+            thousandSeparator=","
+            value={amountPerPoint}
+            valueIsNumericString
+          />
+          <NumberSpinner
+            clearable
+            disabled={!enabled}
+            fullWidth
+            helperText={
+              enabled
+                ? undefined
+                : tPointSettings("pointsValidityYears.disabled")
+            }
+            label={`${tPointSettings("pointsValidityYears.label")} ${tCommon("optional")}`}
+            max={100}
+            min={1}
+            onValueChange={(value) =>
+              setValue(
+                "pointsValidityYears",
+                value != null ? String(value) : "",
+                {
+                  shouldValidate: isSubmitted,
+                },
+              )
+            }
+            placeholder={tPointSettings("pointsValidityYears.placeholder")}
+            value={
+              enabled && pointsValidityYears !== ""
+                ? Number(pointsValidityYears)
+                : null
+            }
+          />
+          <NumericFormat
+            allowNegative={false}
+            customInput={TextField}
+            decimalScale={2}
+            fullWidth
+            helperText={tPointSettings("accountingValuePerPoint.hint")}
+            isAllowed={({ floatValue }) =>
+              floatValue === undefined || floatValue <= 99999999.99
+            }
+            label={`${tPointSettings("accountingValuePerPoint.label")} ${tCommon("optional")}`}
+            name="accountingValuePerPoint"
+            onValueChange={({ value }) =>
+              setValue("accountingValuePerPoint", value, {
+                shouldValidate: isSubmitted,
+              })
+            }
+            placeholder={tPointSettings("accountingValuePerPoint.placeholder")}
+            thousandSeparator=","
+            value={accountingValuePerPoint}
+            valueIsNumericString
+          />
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

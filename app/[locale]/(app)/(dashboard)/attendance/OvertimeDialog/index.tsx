@@ -10,6 +10,10 @@ import { useForm, useWatch } from "react-hook-form";
 
 import { type OvertimeForm, useOvertimeFormSchema } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { MAX_DAILY_WORK_HOURS } from "@/constants/attendance";
@@ -196,80 +200,85 @@ const OvertimeDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="attendance-overtime-form" onSubmit={onSubmit}>
-      <Alert severity="info">
-        {tAttendance(workday ? "overtimeOnWorkday" : "overtimeOnShift")}
-      </Alert>
-      {workday && (
-        <ToggleButtonGroup
-          exclusive
-          fullWidth
-          onChange={(_, value: OvertimePosition | null) =>
-            handlePositionChange(value)
-          }
-          size="small"
-          value={position}
-        >
-          {(["before", "after"] as const).map((value) => (
-            <ToggleButton key={value} value={value}>
-              {tAttendance(`overtimePosition.${value}`)}
-            </ToggleButton>
-          ))}
-        </ToggleButtonGroup>
-      )}
-      <DateTimePicker
-        disabled={workday && position === "after"}
-        label={tAttendance("startsAt")}
-        maxDateTime={endsAt ? dayjs(endsAt) : dayjs(shift.endsAt)}
-        minDateTime={startsAtMin}
-        onChange={(date) =>
-          setValue("startsAt", date?.isValid() ? date.toISOString() : "", {
-            shouldValidate: isSubmitted,
-          })
-        }
-        slotProps={{
-          textField: {
-            error: !!errors.startsAt,
-            fullWidth: true,
-            helperText: errors.startsAt?.message,
-            required: true,
-          },
-        }}
-        timezone={STORE_TIMEZONE}
-        value={startsAt ? dayjs(startsAt) : null}
-      />
-      <DateTimePicker
-        disabled={workday && position === "before"}
-        label={tAttendance("endsAt")}
-        maxDateTime={endsAtMax}
-        minDateTime={startsAt ? dayjs(startsAt) : dayjs(shift.startsAt)}
-        onChange={(date) =>
-          setValue("endsAt", date?.isValid() ? date.toISOString() : "", {
-            shouldValidate: isSubmitted,
-          })
-        }
-        slotProps={{
-          textField: {
-            error: !!errors.endsAt,
-            fullWidth: true,
-            helperText: errors.endsAt?.message,
-            required: true,
-          },
-        }}
-        timezone={STORE_TIMEZONE}
-        value={endsAt ? dayjs(endsAt) : null}
-      />
-      <TextField
-        error={!!errors.reason}
-        fullWidth
-        helperText={errors.reason?.message}
-        label={tAttendance("reason.label")}
-        minRows={3}
-        multiline
-        required
-        {...register("reason")}
-      />
-    </FormBox>
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="attendance-overtime-form" onSubmit={onSubmit}>
+          <Alert severity="info">
+            {tAttendance(workday ? "overtimeOnWorkday" : "overtimeOnShift")}
+          </Alert>
+          {workday && (
+            <ToggleButtonGroup
+              exclusive
+              fullWidth
+              onChange={(_, value: OvertimePosition | null) =>
+                handlePositionChange(value)
+              }
+              size="small"
+              value={position}
+            >
+              {(["before", "after"] as const).map((value) => (
+                <ToggleButton key={value} value={value}>
+                  {tAttendance(`overtimePosition.${value}`)}
+                </ToggleButton>
+              ))}
+            </ToggleButtonGroup>
+          )}
+          <DateTimePicker
+            disabled={workday && position === "after"}
+            label={tAttendance("startsAt")}
+            maxDateTime={endsAt ? dayjs(endsAt) : dayjs(shift.endsAt)}
+            minDateTime={startsAtMin}
+            onChange={(date) =>
+              setValue("startsAt", date?.isValid() ? date.toISOString() : "", {
+                shouldValidate: isSubmitted,
+              })
+            }
+            slotProps={{
+              textField: {
+                error: !!errors.startsAt,
+                fullWidth: true,
+                helperText: errors.startsAt?.message,
+                required: true,
+              },
+            }}
+            timezone={STORE_TIMEZONE}
+            value={startsAt ? dayjs(startsAt) : null}
+          />
+          <DateTimePicker
+            disabled={workday && position === "before"}
+            label={tAttendance("endsAt")}
+            maxDateTime={endsAtMax}
+            minDateTime={startsAt ? dayjs(startsAt) : dayjs(shift.startsAt)}
+            onChange={(date) =>
+              setValue("endsAt", date?.isValid() ? date.toISOString() : "", {
+                shouldValidate: isSubmitted,
+              })
+            }
+            slotProps={{
+              textField: {
+                error: !!errors.endsAt,
+                fullWidth: true,
+                helperText: errors.endsAt?.message,
+                required: true,
+              },
+            }}
+            timezone={STORE_TIMEZONE}
+            value={endsAt ? dayjs(endsAt) : null}
+          />
+          <TextField
+            error={!!errors.reason}
+            fullWidth
+            helperText={errors.reason?.message}
+            label={tAttendance("reason.label")}
+            minRows={3}
+            multiline
+            required
+            {...register("reason")}
+          />
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

@@ -7,6 +7,10 @@ import { useForm, useWatch } from "react-hook-form";
 
 import { type AssignChildForm, useAssignChildFormSchema } from "./definitions";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -100,40 +104,45 @@ const AssignChildDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="attendance-assign-child-form" onSubmit={onSubmit}>
-      <TextField
-        error={!!errors.childId}
-        fullWidth
-        helperText={errors.childId?.message}
-        label={tAttendance("parentalChild")}
-        onChange={(event) =>
-          setValue("childId", event.target.value, {
-            shouldValidate: isSubmitted,
-          })
-        }
-        required
-        select
-        value={childId}
-      >
-        {parentalChildren
-          .filter(({ employeeId }) => employeeId === leaveCase.employeeId)
-          .map(({ id, label, reference }) => (
-            <MenuItem key={id} value={id}>
-              {label} · {reference}
-            </MenuItem>
-          ))}
-      </TextField>
-      <TextField
-        error={!!errors.reason}
-        fullWidth
-        helperText={errors.reason?.message}
-        label={tAttendance("reason.label")}
-        minRows={3}
-        multiline
-        required
-        {...register("reason")}
-      />
-    </FormBox>
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="attendance-assign-child-form" onSubmit={onSubmit}>
+          <TextField
+            error={!!errors.childId}
+            fullWidth
+            helperText={errors.childId?.message}
+            label={tAttendance("parentalChild")}
+            onChange={(event) =>
+              setValue("childId", event.target.value, {
+                shouldValidate: isSubmitted,
+              })
+            }
+            required
+            select
+            value={childId}
+          >
+            {parentalChildren
+              .filter(({ employeeId }) => employeeId === leaveCase.employeeId)
+              .map(({ id, label, reference }) => (
+                <MenuItem key={id} value={id}>
+                  {label} · {reference}
+                </MenuItem>
+              ))}
+          </TextField>
+          <TextField
+            error={!!errors.reason}
+            fullWidth
+            helperText={errors.reason?.message}
+            label={tAttendance("reason.label")}
+            minRows={3}
+            multiline
+            required
+            {...register("reason")}
+          />
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 

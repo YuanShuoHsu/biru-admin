@@ -4,6 +4,10 @@ import { useTranslations } from "next-intl";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { MenuItem, TextField } from "@mui/material";
@@ -44,22 +48,27 @@ const DayKindDialog = ({ defaultValue, onSubmit }: DayKindDialogProps) => {
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="attendance-shift-day-kind-form" onSubmit={onFormSubmit}>
-      <TextField
-        fullWidth
-        label={tAttendance("dayKind.label")}
-        required
-        select
-        value={dayKind}
-        {...register("dayKind")}
-      >
-        {attendanceScheduledDayKindValues.map((value) => (
-          <MenuItem key={value} value={value}>
-            {tAttendance(`dayKind.options.${value}`)}
-          </MenuItem>
-        ))}
-      </TextField>
-    </FormBox>
+    <>
+      <CustomizedDialogContent>
+        <FormBox id="attendance-shift-day-kind-form" onSubmit={onFormSubmit}>
+          <TextField
+            fullWidth
+            label={tAttendance("dayKind.label")}
+            required
+            select
+            value={dayKind}
+            {...register("dayKind")}
+          >
+            {attendanceScheduledDayKindValues.map((value) => (
+              <MenuItem key={value} value={value}>
+                {tAttendance(`dayKind.options.${value}`)}
+              </MenuItem>
+            ))}
+          </TextField>
+        </FormBox>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions />
+    </>
   );
 };
 
