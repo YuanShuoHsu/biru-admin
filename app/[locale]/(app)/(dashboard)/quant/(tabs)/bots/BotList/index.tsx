@@ -71,6 +71,7 @@ import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
   QuantBot,
   QuantBotFilterField,
+  QuantBotListResponse,
   QuantBotSortField,
   StopQuantBotDto,
 } from "@/types/quant";
@@ -195,7 +196,7 @@ const BotList = ({
       sortModel,
     ],
     async ([url]) =>
-      fetcher<{ data: QuantBot[]; total: number }>(
+      fetcher<QuantBotListResponse>(
         `${url}?${getDataGridSearchParams(
           paginationModel,
           filterModel,

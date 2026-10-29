@@ -69,6 +69,8 @@ export type SetMarginModeDto = components["schemas"]["SetMarginModeDto"];
 export type SetPositionModeDto = components["schemas"]["SetPositionModeDto"];
 
 export type QuantBot = components["schemas"]["QuantBotDto"];
+export type QuantBotListResponse =
+  components["schemas"]["QuantBotListResponseDto"];
 export type QuantBotSummary = components["schemas"]["QuantBotSummaryDto"];
 export type QuantBotOrder = components["schemas"]["QuantBotOrderDto"];
 export type QuantBotFill = components["schemas"]["QuantBotFillDto"];

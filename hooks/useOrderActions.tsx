@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { useCallback } from "react";
+import { useCallback, useRef, useState } from "react";
 import useSWR from "swr";
 
 import {
@@ -87,7 +87,7 @@ export const canResolveInvoicePrint = (order: AdminOrderResponse) =>
 const IN_FLIGHT_PRINT_JOB_STATUSES = ["queued", "sent", "unknown"] as const;
 
 // 只有排隊中的工作會被瀏覽器接手；印表機離線時它不該擋住列印
-export const printInvoiceBlockedBy = (
+const printInvoiceBlockedBy = (
   { invoice }: AdminOrderResponse,
   printerOffline: boolean,
 ) =>
@@ -164,9 +164,38 @@ export const findUnresolvedOrderTicket = ({
 
 export const useOrderActions = (
   organizationSlug: string,
-  mutate: () => void,
+  mutate: () => Promise<unknown>,
 ) => {
   const { setDialog } = useDialogStore((state) => state);
+
+  const [pendingInvoicePrintOrderIds, setPendingInvoicePrintOrderIds] =
+    useState<ReadonlySet<string>>(new Set());
+
+  const pendingInvoicePrintOrderIdsRef = useRef(new Set<string>());
+
+  const withPendingInvoicePrint = useCallback(
+    async (order: AdminOrderResponse, request: () => Promise<void>) => {
+      const pendingIds = pendingInvoicePrintOrderIdsRef.current;
+      if (pendingIds.has(order.id)) return;
+
+      pendingIds.add(order.id);
+      setPendingInvoicePrintOrderIds(new Set(pendingIds));
+
+      try {
+        await request();
+      } catch (error) {
+        enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+      } finally {
+        try {
+          await mutate();
+        } finally {
+          pendingIds.delete(order.id);
+          setPendingInvoicePrintOrderIds(new Set(pendingIds));
+        }
+      }
+    },
+    [mutate],
+  );
 
   const tOrders = useTranslations("orders");
 
@@ -333,10 +362,10 @@ export const useOrderActions = (
   );
 
   const handlePrintInvoice = useCallback(
-    async (order: AdminOrderResponse) => {
-      const invoiceUrl = `/api/organizations/${organizationSlug}/orders/${order.id}/invoice`;
+    (order: AdminOrderResponse) =>
+      withPendingInvoicePrint(order, async () => {
+        const invoiceUrl = `/api/organizations/${organizationSlug}/orders/${order.id}/invoice`;
 
-      try {
         const { printHtml, printJob } = await fetcher<OrderInvoicePrint>(
           `${invoiceUrl}/print`,
           { method: "POST" },
@@ -357,21 +386,16 @@ export const useOrderActions = (
         await fetcher(`${invoiceUrl}/print-jobs/${printJob.id}/confirmation`, {
           method: "POST",
         });
-      } catch (error) {
-        enqueueSnackbar(getErrorMessage(error), { variant: "error" });
-      } finally {
-        mutate();
-      }
-    },
-    [mutate, organizationSlug, tOrders],
+      }),
+    [organizationSlug, tOrders, withPendingInvoicePrint],
   );
 
   const handleCancelInvoicePrint = useCallback(
-    async (order: AdminOrderResponse) => {
+    (order: AdminOrderResponse) => {
       const printJob = order.invoice?.printJob;
       if (!printJob) return;
 
-      try {
+      return withPendingInvoicePrint(order, async () => {
         await fetcher(
           `/api/organizations/${organizationSlug}/orders/${order.id}/invoice/print-jobs/${printJob.id}/cancellation`,
           { method: "POST" },
@@ -383,13 +407,9 @@ export const useOrderActions = (
           }),
           { variant: "success" },
         );
-      } catch (error) {
-        enqueueSnackbar(getErrorMessage(error), { variant: "error" });
-      } finally {
-        mutate();
-      }
+      });
     },
-    [mutate, organizationSlug, tOrders],
+    [organizationSlug, tOrders, withPendingInvoicePrint],
   );
 
   const handleConfirmPrintInvoice = useCallback(
@@ -535,5 +555,6 @@ export const useOrderActions = (
     handleResolveOrderTicket,
     handleUpdateCustomer,
     handleViewOrder,
+    pendingInvoicePrintOrderIds,
   };
 };

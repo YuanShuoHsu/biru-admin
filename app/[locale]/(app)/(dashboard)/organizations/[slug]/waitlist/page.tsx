@@ -5,15 +5,15 @@ import { notFound } from "next/navigation";
 
 import OrganizationsSlugWaitlist from ".";
 
-import type { Locale } from "@/i18n/routing";
+import ErrorAlert from "@/components/ErrorAlert";
 
-import { authClient } from "@/lib/auth-client";
+import type { Locale } from "@/i18n/routing";
 
 import type { WaitlistSettingsResponse } from "@/types/waitlist";
 
-import { fetcher } from "@/utils/fetcher";
+import { fetcher, settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
-import { getSession } from "@/utils/session";
+import { getFullOrganization, getSession } from "@/utils/session";
 
 interface OrganizationsSlugWaitlistPageProps {
   params: Promise<{ locale: Locale; slug: string }>;
@@ -39,14 +39,14 @@ const OrganizationsSlugWaitlistPage = async ({
   const organizationSlug = decodeURIComponent(slug);
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const [{ data }, session] = await Promise.all([
-    authClient.organization.getFullOrganization({
-      query: { organizationSlug },
-      fetchOptions,
-    }),
+  const [{ data, error: organizationError }, session] = await Promise.all([
+    settle(getFullOrganization(organizationSlug)),
     getSession(),
   ]);
 
+  if (organizationError?.status === 400 || organizationError?.status === 403)
+    notFound();
+  if (organizationError) return <ErrorAlert />;
   if (!data) notFound();
 
   const currentUserRole = data.members.find(
@@ -56,12 +56,14 @@ const OrganizationsSlugWaitlistPage = async ({
   if (!hasRolePermission(currentUserRole, { waitlistSetting: ["read"] }))
     notFound();
 
-  const settings = await fetcher<WaitlistSettingsResponse>(
-    `/api/organizations/${organizationSlug}/waitlist/settings`,
-    fetchOptions,
-  ).catch(() => null);
-
-  if (!settings) notFound();
+  const { data: settings, error } = await settle(
+    fetcher<WaitlistSettingsResponse>(
+      `/api/organizations/${organizationSlug}/waitlist/settings`,
+      fetchOptions,
+    ),
+  );
+  if (error?.status === 404) notFound();
+  if (error) return <ErrorAlert />;
 
   return (
     <OrganizationsSlugWaitlist

@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import BotList from "./BotList";
+
+import ErrorAlert from "@/components/ErrorAlert";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -16,6 +19,7 @@ import {
 
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getQuantBotEnumOptions } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 import { getQuantBots } from "@/utils/quant";
 
 interface QuantBotsPageProps {
@@ -78,20 +82,26 @@ const QuantBotsContent = async ({
     ? getQuickFilterEnums(quickFilterValue, getQuantBotEnumOptions(tBots))
     : [];
 
-  const { bots: rows, total: rowCount } = await getQuantBots(
-    {
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterEnums,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-    },
-    { headers: { cookie: cookieStore.toString() } },
+  const { data: bots, error } = await settle(
+    getQuantBots(
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterEnums,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
+      { headers: { cookie: cookieStore.toString() } },
+    ),
   );
+  if (error?.status === 403) notFound();
+  if (error) return <ErrorAlert />;
+
+  const { bots: rows, total: rowCount } = bots;
 
   return (
     <BotList

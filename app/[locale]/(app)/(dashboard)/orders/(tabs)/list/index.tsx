@@ -71,6 +71,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
+  AdminOrderListResponse,
   AdminOrderResponse,
   OrderFilterField,
   OrderSortField,
@@ -199,7 +200,7 @@ const Orders = ({
       sortModel,
     ],
     async () =>
-      fetcher<{ data: AdminOrderResponse[]; total: number }>(
+      fetcher<AdminOrderListResponse>(
         `/api/organizations/${organizationSlug}/orders?${getDataGridSearchParams(
           paginationModel,
           filterModel,
@@ -285,6 +286,7 @@ const Orders = ({
     handleResolveOrderTicket,
     handleUpdateCustomer,
     handleViewOrder,
+    pendingInvoicePrintOrderIds,
   } = useOrderActions(organizationSlug, mutate);
 
   const orderTicketPrinters = useOrderTicketPrinterStatuses(organizationSlug);
@@ -388,6 +390,7 @@ const Orders = ({
                 <span>
                   <StyledIconButton
                     disabled={!!printInvoiceBlockedBy(row)}
+                    loading={pendingInvoicePrintOrderIds.has(row.id)}
                     onClick={(event) => {
                       event.stopPropagation();
 
@@ -427,6 +430,7 @@ const Orders = ({
                     if (canCancelInvoicePrint(row))
                       void handleCancelInvoicePrint(row);
                   }}
+                  loading={pendingInvoicePrintOrderIds.has(row.id)}
                   size="small"
                   visible={canCancelInvoicePrint(row)}
                 >
@@ -734,6 +738,7 @@ const Orders = ({
       hasReprintableOrderTicket,
       hasUnresolvedOrderTicket,
       orderTicketPrinters,
+      pendingInvoicePrintOrderIds,
       printInvoiceBlockedBy,
       printInvoiceTooltip,
       handleUpdateCustomer,

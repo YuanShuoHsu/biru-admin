@@ -121,6 +121,9 @@ export type PayrollStatementPage =
 export type PayrollTerms = components["schemas"]["PayrollTermsResponseDto"];
 export type PayrollEarningType =
   components["schemas"]["PayrollEarningTypeResponseDto"];
+export type PayrollRuleIngestResult =
+  components["schemas"]["PayrollRuleIngestResponseDto"];
+export type PayrollRuleSet = components["schemas"]["PayrollRuleSetResponseDto"];
 export type PayrollEarningTypePage =
   components["schemas"]["PayrollEarningTypesResponseDto"];
 export type PayrollEarningInput =

@@ -51,6 +51,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type {
   UserSession,
   UserSessionFilterField,
+  UserSessionListResponse,
   UserSessionSortField,
 } from "@/types/admins";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
@@ -177,7 +178,7 @@ const UserSessions = ({
       sortModel,
     ],
     ([url]) =>
-      fetcher<{ data: UserSession[]; total: number }>(
+      fetcher<UserSessionListResponse>(
         `${url}?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
       ),
     {

@@ -531,7 +531,6 @@ const BotForm = ({ fromId }: BotFormProps) => {
 
 export default BotForm;
 
-/** 建立、複製都在同一個大對話框裡填，填完導到新機器人的詳情頁 */
 export const useBotFormDialog = () => {
   const tBots = useTranslations("quant.bots");
   const setDialog = useDialogStore((state) => state.setDialog);

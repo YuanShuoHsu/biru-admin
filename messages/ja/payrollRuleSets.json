@@ -1,0 +1,41 @@
+{
+  "label": "給与ルールセット",
+  "actions": "操作",
+  "effectiveFrom": "適用開始月",
+  "minimumMonthlyWageCents": "月額最低賃金",
+  "minimumHourlyWageCents": "時間額最低賃金",
+  "laborPercentBp": "労働保険料率",
+  "employmentPercentBp": "雇用保険料率",
+  "healthPercentBp": "健康保険料率",
+  "withholdingRateBp": "給与源泉徴収率",
+  "checkedAt": "最終確認日時",
+  "staleAlert": "給与計算ルールが今月まだ政府データと照合されていないため、今月の給与の下書きが作成できません。「{ingest}」を押してください。",
+  "status": {
+    "label": "ステータス",
+    "confirmed": "確認済み",
+    "unconfirmed": "最低賃金の確認待ち",
+    "stale": "期限切れ"
+  },
+  "confirm": {
+    "title": "最低賃金を確認",
+    "hint": "公式の最低賃金データはまだ {period} 以降の金額に更新されていません。労働部の公告に基づき時間額最低賃金を入力してください。",
+    "minimumHourlyWage": "公告の時間額最低賃金（元）",
+    "sourceLabel": {
+      "label": "公告名",
+      "placeholder": "例：労働部 最低賃金公告",
+      "required": "公告名を入力してください。",
+      "maxLength": "公告名は {max} 文字以内で入力してください。"
+    },
+    "sourceUrl": {
+      "label": "公告リンク",
+      "invalid": "https で始まる公告リンクを入力してください。"
+    },
+    "success": "{period} の時間額最低賃金を確認しました"
+  },
+  "ingest": {
+    "label": "政府データから今すぐ更新",
+    "result": "書き込み：{written}／スキップ：{skipped}／却下：{rejected}",
+    "none": "なし",
+    "unchecked": "公式データを完全に取得できなかったか却下された期間があるため、最新の期間は確認済みになっていません。"
+  }
+}

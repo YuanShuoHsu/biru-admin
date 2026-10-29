@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import OrganizationsSlugInvitations from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import type { Locale } from "@/i18n/routing";
 
-import { authClient } from "@/lib/auth-client";
-
+import { settle } from "@/utils/fetcher";
 import { hasRolePermission, sortByCreatedAtDesc } from "@/utils/organizations";
-import { getSession } from "@/utils/session";
+import { getFullOrganization, getSession } from "@/utils/session";
 
 interface OrganizationsSlugInvitationsPageProps {
   params: Promise<{ locale: Locale; slug: string }>;
@@ -32,18 +32,15 @@ export const generateMetadata = async ({
 const OrganizationsSlugInvitationsContent = async ({
   params,
 }: OrganizationsSlugInvitationsPageProps) => {
-  const [cookieStore, { slug }] = await Promise.all([cookies(), params]);
+  const { slug } = await params;
 
-  const cookieHeader = cookieStore.toString();
-
-  const [{ data }, session] = await Promise.all([
-    authClient.organization.getFullOrganization({
-      query: { organizationSlug: decodeURIComponent(slug) },
-      fetchOptions: { headers: { cookie: cookieHeader } },
-    }),
+  const [{ data, error }, session] = await Promise.all([
+    settle(getFullOrganization(decodeURIComponent(slug))),
     getSession(),
   ]);
 
+  if (error?.status === 400 || error?.status === 403) notFound();
+  if (error) return <ErrorAlert />;
   if (!data) notFound();
 
   const currentUserRole = data.members.find(

@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import Ingredients from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -17,6 +19,7 @@ import {
 
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getIngredientEnumOptions } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 import { getIngredients } from "@/utils/inventory";
 import { hasRolePermission } from "@/utils/organizations";
 import { getMemberRole, getResolvedAdminOrganization } from "@/utils/session";
@@ -122,22 +125,27 @@ const IngredientsContent = async ({
 
   const lowStock = rawSearchParams.lowStock === "true";
 
-  const { ingredients: rows, total: rowCount } = await getIngredients(
-    organization.slug,
-    {
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterEnums,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-    },
-    fetchOptions,
-    lowStock,
+  const { data: ingredients, error } = await settle(
+    getIngredients(
+      organization.slug,
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterEnums,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
+      fetchOptions,
+      lowStock,
+    ),
   );
+  if (error) return <ErrorAlert />;
+
+  const { ingredients: rows, total: rowCount } = ingredients;
 
   return (
     <Ingredients

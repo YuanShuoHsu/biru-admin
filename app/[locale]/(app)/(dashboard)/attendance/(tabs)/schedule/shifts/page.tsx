@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import Shifts from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
@@ -25,6 +27,7 @@ import {
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceDayKindEnumOptions } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -123,40 +126,52 @@ const ShiftsContent = async ({ params, searchParams }: ShiftsPageProps) => {
         : undefined;
 
   const [
-    { shifts: rows, total: rowCount },
-    { employees },
-    { shiftTypes },
-    teams,
+    { data: shifts, error },
+    { data: employeePage, error: employeesError },
+    { data: shiftTypePage, error: shiftTypesError },
+    { data: teams, error: teamsError },
   ] = await Promise.all([
-    getAttendanceShifts(
-      organization.slug,
-      "org",
-      {
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterEnums,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-      },
-      fetchOptions,
-      shiftFilter,
+    settle(
+      getAttendanceShifts(
+        organization.slug,
+        "org",
+        {
+          page,
+          pageSize,
+          filterField,
+          filterOperator,
+          filterValue,
+          quickFilterEnums,
+          quickFilterValue,
+          sortBy,
+          sortDirection,
+        },
+        fetchOptions,
+        shiftFilter,
+      ),
     ),
-    getAttendanceEmployees(
-      organization.slug,
-      { pageSize: MAX_PAGE_SIZE },
-      fetchOptions,
+    settle(
+      getAttendanceEmployees(
+        organization.slug,
+        { pageSize: MAX_PAGE_SIZE },
+        fetchOptions,
+      ),
     ),
-    getAttendanceShiftTypes(
-      organization.slug,
-      { pageSize: MAX_PAGE_SIZE },
-      fetchOptions,
+    settle(
+      getAttendanceShiftTypes(
+        organization.slug,
+        { pageSize: MAX_PAGE_SIZE },
+        fetchOptions,
+      ),
     ),
-    getAttendanceTeams(organization.slug, fetchOptions),
+    settle(getAttendanceTeams(organization.slug, fetchOptions)),
   ]);
+  if (error || employeesError || shiftTypesError || teamsError)
+    return <ErrorAlert />;
+
+  const { shifts: rows, total: rowCount } = shifts;
+  const { employees } = employeePage;
+  const { shiftTypes } = shiftTypePage;
 
   return (
     <Shifts

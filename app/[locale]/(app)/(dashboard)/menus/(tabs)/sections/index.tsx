@@ -78,6 +78,7 @@ import type {
   Menu,
   MenuSection,
   MenuSectionFilterField,
+  MenuSectionListResponse,
   MenuSectionSortField,
 } from "@/types/menus";
 
@@ -209,7 +210,7 @@ const MenusMenuId = ({
       sortModel,
     ],
     async () => {
-      return fetcher<{ data: MenuSection[]; total: number }>(
+      return fetcher<MenuSectionListResponse>(
         `/api/menus/${menuId}/menu-sections?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
       );
     },

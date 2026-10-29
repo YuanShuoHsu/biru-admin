@@ -7,6 +7,12 @@
   "delimiter": ", ",
   "discontinued": "단종",
   "empty": "상품이 없습니다",
+  "error": {
+    "description": "잠시 후 다시 시도해 주세요.",
+    "digest": "오류 코드: {digest}",
+    "retry": "다시 시도",
+    "title": "불러오지 못했습니다"
+  },
   "from": "부터",
   "imageProcessingFailed": "이미지 처리에 실패했습니다",
   "increase": "증가",
@@ -36,6 +42,11 @@
   "maxQuantity": "각 상품은 최대 {quantity} 개까지 구매할 수 있습니다",
   "middleDot": " · ",
   "multiply": "×",
+  "notFound": {
+    "description": "찾으시는 페이지를 찾을 수 없습니다.",
+    "home": "홈으로 돌아가기",
+    "title": "페이지를 찾을 수 없습니다"
+  },
   "optional": "(선택)",
   "organization": {
     "closed": "{name} (영업 종료)",

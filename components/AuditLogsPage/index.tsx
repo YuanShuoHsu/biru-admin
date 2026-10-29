@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import AuditLogs from "@/components/AuditLogs";
+import ErrorAlert from "@/components/ErrorAlert";
 
 import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
 import { DEFAULT_PAGE_SIZE } from "@/constants/pagination";
@@ -24,6 +25,7 @@ import type { Ingredient } from "@/types/inventory";
 import { getAuditLogs } from "@/utils/audit";
 import { getQuickFilterEnums } from "@/utils/dataGrid";
 import { getAuditLogEnumOptions } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 import { getOrganizations, hasRolePermission } from "@/utils/organizations";
 import {
   getMemberRole,
@@ -147,11 +149,13 @@ const AuditLogsPage = async ({
     if (!hasRolePermission(memberRole, { auditLog: ["read"] })) notFound();
   }
 
-  const [tAudit, tCommon, organizations] = await Promise.all([
-    getTranslations({ locale, namespace: "audit" }),
-    getTranslations({ locale, namespace: "common" }),
-    isAdmin ? getOrganizations(fetchOptions) : [],
-  ]);
+  const [tAudit, tCommon, { data: organizations, error: organizationsError }] =
+    await Promise.all([
+      getTranslations({ locale, namespace: "audit" }),
+      getTranslations({ locale, namespace: "common" }),
+      settle(isAdmin ? getOrganizations(fetchOptions) : Promise.resolve([])),
+    ]);
+  if (organizationsError) return <ErrorAlert />;
 
   const quickFilterEnums = quickFilterValue
     ? getQuickFilterEnums(
@@ -160,24 +164,29 @@ const AuditLogsPage = async ({
       )
     : [];
 
-  const { logs, total } = await getAuditLogs(
-    selectedOrganization?.slug,
-    resource,
-    resourceId,
-    ancestorId,
-    {
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterEnums,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-    },
-    fetchOptions,
+  const { data: auditLogs, error } = await settle(
+    getAuditLogs(
+      selectedOrganization?.slug,
+      resource,
+      resourceId,
+      ancestorId,
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterEnums,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
+      fetchOptions,
+    ),
   );
+  if (error) return <ErrorAlert />;
+
+  const { logs, total } = auditLogs;
 
   return (
     <AuditLogs

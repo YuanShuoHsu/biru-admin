@@ -6,6 +6,7 @@ import { authClient } from "@/lib/auth-client";
 
 import type { Menu } from "@/types/menus";
 
+import { toFetchError } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import {
   activeMemberRoleKey,
@@ -15,9 +16,10 @@ import {
 export const getSession = cache(async () => {
   const cookieStore = await cookies();
 
-  const { data } = await authClient.getSession({
+  const { data, error } = await authClient.getSession({
     fetchOptions: { headers: { cookie: cookieStore.toString() } },
   });
+  if (error) throw toFetchError(error);
 
   return data;
 });
@@ -25,11 +27,13 @@ export const getSession = cache(async () => {
 export const listOrganizations = cache(async () => {
   const cookieStore = await cookies();
 
-  const { data } = await authClient.organization.list({
+  const { data, error } = await authClient.organization.list({
     fetchOptions: { headers: { cookie: cookieStore.toString() } },
   });
+  if (error?.status === 401) return [];
+  if (error) throw toFetchError(error);
 
-  return data ?? [];
+  return data;
 });
 
 export const getAdminOrganization = cache(
@@ -59,6 +63,18 @@ export const getDefaultOrganizationSlug = cache(async () => {
   );
 });
 
+export const getFullOrganization = cache(async (organizationSlug: string) => {
+  const cookieStore = await cookies();
+
+  const { data, error } = await authClient.organization.getFullOrganization({
+    query: { organizationSlug },
+    fetchOptions: { headers: { cookie: cookieStore.toString() } },
+  });
+  if (error) throw toFetchError(error);
+
+  return data;
+});
+
 export const getResolvedAdminOrganization = cache(
   async (organizationSlug: string | undefined) => {
     const [organizations, session] = await Promise.all([
@@ -80,12 +96,14 @@ export const getResolvedAdminOrganization = cache(
 export const getMemberRole = cache(async (organizationId: string) => {
   const cookieStore = await cookies();
 
-  const { data } = await authClient.organization.getActiveMemberRole({
+  const { data, error } = await authClient.organization.getActiveMemberRole({
     query: { organizationId },
     fetchOptions: { headers: { cookie: cookieStore.toString() } },
   });
+  if (error?.status === 400 || error?.status === 403) return null;
+  if (error) throw toFetchError(error);
 
-  return data?.role ?? null;
+  return data.role;
 });
 
 export const getDefaultMemberRoleFallback = async () => {

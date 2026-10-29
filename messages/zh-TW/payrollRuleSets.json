@@ -1,0 +1,41 @@
+{
+  "label": "薪資規則集",
+  "actions": "操作",
+  "effectiveFrom": "生效月份",
+  "minimumMonthlyWageCents": "每月最低工資",
+  "minimumHourlyWageCents": "每小時最低工資",
+  "laborPercentBp": "勞保費率",
+  "employmentPercentBp": "就保費率",
+  "healthPercentBp": "健保費率",
+  "withholdingRateBp": "薪資扣繳率",
+  "checkedAt": "最後檢查時間",
+  "staleAlert": "計薪規則本月尚未與政府資料核對，本月的計薪草稿會被擋下，請按「{ingest}」。",
+  "status": {
+    "label": "狀態",
+    "confirmed": "已確認",
+    "unconfirmed": "待確認最低工資",
+    "stale": "已過期"
+  },
+  "confirm": {
+    "title": "確認最低工資",
+    "hint": "官方最低工資資料尚未更新 {period} 起的數值，請依勞動部公告填入每小時最低工資。",
+    "minimumHourlyWage": "公告每小時最低工資（元）",
+    "sourceLabel": {
+      "label": "公告名稱",
+      "placeholder": "例：勞動部公告 115 年最低工資",
+      "required": "請輸入公告名稱。",
+      "maxLength": "公告名稱最多 {max} 個字。"
+    },
+    "sourceUrl": {
+      "label": "公告連結",
+      "invalid": "請輸入 https 開頭的公告連結。"
+    },
+    "success": "已確認 {period} 的每小時最低工資"
+  },
+  "ingest": {
+    "label": "立即從政府資料更新",
+    "result": "寫入：{written}；略過：{skipped}；拒絕：{rejected}",
+    "none": "無",
+    "unchecked": "未能完整取得官方資料或有版本被拒絕，最新版本未標記為已檢查。"
+  }
+}

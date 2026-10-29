@@ -119,6 +119,7 @@ const OrdersBoard = ({
     handleResolveOrderTicket,
     handleUpdateCustomer,
     handleViewOrder,
+    pendingInvoicePrintOrderIds,
   } = useOrderActions(organizationSlug, mutate);
 
   const orderTicketPrinters = useOrderTicketPrinterStatuses(organizationSlug);
@@ -143,6 +144,7 @@ const OrdersBoard = ({
             color?: "error";
             disabledReason?: string;
             label: string;
+            loading?: boolean;
             onClick: () => void;
           }[] = [
             {
@@ -175,6 +177,7 @@ const OrdersBoard = ({
                   ? "actions.printInvoice.reprintLabel"
                   : "actions.printInvoice.title",
               ),
+              loading: pendingInvoicePrintOrderIds.has(order.id),
               onClick: () => handleConfirmPrintInvoice(order),
             },
             canResolveInvoicePrint(order) && {
@@ -183,6 +186,7 @@ const OrdersBoard = ({
             },
             canCancelInvoicePrint(order) && {
               label: tOrders("actions.cancelInvoicePrint.title"),
+              loading: pendingInvoicePrintOrderIds.has(order.id),
               onClick: () => void handleCancelInvoicePrint(order),
             },
             canResetInvoicePrint(order) && {
@@ -244,12 +248,13 @@ const OrdersBoard = ({
               </Stack>
             ),
             actions: actions.map(
-              ({ color, disabledReason, label, onClick }) => (
+              ({ color, disabledReason, label, loading, onClick }) => (
                 <Tooltip key={label} title={disabledReason ?? ""}>
                   <span>
                     <Button
                       color={color || "inherit"}
                       disabled={!!disabledReason}
+                      loading={loading}
                       onClick={onClick}
                       size="small"
                       variant="outlined"
@@ -283,6 +288,7 @@ const OrdersBoard = ({
       handleUpdateCustomer,
       handleViewOrder,
       orderTicketPrinters,
+      pendingInvoicePrintOrderIds,
       printInvoiceBlockedBy,
       printInvoiceTooltip,
       tOrders,

@@ -41,6 +41,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
   OrganizationPointTransaction,
+  OrganizationPointTransactionListResponse,
   PointTransactionFilterField,
   PointTransactionSortField,
 } from "@/types/points";
@@ -149,7 +150,7 @@ const PointTransactions = ({
       sortModel,
     ],
     async () =>
-      fetcher<{ data: OrganizationPointTransaction[]; total: number }>(
+      fetcher<OrganizationPointTransactionListResponse>(
         `/api/organizations/${organizationSlug}/point-transactions?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
       ),
     {

@@ -3,6 +3,7 @@
 import { useEffect, useMemo } from "react";
 
 import { useMessages, useTranslations } from "next-intl";
+import { enqueueSnackbar } from "notistack";
 import { useSWRConfig } from "swr";
 
 import { useSocketConnection } from "@/hooks/useSocketConnection";
@@ -11,18 +12,23 @@ import { quantSocket } from "@/app/socket";
 
 import type { QuantBot } from "@/types/quant";
 
+import { getErrorMessage } from "@/utils/errors";
+
 export const QUANT_BOTS_URL = "/api/quant/bots";
 
 const REVALIDATE_DELAY_MS = 500;
 
-export const isQuantBotKey = (key: unknown) => {
+export const isQuantBotKey = (key: unknown, botId?: string) => {
   const url = Array.isArray(key) ? key[0] : key;
 
-  return typeof url === "string" && url.startsWith(QUANT_BOTS_URL);
+  return (
+    typeof url === "string" &&
+    url.startsWith(botId ? `${QUANT_BOTS_URL}/${botId}` : QUANT_BOTS_URL)
+  );
 };
 
 // 成交推播可能一秒好幾筆，合併成一次重新抓取
-export const useBotStream = () => {
+export const useBotStream = (botId?: string) => {
   const { mutate } = useSWRConfig();
   const { isConnected } = useSocketConnection(quantSocket);
 
@@ -30,25 +36,27 @@ export const useBotStream = () => {
     if (!isConnected) return;
 
     let timer: ReturnType<typeof setTimeout> | null = null;
-    const revalidate = () => {
-      if (timer) return;
+    const revalidate = (event: { botId: string }) => {
+      if (timer || (botId && event.botId !== botId)) return;
       timer = setTimeout(() => {
         timer = null;
-        void mutate(isQuantBotKey);
+        void mutate((key) => isQuantBotKey(key, botId));
       }, REVALIDATE_DELAY_MS);
     };
 
     void quantSocket
       .timeout(10000)
       .emitWithAck("watchBots")
-      .catch(() => {});
+      .catch((error) =>
+        enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
+      );
     quantSocket.on("bot", revalidate);
 
     return () => {
       quantSocket.off("bot", revalidate);
       if (timer) clearTimeout(timer);
     };
-  }, [isConnected, mutate]);
+  }, [botId, isConnected, mutate]);
 };
 
 /** 代碼有翻譯就顯示翻譯，未知的（例如 Pionex 新增的停止原因）原樣顯示 */
@@ -67,7 +75,6 @@ export const useBotLabels = () => {
         reason && reason in reasons
           ? tBots(`reasons.${reason as keyof typeof reasons}`)
           : reason,
-      /** 執行中但暫停開新倉的原因；不是暫停原因時回傳 undefined */
       pause: (reason?: string) =>
         reason && reason in pauses
           ? tBots(`pauses.${reason as keyof typeof pauses}`)

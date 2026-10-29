@@ -70,6 +70,7 @@ import type {
   Modifier,
   ModifierFilterField,
   ModifierGroup,
+  ModifierListResponse,
   ModifierSortField,
 } from "@/types/menus";
 
@@ -216,7 +217,7 @@ const Modifiers = ({
       sortModel,
     ],
     async () => {
-      return fetcher<{ data: Modifier[]; total: number }>(
+      return fetcher<ModifierListResponse>(
         `/api/modifier-groups/${groupId}/modifiers?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
       );
     },

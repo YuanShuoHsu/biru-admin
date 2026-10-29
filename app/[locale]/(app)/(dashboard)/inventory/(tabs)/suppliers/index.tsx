@@ -54,6 +54,7 @@ import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
   Supplier,
   SupplierFilterField,
+  SupplierListResponse,
   SupplierSortField,
 } from "@/types/inventory";
 import type { Organization } from "@/types/organizations";
@@ -182,7 +183,7 @@ const Suppliers = ({
       sortModel,
     ],
     async () =>
-      fetcher<{ data: Supplier[]; total: number }>(
+      fetcher<SupplierListResponse>(
         `/api/organizations/${organizationSlug}/suppliers?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
       ),
     {

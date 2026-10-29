@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import Coupons from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -18,6 +20,7 @@ import {
 import { getCoupons } from "@/utils/coupons";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getCouponEnumOptions } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 import { getOrganizations, hasRolePermission } from "@/utils/organizations";
 import {
   getMemberRole,
@@ -103,9 +106,10 @@ const CouponsContent = async ({ params, searchParams }: CouponsPageProps) => {
     auditLog: ["read"],
   });
 
-  const organizationsPromise = isAdmin
-    ? getOrganizations(fetchOptions)
-    : Promise.resolve([]);
+  const { data: organizations, error: organizationsError } = await settle(
+    isAdmin ? getOrganizations(fetchOptions) : Promise.resolve([]),
+  );
+  if (organizationsError) return <ErrorAlert />;
 
   const quickFilterEnums = quickFilterValue
     ? getQuickFilterEnums(
@@ -113,34 +117,34 @@ const CouponsContent = async ({ params, searchParams }: CouponsPageProps) => {
         getCouponEnumOptions(
           await getTranslations({ locale, namespace: "coupons" }),
           await getTranslations({ locale, namespace: "common" }),
-          await organizationsPromise,
+          organizations,
         ),
       )
     : [];
 
-  const [{ coupons: rows, total: rowCount }, organizations] = await Promise.all(
-    [
-      isAdmin || selectedOrganization
-        ? getCoupons(
-            locale,
-            {
-              page,
-              pageSize,
-              filterField,
-              filterOperator,
-              filterValue,
-              organizationSlug: selectedOrganization?.slug,
-              quickFilterEnums,
-              quickFilterValue,
-              sortBy,
-              sortDirection,
-            },
-            fetchOptions,
-          )
-        : { coupons: [], total: 0 },
-      organizationsPromise,
-    ],
+  const { data: coupons, error } = await settle(
+    isAdmin || selectedOrganization
+      ? getCoupons(
+          locale,
+          {
+            page,
+            pageSize,
+            filterField,
+            filterOperator,
+            filterValue,
+            organizationSlug: selectedOrganization?.slug,
+            quickFilterEnums,
+            quickFilterValue,
+            sortBy,
+            sortDirection,
+          },
+          fetchOptions,
+        )
+      : Promise.resolve({ coupons: [], total: 0 }),
   );
+  if (error) return <ErrorAlert />;
+
+  const { coupons: rows, total: rowCount } = coupons;
 
   return (
     <Coupons

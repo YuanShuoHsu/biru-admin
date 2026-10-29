@@ -7,7 +7,7 @@ import { DEFAULT_PAGE_SIZE } from "@/constants/pagination";
 
 import type {
   AuditLogFilterField,
-  AuditLogResponse,
+  AuditLogListResponse,
   AuditLogSortField,
   AuditResource,
 } from "@/types/audit";
@@ -129,40 +129,36 @@ export const getAuditLogs = cache(
     }: GetAuditLogsQuery = {},
     init?: RequestInit,
   ) => {
-    try {
-      const isNoValueOperator =
-        filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
-      const params = new URLSearchParams({
-        ...(resource && { resource }),
-        ...(resourceId && { resourceId }),
-        ...(ancestorId && { ancestorId }),
-        limit: String(pageSize),
-        offset: String((page - 1) * pageSize),
-        ...(sortBy && { sortBy }),
-        ...(sortDirection && { sortDirection }),
-        ...(filterField &&
-          filterOperator &&
-          (filterValue || isNoValueOperator) && {
-            filterField,
-            filterOperator,
-            ...(filterValue && { filterValue }),
-          }),
-        ...(quickFilterValue && { quickFilterValue }),
-      });
-      for (const entry of quickFilterEnums || [])
-        params.append("quickFilterEnums", entry);
+    const isNoValueOperator =
+      filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
+    const params = new URLSearchParams({
+      ...(resource && { resource }),
+      ...(resourceId && { resourceId }),
+      ...(ancestorId && { ancestorId }),
+      limit: String(pageSize),
+      offset: String((page - 1) * pageSize),
+      ...(sortBy && { sortBy }),
+      ...(sortDirection && { sortDirection }),
+      ...(filterField &&
+        filterOperator &&
+        (filterValue || isNoValueOperator) && {
+          filterField,
+          filterOperator,
+          ...(filterValue && { filterValue }),
+        }),
+      ...(quickFilterValue && { quickFilterValue }),
+    });
+    for (const entry of quickFilterEnums || [])
+      params.append("quickFilterEnums", entry);
 
-      const result = await fetcher<{
-        data: AuditLogResponse[];
-        total: number;
-      }>(`${getAuditLogsPath(organizationSlug)}?${params.toString()}`, init);
+    const result = await fetcher<AuditLogListResponse>(
+      `${getAuditLogsPath(organizationSlug)}?${params.toString()}`,
+      init,
+    );
 
-      return {
-        logs: Array.isArray(result.data) ? result.data : [],
-        total: result.total || 0,
-      };
-    } catch {
-      return { logs: [], total: 0 };
-    }
+    return {
+      logs: Array.isArray(result.data) ? result.data : [],
+      total: result.total || 0,
+    };
   },
 );

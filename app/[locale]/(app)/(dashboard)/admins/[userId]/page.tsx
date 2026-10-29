@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import UserSessions from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -16,10 +18,10 @@ import {
   userSessionFilterFieldValues,
   userSessionSortFieldValues,
 } from "@/types/api";
-import type { UserSession } from "@/types/admins";
+import type { UserSessionListResponse } from "@/types/admins";
 
 import { getGridSearchParams, resolveGridSearchParams } from "@/utils/dataGrid";
-import { fetcher } from "@/utils/fetcher";
+import { fetcher, settle } from "@/utils/fetcher";
 
 interface UserSessionsPageProps {
   params: Promise<{ locale: Locale; userId: string }>;
@@ -79,29 +81,41 @@ const UserSessionsContent = async ({
 
   const cookie = cookieStore.toString();
 
-  const [{ data: user }, { data: rows, total: rowCount }] = await Promise.all([
-    authClient.admin.getUser({
-      query: { id: userId },
-      fetchOptions: {
-        headers: { cookie, origin: process.env.NEXT_PUBLIC_ADMIN_URL! },
-      },
-    }),
-    fetcher<{ data: UserSession[]; total: number }>(
-      `/api/users/${userId}/sessions?${getGridSearchParams({
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-      })}`,
-      { headers: { cookie } },
-    ),
-  ]);
+  const [{ data: user, error }, { data: sessions, error: sessionsError }] =
+    await Promise.all([
+      authClient.admin.getUser({
+        query: { id: userId },
+        fetchOptions: {
+          headers: { cookie, origin: process.env.NEXT_PUBLIC_ADMIN_URL! },
+        },
+      }),
+      settle(
+        fetcher<UserSessionListResponse>(
+          `/api/users/${userId}/sessions?${getGridSearchParams({
+            page,
+            pageSize,
+            filterField,
+            filterOperator,
+            filterValue,
+            quickFilterValue,
+            sortBy,
+            sortDirection,
+          })}`,
+          { headers: { cookie } },
+        ),
+      ),
+    ]);
 
+  if (
+    [error?.status, sessionsError?.status].some(
+      (status) => status === 403 || status === 404,
+    )
+  )
+    notFound();
+  if (error || sessionsError) return <ErrorAlert />;
   if (!user) notFound();
+
+  const { data: rows, total: rowCount } = sessions;
 
   return (
     <UserSessions

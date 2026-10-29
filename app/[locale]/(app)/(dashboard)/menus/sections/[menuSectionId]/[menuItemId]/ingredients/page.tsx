@@ -6,9 +6,12 @@ import { Suspense } from "react";
 
 import MenuItemRecipe from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
+import { isMissingResource, settle } from "@/utils/fetcher";
 import { getHref } from "@/utils/href";
 import { getRecipeByMenuItem } from "@/utils/inventory";
 import {
@@ -45,19 +48,25 @@ const MenuItemRecipeContent = async ({
     await Promise.all([cookies(), params, searchParams]);
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
-  const section = await getAdminMenuSection(menuSectionId, fetchOptions);
+  const { data: section, error: sectionError } = await settle(
+    getAdminMenuSection(menuSectionId, fetchOptions),
+  );
+  if (isMissingResource(sectionError)) notFound();
+  if (sectionError) return <ErrorAlert />;
 
-  if (!section?.menuId) notFound();
-
-  const [menu, menuItem] = await Promise.all([
-    getAdminMenu(section.menuId, fetchOptions),
-    getAdminMenuItem(menuItemId, fetchOptions),
+  const [
+    { data: menu, error: menuError },
+    { data: menuItem, error: menuItemError },
+  ] = await Promise.all([
+    settle(getAdminMenu(section.menuId, fetchOptions)),
+    settle(getAdminMenuItem(menuItemId, fetchOptions)),
   ]);
-
-  if (!menuItem) notFound();
+  if (isMissingResource(menuError) || isMissingResource(menuItemError))
+    notFound();
+  if (menuError || menuItemError) return <ErrorAlert />;
 
   const selectedOrganization = await getAdminOrganization(
-    menu?.organizationId,
+    menu.organizationId,
     rawSearchParams.organization,
   );
   if (!selectedOrganization) notFound();
@@ -73,10 +82,11 @@ const MenuItemRecipeContent = async ({
       locale,
     });
 
-  const [memberRole, recipe] = await Promise.all([
+  const [memberRole, { data: recipe, error: recipeError }] = await Promise.all([
     getMemberRole(selectedOrganization.id),
-    getRecipeByMenuItem(menuItemId, fetchOptions),
+    settle(getRecipeByMenuItem(menuItemId, fetchOptions)),
   ]);
+  if (recipeError) return <ErrorAlert />;
 
   if (menuItem.recipe && !recipe) notFound();
 

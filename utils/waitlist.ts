@@ -4,7 +4,7 @@ import { fetcher } from "./fetcher";
 
 import type {
   WaitlistTicketFilterField,
-  WaitlistTicketListItem,
+  WaitlistTicketListResponse,
   WaitlistTicketSortField,
 } from "@/types/waitlist";
 
@@ -16,21 +16,14 @@ export const getWaitlistTickets = cache(
     query: GridQuery<WaitlistTicketFilterField, WaitlistTicketSortField> = {},
     init?: RequestInit,
   ) => {
-    try {
-      const result = await fetcher<{
-        data: WaitlistTicketListItem[];
-        total: number;
-      }>(
-        `/api/organizations/${organizationSlug}/waitlist/tickets/list?${getGridSearchParams(query).toString()}`,
-        init,
-      );
+    const result = await fetcher<WaitlistTicketListResponse>(
+      `/api/organizations/${organizationSlug}/waitlist/tickets/list?${getGridSearchParams(query).toString()}`,
+      init,
+    );
 
-      return {
-        tickets: Array.isArray(result.data) ? result.data : [],
-        total: result.total || 0,
-      };
-    } catch {
-      return { tickets: [], total: 0 };
-    }
+    return {
+      tickets: Array.isArray(result.data) ? result.data : [],
+      total: result.total || 0,
+    };
   },
 );

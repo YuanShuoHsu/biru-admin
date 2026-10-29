@@ -5,6 +5,7 @@ import {
 } from "@/types/api";
 
 export type Banner = components["schemas"]["BannerResponseDto"];
+export type BannerListResponse = components["schemas"]["BannerListResponseDto"];
 export type CreateBannerDto = components["schemas"]["CreateBannerDto"];
 export type UpdateBannerDto = components["schemas"]["UpdateBannerDto"];
 

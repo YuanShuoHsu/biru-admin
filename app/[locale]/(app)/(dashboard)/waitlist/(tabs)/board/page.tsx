@@ -5,12 +5,14 @@ import { notFound } from "next/navigation";
 
 import AdminWaitlist from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import type { AdminWaitlistResponse } from "@/types/waitlist";
 
-import { fetcher } from "@/utils/fetcher";
+import { fetcher, settle } from "@/utils/fetcher";
 import { getResolvedAdminOrganization } from "@/utils/session";
 
 interface WaitlistPageProps {
@@ -45,12 +47,13 @@ const WaitlistPage = async ({ params, searchParams }: WaitlistPageProps) => {
     redirect({ href: `/waitlist/board?${params.toString()}`, locale });
   }
 
-  const waitlist = await fetcher<AdminWaitlistResponse>(
-    `/api/organizations/${selectedOrganization.slug}/waitlist/tickets`,
-    { headers: { cookie: cookieStore.toString() } },
-  ).catch(() => null);
-
-  if (!waitlist) return null;
+  const { data: waitlist, error } = await settle(
+    fetcher<AdminWaitlistResponse>(
+      `/api/organizations/${selectedOrganization.slug}/waitlist/tickets`,
+      { headers: { cookie: cookieStore.toString() } },
+    ),
+  );
+  if (error) return <ErrorAlert />;
 
   return (
     <AdminWaitlist organization={selectedOrganization} waitlist={waitlist} />

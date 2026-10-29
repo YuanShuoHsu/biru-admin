@@ -58,6 +58,7 @@ import type {
 } from "@/types/dataGrid";
 import type {
   MenuItemModifierGroup,
+  MenuItemModifierGroupListResponse,
   ModifierGroupFilterField,
   ModifierGroupSortField,
 } from "@/types/menus";
@@ -180,7 +181,7 @@ const MenuItemModifierGroups = ({
       sortModel,
     ],
     async () => {
-      return fetcher<{ data: MenuItemModifierGroup[]; total: number }>(
+      return fetcher<MenuItemModifierGroupListResponse>(
         `/api/menu-items/${menuItemId}/modifier-groups?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
       );
     },

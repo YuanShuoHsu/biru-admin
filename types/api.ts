@@ -6245,7 +6245,7 @@ export interface components {
     };
     SaveAttendanceLeaveTypeDto: {
       paidPercent?: number | null;
-      requiresBalance?: boolean | null;
+      requiresBalance?: boolean;
       name: string;
       enabled: boolean;
     };
@@ -6684,6 +6684,10 @@ export interface components {
      * @enum {string}
      */
     UserRole: "admin" | "user";
+    AuditLogListResponseDto: {
+      data: components["schemas"]["AuditLogResponseDto"][];
+      total: number;
+    };
     UserResponseDto: {
       /**
        * @description ID
@@ -6959,10 +6963,10 @@ export interface components {
     UpdateUserDto: {
       /**
        * Format: date
-       * @description 生日
+       * @description 生日；送 null 清除
        * @example 2024-04-04
        */
-      birthDate?: string;
+      birthDate?: string | null;
       /**
        * @description 是否訂閱電子報
        * @example true
@@ -6981,20 +6985,20 @@ export interface components {
       gender?: "female" | "male" | "other";
       /**
        * Format: uri
-       * @description 頭像 URL
+       * @description 頭像 URL；送 null 清除
        * @example https://example.com/avatar.png
        */
-      image?: string;
+      image?: string | null;
       /**
-       * @description 姓
+       * @description 姓；送空字串或 null 清除
        * @example Biru
        */
-      lastName?: string;
+      lastName?: string | null;
       /**
-       * @description 聯絡電話（E.164 格式）
+       * @description 聯絡電話（E.164 格式）；送空字串或 null 清除
        * @example +886912345678
        */
-      phoneNumber?: string;
+      phoneNumber?: string | null;
     };
     LocalizedTextDto: {
       en?: string;
@@ -7057,6 +7061,10 @@ export interface components {
       | "endsAt"
       | "createdAt"
       | "updatedAt";
+    BannerListResponseDto: {
+      data: components["schemas"]["BannerResponseDto"][];
+      total: number;
+    };
     ReorderBannersDto: {
       ids: string[];
       /** @default 0 */
@@ -7506,6 +7514,10 @@ export interface components {
     DeletedRecordFilterField: "organizationName" | "tableName" | "deletedAt";
     /** @enum {string} */
     DeletedRecordSortField: "organizationName" | "tableName" | "deletedAt";
+    DeletedRecordBatchListResponseDto: {
+      data: components["schemas"]["DeletedRecordBatchResponseDto"][];
+      total: number;
+    };
     RestoreDeletedRecordsDto: {
       ids: number[];
     };
@@ -7567,6 +7579,8 @@ export interface components {
       fetchedAt?: string | null;
       /** Format: date-time */
       checkedAt?: string | null;
+      /** @description 最新一期且本月（平台時區）尚未成功確認官方來源 */
+      stale: boolean;
       unconfirmed: "minimumHourlyWageCents"[];
       /** Format: date-time */
       createdAt: string;
@@ -8872,6 +8886,10 @@ export interface components {
      * @enum {string}
      */
     UnitCode: "GRM" | "KGM" | "LTR" | "MLT" | "H87";
+    IngredientListResponseDto: {
+      data: components["schemas"]["IngredientResponseDto"][];
+      total: number;
+    };
     CreateIngredientDto: {
       /**
        * @example {
@@ -8980,6 +8998,10 @@ export interface components {
       | "note"
       | "createdAt"
       | "updatedAt";
+    SupplierListResponseDto: {
+      data: components["schemas"]["SupplierResponseDto"][];
+      total: number;
+    };
     CreateSupplierDto: {
       /** @example 全國食材廣場 */
       name: string;
@@ -9012,6 +9034,10 @@ export interface components {
     RecipeFilterField: "name" | "recipeYield" | "createdAt" | "updatedAt";
     /** @enum {string} */
     RecipeSortField: "name" | "recipeYield" | "createdAt" | "updatedAt";
+    RecipeListResponseDto: {
+      data: components["schemas"]["RecipeResponseDto"][];
+      total: number;
+    };
     CreateRecipeDto: {
       /**
        * @example {
@@ -9135,6 +9161,10 @@ export interface components {
       | "unitCost"
       | "createdAt"
       | "reason";
+    InventoryTransactionListResponseDto: {
+      data: components["schemas"]["InventoryTransactionResponseDto"][];
+      total: number;
+    };
     CreateInventoryTransactionDto: {
       /**
        * @description 清點後的現有數量；異動量由系統與帳上數量相減求得
@@ -9206,6 +9236,10 @@ export interface components {
       | "updatedAt"
       | "unitPrice"
       | "cost";
+    RecipeIngredientListResponseDto: {
+      data: components["schemas"]["RecipeIngredientResponseDto"][];
+      total: number;
+    };
     CreateRecipeIngredientDto: {
       ingredientId: string;
       /**
@@ -9572,6 +9606,10 @@ export interface components {
       | "OrderPaymentDue"
       | "OrderProcessing"
       | "OrderPickupAvailable";
+    AdminOrderListResponseDto: {
+      data: components["schemas"]["AdminOrderResponseDto"][];
+      total: number;
+    };
     OrderBoardItemDto: {
       orderId: string;
       orderNumber: string;
@@ -10024,6 +10062,10 @@ export interface components {
     MenuSectionFilterField: "name" | "description" | "createdAt" | "updatedAt";
     /** @enum {string} */
     MenuSectionSortField: "name" | "description" | "createdAt" | "updatedAt";
+    MenuSectionListResponseDto: {
+      data: components["schemas"]["MenuSectionResponseDto"][];
+      total: number;
+    };
     OrderTicketPrinterOptionDto: {
       id: string;
       /** @description 店家自訂的名稱（例如吧台、廚房）；發票印表機為 null */
@@ -10062,17 +10104,29 @@ export interface components {
      */
     OrderMode: "counter" | "dineIn" | "driveThru" | "pickup";
     NutritionInformationDto: {
+      /** @example 180 calories */
       calories?: string;
+      /** @example 20 g */
       carbohydrateContent?: string;
+      /** @example 15 mg */
       cholesterolContent?: string;
+      /** @example 7 g */
       fatContent?: string;
+      /** @example 0 g */
       fiberContent?: string;
+      /** @example 9 g */
       proteinContent?: string;
+      /** @example 4.5 g */
       saturatedFatContent?: string;
+      /** @example 360 ml */
       servingSize?: string;
+      /** @example 120 mg */
       sodiumContent?: string;
+      /** @example 17 g */
       sugarContent?: string;
+      /** @example 0 g */
       transFatContent?: string;
+      /** @example 2 g */
       unsaturatedFatContent?: string;
     };
     /** @enum {string} */
@@ -10267,6 +10321,10 @@ export interface components {
       | "updatedAt"
       | "priceSpecificationValidFrom"
       | "priceSpecificationValidThrough";
+    MenuItemListResponseDto: {
+      data: components["schemas"]["MenuItemResponseDto"][];
+      total: number;
+    };
     UpdateMenuItemDto: {
       /**
        * @example {
@@ -10371,6 +10429,10 @@ export interface components {
       | "addOnMenuItemName"
       | "createdAt"
       | "updatedAt";
+    MenuItemAddOnListResponseDto: {
+      data: components["schemas"]["MenuItemAddOnResponseDto"][];
+      total: number;
+    };
     UpdateMenuItemAddOnDto: {
       /** @description Add-on menu item ID */
       addOnMenuItemId?: string | null;
@@ -10441,6 +10503,10 @@ export interface components {
       | "maxSelectionCount"
       | "createdAt"
       | "updatedAt";
+    ModifierGroupListResponseDto: {
+      data: components["schemas"]["ModifierGroupResponseDto"][];
+      total: number;
+    };
     UpdateModifierGroupDto: {
       /** @description 群組名稱 */
       displayName?: components["schemas"]["LocalizedTextDto"];
@@ -10482,6 +10548,10 @@ export interface components {
       | "availability"
       | "createdAt"
       | "updatedAt";
+    ModifierListResponseDto: {
+      data: components["schemas"]["ModifierResponseDto"][];
+      total: number;
+    };
     UpdateModifierDto: {
       /** @description 選項名稱 */
       displayName?: components["schemas"]["LocalizedTextDto"];
@@ -10512,6 +10582,10 @@ export interface components {
       createdAt: string;
       /** Format: date-time */
       updatedAt: string;
+    };
+    MenuItemModifierGroupListResponseDto: {
+      data: components["schemas"]["MenuItemModifierGroupResponseDto"][];
+      total: number;
     };
     OrderMenuOfferResponseDto: {
       id: string;
@@ -10887,6 +10961,10 @@ export interface components {
       | "createdAt"
       | "calledAt"
       | "endedAt";
+    WaitlistTicketListResponseDto: {
+      data: components["schemas"]["WaitlistTicketListItemDto"][];
+      total: number;
+    };
     WaitlistStatsResponseDto: {
       /** @description 期間內取號組數，含仍在進行中的號碼牌 */
       total: number;
@@ -11489,6 +11567,10 @@ export interface components {
       /** Format: date-time */
       createdAt: string;
     };
+    QuantBotOrderListResponseDto: {
+      data: components["schemas"]["QuantBotOrderDto"][];
+      total: number;
+    };
     QuantBotFillDto: {
       id: string;
       orderId: string;
@@ -11575,6 +11657,10 @@ export interface components {
       closeModel: components["schemas"]["QuantGridCloseModel"];
       /** @description 實盤：初始買入價格最多高於下單時價格的 %；省略時依 Pionex 預設，模擬盤與回測不使用 */
       slippage?: number;
+    };
+    QuantBotListResponseDto: {
+      data: components["schemas"]["QuantBotDto"][];
+      total: number;
     };
     CreateGridBotDto: {
       name: string;
@@ -12056,6 +12142,10 @@ export interface components {
       | "tag";
     /** @enum {string} */
     QuantBotFillSortField: "filledAt" | "side" | "price" | "size" | "fee";
+    QuantBotFillListResponseDto: {
+      data: components["schemas"]["QuantBotFillDto"][];
+      total: number;
+    };
     QuantBotFillMarkerDto: {
       side: components["schemas"]["QuantOrderSide"];
       price: number;
@@ -12072,6 +12162,10 @@ export interface components {
     };
     /** @enum {string} */
     QuantBotEventSortField: "createdAt" | "kind";
+    QuantBotEventListResponseDto: {
+      data: components["schemas"]["QuantBotEventDto"][];
+      total: number;
+    };
     GridAiStrategyDto: {
       /** @description 建議上界 */
       top: number;
@@ -12473,6 +12567,10 @@ export interface components {
     StorePhotoFilterField: "alt" | "isActive" | "createdAt" | "updatedAt";
     /** @enum {string} */
     StorePhotoSortField: "alt" | "isActive" | "createdAt" | "updatedAt";
+    StorePhotoListResponseDto: {
+      data: components["schemas"]["StorePhotoResponseDto"][];
+      total: number;
+    };
     ReorderStorePhotosDto: {
       ids: string[];
       /** @default 0 */
@@ -14869,7 +14967,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["AuditLogListResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -14910,7 +15010,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["AuditLogListResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -15267,7 +15369,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["BannerListResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -15968,7 +16072,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["DeletedRecordBatchListResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -16033,7 +16139,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["DeletedRecordBatchListResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -17641,7 +17749,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["IngredientListResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -17768,7 +17878,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["SupplierListResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -17865,7 +17977,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["RecipeListResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -18020,7 +18134,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["InventoryTransactionListResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -18203,7 +18319,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["RecipeIngredientListResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -18991,7 +19109,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["AdminOrderListResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -19555,7 +19675,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["MenuSectionListResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -19803,7 +19925,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["MenuItemListResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -20170,7 +20294,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["MenuItemAddOnListResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -20359,7 +20485,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["ModifierGroupListResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -20576,7 +20704,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["ModifierListResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -20795,7 +20925,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["MenuItemModifierGroupListResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -21195,7 +21327,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["WaitlistTicketListResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -22863,7 +22997,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["QuantBotListResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -23458,7 +23594,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["QuantBotOrderListResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -23489,7 +23627,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["QuantBotFillListResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -23581,7 +23721,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["QuantBotEventListResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -24498,7 +24640,9 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["StorePhotoListResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {

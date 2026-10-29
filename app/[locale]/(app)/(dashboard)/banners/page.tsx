@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import Banners from ".";
+
+import ErrorAlert from "@/components/ErrorAlert";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -17,6 +20,7 @@ import {
 import { getBanners } from "@/utils/banners";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getBannerEnumOptions } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 
 interface BannersPageProps {
   params: Promise<{ locale: Locale }>;
@@ -75,20 +79,26 @@ const BannersContent = async ({ params, searchParams }: BannersPageProps) => {
     ? getQuickFilterEnums(quickFilterValue, getBannerEnumOptions(tBanners))
     : [];
 
-  const { banners: rows, total: rowCount } = await getBanners(
-    {
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterEnums,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-    },
-    { headers: { cookie: cookieStore.toString() } },
+  const { data: banners, error } = await settle(
+    getBanners(
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterEnums,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
+      { headers: { cookie: cookieStore.toString() } },
+    ),
   );
+  if (error?.status === 403) notFound();
+  if (error) return <ErrorAlert />;
+
+  const { banners: rows, total: rowCount } = banners;
 
   return (
     <Banners

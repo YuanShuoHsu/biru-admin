@@ -5,9 +5,12 @@ import { notFound } from "next/navigation";
 
 import OrdersBoard from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
+import { settle } from "@/utils/fetcher";
 import { getAdminOrderBoard } from "@/utils/orders";
 import { getResolvedAdminOrganization } from "@/utils/session";
 
@@ -48,10 +51,10 @@ const OrdersBoardPage = async ({
     redirect({ href: `/orders/board?${params.toString()}`, locale });
   }
 
-  const columns = await getAdminOrderBoard(
-    selectedOrganization.slug,
-    fetchOptions,
+  const { data: columns, error } = await settle(
+    getAdminOrderBoard(selectedOrganization.slug, fetchOptions),
   );
+  if (error) return <ErrorAlert />;
 
   return <OrdersBoard columns={columns} organization={selectedOrganization} />;
 };

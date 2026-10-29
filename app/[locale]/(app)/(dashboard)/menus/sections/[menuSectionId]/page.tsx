@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import MenusMenuIdSectionId from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -17,6 +19,7 @@ import {
 
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getMenuEnumOptions } from "@/utils/enumOptions";
+import { isMissingResource, settle } from "@/utils/fetcher";
 import {
   getAdminMenu,
   getAdminMenuSection,
@@ -59,13 +62,20 @@ const MenusMenuIdSectionIdContent = async ({
     await Promise.all([cookies(), params, searchParams]);
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
-  const section = await getAdminMenuSection(menuSectionId, fetchOptions);
+  const { data: section, error: sectionError } = await settle(
+    getAdminMenuSection(menuSectionId, fetchOptions),
+  );
+  if (isMissingResource(sectionError)) notFound();
+  if (sectionError) return <ErrorAlert />;
 
-  if (!section?.menuId) notFound();
+  const { data: menu, error: menuError } = await settle(
+    getAdminMenu(section.menuId, fetchOptions),
+  );
+  if (isMissingResource(menuError)) notFound();
+  if (menuError) return <ErrorAlert />;
 
-  const menu = await getAdminMenu(section.menuId, fetchOptions);
   const selectedOrganization = await getAdminOrganization(
-    menu?.organizationId,
+    menu.organizationId,
     rawSearchParams.organization,
   );
   if (!selectedOrganization) notFound();
@@ -103,22 +113,27 @@ const MenusMenuIdSectionIdContent = async ({
     ? getQuickFilterEnums(quickFilterValue, getMenuEnumOptions(tMenus, tOrder))
     : [];
 
-  const [{ items: rows, total: rowCount }, role] = await Promise.all([
-    getAdminMenuSectionItems(
-      menuSectionId,
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterValue,
-      quickFilterEnums,
-      sortBy,
-      sortDirection,
-      fetchOptions,
+  const [{ data: items, error: itemsError }, role] = await Promise.all([
+    settle(
+      getAdminMenuSectionItems(
+        menuSectionId,
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterValue,
+        quickFilterEnums,
+        sortBy,
+        sortDirection,
+        fetchOptions,
+      ),
     ),
     getMemberRole(selectedOrganization.id),
   ]);
+  if (itemsError) return <ErrorAlert />;
+
+  const { items: rows, total: rowCount } = items;
 
   const canWrite = hasRolePermission(role, { menu: ["update"] });
   const canViewAuditLog = hasRolePermission(role, {
