@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import StorePhotos from ".";
+
+import ErrorAlert from "@/components/ErrorAlert";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -17,6 +20,7 @@ import {
 import { getStorePhotos } from "@/utils/storePhotos";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getStorePhotoEnumOptions } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 
 interface StorePhotosPageProps {
   params: Promise<{ locale: Locale }>;
@@ -87,20 +91,26 @@ const StorePhotosContent = async ({
       )
     : [];
 
-  const { storePhotos: rows, total: rowCount } = await getStorePhotos(
-    {
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterEnums,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-    },
-    { headers: { cookie: cookieStore.toString() } },
+  const { data: storePhotos, error } = await settle(
+    getStorePhotos(
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterEnums,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
+      { headers: { cookie: cookieStore.toString() } },
+    ),
   );
+  if (error?.status === 403) notFound();
+  if (error) return <ErrorAlert />;
+
+  const { storePhotos: rows, total: rowCount } = storePhotos;
 
   return (
     <StorePhotos
