@@ -7562,6 +7562,8 @@ export interface components {
       fetchedAt?: string | null;
       /** Format: date-time */
       checkedAt?: string | null;
+      /** @description 最新一期且本月（平台時區）尚未成功確認官方來源 */
+      stale: boolean;
       unconfirmed: "minimumHourlyWageCents"[];
       /** Format: date-time */
       createdAt: string;
