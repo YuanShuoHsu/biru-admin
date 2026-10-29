@@ -5,9 +5,9 @@ import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent } from "react";
+import type { BaseSyntheticEvent } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
-import useSWR from "swr";
+import useSWRMutation from "swr/mutation";
 
 import BatchSkippedList from "../../../../BatchSkippedList";
 import { type DraftForm, useDraftFormSchema } from "./definitions";
@@ -98,6 +98,7 @@ const DraftDialog = ({
   const {
     control,
     formState: { errors, isSubmitted },
+    getValues,
     handleSubmit,
     register,
     setValue,
@@ -121,22 +122,39 @@ const DraftDialog = ({
     name: "earnings",
   });
 
-  useSWR(
-    earningTypes.length && employeeId && month
-      ? `${payrollPath(organizationSlug, "org", "earnings")}?${new URLSearchParams({ employeeId, month })}`
-      : null,
-    (key: string) => fetcher<PayrollEarningInput[]>(key),
-    {
-      onSuccess: (entered) =>
-        replace(
-          entered.map(({ amountCents, earningTypeId }) => ({
-            amount: fromCents(amountCents),
-            earningTypeId,
-          })),
-        ),
-      revalidateOnFocus: false,
-    },
+  const {
+    error: earningsError,
+    isMutating: earningsLoading,
+    reset: resetEarnings,
+    trigger: triggerEarnings,
+  } = useSWRMutation(
+    payrollPath(organizationSlug, "org", "earnings"),
+    (url: string, { arg }: { arg: { employeeId: string; month: string } }) =>
+      fetcher<PayrollEarningInput[]>(`${url}?${new URLSearchParams(arg)}`),
+    { throwOnError: false },
   );
+
+  const loadEarnings = async (employeeId: string, month: string) => {
+    replace([]);
+
+    if (!earningTypes.length || !employeeId || !month) return resetEarnings();
+
+    const entered = await triggerEarnings({ employeeId, month });
+
+    if (
+      !entered ||
+      getValues("employeeId") !== employeeId ||
+      getValues("month") !== month
+    )
+      return;
+
+    replace(
+      entered.map(({ amountCents, earningTypeId }) => ({
+        amount: fromCents(amountCents),
+        earningTypeId,
+      })),
+    );
+  };
 
   const onSubmitHandler = async (values: DraftForm) => {
     try {
@@ -239,11 +257,13 @@ const DraftDialog = ({
             fullWidth
             helperText={errors.employeeId?.message}
             label={tAttendance("employee")}
-            onChange={(event) =>
+            onChange={(event) => {
               setValue("employeeId", event.target.value, {
                 shouldValidate: isSubmitted,
-              })
-            }
+              });
+
+              loadEarnings(event.target.value, month);
+            }}
             select
             slotProps={{
               inputLabel: { shrink: true },
@@ -265,15 +285,13 @@ const DraftDialog = ({
           <DatePicker
             format={monthFormat}
             label={tAttendance("month")}
-            onChange={(value) =>
-              setValue(
-                "month",
-                value?.isValid() ? value.format("YYYY-MM") : "",
-                {
-                  shouldValidate: isSubmitted,
-                },
-              )
-            }
+            onChange={(value) => {
+              const nextMonth = value?.isValid() ? value.format("YYYY-MM") : "";
+
+              setValue("month", nextMonth, { shouldValidate: isSubmitted });
+
+              loadEarnings(employeeId, nextMonth);
+            }}
             slotProps={{
               textField: {
                 error: !!errors.month,
@@ -361,7 +379,9 @@ const DraftDialog = ({
           )}
         </FormBox>
       </CustomizedDialogContent>
-      <CustomizedDialogActions />
+      <CustomizedDialogActions
+        confirmDisabled={earningsLoading || !!earningsError}
+      />
     </>
   );
 };
