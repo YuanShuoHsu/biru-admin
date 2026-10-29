@@ -2,12 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent, useState } from "react";
-
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
+import { type BaseSyntheticEvent, useEffect, useState } from "react";
 
 import { Alert, Stack, type StackProps, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -51,6 +46,10 @@ const VoidInvoiceDialogContent = ({
 
   const disabled = !reason.trim() || invalidTaxId;
 
+  useEffect(() => {
+    setDialog({ confirmDisabled: disabled });
+  }, [disabled, setDialog]);
+
   const onSubmit = async (event: BaseSyntheticEvent) => {
     event.preventDefault();
 
@@ -89,56 +88,47 @@ const VoidInvoiceDialogContent = ({
   };
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <StyledStack
-          component="form"
-          id={VOID_INVOICE_FORM_ID}
-          onSubmit={onSubmit}
-        >
-          <Alert severity="warning">
-            {tOrders.rich("actions.voidInvoice.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              invoiceNumber: order.invoice?.invoiceNumber || "",
-            })}
-          </Alert>
-          <TextField
-            disabled={confirmLoading}
-            label={tOrders("actions.voidInvoice.reason.label")}
-            onChange={({ target }) => setReason(target.value)}
-            placeholder={tOrders("actions.voidInvoice.reason.placeholder")}
-            required
-            size="small"
-            slotProps={{ htmlInput: { maxLength: 20 } }}
-            value={reason}
-          />
-          <TextField
-            disabled={confirmLoading}
-            error={invalidTaxId}
-            helperText={
-              invalidTaxId
-                ? tOrders("actions.voidInvoice.customerIdentifier.invalid")
-                : tOrders("actions.voidInvoice.customerIdentifier.helperText")
-            }
-            label={tOrders("actions.voidInvoice.customerIdentifier.label")}
-            onChange={({ target }) => setCustomerIdentifier(target.value)}
-            size="small"
-            slotProps={{ htmlInput: { inputMode: "numeric", maxLength: 8 } }}
-            value={customerIdentifier}
-          />
-          <TextField
-            disabled={confirmLoading}
-            helperText={tOrders("actions.voidInvoice.customerName.helperText")}
-            label={tOrders("actions.voidInvoice.customerName.label")}
-            onChange={({ target }) => setCustomerName(target.value)}
-            size="small"
-            slotProps={{ htmlInput: { maxLength: 60 } }}
-            value={customerName}
-          />
-        </StyledStack>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions confirmDisabled={disabled} />
-    </>
+    <StyledStack component="form" id={VOID_INVOICE_FORM_ID} onSubmit={onSubmit}>
+      <Alert severity="warning">
+        {tOrders.rich("actions.voidInvoice.confirm", {
+          bold: (chunks) => <strong>{chunks}</strong>,
+          invoiceNumber: order.invoice?.invoiceNumber || "",
+        })}
+      </Alert>
+      <TextField
+        disabled={confirmLoading}
+        label={tOrders("actions.voidInvoice.reason.label")}
+        onChange={({ target }) => setReason(target.value)}
+        placeholder={tOrders("actions.voidInvoice.reason.placeholder")}
+        required
+        size="small"
+        slotProps={{ htmlInput: { maxLength: 20 } }}
+        value={reason}
+      />
+      <TextField
+        disabled={confirmLoading}
+        error={invalidTaxId}
+        helperText={
+          invalidTaxId
+            ? tOrders("actions.voidInvoice.customerIdentifier.invalid")
+            : tOrders("actions.voidInvoice.customerIdentifier.helperText")
+        }
+        label={tOrders("actions.voidInvoice.customerIdentifier.label")}
+        onChange={({ target }) => setCustomerIdentifier(target.value)}
+        size="small"
+        slotProps={{ htmlInput: { inputMode: "numeric", maxLength: 8 } }}
+        value={customerIdentifier}
+      />
+      <TextField
+        disabled={confirmLoading}
+        helperText={tOrders("actions.voidInvoice.customerName.helperText")}
+        label={tOrders("actions.voidInvoice.customerName.label")}
+        onChange={({ target }) => setCustomerName(target.value)}
+        size="small"
+        slotProps={{ htmlInput: { maxLength: 60 } }}
+        value={customerName}
+      />
+    </StyledStack>
   );
 };
 

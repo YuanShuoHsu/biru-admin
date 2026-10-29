@@ -2,12 +2,8 @@
 
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent, useState } from "react";
+import { type BaseSyntheticEvent, useEffect, useState } from "react";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import { usePrintJobErrorText } from "@/components/PrintJobChip";
 import StyledFormControlLabel from "@/components/StyledFormControlLabel";
 
@@ -62,6 +58,10 @@ const ResolveOrderTicketDialogContent = ({
 
   const [printed, setPrinted] = useState<boolean | null>(null);
 
+  useEffect(() => {
+    setDialog({ confirmDisabled: printed === null });
+  }, [printed, setDialog]);
+
   const onSubmit = async (event: BaseSyntheticEvent) => {
     event.preventDefault();
 
@@ -101,48 +101,43 @@ const ResolveOrderTicketDialogContent = ({
   const reason = printJobErrorText(job.errorCode);
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <StyledStack
-          component="form"
-          id={RESOLVE_ORDER_TICKET_FORM_ID}
-          onSubmit={onSubmit}
-        >
-          <DialogContentText>
-            {tOrders.rich("actions.resolveOrderTicket.description", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              kind: job.kind,
-              orderNumber: order.orderNumber,
-              printer: job.printerName ?? tOrders("orderTicket.removedPrinter"),
-              reason: reason
-                ? `${tCommon("parenthesisOpen")}${reason}${tCommon("parenthesisClose")}`
-                : "",
-            })}
-          </DialogContentText>
-          <Alert severity="warning">
-            {tOrders("actions.resolveOrderTicket.warning")}
-          </Alert>
-          <RadioGroup
-            onChange={(_, value) => setPrinted(value === "true")}
-            value={printed === null ? "" : String(printed)}
-          >
-            <StyledFormControlLabel
-              checked={printed === true}
-              control={<Radio disabled={confirmLoading} />}
-              label={tOrders("actions.resolveOrderTicket.printed")}
-              value="true"
-            />
-            <StyledFormControlLabel
-              checked={printed === false}
-              control={<Radio disabled={confirmLoading} />}
-              label={tOrders("actions.resolveOrderTicket.notPrinted")}
-              value="false"
-            />
-          </RadioGroup>
-        </StyledStack>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions confirmDisabled={printed === null} />
-    </>
+    <StyledStack
+      component="form"
+      id={RESOLVE_ORDER_TICKET_FORM_ID}
+      onSubmit={onSubmit}
+    >
+      <DialogContentText>
+        {tOrders.rich("actions.resolveOrderTicket.description", {
+          bold: (chunks) => <strong>{chunks}</strong>,
+          kind: job.kind,
+          orderNumber: order.orderNumber,
+          printer: job.printerName ?? tOrders("orderTicket.removedPrinter"),
+          reason: reason
+            ? `${tCommon("parenthesisOpen")}${reason}${tCommon("parenthesisClose")}`
+            : "",
+        })}
+      </DialogContentText>
+      <Alert severity="warning">
+        {tOrders("actions.resolveOrderTicket.warning")}
+      </Alert>
+      <RadioGroup
+        onChange={(_, value) => setPrinted(value === "true")}
+        value={printed === null ? "" : String(printed)}
+      >
+        <StyledFormControlLabel
+          checked={printed === true}
+          control={<Radio disabled={confirmLoading} />}
+          label={tOrders("actions.resolveOrderTicket.printed")}
+          value="true"
+        />
+        <StyledFormControlLabel
+          checked={printed === false}
+          control={<Radio disabled={confirmLoading} />}
+          label={tOrders("actions.resolveOrderTicket.notPrinted")}
+          value="false"
+        />
+      </RadioGroup>
+    </StyledStack>
   );
 };
 

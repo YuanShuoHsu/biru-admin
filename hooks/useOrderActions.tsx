@@ -274,7 +274,7 @@ export const useOrderActions = (
   const handleRefund = useCallback(
     (order: AdminOrderResponse) => {
       setDialog({
-        body: (
+        content: (
           <RefundOrderDialogContent
             mutate={mutate}
             order={order}
@@ -420,7 +420,7 @@ export const useOrderActions = (
   const handleConfirmVoidInvoice = useCallback(
     (order: AdminOrderResponse) => {
       setDialog({
-        body: (
+        content: (
           <VoidInvoiceDialogContent
             mutate={mutate}
             order={order}
@@ -438,7 +438,7 @@ export const useOrderActions = (
   const handleConfirmResetInvoicePrint = useCallback(
     (order: AdminOrderResponse) => {
       setDialog({
-        body: (
+        content: (
           <ResetInvoicePrintDialogContent
             mutate={mutate}
             order={order}
@@ -461,7 +461,7 @@ export const useOrderActions = (
       if (!printers.length) return;
 
       setDialog({
-        body: (
+        content: (
           <ReprintOrderTicketDialogContent
             mutate={mutate}
             order={order}
@@ -483,7 +483,7 @@ export const useOrderActions = (
       if (!job) return;
 
       setDialog({
-        body: (
+        content: (
           <ResolveOrderTicketDialogContent
             job={job}
             mutate={mutate}
@@ -505,7 +505,7 @@ export const useOrderActions = (
       if (!printJob) return;
 
       setDialog({
-        body: (
+        content: (
           <ResolveInvoicePrintDialogContent
             mutate={mutate}
             onBrowserReprint={() => handlePrintInvoice(order)}

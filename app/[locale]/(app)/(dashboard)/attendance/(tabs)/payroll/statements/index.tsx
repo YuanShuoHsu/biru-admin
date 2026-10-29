@@ -328,7 +328,7 @@ const Payroll = ({
     () =>
       setDialog({
         confirmText: tAttendance("save"),
-        body: (
+        content: (
           <DraftDialog
             currency={currency}
             earningTypes={earningTypes}

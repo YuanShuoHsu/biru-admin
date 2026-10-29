@@ -5,14 +5,10 @@ import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import type { BaseSyntheticEvent } from "react";
+import { type BaseSyntheticEvent, useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { STORE_TIMEZONE } from "@/constants/timezone";
@@ -95,6 +91,10 @@ const CopyWeekDialog = ({
     shouldRetryOnError: false,
   });
 
+  useEffect(() => {
+    setDialog({ confirmDisabled: !preview?.created.length });
+  }, [preview, setDialog]);
+
   const formatDate = (date: dayjs.Dayjs) =>
     format.dateTime(date.toDate(), "date", { timeZone: STORE_TIMEZONE });
 
@@ -124,87 +124,73 @@ const CopyWeekDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id="attendance-copy-week-form" onSubmit={onSubmit}>
-          <TextField
-            fullWidth
-            helperText={tAttendance("copyWeek.target", {
-              range: `${formatDate(sourceStart.add(7, "day"))} – ${formatDate(
-                sourceStart.add(7 * (weeks + 1) - 1, "day"),
-              )}`,
+    <FormBox id="attendance-copy-week-form" onSubmit={onSubmit}>
+      <TextField
+        fullWidth
+        helperText={tAttendance("copyWeek.target", {
+          range: `${formatDate(sourceStart.add(7, "day"))} – ${formatDate(
+            sourceStart.add(7 * (weeks + 1) - 1, "day"),
+          )}`,
+        })}
+        label={tAttendance("copyWeek.weeks")}
+        required
+        select
+        value={weeks}
+        {...register("weeks")}
+      >
+        {Array.from({ length: MAX_WEEKS }, (_, index) => index + 1).map(
+          (value) => (
+            <MenuItem key={value} value={value}>
+              {tAttendance("copyWeek.weeksOption", { weeks: value })}
+            </MenuItem>
+          ),
+        )}
+      </TextField>
+      {isLoading && <LinearProgress />}
+      {error && <Typography color="error">{getErrorMessage(error)}</Typography>}
+      {preview && !preview.created.length && !preview.skipped.length && (
+        <Typography>{tAttendance("copyWeek.empty")}</Typography>
+      )}
+      {preview && preview.created.length > 0 && (
+        <Typography>
+          {tAttendance("copyWeek.created", { count: preview.created.length })}
+        </Typography>
+      )}
+      {preview && preview.skipped.length > 0 && (
+        <>
+          <Typography>
+            {tAttendance("copyWeek.skipped", {
+              count: preview.skipped.length,
             })}
-            label={tAttendance("copyWeek.weeks")}
-            required
-            select
-            value={weeks}
-            {...register("weeks")}
-          >
-            {Array.from({ length: MAX_WEEKS }, (_, index) => index + 1).map(
-              (value) => (
-                <MenuItem key={value} value={value}>
-                  {tAttendance("copyWeek.weeksOption", { weeks: value })}
-                </MenuItem>
+          </Typography>
+          <SkippedList dense disablePadding>
+            {preview.skipped.map(
+              ({
+                employeeId,
+                employeeName,
+                endsAt,
+                reason,
+                sourceShiftId,
+                startsAt,
+              }) => (
+                <ListItem disableGutters key={`${sourceShiftId}-${startsAt}`}>
+                  <ListItemText
+                    primary={`${employeeLabel(employeeId, employeeName)} · ${format.dateTime(
+                      new Date(startsAt),
+                      "shift",
+                      { timeZone: STORE_TIMEZONE },
+                    )} – ${format.dateTime(new Date(endsAt), "time", {
+                      timeZone: STORE_TIMEZONE,
+                    })}`}
+                    secondary={tAttendance(`copyWeek.skipReasons.${reason}`)}
+                  />
+                </ListItem>
               ),
             )}
-          </TextField>
-          {isLoading && <LinearProgress />}
-          {error && (
-            <Typography color="error">{getErrorMessage(error)}</Typography>
-          )}
-          {preview && !preview.created.length && !preview.skipped.length && (
-            <Typography>{tAttendance("copyWeek.empty")}</Typography>
-          )}
-          {preview && preview.created.length > 0 && (
-            <Typography>
-              {tAttendance("copyWeek.created", {
-                count: preview.created.length,
-              })}
-            </Typography>
-          )}
-          {preview && preview.skipped.length > 0 && (
-            <>
-              <Typography>
-                {tAttendance("copyWeek.skipped", {
-                  count: preview.skipped.length,
-                })}
-              </Typography>
-              <SkippedList dense disablePadding>
-                {preview.skipped.map(
-                  ({
-                    employeeId,
-                    employeeName,
-                    endsAt,
-                    reason,
-                    sourceShiftId,
-                    startsAt,
-                  }) => (
-                    <ListItem
-                      disableGutters
-                      key={`${sourceShiftId}-${startsAt}`}
-                    >
-                      <ListItemText
-                        primary={`${employeeLabel(employeeId, employeeName)} · ${format.dateTime(
-                          new Date(startsAt),
-                          "shift",
-                          { timeZone: STORE_TIMEZONE },
-                        )} – ${format.dateTime(new Date(endsAt), "time", {
-                          timeZone: STORE_TIMEZONE,
-                        })}`}
-                        secondary={tAttendance(
-                          `copyWeek.skipReasons.${reason}`,
-                        )}
-                      />
-                    </ListItem>
-                  ),
-                )}
-              </SkippedList>
-            </>
-          )}
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions confirmDisabled={!preview?.created.length} />
-    </>
+          </SkippedList>
+        </>
+      )}
+    </FormBox>
   );
 };
 

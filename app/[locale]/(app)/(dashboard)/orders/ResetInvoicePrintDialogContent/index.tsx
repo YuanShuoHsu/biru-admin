@@ -2,12 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent, useState } from "react";
-
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
+import { type BaseSyntheticEvent, useEffect, useState } from "react";
 
 import { Alert, Stack, type StackProps, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -48,6 +43,10 @@ const ResetInvoicePrintDialogContent = ({
 
   const disabled = !reason.trim();
 
+  useEffect(() => {
+    setDialog({ confirmDisabled: disabled });
+  }, [disabled, setDialog]);
+
   const onSubmit = async (event: BaseSyntheticEvent) => {
     event.preventDefault();
 
@@ -84,42 +83,35 @@ const ResetInvoicePrintDialogContent = ({
   };
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <StyledStack
-          component="form"
-          id={RESET_INVOICE_PRINT_FORM_ID}
-          onSubmit={onSubmit}
-        >
-          <Alert severity="warning">
-            {tOrders.rich("actions.resetInvoicePrint.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              orderNumber: order.orderNumber,
-            })}
-          </Alert>
-          {resetCount > 0 && (
-            <Alert severity="info">
-              {tOrders("actions.resetInvoicePrint.resetCount", {
-                count: resetCount,
-              })}
-            </Alert>
-          )}
-          <TextField
-            disabled={confirmLoading}
-            label={tOrders("actions.resetInvoicePrint.reason.label")}
-            onChange={({ target }) => setReason(target.value)}
-            placeholder={tOrders(
-              "actions.resetInvoicePrint.reason.placeholder",
-            )}
-            required
-            size="small"
-            slotProps={{ htmlInput: { maxLength: 100 } }}
-            value={reason}
-          />
-        </StyledStack>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions confirmDisabled={disabled} />
-    </>
+    <StyledStack
+      component="form"
+      id={RESET_INVOICE_PRINT_FORM_ID}
+      onSubmit={onSubmit}
+    >
+      <Alert severity="warning">
+        {tOrders.rich("actions.resetInvoicePrint.confirm", {
+          bold: (chunks) => <strong>{chunks}</strong>,
+          orderNumber: order.orderNumber,
+        })}
+      </Alert>
+      {resetCount > 0 && (
+        <Alert severity="info">
+          {tOrders("actions.resetInvoicePrint.resetCount", {
+            count: resetCount,
+          })}
+        </Alert>
+      )}
+      <TextField
+        disabled={confirmLoading}
+        label={tOrders("actions.resetInvoicePrint.reason.label")}
+        onChange={({ target }) => setReason(target.value)}
+        placeholder={tOrders("actions.resetInvoicePrint.reason.placeholder")}
+        required
+        size="small"
+        slotProps={{ htmlInput: { maxLength: 100 } }}
+        value={reason}
+      />
+    </StyledStack>
   );
 };
 
