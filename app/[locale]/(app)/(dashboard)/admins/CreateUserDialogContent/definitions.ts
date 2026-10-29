@@ -13,8 +13,8 @@ export const useCreateUserFormSchema = () => {
       lastName: z.string().trim().optional(),
       firstName: z
         .string()
-        .min(1, { error: tValidation("firstName.required") })
-        .trim(),
+        .trim()
+        .min(1, { error: tValidation("firstName.required") }),
       email: z.email({ error: tValidation("email.invalid") }).trim(),
       password: z
         .string()
