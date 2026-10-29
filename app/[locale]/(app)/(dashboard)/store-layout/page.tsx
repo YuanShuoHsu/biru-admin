@@ -6,11 +6,14 @@ import { Suspense } from "react";
 
 import StoreLayout from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import { STORE_LAYOUT_ORGANIZATION_SLUG } from "@/constants/storeLayout";
 
+import { settle } from "@/utils/fetcher";
 import { getAdminOrderBoard } from "@/utils/orders";
 import { getResolvedAdminOrganization, getSession } from "@/utils/session";
 
@@ -52,11 +55,14 @@ const StoreLayoutContent = async ({
 
   const empty = organization.slug !== STORE_LAYOUT_ORGANIZATION_SLUG;
 
-  const columns = empty
-    ? []
-    : await getAdminOrderBoard(organization.slug, {
-        headers: { cookie: cookieStore.toString() },
-      });
+  const { data: columns, error } = await settle(
+    empty
+      ? Promise.resolve([])
+      : getAdminOrderBoard(organization.slug, {
+          headers: { cookie: cookieStore.toString() },
+        }),
+  );
+  if (error) return <ErrorAlert />;
 
   return (
     <StoreLayout columns={columns} empty={empty} organization={organization} />

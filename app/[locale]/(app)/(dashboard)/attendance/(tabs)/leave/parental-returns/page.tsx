@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import ParentalReturns from "../../../ParentalReturns";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -21,6 +23,7 @@ import {
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceParentalReturnEnumOptions } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -109,27 +112,33 @@ const ParentalReturnsContent = async ({
     : [];
 
   const [
-    { parentalReturns: rows, total: rowCount },
-    { employee, selfReviewAllowed },
+    { data: parentalReturns, error },
+    { data: context, error: contextError },
   ] = await Promise.all([
-    getAttendanceParentalReturns(
-      organization.slug,
-      "org",
-      {
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterEnums,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-      },
-      fetchOptions,
+    settle(
+      getAttendanceParentalReturns(
+        organization.slug,
+        "org",
+        {
+          page,
+          pageSize,
+          filterField,
+          filterOperator,
+          filterValue,
+          quickFilterEnums,
+          quickFilterValue,
+          sortBy,
+          sortDirection,
+        },
+        fetchOptions,
+      ),
     ),
-    getAttendanceContext(organization.slug, fetchOptions),
+    settle(getAttendanceContext(organization.slug, fetchOptions)),
   ]);
+  if (error || contextError) return <ErrorAlert />;
+
+  const { parentalReturns: rows, total: rowCount } = parentalReturns;
+  const { employee, selfReviewAllowed } = context;
 
   return (
     <ParentalReturns

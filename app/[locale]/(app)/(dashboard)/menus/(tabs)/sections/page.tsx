@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import MenusSections from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -16,6 +18,7 @@ import {
 } from "@/types/api";
 
 import { resolveGridSearchParams } from "@/utils/dataGrid";
+import { settle } from "@/utils/fetcher";
 import { getAdminMenuSections } from "@/utils/menus";
 import { hasRolePermission } from "@/utils/organizations";
 import {
@@ -59,9 +62,12 @@ const MenusSectionsContent = async ({
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const { organization: selectedOrganization, menu } =
-    await getResolvedAdminOrganizationMenu(rawSearchParams.organization);
+  const { data: resolved, error: resolvedError } = await settle(
+    getResolvedAdminOrganizationMenu(rawSearchParams.organization),
+  );
+  if (resolvedError) return <ErrorAlert />;
 
+  const { organization: selectedOrganization, menu } = resolved;
   if (!selectedOrganization || !menu) notFound();
 
   const {
@@ -85,21 +91,26 @@ const MenusSectionsContent = async ({
   if (redirectParams)
     redirect({ href: `/menus/sections?${redirectParams.toString()}`, locale });
 
-  const [{ sections: rows, total: rowCount }, role] = await Promise.all([
-    getAdminMenuSections(
-      menu.id,
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-      fetchOptions,
+  const [{ data: sections, error: sectionsError }, role] = await Promise.all([
+    settle(
+      getAdminMenuSections(
+        menu.id,
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+        fetchOptions,
+      ),
     ),
     getMemberRole(menu.organizationId),
   ]);
+  if (sectionsError) return <ErrorAlert />;
+
+  const { sections: rows, total: rowCount } = sections;
 
   const canWrite = hasRolePermission(role, { menu: ["update"] });
   const canViewAuditLog = hasRolePermission(role, {

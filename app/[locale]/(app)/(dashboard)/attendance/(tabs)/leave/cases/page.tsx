@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import LeaveCases from "../../../LeaveCases";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
@@ -26,6 +28,7 @@ import {
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceLeaveTypeNameEnumOptions } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -118,49 +121,71 @@ const LeaveCasesContent = async ({
       )
     : [];
 
-  const [
-    { leaveCases: rows, total: rowCount },
-    { employees },
-    { leaveTypes },
-    { parentalChildren },
-    { employee, selfReviewAllowed },
-  ] = await Promise.all([
-    getAttendanceLeaveCases(
-      organization.slug,
-      "org",
-      {
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterEnums,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-      },
-      fetchOptions,
-    ),
-    canWrite
-      ? getAttendanceEmployees(
-          organization.slug,
-          { pageSize: MAX_PAGE_SIZE },
-          fetchOptions,
-        )
-      : { employees: [] },
-    getAttendanceLeaveTypes(
-      organization.slug,
-      { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
-      fetchOptions,
-    ),
-    getAttendanceParentalChildren(
-      organization.slug,
-      canViewAllParentalChildren ? "org" : "me",
-      { pageSize: MAX_PAGE_SIZE },
-      fetchOptions,
-    ),
+  const { data: context, error: contextError } = await settle(
     getAttendanceContext(organization.slug, fetchOptions),
+  );
+  if (contextError) return <ErrorAlert />;
+
+  const { employee, selfReviewAllowed } = context;
+
+  const [
+    { data: leaveCases, error },
+    { data: employeePage, error: employeesError },
+    { data: leaveTypePage, error: leaveTypesError },
+    { data: parentalChildPage, error: parentalChildrenError },
+  ] = await Promise.all([
+    settle(
+      getAttendanceLeaveCases(
+        organization.slug,
+        "org",
+        {
+          page,
+          pageSize,
+          filterField,
+          filterOperator,
+          filterValue,
+          quickFilterEnums,
+          quickFilterValue,
+          sortBy,
+          sortDirection,
+        },
+        fetchOptions,
+      ),
+    ),
+    settle(
+      canWrite
+        ? getAttendanceEmployees(
+            organization.slug,
+            { pageSize: MAX_PAGE_SIZE },
+            fetchOptions,
+          )
+        : Promise.resolve({ employees: [], total: 0 }),
+    ),
+    settle(
+      getAttendanceLeaveTypes(
+        organization.slug,
+        { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
+        fetchOptions,
+      ),
+    ),
+    settle(
+      canViewAllParentalChildren || employee
+        ? getAttendanceParentalChildren(
+            organization.slug,
+            canViewAllParentalChildren ? "org" : "me",
+            { pageSize: MAX_PAGE_SIZE },
+            fetchOptions,
+          )
+        : Promise.resolve({ parentalChildren: [], total: 0 }),
+    ),
   ]);
+  if (error || employeesError || leaveTypesError || parentalChildrenError)
+    return <ErrorAlert />;
+
+  const { leaveCases: rows, total: rowCount } = leaveCases;
+  const { employees } = employeePage;
+  const { leaveTypes } = leaveTypePage;
+  const { parentalChildren } = parentalChildPage;
 
   return (
     <LeaveCases

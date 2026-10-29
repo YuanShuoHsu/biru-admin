@@ -4,8 +4,11 @@ import { notFound } from "next/navigation";
 
 import OrganizationsSlugPickup from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import type { Locale } from "@/i18n/routing";
 
+import { settle } from "@/utils/fetcher";
 import { getOrganization, hasRolePermission } from "@/utils/organizations";
 import { getFullOrganization, getSession } from "@/utils/session";
 
@@ -30,13 +33,24 @@ const OrganizationsSlugPickupPage = async ({
 }: OrganizationsSlugPickupPageProps) => {
   const { slug } = await params;
 
-  const [data, organization, session] = await Promise.all([
-    getFullOrganization(decodeURIComponent(slug)),
-    getOrganization(decodeURIComponent(slug)),
+  const [
+    { data, error: fullOrganizationError },
+    { data: organization, error },
+    session,
+  ] = await Promise.all([
+    settle(getFullOrganization(decodeURIComponent(slug))),
+    settle(getOrganization(decodeURIComponent(slug))),
     getSession(),
   ]);
 
-  if (!data || !organization) notFound();
+  if (
+    fullOrganizationError?.status === 400 ||
+    fullOrganizationError?.status === 403 ||
+    error?.status === 404
+  )
+    notFound();
+  if (fullOrganizationError || error) return <ErrorAlert />;
+  if (!data) notFound();
 
   const currentUserRole = data.members.find(
     ({ userId }) => userId === session?.user?.id,

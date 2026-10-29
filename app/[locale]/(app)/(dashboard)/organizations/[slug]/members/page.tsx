@@ -5,10 +5,13 @@ import { Suspense } from "react";
 
 import OrganizationsSlugMembers from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { ROLE_RANK } from "@/constants/organizations";
 
 import type { Locale } from "@/i18n/routing";
 
+import { settle } from "@/utils/fetcher";
 import { hasRolePermission, sortByCreatedAtDesc } from "@/utils/organizations";
 import { getFullOrganization, getSession } from "@/utils/session";
 
@@ -33,11 +36,13 @@ const OrganizationsSlugMembersContent = async ({
 }: OrganizationsSlugMembersPageProps) => {
   const { slug } = await params;
 
-  const [data, session] = await Promise.all([
-    getFullOrganization(decodeURIComponent(slug)),
+  const [{ data, error }, session] = await Promise.all([
+    settle(getFullOrganization(decodeURIComponent(slug))),
     getSession(),
   ]);
 
+  if (error?.status === 400 || error?.status === 403) notFound();
+  if (error) return <ErrorAlert />;
   if (!data || !session?.user?.id) notFound();
 
   const currentUserRole = data.members.find(

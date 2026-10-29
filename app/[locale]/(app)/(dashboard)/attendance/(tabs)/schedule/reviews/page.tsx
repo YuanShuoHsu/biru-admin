@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import Reviews from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
@@ -28,6 +30,7 @@ import {
   getAttendanceLeaveTypeNameEnumOptions,
   getAttendanceRequestEnumOptions,
 } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -114,39 +117,52 @@ const ReviewsContent = async ({ params, searchParams }: ReviewsPageProps) => {
     : [];
 
   const [
-    { requests: rows, total: rowCount },
-    { leaveTypes },
-    { employee, selfReviewAllowed },
-    { employees },
+    { data: requests, error },
+    { data: leaveTypePage, error: leaveTypesError },
+    { data: context, error: contextError },
+    { data: employeePage, error: employeesError },
   ] = await Promise.all([
-    getAttendanceRequests(
-      organization.slug,
-      "org",
-      {
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterEnums,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-      },
-      fetchOptions,
+    settle(
+      getAttendanceRequests(
+        organization.slug,
+        "org",
+        {
+          page,
+          pageSize,
+          filterField,
+          filterOperator,
+          filterValue,
+          quickFilterEnums,
+          quickFilterValue,
+          sortBy,
+          sortDirection,
+        },
+        fetchOptions,
+      ),
     ),
-    getAttendanceLeaveTypes(
-      organization.slug,
-      { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
-      fetchOptions,
+    settle(
+      getAttendanceLeaveTypes(
+        organization.slug,
+        { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
+        fetchOptions,
+      ),
     ),
-    getAttendanceContext(organization.slug, fetchOptions),
-    getAttendanceEmployees(
-      organization.slug,
-      { pageSize: MAX_PAGE_SIZE },
-      fetchOptions,
+    settle(getAttendanceContext(organization.slug, fetchOptions)),
+    settle(
+      getAttendanceEmployees(
+        organization.slug,
+        { pageSize: MAX_PAGE_SIZE },
+        fetchOptions,
+      ),
     ),
   ]);
+  if (error || leaveTypesError || contextError || employeesError)
+    return <ErrorAlert />;
+
+  const { requests: rows, total: rowCount } = requests;
+  const { leaveTypes } = leaveTypePage;
+  const { employee, selfReviewAllowed } = context;
+  const { employees } = employeePage;
 
   return (
     <Reviews

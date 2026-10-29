@@ -37,39 +37,35 @@ export const getAdminOrders = cache(
     }: GetAdminOrdersQuery = {},
     init?: RequestInit,
   ) => {
-    try {
-      const offset = (page - 1) * pageSize;
-      const isNoValueOperator =
-        filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
-      const params = new URLSearchParams({
-        limit: String(pageSize),
-        offset: String(offset),
-        ...(sortBy && { sortBy }),
-        ...(sortDirection && { sortDirection }),
-        ...(filterField &&
-          filterOperator &&
-          (filterValue || isNoValueOperator) && {
-            filterField,
-            filterOperator,
-            ...(filterValue && { filterValue }),
-          }),
-        ...(quickFilterValue && { quickFilterValue }),
-      });
-      for (const entry of quickFilterEnums || [])
-        params.append("quickFilterEnums", entry);
+    const offset = (page - 1) * pageSize;
+    const isNoValueOperator =
+      filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
+    const params = new URLSearchParams({
+      limit: String(pageSize),
+      offset: String(offset),
+      ...(sortBy && { sortBy }),
+      ...(sortDirection && { sortDirection }),
+      ...(filterField &&
+        filterOperator &&
+        (filterValue || isNoValueOperator) && {
+          filterField,
+          filterOperator,
+          ...(filterValue && { filterValue }),
+        }),
+      ...(quickFilterValue && { quickFilterValue }),
+    });
+    for (const entry of quickFilterEnums || [])
+      params.append("quickFilterEnums", entry);
 
-      const result = await fetcher<AdminOrderListResponse>(
-        `/api/organizations/${organizationSlug}/orders?${params.toString()}`,
-        init,
-      );
+    const result = await fetcher<AdminOrderListResponse>(
+      `/api/organizations/${organizationSlug}/orders?${params.toString()}`,
+      init,
+    );
 
-      return {
-        orders: Array.isArray(result.data) ? result.data : [],
-        total: result.total || 0,
-      };
-    } catch {
-      return { orders: [], total: 0 };
-    }
+    return {
+      orders: Array.isArray(result.data) ? result.data : [],
+      total: result.total || 0,
+    };
   },
 );
 
@@ -78,15 +74,11 @@ export const getAdminOrderBoard = cache(
     organizationSlug: string,
     init?: RequestInit,
   ): Promise<AdminOrderBoardColumn[]> => {
-    try {
-      const columns = await fetcher<AdminOrderBoardColumn[]>(
-        `/api/organizations/${organizationSlug}/orders/board/admin`,
-        init,
-      );
+    const columns = await fetcher<AdminOrderBoardColumn[]>(
+      `/api/organizations/${organizationSlug}/orders/board/admin`,
+      init,
+    );
 
-      return Array.isArray(columns) ? columns : [];
-    } catch {
-      return [];
-    }
+    return Array.isArray(columns) ? columns : [];
   },
 );

@@ -3,6 +3,7 @@ import OrganizationsSlugTabs from "./OrganizationsSlugTabs";
 import { CountStoreProvider } from "@/providers/count-store-provider";
 
 import { isActiveSession } from "@/utils/auth";
+import { settle } from "@/utils/fetcher";
 import { getFullOrganization } from "@/utils/session";
 
 interface OrganizationsSlugLayoutProps {
@@ -15,7 +16,7 @@ const getPendingInvitationCount = async (
 ) => {
   const { slug } = await params;
 
-  const data = await getFullOrganization(decodeURIComponent(slug));
+  const { data } = await settle(getFullOrganization(decodeURIComponent(slug)));
 
   return (
     data?.invitations.filter(

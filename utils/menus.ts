@@ -29,11 +29,7 @@ export const isLowStock = (offer?: OrderMenuOffer): boolean => {
 
 export const getAdminMenu = cache(
   async (menuId: string, init?: RequestInit) => {
-    try {
-      return await fetcher<Menu>(`/api/menus/${menuId}`, init);
-    } catch {
-      return null;
-    }
+    return fetcher<Menu>(`/api/menus/${menuId}`, init);
   },
 );
 
@@ -50,58 +46,43 @@ export const getAdminMenuSections = cache(
     sortDirection?: "asc" | "desc",
     init?: RequestInit,
   ) => {
-    try {
-      const offset = (page - 1) * pageSize;
-      const isNoValueOperator =
-        filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
-      const params = new URLSearchParams({
-        limit: String(pageSize),
-        offset: String(offset),
-        ...(sortBy && { sortBy }),
-        ...(sortDirection && { sortDirection }),
-        ...(filterField &&
-          filterOperator &&
-          (filterValue || isNoValueOperator) && {
-            filterField,
-            filterOperator,
-            ...(filterValue && { filterValue }),
-          }),
-        ...(quickFilterValue && { quickFilterValue }),
-      });
-      const result = await fetcher<MenuSectionListResponse>(
-        `/api/menus/${menuId}/menu-sections?${params.toString()}`,
-        init,
-      );
-      return {
-        sections: Array.isArray(result.data) ? result.data : [],
-        total: result.total || 0,
-      };
-    } catch {
-      return { sections: [], total: 0 };
-    }
+    const offset = (page - 1) * pageSize;
+    const isNoValueOperator =
+      filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
+    const params = new URLSearchParams({
+      limit: String(pageSize),
+      offset: String(offset),
+      ...(sortBy && { sortBy }),
+      ...(sortDirection && { sortDirection }),
+      ...(filterField &&
+        filterOperator &&
+        (filterValue || isNoValueOperator) && {
+          filterField,
+          filterOperator,
+          ...(filterValue && { filterValue }),
+        }),
+      ...(quickFilterValue && { quickFilterValue }),
+    });
+    const result = await fetcher<MenuSectionListResponse>(
+      `/api/menus/${menuId}/menu-sections?${params.toString()}`,
+      init,
+    );
+    return {
+      sections: Array.isArray(result.data) ? result.data : [],
+      total: result.total || 0,
+    };
   },
 );
 
 export const getAdminMenuSection = cache(
   async (sectionId: string, init?: RequestInit) => {
-    try {
-      return await fetcher<MenuSection>(
-        `/api/menu-sections/${sectionId}`,
-        init,
-      );
-    } catch {
-      return null;
-    }
+    return fetcher<MenuSection>(`/api/menu-sections/${sectionId}`, init);
   },
 );
 
 export const getAdminMenuItem = cache(
   async (menuItemId: string, init?: RequestInit) => {
-    try {
-      return await fetcher<MenuItem>(`/api/menu-items/${menuItemId}`, init);
-    } catch {
-      return null;
-    }
+    return fetcher<MenuItem>(`/api/menu-items/${menuItemId}`, init);
   },
 );
 
@@ -119,38 +100,34 @@ export const getAdminMenuSectionItems = cache(
     sortDirection?: "asc" | "desc",
     init?: RequestInit,
   ) => {
-    try {
-      const offset = (page - 1) * pageSize;
-      const isNoValueOperator =
-        filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
-      const params = new URLSearchParams({
-        limit: String(pageSize),
-        offset: String(offset),
-        ...(sortBy && { sortBy }),
-        ...(sortDirection && { sortDirection }),
-        ...(filterField &&
-          filterOperator &&
-          (filterValue || isNoValueOperator) && {
-            filterField,
-            filterOperator,
-            ...(filterValue && { filterValue }),
-          }),
-        ...(quickFilterValue && { quickFilterValue }),
-      });
-      for (const entry of quickFilterEnums || [])
-        params.append("quickFilterEnums", entry);
+    const offset = (page - 1) * pageSize;
+    const isNoValueOperator =
+      filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
+    const params = new URLSearchParams({
+      limit: String(pageSize),
+      offset: String(offset),
+      ...(sortBy && { sortBy }),
+      ...(sortDirection && { sortDirection }),
+      ...(filterField &&
+        filterOperator &&
+        (filterValue || isNoValueOperator) && {
+          filterField,
+          filterOperator,
+          ...(filterValue && { filterValue }),
+        }),
+      ...(quickFilterValue && { quickFilterValue }),
+    });
+    for (const entry of quickFilterEnums || [])
+      params.append("quickFilterEnums", entry);
 
-      const result = await fetcher<MenuItemListResponse>(
-        `/api/menu-sections/${sectionId}/menu-items?${params.toString()}`,
-        init,
-      );
-      return {
-        items: Array.isArray(result.data) ? result.data : [],
-        total: result.total || 0,
-      };
-    } catch {
-      return { items: [], total: 0 };
-    }
+    const result = await fetcher<MenuItemListResponse>(
+      `/api/menu-sections/${sectionId}/menu-items?${params.toString()}`,
+      init,
+    );
+    return {
+      items: Array.isArray(result.data) ? result.data : [],
+      total: result.total || 0,
+    };
   },
 );
 
@@ -167,35 +144,31 @@ export const getAdminMenuItemAddOns = cache(
     sortDirection?: "asc" | "desc",
     init?: RequestInit,
   ) => {
-    try {
-      const offset = (page - 1) * pageSize;
-      const isNoValueOperator =
-        filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
-      const params = new URLSearchParams({
-        limit: String(pageSize),
-        offset: String(offset),
-        ...(sortBy && { sortBy }),
-        ...(sortDirection && { sortDirection }),
-        ...(filterField &&
-          filterOperator &&
-          (filterValue || isNoValueOperator) && {
-            filterField,
-            filterOperator,
-            ...(filterValue && { filterValue }),
-          }),
-        ...(quickFilterValue && { quickFilterValue }),
-      });
-      const result = await fetcher<MenuItemAddOnListResponse>(
-        `/api/menu-items/${menuItemId}/add-ons?${params.toString()}`,
-        init,
-      );
-      return {
-        addOns: Array.isArray(result.data) ? result.data : [],
-        total: result.total || 0,
-      };
-    } catch {
-      return { addOns: [], total: 0 };
-    }
+    const offset = (page - 1) * pageSize;
+    const isNoValueOperator =
+      filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
+    const params = new URLSearchParams({
+      limit: String(pageSize),
+      offset: String(offset),
+      ...(sortBy && { sortBy }),
+      ...(sortDirection && { sortDirection }),
+      ...(filterField &&
+        filterOperator &&
+        (filterValue || isNoValueOperator) && {
+          filterField,
+          filterOperator,
+          ...(filterValue && { filterValue }),
+        }),
+      ...(quickFilterValue && { quickFilterValue }),
+    });
+    const result = await fetcher<MenuItemAddOnListResponse>(
+      `/api/menu-items/${menuItemId}/add-ons?${params.toString()}`,
+      init,
+    );
+    return {
+      addOns: Array.isArray(result.data) ? result.data : [],
+      total: result.total || 0,
+    };
   },
 );
 
@@ -212,48 +185,37 @@ export const getAdminModifierGroups = cache(
     sortDirection?: "asc" | "desc",
     init?: RequestInit,
   ) => {
-    try {
-      const offset = (page - 1) * pageSize;
-      const isNoValueOperator =
-        filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
-      const params = new URLSearchParams({
-        limit: String(pageSize),
-        offset: String(offset),
-        ...(sortBy && { sortBy }),
-        ...(sortDirection && { sortDirection }),
-        ...(filterField &&
-          filterOperator &&
-          (filterValue || isNoValueOperator) && {
-            filterField,
-            filterOperator,
-            ...(filterValue && { filterValue }),
-          }),
-        ...(quickFilterValue && { quickFilterValue }),
-      });
-      const result = await fetcher<ModifierGroupListResponse>(
-        `/api/menus/${menuId}/modifier-groups?${params.toString()}`,
-        init,
-      );
-      return {
-        groups: Array.isArray(result.data) ? result.data : [],
-        total: result.total || 0,
-      };
-    } catch {
-      return { groups: [], total: 0 };
-    }
+    const offset = (page - 1) * pageSize;
+    const isNoValueOperator =
+      filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
+    const params = new URLSearchParams({
+      limit: String(pageSize),
+      offset: String(offset),
+      ...(sortBy && { sortBy }),
+      ...(sortDirection && { sortDirection }),
+      ...(filterField &&
+        filterOperator &&
+        (filterValue || isNoValueOperator) && {
+          filterField,
+          filterOperator,
+          ...(filterValue && { filterValue }),
+        }),
+      ...(quickFilterValue && { quickFilterValue }),
+    });
+    const result = await fetcher<ModifierGroupListResponse>(
+      `/api/menus/${menuId}/modifier-groups?${params.toString()}`,
+      init,
+    );
+    return {
+      groups: Array.isArray(result.data) ? result.data : [],
+      total: result.total || 0,
+    };
   },
 );
 
 export const getAdminModifierGroup = cache(
   async (groupId: string, init?: RequestInit) => {
-    try {
-      return await fetcher<ModifierGroup>(
-        `/api/modifier-groups/${groupId}`,
-        init,
-      );
-    } catch {
-      return null;
-    }
+    return fetcher<ModifierGroup>(`/api/modifier-groups/${groupId}`, init);
   },
 );
 
@@ -271,38 +233,34 @@ export const getAdminModifiers = cache(
     sortDirection?: "asc" | "desc",
     init?: RequestInit,
   ) => {
-    try {
-      const offset = (page - 1) * pageSize;
-      const isNoValueOperator =
-        filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
-      const params = new URLSearchParams({
-        limit: String(pageSize),
-        offset: String(offset),
-        ...(sortBy && { sortBy }),
-        ...(sortDirection && { sortDirection }),
-        ...(filterField &&
-          filterOperator &&
-          (filterValue || isNoValueOperator) && {
-            filterField,
-            filterOperator,
-            ...(filterValue && { filterValue }),
-          }),
-        ...(quickFilterValue && { quickFilterValue }),
-      });
-      for (const entry of quickFilterEnums || [])
-        params.append("quickFilterEnums", entry);
+    const offset = (page - 1) * pageSize;
+    const isNoValueOperator =
+      filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
+    const params = new URLSearchParams({
+      limit: String(pageSize),
+      offset: String(offset),
+      ...(sortBy && { sortBy }),
+      ...(sortDirection && { sortDirection }),
+      ...(filterField &&
+        filterOperator &&
+        (filterValue || isNoValueOperator) && {
+          filterField,
+          filterOperator,
+          ...(filterValue && { filterValue }),
+        }),
+      ...(quickFilterValue && { quickFilterValue }),
+    });
+    for (const entry of quickFilterEnums || [])
+      params.append("quickFilterEnums", entry);
 
-      const result = await fetcher<ModifierListResponse>(
-        `/api/modifier-groups/${groupId}/modifiers?${params.toString()}`,
-        init,
-      );
-      return {
-        modifiers: Array.isArray(result.data) ? result.data : [],
-        total: result.total || 0,
-      };
-    } catch {
-      return { modifiers: [], total: 0 };
-    }
+    const result = await fetcher<ModifierListResponse>(
+      `/api/modifier-groups/${groupId}/modifiers?${params.toString()}`,
+      init,
+    );
+    return {
+      modifiers: Array.isArray(result.data) ? result.data : [],
+      total: result.total || 0,
+    };
   },
 );
 
@@ -319,34 +277,30 @@ export const getAdminMenuItemModifierGroups = cache(
     sortDirection?: "asc" | "desc",
     init?: RequestInit,
   ) => {
-    try {
-      const offset = (page - 1) * pageSize;
-      const isNoValueOperator =
-        filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
-      const params = new URLSearchParams({
-        limit: String(pageSize),
-        offset: String(offset),
-        ...(sortBy && { sortBy }),
-        ...(sortDirection && { sortDirection }),
-        ...(filterField &&
-          filterOperator &&
-          (filterValue || isNoValueOperator) && {
-            filterField,
-            filterOperator,
-            ...(filterValue && { filterValue }),
-          }),
-        ...(quickFilterValue && { quickFilterValue }),
-      });
-      const result = await fetcher<MenuItemModifierGroupListResponse>(
-        `/api/menu-items/${menuItemId}/modifier-groups?${params.toString()}`,
-        init,
-      );
-      return {
-        links: Array.isArray(result.data) ? result.data : [],
-        total: result.total || 0,
-      };
-    } catch {
-      return { links: [], total: 0 };
-    }
+    const offset = (page - 1) * pageSize;
+    const isNoValueOperator =
+      filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
+    const params = new URLSearchParams({
+      limit: String(pageSize),
+      offset: String(offset),
+      ...(sortBy && { sortBy }),
+      ...(sortDirection && { sortDirection }),
+      ...(filterField &&
+        filterOperator &&
+        (filterValue || isNoValueOperator) && {
+          filterField,
+          filterOperator,
+          ...(filterValue && { filterValue }),
+        }),
+      ...(quickFilterValue && { quickFilterValue }),
+    });
+    const result = await fetcher<MenuItemModifierGroupListResponse>(
+      `/api/menu-items/${menuItemId}/modifier-groups?${params.toString()}`,
+      init,
+    );
+    return {
+      links: Array.isArray(result.data) ? result.data : [],
+      total: result.total || 0,
+    };
   },
 );

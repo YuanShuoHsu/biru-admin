@@ -7,6 +7,7 @@ import { Fragment, useState } from "react";
 import AccountItem from "./AccountItem";
 import OtherAccountItem from "./OtherAccountItem";
 
+import ErrorAlert from "@/components/ErrorAlert";
 import FormCard, {
   StyledCardContent,
   StyledCardHeader,
@@ -41,7 +42,7 @@ const Accounts = () => {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const { data: accounts = [], mutate } = useDeviceSessions();
+  const { data: accounts = [], error, mutate } = useDeviceSessions();
   const otherAccounts = accounts.filter(
     ({ session: { token } }) => token !== session?.session.token,
   );
@@ -121,6 +122,7 @@ const Accounts = () => {
             user={session.user}
           />
         )}
+        {error && <ErrorAlert onRetry={() => mutate()} />}
         {otherAccounts.map(({ session: { token }, user }) => (
           <Fragment key={token}>
             <Divider flexItem />

@@ -7,27 +7,16 @@ import { authClient } from "@/lib/auth-client";
 
 import type { Organization, OrganizationResponse } from "@/types/organizations";
 
-export const getOrganization = cache(
-  async (slug: OrganizationResponse["slug"]) => {
-    try {
-      return await fetcher<OrganizationResponse>(`/api/organizations/${slug}`);
-    } catch {
-      return null;
-    }
-  },
+export const getOrganization = cache((slug: OrganizationResponse["slug"]) =>
+  fetcher<OrganizationResponse>(`/api/organizations/${slug}`),
 );
 
 export const getOrganizations = cache(
-  async (fetchOptions?: { headers: { cookie: string } }) => {
-    try {
-      return await fetcher<OrganizationResponse[]>(
-        "/api/organizations?includeClosed=true",
-        fetchOptions,
-      );
-    } catch {
-      return [];
-    }
-  },
+  (fetchOptions?: { headers: { cookie: string } }) =>
+    fetcher<OrganizationResponse[]>(
+      "/api/organizations?includeClosed=true",
+      fetchOptions,
+    ),
 );
 
 export const getOrganizationLabel = (

@@ -53,7 +53,7 @@ const StyledTransactionCardHeader = styled(CardHeader)({
 interface PointsProps {
   page: number;
   pageSize: number;
-  points: MyPoints | null;
+  points: MyPoints;
 }
 
 const Points = ({ page, pageSize, points }: PointsProps) => {
@@ -69,9 +69,9 @@ const Points = ({ page, pageSize, points }: PointsProps) => {
 
   const rowsPerPageOptions = getPageSizeOptions(pageSize);
 
-  const transactions = points?.transactions || [];
+  const transactions = points.transactions;
 
-  const transactionsTotal = points?.transactionsTotal || 0;
+  const transactionsTotal = points.transactionsTotal;
 
   const organizationCount = new Set(
     transactions
@@ -110,36 +110,29 @@ const Points = ({ page, pageSize, points }: PointsProps) => {
         }
       />
       <StyledCardContent>
-        {!points && (
-          <Typography color="textSecondary" variant="body2">
-            {tAuth("points.empty")}
-          </Typography>
-        )}
-        {points && (
-          <List disablePadding>
-            <ListItem
-              disableGutters
-              secondaryAction={
-                <StyledTypography color="primary" variant="h5">
-                  {tAuth("points.points", {
-                    points: format.number(points.balance),
-                  })}
-                </StyledTypography>
-              }
-            >
-              <ListItemAvatar>
-                <StyledAvatar>
-                  <Stars fontSize="small" />
-                </StyledAvatar>
-              </ListItemAvatar>
-              <StyledListItemText
-                primary={tAuth("points.balance")}
-                slotProps={{ primary: { variant: "subtitle2" } }}
-              />
-            </ListItem>
-          </List>
-        )}
-        {points && transactions.length === 0 && (
+        <List disablePadding>
+          <ListItem
+            disableGutters
+            secondaryAction={
+              <StyledTypography color="primary" variant="h5">
+                {tAuth("points.points", {
+                  points: format.number(points.balance),
+                })}
+              </StyledTypography>
+            }
+          >
+            <ListItemAvatar>
+              <StyledAvatar>
+                <Stars fontSize="small" />
+              </StyledAvatar>
+            </ListItemAvatar>
+            <StyledListItemText
+              primary={tAuth("points.balance")}
+              slotProps={{ primary: { variant: "subtitle2" } }}
+            />
+          </ListItem>
+        </List>
+        {transactions.length === 0 && (
           <Typography color="textSecondary" variant="body2">
             {tAuth("points.transactions.empty")}
           </Typography>

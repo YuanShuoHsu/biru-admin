@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 
 import Calendar from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -23,6 +25,7 @@ import {
   getAttendanceTeams,
   SCHEDULABLE_EMPLOYEES_QUERY,
 } from "@/utils/attendance";
+import { settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -95,25 +98,53 @@ const CalendarPage = async ({ params, searchParams }: CalendarPageProps) => {
     attendanceRequest: ["read"],
   });
 
-  const [shifts, dayKinds, leaves, { employees }, { shiftTypes }, teams] =
-    await Promise.all([
+  const [
+    { data: shifts, error: shiftsError },
+    { data: dayKinds, error: dayKindsError },
+    { data: leaves, error: leavesError },
+    { data: employeePage, error: employeesError },
+    { data: shiftTypePage, error: shiftTypesError },
+    { data: teams, error: teamsError },
+  ] = await Promise.all([
+    settle(
       getAttendanceCalendarShifts(organization.slug, from, to, fetchOptions),
+    ),
+    settle(
       getAttendanceCalendarDayKinds(organization.slug, from, to, fetchOptions),
+    ),
+    settle(
       canReadLeaves
         ? getAttendanceCalendarLeaves(organization.slug, from, to, fetchOptions)
-        : [],
+        : Promise.resolve([]),
+    ),
+    settle(
       getAttendanceEmployees(
         organization.slug,
         SCHEDULABLE_EMPLOYEES_QUERY,
         fetchOptions,
       ),
+    ),
+    settle(
       getAttendanceShiftTypes(
         organization.slug,
         { pageSize: MAX_PAGE_SIZE },
         fetchOptions,
       ),
-      getAttendanceTeams(organization.slug, fetchOptions),
-    ]);
+    ),
+    settle(getAttendanceTeams(organization.slug, fetchOptions)),
+  ]);
+  if (
+    shiftsError ||
+    dayKindsError ||
+    leavesError ||
+    employeesError ||
+    shiftTypesError ||
+    teamsError
+  )
+    return <ErrorAlert />;
+
+  const { employees } = employeePage;
+  const { shiftTypes } = shiftTypePage;
 
   return (
     <Calendar

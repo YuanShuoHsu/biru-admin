@@ -6,6 +6,8 @@ import { Suspense } from "react";
 
 import Payroll from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
@@ -25,6 +27,7 @@ import {
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getPayrollStatementEnumOptions } from "@/utils/enumOptions";
+import { settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -113,39 +116,51 @@ const PayrollContent = async ({ params, searchParams }: PayrollPageProps) => {
     : [];
 
   const [
-    { statements: rows, total: rowCount },
-    { employees },
-    terms,
-    { earningTypes },
+    { data: statements, error },
+    { data: employeePage, error: employeesError },
+    { data: terms, error: termsError },
+    { data: earningTypePage, error: earningTypesError },
   ] = await Promise.all([
-    getPayrollStatements(
-      organization.slug,
-      "org",
-      {
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterEnums,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-      },
-      fetchOptions,
+    settle(
+      getPayrollStatements(
+        organization.slug,
+        "org",
+        {
+          page,
+          pageSize,
+          filterField,
+          filterOperator,
+          filterValue,
+          quickFilterEnums,
+          quickFilterValue,
+          sortBy,
+          sortDirection,
+        },
+        fetchOptions,
+      ),
     ),
-    getAttendanceEmployees(
-      organization.slug,
-      { pageSize: MAX_PAGE_SIZE },
-      fetchOptions,
+    settle(
+      getAttendanceEmployees(
+        organization.slug,
+        { pageSize: MAX_PAGE_SIZE },
+        fetchOptions,
+      ),
     ),
-    getPayrollTerms(organization.slug, fetchOptions),
-    getPayrollEarningTypes(
-      organization.slug,
-      { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
-      fetchOptions,
+    settle(getPayrollTerms(organization.slug, fetchOptions)),
+    settle(
+      getPayrollEarningTypes(
+        organization.slug,
+        { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
+        fetchOptions,
+      ),
     ),
   ]);
+  if (error || employeesError || termsError || earningTypesError)
+    return <ErrorAlert />;
+
+  const { statements: rows, total: rowCount } = statements;
+  const { employees } = employeePage;
+  const { earningTypes } = earningTypePage;
 
   return (
     <Payroll

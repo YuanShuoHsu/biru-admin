@@ -5,10 +5,13 @@ import { notFound } from "next/navigation";
 
 import MyWithholding from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import { getMyWithholdingCertificates } from "@/utils/attendance";
+import { settle } from "@/utils/fetcher";
 import { getAttendanceAccess } from "@/utils/session";
 
 interface MyWithholdingPageProps {
@@ -53,9 +56,12 @@ const MyWithholdingPage = async ({
     });
   }
 
-  const certificates = await getMyWithholdingCertificates(organization.slug, {
-    headers: { cookie: cookieStore.toString() },
-  });
+  const { data: certificates, error } = await settle(
+    getMyWithholdingCertificates(organization.slug, {
+      headers: { cookie: cookieStore.toString() },
+    }),
+  );
+  if (error) return <ErrorAlert />;
 
   return (
     <MyWithholding certificates={certificates} organization={organization} />
