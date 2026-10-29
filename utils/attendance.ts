@@ -392,7 +392,7 @@ export const getAttendanceRequests = cache(
   },
 );
 
-export const attendanceHolidaySubstitutesPath = (
+const attendanceHolidaySubstitutesPath = (
   organizationSlug: string,
   year: number,
   query: GridQuery<

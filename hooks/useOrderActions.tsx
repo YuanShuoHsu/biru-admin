@@ -87,7 +87,7 @@ export const canResolveInvoicePrint = (order: AdminOrderResponse) =>
 const IN_FLIGHT_PRINT_JOB_STATUSES = ["queued", "sent", "unknown"] as const;
 
 // 只有排隊中的工作會被瀏覽器接手；印表機離線時它不該擋住列印
-export const printInvoiceBlockedBy = (
+const printInvoiceBlockedBy = (
   { invoice }: AdminOrderResponse,
   printerOffline: boolean,
 ) =>
