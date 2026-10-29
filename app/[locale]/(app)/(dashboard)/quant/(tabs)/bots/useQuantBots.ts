@@ -67,7 +67,6 @@ export const useBotLabels = () => {
         reason && reason in reasons
           ? tBots(`reasons.${reason as keyof typeof reasons}`)
           : reason,
-      /** 執行中但暫停開新倉的原因；不是暫停原因時回傳 undefined */
       pause: (reason?: string) =>
         reason && reason in pauses
           ? tBots(`pauses.${reason as keyof typeof pauses}`)
