@@ -117,7 +117,7 @@ const OrganizationsSlugPointsPage = async ({
 
   const [
     { data: transactions, error: transactionsError },
-    { data: adjustmentLimit, error: adjustmentLimitError },
+    { data: adjustmentLimit },
   ] = await Promise.all([
     settle(
       getOrganizationPointTransactions(
@@ -143,21 +143,21 @@ const OrganizationsSlugPointsPage = async ({
       ),
     ),
   ]);
-  if (transactionsError || adjustmentLimitError) return <ErrorAlert />;
+  if (transactionsError) return <ErrorAlert />;
 
   const { transactions: rows, total: rowCount } = transactions;
 
   return (
     <PointTransactions
-      adjustmentEnabled={adjustmentLimit.enabled}
+      adjustmentEnabled={adjustmentLimit?.enabled ?? true}
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
       organizationSlug={data.slug}
       ownerOnlyAbovePoints={
-        currentUserRole === "owner"
+        session?.user?.role === "admin" || currentUserRole === "owner"
           ? null
-          : adjustmentLimit.ownerOnlyAbovePoints
+          : (adjustmentLimit?.ownerOnlyAbovePoints ?? null)
       }
       page={page}
       pageSize={pageSize}
