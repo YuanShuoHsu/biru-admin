@@ -120,6 +120,7 @@ const DineInQrCodeCard = ({
 
   const { setDialog } = useDialogStore((state) => state);
 
+  const tCommon = useTranslations("common");
   const tOrganizations = useTranslations("organizations");
 
   const { dineInTableCount, slug: organizationSlug } = organization;
@@ -169,7 +170,7 @@ const DineInQrCodeCard = ({
         {dineInTableCount ? (
           <Typography variant="body2">
             {tOrganizations("inStore.dineIn.tableCount.label")}
-            {": "}
+            {tCommon("colon")}
             {tOrganizations("inStore.dineIn.tableCount.value", {
               count: dineInTableCount,
             })}
@@ -293,6 +294,7 @@ const OrderQrSecretCard = ({ organizationSlug }: OrderQrSecretCardProps) => {
 
   const format = useFormatter();
 
+  const tCommon = useTranslations("common");
   const tOrganizations = useTranslations("organizations");
 
   const { mutate: mutateTokens } = useSWRConfig();
@@ -365,7 +367,7 @@ const OrderQrSecretCard = ({ organizationSlug }: OrderQrSecretCardProps) => {
           <>
             <Typography color="textSecondary" variant="body2">
               {tOrganizations("inStore.qrSecret.rotatedAt")}
-              {": "}
+              {tCommon("colon")}
               {data.rotatedAt
                 ? format.dateTime(new Date(data.rotatedAt), "short")
                 : tOrganizations("inStore.qrSecret.neverRotated")}
@@ -396,6 +398,7 @@ const InvoicePrinterCard = ({ organizationSlug }: InvoicePrinterCardProps) => {
 
   const format = useFormatter();
 
+  const tCommon = useTranslations("common");
   const tOrganizations = useTranslations("organizations");
 
   const printerUrl = `/api/organizations/${organizationSlug}/invoice-printer`;
@@ -491,24 +494,24 @@ const InvoicePrinterCard = ({ organizationSlug }: InvoicePrinterCardProps) => {
             <Stack>
               <UrlTypography variant="body2">
                 {tOrganizations("inStore.invoicePrinter.username")}
-                {": "}
+                {tCommon("colon")}
                 {printer.username}
               </UrlTypography>
               {credentials && (
                 <UrlTypography variant="body2">
                   {tOrganizations("inStore.invoicePrinter.password")}
-                  {": "}
+                  {tCommon("colon")}
                   {credentials.password}
                 </UrlTypography>
               )}
               <UrlTypography variant="body2">
                 {tOrganizations("inStore.invoicePrinter.url")}
-                {": "}
+                {tCommon("colon")}
                 {printer.url}
               </UrlTypography>
               <Typography color="textSecondary" variant="body2">
                 {tOrganizations("inStore.invoicePrinter.lastSeenAt")}
-                {": "}
+                {tCommon("colon")}
                 {printer.lastSeenAt
                   ? format.dateTime(new Date(printer.lastSeenAt), "short")
                   : tOrganizations("inStore.invoicePrinter.neverSeen")}
@@ -574,6 +577,7 @@ const OrderTicketPrinterItem = ({
 
   const format = useFormatter();
 
+  const tCommon = useTranslations("common");
   const tOrganizations = useTranslations("organizations");
 
   const printerUrl = `/api/organizations/${organizationSlug}/order-ticket-printers/${printer.id}`;
@@ -668,24 +672,24 @@ const OrderTicketPrinterItem = ({
       <Stack>
         <UrlTypography variant="body2">
           {tOrganizations("inStore.orderTicketPrinters.username")}
-          {": "}
+          {tCommon("colon")}
           {current.username}
         </UrlTypography>
         {credentials && (
           <UrlTypography variant="body2">
             {tOrganizations("inStore.orderTicketPrinters.password")}
-            {": "}
+            {tCommon("colon")}
             {credentials.password}
           </UrlTypography>
         )}
         <UrlTypography variant="body2">
           {tOrganizations("inStore.orderTicketPrinters.url")}
-          {": "}
+          {tCommon("colon")}
           {current.url}
         </UrlTypography>
         <Typography color="textSecondary" variant="body2">
           {tOrganizations("inStore.orderTicketPrinters.lastSeenAt")}
-          {": "}
+          {tCommon("colon")}
           {printer.lastSeenAt
             ? format.dateTime(new Date(printer.lastSeenAt), "short")
             : tOrganizations("inStore.orderTicketPrinters.neverSeen")}
