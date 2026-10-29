@@ -85,6 +85,7 @@ import {
   ReceiptLong,
   RequestQuote,
   RestoreFromTrash,
+  Rule,
   Scale,
   Schedule,
   Settings,
@@ -752,6 +753,11 @@ const routes: Route[] = [
     icon: Stars,
     label: "pointSettings.label",
     segment: "point-settings",
+  },
+  {
+    icon: Rule,
+    label: "payrollRuleSets.label",
+    segment: "payroll-rule-sets",
   },
   {
     icon: RestoreFromTrash,

@@ -1,0 +1,39 @@
+{
+  "label": "Payroll rule sets",
+  "actions": "Actions",
+  "effectiveFrom": "Effective month",
+  "minimumMonthlyWageCents": "Monthly minimum wage",
+  "minimumHourlyWageCents": "Hourly minimum wage",
+  "laborPercentBp": "Labor insurance rate",
+  "employmentPercentBp": "Employment insurance rate",
+  "healthPercentBp": "Health insurance rate",
+  "withholdingRateBp": "Salary withholding rate",
+  "checkedAt": "Last checked",
+  "status": {
+    "label": "Status",
+    "confirmed": "Confirmed",
+    "unconfirmed": "Minimum wage to confirm"
+  },
+  "confirm": {
+    "title": "Confirm minimum wage",
+    "hint": "The official minimum wage data has not been updated for {period} onward yet. Enter the hourly minimum wage announced by the Ministry of Labor.",
+    "minimumHourlyWage": "Announced hourly minimum wage (NT$)",
+    "sourceLabel": {
+      "label": "Announcement title",
+      "placeholder": "e.g. Ministry of Labor minimum wage announcement",
+      "required": "Enter the announcement title.",
+      "maxLength": "The announcement title can be at most {max} characters."
+    },
+    "sourceUrl": {
+      "label": "Announcement link",
+      "invalid": "Enter an announcement link starting with https."
+    },
+    "success": "Confirmed the hourly minimum wage for {period}"
+  },
+  "ingest": {
+    "label": "Update from government data now",
+    "result": "Written: {written}; skipped: {skipped}; rejected: {rejected}",
+    "none": "none",
+    "unchecked": "The official data could not be fully fetched or a period was rejected, so the latest period was not marked as checked."
+  }
+}

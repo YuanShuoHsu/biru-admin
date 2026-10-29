@@ -1,0 +1,39 @@
+{
+  "label": "薪资规则集",
+  "actions": "操作",
+  "effectiveFrom": "生效月份",
+  "minimumMonthlyWageCents": "每月最低工资",
+  "minimumHourlyWageCents": "每小时最低工资",
+  "laborPercentBp": "劳保费率",
+  "employmentPercentBp": "就保费率",
+  "healthPercentBp": "健保费率",
+  "withholdingRateBp": "薪资扣缴率",
+  "checkedAt": "最后检查时间",
+  "status": {
+    "label": "状态",
+    "confirmed": "已确认",
+    "unconfirmed": "待确认最低工资"
+  },
+  "confirm": {
+    "title": "确认最低工资",
+    "hint": "官方最低工资数据尚未更新 {period} 起的数值，请依劳动部公告填入每小时最低工资。",
+    "minimumHourlyWage": "公告每小时最低工资（元）",
+    "sourceLabel": {
+      "label": "公告名称",
+      "placeholder": "例：劳动部公告 115 年最低工资",
+      "required": "请输入公告名称。",
+      "maxLength": "公告名称最多 {max} 个字。"
+    },
+    "sourceUrl": {
+      "label": "公告链接",
+      "invalid": "请输入 https 开头的公告链接。"
+    },
+    "success": "已确认 {period} 的每小时最低工资"
+  },
+  "ingest": {
+    "label": "立即从政府数据更新",
+    "result": "写入：{written}；略过：{skipped}；拒绝：{rejected}",
+    "none": "无",
+    "unchecked": "未能完整获取官方数据或有版本被拒绝，最新版本未标记为已检查。"
+  }
+}
