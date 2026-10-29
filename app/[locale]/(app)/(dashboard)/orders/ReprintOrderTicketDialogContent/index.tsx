@@ -4,8 +4,10 @@ import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useState } from "react";
 
-import CustomizedDialogActions from "@/components/CustomizedDialogs/Actions";
-import CustomizedDialogContent from "@/components/CustomizedDialogs/Content";
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 import StyledFormControlLabel from "@/components/StyledFormControlLabel";
 
 import {

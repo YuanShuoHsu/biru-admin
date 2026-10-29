@@ -5,8 +5,10 @@ import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useMemo, useState } from "react";
 import useSWR from "swr";
 
-import CustomizedDialogActions from "@/components/CustomizedDialogs/Actions";
-import CustomizedDialogContent from "@/components/CustomizedDialogs/Content";
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 
 import {
   Alert,

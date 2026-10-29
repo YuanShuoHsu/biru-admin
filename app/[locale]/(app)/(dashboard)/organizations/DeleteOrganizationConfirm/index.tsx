@@ -3,8 +3,10 @@
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import CustomizedDialogActions from "@/components/CustomizedDialogs/Actions";
-import CustomizedDialogContent from "@/components/CustomizedDialogs/Content";
+import {
+  CustomizedDialogActions,
+  CustomizedDialogContent,
+} from "@/components/CustomizedDialogs";
 
 import {
   DialogContentText,
