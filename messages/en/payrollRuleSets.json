@@ -9,7 +9,7 @@
   "healthPercentBp": "Health insurance rate",
   "withholdingRateBp": "Salary withholding rate",
   "checkedAt": "Last checked",
-  "staleAlert": "Payroll rules have not been checked against government data this month, so payroll drafts are blocked. Click \"{ingest}\".",
+  "staleAlert": "Payroll rules have not been checked against government data this month, so this month's payroll drafts are blocked. Click \"{ingest}\".",
   "status": {
     "label": "Status",
     "confirmed": "Confirmed",

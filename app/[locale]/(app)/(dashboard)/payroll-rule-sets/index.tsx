@@ -60,7 +60,7 @@ const isUnconfirmed = ({ unconfirmed }: PayrollRuleSet) =>
 
 const STATUS_COLORS = {
   confirmed: "success",
-  stale: "error",
+  stale: "warning",
   unconfirmed: "warning",
 } as const;
 

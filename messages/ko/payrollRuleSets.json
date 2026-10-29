@@ -9,7 +9,7 @@
   "healthPercentBp": "건강보험 요율",
   "withholdingRateBp": "급여 원천징수율",
   "checkedAt": "마지막 확인 시간",
-  "staleAlert": "급여 계산 규칙이 이번 달에 아직 정부 데이터와 대조되지 않아 급여 초안이 차단됩니다. \"{ingest}\"을(를) 눌러 주세요.",
+  "staleAlert": "급여 계산 규칙이 이번 달에 아직 정부 데이터와 대조되지 않아 이번 달 급여 초안이 차단됩니다. \"{ingest}\"을(를) 눌러 주세요.",
   "status": {
     "label": "상태",
     "confirmed": "확인됨",
