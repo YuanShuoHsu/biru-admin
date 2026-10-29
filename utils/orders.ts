@@ -4,7 +4,10 @@ import { fetcher } from "./fetcher";
 
 import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
 
-import type { AdminOrderBoardColumn, AdminOrderResponse } from "@/types/orders";
+import type {
+  AdminOrderBoardColumn,
+  AdminOrderListResponse,
+} from "@/types/orders";
 
 interface GetAdminOrdersQuery {
   page?: number;
@@ -54,10 +57,7 @@ export const getAdminOrders = cache(
     for (const entry of quickFilterEnums || [])
       params.append("quickFilterEnums", entry);
 
-    const result = await fetcher<{
-      data: AdminOrderResponse[];
-      total: number;
-    }>(
+    const result = await fetcher<AdminOrderListResponse>(
       `/api/organizations/${organizationSlug}/orders?${params.toString()}`,
       init,
     );

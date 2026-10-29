@@ -48,6 +48,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type {
   DeletedRecordBatch,
+  DeletedRecordBatchListResponse,
   DeletedRecordFilterField,
   DeletedRecordSortField,
 } from "@/types/deletedRecords";
@@ -169,7 +170,7 @@ const DeletedRecords = ({
       sortModel,
     ],
     () =>
-      fetcher<{ data: DeletedRecordBatch[]; total: number }>(
+      fetcher<DeletedRecordBatchListResponse>(
         `${getDeletedRecordsPath(organizationSlug)}?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
       ),
     {

@@ -63,6 +63,18 @@ export const getDefaultOrganizationSlug = cache(async () => {
   );
 });
 
+export const getFullOrganization = cache(async (organizationSlug: string) => {
+  const cookieStore = await cookies();
+
+  const { data, error } = await authClient.organization.getFullOrganization({
+    query: { organizationSlug },
+    fetchOptions: { headers: { cookie: cookieStore.toString() } },
+  });
+  if (error) throw toFetchError(error);
+
+  return data;
+});
+
 export const getResolvedAdminOrganization = cache(
   async (organizationSlug: string | undefined) => {
     const [organizations, session] = await Promise.all([

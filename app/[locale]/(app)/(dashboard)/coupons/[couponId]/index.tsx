@@ -35,6 +35,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 import type {
   CouponRecipient,
   CouponRecipientFilterField,
+  CouponRecipientListResponse,
   CouponRecipientSortField,
 } from "@/types/coupons";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
@@ -140,7 +141,7 @@ const CouponRecipients = ({
       sortModel,
     ],
     ([path]) =>
-      fetcher<{ data: CouponRecipient[]; total: number }>(
+      fetcher<CouponRecipientListResponse>(
         `${path}?${getDataGridSearchParams(
           paginationModel,
           filterModel,

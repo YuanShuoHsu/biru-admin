@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
 import OrganizationsSlugPickup from ".";
@@ -9,11 +8,9 @@ import ErrorAlert from "@/components/ErrorAlert";
 
 import type { Locale } from "@/i18n/routing";
 
-import { authClient } from "@/lib/auth-client";
-
 import { settle } from "@/utils/fetcher";
 import { getOrganization, hasRolePermission } from "@/utils/organizations";
-import { getSession } from "@/utils/session";
+import { getFullOrganization, getSession } from "@/utils/session";
 
 interface OrganizationsSlugPickupPageProps {
   params: Promise<{ locale: Locale; slug: string }>;
@@ -34,17 +31,14 @@ export const generateMetadata = async ({
 const OrganizationsSlugPickupPage = async ({
   params,
 }: OrganizationsSlugPickupPageProps) => {
-  const [cookieStore, { slug }] = await Promise.all([cookies(), params]);
+  const { slug } = await params;
 
   const [
     { data, error: fullOrganizationError },
     { data: organization, error },
     session,
   ] = await Promise.all([
-    authClient.organization.getFullOrganization({
-      query: { organizationSlug: decodeURIComponent(slug) },
-      fetchOptions: { headers: { cookie: cookieStore.toString() } },
-    }),
+    settle(getFullOrganization(decodeURIComponent(slug))),
     settle(getOrganization(decodeURIComponent(slug))),
     getSession(),
   ]);

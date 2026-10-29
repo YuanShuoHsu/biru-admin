@@ -7,7 +7,7 @@ import { DEFAULT_PAGE_SIZE } from "@/constants/pagination";
 
 import type {
   AuditLogFilterField,
-  AuditLogResponse,
+  AuditLogListResponse,
   AuditLogSortField,
   AuditResource,
 } from "@/types/audit";
@@ -151,10 +151,10 @@ export const getAuditLogs = cache(
     for (const entry of quickFilterEnums || [])
       params.append("quickFilterEnums", entry);
 
-    const result = await fetcher<{
-      data: AuditLogResponse[];
-      total: number;
-    }>(`${getAuditLogsPath(organizationSlug)}?${params.toString()}`, init);
+    const result = await fetcher<AuditLogListResponse>(
+      `${getAuditLogsPath(organizationSlug)}?${params.toString()}`,
+      init,
+    );
 
     return {
       logs: Array.isArray(result.data) ? result.data : [],

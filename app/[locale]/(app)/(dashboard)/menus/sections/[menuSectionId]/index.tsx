@@ -91,6 +91,7 @@ import type {
 import type {
   MenuItem,
   MenuItemFilterField,
+  MenuItemListResponse,
   MenuItemSortField,
 } from "@/types/menus";
 import type { Organization } from "@/types/organizations";
@@ -266,7 +267,7 @@ const MenusMenuIdSectionId = ({
       sortModel,
     ],
     async () => {
-      return fetcher<{ data: MenuItem[]; total: number }>(
+      return fetcher<MenuItemListResponse>(
         `/api/menu-sections/${menuSectionId}/menu-items?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
       );
     },

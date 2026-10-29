@@ -14,6 +14,8 @@ export type CouponListItem = components["schemas"]["CouponListItemDto"];
 export type CouponListResponse = components["schemas"]["CouponListResponseDto"];
 export type CouponRecipient =
   components["schemas"]["CouponRecipientResponseDto"];
+export type CouponRecipientListResponse =
+  components["schemas"]["CouponRecipientListResponseDto"];
 export type CouponScope = Coupon["scope"];
 export type CreateCouponDto = components["schemas"]["CreateCouponDto"];
 export type GrantCouponDto = components["schemas"]["GrantCouponDto"];

@@ -95,6 +95,7 @@ import type {
   User,
   UserFilterField,
   UserFilterOperator,
+  UserListResponse,
   UserRole,
   UserSortField,
 } from "@/types/admins";
@@ -262,9 +263,7 @@ const Admins = ({
         enumOptions,
       );
 
-      return fetcher<{ data: User[]; total: number }>(
-        `/api/users/list?${params}`,
-      );
+      return fetcher<UserListResponse>(`/api/users/list?${params}`);
     },
     {
       fallbackData: { data: initialRows, total: initialRowCount },

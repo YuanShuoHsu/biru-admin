@@ -9,13 +9,11 @@ import ErrorAlert from "@/components/ErrorAlert";
 
 import type { Locale } from "@/i18n/routing";
 
-import { authClient } from "@/lib/auth-client";
-
 import type { WaitlistSettingsResponse } from "@/types/waitlist";
 
 import { fetcher, settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
-import { getSession } from "@/utils/session";
+import { getFullOrganization, getSession } from "@/utils/session";
 
 interface OrganizationsSlugWaitlistPageProps {
   params: Promise<{ locale: Locale; slug: string }>;
@@ -42,10 +40,7 @@ const OrganizationsSlugWaitlistPage = async ({
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
   const [{ data, error: organizationError }, session] = await Promise.all([
-    authClient.organization.getFullOrganization({
-      query: { organizationSlug },
-      fetchOptions,
-    }),
+    settle(getFullOrganization(organizationSlug)),
     getSession(),
   ]);
 

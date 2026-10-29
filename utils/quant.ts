@@ -3,8 +3,8 @@ import { cache } from "react";
 import { fetcher } from "./fetcher";
 
 import type {
-  QuantBot,
   QuantBotFilterField,
+  QuantBotListResponse,
   QuantBotSortField,
 } from "@/types/quant";
 
@@ -15,7 +15,7 @@ export const getQuantBots = cache(
     query: GridQuery<QuantBotFilterField, QuantBotSortField> = {},
     init?: RequestInit,
   ) => {
-    const result = await fetcher<{ data: QuantBot[]; total: number }>(
+    const result = await fetcher<QuantBotListResponse>(
       `/api/quant/bots?${getGridSearchParams(query).toString()}`,
       init,
     );

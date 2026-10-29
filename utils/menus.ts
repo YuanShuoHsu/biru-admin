@@ -8,11 +8,14 @@ import { LOW_STOCK_THRESHOLD } from "@/constants/menus";
 import type {
   Menu,
   MenuItem,
-  MenuItemAddOn,
-  MenuItemModifierGroup,
+  MenuItemAddOnListResponse,
+  MenuItemListResponse,
+  MenuItemModifierGroupListResponse,
   MenuSection,
-  Modifier,
+  MenuSectionListResponse,
   ModifierGroup,
+  ModifierGroupListResponse,
+  ModifierListResponse,
   OrderMenuOffer,
 } from "@/types/menus";
 
@@ -60,7 +63,7 @@ export const getAdminMenuSections = cache(
         }),
       ...(quickFilterValue && { quickFilterValue }),
     });
-    const result = await fetcher<{ data: MenuSection[]; total: number }>(
+    const result = await fetcher<MenuSectionListResponse>(
       `/api/menus/${menuId}/menu-sections?${params.toString()}`,
       init,
     );
@@ -117,7 +120,7 @@ export const getAdminMenuSectionItems = cache(
     for (const entry of quickFilterEnums || [])
       params.append("quickFilterEnums", entry);
 
-    const result = await fetcher<{ data: MenuItem[]; total: number }>(
+    const result = await fetcher<MenuItemListResponse>(
       `/api/menu-sections/${sectionId}/menu-items?${params.toString()}`,
       init,
     );
@@ -158,10 +161,10 @@ export const getAdminMenuItemAddOns = cache(
         }),
       ...(quickFilterValue && { quickFilterValue }),
     });
-    const result = await fetcher<{
-      data: MenuItemAddOn[];
-      total: number;
-    }>(`/api/menu-items/${menuItemId}/add-ons?${params.toString()}`, init);
+    const result = await fetcher<MenuItemAddOnListResponse>(
+      `/api/menu-items/${menuItemId}/add-ons?${params.toString()}`,
+      init,
+    );
     return {
       addOns: Array.isArray(result.data) ? result.data : [],
       total: result.total || 0,
@@ -199,7 +202,7 @@ export const getAdminModifierGroups = cache(
         }),
       ...(quickFilterValue && { quickFilterValue }),
     });
-    const result = await fetcher<{ data: ModifierGroup[]; total: number }>(
+    const result = await fetcher<ModifierGroupListResponse>(
       `/api/menus/${menuId}/modifier-groups?${params.toString()}`,
       init,
     );
@@ -250,7 +253,7 @@ export const getAdminModifiers = cache(
     for (const entry of quickFilterEnums || [])
       params.append("quickFilterEnums", entry);
 
-    const result = await fetcher<{ data: Modifier[]; total: number }>(
+    const result = await fetcher<ModifierListResponse>(
       `/api/modifier-groups/${groupId}/modifiers?${params.toString()}`,
       init,
     );
@@ -291,10 +294,7 @@ export const getAdminMenuItemModifierGroups = cache(
         }),
       ...(quickFilterValue && { quickFilterValue }),
     });
-    const result = await fetcher<{
-      data: MenuItemModifierGroup[];
-      total: number;
-    }>(
+    const result = await fetcher<MenuItemModifierGroupListResponse>(
       `/api/menu-items/${menuItemId}/modifier-groups?${params.toString()}`,
       init,
     );

@@ -6,6 +6,8 @@ import {
 
 export type DeletedRecordBatch =
   components["schemas"]["DeletedRecordBatchResponseDto"];
+export type DeletedRecordBatchListResponse =
+  components["schemas"]["DeletedRecordBatchListResponseDto"];
 
 export type DeletedRecordPermission =
   components["schemas"]["DeletedRecordPermissionDto"];

@@ -5,6 +5,8 @@ import {
 } from "@/types/api";
 
 export type AuditLogResponse = components["schemas"]["AuditLogResponseDto"];
+export type AuditLogListResponse =
+  components["schemas"]["AuditLogListResponseDto"];
 export type AuditResource = components["schemas"]["AuditResource"];
 export type AuditAction = components["schemas"]["AuditAction"];
 

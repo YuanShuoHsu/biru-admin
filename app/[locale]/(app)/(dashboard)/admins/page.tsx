@@ -14,7 +14,7 @@ import {
   userSortFieldValues,
 } from "@/types/api";
 
-import type { User } from "@/types/admins";
+import type { User, UserListResponse } from "@/types/admins";
 
 import {
   getGridSearchParams,
@@ -100,10 +100,10 @@ const AdminsContent = async ({ params, searchParams }: AdminsPageProps) => {
     sortDirection,
   });
 
-  const { data, total } = await fetcher<{
-    data: User[];
-    total: number;
-  }>(`/api/users/list?${queryParams}`, { headers: fetchOptions.headers });
+  const { data, total } = await fetcher<UserListResponse>(
+    `/api/users/list?${queryParams}`,
+    { headers: fetchOptions.headers },
+  );
 
   const rows: User[] = data || [];
   const rowCount = total || 0;
