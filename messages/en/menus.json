@@ -230,7 +230,7 @@
     },
     "observedPrepMinutes": {
       "description": "Median minutes per order, from payment (or ordering, if unpaid) to ready for pickup, across non-scheduled orders with this item served in the last 14 days. Includes other items in the same order and queueing. Not shown with fewer than 5 orders.",
-      "label": "Actual prep time (14-day median)"
+      "label": "Actual preparation time (14-day median)"
     },
     "offers": {
       "availableHours": {

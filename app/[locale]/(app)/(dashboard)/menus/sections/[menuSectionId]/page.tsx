@@ -24,11 +24,7 @@ import {
 } from "@/utils/menus";
 import { getAdminPrepTimes } from "@/utils/orders";
 import { hasRolePermission } from "@/utils/organizations";
-import {
-  getAdminOrganization,
-  getMemberRole,
-  getSession,
-} from "@/utils/session";
+import { getAdminOrganization, getMemberRole } from "@/utils/session";
 
 interface MenusMenuIdSectionIdPageProps {
   params: Promise<{ locale: Locale; menuSectionId: string }>;
@@ -107,7 +103,7 @@ const MenusMenuIdSectionIdContent = async ({
     ? getQuickFilterEnums(quickFilterValue, getMenuEnumOptions(tMenus, tOrder))
     : [];
 
-  const [{ items: rows, total: rowCount }, role, session] = await Promise.all([
+  const [{ items: rows, total: rowCount }, role] = await Promise.all([
     getAdminMenuSectionItems(
       menuSectionId,
       page,
@@ -122,7 +118,6 @@ const MenusMenuIdSectionIdContent = async ({
       fetchOptions,
     ),
     getMemberRole(selectedOrganization.id),
-    getSession(),
   ]);
 
   const canWrite = hasRolePermission(role, { menu: ["update"] });
@@ -132,11 +127,9 @@ const MenusMenuIdSectionIdContent = async ({
   const canUpdateAvailability = hasRolePermission(role, {
     itemAvailability: ["update"],
   });
-  const prepTimes =
-    session?.user.role === "admin" ||
-    hasRolePermission(role, { order: ["read"] })
-      ? await getAdminPrepTimes(selectedOrganization.slug, fetchOptions)
-      : undefined;
+  const prepTimes = hasRolePermission(role, { order: ["read"] })
+    ? await getAdminPrepTimes(selectedOrganization.slug, fetchOptions)
+    : undefined;
 
   return (
     <MenusMenuIdSectionId
