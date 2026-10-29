@@ -8,13 +8,13 @@ export const useCreateOrganizationFormSchema = () => {
     logo: z.string().trim().optional(),
     name: z
       .string()
-      .min(1, { error: tValidation("name.required") })
-      .trim(),
+      .trim()
+      .min(1, { error: tValidation("name.required") }),
     slug: z
       .string()
+      .trim()
       .min(1, { error: tValidation("slug.required") })
-      .regex(/[a-zA-Z]/, { error: tValidation("slug.letter") })
-      .trim(),
+      .regex(/[a-zA-Z]/, { error: tValidation("slug.letter") }),
   });
 };
 
