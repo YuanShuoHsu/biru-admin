@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent, useState } from "react";
+import { type BaseSyntheticEvent, useRef, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 import {
@@ -22,6 +22,7 @@ import { Autocomplete, CircularProgress, TextField } from "@mui/material";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Ingredient, Recipe, RecipeIngredient } from "@/types/inventory";
+import type { MenuItem } from "@/types/menus";
 
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
@@ -31,14 +32,16 @@ type IngredientOption = Pick<Ingredient, "id" | "name" | "unitCode">;
 interface RecipeIngredientDialogProps {
   material: RecipeIngredient | null;
   materials: RecipeIngredient[];
+  menuItem?: MenuItem;
   mutate: () => void;
   organizationSlug: string;
-  recipe: Recipe;
+  recipe: Recipe | null;
 }
 
 const RecipeIngredientDialog = ({
   material,
   materials,
+  menuItem,
   mutate,
   organizationSlug,
   recipe,
@@ -86,14 +89,38 @@ const RecipeIngredientDialog = ({
     ingredient ? [ingredient] : [],
   );
 
+  // 材料送出失敗後重送時沿用已建立的食譜，否則會撞到 menu_item_id 的 unique 限制
+  const createdRecipe = useRef<Recipe | null>(null);
+
   const onSubmitHandler = async (values: RecipeIngredientForm) => {
     try {
       setDialog({ confirmLoading: true });
 
+      let target = recipe ?? createdRecipe.current;
+
+      // 食譜對使用者不是獨立的東西，第一次加材料時才隱式建立；份量由後端預設帶 1
+      if (!target) {
+        target = await fetcher<Recipe>(
+          `/api/organizations/${organizationSlug}/recipes`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              menuItemId: menuItem?.id,
+              name: menuItem?.name,
+            }),
+          },
+        );
+
+        createdRecipe.current = target;
+
+        mutate();
+      }
+
       await fetcher<RecipeIngredient>(
         material
-          ? `/api/recipes/${recipe.id}/recipe-ingredients/${material.id}`
-          : `/api/recipes/${recipe.id}/recipe-ingredients`,
+          ? `/api/recipes/${target.id}/recipe-ingredients/${material.id}`
+          : `/api/recipes/${target.id}/recipe-ingredients`,
         {
           method: material ? "PATCH" : "POST",
           headers: { "Content-Type": "application/json" },

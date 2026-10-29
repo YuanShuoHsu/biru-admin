@@ -112,9 +112,6 @@
   "label": "Inventory",
   "recipes": {
     "actions": {
-      "createRecipe": {
-        "error": "Failed to create recipe"
-      },
       "updateRecipe": {
         "error": "Failed to update servings",
         "success": "Servings updated",

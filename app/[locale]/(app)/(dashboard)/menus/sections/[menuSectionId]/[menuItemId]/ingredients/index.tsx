@@ -1,8 +1,7 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import { enqueueSnackbar } from "notistack";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import useSWR from "swr";
 
 import RecipeIngredientDialog from "./RecipeIngredientDialog";
@@ -84,8 +83,6 @@ const MenuItemRecipe = ({
 
   const priceCurrency = menuItem?.offer?.priceCurrency;
 
-  const [creatingRecipe, setCreatingRecipe] = useState(false);
-
   const { data: recipe, mutate: mutateRecipe } = useSWR(
     !loading && `/api/menu-items/${menuItem?.id}/recipe`,
     (url: string) =>
@@ -116,46 +113,16 @@ const MenuItemRecipe = ({
     [mutateRecipe, setDialog, tInventory],
   );
 
-  const handleCreateRecipeIngredient = useCallback(async () => {
-    let target = recipe;
-
-    // 食譜對使用者不是獨立的東西，第一次加材料時才隱式建立；份量由後端預設帶 1
-    if (!target) {
-      setCreatingRecipe(true);
-
-      try {
-        target = await fetcher<Recipe>(
-          `/api/organizations/${organizationSlug}/recipes`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              menuItemId: menuItem?.id,
-              name: menuItem?.name,
-            }),
-          },
-        );
-
-        mutateRecipe(target);
-      } catch {
-        enqueueSnackbar(tInventory("recipes.actions.createRecipe.error"), {
-          variant: "error",
-        });
-
-        return;
-      } finally {
-        setCreatingRecipe(false);
-      }
-    }
-
+  const handleCreateRecipeIngredient = useCallback(() => {
     setDialog({
       content: (
         <RecipeIngredientDialog
           material={null}
-          materials={target.recipeIngredients || []}
+          materials={recipe?.recipeIngredients || []}
+          menuItem={menuItem}
           mutate={mutateRecipe}
           organizationSlug={organizationSlug}
-          recipe={target}
+          recipe={recipe ?? null}
         />
       ),
       formId: "recipe-ingredient-form",
@@ -281,7 +248,6 @@ const MenuItemRecipe = ({
       {canCreate && !recipe && (
         <ToolbarStack direction="row">
           <Button
-            loading={creatingRecipe}
             onClick={handleCreateRecipeIngredient}
             size="small"
             startIcon={<Add />}
