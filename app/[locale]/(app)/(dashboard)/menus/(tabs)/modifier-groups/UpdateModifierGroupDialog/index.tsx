@@ -71,9 +71,7 @@ const UpdateModifierGroupDialog = ({
         params: { path: { groupId: group.id } },
         body: {
           displayName,
-          ...(minSelectionCount && {
-            minSelectionCount: Number(minSelectionCount),
-          }),
+          minSelectionCount: minSelectionCount ? Number(minSelectionCount) : 0,
           maxSelectionCount: maxSelectionCount
             ? Number(maxSelectionCount)
             : null,
