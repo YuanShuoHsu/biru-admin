@@ -112,9 +112,6 @@
   "label": "库存",
   "recipes": {
     "actions": {
-      "createRecipe": {
-        "error": "新增食谱失败"
-      },
       "updateRecipe": {
         "error": "更新份量失败",
         "success": "已更新份量",

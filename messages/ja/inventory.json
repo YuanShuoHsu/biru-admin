@@ -112,9 +112,6 @@
   "label": "在庫",
   "recipes": {
     "actions": {
-      "createRecipe": {
-        "error": "レシピの追加に失敗しました"
-      },
       "updateRecipe": {
         "error": "出来上がり分量の更新に失敗しました",
         "success": "出来上がり分量を更新しました",

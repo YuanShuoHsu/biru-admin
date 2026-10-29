@@ -112,9 +112,6 @@
   "label": "庫存",
   "recipes": {
     "actions": {
-      "createRecipe": {
-        "error": "新增食譜失敗"
-      },
       "updateRecipe": {
         "error": "更新份量失敗",
         "success": "已更新份量",
