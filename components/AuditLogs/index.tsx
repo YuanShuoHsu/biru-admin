@@ -329,7 +329,7 @@ const ATTENDANCE_FIELD_LABEL_KEYS = {
   latitude: "latitude.label",
   longitude: "longitude.label",
   radiusMeters: "radiusMeters.label",
-  graceMinutes: "graceMinutes.label",
+  "attendanceSetting.graceMinutes": "graceMinutes.label",
   payday: "payday.label",
   paydayNextMonth: "paydayNextMonth",
   overtimeAgreedFrom: "overtimeAgreedFrom.label",
@@ -738,6 +738,7 @@ const AuditLogs = ({
               field: "organizationId",
               filterOperators: enumFilterOperators,
               headerName: tAudit("organization"),
+              sortable: false,
               type: "singleSelect" as const,
               valueGetter: (value: string | null) =>
                 value ?? PLATFORM_ORGANIZATION_ID,
@@ -756,6 +757,7 @@ const AuditLogs = ({
         filterOperators: stringFilterOperators,
         headerName: tAudit("actorEmail"),
         renderCell: renderEmptyableCell,
+        sortable: false,
       },
       {
         field: "action",
