@@ -12,14 +12,22 @@ import {
 } from "@/types/api";
 
 export type Ingredient = components["schemas"]["IngredientResponseDto"];
+export type IngredientListResponse =
+  components["schemas"]["IngredientListResponseDto"];
 export type InventoryTransaction =
   components["schemas"]["InventoryTransactionResponseDto"];
+export type InventoryTransactionListResponse =
+  components["schemas"]["InventoryTransactionListResponseDto"];
 export type Recipe = components["schemas"]["RecipeResponseDto"];
 export type MenuItemRecipeDetail =
   components["schemas"]["MenuItemRecipeDetailResponseDto"];
 export type RecipeIngredient =
   components["schemas"]["RecipeIngredientResponseDto"];
+export type RecipeIngredientListResponse =
+  components["schemas"]["RecipeIngredientListResponseDto"];
 export type Supplier = components["schemas"]["SupplierResponseDto"];
+export type SupplierListResponse =
+  components["schemas"]["SupplierListResponseDto"];
 
 export type CreateIngredientDto = components["schemas"]["CreateIngredientDto"];
 

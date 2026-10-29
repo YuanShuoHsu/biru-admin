@@ -5,16 +5,17 @@ import { fetcher } from "./fetcher";
 import type {
   Ingredient,
   IngredientFilterField,
+  IngredientListResponse,
   IngredientSortField,
-  InventoryTransaction,
   InventoryTransactionFilterField,
+  InventoryTransactionListResponse,
   InventoryTransactionSortField,
   MenuItemRecipeDetail,
-  RecipeIngredient,
   RecipeIngredientFilterField,
+  RecipeIngredientListResponse,
   RecipeIngredientSortField,
-  Supplier,
   SupplierFilterField,
+  SupplierListResponse,
   SupplierSortField,
 } from "@/types/inventory";
 
@@ -32,7 +33,7 @@ export const getIngredients = cache(
     if (lowStock) params.set("lowStock", "true");
 
     try {
-      const result = await fetcher<{ data: Ingredient[]; total: number }>(
+      const result = await fetcher<IngredientListResponse>(
         `/api/organizations/${organizationSlug}/ingredients?${params}`,
         init,
       );
@@ -70,10 +71,7 @@ export const getInventoryTransactions = cache(
     init?: RequestInit,
   ) => {
     try {
-      const result = await fetcher<{
-        data: InventoryTransaction[];
-        total: number;
-      }>(
+      const result = await fetcher<InventoryTransactionListResponse>(
         `/api/ingredients/${ingredientId}/inventory-transactions?${getGridSearchParams(query).toString()}`,
         init,
       );
@@ -95,7 +93,7 @@ export const getSuppliers = cache(
     init?: RequestInit,
   ) => {
     try {
-      const result = await fetcher<{ data: Supplier[]; total: number }>(
+      const result = await fetcher<SupplierListResponse>(
         `/api/organizations/${organizationSlug}/suppliers?${getGridSearchParams(query).toString()}`,
         init,
       );
@@ -120,10 +118,7 @@ export const getRecipeIngredients = cache(
     init?: RequestInit,
   ) => {
     try {
-      const result = await fetcher<{
-        data: RecipeIngredient[];
-        total: number;
-      }>(
+      const result = await fetcher<RecipeIngredientListResponse>(
         `/api/recipes/${recipeId}/recipe-ingredients?${getGridSearchParams(query).toString()}`,
         init,
       );

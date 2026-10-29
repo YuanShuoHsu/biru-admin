@@ -5,8 +5,8 @@ import { fetcher } from "./fetcher";
 import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
 
 import type {
-  Banner,
   BannerFilterField,
+  BannerListResponse,
   BannerSortField,
 } from "@/types/banners";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
@@ -59,7 +59,7 @@ export const getBanners = cache(
       for (const entry of quickFilterEnums || [])
         params.append("quickFilterEnums", entry);
 
-      const result = await fetcher<{ data: Banner[]; total: number }>(
+      const result = await fetcher<BannerListResponse>(
         `/api/banners?${params.toString()}`,
         init,
       );

@@ -63,6 +63,7 @@ import type {
   AddOnFilterField,
   AddOnSortField,
   MenuItemAddOn,
+  MenuItemAddOnListResponse,
 } from "@/types/menus";
 
 import {
@@ -189,10 +190,7 @@ const MenuItemAddOns = ({
       sortModel,
     ],
     async () => {
-      return fetcher<{
-        data: MenuItemAddOn[];
-        total: number;
-      }>(
+      return fetcher<MenuItemAddOnListResponse>(
         `/api/menu-items/${menuItemId}/add-ons?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
       );
     },

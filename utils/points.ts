@@ -3,7 +3,7 @@ import { cache } from "react";
 import { fetcher } from "./fetcher";
 
 import type {
-  OrganizationPointTransaction,
+  OrganizationPointTransactionListResponse,
   PointSetting,
   PointTransactionFilterField,
   PointTransactionSortField,
@@ -25,10 +25,7 @@ export const getOrganizationPointTransactions = cache(
     init?: RequestInit,
   ) => {
     try {
-      const result = await fetcher<{
-        data: OrganizationPointTransaction[];
-        total: number;
-      }>(
+      const result = await fetcher<OrganizationPointTransactionListResponse>(
         `/api/organizations/${organizationSlug}/point-transactions?${getGridSearchParams(query).toString()}`,
         init,
       );

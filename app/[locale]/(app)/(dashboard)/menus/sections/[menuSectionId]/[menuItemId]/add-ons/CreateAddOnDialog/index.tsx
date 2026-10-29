@@ -25,6 +25,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type {
   MenuItemAddOn,
+  MenuItemAddOnListResponse,
   MenuItem as MenuItemDto,
   MenuSection,
 } from "@/types/menus";
@@ -74,12 +75,9 @@ const CreateAddOnDialog = ({
   const { data: addOns = [] } = useSWR(
     `/api/menu-items/${menuItemId}/add-ons?limit=100&offset=0`,
     () =>
-      fetcher<{
-        data: MenuItemAddOn[];
-        total: number;
-      }>(`/api/menu-items/${menuItemId}/add-ons?limit=100&offset=0`).then(
-        ({ data }) => data,
-      ),
+      fetcher<MenuItemAddOnListResponse>(
+        `/api/menu-items/${menuItemId}/add-ons?limit=100&offset=0`,
+      ).then(({ data }) => data),
   );
 
   const usedSectionIds = new Set(

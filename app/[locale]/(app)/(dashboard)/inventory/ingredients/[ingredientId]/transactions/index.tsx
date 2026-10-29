@@ -40,6 +40,7 @@ import type {
   Ingredient,
   InventoryTransaction,
   InventoryTransactionFilterField,
+  InventoryTransactionListResponse,
   InventoryTransactionSortField,
 } from "@/types/inventory";
 
@@ -147,7 +148,7 @@ const IngredientTransactions = ({
       sortModel,
     ],
     async () =>
-      fetcher<{ data: InventoryTransaction[]; total: number }>(
+      fetcher<InventoryTransactionListResponse>(
         `/api/ingredients/${ingredientId}/inventory-transactions?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
       ),
     {

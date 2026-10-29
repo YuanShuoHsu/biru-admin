@@ -57,6 +57,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type {
   Banner,
   BannerFilterField,
+  BannerListResponse,
   BannerSortField,
 } from "@/types/banners";
 import type {
@@ -191,7 +192,7 @@ const Banners = ({
       sortModel,
     ],
     async () =>
-      fetcher<{ data: Banner[]; total: number }>(
+      fetcher<BannerListResponse>(
         `/api/banners?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
       ),
     {

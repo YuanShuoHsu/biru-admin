@@ -3,7 +3,7 @@ import { cache } from "react";
 import { fetcher } from "./fetcher";
 
 import type {
-  DeletedRecordBatch,
+  DeletedRecordBatchListResponse,
   DeletedRecordFilterField,
   DeletedRecordPermission,
   DeletedRecordSortField,
@@ -23,10 +23,7 @@ export const getDeletedRecords = cache(
     init?: RequestInit,
   ) => {
     try {
-      const result = await fetcher<{
-        data: DeletedRecordBatch[];
-        total: number;
-      }>(
+      const result = await fetcher<DeletedRecordBatchListResponse>(
         `${getDeletedRecordsPath(organizationSlug)}?${getGridSearchParams(query).toString()}`,
         init,
       );

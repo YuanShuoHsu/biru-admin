@@ -4,7 +4,7 @@ import { fetcher } from "./fetcher";
 
 import type {
   WaitlistTicketFilterField,
-  WaitlistTicketListItem,
+  WaitlistTicketListResponse,
   WaitlistTicketSortField,
 } from "@/types/waitlist";
 
@@ -17,10 +17,7 @@ export const getWaitlistTickets = cache(
     init?: RequestInit,
   ) => {
     try {
-      const result = await fetcher<{
-        data: WaitlistTicketListItem[];
-        total: number;
-      }>(
+      const result = await fetcher<WaitlistTicketListResponse>(
         `/api/organizations/${organizationSlug}/waitlist/tickets/list?${getGridSearchParams(query).toString()}`,
         init,
       );
