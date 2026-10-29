@@ -2,7 +2,7 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import RecipeIngredientDialog from "./RecipeIngredientDialog";
@@ -84,6 +84,8 @@ const MenuItemRecipe = ({
 
   const priceCurrency = menuItem?.offer?.priceCurrency;
 
+  const [creatingRecipe, setCreatingRecipe] = useState(false);
+
   const { data: recipe, mutate: mutateRecipe } = useSWR(
     !loading && `/api/menu-items/${menuItem?.id}/recipe`,
     (url: string) =>
@@ -119,6 +121,8 @@ const MenuItemRecipe = ({
 
     // 食譜對使用者不是獨立的東西，第一次加材料時才隱式建立；份量由後端預設帶 1
     if (!target) {
+      setCreatingRecipe(true);
+
       try {
         target = await fetcher<Recipe>(
           `/api/organizations/${organizationSlug}/recipes`,
@@ -139,6 +143,8 @@ const MenuItemRecipe = ({
         });
 
         return;
+      } finally {
+        setCreatingRecipe(false);
       }
     }
 
@@ -275,6 +281,7 @@ const MenuItemRecipe = ({
       {canCreate && !recipe && (
         <ToolbarStack direction="row">
           <Button
+            loading={creatingRecipe}
             onClick={handleCreateRecipeIngredient}
             size="small"
             startIcon={<Add />}
