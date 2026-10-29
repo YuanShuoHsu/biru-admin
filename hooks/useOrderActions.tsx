@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import useSWR from "swr";
 
 import {
@@ -171,30 +171,30 @@ export const useOrderActions = (
   const [pendingInvoicePrintOrderIds, setPendingInvoicePrintOrderIds] =
     useState<ReadonlySet<string>>(new Set());
 
+  const pendingInvoicePrintOrderIdsRef = useRef(new Set<string>());
+
   const withPendingInvoicePrint = useCallback(
     async (order: AdminOrderResponse, request: () => Promise<void>) => {
-      if (pendingInvoicePrintOrderIds.has(order.id)) return;
+      const pendingIds = pendingInvoicePrintOrderIdsRef.current;
+      if (pendingIds.has(order.id)) return;
 
-      setPendingInvoicePrintOrderIds((previous) =>
-        new Set(previous).add(order.id),
-      );
+      pendingIds.add(order.id);
+      setPendingInvoicePrintOrderIds(new Set(pendingIds));
 
       try {
         await request();
       } catch (error) {
         enqueueSnackbar(getErrorMessage(error), { variant: "error" });
       } finally {
-        await mutate();
-
-        setPendingInvoicePrintOrderIds((previous) => {
-          const next = new Set(previous);
-          next.delete(order.id);
-
-          return next;
-        });
+        try {
+          await mutate();
+        } finally {
+          pendingIds.delete(order.id);
+          setPendingInvoicePrintOrderIds(new Set(pendingIds));
+        }
       }
     },
-    [mutate, pendingInvoicePrintOrderIds],
+    [mutate],
   );
 
   const tOrders = useTranslations("orders");
