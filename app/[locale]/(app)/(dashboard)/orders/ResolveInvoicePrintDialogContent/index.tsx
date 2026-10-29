@@ -2,8 +2,10 @@
 
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent, useEffect, useState } from "react";
+import { type BaseSyntheticEvent, useState } from "react";
 
+import CustomizedDialogActions from "@/components/CustomizedDialogs/Actions";
+import CustomizedDialogContent from "@/components/CustomizedDialogs/Content";
 import { usePrintJobErrorText } from "@/components/PrintJobChip";
 import StyledFormControlLabel from "@/components/StyledFormControlLabel";
 
@@ -60,10 +62,6 @@ const ResolveInvoicePrintDialogContent = ({
 
   const [printed, setPrinted] = useState<boolean | null>(null);
 
-  useEffect(() => {
-    setDialog({ confirmDisabled: printed === null });
-  }, [printed, setDialog]);
-
   const onSubmit = async (event: BaseSyntheticEvent) => {
     event.preventDefault();
 
@@ -115,41 +113,46 @@ const ResolveInvoicePrintDialogContent = ({
   const reason = printJobErrorText(printJob.errorCode);
 
   return (
-    <StyledStack
-      component="form"
-      id={RESOLVE_INVOICE_PRINT_FORM_ID}
-      onSubmit={onSubmit}
-    >
-      <DialogContentText>
-        {tOrders.rich("actions.resolveInvoicePrint.description", {
-          bold: (chunks) => <strong>{chunks}</strong>,
-          orderNumber: order.orderNumber,
-          reason: reason
-            ? `${tCommon("parenthesisOpen")}${reason}${tCommon("parenthesisClose")}`
-            : "",
-        })}
-      </DialogContentText>
-      <Alert severity="warning">
-        {tOrders("actions.resolveInvoicePrint.warning")}
-      </Alert>
-      <RadioGroup
-        onChange={(_, value) => setPrinted(value === "true")}
-        value={printed === null ? "" : String(printed)}
-      >
-        <StyledFormControlLabel
-          checked={printed === true}
-          control={<Radio disabled={confirmLoading} />}
-          label={tOrders("actions.resolveInvoicePrint.printed")}
-          value="true"
-        />
-        <StyledFormControlLabel
-          checked={printed === false}
-          control={<Radio disabled={confirmLoading} />}
-          label={tOrders("actions.resolveInvoicePrint.notPrinted")}
-          value="false"
-        />
-      </RadioGroup>
-    </StyledStack>
+    <>
+      <CustomizedDialogContent>
+        <StyledStack
+          component="form"
+          id={RESOLVE_INVOICE_PRINT_FORM_ID}
+          onSubmit={onSubmit}
+        >
+          <DialogContentText>
+            {tOrders.rich("actions.resolveInvoicePrint.description", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              orderNumber: order.orderNumber,
+              reason: reason
+                ? `${tCommon("parenthesisOpen")}${reason}${tCommon("parenthesisClose")}`
+                : "",
+            })}
+          </DialogContentText>
+          <Alert severity="warning">
+            {tOrders("actions.resolveInvoicePrint.warning")}
+          </Alert>
+          <RadioGroup
+            onChange={(_, value) => setPrinted(value === "true")}
+            value={printed === null ? "" : String(printed)}
+          >
+            <StyledFormControlLabel
+              checked={printed === true}
+              control={<Radio disabled={confirmLoading} />}
+              label={tOrders("actions.resolveInvoicePrint.printed")}
+              value="true"
+            />
+            <StyledFormControlLabel
+              checked={printed === false}
+              control={<Radio disabled={confirmLoading} />}
+              label={tOrders("actions.resolveInvoicePrint.notPrinted")}
+              value="false"
+            />
+          </RadioGroup>
+        </StyledStack>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions confirmDisabled={printed === null} />
+    </>
   );
 };
 

@@ -499,7 +499,7 @@ const Calendar = ({
     () =>
       setDialog({
         confirmText: tAttendance("copyWeek.confirm"),
-        content: (
+        body: (
           <CopyWeekDialog
             employeeLabel={employeeLabel}
             from={range.from.format("YYYY-MM-DD")}

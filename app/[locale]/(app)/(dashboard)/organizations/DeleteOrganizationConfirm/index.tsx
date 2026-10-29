@@ -1,7 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
+import CustomizedDialogActions from "@/components/CustomizedDialogs/Actions";
+import CustomizedDialogContent from "@/components/CustomizedDialogs/Content";
 
 import {
   DialogContentText,
@@ -30,7 +33,7 @@ interface DeleteOrganizationConfirmProps {
 const DeleteOrganizationConfirm = ({
   names,
 }: DeleteOrganizationConfirmProps) => {
-  const { confirmLoading, setDialog } = useDialogStore((state) => state);
+  const { confirmLoading } = useDialogStore((state) => state);
 
   const tOrganizations = useTranslations("organizations");
 
@@ -42,56 +45,59 @@ const DeleteOrganizationConfirm = ({
 
   const matches = typedValue.trim() === expected;
 
-  useEffect(() => {
-    setDialog({ confirmDisabled: !matches });
-  }, [matches, setDialog]);
-
   return (
-    <StyledStack>
-      <ConfirmStack>
-        <DialogContentText>
-          {isBatch
-            ? tOrganizations.rich(
-                "actions.batchDeleteOrganization.submit.confirm",
-                {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                  count: names.length,
-                },
-              )
-            : tOrganizations.rich("actions.deleteOrganization.confirm", {
-                bold: (chunks) => <strong>{chunks}</strong>,
-                name,
-              })}
-        </DialogContentText>
-        {isBatch && (
-          <List dense disablePadding>
-            {names.map((name, index) => (
-              <ListItem disableGutters key={index}>
-                <ListItemText primary={name} />
-              </ListItem>
-            ))}
-          </List>
-        )}
-      </ConfirmStack>
-      <TextField
-        autoComplete="off"
-        disabled={confirmLoading}
-        fullWidth
-        label={
-          isBatch
-            ? tOrganizations(
-                "actions.batchDeleteOrganization.submit.typeCount",
-                {
-                  count: names.length,
-                },
-              )
-            : tOrganizations("actions.deleteOrganization.typeName", { name })
-        }
-        onChange={({ target }) => setTypedValue(target.value)}
-        size="small"
-        value={typedValue}
-      />
-    </StyledStack>
+    <>
+      <CustomizedDialogContent>
+        <StyledStack>
+          <ConfirmStack>
+            <DialogContentText>
+              {isBatch
+                ? tOrganizations.rich(
+                    "actions.batchDeleteOrganization.submit.confirm",
+                    {
+                      bold: (chunks) => <strong>{chunks}</strong>,
+                      count: names.length,
+                    },
+                  )
+                : tOrganizations.rich("actions.deleteOrganization.confirm", {
+                    bold: (chunks) => <strong>{chunks}</strong>,
+                    name,
+                  })}
+            </DialogContentText>
+            {isBatch && (
+              <List dense disablePadding>
+                {names.map((name, index) => (
+                  <ListItem disableGutters key={index}>
+                    <ListItemText primary={name} />
+                  </ListItem>
+                ))}
+              </List>
+            )}
+          </ConfirmStack>
+          <TextField
+            autoComplete="off"
+            disabled={confirmLoading}
+            fullWidth
+            label={
+              isBatch
+                ? tOrganizations(
+                    "actions.batchDeleteOrganization.submit.typeCount",
+                    {
+                      count: names.length,
+                    },
+                  )
+                : tOrganizations("actions.deleteOrganization.typeName", {
+                    name,
+                  })
+            }
+            onChange={({ target }) => setTypedValue(target.value)}
+            size="small"
+            value={typedValue}
+          />
+        </StyledStack>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions confirmDisabled={!matches} />
+    </>
   );
 };
 

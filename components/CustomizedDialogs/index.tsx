@@ -3,28 +3,18 @@
 
 "use client";
 
-import { useTranslations } from "next-intl";
-import { useSnackbar } from "notistack";
-import { useState } from "react";
-
+import CustomizedDialogActions from "@/components/CustomizedDialogs/Actions";
+import CustomizedDialogContent from "@/components/CustomizedDialogs/Content";
 import Transition from "@/components/CustomizedDialogs/Transition";
 
+import { useCancelDialog } from "@/hooks/useCancelDialog";
+
 import { Close } from "@mui/icons-material";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  IconButton,
-} from "@mui/material";
+import { Dialog, DialogTitle, IconButton } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 import { useUploadAvatarStore } from "@/providers/upload-avatar-store-provider";
-
-import { getErrorMessage } from "@/utils/errors";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -49,67 +39,20 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
 }));
 
 const CustomizedDialogs = () => {
-  const [cancelLoading, setCancelLoading] = useState(false);
-
   const {
-    cancelText,
-    closeDialog,
-    confirmDisabled,
-    confirmLoading,
-    confirmText,
+    body,
     container,
     content,
     contentText,
-    formId,
     maxWidth,
-    onCancel,
-    onConfirm,
     onExited,
     open,
     resetDialog,
-    setDialog,
-    showCancel,
-    showConfirm,
     title,
   } = useDialogStore((state) => state);
   const { resetUploadAvatar } = useUploadAvatarStore((state) => state);
 
-  const loading = cancelLoading || confirmLoading;
-
-  const { enqueueSnackbar } = useSnackbar();
-
-  const tDialog = useTranslations("dialog");
-
-  const handleClose = async () => {
-    if (loading) return;
-
-    setCancelLoading(true);
-
-    try {
-      await onCancel?.();
-      closeDialog();
-    } catch (error) {
-      const message = getErrorMessage(error);
-      enqueueSnackbar(message, { variant: "error" });
-    } finally {
-      setCancelLoading(false);
-    }
-  };
-
-  const handleConfirm = async () => {
-    if (loading) return;
-
-    setDialog({ confirmLoading: true });
-
-    try {
-      await onConfirm?.();
-      closeDialog();
-    } catch (error) {
-      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
-    } finally {
-      setDialog({ confirmLoading: false });
-    }
-  };
+  const handleCancel = useCancelDialog();
 
   const handleExited = () => {
     resetDialog();
@@ -126,7 +69,7 @@ const CustomizedDialogs = () => {
       container={container}
       fullWidth
       maxWidth={maxWidth}
-      onClose={handleClose}
+      onClose={handleCancel}
       open={open}
       scroll="body"
       slotProps={{ transition: { onExited: handleExited } }}
@@ -135,41 +78,15 @@ const CustomizedDialogs = () => {
       <StyledDialogTitle id="customized-dialog-title">
         {title}
       </StyledDialogTitle>
-      <StyledIconButton aria-label="close" onClick={handleClose}>
+      <StyledIconButton aria-label="close" onClick={handleCancel}>
         <Close />
       </StyledIconButton>
-      <DialogContent dividers>
-        {contentText && (
-          <DialogContentText id="customized-dialog-description">
-            {contentText}
-          </DialogContentText>
-        )}
-        {content}
-      </DialogContent>
-      <DialogActions>
-        {showCancel && (
-          <Button
-            loading={cancelLoading}
-            loadingPosition="end"
-            onClick={handleClose}
-          >
-            {cancelText || tDialog("cancel")}
-          </Button>
-        )}
-        {showConfirm && (
-          <Button
-            autoFocus={!formId}
-            disabled={confirmDisabled}
-            form={formId}
-            loading={confirmLoading}
-            loadingPosition="end"
-            onClick={formId ? undefined : handleConfirm}
-            type={formId ? "submit" : "button"}
-          >
-            {confirmText || tDialog("confirm")}
-          </Button>
-        )}
-      </DialogActions>
+      {body ?? (
+        <>
+          <CustomizedDialogContent>{content}</CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
+      )}
     </BootstrapDialog>
   );
 };

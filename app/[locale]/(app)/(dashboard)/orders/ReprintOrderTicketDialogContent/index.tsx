@@ -2,8 +2,10 @@
 
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent, useEffect, useState } from "react";
+import { type BaseSyntheticEvent, useState } from "react";
 
+import CustomizedDialogActions from "@/components/CustomizedDialogs/Actions";
+import CustomizedDialogContent from "@/components/CustomizedDialogs/Content";
 import StyledFormControlLabel from "@/components/StyledFormControlLabel";
 
 import {
@@ -60,10 +62,6 @@ const ReprintOrderTicketDialogContent = ({
     onlyPrinter ? [onlyPrinter.id] : [],
   );
 
-  useEffect(() => {
-    setDialog({ confirmDisabled: !printerIds.length });
-  }, [printerIds, setDialog]);
-
   const handleToggle = (printerId: string, checked: boolean) =>
     setPrinterIds((current) =>
       checked
@@ -105,47 +103,52 @@ const ReprintOrderTicketDialogContent = ({
   };
 
   return (
-    <StyledStack
-      component="form"
-      id={REPRINT_ORDER_TICKET_FORM_ID}
-      onSubmit={onSubmit}
-    >
-      <DialogContentText>
-        {onlyPrinter
-          ? tOrders.rich("actions.reprintOrderTicket.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              orderNumber: order.orderNumber,
-              printer: onlyPrinter.name ?? "",
-            })
-          : tOrders.rich("actions.reprintOrderTicket.confirmMultiple", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              orderNumber: order.orderNumber,
-            })}
-      </DialogContentText>
-      {!onlyPrinter && (
-        <FormControl>
-          <FormLabel>
-            {tOrders("actions.reprintOrderTicket.printers")}
-          </FormLabel>
-          <FormGroup>
-            {printers.map(({ id, name }) => (
-              <StyledFormControlLabel
-                checked={printerIds.includes(id)}
-                control={
-                  <Checkbox
+    <>
+      <CustomizedDialogContent>
+        <StyledStack
+          component="form"
+          id={REPRINT_ORDER_TICKET_FORM_ID}
+          onSubmit={onSubmit}
+        >
+          <DialogContentText>
+            {onlyPrinter
+              ? tOrders.rich("actions.reprintOrderTicket.confirm", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  orderNumber: order.orderNumber,
+                  printer: onlyPrinter.name ?? "",
+                })
+              : tOrders.rich("actions.reprintOrderTicket.confirmMultiple", {
+                  bold: (chunks) => <strong>{chunks}</strong>,
+                  orderNumber: order.orderNumber,
+                })}
+          </DialogContentText>
+          {!onlyPrinter && (
+            <FormControl>
+              <FormLabel>
+                {tOrders("actions.reprintOrderTicket.printers")}
+              </FormLabel>
+              <FormGroup>
+                {printers.map(({ id, name }) => (
+                  <StyledFormControlLabel
                     checked={printerIds.includes(id)}
-                    disabled={confirmLoading}
-                    onChange={(_, checked) => handleToggle(id, checked)}
+                    control={
+                      <Checkbox
+                        checked={printerIds.includes(id)}
+                        disabled={confirmLoading}
+                        onChange={(_, checked) => handleToggle(id, checked)}
+                      />
+                    }
+                    key={id}
+                    label={name ?? ""}
                   />
-                }
-                key={id}
-                label={name ?? ""}
-              />
-            ))}
-          </FormGroup>
-        </FormControl>
-      )}
-    </StyledStack>
+                ))}
+              </FormGroup>
+            </FormControl>
+          )}
+        </StyledStack>
+      </CustomizedDialogContent>
+      <CustomizedDialogActions confirmDisabled={!printerIds.length} />
+    </>
   );
 };
 
