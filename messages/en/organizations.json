@@ -362,6 +362,7 @@
   },
   "points": {
     "adjust": {
+      "disabled": "Points are not enabled, so they can't be adjusted",
       "email": {
         "label": "Member email",
         "placeholder": "Enter the member's email"
@@ -371,6 +372,7 @@
         "placeholder": "e.g. Add a purchase that was missed",
         "required": "Enter a reason"
       },
+      "ownerOnly": "{points, plural, =0 {Only owners can adjust points} other {Only owners can add or deduct more than {points, number} points at once}}",
       "points": {
         "hint": "Positive adds points, negative deducts them; deductions only take unexpired points issued by this store",
         "invalid": "Enter a whole number between -{limit, number} and {limit, number}, not 0",

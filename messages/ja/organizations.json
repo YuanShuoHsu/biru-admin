@@ -362,6 +362,7 @@
   },
   "points": {
     "adjust": {
+      "disabled": "ポイントが有効になっていないため、付与・減算できません",
       "email": {
         "label": "会員のメールアドレス",
         "placeholder": "会員のメールアドレスを入力してください"
@@ -371,6 +372,7 @@
         "placeholder": "例：付与漏れの購入分",
         "required": "調整理由を入力してください"
       },
+      "ownerOnly": "{points, plural, =0 {ポイントの付与・減算はオーナーのみ行えます} other {1 回で {points, number} ポイントを超える付与・減算はオーナーのみ行えます}}",
       "points": {
         "hint": "正の数で付与、負の数で減算します。減算は当店が付与した有効期限内のポイントのみが対象です",
         "invalid": "-{limit, number}〜{limit, number} の 0 以外の整数を入力してください",
