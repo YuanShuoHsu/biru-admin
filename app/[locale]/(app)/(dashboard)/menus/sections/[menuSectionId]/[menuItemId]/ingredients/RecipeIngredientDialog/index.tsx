@@ -89,7 +89,7 @@ const RecipeIngredientDialog = ({
     ingredient ? [ingredient] : [],
   );
 
-  // 材料送出失敗後重送時沿用已建立的食譜，否則會撞到 menu_item_id 的 unique 限制
+  // 材料送出失敗後重送時沿用已建立的食譜，否則會再建一份而撞到唯一限制
   const createdRecipe = useRef<Recipe | null>(null);
 
   const onSubmitHandler = async (values: RecipeIngredientForm) => {
