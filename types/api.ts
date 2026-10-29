@@ -6228,7 +6228,7 @@ export interface components {
     };
     SaveAttendanceLeaveTypeDto: {
       paidPercent?: number | null;
-      requiresBalance?: boolean | null;
+      requiresBalance?: boolean;
       name: string;
       enabled: boolean;
     };
@@ -6946,10 +6946,10 @@ export interface components {
     UpdateUserDto: {
       /**
        * Format: date
-       * @description 生日
+       * @description 生日；送 null 清除
        * @example 2024-04-04
        */
-      birthDate?: string;
+      birthDate?: string | null;
       /**
        * @description 是否訂閱電子報
        * @example true
@@ -6968,20 +6968,20 @@ export interface components {
       gender?: "female" | "male" | "other";
       /**
        * Format: uri
-       * @description 頭像 URL
+       * @description 頭像 URL；送 null 清除
        * @example https://example.com/avatar.png
        */
-      image?: string;
+      image?: string | null;
       /**
-       * @description 姓
+       * @description 姓；送空字串或 null 清除
        * @example Biru
        */
-      lastName?: string;
+      lastName?: string | null;
       /**
-       * @description 聯絡電話（E.164 格式）
+       * @description 聯絡電話（E.164 格式）；送空字串或 null 清除
        * @example +886912345678
        */
-      phoneNumber?: string;
+      phoneNumber?: string | null;
     };
     LocalizedTextDto: {
       en?: string;
@@ -10075,17 +10075,29 @@ export interface components {
      */
     OrderMode: "counter" | "dineIn" | "driveThru" | "pickup";
     NutritionInformationDto: {
+      /** @example 180 calories */
       calories?: string;
+      /** @example 20 g */
       carbohydrateContent?: string;
+      /** @example 15 mg */
       cholesterolContent?: string;
+      /** @example 7 g */
       fatContent?: string;
+      /** @example 0 g */
       fiberContent?: string;
+      /** @example 9 g */
       proteinContent?: string;
+      /** @example 4.5 g */
       saturatedFatContent?: string;
+      /** @example 360 ml */
       servingSize?: string;
+      /** @example 120 mg */
       sodiumContent?: string;
+      /** @example 17 g */
       sugarContent?: string;
+      /** @example 0 g */
       transFatContent?: string;
+      /** @example 2 g */
       unsaturatedFatContent?: string;
     };
     /** @enum {string} */
