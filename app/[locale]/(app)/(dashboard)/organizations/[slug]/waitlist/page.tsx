@@ -7,13 +7,11 @@ import OrganizationsSlugWaitlist from ".";
 
 import type { Locale } from "@/i18n/routing";
 
-import { authClient } from "@/lib/auth-client";
-
 import type { WaitlistSettingsResponse } from "@/types/waitlist";
 
 import { fetcher } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
-import { getSession } from "@/utils/session";
+import { getFullOrganization, getSession } from "@/utils/session";
 
 interface OrganizationsSlugWaitlistPageProps {
   params: Promise<{ locale: Locale; slug: string }>;
@@ -39,11 +37,8 @@ const OrganizationsSlugWaitlistPage = async ({
   const organizationSlug = decodeURIComponent(slug);
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const [{ data }, session] = await Promise.all([
-    authClient.organization.getFullOrganization({
-      query: { organizationSlug },
-      fetchOptions,
-    }),
+  const [data, session] = await Promise.all([
+    getFullOrganization(organizationSlug),
     getSession(),
   ]);
 

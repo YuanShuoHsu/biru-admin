@@ -1,16 +1,13 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
 import OrganizationsSlugLocation from ".";
 
 import type { Locale } from "@/i18n/routing";
 
-import { authClient } from "@/lib/auth-client";
-
 import { hasRolePermission } from "@/utils/organizations";
-import { getSession } from "@/utils/session";
+import { getFullOrganization, getSession } from "@/utils/session";
 
 interface OrganizationsSlugLocationPageProps {
   params: Promise<{ locale: Locale; slug: string }>;
@@ -31,13 +28,10 @@ export const generateMetadata = async ({
 const OrganizationsSlugLocationPage = async ({
   params,
 }: OrganizationsSlugLocationPageProps) => {
-  const [cookieStore, { slug }] = await Promise.all([cookies(), params]);
+  const { slug } = await params;
 
-  const [{ data }, session] = await Promise.all([
-    authClient.organization.getFullOrganization({
-      query: { organizationSlug: decodeURIComponent(slug) },
-      fetchOptions: { headers: { cookie: cookieStore.toString() } },
-    }),
+  const [data, session] = await Promise.all([
+    getFullOrganization(decodeURIComponent(slug)),
     getSession(),
   ]);
 
