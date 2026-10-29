@@ -9,10 +9,12 @@
   "healthPercentBp": "Health insurance rate",
   "withholdingRateBp": "Salary withholding rate",
   "checkedAt": "Last checked",
+  "staleAlert": "Payroll rules have not been checked against government data this month, so payroll drafts are blocked. Click \"{ingest}\".",
   "status": {
     "label": "Status",
     "confirmed": "Confirmed",
-    "unconfirmed": "Minimum wage to confirm"
+    "unconfirmed": "Minimum wage to confirm",
+    "stale": "Stale"
   },
   "confirm": {
     "title": "Confirm minimum wage",

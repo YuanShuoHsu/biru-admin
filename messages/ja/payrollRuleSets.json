@@ -9,10 +9,12 @@
   "healthPercentBp": "健康保険料率",
   "withholdingRateBp": "給与源泉徴収率",
   "checkedAt": "最終確認日時",
+  "staleAlert": "給与計算ルールが今月まだ政府データと照合されていないため、給与の下書きが作成できません。「{ingest}」を押してください。",
   "status": {
     "label": "ステータス",
     "confirmed": "確認済み",
-    "unconfirmed": "最低賃金の確認待ち"
+    "unconfirmed": "最低賃金の確認待ち",
+    "stale": "期限切れ"
   },
   "confirm": {
     "title": "最低賃金を確認",
