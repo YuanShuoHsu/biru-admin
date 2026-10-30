@@ -22,6 +22,7 @@ export const useProfileFormSchema = () => {
         .string()
         .min(1, { error: tValidation("countryCode.notSelected") }),
       telephone: z.string().trim(),
+      emailSubscribed: z.boolean(),
     })
     .superRefine((data, ctx) => {
       if (
