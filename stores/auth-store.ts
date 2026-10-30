@@ -13,7 +13,7 @@ type AuthActions = {
 
 export type AuthStore = AuthState & AuthActions;
 
-export const defaultInitState: AuthState = {
+const defaultInitState: AuthState = {
   sessionPromise: Promise.resolve(null),
 };
 

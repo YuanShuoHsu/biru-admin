@@ -9,7 +9,7 @@ import {
   defaultInitState,
 } from "@/stores/countdown-store";
 
-export const CountdownStoreContext = createContext<
+const CountdownStoreContext = createContext<
   StoreApi<CountdownStore> | undefined
 >(undefined);
 

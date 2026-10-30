@@ -12,10 +12,10 @@ export const useSignInFormSchema = () => {
     email: z.email({ error: tValidation("email.invalid") }).trim(),
     password: z
       .string()
+      .trim()
       .min(PASSWORD_MIN_LENGTH, { error: tValidation("password.minLength") })
       .regex(/[a-zA-Z]/, { error: tValidation("password.letter") })
-      .regex(/[0-9]/, { error: tValidation("password.number") })
-      .trim(),
+      .regex(/[0-9]/, { error: tValidation("password.number") }),
     rememberMe: z.boolean(),
   });
 };

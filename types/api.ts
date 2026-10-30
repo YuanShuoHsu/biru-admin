@@ -2724,6 +2724,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/orders/prep-times": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢各品項設定的備餐時間與近 14 天實際平均 */
+    get: operations["OrdersController_findPrepTimes"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/orders/{orderId}": {
     parameters: {
       query?: never;
@@ -6228,7 +6245,7 @@ export interface components {
     };
     SaveAttendanceLeaveTypeDto: {
       paidPercent?: number | null;
-      requiresBalance?: boolean | null;
+      requiresBalance?: boolean;
       name: string;
       enabled: boolean;
     };
@@ -6946,10 +6963,10 @@ export interface components {
     UpdateUserDto: {
       /**
        * Format: date
-       * @description 生日
+       * @description 生日；送 null 清除
        * @example 2024-04-04
        */
-      birthDate?: string;
+      birthDate?: string | null;
       /**
        * @description 是否訂閱電子報
        * @example true
@@ -6968,20 +6985,20 @@ export interface components {
       gender?: "female" | "male" | "other";
       /**
        * Format: uri
-       * @description 頭像 URL
+       * @description 頭像 URL；送 null 清除
        * @example https://example.com/avatar.png
        */
-      image?: string;
+      image?: string | null;
       /**
-       * @description 姓
+       * @description 姓；送空字串或 null 清除
        * @example Biru
        */
-      lastName?: string;
+      lastName?: string | null;
       /**
-       * @description 聯絡電話（E.164 格式）
+       * @description 聯絡電話（E.164 格式）；送空字串或 null 清除
        * @example +886912345678
        */
-      phoneNumber?: string;
+      phoneNumber?: string | null;
     };
     LocalizedTextDto: {
       en?: string;
@@ -7562,6 +7579,8 @@ export interface components {
       fetchedAt?: string | null;
       /** Format: date-time */
       checkedAt?: string | null;
+      /** @description 最新一期且本月（平台時區）尚未成功確認官方來源 */
+      stale: boolean;
       unconfirmed: "minimumHourlyWageCents"[];
       /** Format: date-time */
       createdAt: string;
@@ -9696,6 +9715,16 @@ export interface components {
       orderStatus: components["schemas"]["OrderFlowStatus"];
       orders: components["schemas"]["AdminOrderResponseDto"][];
     };
+    PrepTimeResponseDto: {
+      menuItemId: string;
+      name: components["schemas"]["LocalizedTextDto"];
+      /** @description 估算採用的備餐分鐘數：門市備餐時間與此品項設定的備餐時間取大者，不含加購 */
+      leadTimeMinutes: number;
+      /** @description 近 14 天含此品項、非預約的已出餐訂單，從付款（未付款則下單）到可取餐的整張單分鐘數中位數，含同單其他品項與排隊等待；樣本不足 5 筆時為 null */
+      medianMinutes: number | null;
+      /** @description 近 14 天含此品項、非預約的已出餐訂單數 */
+      sampleSize: number;
+    };
     OrderReceiptResponseDto: {
       id: string;
       /** @enum {string} */
@@ -10075,17 +10104,29 @@ export interface components {
      */
     OrderMode: "counter" | "dineIn" | "driveThru" | "pickup";
     NutritionInformationDto: {
+      /** @example 180 calories */
       calories?: string;
+      /** @example 20 g */
       carbohydrateContent?: string;
+      /** @example 15 mg */
       cholesterolContent?: string;
+      /** @example 7 g */
       fatContent?: string;
+      /** @example 0 g */
       fiberContent?: string;
+      /** @example 9 g */
       proteinContent?: string;
+      /** @example 4.5 g */
       saturatedFatContent?: string;
+      /** @example 360 ml */
       servingSize?: string;
+      /** @example 120 mg */
       sodiumContent?: string;
+      /** @example 17 g */
       sugarContent?: string;
+      /** @example 0 g */
       transFatContent?: string;
+      /** @example 2 g */
       unsaturatedFatContent?: string;
     };
     /** @enum {string} */
@@ -19161,6 +19202,34 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["AdminOrderBoardColumnDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrdersController_findPrepTimes: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PrepTimeResponseDto"][];
         };
       };
       /** @description Internal server error */

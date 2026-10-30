@@ -3,7 +3,6 @@ export const postalCodes: {
   region: string;
   locality: string;
 }[] = [
-  // 臺北市
   { postal: "100", region: "臺北市", locality: "中正區" },
   { postal: "103", region: "臺北市", locality: "大同區" },
   { postal: "104", region: "臺北市", locality: "中山區" },
@@ -16,7 +15,6 @@ export const postalCodes: {
   { postal: "114", region: "臺北市", locality: "內湖區" },
   { postal: "115", region: "臺北市", locality: "南港區" },
   { postal: "116", region: "臺北市", locality: "文山區" },
-  // 基隆市
   { postal: "200", region: "基隆市", locality: "仁愛區" },
   { postal: "201", region: "基隆市", locality: "信義區" },
   { postal: "202", region: "基隆市", locality: "中正區" },
@@ -24,7 +22,6 @@ export const postalCodes: {
   { postal: "204", region: "基隆市", locality: "安樂區" },
   { postal: "205", region: "基隆市", locality: "暖暖區" },
   { postal: "206", region: "基隆市", locality: "七堵區" },
-  // 新北市
   { postal: "207", region: "新北市", locality: "萬里區" },
   { postal: "208", region: "新北市", locality: "金山區" },
   { postal: "220", region: "新北市", locality: "板橋區" },
@@ -54,12 +51,10 @@ export const postalCodes: {
   { postal: "251", region: "新北市", locality: "淡水區" },
   { postal: "252", region: "新北市", locality: "三芝區" },
   { postal: "253", region: "新北市", locality: "石門區" },
-  // 連江縣
   { postal: "209", region: "連江縣", locality: "南竿鄉" },
   { postal: "210", region: "連江縣", locality: "北竿鄉" },
   { postal: "211", region: "連江縣", locality: "莒光鄉" },
   { postal: "212", region: "連江縣", locality: "東引鄉" },
-  // 宜蘭縣
   { postal: "260", region: "宜蘭縣", locality: "宜蘭市" },
   { postal: "261", region: "宜蘭縣", locality: "頭城鎮" },
   { postal: "262", region: "宜蘭縣", locality: "礁溪鄉" },
@@ -76,7 +71,6 @@ export const postalCodes: {
   { postal: "300", region: "新竹市", locality: "東區" },
   { postal: "300", region: "新竹市", locality: "北區" },
   { postal: "300", region: "新竹市", locality: "香山區" },
-  // 新竹縣
   { postal: "302", region: "新竹縣", locality: "竹北市" },
   { postal: "303", region: "新竹縣", locality: "湖口鄉" },
   { postal: "304", region: "新竹縣", locality: "新豐鄉" },
@@ -90,7 +84,6 @@ export const postalCodes: {
   { postal: "313", region: "新竹縣", locality: "尖石鄉" },
   { postal: "314", region: "新竹縣", locality: "北埔鄉" },
   { postal: "315", region: "新竹縣", locality: "峨眉鄉" },
-  // 桃園市
   { postal: "320", region: "桃園市", locality: "中壢區" },
   { postal: "324", region: "桃園市", locality: "平鎮區" },
   { postal: "325", region: "桃園市", locality: "龍潭區" },
@@ -104,7 +97,6 @@ export const postalCodes: {
   { postal: "336", region: "桃園市", locality: "復興區" },
   { postal: "337", region: "桃園市", locality: "大園區" },
   { postal: "338", region: "桃園市", locality: "蘆竹區" },
-  // 苗栗縣
   { postal: "350", region: "苗栗縣", locality: "竹南鎮" },
   { postal: "351", region: "苗栗縣", locality: "頭份市" },
   { postal: "352", region: "苗栗縣", locality: "三灣鄉" },
@@ -123,7 +115,6 @@ export const postalCodes: {
   { postal: "367", region: "苗栗縣", locality: "三義鄉" },
   { postal: "368", region: "苗栗縣", locality: "西湖鄉" },
   { postal: "369", region: "苗栗縣", locality: "卓蘭鎮" },
-  // 臺中市
   { postal: "400", region: "臺中市", locality: "中區" },
   { postal: "401", region: "臺中市", locality: "東區" },
   { postal: "402", region: "臺中市", locality: "南區" },
@@ -153,7 +144,6 @@ export const postalCodes: {
   { postal: "437", region: "臺中市", locality: "大甲區" },
   { postal: "438", region: "臺中市", locality: "外埔區" },
   { postal: "439", region: "臺中市", locality: "大安區" },
-  // 彰化縣
   { postal: "500", region: "彰化縣", locality: "彰化市" },
   { postal: "502", region: "彰化縣", locality: "芬園鄉" },
   { postal: "503", region: "彰化縣", locality: "花壇鄉" },
@@ -180,7 +170,6 @@ export const postalCodes: {
   { postal: "527", region: "彰化縣", locality: "大城鄉" },
   { postal: "528", region: "彰化縣", locality: "芳苑鄉" },
   { postal: "530", region: "彰化縣", locality: "二水鄉" },
-  // 南投縣
   { postal: "540", region: "南投縣", locality: "南投市" },
   { postal: "541", region: "南投縣", locality: "中寮鄉" },
   { postal: "542", region: "南投縣", locality: "草屯鎮" },
@@ -197,7 +186,6 @@ export const postalCodes: {
   // 嘉義市（兩區共用 600）
   { postal: "600", region: "嘉義市", locality: "東區" },
   { postal: "600", region: "嘉義市", locality: "西區" },
-  // 嘉義縣
   { postal: "602", region: "嘉義縣", locality: "番路鄉" },
   { postal: "603", region: "嘉義縣", locality: "梅山鄉" },
   { postal: "604", region: "嘉義縣", locality: "竹崎鄉" },
@@ -216,7 +204,6 @@ export const postalCodes: {
   { postal: "623", region: "嘉義縣", locality: "溪口鄉" },
   { postal: "624", region: "嘉義縣", locality: "義竹鄉" },
   { postal: "625", region: "嘉義縣", locality: "布袋鎮" },
-  // 雲林縣
   { postal: "630", region: "雲林縣", locality: "斗南鎮" },
   { postal: "631", region: "雲林縣", locality: "大埤鄉" },
   { postal: "632", region: "雲林縣", locality: "虎尾鎮" },
@@ -237,7 +224,6 @@ export const postalCodes: {
   { postal: "653", region: "雲林縣", locality: "口湖鄉" },
   { postal: "654", region: "雲林縣", locality: "四湖鄉" },
   { postal: "655", region: "雲林縣", locality: "元長鄉" },
-  // 臺南市
   { postal: "700", region: "臺南市", locality: "中西區" },
   { postal: "701", region: "臺南市", locality: "東區" },
   { postal: "702", region: "臺南市", locality: "南區" },
@@ -275,7 +261,6 @@ export const postalCodes: {
   { postal: "743", region: "臺南市", locality: "山上區" },
   { postal: "744", region: "臺南市", locality: "新市區" },
   { postal: "745", region: "臺南市", locality: "安定區" },
-  // 高雄市
   { postal: "800", region: "高雄市", locality: "新興區" },
   { postal: "801", region: "高雄市", locality: "前金區" },
   { postal: "802", region: "高雄市", locality: "苓雅區" },
@@ -312,21 +297,18 @@ export const postalCodes: {
   { postal: "849", region: "高雄市", locality: "那瑪夏區" },
   { postal: "851", region: "高雄市", locality: "茂林區" },
   { postal: "852", region: "高雄市", locality: "茄萣區" },
-  // 澎湖縣
   { postal: "880", region: "澎湖縣", locality: "馬公市" },
   { postal: "881", region: "澎湖縣", locality: "西嶼鄉" },
   { postal: "882", region: "澎湖縣", locality: "望安鄉" },
   { postal: "883", region: "澎湖縣", locality: "七美鄉" },
   { postal: "884", region: "澎湖縣", locality: "白沙鄉" },
   { postal: "885", region: "澎湖縣", locality: "湖西鄉" },
-  // 金門縣
   { postal: "890", region: "金門縣", locality: "金城鎮" },
   { postal: "891", region: "金門縣", locality: "金湖鎮" },
   { postal: "892", region: "金門縣", locality: "金沙鎮" },
   { postal: "893", region: "金門縣", locality: "金寧鄉" },
   { postal: "894", region: "金門縣", locality: "烈嶼鄉" },
   { postal: "896", region: "金門縣", locality: "烏坵鄉" },
-  // 屏東縣
   { postal: "900", region: "屏東縣", locality: "屏東市" },
   { postal: "901", region: "屏東縣", locality: "三地門鄉" },
   { postal: "902", region: "屏東縣", locality: "霧台鄉" },
@@ -360,7 +342,6 @@ export const postalCodes: {
   { postal: "945", region: "屏東縣", locality: "牡丹鄉" },
   { postal: "946", region: "屏東縣", locality: "恆春鎮" },
   { postal: "947", region: "屏東縣", locality: "滿州鄉" },
-  // 臺東縣
   { postal: "950", region: "臺東縣", locality: "臺東市" },
   { postal: "951", region: "臺東縣", locality: "綠島鄉" },
   { postal: "952", region: "臺東縣", locality: "蘭嶼鄉" },
@@ -377,7 +358,6 @@ export const postalCodes: {
   { postal: "964", region: "臺東縣", locality: "金峰鄉" },
   { postal: "965", region: "臺東縣", locality: "大武鄉" },
   { postal: "966", region: "臺東縣", locality: "達仁鄉" },
-  // 花蓮縣
   { postal: "970", region: "花蓮縣", locality: "花蓮市" },
   { postal: "971", region: "花蓮縣", locality: "新城鄉" },
   { postal: "972", region: "花蓮縣", locality: "秀林鄉" },

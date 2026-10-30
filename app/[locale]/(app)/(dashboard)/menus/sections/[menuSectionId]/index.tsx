@@ -94,6 +94,7 @@ import type {
   MenuItemListResponse,
   MenuItemSortField,
 } from "@/types/menus";
+import type { PrepTimeResponse } from "@/types/orders";
 import type { Organization } from "@/types/organizations";
 
 import {
@@ -158,6 +159,7 @@ interface MenusMenuIdSectionIdProps {
   organization?: Organization;
   page?: number;
   pageSize?: number;
+  prepTimes?: PrepTimeResponse[];
   quickFilterValue?: string;
   rowCount?: number;
   rows?: MenuItem[];
@@ -178,6 +180,7 @@ const MenusMenuIdSectionId = ({
   organization,
   page = 1,
   pageSize = DEFAULT_PAGE_SIZE,
+  prepTimes,
   quickFilterValue: initialQuickFilterValue,
   rowCount: initialRowCount = 0,
   rows: initialRows = [],
@@ -246,6 +249,18 @@ const MenusMenuIdSectionId = ({
   const enumOptions = useMemo(
     () => getMenuEnumOptions(tMenus, tOrder),
     [tMenus, tOrder],
+  );
+
+  const medianPrepMinutesOf = useMemo(
+    () =>
+      prepTimes &&
+      new Map(
+        prepTimes.map(({ medianMinutes, menuItemId }) => [
+          menuItemId,
+          medianMinutes,
+        ]),
+      ),
+    [prepTimes],
   );
 
   const {
@@ -870,6 +885,25 @@ const MenusMenuIdSectionId = ({
             ? ""
             : `${format.number(offer.deliveryLeadTimeMinutes)} ${tMenus("items.offers.deliveryLeadTimeMinutes.unit")}`,
       },
+      ...(medianPrepMinutesOf
+        ? [
+            {
+              description: tMenus("items.observedPrepMinutes.description"),
+              field: "observedPrepMinutes",
+              filterable: false,
+              headerName: tMenus("items.observedPrepMinutes.label"),
+              renderCell: renderEmptyableCell,
+              sortable: false,
+              valueGetter: (_value: unknown, { id }: MenuItem) => {
+                const minutes = medianPrepMinutesOf.get(id);
+
+                return minutes == null
+                  ? ""
+                  : `${format.number(minutes)} ${tMenus("items.offers.deliveryLeadTimeMinutes.unit")}`;
+              },
+            },
+          ]
+        : []),
       {
         field: "priceSpecification",
         filterOperators: numberFilterOperators,
@@ -930,6 +964,7 @@ const MenusMenuIdSectionId = ({
       hasUpdatableItem,
       isReorderMode,
       locale,
+      medianPrepMinutesOf,
       numberFilterOperators,
       stringFilterOperators,
       tCommon,

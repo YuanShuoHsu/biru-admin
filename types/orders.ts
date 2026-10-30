@@ -19,6 +19,7 @@ export type AdminOrderBoardColumn =
 export type AdminOrderResponse = components["schemas"]["AdminOrderResponseDto"];
 export type AdminOrderListResponse =
   components["schemas"]["AdminOrderListResponseDto"];
+export type PrepTimeResponse = components["schemas"]["PrepTimeResponseDto"];
 export type OrderInvoice = components["schemas"]["OrderInvoiceDto"];
 
 export type OrderInvoicePrint = components["schemas"]["OrderInvoicePrintDto"];

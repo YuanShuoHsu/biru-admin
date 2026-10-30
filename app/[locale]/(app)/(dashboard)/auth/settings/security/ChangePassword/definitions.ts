@@ -10,20 +10,20 @@ export const useChangePasswordFormSchema = () => {
     .object({
       currentPassword: z
         .string()
-        .min(1, { error: tValidation("currentPassword.required") })
-        .trim(),
+        .trim()
+        .min(1, { error: tValidation("currentPassword.required") }),
       newPassword: z
         .string()
+        .trim()
         .min(PASSWORD_MIN_LENGTH, {
           error: tValidation("newPassword.minLength"),
         })
         .regex(/[a-zA-Z]/, { error: tValidation("newPassword.letter") })
-        .regex(/[0-9]/, { error: tValidation("newPassword.number") })
-        .trim(),
+        .regex(/[0-9]/, { error: tValidation("newPassword.number") }),
       confirmNewPassword: z
         .string()
-        .min(1, { error: tValidation("confirmNewPassword.required") })
-        .trim(),
+        .trim()
+        .min(1, { error: tValidation("confirmNewPassword.required") }),
     })
     .refine(
       ({ currentPassword, newPassword }) => currentPassword !== newPassword,

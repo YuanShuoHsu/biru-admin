@@ -112,9 +112,6 @@
   "label": "재고",
   "recipes": {
     "actions": {
-      "createRecipe": {
-        "error": "레시피 추가에 실패했습니다"
-      },
       "updateRecipe": {
         "error": "분량 업데이트에 실패했습니다",
         "success": "분량이(가) 업데이트되었습니다",

@@ -17,7 +17,7 @@ import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useMonthFormat } from "@/hooks/useMonthFormat";
 
 import { CloudSync, TaskAlt } from "@mui/icons-material";
-import { Button, Chip, IconButton, Stack, Tooltip } from "@mui/material";
+import { Alert, Button, Chip, IconButton, Stack, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
@@ -57,6 +57,19 @@ const WAGE_FIELDS = [
 
 const isUnconfirmed = ({ unconfirmed }: PayrollRuleSet) =>
   unconfirmed.includes("minimumHourlyWageCents");
+
+const STATUS_COLORS = {
+  confirmed: "success",
+  stale: "warning",
+  unconfirmed: "warning",
+} as const;
+
+const getStatus = (ruleSet: PayrollRuleSet): keyof typeof STATUS_COLORS =>
+  ruleSet.stale
+    ? "stale"
+    : isUnconfirmed(ruleSet)
+      ? "unconfirmed"
+      : "confirmed";
 
 interface PayrollRuleSetsProps {
   ruleSets: PayrollRuleSet[];
@@ -202,18 +215,14 @@ const PayrollRuleSets = ({ ruleSets }: PayrollRuleSetsProps) => {
         headerName: tPayrollRuleSets("status.label"),
         renderCell: ({ row }: GridRenderCellParams<PayrollRuleSet>) => (
           <Chip
-            color={isUnconfirmed(row) ? "warning" : "success"}
-            label={tPayrollRuleSets(
-              isUnconfirmed(row) ? "status.unconfirmed" : "status.confirmed",
-            )}
+            color={STATUS_COLORS[getStatus(row)]}
+            label={tPayrollRuleSets(`status.${getStatus(row)}`)}
             size="small"
             variant="outlined"
           />
         ),
         valueGetter: (_value, row: PayrollRuleSet) =>
-          tPayrollRuleSets(
-            isUnconfirmed(row) ? "status.unconfirmed" : "status.confirmed",
-          ),
+          tPayrollRuleSets(`status.${getStatus(row)}`),
       },
     ],
     [format, formatMoney, formatMonth, handleConfirm, tPayrollRuleSets],
@@ -221,6 +230,13 @@ const PayrollRuleSets = ({ ruleSets }: PayrollRuleSetsProps) => {
 
   return (
     <>
+      {rows.some(({ stale }) => stale) && (
+        <Alert severity="warning">
+          {tPayrollRuleSets("staleAlert", {
+            ingest: tPayrollRuleSets("ingest.label"),
+          })}
+        </Alert>
+      )}
       <ToolbarStack direction="row">
         <Button
           loading={ingesting}
