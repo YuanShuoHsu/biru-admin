@@ -362,6 +362,7 @@
   },
   "points": {
     "adjust": {
+      "disabled": "點數尚未啟用，無法補點或扣點",
       "email": {
         "label": "會員 Email",
         "placeholder": "請輸入會員的 Email"
@@ -371,6 +372,7 @@
         "placeholder": "例如：補登漏掉的消費",
         "required": "請輸入調整原因"
       },
+      "ownerOnly": "{points, plural, =0 {只有擁有者能補點或扣點} other {單筆超過 {points, number} 點的補點或扣點只有擁有者能調整}}",
       "points": {
         "hint": "正數為補點、負數為扣點；扣點只扣本店發出且未過期的點數",
         "invalid": "請輸入 -{limit, number} 到 {limit, number} 之間、不為 0 的整數",

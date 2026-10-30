@@ -17,10 +17,11 @@ import {
   pointTransactionFilterFieldValues,
   pointTransactionSortFieldValues,
 } from "@/types/api";
+import type { PointAdjustmentLimit } from "@/types/points";
 
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getPointTransactionEnumOptions } from "@/utils/enumOptions";
-import { settle } from "@/utils/fetcher";
+import { fetcher, settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getOrganizationPointTransactions } from "@/utils/points";
 import { getSession } from "@/utils/session";
@@ -114,33 +115,50 @@ const OrganizationsSlugPointsPage = async ({
       )
     : [];
 
-  const { data: transactions, error: transactionsError } = await settle(
-    getOrganizationPointTransactions(
-      data.slug,
-      {
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterEnums,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-      },
-      fetchOptions,
+  const [
+    { data: transactions, error: transactionsError },
+    { data: adjustmentLimit },
+  ] = await Promise.all([
+    settle(
+      getOrganizationPointTransactions(
+        data.slug,
+        {
+          page,
+          pageSize,
+          filterField,
+          filterOperator,
+          filterValue,
+          quickFilterEnums,
+          quickFilterValue,
+          sortBy,
+          sortDirection,
+        },
+        fetchOptions,
+      ),
     ),
-  );
+    settle(
+      fetcher<PointAdjustmentLimit>(
+        `/api/organizations/${data.slug}/point-transactions/adjustment-limit`,
+        fetchOptions,
+      ),
+    ),
+  ]);
   if (transactionsError) return <ErrorAlert />;
 
   const { transactions: rows, total: rowCount } = transactions;
 
   return (
     <PointTransactions
+      adjustmentEnabled={adjustmentLimit?.enabled ?? true}
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
       organizationSlug={data.slug}
+      ownerOnlyAbovePoints={
+        session?.user?.role === "admin" || currentUserRole === "owner"
+          ? null
+          : (adjustmentLimit?.ownerOnlyAbovePoints ?? null)
+      }
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}

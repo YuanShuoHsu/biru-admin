@@ -25,7 +25,7 @@ import {
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { Add } from "@mui/icons-material";
-import { Button, Chip, Stack } from "@mui/material";
+import { Button, Chip, Stack, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
@@ -57,10 +57,12 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface PointTransactionsProps {
+  adjustmentEnabled: boolean;
   filterField?: PointTransactionFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
   organizationSlug: string;
+  ownerOnlyAbovePoints: number | null;
   page: number;
   pageSize?: number;
   quickFilterValue?: string;
@@ -71,10 +73,12 @@ interface PointTransactionsProps {
 }
 
 const PointTransactions = ({
+  adjustmentEnabled,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
   organizationSlug,
+  ownerOnlyAbovePoints,
   page,
   pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
@@ -217,6 +221,7 @@ const PointTransactions = ({
         <AdjustPointsDialog
           mutate={mutate}
           organizationSlug={organizationSlug}
+          ownerOnlyAbovePoints={ownerOnlyAbovePoints}
         />
       ),
       formId: "adjust-points-form",
@@ -313,6 +318,7 @@ const PointTransactions = ({
     <>
       <ToolbarStack direction="row">
         <Button
+          disabled={!adjustmentEnabled}
           onClick={handleAdjustPoints}
           size="small"
           startIcon={<Add />}
@@ -320,6 +326,11 @@ const PointTransactions = ({
         >
           {tOrganizations("points.adjust.title")}
         </Button>
+        {!adjustmentEnabled && (
+          <Typography color="text.secondary" variant="body2">
+            {tOrganizations("points.adjust.disabled")}
+          </Typography>
+        )}
       </ToolbarStack>
       <DataGrid
         {...DATA_GRID_PROPS}
