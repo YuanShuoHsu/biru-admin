@@ -69,27 +69,6 @@ const useHandleClose = () => {
   };
 };
 
-interface CustomizedDialogContentProps {
-  children?: React.ReactNode;
-}
-
-export const CustomizedDialogContent = ({
-  children,
-}: CustomizedDialogContentProps) => {
-  const { contentText, dividers } = useDialogStore((state) => state);
-
-  return (
-    <DialogContent dividers={dividers}>
-      {contentText && (
-        <DialogContentText id="customized-dialog-description">
-          {contentText}
-        </DialogContentText>
-      )}
-      {children}
-    </DialogContent>
-  );
-};
-
 interface CustomizedDialogActionsProps {
   confirmDisabled?: boolean;
 }
@@ -206,7 +185,14 @@ const CustomizedDialogs = () => {
         content
       ) : (
         <>
-          <CustomizedDialogContent>{content}</CustomizedDialogContent>
+          <DialogContent dividers>
+            {contentText && (
+              <DialogContentText id="customized-dialog-description">
+                {contentText}
+              </DialogContentText>
+            )}
+            {content}
+          </DialogContent>
           <CustomizedDialogActions />
         </>
       )}

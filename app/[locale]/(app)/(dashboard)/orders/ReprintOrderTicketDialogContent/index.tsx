@@ -4,14 +4,12 @@ import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useState } from "react";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
+import { CustomizedDialogActions } from "@/components/CustomizedDialogs";
 import StyledFormControlLabel from "@/components/StyledFormControlLabel";
 
 import {
   Checkbox,
+  DialogContent,
   DialogContentText,
   FormControl,
   FormGroup,
@@ -106,7 +104,7 @@ const ReprintOrderTicketDialogContent = ({
 
   return (
     <>
-      <CustomizedDialogContent>
+      <DialogContent dividers>
         <StyledStack
           component="form"
           id={REPRINT_ORDER_TICKET_FORM_ID}
@@ -148,7 +146,7 @@ const ReprintOrderTicketDialogContent = ({
             </FormControl>
           )}
         </StyledStack>
-      </CustomizedDialogContent>
+      </DialogContent>
       <CustomizedDialogActions confirmDisabled={!printerIds.length} />
     </>
   );

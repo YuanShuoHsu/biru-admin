@@ -4,12 +4,15 @@ import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useState } from "react";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
+import { CustomizedDialogActions } from "@/components/CustomizedDialogs";
 
-import { Alert, Stack, type StackProps, TextField } from "@mui/material";
+import {
+  Alert,
+  DialogContent,
+  Stack,
+  type StackProps,
+  TextField,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -90,7 +93,7 @@ const VoidInvoiceDialogContent = ({
 
   return (
     <>
-      <CustomizedDialogContent>
+      <DialogContent dividers>
         <StyledStack
           component="form"
           id={VOID_INVOICE_FORM_ID}
@@ -136,7 +139,7 @@ const VoidInvoiceDialogContent = ({
             value={customerName}
           />
         </StyledStack>
-      </CustomizedDialogContent>
+      </DialogContent>
       <CustomizedDialogActions confirmDisabled={disabled} />
     </>
   );

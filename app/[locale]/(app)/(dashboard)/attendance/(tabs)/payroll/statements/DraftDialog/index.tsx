@@ -12,10 +12,7 @@ import useSWRMutation from "swr/mutation";
 import BatchSkippedList from "../../../../BatchSkippedList";
 import { type DraftForm, useDraftFormSchema } from "./definitions";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
+import { CustomizedDialogActions } from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 
@@ -28,6 +25,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Add, DeleteOutlined } from "@mui/icons-material";
 import {
   Button,
+  DialogContent,
   FormControl,
   type FormControlProps,
   FormLabel,
@@ -246,7 +244,7 @@ const DraftDialog = ({
 
   return (
     <>
-      <CustomizedDialogContent>
+      <DialogContent dividers>
         <FormBox id="payroll-draft-form" onSubmit={onSubmit}>
           <TextField
             error={!!errors.employeeId}
@@ -374,7 +372,7 @@ const DraftDialog = ({
             </StyledFormControl>
           )}
         </FormBox>
-      </CustomizedDialogContent>
+      </DialogContent>
       <CustomizedDialogActions
         confirmDisabled={earningsLoading || !!earningsError}
       />

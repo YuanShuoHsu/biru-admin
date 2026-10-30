@@ -9,15 +9,13 @@ import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
+import { CustomizedDialogActions } from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import {
+  DialogContent,
   LinearProgress,
   List,
   ListItem,
@@ -125,7 +123,7 @@ const CopyWeekDialog = ({
 
   return (
     <>
-      <CustomizedDialogContent>
+      <DialogContent dividers>
         <FormBox id="attendance-copy-week-form" onSubmit={onSubmit}>
           <TextField
             fullWidth
@@ -202,7 +200,7 @@ const CopyWeekDialog = ({
             </>
           )}
         </FormBox>
-      </CustomizedDialogContent>
+      </DialogContent>
       <CustomizedDialogActions confirmDisabled={!preview?.created.length} />
     </>
   );

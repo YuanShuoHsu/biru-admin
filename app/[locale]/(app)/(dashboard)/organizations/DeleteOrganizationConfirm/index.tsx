@@ -3,12 +3,10 @@
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
+import { CustomizedDialogActions } from "@/components/CustomizedDialogs";
 
 import {
+  DialogContent,
   DialogContentText,
   List,
   ListItem,
@@ -49,7 +47,7 @@ const DeleteOrganizationConfirm = ({
 
   return (
     <>
-      <CustomizedDialogContent>
+      <DialogContent dividers>
         <StyledStack>
           <ConfirmStack>
             <DialogContentText>
@@ -97,7 +95,7 @@ const DeleteOrganizationConfirm = ({
             value={typedValue}
           />
         </StyledStack>
-      </CustomizedDialogContent>
+      </DialogContent>
       <CustomizedDialogActions confirmDisabled={!matches} />
     </>
   );

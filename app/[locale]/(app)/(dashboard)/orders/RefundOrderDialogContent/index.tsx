@@ -5,13 +5,11 @@ import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useMemo, useState } from "react";
 import useSWR from "swr";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
+import { CustomizedDialogActions } from "@/components/CustomizedDialogs";
 
 import {
   Alert,
+  DialogContent,
   Divider,
   MenuItem,
   Stack,
@@ -205,7 +203,7 @@ const RefundOrderDialogContent = ({
 
   return (
     <>
-      <CustomizedDialogContent>
+      <DialogContent dividers>
         <FormStack
           component="form"
           id={REFUND_ORDER_FORM_ID}
@@ -331,7 +329,7 @@ const RefundOrderDialogContent = ({
             </StyledTypography>
           </TotalStack>
         </FormStack>
-      </CustomizedDialogContent>
+      </DialogContent>
       <CustomizedDialogActions confirmDisabled={disabled} />
     </>
   );

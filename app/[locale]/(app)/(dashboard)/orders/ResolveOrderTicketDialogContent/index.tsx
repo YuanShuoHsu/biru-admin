@@ -4,15 +4,13 @@ import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useState } from "react";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
+import { CustomizedDialogActions } from "@/components/CustomizedDialogs";
 import { usePrintJobErrorText } from "@/components/PrintJobChip";
 import StyledFormControlLabel from "@/components/StyledFormControlLabel";
 
 import {
   Alert,
+  DialogContent,
   DialogContentText,
   Radio,
   RadioGroup,
@@ -102,7 +100,7 @@ const ResolveOrderTicketDialogContent = ({
 
   return (
     <>
-      <CustomizedDialogContent>
+      <DialogContent dividers>
         <StyledStack
           component="form"
           id={RESOLVE_ORDER_TICKET_FORM_ID}
@@ -140,7 +138,7 @@ const ResolveOrderTicketDialogContent = ({
             />
           </RadioGroup>
         </StyledStack>
-      </CustomizedDialogContent>
+      </DialogContent>
       <CustomizedDialogActions confirmDisabled={printed === null} />
     </>
   );
