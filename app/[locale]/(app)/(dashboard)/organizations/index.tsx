@@ -11,7 +11,9 @@ import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import CreateOrganizationDialog from "./CreateOrganizationDialog";
-import DeleteOrganizationConfirm from "./DeleteOrganizationConfirm";
+import DeleteOrganizationConfirm, {
+  DELETE_ORGANIZATION_FORM_ID,
+} from "./DeleteOrganizationConfirm";
 import UpdateOrganizationDialog from "./UpdateOrganizationDialog";
 
 import DataGrid from "@/components/DataGrid";
@@ -178,27 +180,31 @@ const Organizations = ({
   const handleDeleteOrganization = useCallback(
     ({ id, name }: MyOrganization) => {
       setDialog({
-        confirmDisabled: true,
-        content: <DeleteOrganizationConfirm names={[name]} />,
-        onConfirm: async () => {
-          await authClient.organization.delete(
-            { organizationId: id },
-            {
-              onError: ({ error: { message } }) => {
-                enqueueSnackbar(message, { variant: "error" });
-              },
-              onSuccess: () => {
-                const message = tOrganizations(
-                  "actions.deleteOrganization.success",
-                  { name },
-                );
-                enqueueSnackbar(message, { variant: "success" });
+        content: (
+          <DeleteOrganizationConfirm
+            names={[name]}
+            onDelete={async () => {
+              await authClient.organization.delete(
+                { organizationId: id },
+                {
+                  onError: ({ error: { message } }) => {
+                    enqueueSnackbar(message, { variant: "error" });
+                  },
+                  onSuccess: () => {
+                    const message = tOrganizations(
+                      "actions.deleteOrganization.success",
+                      { name },
+                    );
+                    enqueueSnackbar(message, { variant: "success" });
 
-                mutate();
-              },
-            },
-          );
-        },
+                    mutate();
+                  },
+                },
+              );
+            }}
+          />
+        ),
+        formId: DELETE_ORGANIZATION_FORM_ID,
         open: true,
         title: tOrganizations("actions.deleteOrganization.title"),
       });
@@ -215,41 +221,47 @@ const Organizations = ({
     const count = selectedRows.length;
 
     setDialog({
-      confirmDisabled: true,
       content: (
         <DeleteOrganizationConfirm
           names={selectedRows.map(({ name }) => name)}
+          onDelete={async () => {
+            try {
+              await fetcher(`/api/organizations`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
+              });
+
+              setIsSelectMode(false);
+              clearRowSelection();
+
+              setTimeout(
+                () => apiRef.current?.autosizeColumns(autosizeOptions),
+                0,
+              );
+
+              enqueueSnackbar(
+                tOrganizations(
+                  "actions.batchDeleteOrganization.submit.success",
+                  {
+                    count,
+                  },
+                ),
+                {
+                  variant: "success",
+                },
+              );
+            } catch (error) {
+              enqueueSnackbar(getErrorMessage(error), {
+                variant: "error",
+              });
+            }
+
+            mutate();
+          }}
         />
       ),
-      onConfirm: async () => {
-        try {
-          await fetcher(`/api/organizations`, {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ids: selectedRows.map(({ id }) => id) }),
-          });
-
-          setIsSelectMode(false);
-          clearRowSelection();
-
-          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-
-          enqueueSnackbar(
-            tOrganizations("actions.batchDeleteOrganization.submit.success", {
-              count,
-            }),
-            {
-              variant: "success",
-            },
-          );
-        } catch (error) {
-          enqueueSnackbar(getErrorMessage(error), {
-            variant: "error",
-          });
-        }
-
-        mutate();
-      },
+      formId: DELETE_ORGANIZATION_FORM_ID,
       open: true,
       title: tOrganizations("actions.batchDeleteOrganization.submit.label", {
         count,

@@ -2,20 +2,27 @@
 
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent, useEffect, useState } from "react";
+import type { BaseSyntheticEvent } from "react";
+import { useForm, useWatch } from "react-hook-form";
 
+import {
+  type ReprintOrderTicketForm,
+  useReprintOrderTicketFormSchema,
+} from "./definitions";
+
+import FormBox from "@/components/FormBox";
 import StyledFormControlLabel from "@/components/StyledFormControlLabel";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
   Checkbox,
   DialogContentText,
   FormControl,
   FormGroup,
+  FormHelperText,
   FormLabel,
-  Stack,
-  type StackProps,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -27,10 +34,6 @@ import type {
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
-
-const StyledStack = styled(Stack)<StackProps>(({ theme }) => ({
-  gap: theme.spacing(2),
-}));
 
 export const REPRINT_ORDER_TICKET_FORM_ID = "reprint-order-ticket-form";
 
@@ -55,27 +58,31 @@ const ReprintOrderTicketDialogContent = ({
 
   const [onlyPrinter] = printers.length === 1 ? printers : [];
 
-  // 多台時不預設全選，避免一台卡紙卻讓每個工作站都多做一份
-  const [printerIds, setPrinterIds] = useState<string[]>(
-    onlyPrinter ? [onlyPrinter.id] : [],
-  );
+  const reprintOrderTicketFormSchema = useReprintOrderTicketFormSchema();
 
-  useEffect(() => {
-    setDialog({ confirmDisabled: !printerIds.length });
-  }, [printerIds, setDialog]);
+  const {
+    control,
+    formState: { errors },
+    handleSubmit,
+    setValue,
+  } = useForm<ReprintOrderTicketForm>({
+    // 多台時不預設全選，避免一台卡紙卻讓每個工作站都多做一份
+    defaultValues: { printerIds: onlyPrinter ? [onlyPrinter.id] : [] },
+    resolver: zodResolver(reprintOrderTicketFormSchema),
+  });
+
+  const printerIds = useWatch({ control, name: "printerIds" });
 
   const handleToggle = (printerId: string, checked: boolean) =>
-    setPrinterIds((current) =>
+    setValue(
+      "printerIds",
       checked
-        ? [...current, printerId]
-        : current.filter((id) => id !== printerId),
+        ? [...printerIds, printerId]
+        : printerIds.filter((id) => id !== printerId),
+      { shouldValidate: true },
     );
 
-  const onSubmit = async (event: BaseSyntheticEvent) => {
-    event.preventDefault();
-
-    if (confirmLoading || !printerIds.length) return;
-
+  const onSubmitHandler = async ({ printerIds }: ReprintOrderTicketForm) => {
     setDialog({ confirmLoading: true });
 
     try {
@@ -104,12 +111,11 @@ const ReprintOrderTicketDialogContent = ({
     }
   };
 
+  const onSubmit = (event: BaseSyntheticEvent) =>
+    handleSubmit(onSubmitHandler)(event);
+
   return (
-    <StyledStack
-      component="form"
-      id={REPRINT_ORDER_TICKET_FORM_ID}
-      onSubmit={onSubmit}
-    >
+    <FormBox id={REPRINT_ORDER_TICKET_FORM_ID} onSubmit={onSubmit}>
       <DialogContentText>
         {onlyPrinter
           ? tOrders.rich("actions.reprintOrderTicket.confirm", {
@@ -123,7 +129,7 @@ const ReprintOrderTicketDialogContent = ({
             })}
       </DialogContentText>
       {!onlyPrinter && (
-        <FormControl>
+        <FormControl error={!!errors.printerIds}>
           <FormLabel>
             {tOrders("actions.reprintOrderTicket.printers")}
           </FormLabel>
@@ -143,9 +149,12 @@ const ReprintOrderTicketDialogContent = ({
               />
             ))}
           </FormGroup>
+          {errors.printerIds && (
+            <FormHelperText>{errors.printerIds.message}</FormHelperText>
+          )}
         </FormControl>
       )}
-    </StyledStack>
+    </FormBox>
   );
 };
 

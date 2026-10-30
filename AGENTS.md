@@ -50,7 +50,7 @@ Zustand stores in `stores/` use a factory pattern (e.g., `createAuthStore`). Eac
 
 ### Forms
 
-React Hook Form + Zod schemas (`definitions.ts` files). Form schemas and error handling are co-located with the page/component. Async work that only feeds a form (e.g. creating a parent record first) goes in its submit handler, covered by `isSubmitting` or the dialog's `confirmLoading` — no separate loading state.
+React Hook Form + Zod schemas (`definitions.ts` files). Form schemas and error handling are co-located with the page/component. Async work that only feeds a form (e.g. creating a parent record first) goes in its submit handler, covered by `isSubmitting` or the dialog's `confirmLoading` — no separate loading state. The dialog's confirm button is never disabled: invalid or incomplete input is rejected on submit by the schema and shown as field errors.
 
 ### Internationalization
 

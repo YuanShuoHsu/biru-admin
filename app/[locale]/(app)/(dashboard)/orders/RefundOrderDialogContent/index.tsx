@@ -2,15 +2,27 @@
 
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent, useEffect, useMemo, useState } from "react";
+import { type BaseSyntheticEvent, useMemo, useState } from "react";
+import { type FieldError, get, useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
+
+import {
+  getSelectedQuantities,
+  type RefundOrderForm,
+  useRefundOrderFormSchema,
+} from "./definitions";
+
+import FormBox from "@/components/FormBox";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
   Alert,
   Divider,
+  FormControl,
+  FormHelperText,
   MenuItem,
   Stack,
-  type StackProps,
   TextField,
   Typography,
 } from "@mui/material";
@@ -34,7 +46,7 @@ import { getRefundedQuantities } from "@/utils/refunds";
 import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useOrderItemName } from "@/hooks/useOrderItemName";
 
-const FormStack = styled(Stack)<StackProps>(({ theme }) => ({
+const ItemsFormControl = styled(FormControl)(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
@@ -99,23 +111,40 @@ const RefundOrderDialogContent = ({
     [refunds],
   );
 
-  const [quantities, setQuantities] = useState<Map<string, number>>(new Map());
-  const [reasonCode, setReasonCode] = useState<
-    CreateOrderRefundDto["reasonCode"] | ""
-  >("");
-  const [reason, setReason] = useState("");
+  const remaining = useMemo(
+    () =>
+      new Map(
+        order.items.map((item) => [
+          item.id,
+          item.orderQuantity - (refundedQuantities.get(item.id) ?? 0),
+        ]),
+      ),
+    [order.items, refundedQuantities],
+  );
+
+  const refundOrderFormSchema = useRefundOrderFormSchema(remaining);
+
+  const {
+    control,
+    formState: { errors, isSubmitted },
+    handleSubmit,
+    register,
+    setValue,
+  } = useForm<RefundOrderForm>({
+    defaultValues: { quantities: {}, reason: "", reasonCode: "" },
+    resolver: zodResolver(refundOrderFormSchema),
+  });
+
+  const [quantities, reasonCode] = useWatch({
+    control,
+    name: ["quantities", "reasonCode"],
+  });
+
   const [failed, setFailed] = useState(false);
 
-  const selected = useMemo(() => {
-    if (quantities.size) return quantities;
+  const quantitiesError = get(errors, "quantities") as FieldError | undefined;
 
-    return new Map(
-      order.items.map((item) => [
-        item.id,
-        item.orderQuantity - (refundedQuantities.get(item.id) ?? 0),
-      ]),
-    );
-  }, [order.items, quantities, refundedQuantities]);
+  const selected = getSelectedQuantities(quantities, remaining);
 
   const items = [...selected]
     .filter(([, quantity]) => quantity > 0)
@@ -129,28 +158,11 @@ const RefundOrderDialogContent = ({
       }),
   );
 
-  const isReasonRequired = reasonCode === "other";
-
-  const disabled =
-    isLoading ||
-    !!error ||
-    !!previewError ||
-    !preview ||
-    !reasonCode ||
-    (isReasonRequired && !reason.trim()) ||
-    failed;
-
-  useEffect(() => {
-    setDialog({ confirmDisabled: disabled });
-  }, [disabled, setDialog]);
-
   const isEcpayRefund = order.refundChannel === "ecpay";
   const currency = order.items[0]?.priceCurrency;
 
-  const onSubmit = async (event: BaseSyntheticEvent) => {
-    event.preventDefault();
-
-    if (confirmLoading || disabled || !preview || !reasonCode) return;
+  const onSubmitHandler = async ({ reason, reasonCode }: RefundOrderForm) => {
+    if (!preview || isLoading || !!error || failed || !reasonCode) return;
 
     setDialog({ confirmLoading: true });
 
@@ -202,8 +214,11 @@ const RefundOrderDialogContent = ({
     }
   };
 
+  const onSubmit = (event: BaseSyntheticEvent) =>
+    handleSubmit(onSubmitHandler)(event);
+
   return (
-    <FormStack component="form" id={REFUND_ORDER_FORM_ID} onSubmit={onSubmit}>
+    <FormBox id={REFUND_ORDER_FORM_ID} onSubmit={onSubmit}>
       {!!error && (
         <Alert severity="error">{tOrders("actions.refund.loadFailed")}</Alert>
       )}
@@ -212,11 +227,6 @@ const RefundOrderDialogContent = ({
           {tOrders("actions.refund.previewFailedWithReason", {
             reason: getErrorMessage(previewError),
           })}
-        </Alert>
-      )}
-      {!items.length && (
-        <Alert severity="info">
-          {tOrders("actions.refund.selectAtLeastOne")}
         </Alert>
       )}
       {failed && (
@@ -232,57 +242,63 @@ const RefundOrderDialogContent = ({
       {preview?.isFull && order.invoice?.status === "issued" && (
         <Alert severity="info">{tOrders("actions.refund.invoiceHint")}</Alert>
       )}
-      <Typography variant="body2">
-        {tOrders("actions.refund.itemsLabel")}
-      </Typography>
-      {order.items.map((item) => {
-        const remaining =
-          item.orderQuantity - (refundedQuantities.get(item.id) ?? 0);
+      <ItemsFormControl error={!!quantitiesError}>
+        <Typography variant="body2">
+          {tOrders("actions.refund.itemsLabel")}
+        </Typography>
+        {order.items.map((item) => {
+          const itemRemaining = remaining.get(item.id) ?? 0;
 
-        return (
-          <ItemRowStack direction="row" key={item.id}>
-            <Typography
-              color={remaining ? "textPrimary" : "textDisabled"}
-              variant="body2"
-            >
-              {getOrderItemName(item)} {tCommon("multiply")} {remaining}
-            </Typography>
-            <StyledTextField
-              disabled={!remaining || confirmLoading}
-              onChange={({ target }) => {
-                setFailed(false);
-                setQuantities(
-                  new Map(selected).set(item.id, Number(target.value)),
-                );
-              }}
-              select
-              size="small"
-              slotProps={{
-                htmlInput: { "aria-label": getOrderItemName(item) },
-              }}
-              value={Math.min(selected.get(item.id) ?? 0, remaining)}
-            >
-              {Array.from({ length: remaining + 1 }, (_, index) => (
-                <MenuItem key={index} value={index}>
-                  {index}
-                </MenuItem>
-              ))}
-            </StyledTextField>
-          </ItemRowStack>
-        );
-      })}
+          return (
+            <ItemRowStack direction="row" key={item.id}>
+              <Typography
+                color={itemRemaining ? "textPrimary" : "textDisabled"}
+                variant="body2"
+              >
+                {getOrderItemName(item)} {tCommon("multiply")} {itemRemaining}
+              </Typography>
+              <StyledTextField
+                disabled={!itemRemaining || confirmLoading}
+                onChange={({ target }) => {
+                  setFailed(false);
+                  setValue(
+                    "quantities",
+                    Object.fromEntries(
+                      new Map(selected).set(item.id, Number(target.value)),
+                    ),
+                    { shouldValidate: isSubmitted },
+                  );
+                }}
+                select
+                size="small"
+                slotProps={{
+                  htmlInput: { "aria-label": getOrderItemName(item) },
+                }}
+                value={Math.min(selected.get(item.id) ?? 0, itemRemaining)}
+              >
+                {Array.from({ length: itemRemaining + 1 }, (_, index) => (
+                  <MenuItem key={index} value={index}>
+                    {index}
+                  </MenuItem>
+                ))}
+              </StyledTextField>
+            </ItemRowStack>
+          );
+        })}
+        {quantitiesError && (
+          <FormHelperText>{quantitiesError.message}</FormHelperText>
+        )}
+      </ItemsFormControl>
       <TextField
         disabled={confirmLoading}
+        error={!!errors.reasonCode}
+        helperText={errors.reasonCode?.message}
         label={tOrders("actions.refund.reasonCode")}
-        onChange={({ target }) =>
-          setReasonCode(
-            refundReasonCodeValues.find((code) => code === target.value) ?? "",
-          )
-        }
         required
         select
         size="small"
         value={reasonCode}
+        {...register("reasonCode")}
       >
         {refundReasonCodeValues.map((code) => (
           <MenuItem key={code} value={code}>
@@ -292,12 +308,13 @@ const RefundOrderDialogContent = ({
       </TextField>
       <TextField
         disabled={confirmLoading}
+        error={!!errors.reason}
+        helperText={errors.reason?.message}
         label={tOrders("actions.refund.reason")}
-        onChange={({ target }) => setReason(target.value)}
-        required={isReasonRequired}
+        required={reasonCode === "other"}
         size="small"
         slotProps={{ htmlInput: { maxLength: 50 } }}
-        value={reason}
+        {...register("reason")}
       />
       <Divider />
       {!!preview?.allocatedDiscount && (
@@ -318,7 +335,7 @@ const RefundOrderDialogContent = ({
           {formatMoney(preview?.amount ?? 0, currency)}
         </StyledTypography>
       </TotalStack>
-    </FormStack>
+    </FormBox>
   );
 };
 

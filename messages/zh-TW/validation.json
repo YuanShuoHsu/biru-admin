@@ -400,5 +400,26 @@
   },
   "violationsAcknowledged": {
     "required": "請確認上述違規後再覆核。"
+  },
+  "printed": {
+    "notSelected": "請選擇實際的列印結果。"
+  },
+  "printerIds": {
+    "notSelected": "請至少選擇一台印表機。"
+  },
+  "resetReason": {
+    "required": "重設理由為必填。"
+  },
+  "voidReason": {
+    "required": "作廢原因為必填。"
+  },
+  "confirmation": {
+    "mismatch": "輸入的內容與要確認的「{expected}」不符。"
+  },
+  "refundReasonCode": {
+    "notSelected": "請選擇退款原因。"
+  },
+  "refundReason": {
+    "required": "退款原因選擇「其他」時，補充說明為必填。"
   }
 }
