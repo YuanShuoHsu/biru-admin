@@ -20,7 +20,7 @@ const showsPackages = (packageBaseQuantity: number) => {
   return packageMilli > 0 && packageMilli !== 1000;
 };
 
-export const packagesOf = (quantity: number, packageBaseQuantity: number) => {
+const packagesOf = (quantity: number, packageBaseQuantity: number) => {
   const quantityMilli = Math.round(quantity * 1000);
   const packageMilli = Math.round(packageBaseQuantity * 1000);
   const packages =

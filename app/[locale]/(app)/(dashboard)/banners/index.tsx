@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
@@ -77,6 +77,7 @@ import {
 } from "@/utils/dataGrid";
 import { getBannerEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
+import { localize } from "@/utils/locale";
 
 const ConfirmStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(1),
@@ -168,6 +169,8 @@ const Banners = ({
   const dateFilterOperators = useDateFilterOperators();
 
   const format = useFormatter();
+
+  const locale = useLocale();
 
   const apiRef = useGridApiRef();
 
@@ -459,10 +462,10 @@ const Banners = ({
                 })}
               </DialogContentText>
               <List dense disablePadding>
-                {selectedRows.map(({ id, image }) => (
+                {selectedRows.map(({ alt, id, image }) => (
                   <ListItem disableGutters key={id}>
                     <StyledAvatar
-                      alt={tBanners("image.label")}
+                      alt={localize(alt, locale) || tBanners("image.label")}
                       src={image}
                       variant="rounded"
                     />
@@ -504,7 +507,15 @@ const Banners = ({
       open: true,
       title: tBanners("actions.batchDeleteBanner.submit.label", { count }),
     });
-  }, [apiRef, clearRowSelection, mutate, selectedRows, setDialog, tBanners]);
+  }, [
+    apiRef,
+    clearRowSelection,
+    locale,
+    mutate,
+    selectedRows,
+    setDialog,
+    tBanners,
+  ]);
 
   const handleCancelBatchDelete = useCallback(() => {
     setToolbarMode(null);
@@ -576,10 +587,10 @@ const Banners = ({
         field: "image",
         filterable: false,
         headerName: tBanners("image.label"),
-        renderCell: ({ row: { image } }: GridRenderCellParams<Banner>) => (
+        renderCell: ({ row: { alt, image } }: GridRenderCellParams<Banner>) => (
           <ImageStack direction="row">
             <StyledAvatar
-              alt={tBanners("image.label")}
+              alt={localize(alt, locale) || tBanners("image.label")}
               src={image}
               variant="rounded"
             />
@@ -667,6 +678,7 @@ const Banners = ({
       handleDeleteBanner,
       handleUpdateBanner,
       isReorderMode,
+      locale,
       tBanners,
       toolbarMode,
     ],

@@ -33,7 +33,9 @@ import { authClient } from "@/lib/auth-client";
 import {
   Button,
   CardActions,
+  Checkbox,
   DialogContentText,
+  FormControlLabel,
   Grid,
   Stack,
   TextField,
@@ -97,13 +99,14 @@ const Profile = () => {
       bio: session?.user.bio || "",
       birthDate: toBirthDateValue(session?.user.birthDate),
       ...getPhoneDefaults(session?.user.phoneNumber, locale),
+      emailSubscribed: session?.user.emailSubscribed ?? true,
     },
     resolver: zodResolver(profileFormSchema),
   });
 
-  const [birthDate, countryCode, telephone] = useWatch({
+  const [birthDate, countryCode, telephone, emailSubscribed] = useWatch({
     control,
-    name: ["birthDate", "countryCode", "telephone"],
+    name: ["birthDate", "countryCode", "telephone", "emailSubscribed"],
   });
 
   const { mask, placeholder } = getPhoneFormatting(countryCode);
@@ -115,12 +118,14 @@ const Profile = () => {
       bio: session?.user.bio || "",
       birthDate: toBirthDateValue(session?.user.birthDate),
       ...getPhoneDefaults(session?.user.phoneNumber, locale),
+      emailSubscribed: session?.user.emailSubscribed ?? true,
     });
   }, [
     locale,
     reset,
     session?.user.bio,
     session?.user.birthDate,
+    session?.user.emailSubscribed,
     session?.user.firstName,
     session?.user.lastName,
     session?.user.phoneNumber,
@@ -144,6 +149,7 @@ const Profile = () => {
     birthDate: birthDateValue,
     countryCode: countryCodeValue,
     telephone: telephoneValue,
+    emailSubscribed: emailSubscribedValue,
   }: ProfileForm) => {
     const name = formatFullName(locale, firstName, lastName);
 
@@ -160,6 +166,7 @@ const Profile = () => {
             countryCodeValue as CountryCode,
           ).number
         : "",
+      emailSubscribed: emailSubscribedValue,
       fetchOptions: {
         onError: ({ error: { message } }) => {
           enqueueSnackbar(message, {
@@ -298,6 +305,17 @@ const Profile = () => {
           placeholder={tAuth("bio.placeholder")}
           slotProps={{ htmlInput: { maxLength: 160 } }}
           {...register("bio")}
+        />
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={emailSubscribed}
+              size="small"
+              {...register("emailSubscribed")}
+            />
+          }
+          label={tAuth("emailUpdates")}
+          slotProps={{ typography: { variant: "body2" } }}
         />
       </StyledCardContent>
       <StyledCardActions disableSpacing>

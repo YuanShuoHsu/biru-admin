@@ -10,8 +10,8 @@ export const useProfileFormSchema = () => {
       lastName: z.string().trim().optional(),
       firstName: z
         .string()
-        .min(1, { error: tValidation("firstName.required") })
-        .trim(),
+        .trim()
+        .min(1, { error: tValidation("firstName.required") }),
       bio: z
         .string()
         .trim()
@@ -22,6 +22,7 @@ export const useProfileFormSchema = () => {
         .string()
         .min(1, { error: tValidation("countryCode.notSelected") }),
       telephone: z.string().trim(),
+      emailSubscribed: z.boolean(),
     })
     .superRefine((data, ctx) => {
       if (

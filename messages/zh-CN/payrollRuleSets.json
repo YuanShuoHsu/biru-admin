@@ -9,10 +9,12 @@
   "healthPercentBp": "健保费率",
   "withholdingRateBp": "薪资扣缴率",
   "checkedAt": "最后检查时间",
+  "staleAlert": "计薪规则本月尚未与政府数据核对，本月的计薪草稿会被拦下，请点击「{ingest}」。",
   "status": {
     "label": "状态",
     "confirmed": "已确认",
-    "unconfirmed": "待确认最低工资"
+    "unconfirmed": "待确认最低工资",
+    "stale": "已过期"
   },
   "confirm": {
     "title": "确认最低工资",

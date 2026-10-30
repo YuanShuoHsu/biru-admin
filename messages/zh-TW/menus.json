@@ -228,6 +228,10 @@
       "label": "品項名稱",
       "placeholder": "請輸入您的品項名稱"
     },
+    "observedPrepMinutes": {
+      "description": "近 14 天含此品項、非預約的已出餐訂單，從付款（未付款則下單）到可取餐的整張單分鐘數中位數，含同單其他品項與排隊等待；樣本不足 5 筆時不顯示",
+      "label": "實際備餐時間（近 14 天中位數）"
+    },
     "offers": {
       "availableHours": {
         "label": "可供應時段"

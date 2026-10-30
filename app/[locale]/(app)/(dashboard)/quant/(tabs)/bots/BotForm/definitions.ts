@@ -111,7 +111,6 @@ export interface BotFormValues {
   webhook: { orderAmount: string };
 }
 
-// 進場預設偏多（超賣、黃金交叉、跌破下軌），出場預設相反
 export const emptyCondition = (
   group: "entry" | "exit",
   kind: QuantIndicatorKind = "rsi",

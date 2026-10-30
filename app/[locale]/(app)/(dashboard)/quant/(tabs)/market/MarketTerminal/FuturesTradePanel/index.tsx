@@ -158,7 +158,9 @@ const FuturesTradePanel = ({
 
   // 每次試算要打好幾個交易所端點，停止輸入後才送
   const previewBody = useMemo(() => {
-    const priced = type === "MARKET_QTY" || DECIMAL_PATTERN.test(price);
+    const priced =
+      type === "MARKET_QTY" ||
+      (DECIMAL_PATTERN.test(price) && Number(price) > 0);
     if (!DECIMAL_PATTERN.test(size) || Number(size) <= 0 || !priced)
       return null;
 

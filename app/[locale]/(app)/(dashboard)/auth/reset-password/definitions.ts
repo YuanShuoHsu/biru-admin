@@ -11,14 +11,14 @@ export const useResetPasswordFormSchema = () => {
       email: z.email({ error: tValidation("email.invalid") }).trim(),
       newPassword: z
         .string()
+        .trim()
         .min(PASSWORD_MIN_LENGTH, { error: tValidation("password.minLength") })
         .regex(/[a-zA-Z]/, { error: tValidation("password.letter") })
-        .regex(/[0-9]/, { error: tValidation("password.number") })
-        .trim(),
+        .regex(/[0-9]/, { error: tValidation("password.number") }),
       confirmNewPassword: z
         .string()
-        .min(1, { error: tValidation("confirmPassword.required") })
-        .trim(),
+        .trim()
+        .min(1, { error: tValidation("confirmPassword.required") }),
     })
     .refine(
       ({ newPassword, confirmNewPassword }) =>

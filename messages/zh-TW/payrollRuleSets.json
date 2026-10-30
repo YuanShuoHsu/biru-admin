@@ -9,10 +9,12 @@
   "healthPercentBp": "健保費率",
   "withholdingRateBp": "薪資扣繳率",
   "checkedAt": "最後檢查時間",
+  "staleAlert": "計薪規則本月尚未與政府資料核對，本月的計薪草稿會被擋下，請按「{ingest}」。",
   "status": {
     "label": "狀態",
     "confirmed": "已確認",
-    "unconfirmed": "待確認最低工資"
+    "unconfirmed": "待確認最低工資",
+    "stale": "已過期"
   },
   "confirm": {
     "title": "確認最低工資",

@@ -228,6 +228,10 @@
       "label": "品项名称",
       "placeholder": "请输入您的品项名称"
     },
+    "observedPrepMinutes": {
+      "description": "近 14 天含此品项、非预约的已出餐订单，从付款（未付款则下单）到可取餐的整单分钟数中位数，含同单其他品项与排队等待；样本不足 5 笔时不显示",
+      "label": "实际备餐时间（近 14 天中位数）"
+    },
     "offers": {
       "availableHours": {
         "label": "可供应时段"

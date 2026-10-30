@@ -36,8 +36,8 @@ export const useSignUpFormSchema = () => {
       lastName: z.string().trim().optional(),
       firstName: z
         .string()
-        .min(1, { error: tValidation("firstName.required") })
-        .trim(),
+        .trim()
+        .min(1, { error: tValidation("firstName.required") }),
       // birthDate: z
       //   .string()
       //   .min(1, { error: dict.validation.birthDate.required })
@@ -57,14 +57,14 @@ export const useSignUpFormSchema = () => {
       email: z.email({ error: tValidation("email.invalid") }).trim(),
       password: z
         .string()
+        .trim()
         .min(PASSWORD_MIN_LENGTH, { error: tValidation("password.minLength") })
         .regex(/[a-zA-Z]/, { error: tValidation("password.letter") })
-        .regex(/[0-9]/, { error: tValidation("password.number") })
-        .trim(),
+        .regex(/[0-9]/, { error: tValidation("password.number") }),
       confirmPassword: z
         .string()
-        .min(1, { error: tValidation("confirmPassword.required") })
-        .trim(),
+        .trim()
+        .min(1, { error: tValidation("confirmPassword.required") }),
       // country: z.object({
       //   code: z.custom<CountryCode>().superRefine((value, ctx) => {
       //     if (!value) {

@@ -1,6 +1,8 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
+const BANNER_URL_PATTERN = /^(?:\/(?![/\\])|https:\/\/[^\s\\/])[^\s\\]*$/;
+
 export const useBannerFormSchema = () => {
   const tValidation = useTranslations("validation");
 
@@ -10,7 +12,12 @@ export const useBannerFormSchema = () => {
       endsAt: z.string(),
       isActive: z.boolean(),
       startsAt: z.string(),
-      url: z.string().trim(),
+      url: z
+        .string()
+        .trim()
+        .refine((value) => !value || BANNER_URL_PATTERN.test(value), {
+          error: tValidation("url.invalid"),
+        }),
     })
     .refine(
       ({ endsAt, startsAt }) =>
