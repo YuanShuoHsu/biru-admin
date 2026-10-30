@@ -6678,7 +6678,13 @@ export interface components {
       | "action"
       | "createdAt";
     /** @enum {string} */
-    AuditLogSortField: "actorName" | "resource" | "action" | "createdAt";
+    AuditLogSortField:
+      | "organizationId"
+      | "actorName"
+      | "actorEmail"
+      | "resource"
+      | "action"
+      | "createdAt";
     /**
      * @description 角色
      * @enum {string}
@@ -25441,7 +25447,14 @@ export const auditLogFilterFieldValues: ReadonlyArray<
 ];
 export const auditLogSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AuditLogSortField"]
-> = ["actorName", "resource", "action", "createdAt"];
+> = [
+  "organizationId",
+  "actorName",
+  "actorEmail",
+  "resource",
+  "action",
+  "createdAt",
+];
 export const userRoleValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserRole"]
 > = ["admin", "user"];
