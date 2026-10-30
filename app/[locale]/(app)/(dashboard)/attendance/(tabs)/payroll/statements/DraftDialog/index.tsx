@@ -12,7 +12,7 @@ import useSWRMutation from "swr/mutation";
 import BatchSkippedList from "../../../../BatchSkippedList";
 import { type DraftForm, useDraftFormSchema } from "./definitions";
 
-import { CustomizedDialogActions } from "@/components/CustomizedDialogs";
+import CustomizedDialogActions from "@/components/CustomizedDialogActions";
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 

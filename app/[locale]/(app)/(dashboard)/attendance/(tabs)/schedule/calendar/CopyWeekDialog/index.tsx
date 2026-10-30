@@ -9,7 +9,7 @@ import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 
-import { CustomizedDialogActions } from "@/components/CustomizedDialogs";
+import CustomizedDialogActions from "@/components/CustomizedDialogActions";
 import FormBox from "@/components/FormBox";
 
 import { STORE_TIMEZONE } from "@/constants/timezone";

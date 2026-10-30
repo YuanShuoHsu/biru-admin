@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useState } from "react";
 
-import { CustomizedDialogActions } from "@/components/CustomizedDialogs";
+import CustomizedDialogActions from "@/components/CustomizedDialogActions";
 
 import {
   Alert,
