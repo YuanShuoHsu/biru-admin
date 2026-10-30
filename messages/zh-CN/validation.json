@@ -400,5 +400,26 @@
   },
   "violationsAcknowledged": {
     "required": "请确认上述违规后再复核。"
+  },
+  "printed": {
+    "notSelected": "请选择实际的打印结果。"
+  },
+  "printerIds": {
+    "notSelected": "请至少选择一台打印机。"
+  },
+  "resetReason": {
+    "required": "重设理由为必填。"
+  },
+  "voidReason": {
+    "required": "作废原因为必填。"
+  },
+  "confirmation": {
+    "mismatch": "输入的内容与要确认的“{expected}”不符。"
+  },
+  "refundReasonCode": {
+    "notSelected": "请选择退款原因。"
+  },
+  "refundReason": {
+    "required": "退款原因选择“其他”时，补充说明为必填。"
   }
 }

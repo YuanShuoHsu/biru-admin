@@ -2,20 +2,28 @@
 
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent, useEffect, useState } from "react";
+import type { BaseSyntheticEvent } from "react";
+import { useForm, useWatch } from "react-hook-form";
 
+import {
+  type ResolveInvoicePrintForm,
+  useResolveInvoicePrintFormSchema,
+} from "./definitions";
+
+import FormBox from "@/components/FormBox";
 import { usePrintJobErrorText } from "@/components/PrintJobChip";
 import StyledFormControlLabel from "@/components/StyledFormControlLabel";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
   Alert,
   DialogContentText,
+  FormControl,
+  FormHelperText,
   Radio,
   RadioGroup,
-  Stack,
-  type StackProps,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -27,10 +35,6 @@ import type {
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
-
-const StyledStack = styled(Stack)<StackProps>(({ theme }) => ({
-  gap: theme.spacing(2),
-}));
 
 export const RESOLVE_INVOICE_PRINT_FORM_ID = "resolve-invoice-print-form";
 
@@ -58,17 +62,20 @@ const ResolveInvoicePrintDialogContent = ({
 
   const printJobErrorText = usePrintJobErrorText();
 
-  const [printed, setPrinted] = useState<boolean | null>(null);
+  const resolveInvoicePrintFormSchema = useResolveInvoicePrintFormSchema();
 
-  useEffect(() => {
-    setDialog({ confirmDisabled: printed === null });
-  }, [printed, setDialog]);
+  const {
+    control,
+    formState: { errors },
+    handleSubmit,
+    setValue,
+  } = useForm<ResolveInvoicePrintForm>({
+    resolver: zodResolver(resolveInvoicePrintFormSchema),
+  });
 
-  const onSubmit = async (event: BaseSyntheticEvent) => {
-    event.preventDefault();
+  const printed = useWatch({ control, name: "printed" });
 
-    if (confirmLoading || printed === null) return;
-
+  const onSubmitHandler = async ({ printed }: ResolveInvoicePrintForm) => {
     setDialog({ confirmLoading: true });
 
     try {
@@ -112,14 +119,13 @@ const ResolveInvoicePrintDialogContent = ({
     }
   };
 
+  const onSubmit = (event: BaseSyntheticEvent) =>
+    handleSubmit(onSubmitHandler)(event);
+
   const reason = printJobErrorText(printJob.errorCode);
 
   return (
-    <StyledStack
-      component="form"
-      id={RESOLVE_INVOICE_PRINT_FORM_ID}
-      onSubmit={onSubmit}
-    >
+    <FormBox id={RESOLVE_INVOICE_PRINT_FORM_ID} onSubmit={onSubmit}>
       <DialogContentText>
         {tOrders.rich("actions.resolveInvoicePrint.description", {
           bold: (chunks) => <strong>{chunks}</strong>,
@@ -132,24 +138,31 @@ const ResolveInvoicePrintDialogContent = ({
       <Alert severity="warning">
         {tOrders("actions.resolveInvoicePrint.warning")}
       </Alert>
-      <RadioGroup
-        onChange={(_, value) => setPrinted(value === "true")}
-        value={printed === null ? "" : String(printed)}
-      >
-        <StyledFormControlLabel
-          checked={printed === true}
-          control={<Radio disabled={confirmLoading} />}
-          label={tOrders("actions.resolveInvoicePrint.printed")}
-          value="true"
-        />
-        <StyledFormControlLabel
-          checked={printed === false}
-          control={<Radio disabled={confirmLoading} />}
-          label={tOrders("actions.resolveInvoicePrint.notPrinted")}
-          value="false"
-        />
-      </RadioGroup>
-    </StyledStack>
+      <FormControl error={!!errors.printed}>
+        <RadioGroup
+          onChange={(_, value) =>
+            setValue("printed", value === "true", { shouldValidate: true })
+          }
+          value={printed === undefined ? "" : String(printed)}
+        >
+          <StyledFormControlLabel
+            checked={printed === true}
+            control={<Radio disabled={confirmLoading} />}
+            label={tOrders("actions.resolveInvoicePrint.printed")}
+            value="true"
+          />
+          <StyledFormControlLabel
+            checked={printed === false}
+            control={<Radio disabled={confirmLoading} />}
+            label={tOrders("actions.resolveInvoicePrint.notPrinted")}
+            value="false"
+          />
+        </RadioGroup>
+        {errors.printed && (
+          <FormHelperText>{errors.printed.message}</FormHelperText>
+        )}
+      </FormControl>
+    </FormBox>
   );
 };
 

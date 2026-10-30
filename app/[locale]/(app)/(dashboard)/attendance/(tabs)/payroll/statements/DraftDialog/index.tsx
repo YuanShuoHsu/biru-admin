@@ -5,7 +5,7 @@ import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import type { BaseSyntheticEvent } from "react";
+import { type BaseSyntheticEvent, useRef } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import useSWRMutation from "swr/mutation";
 
@@ -122,43 +122,49 @@ const DraftDialog = ({
     payrollPath(organizationSlug, "org", "earnings"),
     (url: string, { arg }: { arg: { employeeId: string; month: string } }) =>
       fetcher<PayrollEarningInput[]>(`${url}?${new URLSearchParams(arg)}`),
-    { throwOnError: false },
   );
 
-  const loadEarnings = async (employeeId: string, month: string) => {
+  const loadingEarnings = useRef<Promise<void>>(Promise.resolve());
+
+  const loadEarnings = (employeeId: string, month: string) => {
     replace([]);
 
     if (!earningTypes.length || !employeeId || !month) {
       resetEarnings();
-      setDialog({ confirmDisabled: false });
+      loadingEarnings.current = Promise.resolve();
 
       return;
     }
 
-    setDialog({ confirmDisabled: true });
+    loadingEarnings.current = triggerEarnings({ employeeId, month }).then(
+      (entered) => {
+        if (
+          getValues("employeeId") !== employeeId ||
+          getValues("month") !== month
+        )
+          return;
 
-    const entered = await triggerEarnings({ employeeId, month });
-
-    if (
-      !entered ||
-      getValues("employeeId") !== employeeId ||
-      getValues("month") !== month
-    )
-      return;
-
-    replace(
-      entered.map(({ amountCents, earningTypeId }) => ({
-        amount: fromCents(amountCents),
-        earningTypeId,
-      })),
+        replace(
+          entered.map(({ amountCents, earningTypeId }) => ({
+            amount: fromCents(amountCents),
+            earningTypeId,
+          })),
+        );
+      },
     );
-
-    setDialog({ confirmDisabled: false });
+    loadingEarnings.current.catch(() => {
+      loadingEarnings.current = Promise.resolve();
+    });
   };
 
-  const onSubmitHandler = async (values: DraftForm) => {
+  const onSubmitHandler = async (parsed: DraftForm) => {
     try {
       setDialog({ confirmLoading: true });
+
+      // 送出前等既有加給載完，否則草稿會少掉已登錄的項目
+      await loadingEarnings.current;
+
+      const values = { ...parsed, earnings: getValues("earnings") };
 
       if (!values.employeeId) {
         const { skipped, succeeded } = await fetcher<AttendanceBatchResult>(
