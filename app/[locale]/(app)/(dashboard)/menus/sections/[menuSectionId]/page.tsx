@@ -25,6 +25,7 @@ import {
   getAdminMenuSection,
   getAdminMenuSectionItems,
 } from "@/utils/menus";
+import { getAdminPrepTimes } from "@/utils/orders";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAdminOrganization, getMemberRole } from "@/utils/session";
 
@@ -141,6 +142,9 @@ const MenusMenuIdSectionIdContent = async ({
   const canUpdateAvailability = hasRolePermission(role, {
     itemAvailability: ["update"],
   });
+  const prepTimes = hasRolePermission(role, { order: ["read"] })
+    ? await getAdminPrepTimes(selectedOrganization.slug, fetchOptions)
+    : undefined;
 
   return (
     <MenusMenuIdSectionId
@@ -153,6 +157,7 @@ const MenusMenuIdSectionIdContent = async ({
       organization={selectedOrganization}
       page={page}
       pageSize={pageSize}
+      prepTimes={prepTimes}
       quickFilterValue={quickFilterValue}
       rowCount={rowCount}
       rows={rows}
