@@ -178,8 +178,8 @@ const Organizations = ({
   const handleDeleteOrganization = useCallback(
     ({ id, name }: MyOrganization) => {
       setDialog({
+        confirmDisabled: true,
         content: <DeleteOrganizationConfirm names={[name]} />,
-        customLayout: true,
         onConfirm: async () => {
           await authClient.organization.delete(
             { organizationId: id },
@@ -215,12 +215,12 @@ const Organizations = ({
     const count = selectedRows.length;
 
     setDialog({
+      confirmDisabled: true,
       content: (
         <DeleteOrganizationConfirm
           names={selectedRows.map(({ name }) => name)}
         />
       ),
-      customLayout: true,
       onConfirm: async () => {
         try {
           await fetcher(`/api/organizations`, {

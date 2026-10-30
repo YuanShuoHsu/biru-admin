@@ -507,7 +507,6 @@ const Calendar = ({
             organizationSlug={organizationSlug}
           />
         ),
-        customLayout: true,
         formId: "attendance-copy-week-form",
         open: true,
         title: tAttendance("schedule.copyWeek"),

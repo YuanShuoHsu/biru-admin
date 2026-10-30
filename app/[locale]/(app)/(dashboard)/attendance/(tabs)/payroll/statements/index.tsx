@@ -337,7 +337,6 @@ const Payroll = ({
             organizationSlug={organizationSlug}
           />
         ),
-        customLayout: true,
         formId: "payroll-draft-form",
         open: true,
         title: tAttendance("payrollStatus.options.draft"),

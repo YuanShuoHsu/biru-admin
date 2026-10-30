@@ -52,8 +52,6 @@ Zustand stores in `stores/` use a factory pattern (e.g., `createAuthStore`). Eac
 
 React Hook Form + Zod schemas (`definitions.ts` files). Form schemas and error handling are co-located with the page/component. Async work that only feeds a form (e.g. creating a parent record first) goes in its submit handler, covered by `isSubmitting` or the dialog's `confirmLoading` — no separate loading state.
 
-Dialogs are opened through the dialog store (`useDialogStore().setDialog`); the single `components/CustomizedDialogs` shell renders title, close button, `DialogContent` and `components/CustomizedDialogActions`. A dialog whose confirm button depends on its own form state sets `customLayout: true` and renders MUI `DialogContent` + `CustomizedDialogActions` itself (see `app/[locale]/(app)/(dashboard)/orders/*DialogContent`) — never sync derived state back into the store with an effect.
-
 ### Internationalization
 
 5 locales: `zh-TW` (default), `en`, `ja`, `ko`, `zh-CN`. Translation files are in `messages/[locale]/`. Always use `useTranslations()` from `next-intl` and locale-aware `Link`, `redirect`, `usePathname`, `useRouter` from `@/i18n/navigation` (not `next/navigation`).

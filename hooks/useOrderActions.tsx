@@ -310,7 +310,6 @@ export const useOrderActions = (
             organizationSlug={organizationSlug}
           />
         ),
-        customLayout: true,
         formId: REFUND_ORDER_FORM_ID,
         open: true,
         title: tOrders("actions.refund.title"),
@@ -448,7 +447,6 @@ export const useOrderActions = (
             organizationSlug={organizationSlug}
           />
         ),
-        customLayout: true,
         formId: VOID_INVOICE_FORM_ID,
         open: true,
         title: tOrders("actions.voidInvoice.title"),
@@ -467,7 +465,6 @@ export const useOrderActions = (
             organizationSlug={organizationSlug}
           />
         ),
-        customLayout: true,
         formId: RESET_INVOICE_PRINT_FORM_ID,
         open: true,
         title: tOrders("actions.resetInvoicePrint.title"),
@@ -492,7 +489,6 @@ export const useOrderActions = (
             printers={printers}
           />
         ),
-        customLayout: true,
         formId: REPRINT_ORDER_TICKET_FORM_ID,
         open: true,
         title: tOrders("actions.reprintOrderTicket.title"),
@@ -515,7 +511,6 @@ export const useOrderActions = (
             organizationSlug={organizationSlug}
           />
         ),
-        customLayout: true,
         formId: RESOLVE_ORDER_TICKET_FORM_ID,
         open: true,
         title: tOrders("actions.resolveOrderTicket.title"),
@@ -539,7 +534,6 @@ export const useOrderActions = (
             printJob={printJob}
           />
         ),
-        customLayout: true,
         formId: RESOLVE_INVOICE_PRINT_FORM_ID,
         open: true,
         title: tOrders("actions.resolveInvoicePrint.title"),
