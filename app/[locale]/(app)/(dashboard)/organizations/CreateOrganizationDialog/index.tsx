@@ -10,10 +10,6 @@ import {
   useCreateOrganizationFormSchema,
 } from "./definitions";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import UploadAvatars from "@/components/UploadAvatars";
 
@@ -142,43 +138,38 @@ const CreateOrganizationDialog = ({
   };
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id="create-organization-form" onSubmit={onSubmit}>
-          <UploadAvatars uploadKey={CREATE_ORGANIZATION_AVATAR_KEY} />
-          <TextField
-            autoComplete="organization"
-            error={!!errors.name}
-            fullWidth
-            helperText={errors.name?.message}
-            label={tOrganizations("name.label")}
-            placeholder={tOrganizations("name.placeholder")}
-            required
-            {...register("name")}
-          />
-          <TextField
-            error={!!errors.slug}
-            fullWidth
-            helperText={errors.slug?.message}
-            label={tOrganizations("slug.label")}
-            placeholder={tOrganizations("slug.placeholder")}
-            required
-            {...register("slug")}
-          />
-          <Divider flexItem>
-            <Chip label={tOrganizations("address.label")} size="small" />
-          </Divider>
-          <AddressFields
-            control={locationControl}
-            errors={locationErrors}
-            getValues={getLocationValues}
-            register={registerLocation}
-            setValue={setLocationValue}
-          />
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+    <FormBox id="create-organization-form" onSubmit={onSubmit}>
+      <UploadAvatars uploadKey={CREATE_ORGANIZATION_AVATAR_KEY} />
+      <TextField
+        autoComplete="organization"
+        error={!!errors.name}
+        fullWidth
+        helperText={errors.name?.message}
+        label={tOrganizations("name.label")}
+        placeholder={tOrganizations("name.placeholder")}
+        required
+        {...register("name")}
+      />
+      <TextField
+        error={!!errors.slug}
+        fullWidth
+        helperText={errors.slug?.message}
+        label={tOrganizations("slug.label")}
+        placeholder={tOrganizations("slug.placeholder")}
+        required
+        {...register("slug")}
+      />
+      <Divider flexItem>
+        <Chip label={tOrganizations("address.label")} size="small" />
+      </Divider>
+      <AddressFields
+        control={locationControl}
+        errors={locationErrors}
+        getValues={getLocationValues}
+        register={registerLocation}
+        setValue={setLocationValue}
+      />
+    </FormBox>
   );
 };
 

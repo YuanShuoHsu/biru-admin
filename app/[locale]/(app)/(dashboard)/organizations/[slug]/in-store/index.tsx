@@ -8,10 +8,6 @@ import useSWR, { useSWRConfig } from "swr";
 
 import UpdateDineInTableCountDialog from "./UpdateDineInTableCountDialog";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import { StyledCardContent } from "@/components/FormCard";
 
 import { API_ORDER_MODE, ORDER_MODE } from "@/constants/orderMode";
@@ -329,14 +325,9 @@ const OrderQrSecretCard = ({ organizationSlug }: OrderQrSecretCardProps) => {
   const handleRotate = () =>
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tOrganizations("inStore.qrSecret.rotateConfirm")}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tOrganizations("inStore.qrSecret.rotateConfirm")}
+        </DialogContentText>
       ),
       onConfirm: () =>
         updateSecret(
@@ -350,14 +341,9 @@ const OrderQrSecretCard = ({ organizationSlug }: OrderQrSecretCardProps) => {
   const handleRestore = () =>
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tOrganizations("inStore.qrSecret.restoreConfirm")}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tOrganizations("inStore.qrSecret.restoreConfirm")}
+        </DialogContentText>
       ),
       onConfirm: () =>
         updateSecret(
@@ -458,14 +444,9 @@ const InvoicePrinterCard = ({ organizationSlug }: InvoicePrinterCardProps) => {
   const handleReset = () =>
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tOrganizations("inStore.invoicePrinter.resetConfirm")}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tOrganizations("inStore.invoicePrinter.resetConfirm")}
+        </DialogContentText>
       ),
       onConfirm: register,
       open: true,
@@ -475,14 +456,9 @@ const InvoicePrinterCard = ({ organizationSlug }: InvoicePrinterCardProps) => {
   const handleRemove = () =>
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tOrganizations("inStore.invoicePrinter.removeConfirm")}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tOrganizations("inStore.invoicePrinter.removeConfirm")}
+        </DialogContentText>
       ),
       onConfirm: async () => {
         await fetcher(printerUrl, { method: "DELETE" });
@@ -610,14 +586,9 @@ const OrderTicketPrinterItem = ({
   const handleReset = () =>
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tOrganizations("inStore.orderTicketPrinters.resetConfirm")}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tOrganizations("inStore.orderTicketPrinters.resetConfirm")}
+        </DialogContentText>
       ),
       onConfirm: async () =>
         onRegistered(
@@ -632,16 +603,11 @@ const OrderTicketPrinterItem = ({
   const handleRemove = () =>
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tOrganizations("inStore.orderTicketPrinters.removeConfirm", {
-                name,
-              })}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tOrganizations("inStore.orderTicketPrinters.removeConfirm", {
+            name,
+          })}
+        </DialogContentText>
       ),
       onConfirm: async () => {
         await fetcher(printerUrl, { method: "DELETE" });

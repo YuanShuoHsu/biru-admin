@@ -10,6 +10,8 @@ type DialogState = {
   container?: DialogProps["container"];
   content?: React.ReactNode;
   contentText?: string;
+  customLayout: boolean;
+  dividers: boolean;
   formId?: string;
   maxWidth?: DialogProps["maxWidth"];
   onCancel?: () => Promise<void>;
@@ -37,6 +39,8 @@ export const defaultInitState: DialogState = {
   container: null,
   content: null,
   contentText: "",
+  customLayout: false,
+  dividers: true,
   formId: undefined,
   maxWidth: undefined,
   onCancel: undefined,

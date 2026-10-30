@@ -18,10 +18,6 @@ import IsolatedMarginDialog, {
   ISOLATED_MARGIN_FORM_ID,
 } from "./IsolatedMarginDialog";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
@@ -152,18 +148,13 @@ const FuturesAccount = ({
   const handleCancelAll = () =>
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tQuant.rich("account.cancelAll.confirm", {
-                bold: (chunks) => <strong>{chunks}</strong>,
-                count: openOrders?.length ?? 0,
-                symbol: `${market.baseCurrency}/${market.quoteCurrency}`,
-              })}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tQuant.rich("account.cancelAll.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            count: openOrders?.length ?? 0,
+            symbol: `${market.baseCurrency}/${market.quoteCurrency}`,
+          })}
+        </DialogContentText>
       ),
       onConfirm: async () => {
         try {
@@ -258,21 +249,14 @@ const FuturesAccount = ({
     const closePosition = (position: QuantPosition) =>
       setDialog({
         content: (
-          <>
-            <CustomizedDialogContent>
-              <DialogContentText>
-                {tQuant.rich("futures.closePosition.confirm", {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                  direction: tQuant(
-                    `futures.directions.${position.positionSide}`,
-                  ),
-                  pair: pairOf(position.symbol),
-                  size: formatSize(Math.abs(position.size), position.symbol),
-                })}
-              </DialogContentText>
-            </CustomizedDialogContent>
-            <CustomizedDialogActions />
-          </>
+          <DialogContentText>
+            {tQuant.rich("futures.closePosition.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              direction: tQuant(`futures.directions.${position.positionSide}`),
+              pair: pairOf(position.symbol),
+              size: formatSize(Math.abs(position.size), position.symbol),
+            })}
+          </DialogContentText>
         ),
         onConfirm: async () => {
           const isLong = position.positionSide === "LONG";
@@ -527,18 +511,13 @@ const FuturesAccount = ({
     const showFills = (order: QuantFuturesOrder) =>
       setDialog({
         content: (
-          <>
-            <CustomizedDialogContent>
-              <OrderFills
-                pricePrecision={marketOf(order.symbol).pricePrecision}
-                sizePrecision={marketOf(order.symbol).sizePrecision}
-                url={accountUrl(
-                  `/orders/${order.orderId}/fills?symbol=${order.symbol}`,
-                )}
-              />
-            </CustomizedDialogContent>
-            <CustomizedDialogActions />
-          </>
+          <OrderFills
+            pricePrecision={marketOf(order.symbol).pricePrecision}
+            sizePrecision={marketOf(order.symbol).sizePrecision}
+            url={accountUrl(
+              `/orders/${order.orderId}/fills?symbol=${order.symbol}`,
+            )}
+          />
         ),
         maxWidth: "md",
         open: true,

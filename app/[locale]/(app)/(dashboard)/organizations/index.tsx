@@ -14,10 +14,6 @@ import CreateOrganizationDialog from "./CreateOrganizationDialog";
 import DeleteOrganizationConfirm from "./DeleteOrganizationConfirm";
 import UpdateOrganizationDialog from "./UpdateOrganizationDialog";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
@@ -183,6 +179,7 @@ const Organizations = ({
     ({ id, name }: MyOrganization) => {
       setDialog({
         content: <DeleteOrganizationConfirm names={[name]} />,
+        customLayout: true,
         onConfirm: async () => {
           await authClient.organization.delete(
             { organizationId: id },
@@ -223,6 +220,7 @@ const Organizations = ({
           names={selectedRows.map(({ name }) => name)}
         />
       ),
+      customLayout: true,
       onConfirm: async () => {
         try {
           await fetcher(`/api/organizations`, {
@@ -279,17 +277,12 @@ const Organizations = ({
 
       setDialog({
         content: (
-          <>
-            <CustomizedDialogContent>
-              <DialogContentText>
-                {tOrganizations.rich(`actions.${action}.confirm`, {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                  name,
-                })}
-              </DialogContentText>
-            </CustomizedDialogContent>
-            <CustomizedDialogActions />
-          </>
+          <DialogContentText>
+            {tOrganizations.rich(`actions.${action}.confirm`, {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name,
+            })}
+          </DialogContentText>
         ),
         onConfirm: async () => {
           try {

@@ -10,10 +10,6 @@ import CreateMenuSectionDialog from "./CreateMenuSectionDialog";
 import UpdateMenuSectionDialog from "./UpdateMenuSectionDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 import { DragHandle, Sortable } from "@/components/Sortable";
@@ -289,16 +285,11 @@ const MenusMenuId = ({
   const handleEnterReorderMode = useCallback(() => {
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tMenus.rich("sections.actions.reorderSection.confirm", {
-                bold: (chunks) => <strong>{chunks}</strong>,
-              })}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tMenus.rich("sections.actions.reorderSection.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
       ),
       onConfirm: async () => {
         setToolbarMode("reorder");
@@ -312,16 +303,11 @@ const MenusMenuId = ({
   const handleSaveReorder = useCallback(() => {
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tMenus.rich("sections.actions.reorderSection.save.confirm", {
-                bold: (chunks) => <strong>{chunks}</strong>,
-              })}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tMenus.rich("sections.actions.reorderSection.save.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
       ),
       onConfirm: async () => {
         try {
@@ -368,16 +354,11 @@ const MenusMenuId = ({
   const handleCancelReorder = useCallback(() => {
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tMenus.rich("sections.actions.reorderSection.cancel.confirm", {
-                bold: (chunks) => <strong>{chunks}</strong>,
-              })}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tMenus.rich("sections.actions.reorderSection.cancel.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
       ),
       onConfirm: async () => {
         setToolbarMode(null);
@@ -441,17 +422,12 @@ const MenusMenuId = ({
 
       setDialog({
         content: (
-          <>
-            <CustomizedDialogContent>
-              <DialogContentText>
-                {tMenus.rich("sections.actions.deleteSection.confirm", {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                  name: displayName,
-                })}
-              </DialogContentText>
-            </CustomizedDialogContent>
-            <CustomizedDialogActions />
-          </>
+          <DialogContentText>
+            {tMenus.rich("sections.actions.deleteSection.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name: displayName,
+            })}
+          </DialogContentText>
         ),
         onConfirm: async () => {
           try {
@@ -491,29 +467,21 @@ const MenusMenuId = ({
 
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <ConfirmStack>
-              <DialogContentText>
-                {tMenus.rich(
-                  "sections.actions.batchDeleteSection.submit.confirm",
-                  {
-                    bold: (chunks) => <strong>{chunks}</strong>,
-                    count,
-                  },
-                )}
-              </DialogContentText>
-              <List dense disablePadding>
-                {selectedRows.map(({ id, name }) => (
-                  <ListItem disableGutters key={id}>
-                    <ListItemText primary={localize(name, locale)} />
-                  </ListItem>
-                ))}
-              </List>
-            </ConfirmStack>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <ConfirmStack>
+          <DialogContentText>
+            {tMenus.rich("sections.actions.batchDeleteSection.submit.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              count,
+            })}
+          </DialogContentText>
+          <List dense disablePadding>
+            {selectedRows.map(({ id, name }) => (
+              <ListItem disableGutters key={id}>
+                <ListItemText primary={localize(name, locale)} />
+              </ListItem>
+            ))}
+          </List>
+        </ConfirmStack>
       ),
       onConfirm: async () => {
         try {

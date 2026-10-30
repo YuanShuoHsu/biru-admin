@@ -10,10 +10,6 @@ import { useForm, useWatch } from "react-hook-form";
 
 import { type BannerForm, useBannerFormSchema } from "./definitions";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
 import UploadAvatars from "@/components/UploadAvatars";
@@ -137,103 +133,98 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id="banner-form" onSubmit={onSubmit}>
-          <UploadAvatars
-            aspectRatio="16/9"
-            fullWidth
-            highQuality
-            initialSrc={banner?.image}
-            shape="square"
-            uploadKey={uploadKey}
+    <FormBox id="banner-form" onSubmit={onSubmit}>
+      <UploadAvatars
+        aspectRatio="16/9"
+        fullWidth
+        highQuality
+        initialSrc={banner?.image}
+        shape="square"
+        uploadKey={uploadKey}
+      />
+      <StyledFormControlLabel
+        control={
+          <Switch
+            checked={isActive}
+            onChange={(_, checked) => setValue("isActive", checked)}
           />
-          <StyledFormControlLabel
-            control={
-              <Switch
-                checked={isActive}
-                onChange={(_, checked) => setValue("isActive", checked)}
-              />
+        }
+        label={tBanners("isActive.label")}
+      />
+      <LocalizedTextFields
+        fields={(lang) => [
+          {
+            fullWidth: true,
+            helperText: tBanners("alt.helperText"),
+            label: `${tBanners("alt.label")} ${tCommon("optional")}`,
+            onChange: (event) =>
+              setValue("alt", { ...alt, [lang]: event.target.value }),
+            value: alt[lang] || "",
+          },
+        ]}
+      />
+      <TextField
+        error={!!errors.url}
+        fullWidth
+        helperText={errors.url?.message ?? tBanners("url.helperText")}
+        label={`${tBanners("url.label")} ${tCommon("optional")}`}
+        placeholder="/order"
+        slotProps={{ htmlInput: { maxLength: 2048 } }}
+        {...register("url")}
+      />
+      <Grid container spacing={2}>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <DateTimePicker
+            label={`${tBanners("startsAt")} ${tCommon("optional")}`}
+            maxDateTime={endsAt ? dayjs(endsAt) : undefined}
+            onChange={(date) =>
+              setValue(
+                "startsAt",
+                date?.isValid() ? date.startOf("minute").toISOString() : "",
+                {
+                  shouldValidate: isSubmitted,
+                },
+              )
             }
-            label={tBanners("isActive.label")}
-          />
-          <LocalizedTextFields
-            fields={(lang) => [
-              {
+            slotProps={{
+              field: { clearable: true },
+              textField: {
+                error: !!errors.startsAt,
                 fullWidth: true,
-                helperText: tBanners("alt.helperText"),
-                label: `${tBanners("alt.label")} ${tCommon("optional")}`,
-                onChange: (event) =>
-                  setValue("alt", { ...alt, [lang]: event.target.value }),
-                value: alt[lang] || "",
+                helperText: errors.startsAt?.message,
               },
-            ]}
+            }}
+            timezone={PLATFORM_TIMEZONE}
+            value={startsAt ? dayjs(startsAt) : null}
           />
-          <TextField
-            error={!!errors.url}
-            fullWidth
-            helperText={errors.url?.message ?? tBanners("url.helperText")}
-            label={`${tBanners("url.label")} ${tCommon("optional")}`}
-            placeholder="/order"
-            slotProps={{ htmlInput: { maxLength: 2048 } }}
-            {...register("url")}
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <DateTimePicker
+            label={`${tBanners("endsAt")} ${tCommon("optional")}`}
+            minDateTime={startsAt ? dayjs(startsAt) : undefined}
+            onChange={(date) =>
+              setValue(
+                "endsAt",
+                date?.isValid() ? date.startOf("minute").toISOString() : "",
+                {
+                  shouldValidate: isSubmitted,
+                },
+              )
+            }
+            slotProps={{
+              field: { clearable: true },
+              textField: {
+                error: !!errors.endsAt,
+                fullWidth: true,
+                helperText: errors.endsAt?.message,
+              },
+            }}
+            timezone={PLATFORM_TIMEZONE}
+            value={endsAt ? dayjs(endsAt) : null}
           />
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <DateTimePicker
-                label={`${tBanners("startsAt")} ${tCommon("optional")}`}
-                maxDateTime={endsAt ? dayjs(endsAt) : undefined}
-                onChange={(date) =>
-                  setValue(
-                    "startsAt",
-                    date?.isValid() ? date.startOf("minute").toISOString() : "",
-                    {
-                      shouldValidate: isSubmitted,
-                    },
-                  )
-                }
-                slotProps={{
-                  field: { clearable: true },
-                  textField: {
-                    error: !!errors.startsAt,
-                    fullWidth: true,
-                    helperText: errors.startsAt?.message,
-                  },
-                }}
-                timezone={PLATFORM_TIMEZONE}
-                value={startsAt ? dayjs(startsAt) : null}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <DateTimePicker
-                label={`${tBanners("endsAt")} ${tCommon("optional")}`}
-                minDateTime={startsAt ? dayjs(startsAt) : undefined}
-                onChange={(date) =>
-                  setValue(
-                    "endsAt",
-                    date?.isValid() ? date.startOf("minute").toISOString() : "",
-                    {
-                      shouldValidate: isSubmitted,
-                    },
-                  )
-                }
-                slotProps={{
-                  field: { clearable: true },
-                  textField: {
-                    error: !!errors.endsAt,
-                    fullWidth: true,
-                    helperText: errors.endsAt?.message,
-                  },
-                }}
-                timezone={PLATFORM_TIMEZONE}
-                value={endsAt ? dayjs(endsAt) : null}
-              />
-            </Grid>
-          </Grid>
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+        </Grid>
+      </Grid>
+    </FormBox>
   );
 };
 

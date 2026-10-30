@@ -5,11 +5,6 @@ import { useTranslations } from "next-intl";
 import { closeSnackbar, enqueueSnackbar } from "notistack";
 import { useCallback } from "react";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
-
 import { Button, DialogContentText } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -107,18 +102,13 @@ export const useCancelShift = (
       setDialog({
         confirmText: tAttendance("cancelShift"),
         content: (
-          <>
-            <CustomizedDialogContent>
-              <DialogContentText>
-                {tAttendance.rich("cancelShiftIrreversible", {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                  name: shift.employeeName,
-                  reason: ruleMessage,
-                })}
-              </DialogContentText>
-            </CustomizedDialogContent>
-            <CustomizedDialogActions />
-          </>
+          <DialogContentText>
+            {tAttendance.rich("cancelShiftIrreversible", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name: shift.employeeName,
+              reason: ruleMessage,
+            })}
+          </DialogContentText>
         ),
         formId: undefined,
         onConfirm: async () => {

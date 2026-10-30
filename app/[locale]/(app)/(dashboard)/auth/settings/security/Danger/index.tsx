@@ -4,10 +4,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormCard, {
   StyledCardContent,
   StyledCardHeader,
@@ -65,17 +61,12 @@ const Danger = () => {
   const handleDeleteDialog = () =>
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tAuth.rich("settings.danger.confirmContentText", {
-                bold: (chunks) => <strong>{chunks}</strong>,
-                email: session?.user.email || "",
-              })}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tAuth.rich("settings.danger.confirmContentText", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            email: session?.user.email || "",
+          })}
+        </DialogContentText>
       ),
       onConfirm: handleDeleteConfirm,
       open: true,

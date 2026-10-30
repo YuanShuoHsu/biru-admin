@@ -13,10 +13,6 @@ import {
   useBanUserFormSchema,
 } from "./definitions";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -92,75 +88,66 @@ const BanUserDialogContent = ({
     })(event);
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id="ban-user-form" onSubmit={onSubmit}>
-          <TextField
-            autoComplete="email"
-            error={!!errors.email}
-            fullWidth
-            helperText={errors.email?.message}
-            label={tAdmins("email.label")}
-            placeholder={tAdmins("email.placeholder")}
-            required
-            slotProps={{ input: { readOnly: true } }}
-            type="email"
-            {...register("email")}
-          />
-          <TextField
-            error={!!errors.banReason}
-            fullWidth
-            helperText={errors.banReason?.message}
-            label={`${tAdmins("actions.banUser.banReason.label")} ${tCommon("optional")}`}
-            maxRows={4}
-            multiline
-            placeholder={tAdmins("actions.banUser.banReason.placeholder")}
-            slotProps={{ htmlInput: { maxLength: 160 } }}
-            {...register("banReason")}
-          />
-          <TextField
-            error={!!errors.banExpiresIn}
-            fullWidth
-            helperText={errors.banExpiresIn?.message}
-            label={`${tAdmins("actions.banUser.banExpiresIn.label")} ${tCommon("optional")}`}
-            select
-            slotProps={{
-              inputLabel: { shrink: true },
-              select: {
-                displayEmpty: true,
-                renderValue: (selected) => {
-                  const option = BAN_EXPIRES_OPTIONS.find(
-                    ({ value }) => value === selected,
-                  );
+    <FormBox id="ban-user-form" onSubmit={onSubmit}>
+      <TextField
+        autoComplete="email"
+        error={!!errors.email}
+        fullWidth
+        helperText={errors.email?.message}
+        label={tAdmins("email.label")}
+        placeholder={tAdmins("email.placeholder")}
+        required
+        slotProps={{ input: { readOnly: true } }}
+        type="email"
+        {...register("email")}
+      />
+      <TextField
+        error={!!errors.banReason}
+        fullWidth
+        helperText={errors.banReason?.message}
+        label={`${tAdmins("actions.banUser.banReason.label")} ${tCommon("optional")}`}
+        maxRows={4}
+        multiline
+        placeholder={tAdmins("actions.banUser.banReason.placeholder")}
+        slotProps={{ htmlInput: { maxLength: 160 } }}
+        {...register("banReason")}
+      />
+      <TextField
+        error={!!errors.banExpiresIn}
+        fullWidth
+        helperText={errors.banExpiresIn?.message}
+        label={`${tAdmins("actions.banUser.banExpiresIn.label")} ${tCommon("optional")}`}
+        select
+        slotProps={{
+          inputLabel: { shrink: true },
+          select: {
+            displayEmpty: true,
+            renderValue: (selected) => {
+              const option = BAN_EXPIRES_OPTIONS.find(
+                ({ value }) => value === selected,
+              );
 
-                  return option ? (
-                    tAdmins(
-                      `actions.banUser.banExpiresIn.options.${option.label}`,
-                    )
-                  ) : (
-                    <em>
-                      {tAdmins("actions.banUser.banExpiresIn.placeholder")}
-                    </em>
-                  );
-                },
-              },
-            }}
-            value={banExpiresIn}
-            {...register("banExpiresIn")}
-          >
-            <MenuItem disabled value="">
-              <em>{tAdmins("actions.banUser.banExpiresIn.placeholder")}</em>
-            </MenuItem>
-            {BAN_EXPIRES_OPTIONS.map(({ value, label }) => (
-              <MenuItem key={value} value={value}>
-                {tAdmins(`actions.banUser.banExpiresIn.options.${label}`)}
-              </MenuItem>
-            ))}
-          </TextField>
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+              return option ? (
+                tAdmins(`actions.banUser.banExpiresIn.options.${option.label}`)
+              ) : (
+                <em>{tAdmins("actions.banUser.banExpiresIn.placeholder")}</em>
+              );
+            },
+          },
+        }}
+        value={banExpiresIn}
+        {...register("banExpiresIn")}
+      >
+        <MenuItem disabled value="">
+          <em>{tAdmins("actions.banUser.banExpiresIn.placeholder")}</em>
+        </MenuItem>
+        {BAN_EXPIRES_OPTIONS.map(({ value, label }) => (
+          <MenuItem key={value} value={value}>
+            {tAdmins(`actions.banUser.banExpiresIn.options.${label}`)}
+          </MenuItem>
+        ))}
+      </TextField>
+    </FormBox>
   );
 };
 

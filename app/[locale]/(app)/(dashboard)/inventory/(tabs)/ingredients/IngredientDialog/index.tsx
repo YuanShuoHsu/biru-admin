@@ -12,10 +12,6 @@ import {
   type IngredientFormOutput,
 } from "./definitions";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
 import NumberSpinner from "@/components/NumberSpinner";
@@ -357,296 +353,271 @@ const IngredientDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id="ingredient-form" onSubmit={onSubmit}>
-          <UploadAvatars
-            aspectRatio="16/9"
+    <FormBox id="ingredient-form" onSubmit={onSubmit}>
+      <UploadAvatars
+        aspectRatio="16/9"
+        disabled={!editable}
+        fullWidth
+        initialSrc={ingredient?.image || null}
+        shape="square"
+        uploadKey={INGREDIENT_IMAGE_KEY}
+      />
+      <LocalizedTextFields
+        fields={(lang) => [
+          {
+            disabled: !editable,
+            error: !!errors.name?.[lang],
+            fullWidth: true,
+            helperText: errors.name?.[lang]?.message,
+            label: tInventory("ingredients.name.label"),
+            onChange: (event) =>
+              setValue("name", { ...name, [lang]: event.target.value }),
+            placeholder: tInventory("ingredients.name.placeholder"),
+            required: true,
+            value: name?.[lang] || "",
+          },
+        ]}
+      />
+      <TextField
+        disabled={!editable}
+        error={!!errors.brand}
+        fullWidth
+        helperText={errors.brand?.message}
+        label={`${tInventory("ingredients.brand.label")} ${tCommon("optional")}`}
+        placeholder={tInventory("ingredients.brand.placeholder")}
+        {...register("brand")}
+      />
+      {canViewPurchasing && (
+        <NumericFormat
+          allowNegative={false}
+          customInput={TextField}
+          decimalScale={2}
+          disabled={!editable}
+          error={!!errors.price}
+          fullWidth
+          helperText={errors.price?.message || unitCostHint}
+          isAllowed={({ floatValue }) =>
+            floatValue === undefined || floatValue <= 99999999.99
+          }
+          label={tInventory("ingredients.price.label")}
+          onValueChange={({ value }) =>
+            setValue("price", value, { shouldValidate: isSubmitted })
+          }
+          placeholder={tInventory("ingredients.price.placeholder")}
+          required
+          thousandSeparator=","
+          value={price}
+          valueIsNumericString
+        />
+      )}
+      <StyledGrid container spacing={2}>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <NumericFormat
+            allowNegative={false}
+            customInput={TextField}
+            decimalScale={3}
             disabled={!editable}
+            error={!!errors.eligibleQuantity}
             fullWidth
-            initialSrc={ingredient?.image || null}
-            shape="square"
-            uploadKey={INGREDIENT_IMAGE_KEY}
+            helperText={errors.eligibleQuantity?.message}
+            isAllowed={({ floatValue }) =>
+              floatValue === undefined || floatValue <= 999999999.999
+            }
+            label={tInventory("ingredients.eligibleQuantity.label")}
+            onValueChange={({ value }) =>
+              setValue("eligibleQuantity", value, {
+                shouldValidate: isSubmitted,
+              })
+            }
+            placeholder={tInventory("ingredients.eligibleQuantity.placeholder")}
+            required
+            thousandSeparator=","
+            value={eligibleQuantity}
+            valueIsNumericString
           />
-          <LocalizedTextFields
-            fields={(lang) => [
-              {
-                disabled: !editable,
-                error: !!errors.name?.[lang],
-                fullWidth: true,
-                helperText: errors.name?.[lang]?.message,
-                label: tInventory("ingredients.name.label"),
-                onChange: (event) =>
-                  setValue("name", { ...name, [lang]: event.target.value }),
-                placeholder: tInventory("ingredients.name.placeholder"),
-                required: true,
-                value: name?.[lang] || "",
-              },
-            ]}
-          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             disabled={!editable}
-            error={!!errors.brand}
+            error={!!errors.unitCode}
             fullWidth
-            helperText={errors.brand?.message}
-            label={`${tInventory("ingredients.brand.label")} ${tCommon("optional")}`}
-            placeholder={tInventory("ingredients.brand.placeholder")}
-            {...register("brand")}
-          />
-          {canViewPurchasing && (
-            <NumericFormat
-              allowNegative={false}
-              customInput={TextField}
-              decimalScale={2}
-              disabled={!editable}
-              error={!!errors.price}
-              fullWidth
-              helperText={errors.price?.message || unitCostHint}
-              isAllowed={({ floatValue }) =>
-                floatValue === undefined || floatValue <= 99999999.99
-              }
-              label={tInventory("ingredients.price.label")}
-              onValueChange={({ value }) =>
-                setValue("price", value, { shouldValidate: isSubmitted })
-              }
-              placeholder={tInventory("ingredients.price.placeholder")}
-              required
-              thousandSeparator=","
-              value={price}
-              valueIsNumericString
-            />
-          )}
-          <StyledGrid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <NumericFormat
-                allowNegative={false}
-                customInput={TextField}
-                decimalScale={3}
-                disabled={!editable}
-                error={!!errors.eligibleQuantity}
-                fullWidth
-                helperText={errors.eligibleQuantity?.message}
-                isAllowed={({ floatValue }) =>
-                  floatValue === undefined || floatValue <= 999999999.999
-                }
-                label={tInventory("ingredients.eligibleQuantity.label")}
-                onValueChange={({ value }) =>
-                  setValue("eligibleQuantity", value, {
-                    shouldValidate: isSubmitted,
-                  })
-                }
-                placeholder={tInventory(
-                  "ingredients.eligibleQuantity.placeholder",
-                )}
-                required
-                thousandSeparator=","
-                value={eligibleQuantity}
-                valueIsNumericString
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                disabled={!editable}
-                error={!!errors.unitCode}
-                fullWidth
-                helperText={errors.unitCode?.message}
-                label={tInventory("ingredients.eligibleQuantityUnitCode.label")}
-                required
-                select
-                slotProps={{
-                  inputLabel: { shrink: true },
-                  select: {
-                    displayEmpty: true,
-                    renderValue: (selected) => {
-                      const value = unitCodeValues.find(
-                        (unit) => unit === selected,
-                      );
+            helperText={errors.unitCode?.message}
+            label={tInventory("ingredients.eligibleQuantityUnitCode.label")}
+            required
+            select
+            slotProps={{
+              inputLabel: { shrink: true },
+              select: {
+                displayEmpty: true,
+                renderValue: (selected) => {
+                  const value = unitCodeValues.find(
+                    (unit) => unit === selected,
+                  );
 
-                      return value ? (
-                        tInventory(`units.${value}`)
-                      ) : (
-                        <em>
-                          {tInventory(
-                            "ingredients.eligibleQuantityUnitCode.placeholder",
-                          )}
-                        </em>
-                      );
-                    },
-                  },
-                }}
-                value={unitCode}
-                {...register("unitCode")}
-              >
-                <MenuItem disabled value="">
-                  <em>
-                    {tInventory(
-                      "ingredients.eligibleQuantityUnitCode.placeholder",
-                    )}
-                  </em>
-                </MenuItem>
-                {unitCodeValues.map((value) => (
-                  <MenuItem key={value} value={value}>
-                    {tInventory(`units.${value}`)}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Grid>
-          </StyledGrid>
-          <StyledGrid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <NumberSpinner
-                clearable
-                disabled={!baseQuantity || !stockEditable}
-                error={!!errors.inventoryLevel}
-                format={{ maximumFractionDigits: 3 }}
-                fullWidth
-                helperText={
-                  errors.inventoryLevel?.message ||
-                  packageHint(
-                    inventoryLevel,
-                    stockDelta,
-                    stockNote ? [stockNote] : [],
-                  )
-                }
-                label={`${tInventory("ingredients.inventoryLevel.label")} ${tCommon("optional")}`}
-                max={maxPackages(baseQuantity)}
-                min={0}
-                onValueChange={(value) =>
-                  setValue(
-                    "inventoryLevel",
-                    value != null ? String(value) : "",
-                    {
-                      shouldValidate: isSubmitted,
-                    },
-                  )
-                }
-                placeholder={tInventory(
-                  "ingredients.inventoryLevel.placeholder",
-                )}
-                step="any"
-                value={inventoryLevel ? Number(inventoryLevel) : null}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <StyledTextField
-                disabled={!editable}
-                error={!!errors.inventoryLevelUnitText}
-                fullWidth
-                helperText={errors.inventoryLevelUnitText?.message}
-                label={`${tInventory("ingredients.inventoryLevelUnitText.label")} ${tCommon("optional")}`}
-                placeholder={tInventory(
-                  "ingredients.inventoryLevelUnitText.placeholder",
-                )}
-                {...register("inventoryLevelUnitText")}
-              />
-            </Grid>
-          </StyledGrid>
-          {stockEditable && stockChanged && (
-            <TextField
-              error={!!errors.transactionNote}
-              fullWidth
-              helperText={errors.transactionNote?.message}
-              label={`${tInventory("ingredients.transactionNote.label")} ${tCommon("optional")}`}
-              placeholder={tInventory(
-                "ingredients.transactionNote.placeholder",
-              )}
-              {...register("transactionNote")}
-            />
-          )}
+                  return value ? (
+                    tInventory(`units.${value}`)
+                  ) : (
+                    <em>
+                      {tInventory(
+                        "ingredients.eligibleQuantityUnitCode.placeholder",
+                      )}
+                    </em>
+                  );
+                },
+              },
+            }}
+            value={unitCode}
+            {...register("unitCode")}
+          >
+            <MenuItem disabled value="">
+              <em>
+                {tInventory("ingredients.eligibleQuantityUnitCode.placeholder")}
+              </em>
+            </MenuItem>
+            {unitCodeValues.map((value) => (
+              <MenuItem key={value} value={value}>
+                {tInventory(`units.${value}`)}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Grid>
+      </StyledGrid>
+      <StyledGrid container spacing={2}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <NumberSpinner
             clearable
-            disabled={!baseQuantity || !editable}
-            error={!!errors.lowStockThreshold}
+            disabled={!baseQuantity || !stockEditable}
+            error={!!errors.inventoryLevel}
             format={{ maximumFractionDigits: 3 }}
             fullWidth
             helperText={
-              errors.lowStockThreshold?.message ||
-              packageHint(lowStockThreshold, lowStockThresholdDelta)
+              errors.inventoryLevel?.message ||
+              packageHint(
+                inventoryLevel,
+                stockDelta,
+                stockNote ? [stockNote] : [],
+              )
             }
-            label={`${tInventory("ingredients.lowStockThreshold.label")} ${tCommon("optional")}`}
+            label={`${tInventory("ingredients.inventoryLevel.label")} ${tCommon("optional")}`}
             max={maxPackages(baseQuantity)}
             min={0}
             onValueChange={(value) =>
-              setValue(
-                "lowStockThreshold",
-                value != null ? String(value) : "",
-                {
-                  shouldValidate: isSubmitted,
-                },
-              )
+              setValue("inventoryLevel", value != null ? String(value) : "", {
+                shouldValidate: isSubmitted,
+              })
             }
-            placeholder={tInventory(
-              "ingredients.lowStockThreshold.placeholder",
-            )}
-            smallStep={1}
+            placeholder={tInventory("ingredients.inventoryLevel.placeholder")}
             step="any"
-            value={lowStockThreshold ? Number(lowStockThreshold) : null}
+            value={inventoryLevel ? Number(inventoryLevel) : null}
           />
-          {canViewPurchasing && (
-            <>
-              <Autocomplete
-                {...supplierSearch}
-                disabled={!editable}
-                fullWidth
-                getOptionLabel={({ name }) => name}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                onChange={(_, value) => {
-                  setSupplier(value);
-                  setValue("supplierId", value?.id ?? "", {
-                    shouldValidate: isSubmitted,
-                  });
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    error={!!errors.supplierId}
-                    helperText={errors.supplierId?.message}
-                    label={`${tInventory("ingredients.supplierId.label")} ${tCommon("optional")}`}
-                    placeholder={tInventory(
-                      "ingredients.supplierId.placeholder",
-                    )}
-                    slotProps={{
-                      ...params.slotProps,
-                      input: {
-                        ...params.slotProps.input,
-                        endAdornment: (
-                          <>
-                            {supplierSearch.loading && (
-                              <CircularProgress color="inherit" size={20} />
-                            )}
-                            {params.slotProps.input.endAdornment}
-                          </>
-                        ),
-                      },
-                    }}
-                  />
-                )}
-                value={supplier}
-              />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <StyledTextField
+            disabled={!editable}
+            error={!!errors.inventoryLevelUnitText}
+            fullWidth
+            helperText={errors.inventoryLevelUnitText?.message}
+            label={`${tInventory("ingredients.inventoryLevelUnitText.label")} ${tCommon("optional")}`}
+            placeholder={tInventory(
+              "ingredients.inventoryLevelUnitText.placeholder",
+            )}
+            {...register("inventoryLevelUnitText")}
+          />
+        </Grid>
+      </StyledGrid>
+      {stockEditable && stockChanged && (
+        <TextField
+          error={!!errors.transactionNote}
+          fullWidth
+          helperText={errors.transactionNote?.message}
+          label={`${tInventory("ingredients.transactionNote.label")} ${tCommon("optional")}`}
+          placeholder={tInventory("ingredients.transactionNote.placeholder")}
+          {...register("transactionNote")}
+        />
+      )}
+      <NumberSpinner
+        clearable
+        disabled={!baseQuantity || !editable}
+        error={!!errors.lowStockThreshold}
+        format={{ maximumFractionDigits: 3 }}
+        fullWidth
+        helperText={
+          errors.lowStockThreshold?.message ||
+          packageHint(lowStockThreshold, lowStockThresholdDelta)
+        }
+        label={`${tInventory("ingredients.lowStockThreshold.label")} ${tCommon("optional")}`}
+        max={maxPackages(baseQuantity)}
+        min={0}
+        onValueChange={(value) =>
+          setValue("lowStockThreshold", value != null ? String(value) : "", {
+            shouldValidate: isSubmitted,
+          })
+        }
+        placeholder={tInventory("ingredients.lowStockThreshold.placeholder")}
+        smallStep={1}
+        step="any"
+        value={lowStockThreshold ? Number(lowStockThreshold) : null}
+      />
+      {canViewPurchasing && (
+        <>
+          <Autocomplete
+            {...supplierSearch}
+            disabled={!editable}
+            fullWidth
+            getOptionLabel={({ name }) => name}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            onChange={(_, value) => {
+              setSupplier(value);
+              setValue("supplierId", value?.id ?? "", {
+                shouldValidate: isSubmitted,
+              });
+            }}
+            renderInput={(params) => (
               <TextField
-                disabled={!editable}
-                error={!!errors.url}
-                fullWidth
-                helperText={errors.url?.message}
-                label={`${tInventory("ingredients.url.label")} ${tCommon("optional")}`}
-                placeholder={tInventory("ingredients.url.placeholder")}
-                {...register("url")}
+                {...params}
+                error={!!errors.supplierId}
+                helperText={errors.supplierId?.message}
+                label={`${tInventory("ingredients.supplierId.label")} ${tCommon("optional")}`}
+                placeholder={tInventory("ingredients.supplierId.placeholder")}
+                slotProps={{
+                  ...params.slotProps,
+                  input: {
+                    ...params.slotProps.input,
+                    endAdornment: (
+                      <>
+                        {supplierSearch.loading && (
+                          <CircularProgress color="inherit" size={20} />
+                        )}
+                        {params.slotProps.input.endAdornment}
+                      </>
+                    ),
+                  },
+                }}
               />
-            </>
-          )}
+            )}
+            value={supplier}
+          />
           <TextField
             disabled={!editable}
-            error={!!errors.note}
+            error={!!errors.url}
             fullWidth
-            helperText={errors.note?.message}
-            label={`${tInventory("ingredients.note.label")} ${tCommon("optional")}`}
-            placeholder={tInventory("ingredients.note.placeholder")}
-            {...register("note")}
+            helperText={errors.url?.message}
+            label={`${tInventory("ingredients.url.label")} ${tCommon("optional")}`}
+            placeholder={tInventory("ingredients.url.placeholder")}
+            {...register("url")}
           />
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+        </>
+      )}
+      <TextField
+        disabled={!editable}
+        error={!!errors.note}
+        fullWidth
+        helperText={errors.note?.message}
+        label={`${tInventory("ingredients.note.label")} ${tCommon("optional")}`}
+        placeholder={tInventory("ingredients.note.placeholder")}
+        {...register("note")}
+      />
+    </FormBox>
   );
 };
 

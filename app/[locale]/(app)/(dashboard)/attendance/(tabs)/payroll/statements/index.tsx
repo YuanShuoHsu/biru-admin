@@ -14,10 +14,6 @@ import EmployerSupplementDialog from "./EmployerSupplementDialog";
 import TermsDialog from "./TermsDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -341,6 +337,7 @@ const Payroll = ({
             organizationSlug={organizationSlug}
           />
         ),
+        customLayout: true,
         formId: "payroll-draft-form",
         open: true,
         title: tAttendance("payrollStatus.options.draft"),
@@ -406,20 +403,15 @@ const Payroll = ({
     (statement: PayrollStatement) =>
       setDialog({
         content: (
-          <>
-            <CustomizedDialogContent>
-              <BlockerList
-                codes={statement.snapshot.blockers}
-                employeeName={statement.employeeName}
-                onEditTerms={
-                  canManageTerms
-                    ? () => handleTermsDialog(statement.employeeId)
-                    : undefined
-                }
-              />
-            </CustomizedDialogContent>
-            <CustomizedDialogActions />
-          </>
+          <BlockerList
+            codes={statement.snapshot.blockers}
+            employeeName={statement.employeeName}
+            onEditTerms={
+              canManageTerms
+                ? () => handleTermsDialog(statement.employeeId)
+                : undefined
+            }
+          />
         ),
         open: true,
         showConfirm: false,

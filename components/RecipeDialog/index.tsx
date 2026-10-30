@@ -7,10 +7,6 @@ import { useForm, useWatch } from "react-hook-form";
 
 import { useRecipeFormSchema, type RecipeForm } from "./definitions";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 
@@ -75,28 +71,23 @@ const RecipeDialog = ({ mutate, recipe }: RecipeDialogProps) => {
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id="recipe-form" onSubmit={onSubmit}>
-          <NumberSpinner
-            error={!!errors.recipeYield}
-            fullWidth
-            helperText={errors.recipeYield?.message}
-            label={tInventory("recipes.recipeYield.label")}
-            min={1}
-            onValueChange={(value) =>
-              setValue("recipeYield", value != null ? String(value) : "", {
-                shouldValidate: isSubmitted,
-              })
-            }
-            placeholder={tInventory("recipes.recipeYield.placeholder")}
-            required
-            value={recipeYield ? Number(recipeYield) : null}
-          />
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+    <FormBox id="recipe-form" onSubmit={onSubmit}>
+      <NumberSpinner
+        error={!!errors.recipeYield}
+        fullWidth
+        helperText={errors.recipeYield?.message}
+        label={tInventory("recipes.recipeYield.label")}
+        min={1}
+        onValueChange={(value) =>
+          setValue("recipeYield", value != null ? String(value) : "", {
+            shouldValidate: isSubmitted,
+          })
+        }
+        placeholder={tInventory("recipes.recipeYield.placeholder")}
+        required
+        value={recipeYield ? Number(recipeYield) : null}
+      />
+    </FormBox>
   );
 };
 

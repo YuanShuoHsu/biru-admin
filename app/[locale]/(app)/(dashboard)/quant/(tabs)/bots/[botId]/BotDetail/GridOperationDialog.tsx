@@ -8,10 +8,6 @@ import { useSWRConfig } from "swr";
 
 import { QUANT_BOTS_URL, isQuantBotKey } from "../../useQuantBots";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { InputAdornment, TextField, Typography } from "@mui/material";
@@ -130,36 +126,31 @@ const GridOperationDialog = ({
   );
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id={GRID_OPERATION_FORM_ID} noValidate onSubmit={onSubmit}>
-          <Typography color="text.secondary" variant="body2">
-            {tOperation(`descriptions.${operation}`)}
-          </Typography>
-          {operation === "invest" &&
-            numberField("amount", tOperation("amount"), quote)}
-          {operation === "profit" &&
-            numberField(
-              "amount",
-              tOperation("amount"),
-              quote,
-              tOperation("profitHelper", {
-                profit: formatQuote(bot.summary.realizedPnl),
-                quote,
-                withdrawn: formatQuote(bot.summary.profitWithdrawn ?? 0),
-              }),
-            )}
-          {operation === "range" && (
-            <>
-              {numberField("top", tGrid("top"), quote)}
-              {numberField("bottom", tGrid("bottom"), quote)}
-              {numberField("row", tGrid("row"))}
-            </>
-          )}
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+    <FormBox id={GRID_OPERATION_FORM_ID} noValidate onSubmit={onSubmit}>
+      <Typography color="text.secondary" variant="body2">
+        {tOperation(`descriptions.${operation}`)}
+      </Typography>
+      {operation === "invest" &&
+        numberField("amount", tOperation("amount"), quote)}
+      {operation === "profit" &&
+        numberField(
+          "amount",
+          tOperation("amount"),
+          quote,
+          tOperation("profitHelper", {
+            profit: formatQuote(bot.summary.realizedPnl),
+            quote,
+            withdrawn: formatQuote(bot.summary.profitWithdrawn ?? 0),
+          }),
+        )}
+      {operation === "range" && (
+        <>
+          {numberField("top", tGrid("top"), quote)}
+          {numberField("bottom", tGrid("bottom"), quote)}
+          {numberField("row", tGrid("row"))}
+        </>
+      )}
+    </FormBox>
   );
 };
 

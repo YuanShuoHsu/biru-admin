@@ -8,10 +8,6 @@ import useSWR from "swr";
 import SupplierDialog from "./SupplierDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -292,17 +288,12 @@ const Suppliers = ({
     ({ id, name }: Supplier) => {
       setDialog({
         content: (
-          <>
-            <CustomizedDialogContent>
-              <DialogContentText>
-                {tInventory.rich("suppliers.actions.deleteSupplier.confirm", {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                  name,
-                })}
-              </DialogContentText>
-            </CustomizedDialogContent>
-            <CustomizedDialogActions />
-          </>
+          <DialogContentText>
+            {tInventory.rich("suppliers.actions.deleteSupplier.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name,
+            })}
+          </DialogContentText>
         ),
         onConfirm: async () => {
           try {
@@ -338,29 +329,24 @@ const Suppliers = ({
 
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <ConfirmStack>
-              <DialogContentText>
-                {tInventory.rich(
-                  "suppliers.actions.batchDeleteSupplier.submit.confirm",
-                  {
-                    bold: (chunks) => <strong>{chunks}</strong>,
-                    count,
-                  },
-                )}
-              </DialogContentText>
-              <List dense disablePadding>
-                {selectedRows.map(({ id, name }) => (
-                  <ListItem disableGutters key={id}>
-                    <ListItemText primary={name} />
-                  </ListItem>
-                ))}
-              </List>
-            </ConfirmStack>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <ConfirmStack>
+          <DialogContentText>
+            {tInventory.rich(
+              "suppliers.actions.batchDeleteSupplier.submit.confirm",
+              {
+                bold: (chunks) => <strong>{chunks}</strong>,
+                count,
+              },
+            )}
+          </DialogContentText>
+          <List dense disablePadding>
+            {selectedRows.map(({ id, name }) => (
+              <ListItem disableGutters key={id}>
+                <ListItemText primary={name} />
+              </ListItem>
+            ))}
+          </List>
+        </ConfirmStack>
       ),
       onConfirm: async () => {
         try {

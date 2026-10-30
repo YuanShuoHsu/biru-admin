@@ -4,10 +4,6 @@ import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormCard, {
   StyledCardContent,
   StyledCardHeader,
@@ -104,18 +100,13 @@ const Store = ({ points }: StoreProps) => {
   const handleRedeemDialog = (coupon: PointsCoupon) =>
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tAuth.rich("points.redeem.confirmContentText", {
-                bold: (chunks) => <strong>{chunks}</strong>,
-                code: coupon.code,
-                points: format.number(coupon.pointsCost),
-              })}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tAuth.rich("points.redeem.confirmContentText", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            code: coupon.code,
+            points: format.number(coupon.pointsCost),
+          })}
+        </DialogContentText>
       ),
       onConfirm: () => handleRedeem(coupon),
       open: true,

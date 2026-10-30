@@ -7,10 +7,6 @@ import { useForm, useWatch } from "react-hook-form";
 
 import { type ShiftTypeForm, useShiftTypeFormSchema } from "./definitions";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -108,69 +104,60 @@ const ShiftTypeDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id="attendance-shift-type-form" onSubmit={onSubmit}>
-          <TextField
-            error={!!errors.name}
-            fullWidth
-            helperText={errors.name?.message}
-            label={tAttendance("name")}
-            required
-            {...register("name")}
-          />
-          <TimePicker
-            ampm={false}
-            format="HH:mm"
-            label={tAttendance("startsAt")}
-            onChange={(time) =>
-              setValue(
-                "startTime",
-                time?.isValid() ? time.format("HH:mm") : "",
-                {
-                  shouldValidate: isSubmitted,
-                },
-              )
-            }
-            slotProps={{
-              textField: {
-                error: !!errors.startTime,
-                fullWidth: true,
-                helperText: errors.startTime?.message,
-                required: true,
-              },
-            }}
-            value={toTimeDayjs(startTime)}
-          />
-          <TimePicker
-            ampm={false}
-            format="HH:mm"
-            label={tAttendance("endsAt")}
-            onChange={(time) =>
-              setValue("endTime", time?.isValid() ? time.format("HH:mm") : "", {
-                shouldValidate: isSubmitted,
-              })
-            }
-            slotProps={{
-              textField: {
-                error: !!errors.endTime,
-                fullWidth: true,
-                helperText:
-                  errors.endTime?.message ??
-                  (endTime && endTime < startTime
-                    ? tCommon("location.openingHours.nextDayTime", {
-                        time: endTime,
-                      })
-                    : undefined),
-                required: true,
-              },
-            }}
-            value={toTimeDayjs(endTime)}
-          />
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+    <FormBox id="attendance-shift-type-form" onSubmit={onSubmit}>
+      <TextField
+        error={!!errors.name}
+        fullWidth
+        helperText={errors.name?.message}
+        label={tAttendance("name")}
+        required
+        {...register("name")}
+      />
+      <TimePicker
+        ampm={false}
+        format="HH:mm"
+        label={tAttendance("startsAt")}
+        onChange={(time) =>
+          setValue("startTime", time?.isValid() ? time.format("HH:mm") : "", {
+            shouldValidate: isSubmitted,
+          })
+        }
+        slotProps={{
+          textField: {
+            error: !!errors.startTime,
+            fullWidth: true,
+            helperText: errors.startTime?.message,
+            required: true,
+          },
+        }}
+        value={toTimeDayjs(startTime)}
+      />
+      <TimePicker
+        ampm={false}
+        format="HH:mm"
+        label={tAttendance("endsAt")}
+        onChange={(time) =>
+          setValue("endTime", time?.isValid() ? time.format("HH:mm") : "", {
+            shouldValidate: isSubmitted,
+          })
+        }
+        slotProps={{
+          textField: {
+            error: !!errors.endTime,
+            fullWidth: true,
+            helperText:
+              errors.endTime?.message ??
+              (endTime && endTime < startTime
+                ? tCommon("location.openingHours.nextDayTime", {
+                    time: endTime,
+                  })
+                : undefined),
+            required: true,
+          },
+        }}
+        value={toTimeDayjs(endTime)}
+      />
+    </FormBox>
   );
 };
 

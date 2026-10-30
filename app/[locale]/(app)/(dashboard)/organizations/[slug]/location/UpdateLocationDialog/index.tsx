@@ -10,10 +10,6 @@ import {
   type UpdateLocationForm,
 } from "./definitions";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -120,32 +116,27 @@ const UpdateLocationDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id="update-location-form" onSubmit={onSubmit}>
-          <Divider flexItem>
-            <Chip label={tOrganizations("address.label")} size="small" />
-          </Divider>
-          <AddressFields
-            control={control}
-            errors={errors}
-            getValues={getValues}
-            register={register}
-            setValue={setValue}
-          />
-          <Divider flexItem>
-            <Chip label={tOrganizations("localBusiness.label")} size="small" />
-          </Divider>
-          <LocalBusinessFields
-            control={control}
-            errors={errors}
-            register={register}
-            setValue={setValue}
-          />
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+    <FormBox id="update-location-form" onSubmit={onSubmit}>
+      <Divider flexItem>
+        <Chip label={tOrganizations("address.label")} size="small" />
+      </Divider>
+      <AddressFields
+        control={control}
+        errors={errors}
+        getValues={getValues}
+        register={register}
+        setValue={setValue}
+      />
+      <Divider flexItem>
+        <Chip label={tOrganizations("localBusiness.label")} size="small" />
+      </Divider>
+      <LocalBusinessFields
+        control={control}
+        errors={errors}
+        register={register}
+        setValue={setValue}
+      />
+    </FormBox>
   );
 };
 

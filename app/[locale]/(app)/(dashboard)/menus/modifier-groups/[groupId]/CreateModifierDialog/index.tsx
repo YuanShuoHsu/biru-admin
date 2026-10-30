@@ -11,10 +11,6 @@ import {
 } from "./definitions";
 
 import CheckboxesGroup from "@/components/CheckboxesGroup";
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
 import NumberSpinner from "@/components/NumberSpinner";
@@ -111,78 +107,72 @@ const CreateModifierDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id="create-modifier-form" onSubmit={onSubmit}>
-          <LocalizedTextFields
-            fields={(lang) => [
-              {
-                error: !!errors.displayName?.[lang],
-                fullWidth: true,
-                helperText: errors.displayName?.[lang]?.message,
-                label: tMenus("modifiers.displayName.label"),
-                onChange: (event) =>
-                  setValue("displayName", {
-                    ...displayNameValue,
-                    [lang]: event.target.value,
-                  }),
-                placeholder: tMenus("modifiers.displayName.placeholder"),
-                required: true,
-                value: displayNameValue?.[lang] || "",
-              },
-            ]}
-          />
-          <NumberSpinner
-            clearable
-            error={!!errors.priceAdjustment}
-            fullWidth
-            helperText={errors.priceAdjustment?.message}
-            label={`${tMenus("modifiers.priceAdjustment.label")} ${tCommon("optional")}`}
-            min={0}
-            placeholder={tMenus("modifiers.priceAdjustment.placeholder")}
-            step={1}
-            value={priceAdjustment ? Number(priceAdjustment) : null}
-            onValueChange={(value) =>
-              setValue("priceAdjustment", value != null ? String(value) : "")
-            }
-          />
-          <TextField
-            error={!!errors.availability}
-            fullWidth
-            label={tMenus("availability.label")}
-            select
-            {...register("availability")}
-            defaultValue="InStock"
-          >
-            {itemAvailabilityValues.map((value) => (
-              <MenuItem key={value} value={value}>
-                {tMenus(`availability.options.${value}`)}
-              </MenuItem>
-            ))}
-          </TextField>
-          <CheckboxesGroup
-            error={!!errors.availableModes}
-            fullWidth
-            helperText={
-              errors.availableModes?.message ||
-              tMenus("availableModes.helperText")
-            }
-            label={tMenus("availableModes.label")}
-            onChange={(event, value) =>
-              setValue("availableModes", value as ApiOrderMode[])
-            }
-            options={orderModeValues.map((value) => ({
-              children: null,
-              label: tOrder(`mode.${value}.label`),
-              value,
-            }))}
-            required
-            value={availableModes}
-          />
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+    <FormBox id="create-modifier-form" onSubmit={onSubmit}>
+      <LocalizedTextFields
+        fields={(lang) => [
+          {
+            error: !!errors.displayName?.[lang],
+            fullWidth: true,
+            helperText: errors.displayName?.[lang]?.message,
+            label: tMenus("modifiers.displayName.label"),
+            onChange: (event) =>
+              setValue("displayName", {
+                ...displayNameValue,
+                [lang]: event.target.value,
+              }),
+            placeholder: tMenus("modifiers.displayName.placeholder"),
+            required: true,
+            value: displayNameValue?.[lang] || "",
+          },
+        ]}
+      />
+      <NumberSpinner
+        clearable
+        error={!!errors.priceAdjustment}
+        fullWidth
+        helperText={errors.priceAdjustment?.message}
+        label={`${tMenus("modifiers.priceAdjustment.label")} ${tCommon("optional")}`}
+        min={0}
+        placeholder={tMenus("modifiers.priceAdjustment.placeholder")}
+        step={1}
+        value={priceAdjustment ? Number(priceAdjustment) : null}
+        onValueChange={(value) =>
+          setValue("priceAdjustment", value != null ? String(value) : "")
+        }
+      />
+      <TextField
+        error={!!errors.availability}
+        fullWidth
+        label={tMenus("availability.label")}
+        select
+        {...register("availability")}
+        defaultValue="InStock"
+      >
+        {itemAvailabilityValues.map((value) => (
+          <MenuItem key={value} value={value}>
+            {tMenus(`availability.options.${value}`)}
+          </MenuItem>
+        ))}
+      </TextField>
+      <CheckboxesGroup
+        error={!!errors.availableModes}
+        fullWidth
+        helperText={
+          errors.availableModes?.message || tMenus("availableModes.helperText")
+        }
+        label={tMenus("availableModes.label")}
+        onChange={(event, value) =>
+          setValue("availableModes", value as ApiOrderMode[])
+        }
+        options={orderModeValues.map((value) => ({
+          children: null,
+          label: tOrder(`mode.${value}.label`),
+          value,
+        }))}
+        required
+        value={availableModes}
+      />
+    </FormBox>
   );
 };
 

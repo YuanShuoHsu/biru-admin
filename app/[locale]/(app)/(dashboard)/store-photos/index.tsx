@@ -8,10 +8,6 @@ import useSWR from "swr";
 import StorePhotoDialog from "./StorePhotoDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
@@ -276,16 +272,11 @@ const StorePhotos = ({
   const handleEnterReorderMode = useCallback(() => {
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tStorePhotos.rich("actions.reorderStorePhoto.confirm", {
-                bold: (chunks) => <strong>{chunks}</strong>,
-              })}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tStorePhotos.rich("actions.reorderStorePhoto.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
       ),
       onConfirm: async () => {
         setToolbarMode("reorder");
@@ -299,16 +290,11 @@ const StorePhotos = ({
   const handleSaveReorder = useCallback(() => {
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tStorePhotos.rich("actions.reorderStorePhoto.save.confirm", {
-                bold: (chunks) => <strong>{chunks}</strong>,
-              })}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tStorePhotos.rich("actions.reorderStorePhoto.save.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
       ),
       onConfirm: async () => {
         try {
@@ -358,16 +344,11 @@ const StorePhotos = ({
   const handleCancelReorder = useCallback(() => {
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tStorePhotos.rich("actions.reorderStorePhoto.cancel.confirm", {
-                bold: (chunks) => <strong>{chunks}</strong>,
-              })}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tStorePhotos.rich("actions.reorderStorePhoto.cancel.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
       ),
       onConfirm: async () => {
         setToolbarMode(null);
@@ -418,16 +399,11 @@ const StorePhotos = ({
     ({ id }: StorePhoto) => {
       setDialog({
         content: (
-          <>
-            <CustomizedDialogContent>
-              <DialogContentText>
-                {tStorePhotos.rich("actions.deleteStorePhoto.confirm", {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                })}
-              </DialogContentText>
-            </CustomizedDialogContent>
-            <CustomizedDialogActions />
-          </>
+          <DialogContentText>
+            {tStorePhotos.rich("actions.deleteStorePhoto.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+            })}
+          </DialogContentText>
         ),
         onConfirm: async () => {
           try {
@@ -461,33 +437,25 @@ const StorePhotos = ({
 
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <ConfirmStack>
-              <DialogContentText>
-                {tStorePhotos.rich(
-                  "actions.batchDeleteStorePhoto.submit.confirm",
-                  {
-                    bold: (chunks) => <strong>{chunks}</strong>,
-                    count,
-                  },
-                )}
-              </DialogContentText>
-              <List dense disablePadding>
-                {selectedRows.map(({ alt, id, image }) => (
-                  <ListItem disableGutters key={id}>
-                    <StyledAvatar
-                      alt={localize(alt, locale)}
-                      src={image}
-                      variant="rounded"
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            </ConfirmStack>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <ConfirmStack>
+          <DialogContentText>
+            {tStorePhotos.rich("actions.batchDeleteStorePhoto.submit.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              count,
+            })}
+          </DialogContentText>
+          <List dense disablePadding>
+            {selectedRows.map(({ alt, id, image }) => (
+              <ListItem disableGutters key={id}>
+                <StyledAvatar
+                  alt={localize(alt, locale)}
+                  src={image}
+                  variant="rounded"
+                />
+              </ListItem>
+            ))}
+          </List>
+        </ConfirmStack>
       ),
       onConfirm: async () => {
         try {

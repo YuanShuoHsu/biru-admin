@@ -10,10 +10,6 @@ import { query } from "@/constants/query";
 
 import useListAccounts from "@/hooks/useListAccounts";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import { StyledListItem, StyledListItemText } from "@/components/FormCard";
 
 import { authClient } from "@/lib/auth-client";
@@ -70,17 +66,12 @@ const ProviderRow = ({ id, Icon, label }: Provider) => {
   const handleLinkDialog = () => {
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tAuth.rich("settings.linkedAccounts.confirmLinkContentText", {
-                bold: (chunks) => <strong>{chunks}</strong>,
-                provider: label,
-              })}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tAuth.rich("settings.linkedAccounts.confirmLinkContentText", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            provider: label,
+          })}
+        </DialogContentText>
       ),
       onConfirm: handleLinkConfirm,
       open: true,
@@ -117,17 +108,12 @@ const ProviderRow = ({ id, Icon, label }: Provider) => {
   const handleUnlinkDialog = () => {
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tAuth.rich("settings.linkedAccounts.confirmUnlinkContentText", {
-                bold: (chunks) => <strong>{chunks}</strong>,
-                provider: label,
-              })}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tAuth.rich("settings.linkedAccounts.confirmUnlinkContentText", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            provider: label,
+          })}
+        </DialogContentText>
       ),
       onConfirm: handleUnlinkConfirm,
       open: true,

@@ -9,11 +9,6 @@ import { useSWRConfig } from "swr";
 
 import AccountItem from "../AccountItem";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
-
 import { deviceSessionsKey } from "@/hooks/useDeviceSessions";
 
 import { authClient } from "@/lib/auth-client";
@@ -87,17 +82,12 @@ const OtherAccountItem = ({ token, user }: OtherAccountItemProps) => {
 
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tAuth.rich("settings.accounts.setActive.confirmContentText", {
-                bold: (chunks) => <strong>{chunks}</strong>,
-                email: user.email,
-              })}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tAuth.rich("settings.accounts.setActive.confirmContentText", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            email: user.email,
+          })}
+        </DialogContentText>
       ),
       onConfirm: handleSetActiveConfirm,
       open: true,
@@ -134,17 +124,12 @@ const OtherAccountItem = ({ token, user }: OtherAccountItemProps) => {
 
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tAuth.rich("settings.accounts.revoke.confirmContentText", {
-                bold: (chunks) => <strong>{chunks}</strong>,
-                email: user.email,
-              })}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tAuth.rich("settings.accounts.revoke.confirmContentText", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            email: user.email,
+          })}
+        </DialogContentText>
       ),
       onConfirm: handleRevokeConfirm,
       open: true,

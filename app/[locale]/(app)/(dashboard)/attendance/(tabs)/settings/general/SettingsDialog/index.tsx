@@ -10,10 +10,6 @@ import { useFieldArray, useForm, useWatch } from "react-hook-form";
 
 import { type SettingsForm, useSettingsFormSchema } from "./definitions";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 
@@ -269,307 +265,297 @@ const SettingsDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id="attendance-settings-form" onSubmit={onSubmit}>
-          <StyledButton
-            loading={locating}
-            onClick={handleUseCurrentLocation}
-            startIcon={<MyLocation />}
-            variant="outlined"
-          >
-            {tAttendance("useCurrentLocation")}
-          </StyledButton>
-          <NumberSpinner
-            error={!!errors.latitude}
-            fullWidth
-            helperText={errors.latitude?.message}
-            label={tAttendance("latitude.label")}
-            max={90}
-            min={-90}
-            onValueChange={(value) =>
-              setValue("latitude", value, { shouldValidate: isSubmitted })
-            }
-            step={0.0001}
-            required
-            value={latitude}
-          />
-          <NumberSpinner
-            error={!!errors.longitude}
-            fullWidth
-            helperText={errors.longitude?.message}
-            label={tAttendance("longitude.label")}
-            max={180}
-            min={-180}
-            onValueChange={(value) =>
-              setValue("longitude", value, { shouldValidate: isSubmitted })
-            }
-            step={0.0001}
-            required
-            value={longitude}
-          />
-          <NumberSpinner
-            error={!!errors.radiusMeters}
-            fullWidth
-            helperText={errors.radiusMeters?.message}
-            label={tAttendance("radiusMeters.label")}
-            max={10000}
-            min={10}
-            onValueChange={(value) =>
-              setValue("radiusMeters", value ?? 10, {
-                shouldValidate: isSubmitted,
-              })
-            }
-            value={radiusMeters}
-          />
-          <StyledFormControl
-            component="fieldset"
-            error={!!errors.allowedIps}
-            variant="standard"
-          >
-            <FormLabel component="legend">
-              {tAttendance("allowedIps.label")}
-            </FormLabel>
-            {fields.map(({ id }, index) => (
-              <IpFieldStack key={id}>
-                <IpRowStack direction="row">
-                  <TextField
-                    error={!!errors.allowedIps?.[index]?.value}
-                    fullWidth
-                    placeholder={tAttendance("allowedIps.placeholder")}
-                    required
-                    {...register(`allowedIps.${index}.value`)}
-                  />
-                  <IconButton
-                    color="error"
-                    disabled={fields.length === 1 && !firstAllowedIp}
-                    onClick={() => handleAllowedIpRemove(index)}
-                    size="small"
-                  >
-                    <DeleteOutlined fontSize="small" />
-                  </IconButton>
-                </IpRowStack>
-                {errors.allowedIps?.[index]?.value && (
-                  <FormHelperText error>
-                    {errors.allowedIps[index].value.message}
-                  </FormHelperText>
-                )}
-              </IpFieldStack>
-            ))}
-            {errors.allowedIps?.message && (
-              <FormHelperText error>{errors.allowedIps.message}</FormHelperText>
-            )}
-            <Button
-              disabled={fields.length >= ALLOWED_IPS_MAX}
-              onClick={() => append({ value: "" })}
-              startIcon={<Add />}
-              variant="outlined"
-            >
-              {tAttendance("add")}
-            </Button>
-          </StyledFormControl>
-          <NumberSpinner
-            error={!!errors.graceMinutes}
-            fullWidth
-            helperText={errors.graceMinutes?.message}
-            label={tAttendance("graceMinutes.label")}
-            max={60}
-            min={0}
-            onValueChange={(value) =>
-              setValue("graceMinutes", value ?? 0, {
-                shouldValidate: isSubmitted,
-              })
-            }
-            value={graceMinutes}
-          />
-          <TextField
-            error={!!errors.laborInsuranceUnitCode}
-            fullWidth
-            helperText={errors.laborInsuranceUnitCode?.message}
-            label={tAttendance("laborInsuranceUnitCode.label")}
-            slotProps={{ htmlInput: { maxLength: 9 } }}
-            {...register("laborInsuranceUnitCode", {
-              setValueAs: (value: string) => value.toUpperCase(),
-            })}
-          />
-          <TextField
-            fullWidth
-            label={tAttendance("occupationalIndustryCode.label")}
-            onChange={(event) =>
-              setValue("occupationalIndustryCode", event.target.value)
-            }
-            select
-            slotProps={{
-              inputLabel: { shrink: true },
-              select: {
-                displayEmpty: true,
-                renderValue: (selected) => {
-                  const industry = occupationalIndustryRates.find(
-                    ({ code }) => code === selected,
-                  );
-
-                  return industry ? (
-                    industryLabel(industry)
-                  ) : (
-                    <em>{tAttendance("occupationalIndustryCode.none")}</em>
-                  );
-                },
-              },
-            }}
-            value={occupationalIndustryCode}
-          >
-            <MenuItem value="">
-              <em>{tAttendance("occupationalIndustryCode.none")}</em>
-            </MenuItem>
-            {industryCategories.flatMap((category) => [
-              <ListSubheader key={category}>{category}</ListSubheader>,
-              ...occupationalIndustryRates
-                .filter((industry) => industry.category === category)
-                .map((industry) => (
-                  <MenuItem key={industry.code} value={industry.code}>
-                    {industryLabel(industry)}
-                  </MenuItem>
-                )),
-            ])}
-          </TextField>
-          <NumberSpinner
-            clearable
-            error={!!errors.occupationalExperienceRate}
-            fullWidth
-            helperText={
-              errors.occupationalExperienceRate?.message ??
-              tAttendance("occupationalExperienceRateMicros.helper")
-            }
-            label={tAttendance("occupationalExperienceRateMicros.label")}
-            max={10}
-            min={0.0001}
-            onValueChange={(value) =>
-              setValue("occupationalExperienceRate", value, {
-                shouldValidate: isSubmitted,
-              })
-            }
-            step={0.01}
-            value={occupationalExperienceRate}
-          />
-          <DatePicker
-            format={monthFormat}
-            label={tAttendance("voluntaryLaborInsuranceFrom.label")}
-            onChange={(value) =>
-              setValue(
-                "voluntaryLaborInsuranceFrom",
-                value?.isValid() ? value.format("YYYY-MM") : "",
-              )
-            }
-            slotProps={{
-              field: { clearable: true },
-              textField: { fullWidth: true },
-            }}
-            timezone={STORE_TIMEZONE}
-            value={
-              voluntaryLaborInsuranceFrom
-                ? dayjs(voluntaryLaborInsuranceFrom, "YYYY-MM")
-                : null
-            }
-            views={["year", "month"]}
-          />
-          <NumberSpinner
-            clearable
-            error={!!errors.payday}
-            fullWidth
-            helperText={errors.payday?.message}
-            label={tAttendance("payday.label")}
-            max={31}
-            min={1}
-            onValueChange={(value) =>
-              setValue("payday", value, { shouldValidate: isSubmitted })
-            }
-            value={payday}
-          />
-          <StyledFormControlLabel
-            control={
-              <Checkbox
-                checked={paydayNextMonth}
-                onChange={(_, checked) => setValue("paydayNextMonth", checked)}
+    <FormBox id="attendance-settings-form" onSubmit={onSubmit}>
+      <StyledButton
+        loading={locating}
+        onClick={handleUseCurrentLocation}
+        startIcon={<MyLocation />}
+        variant="outlined"
+      >
+        {tAttendance("useCurrentLocation")}
+      </StyledButton>
+      <NumberSpinner
+        error={!!errors.latitude}
+        fullWidth
+        helperText={errors.latitude?.message}
+        label={tAttendance("latitude.label")}
+        max={90}
+        min={-90}
+        onValueChange={(value) =>
+          setValue("latitude", value, { shouldValidate: isSubmitted })
+        }
+        step={0.0001}
+        required
+        value={latitude}
+      />
+      <NumberSpinner
+        error={!!errors.longitude}
+        fullWidth
+        helperText={errors.longitude?.message}
+        label={tAttendance("longitude.label")}
+        max={180}
+        min={-180}
+        onValueChange={(value) =>
+          setValue("longitude", value, { shouldValidate: isSubmitted })
+        }
+        step={0.0001}
+        required
+        value={longitude}
+      />
+      <NumberSpinner
+        error={!!errors.radiusMeters}
+        fullWidth
+        helperText={errors.radiusMeters?.message}
+        label={tAttendance("radiusMeters.label")}
+        max={10000}
+        min={10}
+        onValueChange={(value) =>
+          setValue("radiusMeters", value ?? 10, { shouldValidate: isSubmitted })
+        }
+        value={radiusMeters}
+      />
+      <StyledFormControl
+        component="fieldset"
+        error={!!errors.allowedIps}
+        variant="standard"
+      >
+        <FormLabel component="legend">
+          {tAttendance("allowedIps.label")}
+        </FormLabel>
+        {fields.map(({ id }, index) => (
+          <IpFieldStack key={id}>
+            <IpRowStack direction="row">
+              <TextField
+                error={!!errors.allowedIps?.[index]?.value}
+                fullWidth
+                placeholder={tAttendance("allowedIps.placeholder")}
+                required
+                {...register(`allowedIps.${index}.value`)}
               />
-            }
-            label={tAttendance("paydayNextMonth")}
+              <IconButton
+                color="error"
+                disabled={fields.length === 1 && !firstAllowedIp}
+                onClick={() => handleAllowedIpRemove(index)}
+                size="small"
+              >
+                <DeleteOutlined fontSize="small" />
+              </IconButton>
+            </IpRowStack>
+            {errors.allowedIps?.[index]?.value && (
+              <FormHelperText error>
+                {errors.allowedIps[index].value.message}
+              </FormHelperText>
+            )}
+          </IpFieldStack>
+        ))}
+        {errors.allowedIps?.message && (
+          <FormHelperText error>{errors.allowedIps.message}</FormHelperText>
+        )}
+        <Button
+          disabled={fields.length >= ALLOWED_IPS_MAX}
+          onClick={() => append({ value: "" })}
+          startIcon={<Add />}
+          variant="outlined"
+        >
+          {tAttendance("add")}
+        </Button>
+      </StyledFormControl>
+      <NumberSpinner
+        error={!!errors.graceMinutes}
+        fullWidth
+        helperText={errors.graceMinutes?.message}
+        label={tAttendance("graceMinutes.label")}
+        max={60}
+        min={0}
+        onValueChange={(value) =>
+          setValue("graceMinutes", value ?? 0, { shouldValidate: isSubmitted })
+        }
+        value={graceMinutes}
+      />
+      <TextField
+        error={!!errors.laborInsuranceUnitCode}
+        fullWidth
+        helperText={errors.laborInsuranceUnitCode?.message}
+        label={tAttendance("laborInsuranceUnitCode.label")}
+        slotProps={{ htmlInput: { maxLength: 9 } }}
+        {...register("laborInsuranceUnitCode", {
+          setValueAs: (value: string) => value.toUpperCase(),
+        })}
+      />
+      <TextField
+        fullWidth
+        label={tAttendance("occupationalIndustryCode.label")}
+        onChange={(event) =>
+          setValue("occupationalIndustryCode", event.target.value)
+        }
+        select
+        slotProps={{
+          inputLabel: { shrink: true },
+          select: {
+            displayEmpty: true,
+            renderValue: (selected) => {
+              const industry = occupationalIndustryRates.find(
+                ({ code }) => code === selected,
+              );
+
+              return industry ? (
+                industryLabel(industry)
+              ) : (
+                <em>{tAttendance("occupationalIndustryCode.none")}</em>
+              );
+            },
+          },
+        }}
+        value={occupationalIndustryCode}
+      >
+        <MenuItem value="">
+          <em>{tAttendance("occupationalIndustryCode.none")}</em>
+        </MenuItem>
+        {industryCategories.flatMap((category) => [
+          <ListSubheader key={category}>{category}</ListSubheader>,
+          ...occupationalIndustryRates
+            .filter((industry) => industry.category === category)
+            .map((industry) => (
+              <MenuItem key={industry.code} value={industry.code}>
+                {industryLabel(industry)}
+              </MenuItem>
+            )),
+        ])}
+      </TextField>
+      <NumberSpinner
+        clearable
+        error={!!errors.occupationalExperienceRate}
+        fullWidth
+        helperText={
+          errors.occupationalExperienceRate?.message ??
+          tAttendance("occupationalExperienceRateMicros.helper")
+        }
+        label={tAttendance("occupationalExperienceRateMicros.label")}
+        max={10}
+        min={0.0001}
+        onValueChange={(value) =>
+          setValue("occupationalExperienceRate", value, {
+            shouldValidate: isSubmitted,
+          })
+        }
+        step={0.01}
+        value={occupationalExperienceRate}
+      />
+      <DatePicker
+        format={monthFormat}
+        label={tAttendance("voluntaryLaborInsuranceFrom.label")}
+        onChange={(value) =>
+          setValue(
+            "voluntaryLaborInsuranceFrom",
+            value?.isValid() ? value.format("YYYY-MM") : "",
+          )
+        }
+        slotProps={{
+          field: { clearable: true },
+          textField: { fullWidth: true },
+        }}
+        timezone={STORE_TIMEZONE}
+        value={
+          voluntaryLaborInsuranceFrom
+            ? dayjs(voluntaryLaborInsuranceFrom, "YYYY-MM")
+            : null
+        }
+        views={["year", "month"]}
+      />
+      <NumberSpinner
+        clearable
+        error={!!errors.payday}
+        fullWidth
+        helperText={errors.payday?.message}
+        label={tAttendance("payday.label")}
+        max={31}
+        min={1}
+        onValueChange={(value) =>
+          setValue("payday", value, { shouldValidate: isSubmitted })
+        }
+        value={payday}
+      />
+      <StyledFormControlLabel
+        control={
+          <Checkbox
+            checked={paydayNextMonth}
+            onChange={(_, checked) => setValue("paydayNextMonth", checked)}
           />
-          <DatePicker
-            label={tAttendance("overtimeAgreedFrom.label")}
-            onChange={(value) =>
-              setValue(
-                "overtimeAgreedFrom",
-                value?.isValid() ? value.format("YYYY-MM-DD") : "",
-              )
-            }
-            slotProps={{
-              field: { clearable: true },
-              textField: { fullWidth: true },
-            }}
-            timezone={STORE_TIMEZONE}
-            value={
-              overtimeAgreedFrom
-                ? dayjs.tz(overtimeAgreedFrom, STORE_TIMEZONE)
-                : null
-            }
-          />
-          <StyledFormControl component="fieldset" variant="standard">
-            <FormLabel component="legend">
-              {tAttendance("overtimeExtensionPeriods.label")}
-            </FormLabel>
-            <FormHelperText>
-              {tAttendance("overtimeExtensionPeriods.hint")}
-            </FormHelperText>
-            {periodFields.map(({ id }, index) => (
-              <IpRowStack direction="row" key={id}>
-                <DatePicker
-                  format={monthFormat}
-                  label={tAttendance("overtimeExtensionPeriods.startMonth")}
-                  onChange={(value) =>
-                    setValue(
-                      `overtimeExtensionPeriods.${index}.value`,
-                      value?.isValid() ? value.format("YYYY-MM") : "",
-                      { shouldValidate: isSubmitted },
-                    )
-                  }
-                  slotProps={{
-                    textField: {
-                      error: !!errors.overtimeExtensionPeriods?.[index]?.value,
-                      fullWidth: true,
-                      helperText:
-                        errors.overtimeExtensionPeriods?.[index]?.value
-                          ?.message,
-                    },
-                  }}
-                  timezone={STORE_TIMEZONE}
-                  value={
-                    periods?.[index]?.value
-                      ? dayjs(periods[index].value, "YYYY-MM")
-                      : null
-                  }
-                  views={["year", "month"]}
-                />
-                <IconButton
-                  color="error"
-                  onClick={() => removePeriod(index)}
-                  size="small"
-                >
-                  <DeleteOutlined fontSize="small" />
-                </IconButton>
-              </IpRowStack>
-            ))}
-            <Button
-              onClick={() => appendPeriod({ value: "" })}
-              startIcon={<Add />}
-              variant="outlined"
+        }
+        label={tAttendance("paydayNextMonth")}
+      />
+      <DatePicker
+        label={tAttendance("overtimeAgreedFrom.label")}
+        onChange={(value) =>
+          setValue(
+            "overtimeAgreedFrom",
+            value?.isValid() ? value.format("YYYY-MM-DD") : "",
+          )
+        }
+        slotProps={{
+          field: { clearable: true },
+          textField: { fullWidth: true },
+        }}
+        timezone={STORE_TIMEZONE}
+        value={
+          overtimeAgreedFrom
+            ? dayjs.tz(overtimeAgreedFrom, STORE_TIMEZONE)
+            : null
+        }
+      />
+      <StyledFormControl component="fieldset" variant="standard">
+        <FormLabel component="legend">
+          {tAttendance("overtimeExtensionPeriods.label")}
+        </FormLabel>
+        <FormHelperText>
+          {tAttendance("overtimeExtensionPeriods.hint")}
+        </FormHelperText>
+        {periodFields.map(({ id }, index) => (
+          <IpRowStack direction="row" key={id}>
+            <DatePicker
+              format={monthFormat}
+              label={tAttendance("overtimeExtensionPeriods.startMonth")}
+              onChange={(value) =>
+                setValue(
+                  `overtimeExtensionPeriods.${index}.value`,
+                  value?.isValid() ? value.format("YYYY-MM") : "",
+                  { shouldValidate: isSubmitted },
+                )
+              }
+              slotProps={{
+                textField: {
+                  error: !!errors.overtimeExtensionPeriods?.[index]?.value,
+                  fullWidth: true,
+                  helperText:
+                    errors.overtimeExtensionPeriods?.[index]?.value?.message,
+                },
+              }}
+              timezone={STORE_TIMEZONE}
+              value={
+                periods?.[index]?.value
+                  ? dayjs(periods[index].value, "YYYY-MM")
+                  : null
+              }
+              views={["year", "month"]}
+            />
+            <IconButton
+              color="error"
+              onClick={() => removePeriod(index)}
+              size="small"
             >
-              {tAttendance("add")}
-            </Button>
-          </StyledFormControl>
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+              <DeleteOutlined fontSize="small" />
+            </IconButton>
+          </IpRowStack>
+        ))}
+        <Button
+          onClick={() => appendPeriod({ value: "" })}
+          startIcon={<Add />}
+          variant="outlined"
+        >
+          {tAttendance("add")}
+        </Button>
+      </StyledFormControl>
+    </FormBox>
   );
 };
 

@@ -10,10 +10,6 @@ import { useForm, useWatch } from "react-hook-form";
 
 import { type CorrectionForm, useCorrectionFormSchema } from "./definitions";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { MAX_DAILY_WORK_HOURS } from "@/constants/attendance";
@@ -140,64 +136,47 @@ const CorrectionDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id="attendance-correction-form" onSubmit={onSubmit}>
-          {(
-            [
-              [
-                "clockInAt",
-                clockInAt,
-                "clockIn",
-                earliest,
-                dayjs(shift.endsAt),
-              ],
-              [
-                "clockOutAt",
-                clockOutAt,
-                "clockOut",
-                dayjs(shift.startsAt),
-                latest,
-              ],
-            ] as const
-          ).map(([name, value, action, minDateTime, maxDateTime]) => (
-            <DateTimePicker
-              disableFuture
-              key={name}
-              label={tAttendance(`eventAction.options.${action}`)}
-              maxDateTime={maxDateTime}
-              minDateTime={minDateTime}
-              onChange={(date) =>
-                setValue(name, date?.isValid() ? date.toISOString() : "", {
-                  shouldValidate: isSubmitted,
-                })
-              }
-              slotProps={{
-                textField: {
-                  error: !!errors[name],
-                  fullWidth: true,
-                  helperText: errors[name]?.message,
-                  required: true,
-                },
-              }}
-              timezone={STORE_TIMEZONE}
-              value={value ? dayjs(value) : null}
-            />
-          ))}
-          <TextField
-            error={!!errors.reason}
-            fullWidth
-            helperText={errors.reason?.message}
-            label={tAttendance("reason.label")}
-            minRows={3}
-            multiline
-            required
-            {...register("reason")}
-          />
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+    <FormBox id="attendance-correction-form" onSubmit={onSubmit}>
+      {(
+        [
+          ["clockInAt", clockInAt, "clockIn", earliest, dayjs(shift.endsAt)],
+          ["clockOutAt", clockOutAt, "clockOut", dayjs(shift.startsAt), latest],
+        ] as const
+      ).map(([name, value, action, minDateTime, maxDateTime]) => (
+        <DateTimePicker
+          disableFuture
+          key={name}
+          label={tAttendance(`eventAction.options.${action}`)}
+          maxDateTime={maxDateTime}
+          minDateTime={minDateTime}
+          onChange={(date) =>
+            setValue(name, date?.isValid() ? date.toISOString() : "", {
+              shouldValidate: isSubmitted,
+            })
+          }
+          slotProps={{
+            textField: {
+              error: !!errors[name],
+              fullWidth: true,
+              helperText: errors[name]?.message,
+              required: true,
+            },
+          }}
+          timezone={STORE_TIMEZONE}
+          value={value ? dayjs(value) : null}
+        />
+      ))}
+      <TextField
+        error={!!errors.reason}
+        fullWidth
+        helperText={errors.reason?.message}
+        label={tAttendance("reason.label")}
+        minRows={3}
+        multiline
+        required
+        {...register("reason")}
+      />
+    </FormBox>
   );
 };
 

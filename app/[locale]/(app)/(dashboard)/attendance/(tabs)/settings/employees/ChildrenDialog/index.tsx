@@ -11,10 +11,6 @@ import useSWR from "swr";
 
 import { type ChildForm, useChildFormSchema } from "./definitions";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
@@ -223,107 +219,100 @@ const ChildrenDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id="attendance-child-form" onSubmit={onSubmit}>
-          {children.length > 0 && (
-            <List dense disablePadding>
-              {children.map((child) => (
-                <ListItem
-                  disableGutters
-                  key={child.id}
-                  secondaryAction={
-                    <>
-                      {canUpdate && (
-                        <Tooltip
-                          title={tAttendance(
-                            editingId === child.id
-                              ? "parentalChildren.actions.cancelEdit"
-                              : "parentalChildren.actions.update",
-                          )}
-                        >
-                          <IconButton
-                            color={
-                              editingId === child.id ? "primary" : "default"
-                            }
-                            onClick={() =>
-                              edit(editingId === child.id ? undefined : child)
-                            }
-                            size="small"
-                          >
-                            <Edit fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
+    <FormBox id="attendance-child-form" onSubmit={onSubmit}>
+      {children.length > 0 && (
+        <List dense disablePadding>
+          {children.map((child) => (
+            <ListItem
+              disableGutters
+              key={child.id}
+              secondaryAction={
+                <>
+                  {canUpdate && (
+                    <Tooltip
+                      title={tAttendance(
+                        editingId === child.id
+                          ? "parentalChildren.actions.cancelEdit"
+                          : "parentalChildren.actions.update",
                       )}
-                      {canDelete && child.deletable && (
-                        <Tooltip
-                          title={tAttendance("parentalChildren.actions.delete")}
-                        >
-                          <IconButton
-                            color="error"
-                            edge="end"
-                            onClick={() => handleDelete(child)}
-                            size="small"
-                          >
-                            <Delete fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      )}
-                    </>
-                  }
-                >
-                  <ListItemText
-                    primary={child.label}
-                    secondary={`${child.reference} · ${format.dateTime(new Date(child.birthDate), "date")}`}
-                  />
-                </ListItem>
-              ))}
-            </List>
-          )}
-          <TextField
-            error={!!errors.reference}
-            fullWidth
-            helperText={
-              errors.reference?.message ?? tAttendance("parentalChildHint")
-            }
-            label={tAttendance("childReference")}
-            required
-            slotProps={{ inputLabel: { shrink: !!reference } }}
-            {...register("reference")}
-          />
-          <TextField
-            error={!!errors.label}
-            fullWidth
-            helperText={errors.label?.message}
-            label={tAttendance("childLabel")}
-            required
-            slotProps={{ inputLabel: { shrink: !!label } }}
-            {...register("label")}
-          />
-          <DatePicker
-            label={tAttendance("childBirthDate")}
-            onChange={(value) =>
-              setValue(
-                "birthDate",
-                value?.isValid() ? value.startOf("day").toISOString() : "",
-                { shouldValidate: isSubmitted },
-              )
-            }
-            slotProps={{
-              textField: {
-                error: !!errors.birthDate,
-                fullWidth: true,
-                helperText: errors.birthDate?.message,
-                required: true,
-              },
-            }}
-            timezone={STORE_TIMEZONE}
-            value={birthDate ? dayjs(birthDate) : null}
-          />
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+                    >
+                      <IconButton
+                        color={editingId === child.id ? "primary" : "default"}
+                        onClick={() =>
+                          edit(editingId === child.id ? undefined : child)
+                        }
+                        size="small"
+                      >
+                        <Edit fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {canDelete && child.deletable && (
+                    <Tooltip
+                      title={tAttendance("parentalChildren.actions.delete")}
+                    >
+                      <IconButton
+                        color="error"
+                        edge="end"
+                        onClick={() => handleDelete(child)}
+                        size="small"
+                      >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </>
+              }
+            >
+              <ListItemText
+                primary={child.label}
+                secondary={`${child.reference} · ${format.dateTime(new Date(child.birthDate), "date")}`}
+              />
+            </ListItem>
+          ))}
+        </List>
+      )}
+      <TextField
+        error={!!errors.reference}
+        fullWidth
+        helperText={
+          errors.reference?.message ?? tAttendance("parentalChildHint")
+        }
+        label={tAttendance("childReference")}
+        required
+        slotProps={{ inputLabel: { shrink: !!reference } }}
+        {...register("reference")}
+      />
+      <TextField
+        error={!!errors.label}
+        fullWidth
+        helperText={errors.label?.message}
+        label={tAttendance("childLabel")}
+        required
+        slotProps={{ inputLabel: { shrink: !!label } }}
+        {...register("label")}
+      />
+      <DatePicker
+        label={tAttendance("childBirthDate")}
+        onChange={(value) =>
+          setValue(
+            "birthDate",
+            value?.isValid() ? value.startOf("day").toISOString() : "",
+            { shouldValidate: isSubmitted },
+          )
+        }
+        slotProps={{
+          textField: {
+            error: !!errors.birthDate,
+            fullWidth: true,
+            helperText: errors.birthDate?.message,
+            required: true,
+          },
+        }}
+        timezone={STORE_TIMEZONE}
+        value={birthDate ? dayjs(birthDate) : null}
+      />
+    </FormBox>
   );
 };
 

@@ -10,10 +10,6 @@ import { useForm, useWatch } from "react-hook-form";
 import { type ProfileForm, useProfileFormSchema } from "./definitions";
 
 import CountryAutocomplete from "@/components/CountryAutocomplete";
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormCard, {
   StyledCardContent,
   StyledCardHeader,
@@ -189,17 +185,12 @@ const Profile = () => {
     handleSubmit((data: ProfileForm) => {
       setDialog({
         content: (
-          <>
-            <CustomizedDialogContent>
-              <DialogContentText>
-                {tAuth.rich("settings.profile.confirmContentText", {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                  email: session?.user.email || "",
-                })}
-              </DialogContentText>
-            </CustomizedDialogContent>
-            <CustomizedDialogActions />
-          </>
+          <DialogContentText>
+            {tAuth.rich("settings.profile.confirmContentText", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              email: session?.user.email || "",
+            })}
+          </DialogContentText>
         ),
         onConfirm: () => updateProfile(data),
         open: true,

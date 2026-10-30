@@ -7,10 +7,6 @@ import useSWR from "swr";
 
 import RecipeIngredientDialog from "../RecipeIngredientDialog";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 import { DragHandle, Sortable } from "@/components/Sortable";
@@ -299,17 +295,12 @@ const RecipeIngredients = ({
   const handleEnterReorderMode = useCallback(() => {
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tInventory.rich(
-                "recipes.ingredients.actions.reorderRecipeIngredient.confirm",
-                { bold: (chunks) => <strong>{chunks}</strong> },
-              )}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tInventory.rich(
+            "recipes.ingredients.actions.reorderRecipeIngredient.confirm",
+            { bold: (chunks) => <strong>{chunks}</strong> },
+          )}
+        </DialogContentText>
       ),
       onConfirm: async () => {
         setToolbarMode("reorder");
@@ -326,17 +317,12 @@ const RecipeIngredients = ({
   const handleSaveReorder = useCallback(() => {
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tInventory.rich(
-                "recipes.ingredients.actions.reorderRecipeIngredient.save.confirm",
-                { bold: (chunks) => <strong>{chunks}</strong> },
-              )}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tInventory.rich(
+            "recipes.ingredients.actions.reorderRecipeIngredient.save.confirm",
+            { bold: (chunks) => <strong>{chunks}</strong> },
+          )}
+        </DialogContentText>
       ),
       onConfirm: async () => {
         try {
@@ -389,17 +375,12 @@ const RecipeIngredients = ({
   const handleCancelReorder = useCallback(() => {
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tInventory.rich(
-                "recipes.ingredients.actions.reorderRecipeIngredient.cancel.confirm",
-                { bold: (chunks) => <strong>{chunks}</strong> },
-              )}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tInventory.rich(
+            "recipes.ingredients.actions.reorderRecipeIngredient.cancel.confirm",
+            { bold: (chunks) => <strong>{chunks}</strong> },
+          )}
+        </DialogContentText>
       ),
       onConfirm: async () => {
         setToolbarMode(null);
@@ -478,20 +459,15 @@ const RecipeIngredients = ({
     ({ id, ingredientName }: RecipeIngredient) => {
       setDialog({
         content: (
-          <>
-            <CustomizedDialogContent>
-              <DialogContentText>
-                {tInventory.rich(
-                  "recipes.ingredients.actions.deleteRecipeIngredient.confirm",
-                  {
-                    bold: (chunks) => <strong>{chunks}</strong>,
-                    name: localize(ingredientName, locale),
-                  },
-                )}
-              </DialogContentText>
-            </CustomizedDialogContent>
-            <CustomizedDialogActions />
-          </>
+          <DialogContentText>
+            {tInventory.rich(
+              "recipes.ingredients.actions.deleteRecipeIngredient.confirm",
+              {
+                bold: (chunks) => <strong>{chunks}</strong>,
+                name: localize(ingredientName, locale),
+              },
+            )}
+          </DialogContentText>
         ),
         onConfirm: async () => {
           try {
@@ -535,29 +511,24 @@ const RecipeIngredients = ({
 
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <ConfirmStack>
-              <DialogContentText>
-                {tInventory.rich(
-                  "recipes.ingredients.actions.batchDeleteRecipeIngredient.submit.confirm",
-                  {
-                    bold: (chunks) => <strong>{chunks}</strong>,
-                    count,
-                  },
-                )}
-              </DialogContentText>
-              <List dense disablePadding>
-                {selectedRows.map(({ id, ingredientName }) => (
-                  <ListItem disableGutters key={id}>
-                    <ListItemText primary={localize(ingredientName, locale)} />
-                  </ListItem>
-                ))}
-              </List>
-            </ConfirmStack>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <ConfirmStack>
+          <DialogContentText>
+            {tInventory.rich(
+              "recipes.ingredients.actions.batchDeleteRecipeIngredient.submit.confirm",
+              {
+                bold: (chunks) => <strong>{chunks}</strong>,
+                count,
+              },
+            )}
+          </DialogContentText>
+          <List dense disablePadding>
+            {selectedRows.map(({ id, ingredientName }) => (
+              <ListItem disableGutters key={id}>
+                <ListItemText primary={localize(ingredientName, locale)} />
+              </ListItem>
+            ))}
+          </List>
+        </ConfirmStack>
       ),
       onConfirm: async () => {
         try {

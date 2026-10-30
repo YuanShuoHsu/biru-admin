@@ -10,10 +10,6 @@ import { useForm, useWatch } from "react-hook-form";
 
 import { type ReturnForm, useReturnFormSchema } from "./definitions";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { STORE_TIMEZONE } from "@/constants/timezone";
@@ -132,48 +128,42 @@ const ReturnDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id="attendance-return-form" onSubmit={onSubmit}>
-          <Typography>
-            {date(request.startsAt)} – {date(request.endsAt)}
-          </Typography>
-          <DatePicker
-            label={tAttendance("returnsAt")}
-            onChange={(date) =>
-              setValue(
-                "returnsAt",
-                date?.isValid() ? date.startOf("day").toISOString() : "",
-                { shouldValidate: isSubmitted },
-              )
-            }
-            slotProps={{
-              textField: {
-                error: !!errors.returnsAt,
-                fullWidth: true,
-                helperText:
-                  errors.returnsAt?.message ??
-                  tAttendance("parentalReturnHint"),
-                required: true,
-              },
-            }}
-            timezone={STORE_TIMEZONE}
-            value={returnsAt ? dayjs(returnsAt) : null}
-          />
-          <TextField
-            error={!!errors.reason}
-            fullWidth
-            helperText={errors.reason?.message}
-            label={tAttendance("reason.label")}
-            minRows={3}
-            multiline
-            required
-            {...register("reason")}
-          />
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+    <FormBox id="attendance-return-form" onSubmit={onSubmit}>
+      <Typography>
+        {date(request.startsAt)} – {date(request.endsAt)}
+      </Typography>
+      <DatePicker
+        label={tAttendance("returnsAt")}
+        onChange={(date) =>
+          setValue(
+            "returnsAt",
+            date?.isValid() ? date.startOf("day").toISOString() : "",
+            { shouldValidate: isSubmitted },
+          )
+        }
+        slotProps={{
+          textField: {
+            error: !!errors.returnsAt,
+            fullWidth: true,
+            helperText:
+              errors.returnsAt?.message ?? tAttendance("parentalReturnHint"),
+            required: true,
+          },
+        }}
+        timezone={STORE_TIMEZONE}
+        value={returnsAt ? dayjs(returnsAt) : null}
+      />
+      <TextField
+        error={!!errors.reason}
+        fullWidth
+        helperText={errors.reason?.message}
+        label={tAttendance("reason.label")}
+        minRows={3}
+        multiline
+        required
+        {...register("reason")}
+      />
+    </FormBox>
   );
 };
 

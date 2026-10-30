@@ -7,10 +7,6 @@ import { useForm } from "react-hook-form";
 
 import { type DeferralForm, useDeferralFormSchema } from "./definitions";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -91,23 +87,18 @@ const DeferralDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id="attendance-deferral-form" onSubmit={onSubmit}>
-          <TextField
-            error={!!errors.reason}
-            fullWidth
-            helperText={errors.reason?.message}
-            label={tAttendance("balances.deferralReason")}
-            minRows={3}
-            multiline
-            required
-            {...register("reason")}
-          />
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+    <FormBox id="attendance-deferral-form" onSubmit={onSubmit}>
+      <TextField
+        error={!!errors.reason}
+        fullWidth
+        helperText={errors.reason?.message}
+        label={tAttendance("balances.deferralReason")}
+        minRows={3}
+        multiline
+        required
+        {...register("reason")}
+      />
+    </FormBox>
   );
 };
 

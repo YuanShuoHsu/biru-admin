@@ -16,10 +16,6 @@ import {
   useTermsFormSchema,
 } from "./definitions";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 
@@ -266,293 +262,284 @@ const TermsDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id="payroll-terms-form" onSubmit={onSubmit}>
-          <TextField
-            error={!!errors.employeeId}
-            fullWidth
-            helperText={errors.employeeId?.message}
-            label={tAttendance("employee")}
-            onChange={(event) =>
-              reset({
-                effectiveFrom: values.effectiveFrom,
-                employeeId: event.target.value,
-                sourceNote: "",
-                ...employeeValues(event.target.value),
-              })
-            }
-            required
-            select
-            value={values.employeeId ?? ""}
-          >
-            {employees.map(({ email, id, name }) => (
-              <MenuItem key={id} value={id}>
-                <ListItemText
-                  primary={name}
-                  secondary={email}
-                  slotProps={{ secondary: { variant: "caption" } }}
-                />
-              </MenuItem>
-            ))}
-          </TextField>
-          <DatePicker
-            format={monthFormat}
-            label={tAttendance("effectiveFrom")}
-            onChange={(value) =>
-              setValue(
-                "effectiveFrom",
-                value?.isValid() ? value.startOf("month").toISOString() : "",
-                { shouldValidate: isSubmitted },
-              )
-            }
-            slotProps={{
-              textField: {
-                error: !!errors.effectiveFrom,
-                fullWidth: true,
-                helperText: errors.effectiveFrom?.message,
-                required: true,
-              },
-            }}
-            timezone={STORE_TIMEZONE}
-            value={values.effectiveFrom ? dayjs(values.effectiveFrom) : null}
-            views={["year", "month"]}
-          />
-          <TextField
-            error={!!errors.salaryType}
-            fullWidth
-            helperText={errors.salaryType?.message}
-            label={tAttendance("salaryType.label")}
-            required
-            select
-            value={values.salaryType ?? ""}
-            {...register("salaryType")}
-          >
-            {payrollSalaryTypeValues.map((value) => (
-              <MenuItem key={value} value={value}>
-                {tAttendance(`salaryType.options.${value}`)}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            error={!!errors.monthlyProration}
-            fullWidth
-            helperText={errors.monthlyProration?.message}
-            label={tAttendance("monthlyProration.label")}
-            required
-            select
-            value={values.monthlyProration ?? ""}
-            {...register("monthlyProration")}
-          >
-            {payrollMonthlyProrationValues.map((value) => (
-              <MenuItem key={value} value={value}>
-                {tAttendance(`monthlyProration.options.${value}`)}
-              </MenuItem>
-            ))}
-          </TextField>
-          {AMOUNT_FIELDS.map((name) => (
-            <NumberSpinner
-              error={!!errors[name]}
+    <FormBox id="payroll-terms-form" onSubmit={onSubmit}>
+      <TextField
+        error={!!errors.employeeId}
+        fullWidth
+        helperText={errors.employeeId?.message}
+        label={tAttendance("employee")}
+        onChange={(event) =>
+          reset({
+            effectiveFrom: values.effectiveFrom,
+            employeeId: event.target.value,
+            sourceNote: "",
+            ...employeeValues(event.target.value),
+          })
+        }
+        required
+        select
+        value={values.employeeId ?? ""}
+      >
+        {employees.map(({ email, id, name }) => (
+          <MenuItem key={id} value={id}>
+            <ListItemText
+              primary={name}
+              secondary={email}
+              slotProps={{ secondary: { variant: "caption" } }}
+            />
+          </MenuItem>
+        ))}
+      </TextField>
+      <DatePicker
+        format={monthFormat}
+        label={tAttendance("effectiveFrom")}
+        onChange={(value) =>
+          setValue(
+            "effectiveFrom",
+            value?.isValid() ? value.startOf("month").toISOString() : "",
+            { shouldValidate: isSubmitted },
+          )
+        }
+        slotProps={{
+          textField: {
+            error: !!errors.effectiveFrom,
+            fullWidth: true,
+            helperText: errors.effectiveFrom?.message,
+            required: true,
+          },
+        }}
+        timezone={STORE_TIMEZONE}
+        value={values.effectiveFrom ? dayjs(values.effectiveFrom) : null}
+        views={["year", "month"]}
+      />
+      <TextField
+        error={!!errors.salaryType}
+        fullWidth
+        helperText={errors.salaryType?.message}
+        label={tAttendance("salaryType.label")}
+        required
+        select
+        value={values.salaryType ?? ""}
+        {...register("salaryType")}
+      >
+        {payrollSalaryTypeValues.map((value) => (
+          <MenuItem key={value} value={value}>
+            {tAttendance(`salaryType.options.${value}`)}
+          </MenuItem>
+        ))}
+      </TextField>
+      <TextField
+        error={!!errors.monthlyProration}
+        fullWidth
+        helperText={errors.monthlyProration?.message}
+        label={tAttendance("monthlyProration.label")}
+        required
+        select
+        value={values.monthlyProration ?? ""}
+        {...register("monthlyProration")}
+      >
+        {payrollMonthlyProrationValues.map((value) => (
+          <MenuItem key={value} value={value}>
+            {tAttendance(`monthlyProration.options.${value}`)}
+          </MenuItem>
+        ))}
+      </TextField>
+      {AMOUNT_FIELDS.map((name) => (
+        <NumberSpinner
+          error={!!errors[name]}
+          fullWidth
+          helperText={errors[name]?.message}
+          key={name}
+          label={tAttendance(name, {
+            currency,
+            salaryType: values.salaryType ?? "monthly",
+          })}
+          min={0}
+          onValueChange={(value) =>
+            setValue(name, value ?? 0, { shouldValidate: isSubmitted })
+          }
+          step={0.01}
+          value={values[name] ?? 0}
+        />
+      ))}
+      {declared && (
+        <StyledFormControl component="fieldset" variant="standard">
+          <FormLabel component="legend">
+            {tAttendance("declaredInsurance")}
+          </FormLabel>
+          {DECLARED_INSURANCE_FIELDS.map((name) => (
+            <TextField
               fullWidth
-              helperText={errors[name]?.message}
               key={name}
-              label={tAttendance(name, {
-                currency,
-                salaryType: values.salaryType ?? "monthly",
-              })}
-              min={0}
-              onValueChange={(value) =>
-                setValue(name, value ?? 0, { shouldValidate: isSubmitted })
-              }
-              step={0.01}
-              value={values[name] ?? 0}
+              label={tAttendance(name, { currency })}
+              slotProps={{ input: { readOnly: true } }}
+              value={format.number(declared[name])}
             />
           ))}
-          {declared && (
-            <StyledFormControl component="fieldset" variant="standard">
-              <FormLabel component="legend">
-                {tAttendance("declaredInsurance")}
-              </FormLabel>
-              {DECLARED_INSURANCE_FIELDS.map((name) => (
-                <TextField
-                  fullWidth
-                  key={name}
-                  label={tAttendance(name, { currency })}
-                  slotProps={{ input: { readOnly: true } }}
-                  value={format.number(declared[name])}
-                />
-              ))}
-            </StyledFormControl>
-          )}
-          <ExemptionSelect
-            label={tAttendance("laborInsuranceExemption.label")}
-            none={tAttendance("laborInsuranceExemption.none")}
-            onChange={(value) =>
-              setValue(
-                "laborInsuranceExemption",
-                payrollLaborInsuranceExemptionValues.find(
-                  (option) => option === value,
-                ) ?? null,
-              )
-            }
-            options={payrollLaborInsuranceExemptionValues.map((option) => ({
-              label: tAttendance(`laborInsuranceExemption.options.${option}`),
-              value: option,
-            }))}
-            value={values.laborInsuranceExemption}
-          />
-          {employmentExemptionSelectable && (
-            <ExemptionSelect
-              label={tAttendance("employmentInsuranceExemption.label")}
-              none={tAttendance("employmentInsuranceExemption.none")}
-              onChange={(value) =>
-                setValue(
-                  "employmentInsuranceExemption",
-                  payrollEmploymentInsuranceExemptionValues.find(
-                    (option) => option === value,
-                  ) ?? null,
-                )
+        </StyledFormControl>
+      )}
+      <ExemptionSelect
+        label={tAttendance("laborInsuranceExemption.label")}
+        none={tAttendance("laborInsuranceExemption.none")}
+        onChange={(value) =>
+          setValue(
+            "laborInsuranceExemption",
+            payrollLaborInsuranceExemptionValues.find(
+              (option) => option === value,
+            ) ?? null,
+          )
+        }
+        options={payrollLaborInsuranceExemptionValues.map((option) => ({
+          label: tAttendance(`laborInsuranceExemption.options.${option}`),
+          value: option,
+        }))}
+        value={values.laborInsuranceExemption}
+      />
+      {employmentExemptionSelectable && (
+        <ExemptionSelect
+          label={tAttendance("employmentInsuranceExemption.label")}
+          none={tAttendance("employmentInsuranceExemption.none")}
+          onChange={(value) =>
+            setValue(
+              "employmentInsuranceExemption",
+              payrollEmploymentInsuranceExemptionValues.find(
+                (option) => option === value,
+              ) ?? null,
+            )
+          }
+          options={payrollEmploymentInsuranceExemptionValues.map((option) => ({
+            label: tAttendance(
+              `employmentInsuranceExemption.options.${option}`,
+            ),
+            value: option,
+          }))}
+          value={values.employmentInsuranceExemption}
+        />
+      )}
+      <ExemptionSelect
+        label={tAttendance("healthInsuranceExemption.label")}
+        none={tAttendance("healthInsuranceExemption.none")}
+        onChange={(value) =>
+          setValue(
+            "healthInsuranceExemption",
+            payrollHealthInsuranceExemptionValues.find(
+              (option) => option === value,
+            ) ?? null,
+          )
+        }
+        options={payrollHealthInsuranceExemptionValues.map((option) => ({
+          label: tAttendance(`healthInsuranceExemption.options.${option}`),
+          value: option,
+        }))}
+        value={values.healthInsuranceExemption}
+      />
+      {!values.healthInsuranceExemption && (
+        <StyledFormControlLabel
+          control={
+            <Checkbox
+              checked={!!values.voluntaryHealthInsurance}
+              onChange={(_, checked) =>
+                setValue("voluntaryHealthInsurance", checked)
               }
-              options={payrollEmploymentInsuranceExemptionValues.map(
-                (option) => ({
-                  label: tAttendance(
-                    `employmentInsuranceExemption.options.${option}`,
-                  ),
-                  value: option,
-                }),
-              )}
-              value={values.employmentInsuranceExemption}
             />
-          )}
-          <ExemptionSelect
-            label={tAttendance("healthInsuranceExemption.label")}
-            none={tAttendance("healthInsuranceExemption.none")}
-            onChange={(value) =>
-              setValue(
-                "healthInsuranceExemption",
-                payrollHealthInsuranceExemptionValues.find(
-                  (option) => option === value,
-                ) ?? null,
-              )
-            }
-            options={payrollHealthInsuranceExemptionValues.map((option) => ({
-              label: tAttendance(`healthInsuranceExemption.options.${option}`),
-              value: option,
-            }))}
-            value={values.healthInsuranceExemption}
-          />
-          {!values.healthInsuranceExemption && (
-            <StyledFormControlLabel
-              control={
-                <Checkbox
-                  checked={!!values.voluntaryHealthInsurance}
-                  onChange={(_, checked) =>
-                    setValue("voluntaryHealthInsurance", checked)
-                  }
-                />
-              }
-              label={tAttendance("voluntaryHealthInsurance")}
-            />
-          )}
-          {!values.healthInsuranceExemption && (
-            <NumberSpinner
-              error={!!errors.healthDependents}
-              fullWidth
-              helperText={errors.healthDependents?.message}
-              label={tAttendance("healthDependents")}
-              max={20}
-              min={0}
-              onValueChange={(value) =>
-                setValue("healthDependents", value ?? 0, {
-                  shouldValidate: isSubmitted,
-                })
-              }
-              value={values.healthDependents ?? 0}
-            />
-          )}
-          {(!!values.healthInsuranceExemption ||
-            !values.voluntaryHealthInsurance) && (
-            <ExemptionSelect
-              label={tAttendance("healthSupplementExemption.label")}
-              none={tAttendance("healthSupplementExemption.none")}
-              onChange={(value) =>
-                setValue(
-                  "healthSupplementExemption",
-                  payrollHealthSupplementExemptionValues.find(
-                    (option) => option === value,
-                  ) ?? null,
-                )
-              }
-              options={payrollHealthSupplementExemptionValues.map((option) => ({
-                label: tAttendance(
-                  `healthSupplementExemption.options.${option}`,
-                ),
-                value: option,
-              }))}
-              value={values.healthSupplementExemption}
-            />
-          )}
-          {pensionApplicable &&
-            PENSION_PERCENT_FIELDS.map(({ max, min, name }) => (
-              <NumberSpinner
-                error={!!errors[name]}
-                fullWidth
-                helperText={errors[name]?.message}
-                key={name}
-                label={tAttendance(name)}
-                max={max}
-                min={min}
-                onValueChange={(value) =>
-                  setValue(name, value ?? min, { shouldValidate: isSubmitted })
-                }
-                value={values[name] ?? min}
-              />
-            ))}
-          <TextField
-            error={!!errors.taxMethod}
+          }
+          label={tAttendance("voluntaryHealthInsurance")}
+        />
+      )}
+      {!values.healthInsuranceExemption && (
+        <NumberSpinner
+          error={!!errors.healthDependents}
+          fullWidth
+          helperText={errors.healthDependents?.message}
+          label={tAttendance("healthDependents")}
+          max={20}
+          min={0}
+          onValueChange={(value) =>
+            setValue("healthDependents", value ?? 0, {
+              shouldValidate: isSubmitted,
+            })
+          }
+          value={values.healthDependents ?? 0}
+        />
+      )}
+      {(!!values.healthInsuranceExemption ||
+        !values.voluntaryHealthInsurance) && (
+        <ExemptionSelect
+          label={tAttendance("healthSupplementExemption.label")}
+          none={tAttendance("healthSupplementExemption.none")}
+          onChange={(value) =>
+            setValue(
+              "healthSupplementExemption",
+              payrollHealthSupplementExemptionValues.find(
+                (option) => option === value,
+              ) ?? null,
+            )
+          }
+          options={payrollHealthSupplementExemptionValues.map((option) => ({
+            label: tAttendance(`healthSupplementExemption.options.${option}`),
+            value: option,
+          }))}
+          value={values.healthSupplementExemption}
+        />
+      )}
+      {pensionApplicable &&
+        PENSION_PERCENT_FIELDS.map(({ max, min, name }) => (
+          <NumberSpinner
+            error={!!errors[name]}
             fullWidth
-            helperText={errors.taxMethod?.message}
-            label={tAttendance("taxMethod.label")}
-            required
-            select
-            value={values.taxMethod ?? ""}
-            {...register("taxMethod")}
-          >
-            {payrollTaxMethodValues.map((value) => (
-              <MenuItem key={value} value={value}>
-                {tAttendance(`taxMethod.options.${value}`)}
-              </MenuItem>
-            ))}
-          </TextField>
-          {values.taxMethod === "table" && (
-            <NumberSpinner
-              error={!!errors.withholdingDependents}
-              fullWidth
-              helperText={errors.withholdingDependents?.message}
-              label={tAttendance("withholdingDependents")}
-              max={99}
-              min={0}
-              onValueChange={(value) =>
-                setValue("withholdingDependents", value ?? 0, {
-                  shouldValidate: isSubmitted,
-                })
-              }
-              value={values.withholdingDependents ?? 0}
-            />
-          )}
-          <TextField
-            error={!!errors.sourceNote}
-            fullWidth
-            helperText={errors.sourceNote?.message}
-            label={tAttendance("sourceNote")}
-            minRows={3}
-            multiline
-            {...register("sourceNote")}
+            helperText={errors[name]?.message}
+            key={name}
+            label={tAttendance(name)}
+            max={max}
+            min={min}
+            onValueChange={(value) =>
+              setValue(name, value ?? min, { shouldValidate: isSubmitted })
+            }
+            value={values[name] ?? min}
           />
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+        ))}
+      <TextField
+        error={!!errors.taxMethod}
+        fullWidth
+        helperText={errors.taxMethod?.message}
+        label={tAttendance("taxMethod.label")}
+        required
+        select
+        value={values.taxMethod ?? ""}
+        {...register("taxMethod")}
+      >
+        {payrollTaxMethodValues.map((value) => (
+          <MenuItem key={value} value={value}>
+            {tAttendance(`taxMethod.options.${value}`)}
+          </MenuItem>
+        ))}
+      </TextField>
+      {values.taxMethod === "table" && (
+        <NumberSpinner
+          error={!!errors.withholdingDependents}
+          fullWidth
+          helperText={errors.withholdingDependents?.message}
+          label={tAttendance("withholdingDependents")}
+          max={99}
+          min={0}
+          onValueChange={(value) =>
+            setValue("withholdingDependents", value ?? 0, {
+              shouldValidate: isSubmitted,
+            })
+          }
+          value={values.withholdingDependents ?? 0}
+        />
+      )}
+      <TextField
+        error={!!errors.sourceNote}
+        fullWidth
+        helperText={errors.sourceNote?.message}
+        label={tAttendance("sourceNote")}
+        minRows={3}
+        multiline
+        {...register("sourceNote")}
+      />
+    </FormBox>
   );
 };
 

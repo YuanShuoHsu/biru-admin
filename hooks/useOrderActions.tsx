@@ -6,11 +6,6 @@ import { useCallback, useRef, useState } from "react";
 import useSWR from "swr";
 
 import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
-
-import {
   PRINTER_STATUS_REFRESH_MS,
   STATUS_TEXT_COLORS,
 } from "@/constants/orders";
@@ -208,15 +203,10 @@ export const useOrderActions = (
     (order: AdminOrderResponse) => {
       setDialog({
         content: (
-          <>
-            <CustomizedDialogContent>
-              <OrderDetailDialog
-                order={order}
-                organizationSlug={organizationSlug}
-              />
-            </CustomizedDialogContent>
-            <CustomizedDialogActions />
-          </>
+          <OrderDetailDialog
+            order={order}
+            organizationSlug={organizationSlug}
+          />
         ),
         open: true,
         title: tOrders("actions.viewOrder.title"),
@@ -278,29 +268,24 @@ export const useOrderActions = (
 
       setDialog({
         content: (
-          <>
-            <CustomizedDialogContent>
-              <DialogContentText>
-                {tOrders.rich(
-                  direction === "cancel"
-                    ? "actions.updateStatus.confirm.cancel"
-                    : "actions.updateStatus.confirm.default",
-                  {
-                    bold: (chunks) => <strong>{chunks}</strong>,
-                    count: 1,
-                    orderNumbers: order.orderNumber,
-                    status,
-                    statusText: (chunks) => (
-                      <StatusText as="strong" status={toStatus}>
-                        {chunks}
-                      </StatusText>
-                    ),
-                  },
-                )}
-              </DialogContentText>
-            </CustomizedDialogContent>
-            <CustomizedDialogActions />
-          </>
+          <DialogContentText>
+            {tOrders.rich(
+              direction === "cancel"
+                ? "actions.updateStatus.confirm.cancel"
+                : "actions.updateStatus.confirm.default",
+              {
+                bold: (chunks) => <strong>{chunks}</strong>,
+                count: 1,
+                orderNumbers: order.orderNumber,
+                status,
+                statusText: (chunks) => (
+                  <StatusText as="strong" status={toStatus}>
+                    {chunks}
+                  </StatusText>
+                ),
+              },
+            )}
+          </DialogContentText>
         ),
         onConfirm: () => handleStatusAction(order, toStatus),
         open: true,
@@ -325,6 +310,7 @@ export const useOrderActions = (
             organizationSlug={organizationSlug}
           />
         ),
+        customLayout: true,
         formId: REFUND_ORDER_FORM_ID,
         open: true,
         title: tOrders("actions.refund.title"),
@@ -361,17 +347,12 @@ export const useOrderActions = (
     (order: AdminOrderResponse) => {
       setDialog({
         content: (
-          <>
-            <CustomizedDialogContent>
-              <DialogContentText>
-                {tOrders.rich("actions.issueInvoice.confirm", {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                  orderNumber: order.orderNumber,
-                })}
-              </DialogContentText>
-            </CustomizedDialogContent>
-            <CustomizedDialogActions />
-          </>
+          <DialogContentText>
+            {tOrders.rich("actions.issueInvoice.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              orderNumber: order.orderNumber,
+            })}
+          </DialogContentText>
         ),
         onConfirm: () => handleIssueInvoice(order),
         open: true,
@@ -442,17 +423,12 @@ export const useOrderActions = (
 
       setDialog({
         content: (
-          <>
-            <CustomizedDialogContent>
-              <DialogContentText>
-                {tOrders.rich("actions.printInvoice.reprintConfirm", {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                  orderNumber: order.orderNumber,
-                })}
-              </DialogContentText>
-            </CustomizedDialogContent>
-            <CustomizedDialogActions />
-          </>
+          <DialogContentText>
+            {tOrders.rich("actions.printInvoice.reprintConfirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              orderNumber: order.orderNumber,
+            })}
+          </DialogContentText>
         ),
         onConfirm: () => handlePrintInvoice(order),
         open: true,
@@ -472,6 +448,7 @@ export const useOrderActions = (
             organizationSlug={organizationSlug}
           />
         ),
+        customLayout: true,
         formId: VOID_INVOICE_FORM_ID,
         open: true,
         title: tOrders("actions.voidInvoice.title"),
@@ -490,6 +467,7 @@ export const useOrderActions = (
             organizationSlug={organizationSlug}
           />
         ),
+        customLayout: true,
         formId: RESET_INVOICE_PRINT_FORM_ID,
         open: true,
         title: tOrders("actions.resetInvoicePrint.title"),
@@ -514,6 +492,7 @@ export const useOrderActions = (
             printers={printers}
           />
         ),
+        customLayout: true,
         formId: REPRINT_ORDER_TICKET_FORM_ID,
         open: true,
         title: tOrders("actions.reprintOrderTicket.title"),
@@ -536,6 +515,7 @@ export const useOrderActions = (
             organizationSlug={organizationSlug}
           />
         ),
+        customLayout: true,
         formId: RESOLVE_ORDER_TICKET_FORM_ID,
         open: true,
         title: tOrders("actions.resolveOrderTicket.title"),
@@ -559,6 +539,7 @@ export const useOrderActions = (
             printJob={printJob}
           />
         ),
+        customLayout: true,
         formId: RESOLVE_INVOICE_PRINT_FORM_ID,
         open: true,
         title: tOrders("actions.resolveInvoicePrint.title"),

@@ -17,10 +17,6 @@ import {
   useBotStream,
 } from "../useQuantBots";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -312,17 +308,12 @@ const BotList = ({
           ) : action === "start" ? (
             <StartBotConfirm bot={bot} />
           ) : (
-            <>
-              <CustomizedDialogContent>
-                <DialogContentText>
-                  {tBots.rich("actions.archive.confirm", {
-                    bold: (chunks) => <strong>{chunks}</strong>,
-                    name: bot.name,
-                  })}
-                </DialogContentText>
-              </CustomizedDialogContent>
-              <CustomizedDialogActions />
-            </>
+            <DialogContentText>
+              {tBots.rich("actions.archive.confirm", {
+                bold: (chunks) => <strong>{chunks}</strong>,
+                name: bot.name,
+              })}
+            </DialogContentText>
           ),
         onConfirm: () =>
           request(

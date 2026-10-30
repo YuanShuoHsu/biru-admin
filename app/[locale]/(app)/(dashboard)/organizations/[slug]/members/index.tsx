@@ -9,10 +9,6 @@ import useSWR from "swr";
 import InviteMemberDialog from "./InviteMemberDialog";
 import UpdateMemberRoleDialog from "./UpdateMemberRoleDialog";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
@@ -295,17 +291,12 @@ const OrganizationsSlugMembers = ({
     ({ id: memberId, user: { email } }: Member) => {
       setDialog({
         content: (
-          <>
-            <CustomizedDialogContent>
-              <DialogContentText>
-                {tMembers.rich("actions.removeMember.confirm", {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                  email,
-                })}
-              </DialogContentText>
-            </CustomizedDialogContent>
-            <CustomizedDialogActions />
-          </>
+          <DialogContentText>
+            {tMembers.rich("actions.removeMember.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              email,
+            })}
+          </DialogContentText>
         ),
         onConfirm: async () => {
           await authClient.organization.removeMember(
@@ -342,26 +333,21 @@ const OrganizationsSlugMembers = ({
 
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <ConfirmStack>
-              <DialogContentText>
-                {tMembers.rich("actions.batchRemoveMember.submit.confirm", {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                  count,
-                })}
-              </DialogContentText>
-              <List dense disablePadding>
-                {selectedRows.map(({ id, user: { email } }) => (
-                  <ListItem disableGutters key={id}>
-                    <ListItemText primary={email} />
-                  </ListItem>
-                ))}
-              </List>
-            </ConfirmStack>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <ConfirmStack>
+          <DialogContentText>
+            {tMembers.rich("actions.batchRemoveMember.submit.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              count,
+            })}
+          </DialogContentText>
+          <List dense disablePadding>
+            {selectedRows.map(({ id, user: { email } }) => (
+              <ListItem disableGutters key={id}>
+                <ListItemText primary={email} />
+              </ListItem>
+            ))}
+          </List>
+        </ConfirmStack>
       ),
       onConfirm: async () => {
         try {
@@ -413,17 +399,12 @@ const OrganizationsSlugMembers = ({
   const handleLeaveOrganization = useCallback(() => {
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tOrganizations.rich("actions.leaveOrganization.confirm", {
-                bold: (chunks) => <strong>{chunks}</strong>,
-                name: activeOrganization?.name ?? slug,
-              })}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tOrganizations.rich("actions.leaveOrganization.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            name: activeOrganization?.name ?? slug,
+          })}
+        </DialogContentText>
       ),
       onConfirm: async () => {
         await authClient.organization.leave(
@@ -496,17 +477,12 @@ const OrganizationsSlugMembers = ({
 
       setDialog({
         content: (
-          <>
-            <CustomizedDialogContent>
-              <DialogContentText>
-                {tMembers.rich(confirmKey, {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                  email,
-                })}
-              </DialogContentText>
-            </CustomizedDialogContent>
-            <CustomizedDialogActions />
-          </>
+          <DialogContentText>
+            {tMembers.rich(confirmKey, {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              email,
+            })}
+          </DialogContentText>
         ),
         onConfirm: async () => {
           try {

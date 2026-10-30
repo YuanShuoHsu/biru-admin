@@ -6,10 +6,6 @@ import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import useSWR from "swr";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { Psychology } from "@mui/icons-material";
@@ -59,32 +55,27 @@ const AiKeyDialog = ({ onSaved }: { onSaved: () => void }) => {
   };
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox
-          autoComplete="off"
-          id={AI_KEY_FORM_ID}
-          noValidate
-          onSubmit={onSubmit}
-        >
-          <Alert severity="info">
-            {tAi("description")}
-            <br />
-            {tAi("hint")}
-          </Alert>
-          <TextField
-            fullWidth
-            label={tAi("apiKey")}
-            onChange={(event) => setApiKey(event.target.value)}
-            required
-            slotProps={{ htmlInput: { autoComplete: "new-password" } }}
-            type="password"
-            value={apiKey}
-          />
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+    <FormBox
+      autoComplete="off"
+      id={AI_KEY_FORM_ID}
+      noValidate
+      onSubmit={onSubmit}
+    >
+      <Alert severity="info">
+        {tAi("description")}
+        <br />
+        {tAi("hint")}
+      </Alert>
+      <TextField
+        fullWidth
+        label={tAi("apiKey")}
+        onChange={(event) => setApiKey(event.target.value)}
+        required
+        slotProps={{ htmlInput: { autoComplete: "new-password" } }}
+        type="password"
+        value={apiKey}
+      />
+    </FormBox>
   );
 };
 
@@ -109,14 +100,7 @@ const AiKeySettings = () => {
 
   const handleRemove = () =>
     setDialog({
-      content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>{tAi("remove.confirm")}</DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
-      ),
+      content: <DialogContentText>{tAi("remove.confirm")}</DialogContentText>,
       onConfirm: async () => {
         try {
           await fetcher(AI_KEY_URL, { method: "DELETE" });

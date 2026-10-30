@@ -10,10 +10,6 @@ import useSWR from "swr";
 
 import { type CouponFormValues, useCouponFormSchema } from "../definitions";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 
@@ -257,475 +253,458 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id="coupon-form" onSubmit={onSubmit}>
-          <TextField
-            error={!!errors.code}
+    <FormBox id="coupon-form" onSubmit={onSubmit}>
+      <TextField
+        error={!!errors.code}
+        fullWidth
+        helperText={errors.code?.message}
+        label={tCoupons("code.label")}
+        placeholder={tCoupons("code.placeholder")}
+        required
+        {...register("code")}
+      />
+      <TextField
+        fullWidth
+        label={tCoupons("scope.label")}
+        onChange={(e) => {
+          const value = e.target.value as CouponFormValues["scope"];
+          // 品項券限定單一店家：切換適用範圍時重設適用店家
+          if (value === "item") setValue("applicableOrganizationIds", []);
+          setValue("scope", value, { shouldValidate: isSubmitted });
+        }}
+        required
+        select
+        value={scope}
+      >
+        {couponScopeValues.map((value) => (
+          <MenuItem key={value} value={value}>
+            {tCoupons(`scope.${value}`)}
+          </MenuItem>
+        ))}
+      </TextField>
+      {scope === "order" && (
+        <Autocomplete
+          fullWidth
+          getOptionLabel={({ name }) => name}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          multiple
+          onChange={(_, value) => {
+            const addedAll = value[value.length - 1]?.id === "";
+            setValue(
+              "applicableOrganizationIds",
+              addedAll ? [] : value.map(({ id }) => id).filter(Boolean),
+              { shouldValidate: isSubmitted },
+            );
+          }}
+          getOptionDisabled={({ disabled }) => disabled}
+          options={organizationOptions}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label={tCoupons("organizationScope.label")}
+              placeholder={tCoupons("applicableOrganizationIds.placeholder")}
+            />
+          )}
+          value={
+            applicableOrganizationIds.length
+              ? organizationOptions.filter(({ id }) =>
+                  applicableOrganizationIds.includes(id),
+                )
+              : [allOrganizationsOption]
+          }
+        />
+      )}
+      {scope === "item" && (
+        <>
+          <Autocomplete
             fullWidth
-            helperText={errors.code?.message}
-            label={tCoupons("code.label")}
-            placeholder={tCoupons("code.placeholder")}
-            required
-            {...register("code")}
-          />
-          <TextField
-            fullWidth
-            label={tCoupons("scope.label")}
-            onChange={(e) => {
-              const value = e.target.value as CouponFormValues["scope"];
-              // 品項券限定單一店家：切換適用範圍時重設適用店家
-              if (value === "item") setValue("applicableOrganizationIds", []);
-              setValue("scope", value, { shouldValidate: isSubmitted });
+            getOptionLabel={({ name }) => name}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            onChange={(_, value) => {
+              setValue("applicableOrganizationIds", value ? [value.id] : [], {
+                shouldValidate: isSubmitted,
+              });
+              // 品項 ID 各店不同：換店家後清空已選品項
+              setValue("menuItemIds", []);
+              setValue("menuSectionIds", []);
             }}
+            getOptionDisabled={({ disabled }) => disabled}
+            options={storeOptions}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                error={!!errors.applicableOrganizationIds}
+                helperText={
+                  errors.applicableOrganizationIds?.message ||
+                  tCoupons("applicableOrganizationIds.itemHint")
+                }
+                label={tCoupons("applicableOrganizationIds.label")}
+                placeholder={tCoupons("applicableOrganizationIds.placeholder")}
+                required
+              />
+            )}
+            value={
+              storeOptions.find(
+                ({ id }) => id === applicableOrganizationIds[0],
+              ) || null
+            }
+          />
+          <Autocomplete
+            fullWidth
+            getOptionLabel={({ name }) => name}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            multiple
+            onChange={(_, value) =>
+              setValue(
+                "menuSectionIds",
+                value.map(({ id }) => id),
+                { shouldValidate: isSubmitted },
+              )
+            }
+            options={sectionOptions}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                error={!!errors.menuSectionIds}
+                helperText={tCoupons("scope.itemHint")}
+                label={tCoupons("menuSectionIds.label")}
+                placeholder={tCoupons("menuSectionIds.placeholder")}
+              />
+            )}
+            value={sectionOptions.filter(({ id }) =>
+              menuSectionIds.includes(id),
+            )}
+          />
+          <Autocomplete
+            fullWidth
+            getOptionLabel={({ name }) => name}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            multiple
+            onChange={(_, value) =>
+              setValue(
+                "menuItemIds",
+                value.map(({ id }) => id),
+                { shouldValidate: isSubmitted },
+              )
+            }
+            options={itemOptions}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                error={!!errors.menuItemIds}
+                helperText={tCoupons("scope.itemHint")}
+                label={tCoupons("menuItemIds.label")}
+                placeholder={tCoupons("menuItemIds.placeholder")}
+              />
+            )}
+            value={itemOptions.filter(({ id }) => menuItemIds.includes(id))}
+          />
+        </>
+      )}
+      <StyledGrid container spacing={2}>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <TextField
+            fullWidth
+            label={tCoupons("discountType.label")}
+            onChange={(e) =>
+              setValue(
+                "discountType",
+                e.target.value as CouponFormValues["discountType"],
+                { shouldValidate: isSubmitted },
+              )
+            }
             required
             select
-            value={scope}
+            value={discountType}
           >
-            {couponScopeValues.map((value) => (
-              <MenuItem key={value} value={value}>
-                {tCoupons(`scope.${value}`)}
+            {couponDiscountTypeValues.map((type) => (
+              <MenuItem key={type} value={type}>
+                {tCoupons(`discountType.${type}`)}
               </MenuItem>
             ))}
           </TextField>
-          {scope === "order" && (
-            <Autocomplete
-              fullWidth
-              getOptionLabel={({ name }) => name}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              multiple
-              onChange={(_, value) => {
-                const addedAll = value[value.length - 1]?.id === "";
-                setValue(
-                  "applicableOrganizationIds",
-                  addedAll ? [] : value.map(({ id }) => id).filter(Boolean),
-                  { shouldValidate: isSubmitted },
-                );
-              }}
-              getOptionDisabled={({ disabled }) => disabled}
-              options={organizationOptions}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label={tCoupons("organizationScope.label")}
-                  placeholder={tCoupons(
-                    "applicableOrganizationIds.placeholder",
-                  )}
-                />
-              )}
-              value={
-                applicableOrganizationIds.length
-                  ? organizationOptions.filter(({ id }) =>
-                      applicableOrganizationIds.includes(id),
-                    )
-                  : [allOrganizationsOption]
-              }
-            />
-          )}
-          {scope === "item" && (
-            <>
-              <Autocomplete
-                fullWidth
-                getOptionLabel={({ name }) => name}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                onChange={(_, value) => {
-                  setValue(
-                    "applicableOrganizationIds",
-                    value ? [value.id] : [],
-                    {
-                      shouldValidate: isSubmitted,
-                    },
-                  );
-                  // 品項 ID 各店不同：換店家後清空已選品項
-                  setValue("menuItemIds", []);
-                  setValue("menuSectionIds", []);
-                }}
-                getOptionDisabled={({ disabled }) => disabled}
-                options={storeOptions}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    error={!!errors.applicableOrganizationIds}
-                    helperText={
-                      errors.applicableOrganizationIds?.message ||
-                      tCoupons("applicableOrganizationIds.itemHint")
-                    }
-                    label={tCoupons("applicableOrganizationIds.label")}
-                    placeholder={tCoupons(
-                      "applicableOrganizationIds.placeholder",
-                    )}
-                    required
-                  />
-                )}
-                value={
-                  storeOptions.find(
-                    ({ id }) => id === applicableOrganizationIds[0],
-                  ) || null
-                }
-              />
-              <Autocomplete
-                fullWidth
-                getOptionLabel={({ name }) => name}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                multiple
-                onChange={(_, value) =>
-                  setValue(
-                    "menuSectionIds",
-                    value.map(({ id }) => id),
-                    { shouldValidate: isSubmitted },
-                  )
-                }
-                options={sectionOptions}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    error={!!errors.menuSectionIds}
-                    helperText={tCoupons("scope.itemHint")}
-                    label={tCoupons("menuSectionIds.label")}
-                    placeholder={tCoupons("menuSectionIds.placeholder")}
-                  />
-                )}
-                value={sectionOptions.filter(({ id }) =>
-                  menuSectionIds.includes(id),
-                )}
-              />
-              <Autocomplete
-                fullWidth
-                getOptionLabel={({ name }) => name}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                multiple
-                onChange={(_, value) =>
-                  setValue(
-                    "menuItemIds",
-                    value.map(({ id }) => id),
-                    { shouldValidate: isSubmitted },
-                  )
-                }
-                options={itemOptions}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    error={!!errors.menuItemIds}
-                    helperText={tCoupons("scope.itemHint")}
-                    label={tCoupons("menuItemIds.label")}
-                    placeholder={tCoupons("menuItemIds.placeholder")}
-                  />
-                )}
-                value={itemOptions.filter(({ id }) => menuItemIds.includes(id))}
-              />
-            </>
-          )}
-          <StyledGrid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                fullWidth
-                label={tCoupons("discountType.label")}
-                onChange={(e) =>
-                  setValue(
-                    "discountType",
-                    e.target.value as CouponFormValues["discountType"],
-                    { shouldValidate: isSubmitted },
-                  )
-                }
-                required
-                select
-                value={discountType}
-              >
-                {couponDiscountTypeValues.map((type) => (
-                  <MenuItem key={type} value={type}>
-                    {tCoupons(`discountType.${type}`)}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <NumericFormat
-                allowNegative={false}
-                customInput={TextField}
-                decimalScale={2}
-                error={!!errors.discountValue}
-                fullWidth
-                helperText={errors.discountValue?.message}
-                isAllowed={({ floatValue }) =>
-                  floatValue === undefined || floatValue <= 99999999.99
-                }
-                label={tCoupons("discountValue.label")}
-                name="discountValue"
-                onValueChange={({ value }) =>
-                  setValue("discountValue", value, {
-                    shouldValidate: isSubmitted,
-                  })
-                }
-                placeholder={tCoupons("discountValue.placeholder")}
-                required
-                slotProps={{
-                  input: {
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        {discountType === "percentage" ? "%" : currency}
-                      </InputAdornment>
-                    ),
-                  },
-                }}
-                thousandSeparator=","
-                value={discountValue}
-                valueIsNumericString
-              />
-            </Grid>
-          </StyledGrid>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <NumericFormat
             allowNegative={false}
             customInput={TextField}
             decimalScale={2}
-            error={!!errors.minSubtotal}
+            error={!!errors.discountValue}
             fullWidth
-            helperText={errors.minSubtotal?.message}
+            helperText={errors.discountValue?.message}
             isAllowed={({ floatValue }) =>
               floatValue === undefined || floatValue <= 99999999.99
             }
-            label={`${tCoupons("minSubtotal.label")} ${tCommon("optional")}`}
-            name="minSubtotal"
+            label={tCoupons("discountValue.label")}
+            name="discountValue"
             onValueChange={({ value }) =>
-              setValue("minSubtotal", value, { shouldValidate: isSubmitted })
+              setValue("discountValue", value, { shouldValidate: isSubmitted })
             }
-            placeholder={tCoupons("minSubtotal.placeholder")}
+            placeholder={tCoupons("discountValue.placeholder")}
+            required
             slotProps={{
               input: {
                 endAdornment: (
-                  <InputAdornment position="end">{currency}</InputAdornment>
+                  <InputAdornment position="end">
+                    {discountType === "percentage" ? "%" : currency}
+                  </InputAdornment>
                 ),
               },
             }}
             thousandSeparator=","
-            value={minSubtotal}
+            value={discountValue}
             valueIsNumericString
           />
-          <StyledGrid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <NumberSpinner
-                clearable
-                error={!!errors.totalLimit}
-                fullWidth
-                helperText={errors.totalLimit?.message}
-                label={`${tCoupons("totalLimit.label")} ${tCommon("optional")}`}
-                min={1}
-                onValueChange={(value) =>
-                  setValue("totalLimit", value != null ? String(value) : "", {
-                    shouldValidate: isSubmitted,
-                  })
-                }
-                placeholder={tCoupons("totalLimit.placeholder")}
-                value={totalLimit !== "" ? Number(totalLimit) : null}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <NumberSpinner
-                clearable
-                error={!!errors.perUserLimit}
-                fullWidth
-                helperText={tCoupons("perUserLimit.hint")}
-                label={`${tCoupons("perUserLimit.label")} ${tCommon("optional")}`}
-                min={1}
-                onValueChange={(value) => {
-                  setValue("perUserLimit", value != null ? String(value) : "", {
-                    shouldValidate: isSubmitted,
-                  });
-                  // 每人上限僅會員可用：設定後強制關閉公開
-                  if (value != null) setValue("isPublic", false);
-                }}
-                placeholder={tCoupons("perUserLimit.placeholder")}
-                value={perUserLimit !== "" ? Number(perUserLimit) : null}
-              />
-            </Grid>
-          </StyledGrid>
-          <StyledGrid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <NumberSpinner
-                clearable
-                error={!!errors.pointsCost}
-                fullWidth
-                helperText={tCoupons("pointsCost.hint")}
-                label={`${tCoupons("pointsCost.label")} ${tCommon("optional")}`}
-                min={1}
-                onValueChange={(value) =>
-                  setValue("pointsCost", value != null ? String(value) : "", {
-                    shouldValidate: isSubmitted,
-                  })
-                }
-                placeholder={tCoupons("pointsCost.placeholder")}
-                value={pointsCost !== "" ? Number(pointsCost) : null}
-              />
-            </Grid>
-          </StyledGrid>
-          <StyledGrid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <DateTimePicker
-                label={`${tCoupons("validFrom.label")} ${tCommon("optional")}`}
-                maxDateTime={validThrough ? dayjs(validThrough) : undefined}
-                slotProps={{
-                  field: { clearable: true },
-                  textField: {
-                    error: !!errors.validFrom,
-                    fullWidth: true,
-                    helperText: errors.validFrom?.message,
-                  },
-                }}
-                value={validFrom ? dayjs(validFrom) : null}
-                {...register("validFrom")}
-                onChange={(date) =>
-                  setValue(
-                    "validFrom",
-                    date ? date.format("YYYY-MM-DDTHH:mm") : "",
-                    {
-                      shouldValidate: isSubmitted,
-                    },
-                  )
-                }
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <DateTimePicker
-                label={`${tCoupons("validUntil.label")} ${tCommon("optional")}`}
-                minDateTime={validFrom ? dayjs(validFrom) : undefined}
-                slotProps={{
-                  field: { clearable: true },
-                  textField: {
-                    error: !!errors.validThrough,
-                    fullWidth: true,
-                    helperText: errors.validThrough?.message,
-                  },
-                }}
-                value={validThrough ? dayjs(validThrough) : null}
-                {...register("validThrough")}
-                onChange={(date) =>
-                  setValue(
-                    "validThrough",
-                    date ? date.format("YYYY-MM-DDTHH:mm") : "",
-                    {
-                      shouldValidate: isSubmitted,
-                    },
-                  )
-                }
-              />
-            </Grid>
-          </StyledGrid>
-          <StyledGrid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                disabled={isPointsRedeem}
-                fullWidth
-                helperText={
-                  isPointsRedeem
-                    ? tCoupons("pointsCost.exclusiveHint")
-                    : tCoupons(`issueTrigger.hint.${issueTrigger}`)
-                }
-                label={tCoupons("issueTrigger.label")}
-                onChange={(e) =>
-                  setValue(
-                    "issueTrigger",
-                    e.target.value as CouponFormValues["issueTrigger"],
-                    { shouldValidate: isSubmitted },
-                  )
-                }
-                select
-                value={issueTrigger}
-              >
-                {issueTriggerOptions.map((value) => (
-                  <MenuItem key={value} value={value}>
-                    {tCoupons(`issueTrigger.${value}`)}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Grid>
-            {issueTrigger === "spend" && !isPointsRedeem && (
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <NumericFormat
-                  allowNegative={false}
-                  customInput={TextField}
-                  decimalScale={2}
-                  error={!!errors.issueMinSpend}
-                  fullWidth
-                  helperText={errors.issueMinSpend?.message}
-                  isAllowed={({ floatValue }) =>
-                    floatValue === undefined || floatValue <= 99999999.99
-                  }
-                  label={tCoupons("issueMinSpend.label")}
-                  name="issueMinSpend"
-                  onValueChange={({ value }) =>
-                    setValue("issueMinSpend", value, {
-                      shouldValidate: isSubmitted,
-                    })
-                  }
-                  placeholder={tCoupons("issueMinSpend.placeholder")}
-                  required
-                  slotProps={{
-                    input: {
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          {currency}
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
-                  thousandSeparator=","
-                  value={issueMinSpend}
-                  valueIsNumericString
-                />
-              </Grid>
-            )}
-          </StyledGrid>
-          <FormControl>
-            <StyledFormControlLabel
-              control={
-                <Switch
-                  checked={isActive}
-                  onChange={(_, checked) => setValue("isActive", checked)}
-                />
-              }
-              label={tCoupons("isActive.label")}
-            />
-            <FormHelperText>{tCoupons("isActive.helperText")}</FormHelperText>
-          </FormControl>
-          <FormControl>
-            <StyledFormControlLabel
-              control={
-                <Switch
-                  checked={isClaimable && !isPointsRedeem}
-                  disabled={isPointsRedeem}
-                  onChange={(_, checked) => setValue("isClaimable", checked)}
-                />
-              }
-              label={tCoupons("isClaimable.label")}
-            />
-            <FormHelperText>
-              {isPointsRedeem
+        </Grid>
+      </StyledGrid>
+      <NumericFormat
+        allowNegative={false}
+        customInput={TextField}
+        decimalScale={2}
+        error={!!errors.minSubtotal}
+        fullWidth
+        helperText={errors.minSubtotal?.message}
+        isAllowed={({ floatValue }) =>
+          floatValue === undefined || floatValue <= 99999999.99
+        }
+        label={`${tCoupons("minSubtotal.label")} ${tCommon("optional")}`}
+        name="minSubtotal"
+        onValueChange={({ value }) =>
+          setValue("minSubtotal", value, { shouldValidate: isSubmitted })
+        }
+        placeholder={tCoupons("minSubtotal.placeholder")}
+        slotProps={{
+          input: {
+            endAdornment: (
+              <InputAdornment position="end">{currency}</InputAdornment>
+            ),
+          },
+        }}
+        thousandSeparator=","
+        value={minSubtotal}
+        valueIsNumericString
+      />
+      <StyledGrid container spacing={2}>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <NumberSpinner
+            clearable
+            error={!!errors.totalLimit}
+            fullWidth
+            helperText={errors.totalLimit?.message}
+            label={`${tCoupons("totalLimit.label")} ${tCommon("optional")}`}
+            min={1}
+            onValueChange={(value) =>
+              setValue("totalLimit", value != null ? String(value) : "", {
+                shouldValidate: isSubmitted,
+              })
+            }
+            placeholder={tCoupons("totalLimit.placeholder")}
+            value={totalLimit !== "" ? Number(totalLimit) : null}
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <NumberSpinner
+            clearable
+            error={!!errors.perUserLimit}
+            fullWidth
+            helperText={tCoupons("perUserLimit.hint")}
+            label={`${tCoupons("perUserLimit.label")} ${tCommon("optional")}`}
+            min={1}
+            onValueChange={(value) => {
+              setValue("perUserLimit", value != null ? String(value) : "", {
+                shouldValidate: isSubmitted,
+              });
+              // 每人上限僅會員可用：設定後強制關閉公開
+              if (value != null) setValue("isPublic", false);
+            }}
+            placeholder={tCoupons("perUserLimit.placeholder")}
+            value={perUserLimit !== "" ? Number(perUserLimit) : null}
+          />
+        </Grid>
+      </StyledGrid>
+      <StyledGrid container spacing={2}>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <NumberSpinner
+            clearable
+            error={!!errors.pointsCost}
+            fullWidth
+            helperText={tCoupons("pointsCost.hint")}
+            label={`${tCoupons("pointsCost.label")} ${tCommon("optional")}`}
+            min={1}
+            onValueChange={(value) =>
+              setValue("pointsCost", value != null ? String(value) : "", {
+                shouldValidate: isSubmitted,
+              })
+            }
+            placeholder={tCoupons("pointsCost.placeholder")}
+            value={pointsCost !== "" ? Number(pointsCost) : null}
+          />
+        </Grid>
+      </StyledGrid>
+      <StyledGrid container spacing={2}>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <DateTimePicker
+            label={`${tCoupons("validFrom.label")} ${tCommon("optional")}`}
+            maxDateTime={validThrough ? dayjs(validThrough) : undefined}
+            slotProps={{
+              field: { clearable: true },
+              textField: {
+                error: !!errors.validFrom,
+                fullWidth: true,
+                helperText: errors.validFrom?.message,
+              },
+            }}
+            value={validFrom ? dayjs(validFrom) : null}
+            {...register("validFrom")}
+            onChange={(date) =>
+              setValue(
+                "validFrom",
+                date ? date.format("YYYY-MM-DDTHH:mm") : "",
+                {
+                  shouldValidate: isSubmitted,
+                },
+              )
+            }
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <DateTimePicker
+            label={`${tCoupons("validUntil.label")} ${tCommon("optional")}`}
+            minDateTime={validFrom ? dayjs(validFrom) : undefined}
+            slotProps={{
+              field: { clearable: true },
+              textField: {
+                error: !!errors.validThrough,
+                fullWidth: true,
+                helperText: errors.validThrough?.message,
+              },
+            }}
+            value={validThrough ? dayjs(validThrough) : null}
+            {...register("validThrough")}
+            onChange={(date) =>
+              setValue(
+                "validThrough",
+                date ? date.format("YYYY-MM-DDTHH:mm") : "",
+                {
+                  shouldValidate: isSubmitted,
+                },
+              )
+            }
+          />
+        </Grid>
+      </StyledGrid>
+      <StyledGrid container spacing={2}>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <TextField
+            disabled={isPointsRedeem}
+            fullWidth
+            helperText={
+              isPointsRedeem
                 ? tCoupons("pointsCost.exclusiveHint")
-                : tCoupons("isClaimable.helperText")}
-            </FormHelperText>
-          </FormControl>
-          <FormControl>
-            <StyledFormControlLabel
-              control={
-                <Switch
-                  checked={isPublic && !isPointsRedeem && !hasPerUserLimit}
-                  disabled={isPointsRedeem || hasPerUserLimit}
-                  onChange={(_, checked) => setValue("isPublic", checked)}
-                />
+                : tCoupons(`issueTrigger.hint.${issueTrigger}`)
+            }
+            label={tCoupons("issueTrigger.label")}
+            onChange={(e) =>
+              setValue(
+                "issueTrigger",
+                e.target.value as CouponFormValues["issueTrigger"],
+                { shouldValidate: isSubmitted },
+              )
+            }
+            select
+            value={issueTrigger}
+          >
+            {issueTriggerOptions.map((value) => (
+              <MenuItem key={value} value={value}>
+                {tCoupons(`issueTrigger.${value}`)}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Grid>
+        {issueTrigger === "spend" && !isPointsRedeem && (
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <NumericFormat
+              allowNegative={false}
+              customInput={TextField}
+              decimalScale={2}
+              error={!!errors.issueMinSpend}
+              fullWidth
+              helperText={errors.issueMinSpend?.message}
+              isAllowed={({ floatValue }) =>
+                floatValue === undefined || floatValue <= 99999999.99
               }
-              label={tCoupons("isPublic.label")}
+              label={tCoupons("issueMinSpend.label")}
+              name="issueMinSpend"
+              onValueChange={({ value }) =>
+                setValue("issueMinSpend", value, {
+                  shouldValidate: isSubmitted,
+                })
+              }
+              placeholder={tCoupons("issueMinSpend.placeholder")}
+              required
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">{currency}</InputAdornment>
+                  ),
+                },
+              }}
+              thousandSeparator=","
+              value={issueMinSpend}
+              valueIsNumericString
             />
-            <FormHelperText>
-              {isPointsRedeem
-                ? tCoupons("pointsCost.exclusiveHint")
-                : hasPerUserLimit
-                  ? tCoupons("isPublic.exclusiveHint")
-                  : tCoupons("isPublic.helperText")}
-            </FormHelperText>
-          </FormControl>
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+          </Grid>
+        )}
+      </StyledGrid>
+      <FormControl>
+        <StyledFormControlLabel
+          control={
+            <Switch
+              checked={isActive}
+              onChange={(_, checked) => setValue("isActive", checked)}
+            />
+          }
+          label={tCoupons("isActive.label")}
+        />
+        <FormHelperText>{tCoupons("isActive.helperText")}</FormHelperText>
+      </FormControl>
+      <FormControl>
+        <StyledFormControlLabel
+          control={
+            <Switch
+              checked={isClaimable && !isPointsRedeem}
+              disabled={isPointsRedeem}
+              onChange={(_, checked) => setValue("isClaimable", checked)}
+            />
+          }
+          label={tCoupons("isClaimable.label")}
+        />
+        <FormHelperText>
+          {isPointsRedeem
+            ? tCoupons("pointsCost.exclusiveHint")
+            : tCoupons("isClaimable.helperText")}
+        </FormHelperText>
+      </FormControl>
+      <FormControl>
+        <StyledFormControlLabel
+          control={
+            <Switch
+              checked={isPublic && !isPointsRedeem && !hasPerUserLimit}
+              disabled={isPointsRedeem || hasPerUserLimit}
+              onChange={(_, checked) => setValue("isPublic", checked)}
+            />
+          }
+          label={tCoupons("isPublic.label")}
+        />
+        <FormHelperText>
+          {isPointsRedeem
+            ? tCoupons("pointsCost.exclusiveHint")
+            : hasPerUserLimit
+              ? tCoupons("isPublic.exclusiveHint")
+              : tCoupons("isPublic.helperText")}
+        </FormHelperText>
+      </FormControl>
+    </FormBox>
   );
 };
 

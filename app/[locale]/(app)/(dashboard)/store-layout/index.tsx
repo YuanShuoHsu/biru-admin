@@ -14,11 +14,6 @@ import {
 import useSWR from "swr";
 import { DoubleSide } from "three";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
-
 import { STATUS_COLORS, STATUS_TEXT_COLORS } from "@/constants/orders";
 
 import { useSocketConnection } from "@/hooks/useSocketConnection";
@@ -857,20 +852,15 @@ const StoreLayout = ({
     setDialog({
       container: document.fullscreenElement,
       content: (
-        <>
-          <CustomizedDialogContent>
-            <Stack divider={<Divider />} spacing={2}>
-              {tableOrders.get(tableNumber)?.map((order) => (
-                <OrderDetailDialog
-                  key={order.id}
-                  order={order}
-                  organizationSlug={organizationSlug}
-                />
-              ))}
-            </Stack>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <Stack divider={<Divider />} spacing={2}>
+          {tableOrders.get(tableNumber)?.map((order) => (
+            <OrderDetailDialog
+              key={order.id}
+              order={order}
+              organizationSlug={organizationSlug}
+            />
+          ))}
+        </Stack>
       ),
       open: true,
       title: tOrder("mode.dineIn.tableNumber.value", { tableNumber }),

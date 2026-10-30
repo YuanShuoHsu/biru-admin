@@ -6,10 +6,6 @@ import { useForm } from "react-hook-form";
 
 import { type TeamForm, useTeamFormSchema } from "./definitions";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -94,22 +90,17 @@ const UpdateTeamDialog = ({
   });
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id="team-form" onSubmit={onSubmit}>
-          <TextField
-            error={!!errors.name}
-            fullWidth
-            helperText={errors.name?.message}
-            label={tTeams("name.label")}
-            placeholder={tTeams("name.placeholder")}
-            required
-            {...register("name")}
-          />
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+    <FormBox id="team-form" onSubmit={onSubmit}>
+      <TextField
+        error={!!errors.name}
+        fullWidth
+        helperText={errors.name?.message}
+        label={tTeams("name.label")}
+        placeholder={tTeams("name.placeholder")}
+        required
+        {...register("name")}
+      />
+    </FormBox>
   );
 };
 

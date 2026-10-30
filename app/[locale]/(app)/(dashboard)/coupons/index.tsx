@@ -9,10 +9,6 @@ import CouponDialog from "./CouponDialog";
 import GrantCouponDialog from "./GrantCouponDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -392,17 +388,12 @@ const Coupons = ({
     ({ code, id }: Coupon) => {
       setDialog({
         content: (
-          <>
-            <CustomizedDialogContent>
-              <DialogContentText>
-                {tCoupons.rich("actions.deleteCoupon.confirm", {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                  code,
-                })}
-              </DialogContentText>
-            </CustomizedDialogContent>
-            <CustomizedDialogActions />
-          </>
+          <DialogContentText>
+            {tCoupons.rich("actions.deleteCoupon.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              code,
+            })}
+          </DialogContentText>
         ),
         onConfirm: async () => {
           try {
@@ -435,26 +426,21 @@ const Coupons = ({
 
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <ConfirmStack>
-              <DialogContentText>
-                {tCoupons.rich("actions.batchDeleteCoupon.submit.confirm", {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                  count,
-                })}
-              </DialogContentText>
-              <List dense disablePadding>
-                {selectedRows.map(({ code, id }) => (
-                  <ListItem disableGutters key={id}>
-                    <ListItemText primary={code} />
-                  </ListItem>
-                ))}
-              </List>
-            </ConfirmStack>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <ConfirmStack>
+          <DialogContentText>
+            {tCoupons.rich("actions.batchDeleteCoupon.submit.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              count,
+            })}
+          </DialogContentText>
+          <List dense disablePadding>
+            {selectedRows.map(({ code, id }) => (
+              <ListItem disableGutters key={id}>
+                <ListItemText primary={code} />
+              </ListItem>
+            ))}
+          </List>
+        </ConfirmStack>
       ),
       onConfirm: async () => {
         try {

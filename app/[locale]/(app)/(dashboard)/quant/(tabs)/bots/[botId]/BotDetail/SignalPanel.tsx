@@ -9,11 +9,6 @@ import { useSWRConfig } from "swr";
 import { QUANT_BOTS_URL, isQuantBotKey } from "../../useQuantBots";
 import { CopyField } from "../../WebhookSetup";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
-
 import { Visibility } from "@mui/icons-material";
 import {
   Alert,
@@ -69,18 +64,13 @@ const SignalPanel = ({ bot }: { bot: QuantBot }) => {
   const send = () =>
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tSignal("send.confirm", {
-                action: tSignal(`actions.${action}`),
-                contracts,
-                positionSize,
-              })}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tSignal("send.confirm", {
+            action: tSignal(`actions.${action}`),
+            contracts,
+            positionSize,
+          })}
+        </DialogContentText>
       ),
       onConfirm: async () => {
         try {

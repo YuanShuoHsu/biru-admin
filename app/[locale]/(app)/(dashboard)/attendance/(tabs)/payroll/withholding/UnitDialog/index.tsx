@@ -12,10 +12,6 @@ import {
   useUnitFormSchema,
 } from "./definitions";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -127,80 +123,75 @@ const UnitDialog = ({ mutate, organizationSlug, unit }: UnitDialogProps) => {
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id="payroll-withholding-unit-form" onSubmit={onSubmit}>
-          <TextField
-            error={!!errors.businessNumber}
-            fullWidth
-            helperText={errors.businessNumber?.message}
-            label={tAttendance("withholding.unit.fields.businessNumber")}
-            required
-            slotProps={{ htmlInput: { inputMode: "numeric", maxLength: 8 } }}
-            {...businessNumberField}
-            onBlur={(event) => {
-              businessNumberField.onBlur(event);
-              fillFromRegistry(event.target.value);
-            }}
-          />
-          {UNIT_TEXT_FIELDS.map(({ max, name }) => (
-            <TextField
-              error={!!errors[name]}
-              fullWidth
-              helperText={errors[name]?.message}
-              key={name}
-              label={tAttendance(`withholding.unit.fields.${name}`)}
-              required
-              slotProps={{ htmlInput: { maxLength: max } }}
-              {...register(name, {
-                onBlur:
-                  name === "representativeName"
-                    ? (event) => fillAgentName(event.target.value.trim())
-                    : undefined,
-              })}
-            />
-          ))}
-          <TextField
-            error={!!errors.taxOfficeCode}
-            fullWidth
-            helperText={errors.taxOfficeCode?.message}
-            label={tAttendance("withholding.unit.fields.taxOfficeCode")}
-            required
-            slotProps={{ htmlInput: { maxLength: 3 } }}
-            {...register("taxOfficeCode")}
-          />
-          <TextField
-            error={!!errors.taxRegistrationNumber}
-            fullWidth
-            helperText={errors.taxRegistrationNumber?.message}
-            label={tAttendance("withholding.unit.fields.taxRegistrationNumber")}
-            required
-            slotProps={{ htmlInput: { maxLength: 9 } }}
-            {...register("taxRegistrationNumber")}
-          />
-          <TextField
-            error={!!errors.contactPhone}
-            fullWidth
-            helperText={errors.contactPhone?.message}
-            label={tAttendance("withholding.unit.fields.contactPhone")}
-            required
-            slotProps={{ htmlInput: { inputMode: "tel", maxLength: 15 } }}
-            {...register("contactPhone")}
-          />
-          <TextField
-            error={!!errors.contactEmail}
-            fullWidth
-            helperText={errors.contactEmail?.message}
-            label={tAttendance("withholding.unit.fields.contactEmail")}
-            required
-            slotProps={{ htmlInput: { maxLength: 30 } }}
-            type="email"
-            {...register("contactEmail")}
-          />
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+    <FormBox id="payroll-withholding-unit-form" onSubmit={onSubmit}>
+      <TextField
+        error={!!errors.businessNumber}
+        fullWidth
+        helperText={errors.businessNumber?.message}
+        label={tAttendance("withholding.unit.fields.businessNumber")}
+        required
+        slotProps={{ htmlInput: { inputMode: "numeric", maxLength: 8 } }}
+        {...businessNumberField}
+        onBlur={(event) => {
+          businessNumberField.onBlur(event);
+          fillFromRegistry(event.target.value);
+        }}
+      />
+      {UNIT_TEXT_FIELDS.map(({ max, name }) => (
+        <TextField
+          error={!!errors[name]}
+          fullWidth
+          helperText={errors[name]?.message}
+          key={name}
+          label={tAttendance(`withholding.unit.fields.${name}`)}
+          required
+          slotProps={{ htmlInput: { maxLength: max } }}
+          {...register(name, {
+            onBlur:
+              name === "representativeName"
+                ? (event) => fillAgentName(event.target.value.trim())
+                : undefined,
+          })}
+        />
+      ))}
+      <TextField
+        error={!!errors.taxOfficeCode}
+        fullWidth
+        helperText={errors.taxOfficeCode?.message}
+        label={tAttendance("withholding.unit.fields.taxOfficeCode")}
+        required
+        slotProps={{ htmlInput: { maxLength: 3 } }}
+        {...register("taxOfficeCode")}
+      />
+      <TextField
+        error={!!errors.taxRegistrationNumber}
+        fullWidth
+        helperText={errors.taxRegistrationNumber?.message}
+        label={tAttendance("withholding.unit.fields.taxRegistrationNumber")}
+        required
+        slotProps={{ htmlInput: { maxLength: 9 } }}
+        {...register("taxRegistrationNumber")}
+      />
+      <TextField
+        error={!!errors.contactPhone}
+        fullWidth
+        helperText={errors.contactPhone?.message}
+        label={tAttendance("withholding.unit.fields.contactPhone")}
+        required
+        slotProps={{ htmlInput: { inputMode: "tel", maxLength: 15 } }}
+        {...register("contactPhone")}
+      />
+      <TextField
+        error={!!errors.contactEmail}
+        fullWidth
+        helperText={errors.contactEmail?.message}
+        label={tAttendance("withholding.unit.fields.contactEmail")}
+        required
+        slotProps={{ htmlInput: { maxLength: 30 } }}
+        type="email"
+        {...register("contactEmail")}
+      />
+    </FormBox>
   );
 };
 

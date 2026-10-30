@@ -7,10 +7,6 @@ import { Fragment, useState } from "react";
 import AccountItem from "./AccountItem";
 import OtherAccountItem from "./OtherAccountItem";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import ErrorAlert from "@/components/ErrorAlert";
 import FormCard, {
   StyledCardContent,
@@ -87,17 +83,12 @@ const Accounts = () => {
   const handleRevokeCurrentDialog = () =>
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tAuth.rich("signOut.confirmContentText", {
-                bold: (chunks) => <strong>{chunks}</strong>,
-                email: session?.user.email || "",
-              })}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tAuth.rich("signOut.confirmContentText", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            email: session?.user.email || "",
+          })}
+        </DialogContentText>
       ),
       onConfirm: handleRevokeCurrentConfirm,
       open: true,

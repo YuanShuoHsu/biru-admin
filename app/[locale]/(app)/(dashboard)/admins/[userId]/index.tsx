@@ -8,10 +8,6 @@ import useSWR, { useSWRConfig } from "swr";
 
 import RevokeUserSessionDialogContent from "./RevokeUserSessionDialogContent";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -304,16 +300,11 @@ const UserSessions = ({
   const handleEnterUserSessionBatchRevokeMode = useCallback(() => {
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tUserSessions.rich("actions.batchRevokeUserSession.confirm", {
-                bold: (chunks) => <strong>{chunks}</strong>,
-              })}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tUserSessions.rich("actions.batchRevokeUserSession.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
       ),
       onConfirm: async () => {
         setIsSelectMode(true);
@@ -329,20 +320,12 @@ const UserSessions = ({
 
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tUserSessions.rich(
-                "actions.batchRevokeUserSession.submit.confirm",
-                {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                  count,
-                },
-              )}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tUserSessions.rich("actions.batchRevokeUserSession.submit.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            count,
+          })}
+        </DialogContentText>
       ),
       onConfirm: async () => {
         try {
@@ -384,19 +367,11 @@ const UserSessions = ({
   const handleCancelUserSessionBatchRevoke = useCallback(() => {
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tUserSessions.rich(
-                "actions.batchRevokeUserSession.cancel.confirm",
-                {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                },
-              )}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tUserSessions.rich("actions.batchRevokeUserSession.cancel.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
       ),
       onConfirm: async () => {
         setIsSelectMode(false);

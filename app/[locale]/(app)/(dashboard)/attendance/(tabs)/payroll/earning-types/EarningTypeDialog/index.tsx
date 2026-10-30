@@ -7,10 +7,6 @@ import { useForm, useWatch } from "react-hook-form";
 
 import { type EarningTypeForm, useEarningTypeFormSchema } from "./definitions";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -102,42 +98,37 @@ const EarningTypeDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id="payroll-earning-type-form" onSubmit={onSubmit}>
-          <TextField
-            error={!!errors.name}
-            fullWidth
-            helperText={errors.name?.message}
-            label={tAttendance("name")}
-            required
-            {...register("name")}
-          />
-          <TextField
-            disabled={!!earningType}
-            fullWidth
-            helperText={tAttendance(`earningCategory.descriptions.${category}`)}
-            label={tAttendance("earningCategory.label")}
-            onChange={(event) =>
-              setValue(
-                "category",
-                event.target.value as EarningTypeForm["category"],
-              )
-            }
-            required
-            select
-            value={category}
-          >
-            {payrollEarningCategoryValues.map((value) => (
-              <MenuItem key={value} value={value}>
-                {tAttendance(`earningCategory.options.${value}`)}
-              </MenuItem>
-            ))}
-          </TextField>
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+    <FormBox id="payroll-earning-type-form" onSubmit={onSubmit}>
+      <TextField
+        error={!!errors.name}
+        fullWidth
+        helperText={errors.name?.message}
+        label={tAttendance("name")}
+        required
+        {...register("name")}
+      />
+      <TextField
+        disabled={!!earningType}
+        fullWidth
+        helperText={tAttendance(`earningCategory.descriptions.${category}`)}
+        label={tAttendance("earningCategory.label")}
+        onChange={(event) =>
+          setValue(
+            "category",
+            event.target.value as EarningTypeForm["category"],
+          )
+        }
+        required
+        select
+        value={category}
+      >
+        {payrollEarningCategoryValues.map((value) => (
+          <MenuItem key={value} value={value}>
+            {tAttendance(`earningCategory.options.${value}`)}
+          </MenuItem>
+        ))}
+      </TextField>
+    </FormBox>
   );
 };
 

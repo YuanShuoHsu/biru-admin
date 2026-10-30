@@ -188,18 +188,14 @@ const DraftDialog = ({
           setDialog({
             confirmLoading: false,
             content: (
-              <>
-                <CustomizedDialogContent>
-                  <BatchSkippedList
-                    labels={Object.fromEntries(
-                      employees.map(({ id, name }) => [id, name]),
-                    )}
-                    skipped={skipped}
-                  />
-                </CustomizedDialogContent>
-                <CustomizedDialogActions />
-              </>
+              <BatchSkippedList
+                labels={Object.fromEntries(
+                  employees.map(({ id, name }) => [id, name]),
+                )}
+                skipped={skipped}
+              />
             ),
+            customLayout: false,
             formId: undefined,
             showConfirm: false,
             title: tAttendance("batch.skipped", { count: skipped.length }),

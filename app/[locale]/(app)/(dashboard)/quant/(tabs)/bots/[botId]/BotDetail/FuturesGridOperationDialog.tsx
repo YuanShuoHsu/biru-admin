@@ -8,10 +8,6 @@ import { useSWRConfig } from "swr";
 
 import { QUANT_BOTS_URL, isQuantBotKey } from "../../useQuantBots";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import {
@@ -306,182 +302,173 @@ const FuturesGridOperationDialog = ({
   );
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox
-          id={FUTURES_GRID_OPERATION_FORM_ID}
-          noValidate
-          onSubmit={onSubmit}
+    <FormBox id={FUTURES_GRID_OPERATION_FORM_ID} noValidate onSubmit={onSubmit}>
+      <Typography color="text.secondary" variant="body2">
+        {tOperation(`descriptions.${operation}`)}
+      </Typography>
+      {(operation === "invest" ||
+        operation === "addMargin" ||
+        operation === "reduceMargin") &&
+        numberField("amount", tOperation("amount"), quote)}
+      {operation === "range" && (
+        <>
+          {numberField("top", tGrid("top"), quote)}
+          {numberField("bottom", tGrid("bottom"), quote)}
+          {numberField("row", tGrid("row"))}
+        </>
+      )}
+      {operation === "reduce" &&
+        numberField(
+          "reduceNum",
+          tOperation("reduceNum"),
+          undefined,
+          check?.maxReduceNum === undefined
+            ? tOperation("reduceNumHelper")
+            : tOperation("reduceNumMax", { max: check.maxReduceNum }),
+        )}
+      {operation === "pause" && (
+        <TextField
+          label={tOperation("pauseMode")}
+          onChange={(event) =>
+            update({
+              pauseMode: event.target.value as Fields["pauseMode"],
+            })
+          }
+          select
+          value={fields.pauseMode}
         >
-          <Typography color="text.secondary" variant="body2">
-            {tOperation(`descriptions.${operation}`)}
-          </Typography>
-          {(operation === "invest" ||
-            operation === "addMargin" ||
-            operation === "reduceMargin") &&
-            numberField("amount", tOperation("amount"), quote)}
-          {operation === "range" && (
-            <>
-              {numberField("top", tGrid("top"), quote)}
-              {numberField("bottom", tGrid("bottom"), quote)}
-              {numberField("row", tGrid("row"))}
-            </>
+          {quantFuturesGridPauseModeValues.map((value) => (
+            <MenuItem key={value} value={value}>
+              {tOperation(`pauseModes.${value}`)}
+            </MenuItem>
+          ))}
+        </TextField>
+      )}
+      {((operation === "pause" && fields.pauseMode === "conditional") ||
+        operation === "resume") && (
+        <>
+          {numberField(
+            "triggerUp",
+            tOperation("triggerUp"),
+            quote,
+            tOperation("triggerOptional"),
           )}
-          {operation === "reduce" &&
-            numberField(
-              "reduceNum",
-              tOperation("reduceNum"),
-              undefined,
-              check?.maxReduceNum === undefined
-                ? tOperation("reduceNumHelper")
-                : tOperation("reduceNumMax", { max: check.maxReduceNum }),
+          {numberField(
+            "triggerDown",
+            tOperation("triggerDown"),
+            quote,
+            tOperation("triggerOptional"),
+          )}
+        </>
+      )}
+      {operation === "pause" && (
+        <>
+          {pauseStopSwitch("stopProfitEnabled")}
+          {pauseStopSwitch("stopLossEnabled")}
+        </>
+      )}
+      {operation === "stops" && (
+        <>
+          <Stack sx={{ flexDirection: "row", gap: 2 }}>
+            {stopTypeField("lossStopType")}
+            {numberField(
+              "lossStop",
+              tGrid("lossStop"),
+              fields.lossStopType === "profit_ratio" ? "%" : quote,
+              tOperation("stopClearHelper"),
             )}
-          {operation === "pause" && (
-            <TextField
-              label={tOperation("pauseMode")}
-              onChange={(event) =>
-                update({
-                  pauseMode: event.target.value as Fields["pauseMode"],
-                })
-              }
-              select
-              value={fields.pauseMode}
-            >
-              {quantFuturesGridPauseModeValues.map((value) => (
-                <MenuItem key={value} value={value}>
-                  {tOperation(`pauseModes.${value}`)}
-                </MenuItem>
-              ))}
-            </TextField>
-          )}
-          {((operation === "pause" && fields.pauseMode === "conditional") ||
-            operation === "resume") && (
-            <>
-              {numberField(
-                "triggerUp",
-                tOperation("triggerUp"),
-                quote,
-                tOperation("triggerOptional"),
-              )}
-              {numberField(
-                "triggerDown",
-                tOperation("triggerDown"),
-                quote,
-                tOperation("triggerOptional"),
-              )}
-            </>
-          )}
-          {operation === "pause" && (
-            <>
-              {pauseStopSwitch("stopProfitEnabled")}
-              {pauseStopSwitch("stopLossEnabled")}
-            </>
-          )}
-          {operation === "stops" && (
-            <>
-              <Stack sx={{ flexDirection: "row", gap: 2 }}>
-                {stopTypeField("lossStopType")}
-                {numberField(
-                  "lossStop",
-                  tGrid("lossStop"),
-                  fields.lossStopType === "profit_ratio" ? "%" : quote,
-                  tOperation("stopClearHelper"),
-                )}
-              </Stack>
-              {fields.lossStopType === "price_limit" &&
-                numberField(
-                  "lossStopLimit",
-                  tGrid("lossStopLimit"),
+          </Stack>
+          {fields.lossStopType === "price_limit" &&
+            numberField(
+              "lossStopLimit",
+              tGrid("lossStopLimit"),
+              quote,
+              tGrid("stopLimitHelper"),
+            )}
+          {config.trend === "no_trend" &&
+            numberField(
+              "lossStopHigh",
+              tOperation("lossStopHigh"),
+              quote,
+              tOperation("stopClearHelper"),
+            )}
+          {config.trend === "no_trend" &&
+            fields.lossStopType === "price_limit" &&
+            numberField(
+              "lossStopLimitHigh",
+              tOperation("lossStopLimitHigh"),
+              quote,
+              tGrid("stopLimitHelper"),
+            )}
+          <Stack sx={{ flexDirection: "row", gap: 2 }}>
+            {stopTypeField("profitStopType")}
+            {numberField(
+              "profitStop",
+              tGrid("profitStop"),
+              fields.profitStopType === "profit_ratio" ? "%" : quote,
+              tOperation("stopClearHelper"),
+            )}
+          </Stack>
+          {fields.profitStopType === "price_limit" &&
+            numberField(
+              "profitStopLimit",
+              tGrid("profitStopLimit"),
+              quote,
+              tGrid("stopLimitHelper"),
+            )}
+        </>
+      )}
+      {check && (
+        <Alert severity={check.ok ? "info" : "error"}>
+          <Stack sx={{ gap: 0.5 }}>
+            {!check.ok && (
+              <Typography variant="body2">
+                {tOperation("rejected", { reason: check.reason ?? "" })}
+              </Typography>
+            )}
+            {(check.liquidationPriceDownAfter !== undefined ||
+              check.liquidationPriceDownBefore !== undefined) && (
+              <Typography variant="body2">
+                {tOperation("liquidationDown", {
+                  after: formatPrice(check.liquidationPriceDownAfter),
+                  before: formatPrice(check.liquidationPriceDownBefore),
+                })}
+              </Typography>
+            )}
+            {(check.liquidationPriceUpAfter !== undefined ||
+              check.liquidationPriceUpBefore !== undefined) && (
+              <Typography variant="body2">
+                {tOperation("liquidationUp", {
+                  after: formatPrice(check.liquidationPriceUpAfter),
+                  before: formatPrice(check.liquidationPriceUpBefore),
+                })}
+              </Typography>
+            )}
+            {check.maxAmount !== undefined && (
+              <Typography variant="body2">
+                {tOperation("maxAmount", {
+                  amount: formatPrice(check.maxAmount),
                   quote,
-                  tGrid("stopLimitHelper"),
-                )}
-              {config.trend === "no_trend" &&
-                numberField(
-                  "lossStopHigh",
-                  tOperation("lossStopHigh"),
+                })}
+              </Typography>
+            )}
+            {check.reducePnl !== undefined && (
+              <Typography variant="body2">
+                {tOperation("reducePnl", {
+                  pnl: formatPrice(check.reducePnl),
                   quote,
-                  tOperation("stopClearHelper"),
-                )}
-              {config.trend === "no_trend" &&
-                fields.lossStopType === "price_limit" &&
-                numberField(
-                  "lossStopLimitHigh",
-                  tOperation("lossStopLimitHigh"),
-                  quote,
-                  tGrid("stopLimitHelper"),
-                )}
-              <Stack sx={{ flexDirection: "row", gap: 2 }}>
-                {stopTypeField("profitStopType")}
-                {numberField(
-                  "profitStop",
-                  tGrid("profitStop"),
-                  fields.profitStopType === "profit_ratio" ? "%" : quote,
-                  tOperation("stopClearHelper"),
-                )}
-              </Stack>
-              {fields.profitStopType === "price_limit" &&
-                numberField(
-                  "profitStopLimit",
-                  tGrid("profitStopLimit"),
-                  quote,
-                  tGrid("stopLimitHelper"),
-                )}
-            </>
-          )}
-          {check && (
-            <Alert severity={check.ok ? "info" : "error"}>
-              <Stack sx={{ gap: 0.5 }}>
-                {!check.ok && (
-                  <Typography variant="body2">
-                    {tOperation("rejected", { reason: check.reason ?? "" })}
-                  </Typography>
-                )}
-                {(check.liquidationPriceDownAfter !== undefined ||
-                  check.liquidationPriceDownBefore !== undefined) && (
-                  <Typography variant="body2">
-                    {tOperation("liquidationDown", {
-                      after: formatPrice(check.liquidationPriceDownAfter),
-                      before: formatPrice(check.liquidationPriceDownBefore),
-                    })}
-                  </Typography>
-                )}
-                {(check.liquidationPriceUpAfter !== undefined ||
-                  check.liquidationPriceUpBefore !== undefined) && (
-                  <Typography variant="body2">
-                    {tOperation("liquidationUp", {
-                      after: formatPrice(check.liquidationPriceUpAfter),
-                      before: formatPrice(check.liquidationPriceUpBefore),
-                    })}
-                  </Typography>
-                )}
-                {check.maxAmount !== undefined && (
-                  <Typography variant="body2">
-                    {tOperation("maxAmount", {
-                      amount: formatPrice(check.maxAmount),
-                      quote,
-                    })}
-                  </Typography>
-                )}
-                {check.reducePnl !== undefined && (
-                  <Typography variant="body2">
-                    {tOperation("reducePnl", {
-                      pnl: formatPrice(check.reducePnl),
-                      quote,
-                    })}
-                  </Typography>
-                )}
-                {check.ok && (
-                  <Typography color="text.secondary" variant="caption">
-                    {tOperation("confirmHint")}
-                  </Typography>
-                )}
-              </Stack>
-            </Alert>
-          )}
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+                })}
+              </Typography>
+            )}
+            {check.ok && (
+              <Typography color="text.secondary" variant="caption">
+                {tOperation("confirmHint")}
+              </Typography>
+            )}
+          </Stack>
+        </Alert>
+      )}
+    </FormBox>
   );
 };
 

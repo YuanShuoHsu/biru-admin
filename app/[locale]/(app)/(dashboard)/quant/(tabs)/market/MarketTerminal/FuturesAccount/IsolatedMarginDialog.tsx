@@ -5,10 +5,6 @@ import { type BaseSyntheticEvent, useState } from "react";
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import {
@@ -77,42 +73,37 @@ const IsolatedMarginDialog = ({
   };
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id={ISOLATED_MARGIN_FORM_ID} noValidate onSubmit={onSubmit}>
-          <ToggleButtonGroup
-            exclusive
-            fullWidth
-            onChange={(_, value: AdjustIsolatedMarginDto["direction"] | null) =>
-              value && setDirection(value)
-            }
-            value={direction}
-          >
-            {quantMarginDirectionValues.map((value) => (
-              <ToggleButton key={value} value={value}>
-                {tMargin(`directions.${value}`)}
-              </ToggleButton>
-            ))}
-          </ToggleButtonGroup>
-          <TextField
-            error={amount !== "" && invalid}
-            helperText={tMargin(`helpers.${direction}`)}
-            label={tMargin("amount")}
-            onChange={(event) => setAmount(event.target.value)}
-            slotProps={{
-              htmlInput: { inputMode: "decimal" },
-              input: {
-                endAdornment: (
-                  <InputAdornment position="end">{quote}</InputAdornment>
-                ),
-              },
-            }}
-            value={amount}
-          />
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+    <FormBox id={ISOLATED_MARGIN_FORM_ID} noValidate onSubmit={onSubmit}>
+      <ToggleButtonGroup
+        exclusive
+        fullWidth
+        onChange={(_, value: AdjustIsolatedMarginDto["direction"] | null) =>
+          value && setDirection(value)
+        }
+        value={direction}
+      >
+        {quantMarginDirectionValues.map((value) => (
+          <ToggleButton key={value} value={value}>
+            {tMargin(`directions.${value}`)}
+          </ToggleButton>
+        ))}
+      </ToggleButtonGroup>
+      <TextField
+        error={amount !== "" && invalid}
+        helperText={tMargin(`helpers.${direction}`)}
+        label={tMargin("amount")}
+        onChange={(event) => setAmount(event.target.value)}
+        slotProps={{
+          htmlInput: { inputMode: "decimal" },
+          input: {
+            endAdornment: (
+              <InputAdornment position="end">{quote}</InputAdornment>
+            ),
+          },
+        }}
+        value={amount}
+      />
+    </FormBox>
   );
 };
 

@@ -9,10 +9,6 @@ import useSWR from "swr";
 import { quantAccountUrl } from "../../useQuantCredentials";
 import { floorToPrecision } from "./TradePanel/definitions";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { SwapVert } from "@mui/icons-material";
@@ -108,75 +104,70 @@ const TransferDialog = ({
   };
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id={TRANSFER_FORM_ID} noValidate onSubmit={onSubmit}>
-          <Stack sx={{ alignItems: "center", flexDirection: "row", gap: 1 }}>
-            <Stack sx={{ flex: 1, gap: 1 }}>
-              <TextField
-                label={tTransfer("from")}
-                slotProps={{ input: { readOnly: true } }}
-                value={tTransfer(`accounts.${fromAccount}`)}
-              />
-              <TextField
-                label={tTransfer("to")}
-                slotProps={{ input: { readOnly: true } }}
-                value={tTransfer(`accounts.${toAccount}`)}
-              />
-            </Stack>
-            <Tooltip title={tTransfer("swap")}>
-              <IconButton
-                onClick={() => {
-                  setFromAccount(toAccount);
-                  setAmount("");
-                }}
-              >
-                <SwapVert />
-              </IconButton>
-            </Tooltip>
-          </Stack>
+    <FormBox id={TRANSFER_FORM_ID} noValidate onSubmit={onSubmit}>
+      <Stack sx={{ alignItems: "center", flexDirection: "row", gap: 1 }}>
+        <Stack sx={{ flex: 1, gap: 1 }}>
           <TextField
-            error={amount !== "" && invalid}
-            helperText={tTransfer("available", {
-              amount:
-                available === undefined
-                  ? "—"
-                  : format.number(available, {
-                      maximumFractionDigits: MAX_FRACTION_DIGITS,
-                    }),
-              currency,
-            })}
-            label={tTransfer("amount")}
-            onChange={(event) => setAmount(event.target.value)}
-            slotProps={{
-              htmlInput: { inputMode: "decimal" },
-              input: {
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <Typography color="text.secondary" variant="body2">
-                      {currency}
-                    </Typography>
-                    <Button
-                      disabled={!available}
-                      onClick={() =>
-                        setAmount(
-                          floorToPrecision(available ?? 0, MAX_FRACTION_DIGITS),
-                        )
-                      }
-                      size="small"
-                    >
-                      {tTransfer("max")}
-                    </Button>
-                  </InputAdornment>
-                ),
-              },
-            }}
-            value={amount}
+            label={tTransfer("from")}
+            slotProps={{ input: { readOnly: true } }}
+            value={tTransfer(`accounts.${fromAccount}`)}
           />
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+          <TextField
+            label={tTransfer("to")}
+            slotProps={{ input: { readOnly: true } }}
+            value={tTransfer(`accounts.${toAccount}`)}
+          />
+        </Stack>
+        <Tooltip title={tTransfer("swap")}>
+          <IconButton
+            onClick={() => {
+              setFromAccount(toAccount);
+              setAmount("");
+            }}
+          >
+            <SwapVert />
+          </IconButton>
+        </Tooltip>
+      </Stack>
+      <TextField
+        error={amount !== "" && invalid}
+        helperText={tTransfer("available", {
+          amount:
+            available === undefined
+              ? "—"
+              : format.number(available, {
+                  maximumFractionDigits: MAX_FRACTION_DIGITS,
+                }),
+          currency,
+        })}
+        label={tTransfer("amount")}
+        onChange={(event) => setAmount(event.target.value)}
+        slotProps={{
+          htmlInput: { inputMode: "decimal" },
+          input: {
+            endAdornment: (
+              <InputAdornment position="end">
+                <Typography color="text.secondary" variant="body2">
+                  {currency}
+                </Typography>
+                <Button
+                  disabled={!available}
+                  onClick={() =>
+                    setAmount(
+                      floorToPrecision(available ?? 0, MAX_FRACTION_DIGITS),
+                    )
+                  }
+                  size="small"
+                >
+                  {tTransfer("max")}
+                </Button>
+              </InputAdornment>
+            ),
+          },
+        }}
+        value={amount}
+      />
+    </FormBox>
   );
 };
 

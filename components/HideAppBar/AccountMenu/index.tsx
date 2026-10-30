@@ -12,10 +12,6 @@ import { useState, type MouseEvent } from "react";
 import { useSWRConfig } from "swr";
 
 import BadgeAvatars from "@/components/BadgeAvatars";
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 
 import { useAuthNavItems, useLogoutNavItem } from "@/hooks/useAuth";
 import { useRoutes } from "@/hooks/useRoutes";
@@ -193,17 +189,12 @@ const AccountMenu = () => {
   const handleSetActiveDialog = (sessionToken: string, email: string) =>
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tAuth.rich("switchSession.confirmContentText", {
-                bold: (chunks) => <strong>{chunks}</strong>,
-                email,
-              })}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tAuth.rich("switchSession.confirmContentText", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            email,
+          })}
+        </DialogContentText>
       ),
       onConfirm: () => handleSetActiveConfirm(sessionToken, email),
       open: true,

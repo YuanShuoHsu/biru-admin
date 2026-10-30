@@ -6,11 +6,6 @@ import { useFormatter, useTranslations } from "next-intl";
 
 import { pnlColor } from "../useQuantBots";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
-
 import { quantMarketTypeOf, quantPairOf } from "@/constants/quant";
 
 import {
@@ -81,78 +76,68 @@ const StopBotConfirm = ({ bot, onStop }: StopBotConfirmProps) => {
   };
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <Stack sx={{ gap: 2 }}>
-          <DialogContentText>
-            {tBots.rich("actions.stop.confirm", {
-              bold: (chunks) => <strong>{chunks}</strong>,
-              name: bot.name,
-              pair,
-              type: tBots(`types.${bot.type}`),
-            })}
-            <br />
+    <Stack sx={{ gap: 2 }}>
+      <DialogContentText>
+        {tBots.rich("actions.stop.confirm", {
+          bold: (chunks) => <strong>{chunks}</strong>,
+          name: bot.name,
+          pair,
+          type: tBots(`types.${bot.type}`),
+        })}
+        <br />
+        {tBots(
+          `actions.stop.consequences.${consequenceOf(bot, isFutures, closeModel)}`,
+          {
+            base,
+            quote,
+          },
+        )}
+      </DialogContentText>
+      {closeModel && (
+        <FormControl>
+          <FormLabel>
             {tBots(
-              `actions.stop.consequences.${consequenceOf(bot, isFutures, closeModel)}`,
-              {
-                base,
-                quote,
-              },
+              isGrid
+                ? "form.grid.closeModel.label"
+                : "actions.stop.position.label",
             )}
-          </DialogContentText>
-          {closeModel && (
-            <FormControl>
-              <FormLabel>
-                {tBots(
+          </FormLabel>
+          <RadioGroup
+            onChange={(_, value) => changeCloseModel(value as CloseModel)}
+            row
+            value={closeModel}
+          >
+            {quantGridCloseModelValues.map((value) => (
+              <FormControlLabel
+                control={<Radio />}
+                key={value}
+                label={
                   isGrid
-                    ? "form.grid.closeModel.label"
-                    : "actions.stop.position.label",
-                )}
-              </FormLabel>
-              <RadioGroup
-                onChange={(_, value) => changeCloseModel(value as CloseModel)}
-                row
-                value={closeModel}
-              >
-                {quantGridCloseModelValues.map((value) => (
-                  <FormControlLabel
-                    control={<Radio />}
-                    key={value}
-                    label={
-                      isGrid
-                        ? tBots(`form.grid.closeModel.${value}`, { quote })
-                        : tBots(`actions.stop.position.${value}`)
-                    }
-                    value={value}
-                  />
-                ))}
-              </RadioGroup>
-            </FormControl>
-          )}
-          {bot.startedAt && !bot.summary.pionexError && (
-            <Stack
-              sx={{ flexDirection: "row", justifyContent: "space-between" }}
-            >
-              <Typography variant="body2">
-                {tBots("actions.stop.currentPnl")}
-              </Typography>
-              <Typography
-                sx={{ color: pnlColor(bot.summary.pnl) }}
-                variant="body2"
-              >
-                {format.number(bot.summary.pnl, {
-                  maximumFractionDigits: 2,
-                  minimumFractionDigits: 2,
-                  signDisplay: "negative",
-                })}{" "}
-                {quote}
-              </Typography>
-            </Stack>
-          )}
+                    ? tBots(`form.grid.closeModel.${value}`, { quote })
+                    : tBots(`actions.stop.position.${value}`)
+                }
+                value={value}
+              />
+            ))}
+          </RadioGroup>
+        </FormControl>
+      )}
+      {bot.startedAt && !bot.summary.pionexError && (
+        <Stack sx={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <Typography variant="body2">
+            {tBots("actions.stop.currentPnl")}
+          </Typography>
+          <Typography sx={{ color: pnlColor(bot.summary.pnl) }} variant="body2">
+            {format.number(bot.summary.pnl, {
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2,
+              signDisplay: "negative",
+            })}{" "}
+            {quote}
+          </Typography>
         </Stack>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+      )}
+    </Stack>
   );
 };
 

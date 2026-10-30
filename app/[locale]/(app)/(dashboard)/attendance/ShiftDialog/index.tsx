@@ -10,10 +10,6 @@ import { useForm, useWatch } from "react-hook-form";
 
 import { type ShiftForm, useShiftFormSchema } from "./definitions";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 
@@ -406,171 +402,162 @@ const ShiftDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id="attendance-shift-form" onSubmit={onSubmit}>
-          <TextField
-            error={!!errors.employeeIds}
-            fullWidth
-            helperText={errors.employeeIds?.message}
-            label={tAttendance("employee")}
-            onChange={(event) => {
-              const { value } = event.target as { value: string | string[] };
+    <FormBox id="attendance-shift-form" onSubmit={onSubmit}>
+      <TextField
+        error={!!errors.employeeIds}
+        fullWidth
+        helperText={errors.employeeIds?.message}
+        label={tAttendance("employee")}
+        onChange={(event) => {
+          const { value } = event.target as { value: string | string[] };
 
-              handleEmployeeIdsChange(Array.isArray(value) ? value : [value]);
-            }}
-            required
-            select
-            slotProps={{
-              select: shift
-                ? undefined
-                : {
-                    multiple: true,
-                    renderValue: (selected) =>
-                      employeeNames(
-                        Array.isArray(selected) ? selected : [selected],
-                      ),
-                  },
-            }}
-            value={shift ? (employeeIds[0] ?? "") : employeeIds}
-          >
-            {employees.map(({ email, id, name }) => (
-              <MenuItem key={id} value={id}>
-                {!shift && <Checkbox checked={employeeIds.includes(id)} />}
-                <ListItemText
-                  primary={name}
-                  secondary={email}
-                  slotProps={{ secondary: { variant: "caption" } }}
-                />
-              </MenuItem>
-            ))}
-          </TextField>
-          {!!teams.length && (
-            <TextField
-              fullWidth
-              label={tAttendance("team")}
-              onChange={(event) => setValue("teamId", event.target.value)}
-              select
-              slotProps={{
-                inputLabel: { shrink: true },
-                select: { displayEmpty: true },
-              }}
-              value={teamId}
-            >
-              <MenuItem value="">{tAttendance("noTeam")}</MenuItem>
-              {sharedTeams(employeeIds).map(({ id, name }) => (
-                <MenuItem key={id} value={id}>
-                  {name}
-                </MenuItem>
-              ))}
-            </TextField>
-          )}
-          {!!timePresets.length && (
-            <ChipStack direction="row">
-              <Typography color="textSecondary" variant="body2">
-                {tAttendance(
-                  shiftTypes.length
-                    ? "shiftTypes.label"
-                    : "schedule.recentTimes",
-                )}
-              </Typography>
-              {timePresets.map(({ label, time }) => (
-                <Chip
-                  key={label}
-                  label={label}
-                  onClick={() => handleTimePreset(time)}
-                  size="small"
-                  variant="outlined"
-                />
-              ))}
-            </ChipStack>
-          )}
-          <DateTimePicker
-            label={tAttendance("startsAt")}
-            onChange={handleStartsAtChange}
-            slotProps={{
-              textField: {
-                error: !!errors.startsAt,
-                fullWidth: true,
-                helperText: errors.startsAt?.message,
-                required: true,
+          handleEmployeeIdsChange(Array.isArray(value) ? value : [value]);
+        }}
+        required
+        select
+        slotProps={{
+          select: shift
+            ? undefined
+            : {
+                multiple: true,
+                renderValue: (selected) =>
+                  employeeNames(
+                    Array.isArray(selected) ? selected : [selected],
+                  ),
               },
-            }}
-            timezone={STORE_TIMEZONE}
-            value={startsAt ? dayjs(startsAt) : null}
-          />
-          <DateTimePicker
-            label={tAttendance("endsAt")}
-            minDateTime={startsAt ? dayjs(startsAt) : undefined}
-            onChange={(date) =>
-              setValue("endsAt", date?.isValid() ? date.toISOString() : "", {
-                shouldValidate: isSubmitted,
-              })
-            }
-            slotProps={{
-              textField: {
-                error: !!errors.endsAt,
-                fullWidth: true,
-                helperText: errors.endsAt?.message,
-                required: true,
-              },
-            }}
-            timezone={STORE_TIMEZONE}
-            value={endsAt ? dayjs(endsAt) : null}
-          />
-          {rotating && (
-            <TextField
-              error={!!errors.dayKind}
-              fullWidth
-              helperText={errors.dayKind?.message}
-              label={tAttendance("dayKind.label")}
-              required
-              select
-              value={dayKind}
-              {...register("dayKind")}
-            >
-              {attendanceScheduledDayKindValues.map((value) => (
-                <MenuItem key={value} value={value}>
-                  {tAttendance(`dayKind.options.${value}`)}
-                </MenuItem>
-              ))}
-            </TextField>
-          )}
-          {!shift && (
-            <NumberSpinner
-              error={!!errors.repeatWeeks}
-              fullWidth
-              helperText={errors.repeatWeeks?.message}
-              label={tAttendance("repeatWeeks")}
-              max={12}
-              min={1}
-              onValueChange={(value) =>
-                setValue("repeatWeeks", value ?? 1, {
-                  shouldValidate: isSubmitted,
-                })
-              }
-              value={repeatWeeks}
+        }}
+        value={shift ? (employeeIds[0] ?? "") : employeeIds}
+      >
+        {employees.map(({ email, id, name }) => (
+          <MenuItem key={id} value={id}>
+            {!shift && <Checkbox checked={employeeIds.includes(id)} />}
+            <ListItemText
+              primary={name}
+              secondary={email}
+              slotProps={{ secondary: { variant: "caption" } }}
             />
-          )}
-          {conflict && conflict.requestKey === requestKey && (
-            <FormHelperText error>{conflict.message}</FormHelperText>
-          )}
-          {shift && onCancelShift && (
-            <StartButton
-              color="error"
-              onClick={() => {
-                closeDialog();
-                onCancelShift(shift);
-              }}
-              startIcon={<EventBusy />}
-            >
-              {tAttendance("cancelShift")}
-            </StartButton>
-          )}
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+          </MenuItem>
+        ))}
+      </TextField>
+      {!!teams.length && (
+        <TextField
+          fullWidth
+          label={tAttendance("team")}
+          onChange={(event) => setValue("teamId", event.target.value)}
+          select
+          slotProps={{
+            inputLabel: { shrink: true },
+            select: { displayEmpty: true },
+          }}
+          value={teamId}
+        >
+          <MenuItem value="">{tAttendance("noTeam")}</MenuItem>
+          {sharedTeams(employeeIds).map(({ id, name }) => (
+            <MenuItem key={id} value={id}>
+              {name}
+            </MenuItem>
+          ))}
+        </TextField>
+      )}
+      {!!timePresets.length && (
+        <ChipStack direction="row">
+          <Typography color="textSecondary" variant="body2">
+            {tAttendance(
+              shiftTypes.length ? "shiftTypes.label" : "schedule.recentTimes",
+            )}
+          </Typography>
+          {timePresets.map(({ label, time }) => (
+            <Chip
+              key={label}
+              label={label}
+              onClick={() => handleTimePreset(time)}
+              size="small"
+              variant="outlined"
+            />
+          ))}
+        </ChipStack>
+      )}
+      <DateTimePicker
+        label={tAttendance("startsAt")}
+        onChange={handleStartsAtChange}
+        slotProps={{
+          textField: {
+            error: !!errors.startsAt,
+            fullWidth: true,
+            helperText: errors.startsAt?.message,
+            required: true,
+          },
+        }}
+        timezone={STORE_TIMEZONE}
+        value={startsAt ? dayjs(startsAt) : null}
+      />
+      <DateTimePicker
+        label={tAttendance("endsAt")}
+        minDateTime={startsAt ? dayjs(startsAt) : undefined}
+        onChange={(date) =>
+          setValue("endsAt", date?.isValid() ? date.toISOString() : "", {
+            shouldValidate: isSubmitted,
+          })
+        }
+        slotProps={{
+          textField: {
+            error: !!errors.endsAt,
+            fullWidth: true,
+            helperText: errors.endsAt?.message,
+            required: true,
+          },
+        }}
+        timezone={STORE_TIMEZONE}
+        value={endsAt ? dayjs(endsAt) : null}
+      />
+      {rotating && (
+        <TextField
+          error={!!errors.dayKind}
+          fullWidth
+          helperText={errors.dayKind?.message}
+          label={tAttendance("dayKind.label")}
+          required
+          select
+          value={dayKind}
+          {...register("dayKind")}
+        >
+          {attendanceScheduledDayKindValues.map((value) => (
+            <MenuItem key={value} value={value}>
+              {tAttendance(`dayKind.options.${value}`)}
+            </MenuItem>
+          ))}
+        </TextField>
+      )}
+      {!shift && (
+        <NumberSpinner
+          error={!!errors.repeatWeeks}
+          fullWidth
+          helperText={errors.repeatWeeks?.message}
+          label={tAttendance("repeatWeeks")}
+          max={12}
+          min={1}
+          onValueChange={(value) =>
+            setValue("repeatWeeks", value ?? 1, { shouldValidate: isSubmitted })
+          }
+          value={repeatWeeks}
+        />
+      )}
+      {conflict && conflict.requestKey === requestKey && (
+        <FormHelperText error>{conflict.message}</FormHelperText>
+      )}
+      {shift && onCancelShift && (
+        <StartButton
+          color="error"
+          onClick={() => {
+            closeDialog();
+            onCancelShift(shift);
+          }}
+          startIcon={<EventBusy />}
+        >
+          {tAttendance("cancelShift")}
+        </StartButton>
+      )}
+    </FormBox>
   );
 };
 

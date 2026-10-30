@@ -76,10 +76,10 @@ interface CustomizedDialogContentProps {
 export const CustomizedDialogContent = ({
   children,
 }: CustomizedDialogContentProps) => {
-  const { contentText } = useDialogStore((state) => state);
+  const { contentText, dividers } = useDialogStore((state) => state);
 
   return (
-    <DialogContent dividers>
+    <DialogContent dividers={dividers}>
       {contentText && (
         <DialogContentText id="customized-dialog-description">
           {contentText}
@@ -164,6 +164,7 @@ const CustomizedDialogs = () => {
     container,
     content,
     contentText,
+    customLayout,
     maxWidth,
     onExited,
     open,
@@ -201,7 +202,14 @@ const CustomizedDialogs = () => {
       <StyledIconButton aria-label="close" onClick={handleClose}>
         <Close />
       </StyledIconButton>
-      {content}
+      {customLayout ? (
+        content
+      ) : (
+        <>
+          <CustomizedDialogContent>{content}</CustomizedDialogContent>
+          <CustomizedDialogActions />
+        </>
+      )}
     </BootstrapDialog>
   );
 };

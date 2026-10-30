@@ -9,10 +9,6 @@ import BalanceDialog from "./BalanceDialog";
 import DeferralDialog from "./DeferralDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
@@ -313,17 +309,12 @@ const Balances = ({
     ({ annualLeaveDeferralId, employeeName }: AttendanceLeaveBalance) =>
       setDialog({
         content: (
-          <>
-            <CustomizedDialogContent>
-              <DialogContentText>
-                {tAttendance.rich("balances.revokeDeferralConfirm", {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                  name: employeeName,
-                })}
-              </DialogContentText>
-            </CustomizedDialogContent>
-            <CustomizedDialogActions />
-          </>
+          <DialogContentText>
+            {tAttendance.rich("balances.revokeDeferralConfirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name: employeeName,
+            })}
+          </DialogContentText>
         ),
         onConfirm: async () => {
           try {
@@ -356,19 +347,11 @@ const Balances = ({
   const handleEnterDeferralBatchRevokeMode = useCallback(() => {
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tAttendance.rich(
-                "balances.actions.batchRevokeDeferral.confirm",
-                {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                },
-              )}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tAttendance.rich("balances.actions.batchRevokeDeferral.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
       ),
       onConfirm: async () => {
         setIsSelectMode(true);
@@ -384,20 +367,15 @@ const Balances = ({
 
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tAttendance.rich(
-                "balances.actions.batchRevokeDeferral.submit.confirm",
-                {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                  count,
-                },
-              )}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tAttendance.rich(
+            "balances.actions.batchRevokeDeferral.submit.confirm",
+            {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              count,
+            },
+          )}
+        </DialogContentText>
       ),
       onConfirm: async () => {
         try {
@@ -453,19 +431,14 @@ const Balances = ({
   const handleCancelDeferralBatchRevoke = useCallback(() => {
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tAttendance.rich(
-                "balances.actions.batchRevokeDeferral.cancel.confirm",
-                {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                },
-              )}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tAttendance.rich(
+            "balances.actions.batchRevokeDeferral.cancel.confirm",
+            {
+              bold: (chunks) => <strong>{chunks}</strong>,
+            },
+          )}
+        </DialogContentText>
       ),
       onConfirm: async () => {
         setIsSelectMode(false);

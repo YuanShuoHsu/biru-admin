@@ -8,10 +8,6 @@ import useSWR from "swr";
 import EarningTypeDialog from "./EarningTypeDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 
 import {
@@ -275,17 +271,12 @@ const EarningTypes = ({
     ({ id, name }: PayrollEarningType) =>
       setDialog({
         content: (
-          <>
-            <CustomizedDialogContent>
-              <DialogContentText>
-                {tAttendance.rich("earningTypes.actions.delete.confirm", {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                  name,
-                })}
-              </DialogContentText>
-            </CustomizedDialogContent>
-            <CustomizedDialogActions />
-          </>
+          <DialogContentText>
+            {tAttendance.rich("earningTypes.actions.delete.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name,
+            })}
+          </DialogContentText>
         ),
         onConfirm: async () => {
           try {
@@ -322,29 +313,24 @@ const EarningTypes = ({
 
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <ConfirmStack>
-              <DialogContentText>
-                {tAttendance.rich(
-                  "earningTypes.actions.batchDelete.submit.confirm",
-                  {
-                    bold: (chunks) => <strong>{chunks}</strong>,
-                    count,
-                  },
-                )}
-              </DialogContentText>
-              <List dense disablePadding>
-                {selectedRows.map(({ id, name }) => (
-                  <ListItem disableGutters key={id}>
-                    <ListItemText primary={name} />
-                  </ListItem>
-                ))}
-              </List>
-            </ConfirmStack>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <ConfirmStack>
+          <DialogContentText>
+            {tAttendance.rich(
+              "earningTypes.actions.batchDelete.submit.confirm",
+              {
+                bold: (chunks) => <strong>{chunks}</strong>,
+                count,
+              },
+            )}
+          </DialogContentText>
+          <List dense disablePadding>
+            {selectedRows.map(({ id, name }) => (
+              <ListItem disableGutters key={id}>
+                <ListItemText primary={name} />
+              </ListItem>
+            ))}
+          </List>
+        </ConfirmStack>
       ),
       onConfirm: async () => {
         try {

@@ -8,10 +8,6 @@ import { useForm, useWatch } from "react-hook-form";
 import BatchSkippedList from "../BatchSkippedList";
 import { type BatchReviewForm, useBatchReviewFormSchema } from "./definitions";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -115,14 +111,7 @@ const BatchReviewDialog = ({
       if (skipped.length)
         setDialog({
           confirmLoading: false,
-          content: (
-            <>
-              <CustomizedDialogContent>
-                <BatchSkippedList labels={labels} skipped={skipped} />
-              </CustomizedDialogContent>
-              <CustomizedDialogActions />
-            </>
-          ),
+          content: <BatchSkippedList labels={labels} skipped={skipped} />,
           formId: undefined,
           showConfirm: false,
           title: tAttendance("batch.skipped", { count: skipped.length }),
@@ -141,58 +130,51 @@ const BatchReviewDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id="attendance-batch-review-form" onSubmit={onSubmit}>
-          {violationEntries.length > 0 && (
-            <Alert severity="warning">
-              <AlertTitle>{tAttendance("payroll.violations")}</AlertTitle>
-              {violationEntries.map(([id, codes]) => (
-                <Fragment key={id}>
-                  <Typography variant="subtitle2">{labels[id]}</Typography>
-                  {codes.map((code) => (
-                    <Typography key={code} variant="body2">
-                      {tAttendance(`errors.${code}`)}
-                    </Typography>
-                  ))}
-                </Fragment>
+    <FormBox id="attendance-batch-review-form" onSubmit={onSubmit}>
+      {violationEntries.length > 0 && (
+        <Alert severity="warning">
+          <AlertTitle>{tAttendance("payroll.violations")}</AlertTitle>
+          {violationEntries.map(([id, codes]) => (
+            <Fragment key={id}>
+              <Typography variant="subtitle2">{labels[id]}</Typography>
+              {codes.map((code) => (
+                <Typography key={code} variant="body2">
+                  {tAttendance(`errors.${code}`)}
+                </Typography>
               ))}
-            </Alert>
-          )}
-          <TextField
-            error={!!errors.reason}
-            fullWidth
-            helperText={errors.reason?.message}
-            label={tAttendance("reviewReason")}
-            minRows={3}
-            multiline
-            required={status === "rejected"}
-            {...register("reason")}
-          />
-          {violationEntries.length > 0 && (
-            <FormControl error={!!errors.acknowledged}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={acknowledged}
-                    onChange={(_, checked) =>
-                      setValue("acknowledged", checked, {
-                        shouldValidate: true,
-                      })
-                    }
-                  />
+            </Fragment>
+          ))}
+        </Alert>
+      )}
+      <TextField
+        error={!!errors.reason}
+        fullWidth
+        helperText={errors.reason?.message}
+        label={tAttendance("reviewReason")}
+        minRows={3}
+        multiline
+        required={status === "rejected"}
+        {...register("reason")}
+      />
+      {violationEntries.length > 0 && (
+        <FormControl error={!!errors.acknowledged}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={acknowledged}
+                onChange={(_, checked) =>
+                  setValue("acknowledged", checked, { shouldValidate: true })
                 }
-                label={tAttendance("payroll.acknowledgeViolations")}
               />
-              {errors.acknowledged && (
-                <FormHelperText>{errors.acknowledged.message}</FormHelperText>
-              )}
-            </FormControl>
+            }
+            label={tAttendance("payroll.acknowledgeViolations")}
+          />
+          {errors.acknowledged && (
+            <FormHelperText>{errors.acknowledged.message}</FormHelperText>
           )}
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+        </FormControl>
+      )}
+    </FormBox>
   );
 };
 

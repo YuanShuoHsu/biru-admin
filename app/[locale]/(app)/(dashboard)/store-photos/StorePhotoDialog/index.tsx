@@ -7,10 +7,6 @@ import { useForm, useWatch } from "react-hook-form";
 
 import { type StorePhotoForm, useStorePhotoFormSchema } from "./definitions";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
 import UploadAvatars from "@/components/UploadAvatars";
@@ -114,46 +110,41 @@ const StorePhotoDialog = ({ mutate, storePhoto }: StorePhotoDialogProps) => {
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id="store-photo-form" onSubmit={onSubmit}>
-          <UploadAvatars
-            aspectRatio="4/3"
-            fullWidth
-            highQuality
-            initialSrc={storePhoto?.image}
-            shape="square"
-            uploadKey={uploadKey}
+    <FormBox id="store-photo-form" onSubmit={onSubmit}>
+      <UploadAvatars
+        aspectRatio="4/3"
+        fullWidth
+        highQuality
+        initialSrc={storePhoto?.image}
+        shape="square"
+        uploadKey={uploadKey}
+      />
+      <LocalizedTextFields
+        fields={(lang) => [
+          {
+            error: !!errors.alt?.[lang],
+            fullWidth: true,
+            helperText:
+              errors.alt?.[lang]?.message ?? tStorePhotos("alt.helperText"),
+            label: tStorePhotos("alt.label"),
+            onChange: (event) =>
+              setValue("alt", { ...altValue, [lang]: event.target.value }),
+            placeholder: tStorePhotos("alt.placeholder"),
+            required: true,
+            value: altValue?.[lang] || "",
+          },
+        ]}
+      />
+      <StyledFormControlLabel
+        control={
+          <Switch
+            checked={isActive}
+            onChange={(_, checked) => setValue("isActive", checked)}
           />
-          <LocalizedTextFields
-            fields={(lang) => [
-              {
-                error: !!errors.alt?.[lang],
-                fullWidth: true,
-                helperText:
-                  errors.alt?.[lang]?.message ?? tStorePhotos("alt.helperText"),
-                label: tStorePhotos("alt.label"),
-                onChange: (event) =>
-                  setValue("alt", { ...altValue, [lang]: event.target.value }),
-                placeholder: tStorePhotos("alt.placeholder"),
-                required: true,
-                value: altValue?.[lang] || "",
-              },
-            ]}
-          />
-          <StyledFormControlLabel
-            control={
-              <Switch
-                checked={isActive}
-                onChange={(_, checked) => setValue("isActive", checked)}
-              />
-            }
-            label={tStorePhotos("isActive.label")}
-          />
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+        }
+        label={tStorePhotos("isActive.label")}
+      />
+    </FormBox>
   );
 };
 

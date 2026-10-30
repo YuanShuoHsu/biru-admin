@@ -14,10 +14,6 @@ import AiKeySettings from "./AiKeySettings";
 import CredentialAssets from "./CredentialAssets";
 import CredentialDialog, { CREDENTIAL_FORM_ID } from "./CredentialDialog";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
@@ -83,17 +79,12 @@ const CredentialSettings = () => {
     ({ id, label }: QuantCredential) =>
       setDialog({
         content: (
-          <>
-            <CustomizedDialogContent>
-              <DialogContentText>
-                {tQuant.rich("settings.delete.confirm", {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                  label,
-                })}
-              </DialogContentText>
-            </CustomizedDialogContent>
-            <CustomizedDialogActions />
-          </>
+          <DialogContentText>
+            {tQuant.rich("settings.delete.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              label,
+            })}
+          </DialogContentText>
         ),
         onConfirm: async () => {
           try {

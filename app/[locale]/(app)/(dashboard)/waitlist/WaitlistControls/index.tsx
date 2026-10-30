@@ -6,11 +6,6 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useEffect, useState } from "react";
 import useSWR, { useSWRConfig } from "swr";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
-
 import { useOrganization } from "@/hooks/organizations";
 import { useSocketConnection } from "@/hooks/useSocketConnection";
 
@@ -159,20 +154,12 @@ const WaitlistControls = () => {
   ) =>
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tWaitlist.rich(
-                checked ? "paused.resumeConfirm" : "paused.confirm",
-                {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                  name: name || "",
-                },
-              )}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tWaitlist.rich(checked ? "paused.resumeConfirm" : "paused.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            name: name || "",
+          })}
+        </DialogContentText>
       ),
       onConfirm: () => handleUpdatePaused(!checked),
       open: true,

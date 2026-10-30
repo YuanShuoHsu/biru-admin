@@ -31,10 +31,6 @@ import AiRequests from "./AiRequests";
 import EquityChart from "./EquityChart";
 import SignalPanel from "./SignalPanel";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import DataGrid from "@/components/DataGrid";
 
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
@@ -318,17 +314,12 @@ const BotDetail = ({ botId }: { botId: string }) => {
         ) : action === "start" ? (
           <StartBotConfirm bot={bot} />
         ) : (
-          <>
-            <CustomizedDialogContent>
-              <DialogContentText>
-                {tBots.rich("actions.archive.confirm", {
-                  bold: (chunks) => <strong>{chunks}</strong>,
-                  name: bot.name,
-                })}
-              </DialogContentText>
-            </CustomizedDialogContent>
-            <CustomizedDialogActions />
-          </>
+          <DialogContentText>
+            {tBots.rich("actions.archive.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name: bot.name,
+            })}
+          </DialogContentText>
         ),
       onConfirm: () => request(action, tBots(`actions.${action}.success`)),
       open: true,
@@ -338,14 +329,9 @@ const BotDetail = ({ botId }: { botId: string }) => {
   const regenerateToken = () =>
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tBots("webhook.regenerate.confirm")}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tBots("webhook.regenerate.confirm")}
+        </DialogContentText>
       ),
       onConfirm: async () => {
         try {
@@ -357,14 +343,7 @@ const BotDetail = ({ botId }: { botId: string }) => {
             variant: "success",
           });
           setDialog({
-            content: (
-              <>
-                <CustomizedDialogContent>
-                  <WebhookSetup botId={bot.id} token={webhookToken} />
-                </CustomizedDialogContent>
-                <CustomizedDialogActions />
-              </>
-            ),
+            content: <WebhookSetup botId={bot.id} token={webhookToken} />,
             open: true,
             showCancel: false,
             title: tBots("webhook.title"),

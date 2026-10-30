@@ -11,10 +11,6 @@ import LanguageMenu from "./LanguageMenu";
 import ThemeSwitcher from "./ThemeSwitcher";
 
 import BrandMark from "@/components/BrandMark";
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 
 import {
   APP_BAR_TOOLBAR_HEIGHT,
@@ -113,17 +109,12 @@ const HideAppBar = () => {
   const handleStopImpersonating = () => {
     setDialog({
       content: (
-        <>
-          <CustomizedDialogContent>
-            <DialogContentText>
-              {tAdmins.rich("actions.stopImpersonating.confirm", {
-                bold: (chunks) => <strong>{chunks}</strong>,
-                email: session!.user.email,
-              })}
-            </DialogContentText>
-          </CustomizedDialogContent>
-          <CustomizedDialogActions />
-        </>
+        <DialogContentText>
+          {tAdmins.rich("actions.stopImpersonating.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+            email: session!.user.email,
+          })}
+        </DialogContentText>
       ),
       onConfirm: async () => {
         await authClient.admin.stopImpersonating({

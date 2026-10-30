@@ -11,10 +11,6 @@ import {
   useAdjustPointsFormSchema,
 } from "./definitions";
 
-import {
-  CustomizedDialogActions,
-  CustomizedDialogContent,
-} from "@/components/CustomizedDialogs";
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 
@@ -86,53 +82,47 @@ const AdjustPointsDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <>
-      <CustomizedDialogContent>
-        <FormBox id="adjust-points-form" onSubmit={onSubmit}>
-          <TextField
-            error={!!errors.email}
-            fullWidth
-            helperText={errors.email?.message}
-            label={tOrganizations("points.adjust.email.label")}
-            placeholder={tOrganizations("points.adjust.email.placeholder")}
-            required
-            type="email"
-            {...register("email")}
-          />
-          <NumberSpinner
-            error={!!errors.points}
-            fullWidth
-            helperText={
-              errors.points?.message ||
-              tOrganizations("points.adjust.points.hint")
-            }
-            label={tOrganizations("points.adjust.points.label")}
-            max={ADJUST_POINTS_LIMIT}
-            min={-ADJUST_POINTS_LIMIT}
-            onValueChange={(value) =>
-              setValue("points", value != null ? String(value) : "", {
-                shouldValidate: isSubmitted,
-              })
-            }
-            placeholder={tOrganizations("points.adjust.points.placeholder")}
-            required
-            value={points !== "" ? Number(points) : null}
-          />
-          <TextField
-            error={!!errors.note}
-            fullWidth
-            helperText={errors.note?.message}
-            label={tOrganizations("points.adjust.note.label")}
-            multiline
-            placeholder={tOrganizations("points.adjust.note.placeholder")}
-            required
-            slotProps={{ htmlInput: { maxLength: 200 } }}
-            {...register("note")}
-          />
-        </FormBox>
-      </CustomizedDialogContent>
-      <CustomizedDialogActions />
-    </>
+    <FormBox id="adjust-points-form" onSubmit={onSubmit}>
+      <TextField
+        error={!!errors.email}
+        fullWidth
+        helperText={errors.email?.message}
+        label={tOrganizations("points.adjust.email.label")}
+        placeholder={tOrganizations("points.adjust.email.placeholder")}
+        required
+        type="email"
+        {...register("email")}
+      />
+      <NumberSpinner
+        error={!!errors.points}
+        fullWidth
+        helperText={
+          errors.points?.message || tOrganizations("points.adjust.points.hint")
+        }
+        label={tOrganizations("points.adjust.points.label")}
+        max={ADJUST_POINTS_LIMIT}
+        min={-ADJUST_POINTS_LIMIT}
+        onValueChange={(value) =>
+          setValue("points", value != null ? String(value) : "", {
+            shouldValidate: isSubmitted,
+          })
+        }
+        placeholder={tOrganizations("points.adjust.points.placeholder")}
+        required
+        value={points !== "" ? Number(points) : null}
+      />
+      <TextField
+        error={!!errors.note}
+        fullWidth
+        helperText={errors.note?.message}
+        label={tOrganizations("points.adjust.note.label")}
+        multiline
+        placeholder={tOrganizations("points.adjust.note.placeholder")}
+        required
+        slotProps={{ htmlInput: { maxLength: 200 } }}
+        {...register("note")}
+      />
+    </FormBox>
   );
 };
 
