@@ -18,6 +18,8 @@ No test framework is configured in this project.
 
 The pre-commit hook (Husky + lint-staged) runs `pnpm format`, `pnpm lint`, and `prettier --write` on staged files. Do not bypass with `--no-verify`.
 
+Branch from `develop` and open every PR against `develop`. GitHub's default branch is `master`, so set the base explicitly (`gh pr create --base develop`): a PR merged only into `master` never reaches `develop`, so work branched from `develop` misses it and conflicts when `master` is merged back.
+
 ## Architecture
 
 This is a **Next.js 16 App Router** admin panel with TypeScript, MUI, and multi-language support.
