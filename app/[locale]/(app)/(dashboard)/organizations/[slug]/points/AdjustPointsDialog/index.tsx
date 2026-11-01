@@ -16,7 +16,7 @@ import NumberSpinner from "@/components/NumberSpinner";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { TextField } from "@mui/material";
+import { Alert, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -26,11 +26,13 @@ import { fetcher } from "@/utils/fetcher";
 interface AdjustPointsDialogProps {
   mutate: () => void;
   organizationSlug: string;
+  ownerOnlyAbovePoints: number | null;
 }
 
 const AdjustPointsDialog = ({
   mutate,
   organizationSlug,
+  ownerOnlyAbovePoints,
 }: AdjustPointsDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
@@ -83,6 +85,13 @@ const AdjustPointsDialog = ({
 
   return (
     <FormBox id="adjust-points-form" onSubmit={onSubmit}>
+      {ownerOnlyAbovePoints !== null && (
+        <Alert severity="info">
+          {tOrganizations("points.adjust.ownerOnly", {
+            points: ownerOnlyAbovePoints,
+          })}
+        </Alert>
+      )}
       <TextField
         error={!!errors.email}
         fullWidth

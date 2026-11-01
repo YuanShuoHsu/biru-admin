@@ -103,7 +103,8 @@
       },
       "customerName": {
         "helperText": "留空则沿用原发票的抬头",
-        "label": "更正买受人抬头"
+        "label": "更正买受人抬头",
+        "requiresIdentifier": "须同时填写统一编号才会生效；个人或捐赠发票一律使用顾客本人姓名"
       },
       "reason": {
         "label": "作废原因",

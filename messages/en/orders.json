@@ -103,7 +103,8 @@
       },
       "customerName": {
         "helperText": "Leave blank to keep the name from the voided invoice",
-        "label": "Correct the buyer name"
+        "label": "Correct the buyer name",
+        "requiresIdentifier": "Only applied together with a tax ID; a personal or donated invoice always uses the customer's own name"
       },
       "reason": {
         "label": "Reason for voiding",

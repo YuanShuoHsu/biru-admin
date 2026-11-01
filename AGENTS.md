@@ -18,6 +18,8 @@ No test framework is configured in this project.
 
 The pre-commit hook (Husky + lint-staged) runs `pnpm format`, `pnpm lint`, and `prettier --write` on staged files. Do not bypass with `--no-verify`.
 
+Branch from `develop` and open every PR against `develop`. GitHub's default branch is `master`, so set the base explicitly (`gh pr create --base develop`): a PR merged only into `master` never reaches `develop`, so work branched from `develop` misses it and conflicts when `master` is merged back.
+
 ## Architecture
 
 This is a **Next.js 16 App Router** admin panel with TypeScript, MUI, and multi-language support.
@@ -81,7 +83,7 @@ Only files both repos use are mirrored: a file only one repo uses is not created
 For each changed file, read both versions and decide:
 
 1. **Superset files** (this repo has extra content — transplant only the changed hunks to biru, never overwrite the whole file):
-   `utils/menus.ts`, `CustomerPaymentForm`, `messages/*/common.json`, `types/api.ts`
+   `utils/menus.ts`, `messages/*/common.json`, `types/api.ts`
 
 2. **All other mirrored files** — transplant only the hunks you changed in this task. biru is the source of truth for shared files: never `cp` this repo's version over biru, even when it looks newer or more conventional.
 

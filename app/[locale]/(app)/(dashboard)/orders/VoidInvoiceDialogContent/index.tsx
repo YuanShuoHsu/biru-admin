@@ -39,7 +39,9 @@ const VoidInvoiceDialogContent = ({
 
   const tOrders = useTranslations("orders");
 
-  const voidInvoiceFormSchema = useVoidInvoiceFormSchema();
+  const nameRequiresTaxId = order.invoice?.type !== "company";
+
+  const voidInvoiceFormSchema = useVoidInvoiceFormSchema(nameRequiresTaxId);
 
   const {
     formState: { errors },
@@ -123,7 +125,13 @@ const VoidInvoiceDialogContent = ({
       />
       <TextField
         disabled={confirmLoading}
-        helperText={tOrders("actions.voidInvoice.customerName.helperText")}
+        error={!!errors.customerName}
+        helperText={
+          errors.customerName?.message ||
+          (nameRequiresTaxId
+            ? tOrders("actions.voidInvoice.customerName.requiresIdentifier")
+            : tOrders("actions.voidInvoice.customerName.helperText"))
+        }
         label={tOrders("actions.voidInvoice.customerName.label")}
         size="small"
         slotProps={{ htmlInput: { maxLength: 60 } }}
