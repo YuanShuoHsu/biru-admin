@@ -400,5 +400,26 @@
   },
   "violationsAcknowledged": {
     "required": "Acknowledge the violations above before review."
+  },
+  "printed": {
+    "notSelected": "Please select the actual print result."
+  },
+  "printerIds": {
+    "notSelected": "Please select at least one printer."
+  },
+  "resetReason": {
+    "required": "Reset reason is required."
+  },
+  "voidReason": {
+    "required": "Void reason is required."
+  },
+  "confirmation": {
+    "mismatch": "The input does not match “{expected}”."
+  },
+  "refundReasonCode": {
+    "notSelected": "Please select a refund reason."
+  },
+  "refundReason": {
+    "required": "Details are required when the refund reason is “Other”."
   }
 }

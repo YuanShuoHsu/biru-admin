@@ -5,7 +5,7 @@ import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent, useEffect } from "react";
+import type { BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 
@@ -90,10 +90,6 @@ const CopyWeekDialog = ({
     revalidateOnFocus: false,
     shouldRetryOnError: false,
   });
-
-  useEffect(() => {
-    setDialog({ confirmDisabled: !preview?.created.length });
-  }, [preview, setDialog]);
 
   const formatDate = (date: dayjs.Dayjs) =>
     format.dateTime(date.toDate(), "date", { timeZone: STORE_TIMEZONE });

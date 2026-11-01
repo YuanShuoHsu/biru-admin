@@ -4,7 +4,6 @@ import type { DialogProps } from "@mui/material";
 
 type DialogState = {
   cancelText?: string;
-  confirmDisabled: boolean;
   confirmLoading: boolean;
   confirmText?: string;
   container?: DialogProps["container"];
@@ -31,7 +30,6 @@ export type DialogStore = DialogState & DialogActions;
 
 export const defaultInitState: DialogState = {
   cancelText: "",
-  confirmDisabled: false,
   confirmLoading: false,
   confirmText: "",
   container: null,

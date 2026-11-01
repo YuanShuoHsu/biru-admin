@@ -2,10 +2,19 @@
 
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent, useEffect, useState } from "react";
+import type { BaseSyntheticEvent } from "react";
+import { useForm } from "react-hook-form";
 
-import { Alert, Stack, type StackProps, TextField } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import {
+  type ResetInvoicePrintForm,
+  useResetInvoicePrintFormSchema,
+} from "./definitions";
+
+import FormBox from "@/components/FormBox";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { Alert, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -13,10 +22,6 @@ import type { AdminOrderResponse, ResetInvoicePrintDto } from "@/types/orders";
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
-
-const StyledStack = styled(Stack)<StackProps>(({ theme }) => ({
-  gap: theme.spacing(2),
-}));
 
 export const RESET_INVOICE_PRINT_FORM_ID = "reset-invoice-print-form";
 
@@ -37,30 +42,27 @@ const ResetInvoicePrintDialogContent = ({
 
   const tOrders = useTranslations("orders");
 
-  const [reason, setReason] = useState("");
+  const resetInvoicePrintFormSchema = useResetInvoicePrintFormSchema();
+
+  const {
+    formState: { errors },
+    handleSubmit,
+    register,
+  } = useForm<ResetInvoicePrintForm>({
+    defaultValues: { reason: "" },
+    resolver: zodResolver(resetInvoicePrintFormSchema),
+  });
 
   const resetCount = order.invoice?.printResetCount || 0;
 
-  const disabled = !reason.trim();
-
-  useEffect(() => {
-    setDialog({ confirmDisabled: disabled });
-  }, [disabled, setDialog]);
-
-  const onSubmit = async (event: BaseSyntheticEvent) => {
-    event.preventDefault();
-
-    if (confirmLoading || disabled) return;
-
+  const onSubmitHandler = async ({ reason }: ResetInvoicePrintForm) => {
     setDialog({ confirmLoading: true });
 
     try {
       await fetcher(
         `/api/organizations/${organizationSlug}/orders/${order.id}/invoice/print`,
         {
-          body: JSON.stringify({
-            reason: reason.trim(),
-          } satisfies ResetInvoicePrintDto),
+          body: JSON.stringify({ reason } satisfies ResetInvoicePrintDto),
           headers: { "Content-Type": "application/json" },
           method: "PATCH",
         },
@@ -82,12 +84,11 @@ const ResetInvoicePrintDialogContent = ({
     }
   };
 
+  const onSubmit = (event: BaseSyntheticEvent) =>
+    handleSubmit(onSubmitHandler)(event);
+
   return (
-    <StyledStack
-      component="form"
-      id={RESET_INVOICE_PRINT_FORM_ID}
-      onSubmit={onSubmit}
-    >
+    <FormBox id={RESET_INVOICE_PRINT_FORM_ID} onSubmit={onSubmit}>
       <Alert severity="warning">
         {tOrders.rich("actions.resetInvoicePrint.confirm", {
           bold: (chunks) => <strong>{chunks}</strong>,
@@ -103,15 +104,16 @@ const ResetInvoicePrintDialogContent = ({
       )}
       <TextField
         disabled={confirmLoading}
+        error={!!errors.reason}
+        helperText={errors.reason?.message}
         label={tOrders("actions.resetInvoicePrint.reason.label")}
-        onChange={({ target }) => setReason(target.value)}
         placeholder={tOrders("actions.resetInvoicePrint.reason.placeholder")}
         required
         size="small"
         slotProps={{ htmlInput: { maxLength: 100 } }}
-        value={reason}
+        {...register("reason")}
       />
-    </StyledStack>
+    </FormBox>
   );
 };
 

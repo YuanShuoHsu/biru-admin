@@ -400,5 +400,26 @@
   },
   "violationsAcknowledged": {
     "required": "위 위반을 확인한 후 검토하세요."
+  },
+  "printed": {
+    "notSelected": "실제 인쇄 결과를 선택해 주세요."
+  },
+  "printerIds": {
+    "notSelected": "프린터를 한 대 이상 선택해 주세요."
+  },
+  "resetReason": {
+    "required": "재설정 사유는 필수입니다."
+  },
+  "voidReason": {
+    "required": "작폐 사유는 필수입니다."
+  },
+  "confirmation": {
+    "mismatch": "입력한 내용이 “{expected}”와 일치하지 않습니다."
+  },
+  "refundReasonCode": {
+    "notSelected": "환불 사유를 선택해 주세요."
+  },
+  "refundReason": {
+    "required": "환불 사유가 “기타”인 경우 보충 설명은 필수입니다."
   }
 }

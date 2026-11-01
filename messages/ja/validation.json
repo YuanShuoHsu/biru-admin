@@ -400,5 +400,26 @@
   },
   "violationsAcknowledged": {
     "required": "上記の違反を確認してから承認してください。"
+  },
+  "printed": {
+    "notSelected": "実際の印刷結果を選択してください。"
+  },
+  "printerIds": {
+    "notSelected": "プリンターを 1 台以上選択してください。"
+  },
+  "resetReason": {
+    "required": "リセット理由は必須です。"
+  },
+  "voidReason": {
+    "required": "取消理由は必須です。"
+  },
+  "confirmation": {
+    "mismatch": "入力内容が「{expected}」と一致しません。"
+  },
+  "refundReasonCode": {
+    "notSelected": "返金理由を選択してください。"
+  },
+  "refundReason": {
+    "required": "返金理由が「その他」の場合、補足説明は必須です。"
   }
 }

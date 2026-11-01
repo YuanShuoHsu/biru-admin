@@ -2,20 +2,29 @@
 
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent, useEffect, useState } from "react";
+import type { BaseSyntheticEvent } from "react";
+import { useForm, useWatch } from "react-hook-form";
 
+import {
+  type ResolveOrderTicketFormInput,
+  type ResolveOrderTicketFormOutput,
+  useResolveOrderTicketFormSchema,
+} from "./definitions";
+
+import FormBox from "@/components/FormBox";
 import { usePrintJobErrorText } from "@/components/PrintJobChip";
 import StyledFormControlLabel from "@/components/StyledFormControlLabel";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
   Alert,
   DialogContentText,
+  FormControl,
+  FormHelperText,
   Radio,
   RadioGroup,
-  Stack,
-  type StackProps,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -27,10 +36,6 @@ import type {
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
-
-const StyledStack = styled(Stack)<StackProps>(({ theme }) => ({
-  gap: theme.spacing(2),
-}));
 
 export const RESOLVE_ORDER_TICKET_FORM_ID = "resolve-order-ticket-form";
 
@@ -56,17 +61,25 @@ const ResolveOrderTicketDialogContent = ({
 
   const printJobErrorText = usePrintJobErrorText();
 
-  const [printed, setPrinted] = useState<boolean | null>(null);
+  const resolveOrderTicketFormSchema = useResolveOrderTicketFormSchema();
 
-  useEffect(() => {
-    setDialog({ confirmDisabled: printed === null });
-  }, [printed, setDialog]);
+  const {
+    control,
+    formState: { errors, isSubmitted },
+    handleSubmit,
+    setValue,
+  } = useForm<
+    ResolveOrderTicketFormInput,
+    unknown,
+    ResolveOrderTicketFormOutput
+  >({
+    defaultValues: { printed: "" },
+    resolver: zodResolver(resolveOrderTicketFormSchema),
+  });
 
-  const onSubmit = async (event: BaseSyntheticEvent) => {
-    event.preventDefault();
+  const printed = useWatch({ control, name: "printed" });
 
-    if (confirmLoading || printed === null) return;
-
+  const onSubmitHandler = async ({ printed }: ResolveOrderTicketFormOutput) => {
     setDialog({ confirmLoading: true });
 
     try {
@@ -98,14 +111,13 @@ const ResolveOrderTicketDialogContent = ({
     }
   };
 
+  const onSubmit = (event: BaseSyntheticEvent) =>
+    handleSubmit(onSubmitHandler)(event);
+
   const reason = printJobErrorText(job.errorCode);
 
   return (
-    <StyledStack
-      component="form"
-      id={RESOLVE_ORDER_TICKET_FORM_ID}
-      onSubmit={onSubmit}
-    >
+    <FormBox id={RESOLVE_ORDER_TICKET_FORM_ID} onSubmit={onSubmit}>
       <DialogContentText>
         {tOrders.rich("actions.resolveOrderTicket.description", {
           bold: (chunks) => <strong>{chunks}</strong>,
@@ -120,24 +132,31 @@ const ResolveOrderTicketDialogContent = ({
       <Alert severity="warning">
         {tOrders("actions.resolveOrderTicket.warning")}
       </Alert>
-      <RadioGroup
-        onChange={(_, value) => setPrinted(value === "true")}
-        value={printed === null ? "" : String(printed)}
-      >
-        <StyledFormControlLabel
-          checked={printed === true}
-          control={<Radio disabled={confirmLoading} />}
-          label={tOrders("actions.resolveOrderTicket.printed")}
-          value="true"
-        />
-        <StyledFormControlLabel
-          checked={printed === false}
-          control={<Radio disabled={confirmLoading} />}
-          label={tOrders("actions.resolveOrderTicket.notPrinted")}
-          value="false"
-        />
-      </RadioGroup>
-    </StyledStack>
+      <FormControl error={!!errors.printed}>
+        <RadioGroup
+          onChange={(_, value) =>
+            setValue("printed", value, { shouldValidate: isSubmitted })
+          }
+          value={printed}
+        >
+          <StyledFormControlLabel
+            checked={printed === "true"}
+            control={<Radio disabled={confirmLoading} />}
+            label={tOrders("actions.resolveOrderTicket.printed")}
+            value="true"
+          />
+          <StyledFormControlLabel
+            checked={printed === "false"}
+            control={<Radio disabled={confirmLoading} />}
+            label={tOrders("actions.resolveOrderTicket.notPrinted")}
+            value="false"
+          />
+        </RadioGroup>
+        {errors.printed && (
+          <FormHelperText>{errors.printed.message}</FormHelperText>
+        )}
+      </FormControl>
+    </FormBox>
   );
 };
 

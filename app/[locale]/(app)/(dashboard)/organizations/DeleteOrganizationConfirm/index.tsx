@@ -1,7 +1,18 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { enqueueSnackbar } from "notistack";
+import type { BaseSyntheticEvent } from "react";
+import { useForm } from "react-hook-form";
+
+import {
+  type DeleteOrganizationForm,
+  useDeleteOrganizationFormSchema,
+} from "./definitions";
+
+import FormBox from "@/components/FormBox";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
   DialogContentText,
@@ -15,39 +26,63 @@ import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-const StyledStack = styled(Stack)(({ theme }) => ({
-  gap: theme.spacing(2),
-}));
+import { getErrorMessage } from "@/utils/errors";
 
 const ConfirmStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(1),
 }));
 
+export const DELETE_ORGANIZATION_FORM_ID = "delete-organization-form";
+
 interface DeleteOrganizationConfirmProps {
   names: string[];
+  onDelete: () => Promise<void>;
 }
 
 const DeleteOrganizationConfirm = ({
   names,
+  onDelete,
 }: DeleteOrganizationConfirmProps) => {
-  const { confirmLoading, setDialog } = useDialogStore((state) => state);
+  const { closeDialog, confirmLoading, setDialog } = useDialogStore(
+    (state) => state,
+  );
 
   const tOrganizations = useTranslations("organizations");
-
-  const [typedValue, setTypedValue] = useState("");
 
   const [name] = names;
   const isBatch = names.length > 1;
   const expected = isBatch ? String(names.length) : name;
 
-  const matches = typedValue.trim() === expected;
+  const deleteOrganizationFormSchema =
+    useDeleteOrganizationFormSchema(expected);
 
-  useEffect(() => {
-    setDialog({ confirmDisabled: !matches });
-  }, [matches, setDialog]);
+  const {
+    formState: { errors },
+    handleSubmit,
+    register,
+  } = useForm<DeleteOrganizationForm>({
+    defaultValues: { confirmation: "" },
+    resolver: zodResolver(deleteOrganizationFormSchema),
+  });
+
+  const onSubmitHandler = async () => {
+    setDialog({ confirmLoading: true });
+
+    try {
+      await onDelete();
+      closeDialog();
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+    } finally {
+      setDialog({ confirmLoading: false });
+    }
+  };
+
+  const onSubmit = (event: BaseSyntheticEvent) =>
+    handleSubmit(onSubmitHandler)(event);
 
   return (
-    <StyledStack>
+    <FormBox id={DELETE_ORGANIZATION_FORM_ID} onSubmit={onSubmit}>
       <ConfirmStack>
         <DialogContentText>
           {isBatch
@@ -76,7 +111,9 @@ const DeleteOrganizationConfirm = ({
       <TextField
         autoComplete="off"
         disabled={confirmLoading}
+        error={!!errors.confirmation}
         fullWidth
+        helperText={errors.confirmation?.message}
         label={
           isBatch
             ? tOrganizations(
@@ -87,11 +124,10 @@ const DeleteOrganizationConfirm = ({
               )
             : tOrganizations("actions.deleteOrganization.typeName", { name })
         }
-        onChange={({ target }) => setTypedValue(target.value)}
         size="small"
-        value={typedValue}
+        {...register("confirmation")}
       />
-    </StyledStack>
+    </FormBox>
   );
 };
 
