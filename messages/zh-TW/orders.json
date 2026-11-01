@@ -103,7 +103,8 @@
       },
       "customerName": {
         "helperText": "留空則沿用原發票的抬頭",
-        "label": "更正買受人抬頭"
+        "label": "更正買受人抬頭",
+        "requiresIdentifier": "須同時填寫統一編號才會生效；個人或捐贈發票一律使用顧客本人姓名"
       },
       "reason": {
         "label": "作廢原因",

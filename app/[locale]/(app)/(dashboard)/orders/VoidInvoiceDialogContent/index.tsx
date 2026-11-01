@@ -43,8 +43,10 @@ const VoidInvoiceDialogContent = ({
 
   const taxId = customerIdentifier.trim();
   const invalidTaxId = !!taxId && !/^\d{8}$/.test(taxId);
+  const nameRequiresTaxId = order.invoice?.type !== "company";
+  const nameWithoutTaxId = nameRequiresTaxId && !!customerName.trim() && !taxId;
 
-  const disabled = !reason.trim() || invalidTaxId;
+  const disabled = !reason.trim() || invalidTaxId || nameWithoutTaxId;
 
   useEffect(() => {
     setDialog({ confirmDisabled: disabled });
@@ -121,7 +123,12 @@ const VoidInvoiceDialogContent = ({
       />
       <TextField
         disabled={confirmLoading}
-        helperText={tOrders("actions.voidInvoice.customerName.helperText")}
+        error={nameWithoutTaxId}
+        helperText={
+          nameRequiresTaxId
+            ? tOrders("actions.voidInvoice.customerName.requiresIdentifier")
+            : tOrders("actions.voidInvoice.customerName.helperText")
+        }
         label={tOrders("actions.voidInvoice.customerName.label")}
         onChange={({ target }) => setCustomerName(target.value)}
         size="small"
