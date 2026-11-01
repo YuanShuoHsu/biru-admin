@@ -154,11 +154,7 @@ const OrganizationsSlugPointsPage = async ({
       filterOperator={filterOperator}
       filterValue={filterValue}
       organizationSlug={data.slug}
-      ownerOnlyAbovePoints={
-        session?.user?.role === "admin" || currentUserRole === "owner"
-          ? null
-          : (adjustmentLimit?.ownerOnlyAbovePoints ?? null)
-      }
+      ownerOnlyAbovePoints={adjustmentLimit?.ownerOnlyAbovePoints ?? null}
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}
