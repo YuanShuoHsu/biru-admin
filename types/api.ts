@@ -2885,7 +2885,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 查詢本店非 owner 單筆可補點或扣點的上限 */
+    /** 查詢目前使用者在本店單筆可補點或扣點的上限 */
     get: operations["OrganizationPointsController_getAdjustmentLimit"];
     put?: never;
     post?: never;
@@ -10016,8 +10016,8 @@ export interface components {
     PointAdjustmentLimitDto: {
       /** @description 點數是否已啟用；未啟用時無法補點或扣點 */
       enabled: boolean;
-      /** @description 非 owner 單筆可補扣的最大點數（NT$3,000 依每點金額換算）；超過只有 owner 能做，0 = 只有 owner 能調整 */
-      ownerOnlyAbovePoints: number;
+      /** @description 非 owner 單筆可補扣的最大點數（NT$3,000 依每點金額換算）；超過只有 owner 能做，0 = 只有 owner 能調整；呼叫者是 owner（含平台管理員）時為 null，不受上限限制 */
+      ownerOnlyAbovePoints: number | null;
     };
     AdjustPointsDto: {
       /**
@@ -19555,7 +19555,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
