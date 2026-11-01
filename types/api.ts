@@ -2878,6 +2878,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/point-transactions/adjustment-limit": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢本店非 owner 單筆可補點或扣點的上限 */
+    get: operations["OrganizationPointsController_getAdjustmentLimit"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/point-transactions/adjustments": {
     parameters: {
       query?: never;
@@ -9995,6 +10012,12 @@ export interface components {
     OrganizationPointTransactionListResponseDto: {
       data: components["schemas"]["OrganizationPointTransactionDto"][];
       total: number;
+    };
+    PointAdjustmentLimitDto: {
+      /** @description 點數是否已啟用；未啟用時無法補點或扣點 */
+      enabled: boolean;
+      /** @description 非 owner 單筆可補扣的最大點數（NT$3,000 依每點金額換算）；超過只有 owner 能做，0 = 只有 owner 能調整 */
+      ownerOnlyAbovePoints: number;
     };
     AdjustPointsDto: {
       /**
@@ -19517,6 +19540,32 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["OrganizationPointTransactionListResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrganizationPointsController_getAdjustmentLimit: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PointAdjustmentLimitDto"];
         };
       };
       /** @description Internal server error */
