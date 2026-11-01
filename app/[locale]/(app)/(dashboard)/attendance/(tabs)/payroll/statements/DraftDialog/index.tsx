@@ -98,6 +98,7 @@ const DraftDialog = ({
     handleSubmit,
     register,
     setValue,
+    trigger,
   } = useForm<DraftForm>({
     defaultValues: {
       earnings: [],
@@ -152,9 +153,8 @@ const DraftDialog = ({
         );
       },
     );
-    loadingEarnings.current.catch(() => {
-      loadingEarnings.current = Promise.resolve();
-    });
+    // 只為了不讓 rejection 變成 unhandled；失敗仍留在 ref，送出時 await 會拋出
+    loadingEarnings.current.catch(() => {});
   };
 
   const onSubmitHandler = async (parsed: DraftForm) => {
@@ -163,6 +163,12 @@ const DraftDialog = ({
 
       // 送出前等既有加給載完，否則草稿會少掉已登錄的項目
       await loadingEarnings.current;
+
+      if (!(await trigger("earnings"))) {
+        setDialog({ confirmLoading: false });
+
+        return;
+      }
 
       const values = { ...parsed, earnings: getValues("earnings") };
 

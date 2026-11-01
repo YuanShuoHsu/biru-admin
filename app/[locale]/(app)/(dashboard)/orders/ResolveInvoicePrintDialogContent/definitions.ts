@@ -5,10 +5,14 @@ export const useResolveInvoicePrintFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
-    printed: z.boolean({ error: tValidation("printed.notSelected") }),
+    printed: z.stringbool({ error: tValidation("printed.notSelected") }),
   });
 };
 
-export type ResolveInvoicePrintForm = z.infer<
+export type ResolveInvoicePrintFormInput = z.input<
+  ReturnType<typeof useResolveInvoicePrintFormSchema>
+>;
+
+export type ResolveInvoicePrintFormOutput = z.output<
   ReturnType<typeof useResolveInvoicePrintFormSchema>
 >;

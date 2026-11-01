@@ -6,7 +6,8 @@ import type { BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 import {
-  type ResolveInvoicePrintForm,
+  type ResolveInvoicePrintFormInput,
+  type ResolveInvoicePrintFormOutput,
   useResolveInvoicePrintFormSchema,
 } from "./definitions";
 
@@ -66,16 +67,23 @@ const ResolveInvoicePrintDialogContent = ({
 
   const {
     control,
-    formState: { errors },
+    formState: { errors, isSubmitted },
     handleSubmit,
     setValue,
-  } = useForm<ResolveInvoicePrintForm>({
+  } = useForm<
+    ResolveInvoicePrintFormInput,
+    unknown,
+    ResolveInvoicePrintFormOutput
+  >({
+    defaultValues: { printed: "" },
     resolver: zodResolver(resolveInvoicePrintFormSchema),
   });
 
   const printed = useWatch({ control, name: "printed" });
 
-  const onSubmitHandler = async ({ printed }: ResolveInvoicePrintForm) => {
+  const onSubmitHandler = async ({
+    printed,
+  }: ResolveInvoicePrintFormOutput) => {
     setDialog({ confirmLoading: true });
 
     try {
@@ -141,18 +149,18 @@ const ResolveInvoicePrintDialogContent = ({
       <FormControl error={!!errors.printed}>
         <RadioGroup
           onChange={(_, value) =>
-            setValue("printed", value === "true", { shouldValidate: true })
+            setValue("printed", value, { shouldValidate: isSubmitted })
           }
-          value={printed === undefined ? "" : String(printed)}
+          value={printed}
         >
           <StyledFormControlLabel
-            checked={printed === true}
+            checked={printed === "true"}
             control={<Radio disabled={confirmLoading} />}
             label={tOrders("actions.resolveInvoicePrint.printed")}
             value="true"
           />
           <StyledFormControlLabel
-            checked={printed === false}
+            checked={printed === "false"}
             control={<Radio disabled={confirmLoading} />}
             label={tOrders("actions.resolveInvoicePrint.notPrinted")}
             value="false"

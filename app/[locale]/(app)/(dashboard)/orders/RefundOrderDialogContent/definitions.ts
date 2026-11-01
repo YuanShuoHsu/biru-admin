@@ -17,29 +17,23 @@ export const useRefundOrderFormSchema = (remaining: Map<string, number>) => {
 
   return z
     .object({
-      quantities: z.record(z.string(), z.number()),
+      quantities: z
+        .record(z.string(), z.number())
+        .refine(
+          (quantities) =>
+            [...getSelectedQuantities(quantities, remaining).values()].some(
+              (quantity) => quantity > 0,
+            ),
+          { error: tOrders("actions.refund.selectAtLeastOne"), path: ["root"] },
+        ),
       reason: z.string().trim(),
-      reasonCode: z.enum(refundReasonCodeValues).or(z.literal("")),
+      reasonCode: z.string().pipe(
+        z.enum(refundReasonCodeValues, {
+          error: tValidation("refundReasonCode.notSelected"),
+        }),
+      ),
     })
     .superRefine((data, ctx) => {
-      if (
-        ![...getSelectedQuantities(data.quantities, remaining).values()].some(
-          (quantity) => quantity > 0,
-        )
-      )
-        ctx.addIssue({
-          code: "custom",
-          message: tOrders("actions.refund.selectAtLeastOne"),
-          path: ["quantities"],
-        });
-
-      if (!data.reasonCode)
-        ctx.addIssue({
-          code: "custom",
-          message: tValidation("refundReasonCode.notSelected"),
-          path: ["reasonCode"],
-        });
-
       if (data.reasonCode === "other" && !data.reason)
         ctx.addIssue({
           code: "custom",
@@ -49,6 +43,10 @@ export const useRefundOrderFormSchema = (remaining: Map<string, number>) => {
     });
 };
 
-export type RefundOrderForm = z.infer<
+export type RefundOrderFormInput = z.input<
+  ReturnType<typeof useRefundOrderFormSchema>
+>;
+
+export type RefundOrderFormOutput = z.output<
   ReturnType<typeof useRefundOrderFormSchema>
 >;

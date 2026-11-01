@@ -5,10 +5,14 @@ export const useResolveOrderTicketFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
-    printed: z.boolean({ error: tValidation("printed.notSelected") }),
+    printed: z.stringbool({ error: tValidation("printed.notSelected") }),
   });
 };
 
-export type ResolveOrderTicketForm = z.infer<
+export type ResolveOrderTicketFormInput = z.input<
+  ReturnType<typeof useResolveOrderTicketFormSchema>
+>;
+
+export type ResolveOrderTicketFormOutput = z.output<
   ReturnType<typeof useResolveOrderTicketFormSchema>
 >;

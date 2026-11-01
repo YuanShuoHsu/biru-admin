@@ -62,7 +62,7 @@ const ReprintOrderTicketDialogContent = ({
 
   const {
     control,
-    formState: { errors },
+    formState: { errors, isSubmitted },
     handleSubmit,
     setValue,
   } = useForm<ReprintOrderTicketForm>({
@@ -79,7 +79,7 @@ const ReprintOrderTicketDialogContent = ({
       checked
         ? [...printerIds, printerId]
         : printerIds.filter((id) => id !== printerId),
-      { shouldValidate: true },
+      { shouldValidate: isSubmitted },
     );
 
   const onSubmitHandler = async ({ printerIds }: ReprintOrderTicketForm) => {

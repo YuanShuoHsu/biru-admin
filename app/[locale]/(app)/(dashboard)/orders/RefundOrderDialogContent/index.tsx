@@ -3,12 +3,13 @@
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useMemo, useState } from "react";
-import { type FieldError, get, useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 
 import {
   getSelectedQuantities,
-  type RefundOrderForm,
+  type RefundOrderFormInput,
+  type RefundOrderFormOutput,
   useRefundOrderFormSchema,
 } from "./definitions";
 
@@ -130,7 +131,7 @@ const RefundOrderDialogContent = ({
     handleSubmit,
     register,
     setValue,
-  } = useForm<RefundOrderForm>({
+  } = useForm<RefundOrderFormInput, unknown, RefundOrderFormOutput>({
     defaultValues: { quantities: {}, reason: "", reasonCode: "" },
     resolver: zodResolver(refundOrderFormSchema),
   });
@@ -141,8 +142,6 @@ const RefundOrderDialogContent = ({
   });
 
   const [failed, setFailed] = useState(false);
-
-  const quantitiesError = get(errors, "quantities") as FieldError | undefined;
 
   const selected = getSelectedQuantities(quantities, remaining);
 
@@ -161,8 +160,11 @@ const RefundOrderDialogContent = ({
   const isEcpayRefund = order.refundChannel === "ecpay";
   const currency = order.items[0]?.priceCurrency;
 
-  const onSubmitHandler = async ({ reason, reasonCode }: RefundOrderForm) => {
-    if (!preview || isLoading || !!error || failed || !reasonCode) return;
+  const onSubmitHandler = async ({
+    reason,
+    reasonCode,
+  }: RefundOrderFormOutput) => {
+    if (!preview || isLoading || !!error || failed) return;
 
     setDialog({ confirmLoading: true });
 
@@ -242,7 +244,7 @@ const RefundOrderDialogContent = ({
       {preview?.isFull && order.invoice?.status === "issued" && (
         <Alert severity="info">{tOrders("actions.refund.invoiceHint")}</Alert>
       )}
-      <ItemsFormControl error={!!quantitiesError}>
+      <ItemsFormControl error={!!errors.quantities?.root}>
         <Typography variant="body2">
           {tOrders("actions.refund.itemsLabel")}
         </Typography>
@@ -285,8 +287,8 @@ const RefundOrderDialogContent = ({
             </ItemRowStack>
           );
         })}
-        {quantitiesError && (
-          <FormHelperText>{quantitiesError.message}</FormHelperText>
+        {errors.quantities?.root && (
+          <FormHelperText>{errors.quantities.root.message}</FormHelperText>
         )}
       </ItemsFormControl>
       <TextField
