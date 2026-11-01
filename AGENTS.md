@@ -81,7 +81,7 @@ Only files both repos use are mirrored: a file only one repo uses is not created
 For each changed file, read both versions and decide:
 
 1. **Superset files** (this repo has extra content — transplant only the changed hunks to biru, never overwrite the whole file):
-   `utils/menus.ts`, `CustomerPaymentForm`, `messages/*/common.json`, `types/api.ts`
+   `utils/menus.ts`, `messages/*/common.json`, `types/api.ts`
 
 2. **All other mirrored files** — transplant only the hunks you changed in this task. biru is the source of truth for shared files: never `cp` this repo's version over biru, even when it looks newer or more conventional.
 
