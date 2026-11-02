@@ -145,6 +145,18 @@ const Store = ({ points }: StoreProps) => {
             />
           </ListItem>
         </List>
+        {points.expiringSoon.map((expiring) => (
+          <Typography
+            color="textSecondary"
+            key={expiring.expiresAt}
+            variant="body2"
+          >
+            {tAuth("points.expiringSoon", {
+              date: format.dateTime(new Date(expiring.expiresAt), "date"),
+              points: format.number(expiring.points),
+            })}
+          </Typography>
+        ))}
         {coupons.length === 0 && (
           <Typography color="textSecondary" variant="body2">
             {tAuth("points.redeemableEmpty")}
