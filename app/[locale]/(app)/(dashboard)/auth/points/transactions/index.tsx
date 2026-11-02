@@ -43,12 +43,13 @@ const StyledListItemText = styled(ListItemText)({
   },
 });
 
-const StyledTransactionCardHeader = styled(CardHeader)({
+const StyledTransactionCardHeader = styled(CardHeader)(({ theme }) => ({
   "& .MuiCardHeader-action": {
     margin: 0,
+    marginLeft: theme.spacing(2),
     alignSelf: "center",
   },
-});
+}));
 
 interface PointsProps {
   page: number;
