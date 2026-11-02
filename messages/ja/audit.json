@@ -15,6 +15,10 @@
   },
   "actor": "操作者",
   "actorEmail": "メールアドレス",
+  "actorFilter": {
+    "apply": "この操作者の記録のみ表示",
+    "label": "操作者：{actor}"
+  },
   "changes": "変更内容",
   "createdAt": "日時",
   "field": {

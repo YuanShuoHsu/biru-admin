@@ -34,6 +34,7 @@ import {
 } from "@/utils/session";
 
 interface AuditLogSearchParams {
+  actorId?: string;
   filterField?: string;
   filterOperator?: string;
   filterValue?: string;
@@ -68,6 +69,7 @@ const AuditLogsPage = async ({
   searchParams,
 }: AuditLogsPageProps) => {
   const {
+    actorId,
     filterField: rawFilterField,
     filterOperator: rawFilterOperator,
     filterValue,
@@ -139,6 +141,7 @@ const AuditLogsPage = async ({
           ...(filterValue && { filterValue }),
         }),
       ...(quickFilterValue && { quickFilterValue }),
+      ...(actorId && { actorId }),
     });
 
     redirect({ href: `${href}?${params.toString()}`, locale });
@@ -171,6 +174,7 @@ const AuditLogsPage = async ({
       resourceId,
       ancestorId,
       {
+        actorId,
         page,
         pageSize,
         filterField,
