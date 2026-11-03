@@ -35,7 +35,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { ActiveOrganization, Invitation } from "@/types/organizations";
 
 import { isActiveSession } from "@/utils/auth";
-import { getErrorMessage } from "@/utils/errors";
+import { getErrorMessage, toFetchError } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { sortByCreatedAtDesc } from "@/utils/organizations";
 
@@ -103,7 +103,7 @@ const OrganizationsSlugInvitations = ({
           query: { organizationSlug: decodeURIComponent(slug) },
         },
       );
-      if (error) throw error;
+      if (error) throw toFetchError(error);
 
       const pendingInvitations = sortByCreatedAtDesc(
         data.invitations.filter(

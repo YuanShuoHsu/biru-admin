@@ -60,7 +60,7 @@ import type {
 } from "@/types/organizations";
 
 import { isActiveSession } from "@/utils/auth";
-import { getErrorMessage } from "@/utils/errors";
+import { getErrorMessage, toFetchError } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { sortByCreatedAtDesc } from "@/utils/organizations";
 
@@ -178,7 +178,7 @@ const OrganizationsSlugMembers = ({
           query: { organizationSlug: decodeURIComponent(slug) },
         },
       );
-      if (error) throw error;
+      if (error) throw toFetchError(error);
 
       return {
         rows: sortByCreatedAtDesc(data.members),
