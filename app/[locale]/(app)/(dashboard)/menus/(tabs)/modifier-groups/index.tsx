@@ -144,6 +144,7 @@ const ModifierGroups = ({
   const [toolbarMode, setToolbarMode] = useState<ToolbarMode>(null);
   const isReorderMode = toolbarMode === "reorder";
   const isSelectMode = toolbarMode === "select";
+  const [draftRows, setDraftRows] = useState<ModifierGroup[] | null>(null);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -194,7 +195,7 @@ const ModifierGroups = ({
   const updateQuery = useUpdateQuery();
 
   const {
-    data: { data: rows, total: rowCount } = {
+    data: { data: fetchedRows, total: rowCount } = {
       data: initialRows,
       total: initialRowCount,
     },
@@ -226,6 +227,8 @@ const ModifierGroups = ({
     },
   );
 
+  const rows = draftRows ?? fetchedRows;
+
   const {
     clearRowSelection,
     hasSelectableRows,
@@ -234,7 +237,7 @@ const ModifierGroups = ({
   } = useRowSelection({ enabled: isSelectMode, rows });
 
   const isReorderDisabled =
-    rowCount < 2 || isFilteredOrSorted(filterModel, sortModel);
+    rowCount < 2 || isValidating || isFilteredOrSorted(filterModel, sortModel);
 
   const handlePaginationModelChange = useCallback(
     (newModel: GridPaginationModel) => {
@@ -294,13 +297,14 @@ const ModifierGroups = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
+        setDraftRows(rows);
         setToolbarMode("reorder");
         setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
       title: tMenus("modifierGroups.actions.reorderGroup.title"),
     });
-  }, [apiRef, setDialog, tMenus]);
+  }, [apiRef, rows, setDialog, tMenus]);
 
   const handleSaveModifierGroupReorder = useCallback(() => {
     setDialog({
@@ -322,6 +326,8 @@ const ModifierGroups = ({
             }),
           });
 
+          mutate({ data: rows, total: rowCount });
+          setDraftRows(null);
           setToolbarMode(null);
 
           setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
@@ -331,8 +337,6 @@ const ModifierGroups = ({
             { variant: "success" },
           );
         } catch {
-          mutate();
-
           enqueueSnackbar(
             tMenus("modifierGroups.actions.reorderGroup.save.error"),
             { variant: "error" },
@@ -344,11 +348,12 @@ const ModifierGroups = ({
     });
   }, [
     apiRef,
-    rows,
     menuId,
     mutate,
     paginationModel.page,
     paginationModel.pageSize,
+    rowCount,
+    rows,
     setDialog,
     tMenus,
   ]);
@@ -363,14 +368,13 @@ const ModifierGroups = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
+        setDraftRows(null);
         setToolbarMode(null);
-
-        mutate();
       },
       open: true,
       title: tMenus("modifierGroups.actions.reorderGroup.cancel.label"),
     });
-  }, [mutate, setDialog, tMenus]);
+  }, [setDialog, tMenus]);
 
   const handleModifierGroupDragEnd = ({ operation }: DragEndEvent) => {
     if (!isSortableOperation(operation)) return;
@@ -382,8 +386,7 @@ const ModifierGroups = ({
     const toIndex = source.index;
     if (fromIndex === toIndex) return;
 
-    const newGroups = arrayMove(rows, fromIndex, toIndex);
-    mutate({ data: newGroups, total: rowCount }, false);
+    setDraftRows(arrayMove(rows, fromIndex, toIndex));
   };
 
   const handleCreateModifierGroup = useCallback(() => {
@@ -766,8 +769,11 @@ const ModifierGroups = ({
           {...rowSelectionProps}
           apiRef={apiRef}
           columns={columns}
+          disableColumnFilter={isReorderMode}
+          disableColumnSorting={isReorderMode}
           filterMode="server"
           filterModel={filterModel}
+          hideFooterPagination={isReorderMode}
           loading={loading || isValidating}
           onFilterModelChange={handleFilterModelChange}
           onPaginationModelChange={handlePaginationModelChange}

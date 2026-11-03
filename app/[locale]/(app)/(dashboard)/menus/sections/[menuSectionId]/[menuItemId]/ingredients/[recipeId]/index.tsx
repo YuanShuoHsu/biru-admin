@@ -139,6 +139,7 @@ const RecipeIngredients = ({
   const [toolbarMode, setToolbarMode] = useState<ToolbarMode>(null);
   const isReorderMode = toolbarMode === "reorder";
   const isSelectMode = toolbarMode === "select";
+  const [draftRows, setDraftRows] = useState<RecipeIngredient[] | null>(null);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -199,7 +200,7 @@ const RecipeIngredients = ({
   const recipeId = recipe?.id ?? "";
 
   const {
-    data: { data: rows, total: rowCount } = {
+    data: { data: fetchedRows, total: rowCount } = {
       data: initialRows,
       total: initialRowCount,
     },
@@ -229,6 +230,8 @@ const RecipeIngredients = ({
       },
     },
   );
+
+  const rows = draftRows ?? fetchedRows;
 
   const {
     clearRowSelection,
@@ -291,7 +294,7 @@ const RecipeIngredients = ({
   );
 
   const isReorderDisabled =
-    rowCount < 2 || isFilteredOrSorted(filterModel, sortModel);
+    rowCount < 2 || isValidating || isFilteredOrSorted(filterModel, sortModel);
 
   const handleEnterReorderMode = useCallback(() => {
     setDialog({
@@ -304,6 +307,7 @@ const RecipeIngredients = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
+        setDraftRows(rows);
         setToolbarMode("reorder");
 
         setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
@@ -313,7 +317,7 @@ const RecipeIngredients = ({
         "recipes.ingredients.actions.reorderRecipeIngredient.title",
       ),
     });
-  }, [apiRef, setDialog, tInventory]);
+  }, [apiRef, rows, setDialog, tInventory]);
 
   const handleSaveReorder = useCallback(() => {
     setDialog({
@@ -336,6 +340,8 @@ const RecipeIngredients = ({
             }),
           });
 
+          mutate({ data: rows, total: rowCount });
+          setDraftRows(null);
           setToolbarMode(null);
 
           setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
@@ -347,8 +353,6 @@ const RecipeIngredients = ({
             { variant: "success" },
           );
         } catch (error) {
-          mutate();
-
           enqueueSnackbar(getErrorMessage(error), { variant: "error" });
         }
       },
@@ -359,11 +363,12 @@ const RecipeIngredients = ({
     });
   }, [
     apiRef,
-    rows,
     mutate,
     paginationModel.page,
     paginationModel.pageSize,
     recipeId,
+    rowCount,
+    rows,
     setDialog,
     tInventory,
   ]);
@@ -379,16 +384,15 @@ const RecipeIngredients = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
+        setDraftRows(null);
         setToolbarMode(null);
-
-        mutate();
       },
       open: true,
       title: tInventory(
         "recipes.ingredients.actions.reorderRecipeIngredient.cancel.label",
       ),
     });
-  }, [mutate, setDialog, tInventory]);
+  }, [setDialog, tInventory]);
 
   const handleDragEnd = ({ operation }: DragEndEvent) => {
     if (!isSortableOperation(operation)) return;
@@ -400,10 +404,7 @@ const RecipeIngredients = ({
     const toIndex = source.index;
     if (fromIndex === toIndex) return;
 
-    mutate(
-      { data: arrayMove(rows, fromIndex, toIndex), total: rowCount },
-      false,
-    );
+    setDraftRows(arrayMove(rows, fromIndex, toIndex));
   };
 
   const handleCreateRecipeIngredient = useCallback(() => {
@@ -821,8 +822,11 @@ const RecipeIngredients = ({
           {...rowSelectionProps}
           apiRef={apiRef}
           columns={columns}
+          disableColumnFilter={isReorderMode}
+          disableColumnSorting={isReorderMode}
           filterMode="server"
           filterModel={filterModel}
+          hideFooterPagination={isReorderMode}
           loading={loading || isValidating}
           onFilterModelChange={handleFilterModelChange}
           onPaginationModelChange={handlePaginationModelChange}

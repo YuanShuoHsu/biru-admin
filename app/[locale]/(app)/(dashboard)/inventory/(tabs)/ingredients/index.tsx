@@ -5,7 +5,6 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
-import { flushSync } from "react-dom";
 import useSWR from "swr";
 
 import IngredientDialog from "./IngredientDialog";
@@ -206,6 +205,7 @@ const Ingredients = ({
   const [toolbarMode, setToolbarMode] = useState<ToolbarMode>(null);
   const isReorderMode = toolbarMode === "reorder";
   const isSelectMode = toolbarMode === "select";
+  const [draftRows, setDraftRows] = useState<Ingredient[] | null>(null);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -262,7 +262,7 @@ const Ingredients = ({
   );
 
   const {
-    data: { data: rows, total: rowCount } = {
+    data: { data: fetchedRows, total: rowCount } = {
       data: initialRows,
       total: initialRowCount,
     },
@@ -296,8 +296,6 @@ const Ingredients = ({
     },
     {
       fallbackData: { data: initialRows, total: initialRowCount },
-      // https://swr.vercel.app/docs/api#options
-      isPaused: () => isReorderMode,
       onSuccess: () => {
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
@@ -305,6 +303,8 @@ const Ingredients = ({
       },
     },
   );
+
+  const rows = draftRows ?? fetchedRows;
 
   const {
     clearRowSelection,
@@ -386,6 +386,7 @@ const Ingredients = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
+        setDraftRows(rows);
         setToolbarMode("reorder");
 
         setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
@@ -393,7 +394,7 @@ const Ingredients = ({
       open: true,
       title: tInventory("ingredients.actions.reorderIngredient.title"),
     });
-  }, [apiRef, setDialog, tInventory]);
+  }, [apiRef, rows, setDialog, tInventory]);
 
   const handleSaveReorder = useCallback(() => {
     setDialog({
@@ -419,6 +420,8 @@ const Ingredients = ({
             },
           );
 
+          mutate({ data: rows, total: rowCount });
+          setDraftRows(null);
           setToolbarMode(null);
 
           setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
@@ -436,10 +439,12 @@ const Ingredients = ({
     });
   }, [
     apiRef,
-    rows,
+    mutate,
     organizationSlug,
     paginationModel.page,
     paginationModel.pageSize,
+    rowCount,
+    rows,
     setDialog,
     tInventory,
   ]);
@@ -455,15 +460,13 @@ const Ingredients = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
-        // isPaused 讀的是已 commit 的設定，沒先 commit 離開排序模式，mutate 不會重新抓取
-        flushSync(() => setToolbarMode(null));
-
-        mutate();
+        setDraftRows(null);
+        setToolbarMode(null);
       },
       open: true,
       title: tInventory("ingredients.actions.reorderIngredient.cancel.label"),
     });
-  }, [mutate, setDialog, tInventory]);
+  }, [setDialog, tInventory]);
 
   const handleDragEnd = ({ operation }: DragEndEvent) => {
     if (!isSortableOperation(operation)) return;
@@ -475,10 +478,7 @@ const Ingredients = ({
     const toIndex = source.index;
     if (fromIndex === toIndex) return;
 
-    mutate(
-      { data: arrayMove(rows, fromIndex, toIndex), total: rowCount },
-      false,
-    );
+    setDraftRows(arrayMove(rows, fromIndex, toIndex));
   };
 
   const handleCreateIngredient = useCallback(() => {
@@ -1057,13 +1057,9 @@ const Ingredients = ({
           filterModel={filterModel}
           hideFooterPagination={isReorderMode}
           loading={loading || isValidating}
-          onFilterModelChange={
-            isReorderMode ? undefined : handleFilterModelChange
-          }
-          onPaginationModelChange={
-            isReorderMode ? undefined : handlePaginationModelChange
-          }
-          onSortModelChange={isReorderMode ? undefined : handleSortModelChange}
+          onFilterModelChange={handleFilterModelChange}
+          onPaginationModelChange={handlePaginationModelChange}
+          onSortModelChange={handleSortModelChange}
           pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
           paginationMode="server"
           paginationModel={paginationModel}
