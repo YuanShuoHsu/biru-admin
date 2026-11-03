@@ -529,8 +529,6 @@ const BotForm = ({ fromId }: BotFormProps) => {
   );
 };
 
-export default BotForm;
-
 export const useBotFormDialog = () => {
   const tBots = useTranslations("quant.bots");
   const setDialog = useDialogStore((state) => state.setDialog);

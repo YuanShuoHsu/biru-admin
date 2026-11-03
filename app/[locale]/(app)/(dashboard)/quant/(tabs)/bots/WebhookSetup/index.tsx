@@ -16,11 +16,10 @@ import {
 
 const API_URL = process.env.NEXT_PUBLIC_NEST_URL;
 
-export const webhookUrl = (botId: string) =>
-  `${API_URL}/api/quant/webhooks/${botId}`;
+const webhookUrl = (botId: string) => `${API_URL}/api/quant/webhooks/${botId}`;
 
 // TradingView 的 {{timenow}} 每次觸發都不同，當作訊號 id 讓重送只執行一次
-export const alertTemplate = (token: string) =>
+const alertTemplate = (token: string) =>
   JSON.stringify({ action: "buy", id: "{{timenow}}", token });
 
 export const CopyField = ({
