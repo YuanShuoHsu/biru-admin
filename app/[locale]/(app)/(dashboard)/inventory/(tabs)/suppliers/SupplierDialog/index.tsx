@@ -19,6 +19,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Ingredient, Supplier } from "@/types/inventory";
 
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
@@ -103,10 +104,8 @@ const SupplierDialog = ({
       closeDialog();
 
       mutate();
-    } catch {
-      enqueueSnackbar(tInventory(`suppliers.actions.${action}.error`), {
-        variant: "error",
-      });
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
 
       setDialog({ confirmLoading: false });
     }

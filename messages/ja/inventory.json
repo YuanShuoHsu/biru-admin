@@ -8,20 +8,17 @@
         },
         "submit": {
           "confirm": "以下の <bold>{count} 件の食材</bold>を削除しますか？",
-          "error": "食材の一括削除に失敗しました",
           "label": "選択した食材を削除（{count}）",
           "success": "食材 {count} 件を削除しました"
         },
         "title": "食材を一括削除"
       },
       "createIngredient": {
-        "error": "食材の追加に失敗しました",
         "success": "食材 {name} を追加しました",
         "title": "食材を追加"
       },
       "deleteIngredient": {
         "confirm": "<bold>{name}</bold> を削除しますか？この操作は取り消せません。",
-        "error": "食材の削除に失敗しました",
         "success": "食材 {name} を削除しました",
         "title": "食材を削除"
       },
@@ -34,14 +31,12 @@
         "confirm": "<bold>食材</bold>を並び替えますか？",
         "save": {
           "confirm": "<bold>食材</bold>の並び順を保存しますか？",
-          "error": "並び順の保存に失敗しました",
           "label": "食材の並び順を保存",
           "success": "並び順を保存しました"
         },
         "title": "食材を並び替え"
       },
       "updateIngredient": {
-        "error": "食材の更新に失敗しました",
         "success": "食材 {name} を更新しました",
         "title": "食材を編集"
       },
@@ -113,7 +108,6 @@
   "recipes": {
     "actions": {
       "updateRecipe": {
-        "error": "出来上がり分量の更新に失敗しました",
         "success": "出来上がり分量を更新しました",
         "title": "出来上がり分量を編集"
       },
@@ -139,20 +133,17 @@
           },
           "submit": {
             "confirm": "以下の <bold>{count} 件の材料</bold>を削除しますか？",
-            "error": "材料の一括削除に失敗しました",
             "label": "選択した材料を削除（{count}）",
             "success": "材料 {count} 件を削除しました"
           },
           "title": "材料を一括削除"
         },
         "createRecipeIngredient": {
-          "error": "材料の追加に失敗しました",
           "success": "材料を追加しました",
           "title": "材料を追加"
         },
         "deleteRecipeIngredient": {
           "confirm": "<bold>{name}</bold> を削除しますか？この操作は取り消せません。",
-          "error": "材料の削除に失敗しました",
           "success": "材料を削除しました",
           "title": "材料を削除"
         },
@@ -165,14 +156,12 @@
           "confirm": "<bold>材料</bold>を並び替えますか？",
           "save": {
             "confirm": "<bold>材料</bold>の並び順を保存しますか？",
-            "error": "並び順の保存に失敗しました",
             "label": "材料の並び順を保存",
             "success": "並び順を保存しました"
           },
           "title": "材料を並び替え"
         },
         "updateRecipeIngredient": {
-          "error": "材料の更新に失敗しました",
           "success": "材料を更新しました",
           "title": "材料を編集"
         }
@@ -212,26 +201,22 @@
         },
         "submit": {
           "confirm": "以下の <bold>{count} 件の仕入先</bold>を削除しますか？",
-          "error": "仕入先の一括削除に失敗しました",
           "label": "選択した仕入先を削除（{count}）",
           "success": "仕入先 {count} 件を削除しました"
         },
         "title": "仕入先を一括削除"
       },
       "createSupplier": {
-        "error": "仕入先の追加に失敗しました",
         "success": "仕入先を追加しました",
         "title": "仕入先を追加"
       },
       "deleteSupplier": {
         "confirm": "<bold>{name}</bold> を削除しますか？この操作は取り消せません。",
-        "error": "仕入先の削除に失敗しました",
         "success": "仕入先を削除しました",
         "title": "仕入先を削除"
       },
       "label": "操作",
       "updateSupplier": {
-        "error": "仕入先の更新に失敗しました",
         "success": "仕入先を更新しました",
         "title": "仕入先を編集"
       }
@@ -264,8 +249,7 @@
     },
     "label": "在庫変動",
     "note": {
-      "label": "備考",
-      "placeholder": "備考を入力してください"
+      "label": "備考"
     },
     "orderNumber": {
       "label": "注文番号"
