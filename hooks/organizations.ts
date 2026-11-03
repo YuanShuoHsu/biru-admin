@@ -28,9 +28,9 @@ export const useDefaultOrganizationSlug = () =>
       authClient.getSession(),
       authClient.organization.list(),
     ]);
-    if (sessionError) throw sessionError;
+    if (sessionError) throw toFetchError(sessionError);
     if (organizationsError && organizationsError.status !== 401)
-      throw organizationsError;
+      throw toFetchError(organizationsError);
 
     return resolveDefaultOrganizationSlug(
       session?.session?.activeOrganizationId,
