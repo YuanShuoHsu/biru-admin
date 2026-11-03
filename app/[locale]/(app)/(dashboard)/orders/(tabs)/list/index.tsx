@@ -108,7 +108,9 @@ const TRANSITION_SLOTS: OrderTransition["direction"][][] = [
 ];
 
 interface OrdersProps {
+  canCreateRefund?: boolean;
   canViewAuditLog?: boolean;
+  canVoidInvoices?: boolean;
   filterField?: OrderFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
@@ -124,7 +126,9 @@ interface OrdersProps {
 }
 
 const Orders = ({
+  canCreateRefund = false,
   canViewAuditLog = false,
+  canVoidInvoices = false,
   filterField: initialFilterField,
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
@@ -313,7 +317,10 @@ const Orders = ({
     [rows],
   );
 
-  const hasVoidableInvoice = useMemo(() => rows.some(canVoidInvoice), [rows]);
+  const hasVoidableInvoice = useMemo(
+    () => canVoidInvoices && rows.some(canVoidInvoice),
+    [canVoidInvoices, rows],
+  );
 
   const hasUnresolvedOrderTicket = useMemo(
     () => rows.some((row) => !!findUnresolvedOrderTicket(row)),
@@ -326,8 +333,8 @@ const Orders = ({
   );
 
   const hasRefundable = useMemo(
-    () => rows.some(({ refundable }) => refundable),
-    [rows],
+    () => canCreateRefund && rows.some(({ refundable }) => refundable),
+    [canCreateRefund, rows],
   );
 
   const hasTransitions = useMemo(

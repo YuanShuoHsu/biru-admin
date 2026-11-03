@@ -22,7 +22,11 @@ import { getOrderEnumOptions } from "@/utils/enumOptions";
 import { settle } from "@/utils/fetcher";
 import { getAdminOrders } from "@/utils/orders";
 import { hasRolePermission } from "@/utils/organizations";
-import { getMemberRole, getResolvedAdminOrganization } from "@/utils/session";
+import {
+  getMemberRole,
+  getResolvedAdminOrganization,
+  getSession,
+} from "@/utils/session";
 
 interface OrdersPageProps {
   params: Promise<{ locale: Locale }>;
@@ -96,10 +100,18 @@ const OrdersContent = async ({ params, searchParams }: OrdersPageProps) => {
       )
     : [];
 
-  const memberRole = await getMemberRole(selectedOrganization.id);
+  const [memberRole, session] = await Promise.all([
+    getMemberRole(selectedOrganization.id),
+    getSession(),
+  ]);
+  const isAdmin = session?.user?.role === "admin";
   const canViewAuditLog = hasRolePermission(memberRole, {
     auditLog: ["read"],
   });
+  const canCreateRefund =
+    isAdmin || hasRolePermission(memberRole, { refund: ["create"] });
+  const canVoidInvoices =
+    isAdmin || hasRolePermission(memberRole, { invoice: ["void"] });
 
   const { data: orders, error } = await settle(
     getAdminOrders(
@@ -124,7 +136,9 @@ const OrdersContent = async ({ params, searchParams }: OrdersPageProps) => {
 
   return (
     <Orders
+      canCreateRefund={canCreateRefund}
       canViewAuditLog={canViewAuditLog}
+      canVoidInvoices={canVoidInvoices}
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
