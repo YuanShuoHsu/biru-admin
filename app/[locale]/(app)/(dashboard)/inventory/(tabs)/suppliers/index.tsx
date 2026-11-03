@@ -402,7 +402,7 @@ const Suppliers = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...(canWrite && !isSelectMode
+      ...((canWrite || canViewAuditLog) && !isSelectMode
         ? [
             {
               disableColumnMenu: true,
@@ -412,28 +412,36 @@ const Suppliers = ({
               headerName: tInventory("suppliers.actions.label"),
               renderCell: ({ row }: GridRenderCellParams<Supplier>) => (
                 <ActionsStack direction="row">
-                  <Tooltip
-                    title={tInventory("suppliers.actions.updateSupplier.title")}
-                  >
-                    <IconButton
-                      onClick={() => handleUpdateSupplier(row)}
-                      size="small"
+                  {canWrite && (
+                    <Tooltip
+                      title={tInventory(
+                        "suppliers.actions.updateSupplier.title",
+                      )}
                     >
-                      <Edit fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
+                      <IconButton
+                        onClick={() => handleUpdateSupplier(row)}
+                        size="small"
+                      >
+                        <Edit fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
                   {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
-                  <Tooltip
-                    title={tInventory("suppliers.actions.deleteSupplier.title")}
-                  >
-                    <IconButton
-                      color="error"
-                      onClick={() => handleDeleteSupplier(row)}
-                      size="small"
+                  {canWrite && (
+                    <Tooltip
+                      title={tInventory(
+                        "suppliers.actions.deleteSupplier.title",
+                      )}
                     >
-                      <Delete fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
+                      <IconButton
+                        color="error"
+                        onClick={() => handleDeleteSupplier(row)}
+                        size="small"
+                      >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
                 </ActionsStack>
               ),
               resizable: false,
