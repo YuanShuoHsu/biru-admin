@@ -32,11 +32,14 @@ import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 import { Link } from "@/i18n/navigation";
 import { routing, type Locale } from "@/i18n/routing";
 
+import { FilterAlt } from "@mui/icons-material";
 import {
   Chip,
   Divider,
+  IconButton,
   Link as MuiLink,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -527,6 +530,7 @@ const AuditLogs = ({
   const locale = useLocale();
 
   const searchParams = useSearchParams();
+  const actorId = searchParams.get("actorId") ?? "";
 
   const tAttendance = useTranslations("attendance");
   const tAudit = useTranslations("audit");
@@ -558,6 +562,7 @@ const AuditLogs = ({
       resource,
       resourceId,
       ancestorId,
+      actorId,
       filterModel.items[0]?.field,
       filterModel.items[0]?.operator,
       filterModel.items[0]?.value,
@@ -576,6 +581,7 @@ const AuditLogs = ({
       if (resource) params.set("resource", resource);
       if (resourceId) params.set("resourceId", resourceId);
       if (ancestorId) params.set("ancestorId", ancestorId);
+      if (actorId) params.set("actorId", actorId);
 
       return fetcher<AuditLogListResponse>(`${path}?${params.toString()}`);
     },
@@ -634,6 +640,15 @@ const AuditLogs = ({
         page: "1",
         quickFilterValue: (newModel.quickFilterValues ?? []).join(" ").trim(),
       });
+    },
+    [updateQuery],
+  );
+
+  const handleActorIdChange = useCallback(
+    (newActorId: string) => {
+      setPaginationModel((previous) => ({ ...previous, page: 0 }));
+
+      updateQuery({ actorId: newActorId, page: "1" });
     },
     [updateQuery],
   );
@@ -749,7 +764,28 @@ const AuditLogs = ({
         field: "actorName",
         filterOperators: stringFilterOperators,
         headerName: tAudit("actor"),
-        renderCell: renderEmptyableCell,
+        renderCell: ({
+          row,
+          value,
+        }: GridRenderCellParams<AuditLogResponse, string | null>) => (
+          <ChangesStack direction="row">
+            {value || <EmptyCell />}
+            {row.actorId && !actorId && (
+              <Tooltip title={tAudit("actorFilter.apply")}>
+                <IconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    if (row.actorId) handleActorIdChange(row.actorId);
+                  }}
+                  size="small"
+                >
+                  <FilterAlt fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
+          </ChangesStack>
+        ),
       },
       {
         field: "actorEmail",
@@ -900,11 +936,13 @@ const AuditLogs = ({
       },
     ],
     [
+      actorId,
       dateFilterOperators,
       enumFilterOperators,
       enumOptions,
       format,
       getValueText,
+      handleActorIdChange,
       locale,
       organizations,
       resource,
@@ -914,6 +952,8 @@ const AuditLogs = ({
       tAudit,
     ],
   );
+
+  const actorLog = logs.find((log) => log.actorId === actorId);
 
   return (
     <DataGrid
@@ -935,7 +975,18 @@ const AuditLogs = ({
       sortModel={sortModel}
       slotProps={{
         ...DATA_GRID_PROPS.slotProps,
-        toolbar: { exportDateField: "createdAt" },
+        toolbar: {
+          action: actorId ? (
+            <Chip
+              label={tAudit("actorFilter.label", {
+                actor: actorLog?.actorName || actorLog?.actorEmail || actorId,
+              })}
+              onDelete={() => handleActorIdChange("")}
+              size="small"
+            />
+          ) : undefined,
+          exportDateField: "createdAt",
+        },
       }}
     />
   );

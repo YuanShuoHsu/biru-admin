@@ -15,6 +15,10 @@
   },
   "actor": "작업자",
   "actorEmail": "이메일",
+  "actorFilter": {
+    "apply": "이 작업자의 기록만 보기",
+    "label": "작업자: {actor}"
+  },
   "changes": "변경 내용",
   "createdAt": "일시",
   "field": {

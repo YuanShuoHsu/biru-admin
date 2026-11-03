@@ -15,6 +15,10 @@
   },
   "actor": "操作者",
   "actorEmail": "操作者信箱",
+  "actorFilter": {
+    "apply": "只看此操作者的紀錄",
+    "label": "操作者：{actor}"
+  },
   "changes": "異動內容",
   "createdAt": "時間",
   "field": {

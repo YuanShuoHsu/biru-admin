@@ -9928,6 +9928,15 @@ export interface components {
       /** @description 每點的會計價值（元），只用於對帳 */
       accountingValuePerPoint?: number | null;
     };
+    ExpiringPointsDto: {
+      /**
+       * Format: date-time
+       * @description 當天（台灣時間）最早到期的時間
+       */
+      expiresAt: string;
+      /** @description 當天（台灣時間）到期的剩餘點數，已扣除同日收回的點數，合計不超過餘額 */
+      points: number;
+    };
     PointsCouponDto: {
       id: string;
       code: string;
@@ -9968,6 +9977,8 @@ export interface components {
     MyPointsDto: {
       /** @description 全店家合併餘額 */
       balance: number;
+      /** @description 今天起 30 天內（台灣日期）到期的剩餘點數，依到期日分組，由近到遠 */
+      expiringSoon: components["schemas"]["ExpiringPointsDto"][];
       redeemableCoupons: components["schemas"]["PointsCouponDto"][];
       transactions: components["schemas"]["PointTransactionDto"][];
       /** @description 明細總筆數 */
@@ -14973,6 +14984,8 @@ export interface operations {
       query?: {
         resource?: components["schemas"]["AuditResource"];
         resourceId?: string;
+        /** @description 只列出此操作者的紀錄 */
+        actorId?: string;
         /** @description 篩出祖先含此 id 的紀錄,例如某張券的所有發放 */
         ancestorId?: string;
         filterField?: components["schemas"]["AuditLogFilterField"];
@@ -15014,6 +15027,8 @@ export interface operations {
       query?: {
         resource?: components["schemas"]["AuditResource"];
         resourceId?: string;
+        /** @description 只列出此操作者的紀錄 */
+        actorId?: string;
         /** @description 篩出祖先含此 id 的紀錄,例如某張券的所有發放 */
         ancestorId?: string;
         filterField?: components["schemas"]["AuditLogFilterField"];

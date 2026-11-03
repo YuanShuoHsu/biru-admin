@@ -60,6 +60,7 @@ import type {
 import type { Organization } from "@/types/organizations";
 
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
@@ -305,11 +306,8 @@ const Suppliers = ({
             );
 
             mutate();
-          } catch {
-            enqueueSnackbar(
-              tInventory("suppliers.actions.deleteSupplier.error"),
-              { variant: "error" },
-            );
+          } catch (error) {
+            enqueueSnackbar(getErrorMessage(error), { variant: "error" });
           }
         },
         open: true,
@@ -369,11 +367,8 @@ const Suppliers = ({
               variant: "success",
             },
           );
-        } catch {
-          enqueueSnackbar(
-            tInventory("suppliers.actions.batchDeleteSupplier.submit.error"),
-            { variant: "error" },
-          );
+        } catch (error) {
+          enqueueSnackbar(getErrorMessage(error), { variant: "error" });
         }
 
         mutate();

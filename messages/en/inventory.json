@@ -8,20 +8,17 @@
         },
         "submit": {
           "confirm": "Are you sure you want to delete the following <bold>{count} ingredients</bold>?",
-          "error": "Failed to batch delete ingredients",
           "label": "Delete Selected Ingredients ({count})",
           "success": "Deleted {count} ingredients"
         },
         "title": "Batch Delete Ingredients"
       },
       "createIngredient": {
-        "error": "Failed to create ingredient",
         "success": "Ingredient {name} created",
         "title": "Create ingredient"
       },
       "deleteIngredient": {
         "confirm": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone.",
-        "error": "Failed to delete ingredient",
         "success": "Ingredient {name} deleted",
         "title": "Delete ingredient"
       },
@@ -34,14 +31,12 @@
         "confirm": "Are you sure you want to reorder <bold>ingredients</bold>?",
         "save": {
           "confirm": "Are you sure you want to save <bold>ingredients</bold> reorder?",
-          "error": "Failed to save reorder",
           "label": "Save Ingredients Reorder",
           "success": "Reorder saved"
         },
         "title": "Reorder Ingredients"
       },
       "updateIngredient": {
-        "error": "Failed to update ingredient",
         "success": "Ingredient {name} updated",
         "title": "Edit ingredient"
       },
@@ -113,7 +108,6 @@
   "recipes": {
     "actions": {
       "updateRecipe": {
-        "error": "Failed to update servings",
         "success": "Servings updated",
         "title": "Edit servings"
       },
@@ -139,20 +133,17 @@
           },
           "submit": {
             "confirm": "Are you sure you want to delete the following <bold>{count} recipe ingredients</bold>?",
-            "error": "Failed to batch delete recipe ingredients",
             "label": "Delete Selected Recipe Ingredients ({count})",
             "success": "Deleted {count} recipe ingredients"
           },
           "title": "Batch Delete Recipe Ingredients"
         },
         "createRecipeIngredient": {
-          "error": "Failed to create recipe ingredient",
           "success": "Recipe ingredient created",
           "title": "Create recipe ingredient"
         },
         "deleteRecipeIngredient": {
           "confirm": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone.",
-          "error": "Failed to delete recipe ingredient",
           "success": "Recipe ingredient deleted",
           "title": "Delete recipe ingredient"
         },
@@ -165,14 +156,12 @@
           "confirm": "Are you sure you want to reorder <bold>recipe ingredients</bold>?",
           "save": {
             "confirm": "Are you sure you want to save <bold>recipe ingredients</bold> reorder?",
-            "error": "Failed to save reorder",
             "label": "Save recipe ingredients reorder",
             "success": "Reorder saved"
           },
           "title": "Reorder recipe ingredients"
         },
         "updateRecipeIngredient": {
-          "error": "Failed to update recipe ingredient",
           "success": "Recipe ingredient updated",
           "title": "Edit recipe ingredient"
         }
@@ -212,26 +201,22 @@
         },
         "submit": {
           "confirm": "Are you sure you want to delete the following <bold>{count} suppliers</bold>?",
-          "error": "Failed to batch delete suppliers",
           "label": "Delete Selected Suppliers ({count})",
           "success": "Deleted {count} suppliers"
         },
         "title": "Batch Delete Suppliers"
       },
       "createSupplier": {
-        "error": "Failed to create supplier",
         "success": "Supplier created",
         "title": "Create supplier"
       },
       "deleteSupplier": {
         "confirm": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone.",
-        "error": "Failed to delete supplier",
         "success": "Supplier deleted",
         "title": "Delete supplier"
       },
       "label": "Actions",
       "updateSupplier": {
-        "error": "Failed to update supplier",
         "success": "Supplier updated",
         "title": "Edit supplier"
       }

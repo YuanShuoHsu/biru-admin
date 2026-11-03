@@ -97,6 +97,7 @@ import {
   isFilteredOrSorted,
 } from "@/utils/dataGrid";
 import { getIngredientEnumOptions } from "@/utils/enumOptions";
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import {
   formatPackagePrice,
@@ -426,11 +427,8 @@ const Ingredients = ({
             tInventory("ingredients.actions.reorderIngredient.save.success"),
             { variant: "success" },
           );
-        } catch {
-          enqueueSnackbar(
-            tInventory("ingredients.actions.reorderIngredient.save.error"),
-            { variant: "error" },
-          );
+        } catch (error) {
+          enqueueSnackbar(getErrorMessage(error), { variant: "error" });
         }
       },
       open: true,
@@ -581,11 +579,8 @@ const Ingredients = ({
             );
 
             mutate();
-          } catch {
-            enqueueSnackbar(
-              tInventory("ingredients.actions.deleteIngredient.error"),
-              { variant: "error" },
-            );
+          } catch (error) {
+            enqueueSnackbar(getErrorMessage(error), { variant: "error" });
           }
         },
         open: true,
@@ -646,13 +641,8 @@ const Ingredients = ({
               variant: "success",
             },
           );
-        } catch {
-          enqueueSnackbar(
-            tInventory(
-              "ingredients.actions.batchDeleteIngredient.submit.error",
-            ),
-            { variant: "error" },
-          );
+        } catch (error) {
+          enqueueSnackbar(getErrorMessage(error), { variant: "error" });
         }
 
         mutate();

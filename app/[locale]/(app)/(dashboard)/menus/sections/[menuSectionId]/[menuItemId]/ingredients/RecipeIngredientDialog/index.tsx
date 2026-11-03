@@ -24,6 +24,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { Ingredient, Recipe, RecipeIngredient } from "@/types/inventory";
 import type { MenuItem } from "@/types/menus";
 
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
@@ -136,11 +137,8 @@ const RecipeIngredientDialog = ({
       closeDialog();
 
       mutate();
-    } catch {
-      enqueueSnackbar(
-        tInventory(`recipes.ingredients.actions.${action}.error`),
-        { variant: "error" },
-      );
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
 
       setDialog({ confirmLoading: false });
     }

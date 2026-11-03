@@ -45,6 +45,7 @@ import type {
   Supplier,
 } from "@/types/inventory";
 
+import { getErrorMessage } from "@/utils/errors";
 import {
   formatUnitPriceOf,
   maxPackages,
@@ -340,10 +341,8 @@ const IngredientDialog = ({
       closeDialog();
 
       mutate();
-    } catch {
-      enqueueSnackbar(tInventory(`${action}.error`), {
-        variant: "error",
-      });
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
 
       setDialog({ confirmLoading: false });
     }

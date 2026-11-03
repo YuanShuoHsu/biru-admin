@@ -19,6 +19,7 @@ import {
   Avatar,
   Card,
   CardHeader,
+  Link,
   List,
   ListItem,
   ListItemAvatar,
@@ -41,6 +42,10 @@ const StyledListItemText = styled(ListItemText)({
   "& .MuiListItemText-primary": {
     fontWeight: "bold",
   },
+});
+
+const StyledExpiringLink = styled(Link)({
+  alignSelf: "flex-start",
 });
 
 const StyledTransactionCardHeader = styled(CardHeader)({
@@ -132,6 +137,20 @@ const Points = ({ page, pageSize, points }: PointsProps) => {
             />
           </ListItem>
         </List>
+        {points.expiringSoon.map((expiring) => (
+          <StyledExpiringLink
+            color="textSecondary"
+            href="/auth/points/store"
+            key={expiring.expiresAt}
+            underline="always"
+            variant="body2"
+          >
+            {tAuth("points.expiringSoon", {
+              date: format.dateTime(new Date(expiring.expiresAt), "date"),
+              points: format.number(expiring.points),
+            })}
+          </StyledExpiringLink>
+        ))}
         {transactions.length === 0 && (
           <Typography color="textSecondary" variant="body2">
             {tAuth("points.transactions.empty")}
