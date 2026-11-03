@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
+import { flushSync } from "react-dom";
 import useSWR from "swr";
 
 import IngredientDialog from "./IngredientDialog";
@@ -294,6 +295,8 @@ const Ingredients = ({
     },
     {
       fallbackData: { data: initialRows, total: initialRowCount },
+      // https://swr.vercel.app/docs/api#options
+      isPaused: () => isReorderMode,
       onSuccess: () => {
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
@@ -421,8 +424,6 @@ const Ingredients = ({
             { variant: "success" },
           );
         } catch {
-          mutate();
-
           enqueueSnackbar(
             tInventory("ingredients.actions.reorderIngredient.save.error"),
             { variant: "error" },
@@ -435,7 +436,6 @@ const Ingredients = ({
   }, [
     apiRef,
     rows,
-    mutate,
     organizationSlug,
     paginationModel.page,
     paginationModel.pageSize,
@@ -454,7 +454,8 @@ const Ingredients = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
-        setToolbarMode(null);
+        // isPaused 讀的是已 commit 的設定，沒先 commit 離開排序模式，mutate 不會重新抓取
+        flushSync(() => setToolbarMode(null));
 
         mutate();
       },
@@ -692,59 +693,69 @@ const Ingredients = ({
             },
           ]
         : []),
-      {
-        disableColumnMenu: true,
-        disableExport: true,
-        field: "actions",
-        filterable: false,
-        headerName: tInventory("ingredients.actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<Ingredient>) => (
-          <ActionsStack direction="row">
-            <Tooltip
-              title={tInventory("ingredients.actions.viewTransactions.title")}
-            >
-              <IconButton
-                onClick={() => handleViewTransactions(row)}
-                size="small"
-              >
-                <SwapVert fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            {(canWrite || canRecordTransaction) && (
-              <Tooltip
-                title={tInventory("ingredients.actions.updateIngredient.title")}
-              >
-                <StyledIconButton
-                  onClick={() => {
-                    if (canWrite || row.packageBaseQuantity)
-                      handleUpdateIngredient(row);
-                  }}
-                  size="small"
-                  visible={canWrite || !!row.packageBaseQuantity}
-                >
-                  <Edit fontSize="small" />
-                </StyledIconButton>
-              </Tooltip>
-            )}
-            {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
-            {canWrite && (
-              <Tooltip
-                title={tInventory("ingredients.actions.deleteIngredient.title")}
-              >
-                <IconButton
-                  color="error"
-                  onClick={() => handleDeleteIngredient(row)}
-                  size="small"
-                >
-                  <Delete fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            )}
-          </ActionsStack>
-        ),
-        resizable: false,
-        sortable: false,
-      },
+      ...(!toolbarMode
+        ? [
+            {
+              disableColumnMenu: true,
+              disableExport: true,
+              field: "actions",
+              filterable: false,
+              headerName: tInventory("ingredients.actions.label"),
+              renderCell: ({ row }: GridRenderCellParams<Ingredient>) => (
+                <ActionsStack direction="row">
+                  <Tooltip
+                    title={tInventory(
+                      "ingredients.actions.viewTransactions.title",
+                    )}
+                  >
+                    <IconButton
+                      onClick={() => handleViewTransactions(row)}
+                      size="small"
+                    >
+                      <SwapVert fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  {(canWrite || canRecordTransaction) && (
+                    <Tooltip
+                      title={tInventory(
+                        "ingredients.actions.updateIngredient.title",
+                      )}
+                    >
+                      <StyledIconButton
+                        onClick={() => {
+                          if (canWrite || row.packageBaseQuantity)
+                            handleUpdateIngredient(row);
+                        }}
+                        size="small"
+                        visible={canWrite || !!row.packageBaseQuantity}
+                      >
+                        <Edit fontSize="small" />
+                      </StyledIconButton>
+                    </Tooltip>
+                  )}
+                  {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
+                  {canWrite && (
+                    <Tooltip
+                      title={tInventory(
+                        "ingredients.actions.deleteIngredient.title",
+                      )}
+                    >
+                      <IconButton
+                        color="error"
+                        onClick={() => handleDeleteIngredient(row)}
+                        size="small"
+                      >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </ActionsStack>
+              ),
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
         field: "image",
         filterable: false,
@@ -943,6 +954,7 @@ const Ingredients = ({
       stringFilterOperators,
       tCommon,
       tInventory,
+      toolbarMode,
     ],
   );
 
@@ -1049,9 +1061,13 @@ const Ingredients = ({
           filterMode="server"
           filterModel={filterModel}
           loading={loading || isValidating}
-          onFilterModelChange={handleFilterModelChange}
-          onPaginationModelChange={handlePaginationModelChange}
-          onSortModelChange={handleSortModelChange}
+          onFilterModelChange={
+            isReorderMode ? undefined : handleFilterModelChange
+          }
+          onPaginationModelChange={
+            isReorderMode ? undefined : handlePaginationModelChange
+          }
+          onSortModelChange={isReorderMode ? undefined : handleSortModelChange}
           pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
           paginationMode="server"
           paginationModel={paginationModel}
