@@ -43,7 +43,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { ActiveOrganization, Team } from "@/types/organizations";
 
-import { getErrorMessage } from "@/utils/errors";
+import { getErrorMessage, toFetchError } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { sortByCreatedAtDesc } from "@/utils/organizations";
 
@@ -107,7 +107,7 @@ const OrganizationsSlugTeams = ({
           query: { organizationSlug: decodeURIComponent(slug) },
         },
       );
-      if (error) throw error;
+      if (error) throw toFetchError(error);
 
       return { rows: sortByCreatedAtDesc(data.teams) };
     },

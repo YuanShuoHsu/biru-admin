@@ -37,7 +37,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { ActiveOrganization, Team } from "@/types/organizations";
 
-import { getErrorMessage } from "@/utils/errors";
+import { getErrorMessage, toFetchError } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { buildTeamMembers, type TeamMemberRow } from "@/utils/teams";
 
@@ -124,7 +124,7 @@ const OrganizationsSlugTeamsTeamId = ({
         query: { teamId },
       });
       if (error?.code === "USER_IS_NOT_A_MEMBER_OF_THE_TEAM") return [];
-      if (error) throw error;
+      if (error) throw toFetchError(error);
 
       return buildTeamMembers(data, members);
     },

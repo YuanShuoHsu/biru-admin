@@ -8,6 +8,7 @@ import { authClient } from "@/lib/auth-client";
 import type { Organization } from "@/types/organizations";
 
 import { canRestoreDeletedRecords } from "@/utils/deletedRecords";
+import { toFetchError } from "@/utils/errors";
 import {
   activeMemberRoleKey,
   defaultOrganizationSlugKey,
@@ -45,7 +46,7 @@ const useMemberRole = (organizationSlug: string) => {
         { query: { organizationSlug: slug } },
       );
       if (error?.status === 400 || error?.status === 403) return null;
-      if (error) throw error;
+      if (error) throw toFetchError(error);
 
       return data.role;
     },
@@ -82,7 +83,7 @@ export const useCanRestoreDeletedRecords = () => {
 
 const fetchOrganizations = async () => {
   const { data, error } = await authClient.organization.list();
-  if (error) throw error;
+  if (error) throw toFetchError(error);
 
   return sortByCreatedAtDesc(data);
 };
