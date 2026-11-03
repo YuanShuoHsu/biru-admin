@@ -249,7 +249,8 @@
     },
     "label": "재고 변동",
     "note": {
-      "label": "비고"
+      "label": "비고",
+      "placeholder": "비고을(를) 입력해 주세요"
     },
     "orderNumber": {
       "label": "주문 번호"

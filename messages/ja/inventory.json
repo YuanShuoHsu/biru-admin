@@ -249,7 +249,8 @@
     },
     "label": "在庫変動",
     "note": {
-      "label": "備考"
+      "label": "備考",
+      "placeholder": "備考を入力してください"
     },
     "orderNumber": {
       "label": "注文番号"

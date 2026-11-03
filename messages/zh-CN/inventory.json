@@ -249,7 +249,8 @@
     },
     "label": "库存进出",
     "note": {
-      "label": "备注"
+      "label": "备注",
+      "placeholder": "请输入您的备注"
     },
     "orderNumber": {
       "label": "订单编号"

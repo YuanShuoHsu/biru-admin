@@ -249,7 +249,8 @@
     },
     "label": "Stock movement",
     "note": {
-      "label": "Notes"
+      "label": "Notes",
+      "placeholder": "Please enter your Notes"
     },
     "orderNumber": {
       "label": "Order number"
