@@ -14,6 +14,7 @@ import type {
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
 interface GetAuditLogsQuery {
+  actorId?: string;
   filterField?: AuditLogFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
@@ -117,6 +118,7 @@ export const getAuditLogs = cache(
     resourceId: string | undefined,
     ancestorId: string | undefined,
     {
+      actorId,
       page = 1,
       pageSize = DEFAULT_PAGE_SIZE,
       filterField,
@@ -135,6 +137,7 @@ export const getAuditLogs = cache(
       ...(resource && { resource }),
       ...(resourceId && { resourceId }),
       ...(ancestorId && { ancestorId }),
+      ...(actorId && { actorId }),
       limit: String(pageSize),
       offset: String((page - 1) * pageSize),
       ...(sortBy && { sortBy }),

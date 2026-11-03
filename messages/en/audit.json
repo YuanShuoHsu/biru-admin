@@ -15,6 +15,10 @@
   },
   "actor": "Changed by",
   "actorEmail": "Email",
+  "actorFilter": {
+    "apply": "Show only this person's changes",
+    "label": "Changed by: {actor}"
+  },
   "changes": "Changes",
   "createdAt": "Time",
   "field": {
