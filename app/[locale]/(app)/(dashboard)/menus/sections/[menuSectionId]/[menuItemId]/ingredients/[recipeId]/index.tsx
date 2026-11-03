@@ -74,6 +74,7 @@ import {
   getFilterItemParams,
   isFilteredOrSorted,
 } from "@/utils/dataGrid";
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { formatUnitPriceOf } from "@/utils/ingredients";
 import { localize } from "@/utils/locale";
@@ -345,15 +346,10 @@ const RecipeIngredients = ({
             ),
             { variant: "success" },
           );
-        } catch {
+        } catch (error) {
           mutate();
 
-          enqueueSnackbar(
-            tInventory(
-              "recipes.ingredients.actions.reorderRecipeIngredient.save.error",
-            ),
-            { variant: "error" },
-          );
+          enqueueSnackbar(getErrorMessage(error), { variant: "error" });
         }
       },
       open: true,
@@ -483,13 +479,8 @@ const RecipeIngredients = ({
             );
 
             handleMutate();
-          } catch {
-            enqueueSnackbar(
-              tInventory(
-                "recipes.ingredients.actions.deleteRecipeIngredient.error",
-              ),
-              { variant: "error" },
-            );
+          } catch (error) {
+            enqueueSnackbar(getErrorMessage(error), { variant: "error" });
           }
         },
         open: true,
@@ -552,13 +543,8 @@ const RecipeIngredients = ({
               variant: "success",
             },
           );
-        } catch {
-          enqueueSnackbar(
-            tInventory(
-              "recipes.ingredients.actions.batchDeleteRecipeIngredient.submit.error",
-            ),
-            { variant: "error" },
-          );
+        } catch (error) {
+          enqueueSnackbar(getErrorMessage(error), { variant: "error" });
         }
 
         mutate();

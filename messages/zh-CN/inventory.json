@@ -8,20 +8,17 @@
         },
         "submit": {
           "confirm": "确定要删除以下 <bold>{count} 条食材</bold>吗？",
-          "error": "批量删除食材失败",
           "label": "删除所选食材（{count}）",
           "success": "已删除 {count} 条食材"
         },
         "title": "批量删除食材"
       },
       "createIngredient": {
-        "error": "新增食材失败",
         "success": "已新增食材 {name}",
         "title": "新增食材"
       },
       "deleteIngredient": {
         "confirm": "确定要删除 <bold>{name}</bold> 吗？此操作无法复原。",
-        "error": "删除食材失败",
         "success": "已删除食材 {name}",
         "title": "删除食材"
       },
@@ -34,14 +31,12 @@
         "confirm": "确定要进行<bold>食材</bold>排序吗？",
         "save": {
           "confirm": "确定要保存<bold>食材</bold>排序吗？",
-          "error": "排序保存失败",
           "label": "保存食材排序",
           "success": "排序已保存"
         },
         "title": "食材排序"
       },
       "updateIngredient": {
-        "error": "更新食材失败",
         "success": "已更新食材 {name}",
         "title": "编辑食材"
       },
@@ -113,7 +108,6 @@
   "recipes": {
     "actions": {
       "updateRecipe": {
-        "error": "更新份量失败",
         "success": "已更新份量",
         "title": "编辑份量"
       },
@@ -139,20 +133,17 @@
           },
           "submit": {
             "confirm": "确定要删除以下 <bold>{count} 条材料</bold>吗？",
-            "error": "批量删除材料失败",
             "label": "删除所选材料（{count}）",
             "success": "已删除 {count} 条材料"
           },
           "title": "批量删除材料"
         },
         "createRecipeIngredient": {
-          "error": "新增材料失败",
           "success": "已新增材料",
           "title": "新增材料"
         },
         "deleteRecipeIngredient": {
           "confirm": "确定要删除 <bold>{name}</bold> 吗？此操作无法复原。",
-          "error": "删除材料失败",
           "success": "已删除材料",
           "title": "删除材料"
         },
@@ -165,14 +156,12 @@
           "confirm": "确定要进行<bold>材料</bold>排序吗？",
           "save": {
             "confirm": "确定要保存<bold>材料</bold>排序吗？",
-            "error": "排序保存失败",
             "label": "保存材料排序",
             "success": "排序已保存"
           },
           "title": "材料排序"
         },
         "updateRecipeIngredient": {
-          "error": "更新材料失败",
           "success": "已更新材料",
           "title": "编辑材料"
         }
@@ -212,26 +201,22 @@
         },
         "submit": {
           "confirm": "确定要删除以下 <bold>{count} 家供应商</bold>吗？",
-          "error": "批量删除供应商失败",
           "label": "删除所选供应商（{count}）",
           "success": "已删除 {count} 家供应商"
         },
         "title": "批量删除供应商"
       },
       "createSupplier": {
-        "error": "新增供应商失败",
         "success": "已新增供应商",
         "title": "新增供应商"
       },
       "deleteSupplier": {
         "confirm": "确定要删除 <bold>{name}</bold> 吗？此操作无法复原。",
-        "error": "删除供应商失败",
         "success": "已删除供应商",
         "title": "删除供应商"
       },
       "label": "操作",
       "updateSupplier": {
-        "error": "更新供应商失败",
         "success": "已更新供应商",
         "title": "编辑供应商"
       }

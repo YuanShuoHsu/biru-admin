@@ -16,6 +16,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Recipe } from "@/types/inventory";
 
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 interface RecipeDialogProps {
@@ -58,10 +59,8 @@ const RecipeDialog = ({ mutate, recipe }: RecipeDialogProps) => {
       closeDialog();
 
       mutate();
-    } catch {
-      enqueueSnackbar(tInventory("recipes.actions.updateRecipe.error"), {
-        variant: "error",
-      });
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
 
       setDialog({ confirmLoading: false });
     }
