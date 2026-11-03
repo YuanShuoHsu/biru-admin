@@ -130,12 +130,17 @@ const AuthSignIn = ({ redirectTo, rememberMe }: AuthSignInProps) => {
         onError: async ({ error: { code, message } }) => {
           if (code === "EMAIL_NOT_VERIFIED") {
             if (!items["verify-email"]) {
-              await authClient.sendVerificationEmail({
-                callbackURL: redirectTo,
-                email: data.email,
-              });
-
-              startCountdown("verify-email");
+              await authClient.sendVerificationEmail(
+                { callbackURL: redirectTo, email: data.email },
+                {
+                  onError: ({ error: { message } }) => {
+                    enqueueSnackbar(message, { variant: "error" });
+                  },
+                  onSuccess: () => {
+                    startCountdown("verify-email");
+                  },
+                },
+              );
             }
 
             router.push({
