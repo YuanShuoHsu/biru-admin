@@ -131,6 +131,7 @@ const StorePhotos = ({
   const [toolbarMode, setToolbarMode] = useState<ToolbarMode>(null);
   const isReorderMode = toolbarMode === "reorder";
   const isSelectMode = toolbarMode === "select";
+  const [draftRows, setDraftRows] = useState<StorePhoto[] | null>(null);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -180,7 +181,7 @@ const StorePhotos = ({
   );
 
   const {
-    data: { data: rows, total: rowCount } = {
+    data: { data: fetchedRows, total: rowCount } = {
       data: initialRows,
       total: initialRowCount,
     },
@@ -211,6 +212,8 @@ const StorePhotos = ({
     },
   );
 
+  const rows = draftRows ?? fetchedRows;
+
   const {
     clearRowSelection,
     hasSelectableRows,
@@ -219,7 +222,7 @@ const StorePhotos = ({
   } = useRowSelection({ enabled: isSelectMode, rows });
 
   const isReorderDisabled =
-    rowCount < 2 || isFilteredOrSorted(filterModel, sortModel);
+    rowCount < 2 || isValidating || isFilteredOrSorted(filterModel, sortModel);
 
   const handlePaginationModelChange = useCallback(
     (newModel: GridPaginationModel) => {
@@ -279,13 +282,14 @@ const StorePhotos = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
+        setDraftRows(rows);
         setToolbarMode("reorder");
         setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
       title: tStorePhotos("actions.reorderStorePhoto.title"),
     });
-  }, [apiRef, setDialog, tStorePhotos]);
+  }, [apiRef, rows, setDialog, tStorePhotos]);
 
   const handleSaveReorder = useCallback(() => {
     setDialog({
@@ -307,6 +311,8 @@ const StorePhotos = ({
             }),
           });
 
+          mutate({ data: rows, total: rowCount });
+          setDraftRows(null);
           setToolbarMode(null);
 
           setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
@@ -318,8 +324,6 @@ const StorePhotos = ({
             },
           );
         } catch {
-          mutate();
-
           enqueueSnackbar(
             tStorePhotos("actions.reorderStorePhoto.save.error"),
             {
@@ -333,10 +337,11 @@ const StorePhotos = ({
     });
   }, [
     apiRef,
-    rows,
     mutate,
     paginationModel.page,
     paginationModel.pageSize,
+    rowCount,
+    rows,
     setDialog,
     tStorePhotos,
   ]);
@@ -351,14 +356,13 @@ const StorePhotos = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
+        setDraftRows(null);
         setToolbarMode(null);
-
-        mutate();
       },
       open: true,
       title: tStorePhotos("actions.reorderStorePhoto.cancel.label"),
     });
-  }, [mutate, setDialog, tStorePhotos]);
+  }, [setDialog, tStorePhotos]);
 
   const handleDragEnd = ({ operation }: DragEndEvent) => {
     if (!isSortableOperation(operation)) return;
@@ -370,8 +374,7 @@ const StorePhotos = ({
     const toIndex = source.index;
     if (fromIndex === toIndex) return;
 
-    const newStorePhotos = arrayMove(rows, fromIndex, toIndex);
-    mutate({ data: newStorePhotos, total: rowCount }, false);
+    setDraftRows(arrayMove(rows, fromIndex, toIndex));
   };
 
   const handleCreateStorePhoto = useCallback(() => {
@@ -730,8 +733,11 @@ const StorePhotos = ({
           {...rowSelectionProps}
           apiRef={apiRef}
           columns={columns}
+          disableColumnFilter={isReorderMode}
+          disableColumnSorting={isReorderMode}
           filterMode="server"
           filterModel={filterModel}
+          hideFooterPagination={isReorderMode}
           loading={loading || isValidating}
           onFilterModelChange={handleFilterModelChange}
           onPaginationModelChange={handlePaginationModelChange}

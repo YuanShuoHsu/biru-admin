@@ -144,6 +144,7 @@ const MenusMenuId = ({
   const [toolbarMode, setToolbarMode] = useState<ToolbarMode>(null);
   const isReorderMode = toolbarMode === "reorder";
   const isSelectMode = toolbarMode === "select";
+  const [draftRows, setDraftRows] = useState<MenuSection[] | null>(null);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: page - 1,
     pageSize,
@@ -192,7 +193,7 @@ const MenusMenuId = ({
   const updateQuery = useUpdateQuery();
 
   const {
-    data: { data: rows, total: rowCount } = {
+    data: { data: fetchedRows, total: rowCount } = {
       data: initialRows,
       total: initialRowCount,
     },
@@ -224,6 +225,8 @@ const MenusMenuId = ({
     },
   );
 
+  const rows = draftRows ?? fetchedRows;
+
   const {
     clearRowSelection,
     hasSelectableRows,
@@ -232,7 +235,7 @@ const MenusMenuId = ({
   } = useRowSelection({ enabled: isSelectMode, rows });
 
   const isReorderDisabled =
-    rowCount < 2 || isFilteredOrSorted(filterModel, sortModel);
+    rowCount < 2 || isValidating || isFilteredOrSorted(filterModel, sortModel);
 
   const handlePaginationModelChange = useCallback(
     (newModel: GridPaginationModel) => {
@@ -292,13 +295,14 @@ const MenusMenuId = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
+        setDraftRows(rows);
         setToolbarMode("reorder");
         setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
       },
       open: true,
       title: tMenus("sections.actions.reorderSection.title"),
     });
-  }, [apiRef, setDialog, tMenus]);
+  }, [apiRef, rows, setDialog, tMenus]);
 
   const handleSaveReorder = useCallback(() => {
     setDialog({
@@ -320,6 +324,8 @@ const MenusMenuId = ({
             }),
           });
 
+          mutate({ data: rows, total: rowCount });
+          setDraftRows(null);
           setToolbarMode(null);
 
           setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
@@ -329,8 +335,6 @@ const MenusMenuId = ({
             { variant: "success" },
           );
         } catch {
-          mutate();
-
           enqueueSnackbar(
             tMenus("sections.actions.reorderSection.save.error"),
             { variant: "error" },
@@ -346,6 +350,7 @@ const MenusMenuId = ({
     mutate,
     paginationModel.page,
     paginationModel.pageSize,
+    rowCount,
     rows,
     setDialog,
     tMenus,
@@ -361,14 +366,13 @@ const MenusMenuId = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
+        setDraftRows(null);
         setToolbarMode(null);
-
-        mutate();
       },
       open: true,
       title: tMenus("sections.actions.reorderSection.cancel.label"),
     });
-  }, [mutate, setDialog, tMenus]);
+  }, [setDialog, tMenus]);
 
   const handleDragEnd = ({ operation }: DragEndEvent) => {
     if (!isSortableOperation(operation)) return;
@@ -380,8 +384,7 @@ const MenusMenuId = ({
     const toIndex = source.index;
     if (fromIndex === toIndex) return;
 
-    const newSections = arrayMove(rows, fromIndex, toIndex);
-    mutate({ data: newSections, total: rowCount }, false);
+    setDraftRows(arrayMove(rows, fromIndex, toIndex));
   };
 
   const handleCreateSection = useCallback(() => {
@@ -752,8 +755,11 @@ const MenusMenuId = ({
           {...rowSelectionProps}
           apiRef={apiRef}
           columns={columns}
+          disableColumnFilter={isReorderMode}
+          disableColumnSorting={isReorderMode}
           filterMode="server"
           filterModel={filterModel}
+          hideFooterPagination={isReorderMode}
           loading={loading || isValidating}
           onFilterModelChange={handleFilterModelChange}
           onPaginationModelChange={handlePaginationModelChange}
