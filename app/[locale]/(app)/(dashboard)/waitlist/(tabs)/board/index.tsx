@@ -60,6 +60,11 @@ const COLUMN_STATUSES = [
   "expired",
 ] as const satisfies readonly WaitlistTicketStatus[];
 
+type TransferStatus = Extract<
+  WaitlistTransitionStatus,
+  "called" | "seated" | "waiting"
+>;
+
 const TRANSITION_LABELS = {
   called: "recall",
   cancelled: "cancel",
@@ -218,7 +223,7 @@ const AdminWaitlist = ({
 
   const handleBatchTransition = async (
     ids: string[],
-    status: "called" | "seated" | "waiting",
+    status: TransferStatus,
   ) => {
     const tickets = waitlist.tickets.filter(({ id }) => ids.includes(id));
     const results = await Promise.allSettled(
@@ -252,7 +257,7 @@ const AdminWaitlist = ({
 
   const confirmBatchTransition = (
     ids: string[],
-    status: "called" | "seated" | "waiting",
+    status: TransferStatus,
     title: React.ReactNode,
   ) =>
     new Promise<boolean>((resolve) => {
@@ -287,7 +292,7 @@ const AdminWaitlist = ({
 
   const toTransferAction = (
     direction: "advance" | "revert",
-    status: "called" | "seated" | "waiting",
+    status: TransferStatus,
   ): SelectAllTransferListAction => {
     const key = `actions.transfer.${direction}` as const;
     const statusLabel = tWaitlist(`status.${status}`);
