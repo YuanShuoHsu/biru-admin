@@ -83,11 +83,15 @@ const StatusText = styled("span", {
 });
 
 interface OrdersBoardProps {
+  canCreateRefund: boolean;
+  canVoidInvoices: boolean;
   columns: AdminOrderBoardColumn[];
   organization: Organization;
 }
 
 const OrdersBoard = ({
+  canCreateRefund,
+  canVoidInvoices,
   columns: initialColumns,
   organization: { slug: organizationSlug },
 }: OrdersBoardProps) => {
@@ -193,14 +197,16 @@ const OrdersBoard = ({
               label: tOrders("actions.resetInvoicePrint.title"),
               onClick: () => handleConfirmResetInvoicePrint(order),
             },
-            canVoidInvoice(order) && {
-              label: tOrders("actions.voidInvoice.title"),
-              onClick: () => handleConfirmVoidInvoice(order),
-            },
-            order.refundable && {
-              label: tOrders("actions.refund.title"),
-              onClick: () => handleRefund(order),
-            },
+            canVoidInvoices &&
+              canVoidInvoice(order) && {
+                label: tOrders("actions.voidInvoice.title"),
+                onClick: () => handleConfirmVoidInvoice(order),
+              },
+            canCreateRefund &&
+              order.refundable && {
+                label: tOrders("actions.refund.title"),
+                onClick: () => handleRefund(order),
+              },
             cancelTransition && {
               color: "error" as const,
               label: tOrders("actions.updateStatus.title.cancel"),
@@ -273,6 +279,8 @@ const OrdersBoard = ({
       })),
     [
       boardColumns,
+      canCreateRefund,
+      canVoidInvoices,
       format,
       getOrderModeLabel,
       handleCancelInvoicePrint,

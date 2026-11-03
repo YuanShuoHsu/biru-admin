@@ -12,7 +12,12 @@ import type { Locale } from "@/i18n/routing";
 
 import { settle } from "@/utils/fetcher";
 import { getAdminOrderBoard } from "@/utils/orders";
-import { getResolvedAdminOrganization } from "@/utils/session";
+import { hasRolePermission } from "@/utils/organizations";
+import {
+  getMemberRole,
+  getResolvedAdminOrganization,
+  getSession,
+} from "@/utils/session";
 
 interface OrdersBoardPageProps {
   params: Promise<{ locale: Locale }>;
@@ -51,12 +56,27 @@ const OrdersBoardPage = async ({
     redirect({ href: `/orders/board?${params.toString()}`, locale });
   }
 
-  const { data: columns, error } = await settle(
-    getAdminOrderBoard(selectedOrganization.slug, fetchOptions),
-  );
+  const [{ data: columns, error }, memberRole, session] = await Promise.all([
+    settle(getAdminOrderBoard(selectedOrganization.slug, fetchOptions)),
+    getMemberRole(selectedOrganization.id),
+    getSession(),
+  ]);
   if (error) return <ErrorAlert />;
 
-  return <OrdersBoard columns={columns} organization={selectedOrganization} />;
+  const isAdmin = session?.user?.role === "admin";
+
+  return (
+    <OrdersBoard
+      canCreateRefund={
+        isAdmin || hasRolePermission(memberRole, { refund: ["create"] })
+      }
+      canVoidInvoices={
+        isAdmin || hasRolePermission(memberRole, { invoice: ["void"] })
+      }
+      columns={columns}
+      organization={selectedOrganization}
+    />
+  );
 };
 
 export default OrdersBoardPage;
