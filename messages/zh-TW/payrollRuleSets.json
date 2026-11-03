@@ -20,6 +20,7 @@
     "title": "確認最低工資",
     "hint": "官方最低工資資料尚未更新 {period} 起的數值，請依勞動部公告填入每小時最低工資。",
     "minimumHourlyWage": "公告每小時最低工資（元）",
+    "currentWages": "目前沿用每小時 {hourly} 元；本期每月最低工資 {monthly} 元。",
     "sourceLabel": {
       "label": "公告名稱",
       "placeholder": "例：勞動部公告 115 年最低工資",

@@ -20,6 +20,7 @@
     "title": "最低賃金を確認",
     "hint": "公式の最低賃金データはまだ {period} 以降の金額に更新されていません。労働部の公告に基づき時間額最低賃金を入力してください。",
     "minimumHourlyWage": "公告の時間額最低賃金（元）",
+    "currentWages": "現在は時間額 {hourly} 元を引き継いでいます。今期の月額最低賃金は {monthly} 元です。",
     "sourceLabel": {
       "label": "公告名",
       "placeholder": "例：労働部 最低賃金公告",
