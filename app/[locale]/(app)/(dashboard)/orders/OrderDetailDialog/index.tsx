@@ -28,6 +28,7 @@ import type {
   OrderPaymentNotification,
   OrderRefund,
   OrderResponse,
+  OrderVoidedInvoice,
 } from "@/types/orders";
 
 import { getErrorMessage } from "@/utils/errors";
@@ -149,6 +150,11 @@ const OrderDetailDialog = ({
 
   const { data: refunds } = useSWR<OrderRefund[]>(
     `/api/organizations/${organizationSlug}/orders/${order.id}/refunds`,
+    fetcher,
+  );
+
+  const { data: voidedInvoices } = useSWR<OrderVoidedInvoice[]>(
+    `/api/organizations/${organizationSlug}/orders/${order.id}/invoice/voided`,
     fetcher,
   );
 
@@ -475,6 +481,53 @@ const OrderDetailDialog = ({
               )}
             </EntryStack>
           )}
+        </Section>
+      )}
+      {!!voidedInvoices?.length && (
+        <Section title={tOrders("detail.voidedInvoices.title")}>
+          {voidedInvoices.map((voidedInvoice) => (
+            <EntryStack key={voidedInvoice.id}>
+              {voidedInvoice.invoiceNumber && (
+                <InfoRow
+                  label={tOrders("detail.invoice.invoiceNumber")}
+                  value={voidedInvoice.invoiceNumber}
+                />
+              )}
+              {voidedInvoice.invoiceDate && (
+                <InfoRow
+                  label={tOrders("detail.invoice.invoiceDate")}
+                  value={format.dateTime(
+                    new Date(voidedInvoice.invoiceDate),
+                    "short",
+                  )}
+                />
+              )}
+              {voidedInvoice.voidedAt && (
+                <InfoRow
+                  label={tOrders("detail.voidedInvoices.voidedAt")}
+                  value={format.dateTime(
+                    new Date(voidedInvoice.voidedAt),
+                    "short",
+                  )}
+                />
+              )}
+              {(!!voidedInvoice.operatorName ||
+                voidedInvoice.operatorDeleted) && (
+                <InfoRow
+                  label={tOrders("detail.voidedInvoices.operator")}
+                  value={
+                    voidedInvoice.operatorName ?? tCommon("deletedAccount")
+                  }
+                />
+              )}
+              {!!voidedInvoice.reason && (
+                <InfoRow
+                  label={tOrders("detail.voidedInvoices.reason")}
+                  value={voidedInvoice.reason}
+                />
+              )}
+            </EntryStack>
+          ))}
         </Section>
       )}
       {!!refunds?.length && (

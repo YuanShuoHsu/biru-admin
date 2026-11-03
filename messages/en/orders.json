@@ -222,6 +222,12 @@
     "total": "Total",
     "transaction": {
       "title": "Transaction"
+    },
+    "voidedInvoices": {
+      "operator": "Voided by",
+      "reason": "Reason for voiding",
+      "title": "Voided invoices",
+      "voidedAt": "Voided at"
     }
   },
   "invoiceStatus": "Invoice status",

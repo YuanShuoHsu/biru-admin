@@ -222,6 +222,12 @@
     "total": "合計",
     "transaction": {
       "title": "取引情報"
+    },
+    "voidedInvoices": {
+      "operator": "無効化した担当者",
+      "reason": "無効化の理由",
+      "title": "無効化したインボイス",
+      "voidedAt": "無効化日時"
     }
   },
   "invoiceStatus": "インボイス状態",
