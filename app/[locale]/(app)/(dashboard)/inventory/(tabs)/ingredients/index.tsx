@@ -370,7 +370,10 @@ const Ingredients = ({
   }, [lowStock, updateQuery]);
 
   const isReorderDisabled =
-    rowCount < 2 || lowStock || isFilteredOrSorted(filterModel, sortModel);
+    rowCount < 2 ||
+    lowStock ||
+    isValidating ||
+    isFilteredOrSorted(filterModel, sortModel);
 
   const handleEnterReorderMode = useCallback(() => {
     setDialog({
@@ -1058,8 +1061,11 @@ const Ingredients = ({
           {...rowSelectionProps}
           apiRef={apiRef}
           columns={columns}
+          disableColumnFilter={isReorderMode}
+          disableColumnSorting={isReorderMode}
           filterMode="server"
           filterModel={filterModel}
+          hideFooterPagination={isReorderMode}
           loading={loading || isValidating}
           onFilterModelChange={
             isReorderMode ? undefined : handleFilterModelChange
