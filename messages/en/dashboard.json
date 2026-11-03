@@ -15,11 +15,6 @@
     "revenue": "Revenue",
     "discount": "Discounts"
   },
-  "quickActions": {
-    "label": "Quick Actions",
-    "manageUsers": "Manage Users",
-    "manageOrganizations": "Manage Organizations"
-  },
   "charts": {
     "avgOrderValue": "Average Order Value",
     "couponUsage": "Coupon Usage",

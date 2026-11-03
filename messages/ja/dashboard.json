@@ -15,11 +15,6 @@
     "revenue": "売上",
     "discount": "割引額"
   },
-  "quickActions": {
-    "label": "クイックアクション",
-    "manageUsers": "ユーザー管理",
-    "manageOrganizations": "組織管理"
-  },
   "charts": {
     "avgOrderValue": "平均注文金額",
     "couponUsage": "クーポン利用回数",
