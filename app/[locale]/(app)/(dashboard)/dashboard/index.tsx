@@ -1,8 +1,5 @@
 "use client";
 
-import dayjs from "dayjs";
-import timezonePlugin from "dayjs/plugin/timezone";
-import utc from "dayjs/plugin/utc";
 import { useFormatter, useTranslations } from "next-intl";
 import { useMemo } from "react";
 
@@ -11,7 +8,6 @@ import { DASHBOARD_RANGES, type DashboardRange } from "./definitions";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { useFormatMoney } from "@/hooks/useFormatMoney";
-import { useMonthFormat } from "@/hooks/useMonthFormat";
 import { useRoutes } from "@/hooks/useRoutes";
 
 import { useRouter } from "@/i18n/navigation";
@@ -39,9 +35,6 @@ import {
 import type { OrderStatsResponse } from "@/types/orders";
 import type { Organization } from "@/types/organizations";
 import type { WaitlistStats } from "@/types/waitlist";
-
-dayjs.extend(utc);
-dayjs.extend(timezonePlugin);
 
 const StyledCard = styled(Card)({
   height: "100%",
@@ -176,8 +169,6 @@ const Dashboard = ({
 }: DashboardProps) => {
   const format = useFormatter();
 
-  const monthFormat = useMonthFormat();
-
   const formatMoney = useFormatMoney();
 
   const currency = organization?.currency ?? "";
@@ -213,21 +204,16 @@ const Dashboard = ({
 
     const stepMs = bucketDays * 86_400_000;
 
-    return Array.from({ length: count }, (_, index) => {
-      const date = new Date(end - (count - 1 - index) * stepMs);
-
-      return bucketDays >= 28
-        ? dayjs(date).tz(STORE_TIMEZONE).format(monthFormat)
-        : format.dateTime(date, "monthDay", { timeZone: STORE_TIMEZONE });
-    });
-  }, [
-    bucketDays,
-    format,
-    hourly,
-    monthFormat,
-    stats.ordersTrend.data.length,
-    trendEnd,
-  ]);
+    return Array.from({ length: count }, (_, index) =>
+      format.dateTime(
+        new Date(end - (count - 1 - index) * stepMs),
+        "monthDay",
+        {
+          timeZone: STORE_TIMEZONE,
+        },
+      ),
+    );
+  }, [bucketDays, format, hourly, stats.ordersTrend.data.length, trendEnd]);
 
   const periodLabel = tDashboard(`stats.period.${range}`);
 
