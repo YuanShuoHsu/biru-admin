@@ -15,11 +15,6 @@
     "revenue": "매출",
     "discount": "할인 금액"
   },
-  "quickActions": {
-    "label": "빠른 작업",
-    "manageUsers": "사용자 관리",
-    "manageOrganizations": "조직 관리"
-  },
   "charts": {
     "avgOrderValue": "평균 주문 금액",
     "couponUsage": "쿠폰 사용 횟수",

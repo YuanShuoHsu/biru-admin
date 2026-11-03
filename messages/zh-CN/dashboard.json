@@ -15,11 +15,6 @@
     "revenue": "营业额",
     "discount": "折扣金额"
   },
-  "quickActions": {
-    "label": "快速操作",
-    "manageUsers": "管理用户",
-    "manageOrganizations": "管理组织"
-  },
   "charts": {
     "avgOrderValue": "平均客单价",
     "couponUsage": "优惠券使用次数",
