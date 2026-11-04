@@ -47,19 +47,31 @@ const LowStockAlerts = () => {
       ingredients,
       organizationId,
     }: {
-      ingredients: { id: string; name: LocalizedText }[];
+      ingredients: { id: string; name: LocalizedText; oversold?: boolean }[];
       organizationId: string;
     }) => {
       if (organizationId !== organization.id) return;
 
-      enqueueSnackbar(
-        tInventory("ingredients.lowStockReached", {
-          names: format.list(
-            ingredients.map(({ name }) => localize(name, locale)),
-          ),
-        }),
-        { variant: "warning" },
-      );
+      const namesOf = (matches: typeof ingredients) =>
+        format.list(matches.map(({ name }) => localize(name, locale)));
+
+      const oversold = ingredients.filter(({ oversold }) => oversold);
+      const lowStock = ingredients.filter(({ oversold }) => !oversold);
+
+      if (oversold.length)
+        enqueueSnackbar(
+          tInventory("ingredients.oversoldReached", {
+            names: namesOf(oversold),
+          }),
+          { variant: "error" },
+        );
+      if (lowStock.length)
+        enqueueSnackbar(
+          tInventory("ingredients.lowStockReached", {
+            names: namesOf(lowStock),
+          }),
+          { variant: "warning" },
+        );
       mutate((key) => Array.isArray(key) && key[0] === ingredientsUrl);
     };
 

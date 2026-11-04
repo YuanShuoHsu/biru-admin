@@ -25,7 +25,7 @@
 | 洋蔥       | [進口洋蔥 10公斤](https://www.costco.com.tw/Business-Delivery/Food-Beverages-Pet-Supplies/Chilled-Food/Import-Onion-10-kg/p/85744)              | [Costco](https://www.costco.com.tw)                                | 559元   | 10kg   | 0.056元/g     |
 | 紅蘿蔔     | [產銷履歷 VDS 活力胡蘿蔔 5公斤](https://www.costco.com.tw/Food-Dining/Frozen-Fresh-Food/Chilled-Fresh-Food/TAP-VDS-Fresh-Carrots-5-kg/p/997672) | [Costco](https://www.costco.com.tw)                                | 385元   | 5kg    | 0.077元/g     |
 | 番茄糊     | [漢斯蕃茄配司 340g](https://pxbox.es.pxmart.com.tw/product/270022)                                                                              | [全聯全電商](https://pxbox.es.pxmart.com.tw)                       | 131元   | 340g   | 0.385元/g     |
-| 水         | 自來水                                                                                                                                          | [台水](https://www.water.gov.tw/ch/Subject/Detail/1288?nodeId=813) | 12.08元 | 1000L  | 0.000012元/ml |
+| 水         | 飲用水                                                                                                                                          | [台水](https://www.water.gov.tw/ch/Subject/Detail/1288?nodeId=813) | 12.08元 | 1000L  | 0.000012元/ml |
 | 紅醬       | 自製，見 [食譜](recipes.md#紅醬)                                                                                                                | 自製                                                               | 284元   | 2300g  | 0.123元/g     |
 
 ## 備註

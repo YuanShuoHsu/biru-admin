@@ -83,6 +83,7 @@
       "placeholder": "Please enter your Notes"
     },
     "outOfStock": "Out of stock",
+    "oversoldReached": "{names} ran out of stock, but paid orders still stand. Please check the actual stock.",
     "packageRequired": "Please fill in content and unit first",
     "price": {
       "label": "Price",

@@ -83,6 +83,7 @@
       "placeholder": "備考を入力してください"
     },
     "outOfStock": "在庫切れ",
+    "oversoldReached": "{names} の在庫が不足していますが、支払い済みの注文は成立します。実際の在庫を確認してください。",
     "packageRequired": "先に内容量と単位を入力してください",
     "price": {
       "label": "価格",

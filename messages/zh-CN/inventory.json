@@ -83,6 +83,7 @@
       "placeholder": "请输入您的备注"
     },
     "outOfStock": "无库存",
+    "oversoldReached": "{names} 库存不足，但已付款的订单仍会成立，请确认实际库存",
     "packageRequired": "请先填写内容量与单位",
     "price": {
       "label": "价格",

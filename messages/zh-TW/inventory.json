@@ -83,6 +83,7 @@
       "placeholder": "請輸入您的備註"
     },
     "outOfStock": "無庫存",
+    "oversoldReached": "{names} 庫存不足，但已付款的訂單仍會成立，請確認實際庫存",
     "packageRequired": "請先填寫內容量與單位",
     "price": {
       "label": "價格",

@@ -83,6 +83,7 @@
       "placeholder": "비고를 입력해 주세요"
     },
     "outOfStock": "재고 없음",
+    "oversoldReached": "{names} 재고가 부족하지만 결제된 주문은 유지됩니다. 실제 재고를 확인해 주세요.",
     "packageRequired": "먼저 내용량과 단위를 입력해 주세요",
     "price": {
       "label": "가격",
