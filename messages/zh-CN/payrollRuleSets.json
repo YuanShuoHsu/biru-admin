@@ -34,7 +34,7 @@
   },
   "ingest": {
     "label": "立即从政府数据更新",
-    "result": "写入：{written}；略过：{skipped}；拒绝：{rejected}",
+    "result": "写入：{written}；略过：{skipped}；拒绝：{rejected}；国定假日：{holidays}",
     "none": "无",
     "unchecked": "未能完整获取官方数据或有版本被拒绝，最新版本未标记为已检查。"
   }

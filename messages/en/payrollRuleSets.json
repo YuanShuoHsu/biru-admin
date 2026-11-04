@@ -34,7 +34,7 @@
   },
   "ingest": {
     "label": "Update from government data now",
-    "result": "Written: {written}; skipped: {skipped}; rejected: {rejected}",
+    "result": "Written: {written}; skipped: {skipped}; rejected: {rejected}; national holidays: {holidays}",
     "none": "none",
     "unchecked": "The official data could not be fully fetched or a period was rejected, so the latest period was not marked as checked."
   }

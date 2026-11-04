@@ -34,7 +34,7 @@
   },
   "ingest": {
     "label": "정부 데이터로 지금 업데이트",
-    "result": "기록: {written}; 건너뜀: {skipped}; 거부: {rejected}",
+    "result": "기록: {written}; 건너뜀: {skipped}; 거부: {rejected}; 공휴일: {holidays}",
     "none": "없음",
     "unchecked": "공식 데이터를 모두 가져오지 못했거나 거부된 기간이 있어 최신 기간이 확인됨으로 표시되지 않았습니다."
   }

@@ -34,7 +34,7 @@
   },
   "ingest": {
     "label": "政府データから今すぐ更新",
-    "result": "書き込み：{written}／スキップ：{skipped}／却下：{rejected}",
+    "result": "書き込み：{written}／スキップ：{skipped}／却下：{rejected}／祝日：{holidays}",
     "none": "なし",
     "unchecked": "公式データを完全に取得できなかったか却下された期間があるため、最新の期間は確認済みになっていません。"
   }
