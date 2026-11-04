@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import Admins from ".";
+
+import ErrorAlert from "@/components/ErrorAlert";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -22,7 +25,7 @@ import {
   resolveGridSearchParams,
 } from "@/utils/dataGrid";
 import { getAdminEnumOptions } from "@/utils/enumOptions";
-import { fetcher } from "@/utils/fetcher";
+import { fetcher, settle } from "@/utils/fetcher";
 
 interface AdminsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -100,13 +103,16 @@ const AdminsContent = async ({ params, searchParams }: AdminsPageProps) => {
     sortDirection,
   });
 
-  const { data, total } = await fetcher<UserListResponse>(
-    `/api/users/list?${queryParams}`,
-    { headers: fetchOptions.headers },
+  const { data: users, error } = await settle(
+    fetcher<UserListResponse>(`/api/users/list?${queryParams}`, {
+      headers: fetchOptions.headers,
+    }),
   );
+  if (error?.status === 403) notFound();
+  if (error) return <ErrorAlert />;
 
-  const rows: User[] = data || [];
-  const rowCount = total || 0;
+  const rows: User[] = users.data || [];
+  const rowCount = users.total || 0;
 
   return (
     <Admins
