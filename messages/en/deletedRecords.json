@@ -27,7 +27,7 @@
     "closed": "The store is closed, so this data can't be restored",
     "confirm": "Restore <bold>{name}</bold>?{count, plural, =0 {} one { # related record deleted with it will be restored too.} other { # related records deleted with it will be restored too.}}",
     "forbidden": "You don't have permission to restore this data",
-    "ownerOnly": "Only the owner can restore an owner member or invitation",
+    "ownerOnly": "Only an owner can restore an owner's membership or invitation",
     "success": "{name} restored",
     "title": "Restore"
   },
