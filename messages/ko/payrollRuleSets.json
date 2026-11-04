@@ -20,6 +20,7 @@
     "title": "최저임금 확인",
     "hint": "공식 최저임금 데이터가 아직 {period}부터의 금액으로 업데이트되지 않았습니다. 노동부 공고에 따라 시간당 최저임금을 입력하세요.",
     "minimumHourlyWage": "공고된 시간당 최저임금(NT$)",
+    "currentWages": "이전 기간에서 이어받은 시간당 최저임금: NT$ {hourly}. 이번 기간 월 최저임금: NT$ {monthly}.",
     "sourceLabel": {
       "label": "공고명",
       "placeholder": "예: 노동부 최저임금 공고",

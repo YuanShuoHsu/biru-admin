@@ -26,13 +26,17 @@ import { toCents } from "@/utils/attendance";
 import { getErrorMessage } from "@/utils/errors";
 
 interface ConfirmRuleSetDialogProps {
+  carriedHourlyWage: string;
   effectiveFrom: string;
+  minimumMonthlyWage: string;
   mutate: () => void;
   period: string;
 }
 
 const ConfirmRuleSetDialog = ({
+  carriedHourlyWage,
   effectiveFrom,
+  minimumMonthlyWage,
   mutate,
   period,
 }: ConfirmRuleSetDialogProps) => {
@@ -97,7 +101,13 @@ const ConfirmRuleSetDialog = ({
       <NumberSpinner
         error={!!errors.minimumHourlyWage}
         fullWidth
-        helperText={errors.minimumHourlyWage?.message}
+        helperText={
+          errors.minimumHourlyWage?.message ??
+          tPayrollRuleSets("confirm.currentWages", {
+            hourly: carriedHourlyWage,
+            monthly: minimumMonthlyWage,
+          })
+        }
         label={tPayrollRuleSets("confirm.minimumHourlyWage")}
         max={MINIMUM_HOURLY_WAGE_MAX}
         min={0}

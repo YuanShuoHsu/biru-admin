@@ -20,6 +20,7 @@
     "title": "Confirm minimum wage",
     "hint": "The official minimum wage data has not been updated for {period} onward yet. Enter the hourly minimum wage announced by the Ministry of Labor.",
     "minimumHourlyWage": "Announced hourly minimum wage (NT$)",
+    "currentWages": "Hourly minimum wage carried over from the previous period: NT$ {hourly}. Monthly minimum wage for this period: NT$ {monthly}.",
     "sourceLabel": {
       "label": "Announcement title",
       "placeholder": "e.g. Ministry of Labor minimum wage announcement",

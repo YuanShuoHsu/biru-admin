@@ -20,6 +20,7 @@
     "title": "确认最低工资",
     "hint": "官方最低工资数据尚未更新 {period} 起的数值，请依劳动部公告填入每小时最低工资。",
     "minimumHourlyWage": "公告每小时最低工资（元）",
+    "currentWages": "目前沿用每小时 {hourly} 元；本期每月最低工资 {monthly} 元。",
     "sourceLabel": {
       "label": "公告名称",
       "placeholder": "例：劳动部公告 115 年最低工资",

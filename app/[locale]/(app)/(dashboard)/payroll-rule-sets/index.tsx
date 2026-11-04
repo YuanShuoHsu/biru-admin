@@ -103,11 +103,19 @@ const PayrollRuleSets = ({ ruleSets }: PayrollRuleSetsProps) => {
   );
 
   const handleConfirm = useCallback(
-    ({ effectiveFrom }: PayrollRuleSet) =>
+    ({ effectiveFrom, rules }: PayrollRuleSet) =>
       setDialog({
         content: (
           <ConfirmRuleSetDialog
+            carriedHourlyWage={formatMoney(
+              fromCents(rules.minimumHourlyWageCents),
+              null,
+            )}
             effectiveFrom={effectiveFrom}
+            minimumMonthlyWage={formatMoney(
+              fromCents(rules.minimumMonthlyWageCents),
+              null,
+            )}
             mutate={mutate}
             period={formatMonth(effectiveFrom)}
           />
@@ -116,7 +124,7 @@ const PayrollRuleSets = ({ ruleSets }: PayrollRuleSetsProps) => {
         open: true,
         title: tPayrollRuleSets("confirm.title"),
       }),
-    [formatMonth, mutate, setDialog, tPayrollRuleSets],
+    [formatMoney, formatMonth, mutate, setDialog, tPayrollRuleSets],
   );
 
   const handleIngest = async () => {
