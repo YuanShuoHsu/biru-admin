@@ -3,12 +3,17 @@ import { cache } from "react";
 import { fetcher } from "./fetcher";
 
 import type {
+  QuantBot,
   QuantBotFilterField,
   QuantBotListResponse,
   QuantBotSortField,
 } from "@/types/quant";
 
 import { type GridQuery, getGridSearchParams } from "@/utils/dataGrid";
+
+export const getQuantBot = cache(async (botId: string, init?: RequestInit) =>
+  fetcher<QuantBot>(`/api/quant/bots/${botId}`, init),
+);
 
 export const getQuantBots = cache(
   async (
