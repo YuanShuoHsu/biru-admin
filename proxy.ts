@@ -52,17 +52,16 @@ const isOrganizationMember = async (request: NextRequest) => {
 export const proxy = async (request: NextRequest) => {
   const { pathname } = request.nextUrl;
 
-  const pathnameLocale = routing.locales.find(
+  const locale = routing.locales.find(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`,
   );
 
-  const locale = pathnameLocale || routing.defaultLocale;
-
   const response = handleI18nRouting(request);
 
+  if (!locale) return response;
+
   const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE === "true";
-  const isMaintenancePath =
-    pathnameLocale && pathname === `/${pathnameLocale}/maintenance`;
+  const isMaintenancePath = pathname === `/${locale}/maintenance`;
 
   if (isMaintenanceMode) {
     if (isMaintenancePath) return response;
