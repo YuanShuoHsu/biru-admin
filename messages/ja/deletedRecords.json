@@ -26,6 +26,7 @@
   "restore": {
     "closed": "店舗が閉店中のため、このデータは復元できません",
     "confirm": "<bold>{name}</bold> を復元しますか？{count, plural, =0 {} other {同時に削除された関連データ # 件も復元されます。}}",
+    "forbidden": "このデータを復元する権限がありません",
     "success": "{name} を復元しました",
     "title": "復元"
   },

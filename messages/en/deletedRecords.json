@@ -26,6 +26,7 @@
   "restore": {
     "closed": "The store is closed, so this data can't be restored",
     "confirm": "Restore <bold>{name}</bold>?{count, plural, =0 {} one { # related record deleted with it will be restored too.} other { # related records deleted with it will be restored too.}}",
+    "forbidden": "You don't have permission to restore this data",
     "success": "{name} restored",
     "title": "Restore"
   },
