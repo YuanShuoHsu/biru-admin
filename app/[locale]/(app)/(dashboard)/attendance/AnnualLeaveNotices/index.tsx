@@ -162,6 +162,7 @@ const AnnualLeaveNotices = ({
       ),
     {
       fallbackData: { data: initialRows, total: initialRowCount },
+      keepPreviousData: true,
       onSuccess: () => {
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
