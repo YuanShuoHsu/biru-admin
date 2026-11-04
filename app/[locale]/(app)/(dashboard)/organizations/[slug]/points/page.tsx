@@ -10,8 +10,6 @@ import ErrorAlert from "@/components/ErrorAlert";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-import { authClient } from "@/lib/auth-client";
-
 import {
   filterOperatorValues,
   pointTransactionFilterFieldValues,
@@ -24,7 +22,7 @@ import { getPointTransactionEnumOptions } from "@/utils/enumOptions";
 import { fetcher, settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getOrganizationPointTransactions } from "@/utils/points";
-import { getSession } from "@/utils/session";
+import { getFullOrganization, getSession } from "@/utils/session";
 
 interface OrganizationsSlugPointsPageProps {
   params: Promise<{ locale: Locale; slug: string }>;
@@ -65,10 +63,7 @@ const OrganizationsSlugPointsPage = async ({
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
   const [{ data, error }, session] = await Promise.all([
-    authClient.organization.getFullOrganization({
-      query: { organizationSlug: decodeURIComponent(slug) },
-      fetchOptions,
-    }),
+    settle(getFullOrganization(decodeURIComponent(slug))),
     getSession(),
   ]);
 
