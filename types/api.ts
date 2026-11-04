@@ -1486,7 +1486,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** 從政府開放資料更新投保級距 */
+    /** 從政府開放資料更新投保級距與國定假日 */
     post: operations["AdminPayrollRulesController_ingest"];
     delete?: never;
     options?: never;
@@ -7630,6 +7630,7 @@ export interface components {
       skipped: string[];
       rejected: string[];
       checked: boolean;
+      holidayYears: number[];
     };
     ConfirmRuleSetDto: {
       minimumHourlyWageCents: string;

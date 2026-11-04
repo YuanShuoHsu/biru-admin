@@ -131,7 +131,7 @@ const PayrollRuleSets = ({ ruleSets }: PayrollRuleSetsProps) => {
     try {
       setIngesting(true);
 
-      const { checked, rejected, skipped, written } =
+      const { checked, holidayYears, rejected, skipped, written } =
         await fetcher<PayrollRuleIngestResult>(
           `${PAYROLL_RULE_SETS_PATH}/ingest`,
           { method: "POST" },
@@ -143,6 +143,9 @@ const PayrollRuleSets = ({ ruleSets }: PayrollRuleSetsProps) => {
           : tPayrollRuleSets("ingest.none");
 
       const result = tPayrollRuleSets("ingest.result", {
+        holidays: holidayYears.length
+          ? format.list(holidayYears.map(String), "enumeration")
+          : tPayrollRuleSets("ingest.none"),
         rejected: periods(rejected),
         skipped: periods(skipped),
         written: periods(written),

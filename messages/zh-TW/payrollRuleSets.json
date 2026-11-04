@@ -35,7 +35,7 @@
   },
   "ingest": {
     "label": "立即從政府資料更新",
-    "result": "寫入：{written}；略過：{skipped}；拒絕：{rejected}",
+    "result": "寫入：{written}；略過：{skipped}；拒絕：{rejected}；國定假日：{holidays}",
     "none": "無",
     "unchecked": "未能完整取得官方資料或有版本被拒絕，最新版本未標記為已檢查。"
   }
