@@ -183,6 +183,7 @@ const MineContent = async ({ params, searchParams }: MinePageProps) => {
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
+      key={organization.slug}
       leaveCases={leaveCases}
       leaveTypes={leaveTypes}
       organization={organization}

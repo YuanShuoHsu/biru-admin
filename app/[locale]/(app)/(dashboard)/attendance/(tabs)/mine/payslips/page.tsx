@@ -115,6 +115,7 @@ const PayslipsContent = async ({ params, searchParams }: PayslipsPageProps) => {
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
+      key={organization.slug}
       organization={organization}
       page={page}
       pageSize={pageSize}

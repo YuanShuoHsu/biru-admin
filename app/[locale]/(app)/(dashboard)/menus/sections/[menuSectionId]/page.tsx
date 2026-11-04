@@ -154,6 +154,7 @@ const MenusMenuIdSectionIdContent = async ({
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
+      key={selectedOrganization.slug}
       organization={selectedOrganization}
       page={page}
       pageSize={pageSize}

@@ -121,6 +121,7 @@ const ShiftTypesContent = async ({
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
+      key={organization.slug}
       organization={organization}
       page={page}
       pageSize={pageSize}

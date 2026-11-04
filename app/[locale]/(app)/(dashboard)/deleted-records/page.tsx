@@ -141,6 +141,7 @@ const DeletedRecordsContent = async ({
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
+      key={organization?.slug}
       organizationSlug={organization?.slug}
       page={page}
       pageSize={pageSize}

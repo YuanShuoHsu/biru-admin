@@ -152,6 +152,7 @@ const ModifiersContent = async ({
       filterOperator={filterOperator}
       filterValue={filterValue}
       group={group}
+      key={selectedOrganization.slug}
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}

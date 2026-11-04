@@ -167,6 +167,7 @@ const RecipeIngredientsContent = async ({
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
+      key={selectedOrganization.slug}
       menuItem={menuItem}
       organizationSlug={selectedOrganization.slug}
       page={page}
