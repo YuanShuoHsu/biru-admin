@@ -40,6 +40,7 @@ export type OrderTicketPrinterStatus =
 export type ResetInvoicePrintDto =
   components["schemas"]["ResetInvoicePrintDto"];
 export type VoidInvoiceDto = components["schemas"]["VoidInvoiceDto"];
+export type OrderVoidedInvoice = components["schemas"]["VoidedInvoiceDto"];
 export type OrderPaymentNotification =
   components["schemas"]["OrderPaymentNotificationDto"];
 export type OrderRefund = components["schemas"]["OrderRefundDto"];

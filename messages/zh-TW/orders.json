@@ -222,6 +222,12 @@
     "total": "總計",
     "transaction": {
       "title": "交易資訊"
+    },
+    "voidedInvoices": {
+      "operator": "作廢人員",
+      "reason": "作廢原因",
+      "title": "作廢發票紀錄",
+      "voidedAt": "作廢時間"
     }
   },
   "invoiceStatus": "發票狀態",

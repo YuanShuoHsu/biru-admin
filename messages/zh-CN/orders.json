@@ -222,6 +222,12 @@
     "total": "总计",
     "transaction": {
       "title": "交易信息"
+    },
+    "voidedInvoices": {
+      "operator": "作废人员",
+      "reason": "作废原因",
+      "title": "作废发票记录",
+      "voidedAt": "作废时间"
     }
   },
   "invoiceStatus": "发票状态",

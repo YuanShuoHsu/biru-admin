@@ -222,6 +222,12 @@
     "total": "합계",
     "transaction": {
       "title": "거래 정보"
+    },
+    "voidedInvoices": {
+      "operator": "취소 처리자",
+      "reason": "취소 사유",
+      "title": "취소된 세금계산서",
+      "voidedAt": "취소 일시"
     }
   },
   "invoiceStatus": "영수증 상태",
