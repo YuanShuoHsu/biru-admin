@@ -9953,7 +9953,6 @@ export interface components {
     PointSettingResponseDto: {
       id: string;
       amountPerPoint: string | null;
-      pointsValidityYears: number | null;
       /** Format: date-time */
       pointsEnabledAt: string | null;
       accountingValuePerPoint: string | null;
@@ -9963,8 +9962,6 @@ export interface components {
     UpdatePointSettingDto: {
       /** @description 消費多少元換 1 點；null = 停用點數 */
       amountPerPoint?: number | null;
-      /** @description 點數有效年限；null = 不會到期 */
-      pointsValidityYears?: number | null;
       /** @description 每點的會計價值（元），只用於對帳 */
       accountingValuePerPoint?: number | null;
     };
@@ -11169,7 +11166,6 @@ export interface components {
        */
       currency: string;
       amountPerPoint?: string | null;
-      pointsValidityYears?: number | null;
       pickupLeadMinutes: number;
       pickupMaxAdvanceDays: number;
       pickupCutoffMinutes: number;
@@ -11208,7 +11204,6 @@ export interface components {
        */
       currency: string;
       amountPerPoint?: string | null;
-      pointsValidityYears?: number | null;
       pickupLeadMinutes: number;
       pickupMaxAdvanceDays: number;
       pickupCutoffMinutes: number;

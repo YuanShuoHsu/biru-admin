@@ -12,7 +12,6 @@ import {
 } from "./definitions";
 
 import FormBox from "@/components/FormBox";
-import NumberSpinner from "@/components/NumberSpinner";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -60,22 +59,14 @@ const UpdatePointSettingDialog = ({
         pointSetting.accountingValuePerPoint,
       ),
       amountPerPoint: toFormValue(pointSetting.amountPerPoint),
-      pointsValidityYears: toFormValue(pointSetting.pointsValidityYears),
     },
     resolver: zodResolver(updatePointSettingFormSchema),
   });
 
-  const [accountingValuePerPoint, amountPerPoint, pointsValidityYears] =
-    useWatch({
-      control,
-      name: [
-        "accountingValuePerPoint",
-        "amountPerPoint",
-        "pointsValidityYears",
-      ],
-    });
-
-  const enabled = amountPerPoint !== "";
+  const [accountingValuePerPoint, amountPerPoint] = useWatch({
+    control,
+    name: ["accountingValuePerPoint", "amountPerPoint"],
+  });
 
   const onSubmitHandler = async (values: UpdatePointSettingForm) => {
     try {
@@ -87,9 +78,6 @@ const UpdatePointSettingDialog = ({
             values.accountingValuePerPoint,
           ),
           amountPerPoint: toNumberOrNull(values.amountPerPoint),
-          pointsValidityYears: enabled
-            ? toNumberOrNull(values.pointsValidityYears)
-            : null,
         },
       });
 
@@ -134,28 +122,6 @@ const UpdatePointSettingDialog = ({
         thousandSeparator=","
         value={amountPerPoint}
         valueIsNumericString
-      />
-      <NumberSpinner
-        clearable
-        disabled={!enabled}
-        fullWidth
-        helperText={
-          enabled ? undefined : tPointSettings("pointsValidityYears.disabled")
-        }
-        label={`${tPointSettings("pointsValidityYears.label")} ${tCommon("optional")}`}
-        max={100}
-        min={1}
-        onValueChange={(value) =>
-          setValue("pointsValidityYears", value != null ? String(value) : "", {
-            shouldValidate: isSubmitted,
-          })
-        }
-        placeholder={tPointSettings("pointsValidityYears.placeholder")}
-        value={
-          enabled && pointsValidityYears !== ""
-            ? Number(pointsValidityYears)
-            : null
-        }
       />
       <NumericFormat
         allowNegative={false}

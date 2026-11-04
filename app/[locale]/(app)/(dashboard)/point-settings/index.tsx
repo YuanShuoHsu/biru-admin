@@ -29,12 +29,8 @@ const PointSettings = ({ pointSetting }: PointSettingsProps) => {
       title: tPointSettings("update.title"),
     });
 
-  const {
-    accountingValuePerPoint,
-    amountPerPoint,
-    pointsEnabledAt,
-    pointsValidityYears,
-  } = pointSetting;
+  const { accountingValuePerPoint, amountPerPoint, pointsEnabledAt } =
+    pointSetting;
 
   const items = [
     {
@@ -46,16 +42,6 @@ const PointSettings = ({ pointSetting }: PointSettingsProps) => {
               value: Number(amountPerPoint),
             })
           : tPointSettings("amountPerPoint.empty"),
-    },
-    {
-      key: "pointsValidityYears",
-      label: tPointSettings("pointsValidityYears.label"),
-      value:
-        pointsValidityYears != null
-          ? tPointSettings("pointsValidityYears.value", {
-              value: pointsValidityYears,
-            })
-          : tPointSettings("pointsValidityYears.empty"),
     },
     {
       key: "pointsEnabledAt",
