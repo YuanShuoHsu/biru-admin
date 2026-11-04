@@ -195,11 +195,6 @@ const OrganizationsSlugMembers = ({
         teams: initialTeams,
         pendingInvitationCount: 0,
       },
-      onError: ({ message }) => {
-        enqueueSnackbar(message, {
-          variant: "error",
-        });
-      },
       onSuccess: ({ pendingInvitationCount }) => {
         setCount(countKeys.pendingInvitations, pendingInvitationCount);
         setTimeout(() => {

@@ -130,11 +130,6 @@ const OrganizationsSlugTeamsTeamId = ({
     },
     {
       fallbackData: initialTeamMembers,
-      onError: ({ message }) => {
-        enqueueSnackbar(message, {
-          variant: "error",
-        });
-      },
       onSuccess: () => {
         setTimeout(() => {
           apiRef.current?.autosizeColumns(autosizeOptions);
