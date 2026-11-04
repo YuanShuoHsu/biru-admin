@@ -7509,6 +7509,11 @@ export interface components {
       | "attendance_annual_leave_deferral"
       | "attendance_holiday_substitute"
       | "payroll_earning_type";
+    /**
+     * @description 不能還原的原因：ownerOnly＝要還原擁有者成員或邀請、操作者不是擁有者；forbidden＝角色沒有這些資料的權限；closed＝門市停業中。可以還原時為 null
+     * @enum {string}
+     */
+    DeletedRecordRestoreBlockedBy: "ownerOnly" | "forbidden" | "closed";
     DeletedRecordBatchResponseDto: {
       /** @description 同一次刪除（同一個交易）的編號 */
       batchId: number;
@@ -7532,6 +7537,10 @@ export interface components {
       deletedBy?: string | null;
       /** @description 目前操作者可否還原（店內須具備各資料的建立權限） */
       canRestore: boolean;
+      /** @description 不能還原的原因：ownerOnly＝要還原擁有者成員或邀請、操作者不是擁有者；forbidden＝角色沒有這些資料的權限；closed＝門市停業中。可以還原時為 null */
+      restoreBlockedBy:
+        | components["schemas"]["DeletedRecordRestoreBlockedBy"]
+        | null;
     };
     /** @enum {string} */
     DeletedRecordFilterField: "organizationName" | "tableName" | "deletedAt";
@@ -25679,6 +25688,9 @@ export const deletedRecordTableValues: ReadonlyArray<
   "attendance_holiday_substitute",
   "payroll_earning_type",
 ];
+export const deletedRecordRestoreBlockedByValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["DeletedRecordRestoreBlockedBy"]
+> = ["ownerOnly", "forbidden", "closed"];
 export const deletedRecordFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["DeletedRecordFilterField"]
 > = ["organizationName", "tableName", "deletedAt"];

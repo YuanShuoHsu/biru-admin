@@ -82,7 +82,6 @@ interface DeletedRecordsProps {
   filterOperator?: FilterOperator;
   filterValue?: string;
   loading?: boolean;
-  organizationClosed?: boolean;
   organizationSlug?: string;
   page?: number;
   pageSize?: number;
@@ -98,7 +97,6 @@ const DeletedRecords = ({
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
   loading = false,
-  organizationClosed = false,
   organizationSlug,
   page = 1,
   pageSize = DEFAULT_PAGE_SIZE,
@@ -401,9 +399,7 @@ const DeletedRecords = ({
                     title={tDeletedRecords(
                       row.canRestore
                         ? "restore.title"
-                        : organizationClosed
-                          ? "restore.closed"
-                          : "restore.forbidden",
+                        : `restore.${row.restoreBlockedBy ?? "forbidden"}`,
                     )}
                   >
                     <span>
@@ -481,7 +477,6 @@ const DeletedRecords = ({
       handleRestore,
       isSelectMode,
       locale,
-      organizationClosed,
       organizationSlug,
       stringFilterOperators,
       tDeletedRecords,
