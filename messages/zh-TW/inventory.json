@@ -99,6 +99,11 @@
     "unitPrice": {
       "label": "單位成本"
     },
+    "unlimitedStock": {
+      "helperText": "勾選後不扣庫存，也不會因庫存不足而售完，成本照算",
+      "label": "不限量",
+      "recountHint": "不限量期間未扣庫存，請重新盤點"
+    },
     "url": {
       "label": "商品連結",
       "placeholder": "請輸入您的商品連結"

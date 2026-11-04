@@ -146,6 +146,9 @@
   "ingredientId": {
     "notSelected": "請選擇您的食材。"
   },
+  "inventoryLevel": {
+    "required": "不限量改回追蹤時，庫存為必填。"
+  },
   "invoiceType": {
     "notSelected": "請選擇您的發票類型。"
   },

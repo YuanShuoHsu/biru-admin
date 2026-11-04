@@ -99,6 +99,11 @@
     "unitPrice": {
       "label": "Unit cost"
     },
+    "unlimitedStock": {
+      "helperText": "When checked, stock is not deducted and shortages never mark items as sold out. Cost still counts.",
+      "label": "Unlimited stock",
+      "recountHint": "Stock was not deducted while unlimited. Please recount."
+    },
     "url": {
       "label": "Product link",
       "placeholder": "Please enter your Product link"

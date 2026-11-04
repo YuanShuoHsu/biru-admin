@@ -146,6 +146,9 @@
   "ingredientId": {
     "notSelected": "Please select your ingredient."
   },
+  "inventoryLevel": {
+    "required": "Stock is required when unchecking unlimited stock."
+  },
   "invoiceType": {
     "notSelected": "Please select your invoice type."
   },

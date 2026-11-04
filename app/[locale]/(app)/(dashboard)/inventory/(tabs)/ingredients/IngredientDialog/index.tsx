@@ -29,7 +29,11 @@ import { apiClient } from "@/lib/api-client";
 
 import {
   Autocomplete,
+  Checkbox,
   CircularProgress,
+  FormControl,
+  FormControlLabel,
+  FormHelperText,
   Grid,
   MenuItem,
   TextField,
@@ -60,6 +64,10 @@ type SupplierOption = Pick<Supplier, "id" | "name">;
 
 const StyledGrid = styled(Grid)({
   width: "100%",
+});
+
+const StyledFormControlLabel = styled(FormControlLabel)({
+  alignSelf: "flex-start",
 });
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
@@ -122,7 +130,11 @@ const IngredientDialog = ({
         )
       : "";
 
-  const ingredientFormSchema = useIngredientFormSchema(canViewPurchasing);
+  const savedUnlimited = !!ingredient?.unlimitedStock;
+  const ingredientFormSchema = useIngredientFormSchema(
+    canViewPurchasing,
+    savedUnlimited && canRecordTransaction,
+  );
   const {
     control,
     formState: { errors, isSubmitted },
@@ -144,6 +156,7 @@ const IngredientDialog = ({
       supplierId: ingredient?.supplierId || "",
       unitCode:
         ingredient?.eligibleQuantityUnitCode || ingredient?.unitCode || "",
+      unlimitedStock: ingredient?.unlimitedStock ?? false,
     },
     resolver: zodResolver(ingredientFormSchema),
   });
@@ -154,6 +167,7 @@ const IngredientDialog = ({
   const price = useWatch({ control, name: "price" });
   const name = useWatch({ control, name: "name" });
   const unitCode = useWatch({ control, name: "unitCode" });
+  const unlimitedStock = useWatch({ control, name: "unlimitedStock" });
 
   const packageUnitCode =
     unitCodeValues.find((unit) => unit === unitCode) ?? null;
@@ -239,7 +253,7 @@ const IngredientDialog = ({
         ? String(toBaseQuantity(Number(packages), baseQuantity))
         : null;
 
-  const stockPayload = toStockPayload(inventoryLevel);
+  const stockPayload = unlimitedStock ? null : toStockPayload(inventoryLevel);
   const stockDelta =
     ingredient && stockPayload != null
       ? Number(stockPayload) - Number(ingredient.inventoryLevel)
@@ -309,6 +323,7 @@ const IngredientDialog = ({
       }),
       price: values.price,
       supplierId: values.supplierId || null,
+      unlimitedStock: values.unlimitedStock,
       url: values.url || null,
     };
 
@@ -481,82 +496,124 @@ const IngredientDialog = ({
           </TextField>
         </Grid>
       </StyledGrid>
-      <StyledGrid container spacing={2}>
-        <Grid size={{ xs: 12, sm: 6 }}>
+      <FormControl disabled={!editable}>
+        <StyledFormControlLabel
+          control={
+            <Checkbox
+              checked={unlimitedStock}
+              onChange={(_, checked) => {
+                setValue("unlimitedStock", checked);
+                if (savedUnlimited && stockEditable)
+                  setValue("inventoryLevel", checked ? initialStock : "");
+              }}
+            />
+          }
+          label={tInventory("ingredients.unlimitedStock.label")}
+        />
+        <FormHelperText>
+          {tInventory("ingredients.unlimitedStock.helperText")}
+        </FormHelperText>
+      </FormControl>
+      {!unlimitedStock && (
+        <>
+          <StyledGrid container spacing={2}>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <NumberSpinner
+                clearable
+                disabled={!baseQuantity || !stockEditable}
+                error={!!errors.inventoryLevel}
+                format={{ maximumFractionDigits: 3 }}
+                fullWidth
+                helperText={
+                  errors.inventoryLevel?.message ||
+                  (savedUnlimited && (!inventoryLevel || !stockEditable)
+                    ? tInventory("ingredients.unlimitedStock.recountHint")
+                    : packageHint(
+                        inventoryLevel,
+                        stockDelta,
+                        stockNote ? [stockNote] : [],
+                      ))
+                }
+                label={
+                  savedUnlimited && stockEditable
+                    ? tInventory("ingredients.inventoryLevel.label")
+                    : `${tInventory("ingredients.inventoryLevel.label")} ${tCommon("optional")}`
+                }
+                max={maxPackages(baseQuantity)}
+                min={0}
+                onValueChange={(value) =>
+                  setValue(
+                    "inventoryLevel",
+                    value != null ? String(value) : "",
+                    {
+                      shouldValidate: isSubmitted,
+                    },
+                  )
+                }
+                placeholder={tInventory(
+                  "ingredients.inventoryLevel.placeholder",
+                )}
+                step="any"
+                value={inventoryLevel ? Number(inventoryLevel) : null}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <StyledTextField
+                disabled={!editable}
+                error={!!errors.inventoryLevelUnitText}
+                fullWidth
+                helperText={errors.inventoryLevelUnitText?.message}
+                label={`${tInventory("ingredients.inventoryLevelUnitText.label")} ${tCommon("optional")}`}
+                placeholder={tInventory(
+                  "ingredients.inventoryLevelUnitText.placeholder",
+                )}
+                {...register("inventoryLevelUnitText")}
+              />
+            </Grid>
+          </StyledGrid>
+          {stockEditable && stockChanged && (
+            <TextField
+              error={!!errors.transactionNote}
+              fullWidth
+              helperText={errors.transactionNote?.message}
+              label={`${tInventory("ingredients.transactionNote.label")} ${tCommon("optional")}`}
+              placeholder={tInventory(
+                "ingredients.transactionNote.placeholder",
+              )}
+              {...register("transactionNote")}
+            />
+          )}
           <NumberSpinner
             clearable
-            disabled={!baseQuantity || !stockEditable}
-            error={!!errors.inventoryLevel}
+            disabled={!baseQuantity || !editable}
+            error={!!errors.lowStockThreshold}
             format={{ maximumFractionDigits: 3 }}
             fullWidth
             helperText={
-              errors.inventoryLevel?.message ||
-              packageHint(
-                inventoryLevel,
-                stockDelta,
-                stockNote ? [stockNote] : [],
-              )
+              errors.lowStockThreshold?.message ||
+              packageHint(lowStockThreshold, lowStockThresholdDelta)
             }
-            label={`${tInventory("ingredients.inventoryLevel.label")} ${tCommon("optional")}`}
+            label={`${tInventory("ingredients.lowStockThreshold.label")} ${tCommon("optional")}`}
             max={maxPackages(baseQuantity)}
             min={0}
             onValueChange={(value) =>
-              setValue("inventoryLevel", value != null ? String(value) : "", {
-                shouldValidate: isSubmitted,
-              })
+              setValue(
+                "lowStockThreshold",
+                value != null ? String(value) : "",
+                {
+                  shouldValidate: isSubmitted,
+                },
+              )
             }
-            placeholder={tInventory("ingredients.inventoryLevel.placeholder")}
-            step="any"
-            value={inventoryLevel ? Number(inventoryLevel) : null}
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <StyledTextField
-            disabled={!editable}
-            error={!!errors.inventoryLevelUnitText}
-            fullWidth
-            helperText={errors.inventoryLevelUnitText?.message}
-            label={`${tInventory("ingredients.inventoryLevelUnitText.label")} ${tCommon("optional")}`}
             placeholder={tInventory(
-              "ingredients.inventoryLevelUnitText.placeholder",
+              "ingredients.lowStockThreshold.placeholder",
             )}
-            {...register("inventoryLevelUnitText")}
+            smallStep={1}
+            step="any"
+            value={lowStockThreshold ? Number(lowStockThreshold) : null}
           />
-        </Grid>
-      </StyledGrid>
-      {stockEditable && stockChanged && (
-        <TextField
-          error={!!errors.transactionNote}
-          fullWidth
-          helperText={errors.transactionNote?.message}
-          label={`${tInventory("ingredients.transactionNote.label")} ${tCommon("optional")}`}
-          placeholder={tInventory("ingredients.transactionNote.placeholder")}
-          {...register("transactionNote")}
-        />
+        </>
       )}
-      <NumberSpinner
-        clearable
-        disabled={!baseQuantity || !editable}
-        error={!!errors.lowStockThreshold}
-        format={{ maximumFractionDigits: 3 }}
-        fullWidth
-        helperText={
-          errors.lowStockThreshold?.message ||
-          packageHint(lowStockThreshold, lowStockThresholdDelta)
-        }
-        label={`${tInventory("ingredients.lowStockThreshold.label")} ${tCommon("optional")}`}
-        max={maxPackages(baseQuantity)}
-        min={0}
-        onValueChange={(value) =>
-          setValue("lowStockThreshold", value != null ? String(value) : "", {
-            shouldValidate: isSubmitted,
-          })
-        }
-        placeholder={tInventory("ingredients.lowStockThreshold.placeholder")}
-        smallStep={1}
-        step="any"
-        value={lowStockThreshold ? Number(lowStockThreshold) : null}
-      />
       {canViewPurchasing && (
         <>
           <Autocomplete

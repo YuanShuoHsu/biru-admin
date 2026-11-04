@@ -146,6 +146,9 @@
   "ingredientId": {
     "notSelected": "食材を選択してください。"
   },
+  "inventoryLevel": {
+    "required": "在庫制限なしを解除する場合、在庫は必須です。"
+  },
   "invoiceType": {
     "notSelected": "インボイスの種類を選択してください。"
   },

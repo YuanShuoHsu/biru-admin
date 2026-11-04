@@ -99,6 +99,11 @@
     "unitPrice": {
       "label": "단위 원가"
     },
+    "unlimitedStock": {
+      "helperText": "선택하면 재고를 차감하지 않고 재고 부족으로 품절되지도 않습니다. 원가는 계속 계산됩니다.",
+      "label": "재고 무제한",
+      "recountHint": "재고 무제한 기간에는 재고가 차감되지 않았습니다. 다시 실사해 주세요."
+    },
     "url": {
       "label": "상품 링크",
       "placeholder": "상품 링크를 입력해 주세요"

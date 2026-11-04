@@ -165,6 +165,7 @@
     "total": "合計",
     "type": "種別",
     "unitCode": "単位",
+    "unlimitedStock": "在庫制限なし",
     "url": "商品リンク",
     "usedAt": "使用日時",
     "user": "会員",

@@ -9000,6 +9000,11 @@ export interface components {
       url?: string | null;
       note?: string | null;
       /**
+       * @description 不限量的食材不扣庫存、不判斷售完、不發低庫存警示；成本照算。庫存與 lowStockThreshold 會保留，改回追蹤後沿用
+       * @default false
+       */
+      unlimitedStock: boolean;
+      /**
        * @description 開帳數量；系統會一併寫入盤點帳本
        * @example 500.000
        */
@@ -9024,6 +9029,7 @@ export interface components {
       supplierName?: string | null;
       unitCode: components["schemas"]["UnitCode"];
       inventoryLevel: string;
+      unlimitedStock: boolean;
       /** @description inventoryLevel 顯示用的單位；不參與 unitCode 的換算 */
       inventoryLevelUnitText?: string | null;
       lowStockThreshold?: string | null;
@@ -9206,6 +9212,11 @@ export interface components {
        */
       url?: string | null;
       note?: string | null;
+      /**
+       * @description 不限量的食材不扣庫存、不判斷售完、不發低庫存警示；成本照算。庫存與 lowStockThreshold 會保留，改回追蹤後沿用
+       * @default false
+       */
+      unlimitedStock: boolean;
       /**
        * @description 開帳數量；系統會一併寫入盤點帳本
        * @example 500.000

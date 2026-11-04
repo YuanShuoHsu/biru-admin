@@ -835,7 +835,10 @@ const Ingredients = ({
         filterOperators: numberFilterOperators,
         headerName: `${tInventory("ingredients.inventoryLevel.label")} ${tCommon("optional")}`,
         renderCell: ({ row }: GridRenderCellParams<Ingredient>) => {
-          const { inventoryLevel, lowStockThreshold } = row;
+          const { inventoryLevel, lowStockThreshold, unlimitedStock } = row;
+          if (unlimitedStock)
+            return tInventory("ingredients.unlimitedStock.label");
+
           const level = Number(inventoryLevel);
           const isOutOfStock = level <= 0;
           const isLowStock =
@@ -873,7 +876,7 @@ const Ingredients = ({
         filterOperators: numberFilterOperators,
         headerName: `${tInventory("ingredients.lowStockThreshold.label")} ${tCommon("optional")}`,
         renderCell: ({ row }: GridRenderCellParams<Ingredient>) =>
-          row.lowStockThreshold == null ? (
+          row.unlimitedStock || row.lowStockThreshold == null ? (
             <EmptyCell />
           ) : (
             <StockCell
