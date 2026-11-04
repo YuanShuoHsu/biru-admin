@@ -5,7 +5,7 @@
         "label": "쿠폰 일괄 삭제 취소"
       },
       "submit": {
-        "confirm": "다음 <bold>{count}개의 쿠폰</bold>을(를) 삭제하시겠습니까?",
+        "confirm": "다음 <bold>{count}개의 쿠폰</bold>을 삭제하시겠습니까?",
         "label": "선택한 쿠폰 삭제 ({count})",
         "success": "쿠폰 {count}개를 삭제했습니다"
       },

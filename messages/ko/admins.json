@@ -27,7 +27,7 @@
         "label": "사용자 일괄 삭제 취소"
       },
       "submit": {
-        "confirm": "다음 <bold>{count}개의 사용자</bold>을(를) 삭제하시겠습니까?",
+        "confirm": "다음 <bold>{count}개의 사용자</bold>를 삭제하시겠습니까?",
         "label": "선택한 사용자 삭제 ({count})",
         "success": "사용자 {count}개를 삭제했습니다"
       },
@@ -116,9 +116,9 @@
           "confirm": "<bold>세션</bold> 일괄 취소를 취소하시겠습니까? 선택한 항목이 해제됩니다.",
           "label": "세션 일괄 취소 취소"
         },
-        "confirm": "<bold>세션</bold>을(를) 일괄 취소하시겠습니까?",
+        "confirm": "<bold>세션</bold>을 일괄 취소하시겠습니까?",
         "submit": {
-          "confirm": "선택한 <bold>{count}개의 세션</bold>을(를) 취소하시겠습니까?",
+          "confirm": "선택한 <bold>{count}개의 세션</bold>을 취소하시겠습니까?",
           "label": "선택한 세션 취소 ({count})",
           "success": "세션 {count}개를 취소했습니다"
         },

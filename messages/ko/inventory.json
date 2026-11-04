@@ -7,7 +7,7 @@
           "label": "식자재 일괄 삭제 취소"
         },
         "submit": {
-          "confirm": "다음 <bold>{count}개의 식자재</bold>을(를) 삭제하시겠습니까?",
+          "confirm": "다음 <bold>{count}개의 식자재</bold>를 삭제하시겠습니까?",
           "label": "선택한 식자재 삭제 ({count})",
           "success": "식자재 {count}개를 삭제했습니다"
         },
@@ -46,7 +46,7 @@
     },
     "brand": {
       "label": "브랜드",
-      "placeholder": "브랜드을(를) 입력해 주세요"
+      "placeholder": "브랜드를 입력해 주세요"
     },
     "eligibleQuantity": {
       "label": "내용량",
@@ -72,15 +72,15 @@
     "lowStockReached": "{names}이(가) 재고 부족 기준 이하로 떨어졌습니다",
     "lowStockThreshold": {
       "label": "재고 부족 기준",
-      "placeholder": "재고 부족 기준을(를) 입력해 주세요"
+      "placeholder": "재고 부족 기준을 입력해 주세요"
     },
     "name": {
       "label": "식자재 이름",
-      "placeholder": "식자재 이름을(를) 입력해 주세요"
+      "placeholder": "식자재 이름을 입력해 주세요"
     },
     "note": {
       "label": "비고",
-      "placeholder": "비고을(를) 입력해 주세요"
+      "placeholder": "비고를 입력해 주세요"
     },
     "outOfStock": "재고 없음",
     "packageRequired": "먼저 내용량과 단위를 입력해 주세요",
@@ -90,25 +90,25 @@
     },
     "supplierId": {
       "label": "공급업체",
-      "placeholder": "공급업체을(를) 선택해 주세요"
+      "placeholder": "공급업체를 선택해 주세요"
     },
     "transactionNote": {
       "label": "재고 변동 비고",
-      "placeholder": "재고 변동 비고을(를) 입력해 주세요"
+      "placeholder": "재고 변동 비고를 입력해 주세요"
     },
     "unitPrice": {
       "label": "단위 원가"
     },
     "url": {
       "label": "상품 링크",
-      "placeholder": "상품 링크을(를) 입력해 주세요"
+      "placeholder": "상품 링크를 입력해 주세요"
     }
   },
   "label": "재고",
   "recipes": {
     "actions": {
       "updateRecipe": {
-        "success": "분량이(가) 업데이트되었습니다",
+        "success": "분량이 업데이트되었습니다",
         "title": "분량 편집"
       },
       "viewRecipeIngredients": {
@@ -132,19 +132,19 @@
             "label": "재료 일괄 삭제 취소"
           },
           "submit": {
-            "confirm": "다음 <bold>{count}개의 재료</bold>을(를) 삭제하시겠습니까?",
+            "confirm": "다음 <bold>{count}개의 재료</bold>를 삭제하시겠습니까?",
             "label": "선택한 재료 삭제 ({count})",
             "success": "재료 {count}개를 삭제했습니다"
           },
           "title": "재료 일괄 삭제"
         },
         "createRecipeIngredient": {
-          "success": "재료이(가) 추가되었습니다",
+          "success": "재료가 추가되었습니다",
           "title": "재료 추가"
         },
         "deleteRecipeIngredient": {
           "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
-          "success": "재료이(가) 삭제되었습니다",
+          "success": "재료가 삭제되었습니다",
           "title": "재료 삭제"
         },
         "label": "작업",
@@ -162,7 +162,7 @@
           "title": "재료 정렬"
         },
         "updateRecipeIngredient": {
-          "success": "재료이(가) 업데이트되었습니다",
+          "success": "재료가 업데이트되었습니다",
           "title": "재료 편집"
         }
       },
@@ -171,12 +171,12 @@
       },
       "ingredientId": {
         "label": "식자재",
-        "placeholder": "식자재을(를) 선택해 주세요"
+        "placeholder": "식자재를 선택해 주세요"
       },
       "label": "재료",
       "requiredQuantity": {
         "label": "사용량",
-        "placeholder": "사용량을(를) 입력해 주세요"
+        "placeholder": "사용량을 입력해 주세요"
       },
       "unitPrice": {
         "label": "단위 원가"
@@ -188,7 +188,7 @@
     },
     "recipeYield": {
       "label": "분량",
-      "placeholder": "분량을(를) 입력해 주세요",
+      "placeholder": "분량을 입력해 주세요",
       "unit": "인분"
     }
   },
@@ -200,47 +200,47 @@
           "label": "공급업체 일괄 삭제 취소"
         },
         "submit": {
-          "confirm": "다음 <bold>{count}개의 공급업체</bold>을(를) 삭제하시겠습니까?",
+          "confirm": "다음 <bold>{count}개의 공급업체</bold>를 삭제하시겠습니까?",
           "label": "선택한 공급업체 삭제 ({count})",
           "success": "공급업체 {count}개를 삭제했습니다"
         },
         "title": "공급업체 일괄 삭제"
       },
       "createSupplier": {
-        "success": "공급업체이(가) 추가되었습니다",
+        "success": "공급업체가 추가되었습니다",
         "title": "공급업체 추가"
       },
       "deleteSupplier": {
         "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
-        "success": "공급업체이(가) 삭제되었습니다",
+        "success": "공급업체가 삭제되었습니다",
         "title": "공급업체 삭제"
       },
       "label": "작업",
       "updateSupplier": {
-        "success": "공급업체이(가) 업데이트되었습니다",
+        "success": "공급업체가 업데이트되었습니다",
         "title": "공급업체 편집"
       }
     },
     "ingredients": {
       "label": "식자재",
-      "placeholder": "식자재을(를) 선택해 주세요"
+      "placeholder": "식자재를 선택해 주세요"
     },
     "label": "공급업체",
     "name": {
       "label": "공급업체 이름",
-      "placeholder": "공급업체 이름을(를) 입력해 주세요"
+      "placeholder": "공급업체 이름을 입력해 주세요"
     },
     "note": {
       "label": "비고",
-      "placeholder": "비고을(를) 입력해 주세요"
+      "placeholder": "비고를 입력해 주세요"
     },
     "telephone": {
       "label": "전화번호",
-      "placeholder": "전화번호을(를) 입력해 주세요"
+      "placeholder": "전화번호를 입력해 주세요"
     },
     "url": {
       "label": "웹사이트",
-      "placeholder": "웹사이트을(를) 입력해 주세요"
+      "placeholder": "웹사이트를 입력해 주세요"
     }
   },
   "transactions": {
@@ -250,7 +250,7 @@
     "label": "재고 변동",
     "note": {
       "label": "비고",
-      "placeholder": "비고을(를) 입력해 주세요"
+      "placeholder": "비고를 입력해 주세요"
     },
     "orderNumber": {
       "label": "주문 번호"
