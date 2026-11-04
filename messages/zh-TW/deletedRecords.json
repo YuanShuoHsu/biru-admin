@@ -26,6 +26,8 @@
   "restore": {
     "closed": "門市停業中，無法還原這類資料",
     "confirm": "確定要還原 <bold>{name}</bold> 嗎？{count, plural, =0 {} other {同一次刪除的 # 筆相關資料也會一起還原。}}",
+    "forbidden": "您沒有權限還原這類資料",
+    "ownerOnly": "只有擁有者才能還原擁有者成員或邀請",
     "success": "已還原 {name}",
     "title": "還原"
   },

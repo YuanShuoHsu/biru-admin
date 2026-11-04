@@ -398,7 +398,9 @@ const DeletedRecords = ({
                 <ActionsStack direction="row">
                   <Tooltip
                     title={tDeletedRecords(
-                      row.canRestore ? "restore.title" : "restore.closed",
+                      row.canRestore
+                        ? "restore.title"
+                        : `restore.${row.restoreBlockedBy ?? "forbidden"}`,
                     )}
                   >
                     <span>
