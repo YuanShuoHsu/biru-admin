@@ -100,16 +100,22 @@ const StyledInputAdornment = styled(InputAdornment)(({ theme }) => ({
 declare module "@mui/x-data-grid" {
   interface ToolbarPropsOverrides {
     action?: ReactNode;
+    disableExport?: boolean;
     exportDateField?: string;
   }
 }
 
 interface CustomToolbarProps {
   action?: ReactNode;
+  disableExport?: boolean;
   exportDateField?: string;
 }
 
-const CustomToolbar = ({ action, exportDateField }: CustomToolbarProps) => {
+const CustomToolbar = ({
+  action,
+  disableExport = false,
+  exportDateField,
+}: CustomToolbarProps) => {
   const apiRef = useGridApiContext();
 
   const segments = useRouteSegments();
@@ -159,50 +165,56 @@ const CustomToolbar = ({ action, exportDateField }: CustomToolbarProps) => {
           )}
         />
       </Tooltip>
-      <StyledDivider flexItem orientation="vertical" variant="middle" />
-      <Tooltip title={tToolbar("export.label")}>
-        <ToolbarButton
-          aria-controls="export-menu"
-          aria-expanded={exportMenuOpen ? "true" : undefined}
-          aria-haspopup="true"
-          id="export-menu-trigger"
-          onClick={({ currentTarget }) => setExportMenuTrigger(currentTarget)}
-        >
-          <FileDownload fontSize="small" />
-        </ToolbarButton>
-      </Tooltip>
-      <Menu
-        anchorEl={exportMenuTrigger}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        id="export-menu"
-        onClose={() => setExportMenuTrigger(null)}
-        open={exportMenuOpen}
-        slotProps={{
-          list: {
-            "aria-labelledby": "export-menu-trigger",
-          },
-        }}
-        transformOrigin={{ vertical: "top", horizontal: "right" }}
-      >
-        <ExportPrint
-          onClick={() => setExportMenuTrigger(null)}
-          options={{ fileName: exportFileName }}
-          render={<MenuItem />}
-        >
-          {tToolbar("export.print")}
-        </ExportPrint>
-        <ExportCsv
-          onClick={() => setExportMenuTrigger(null)}
-          options={{ fileName: exportFileName }}
-          render={<MenuItem />}
-        >
-          {tToolbar("export.csv")}
-        </ExportCsv>
-        {/* Available to MUI X Premium users */}
-        {/* <ExportExcel render={<MenuItem />}>
+      {!disableExport && (
+        <>
+          <StyledDivider flexItem orientation="vertical" variant="middle" />
+          <Tooltip title={tToolbar("export.label")}>
+            <ToolbarButton
+              aria-controls="export-menu"
+              aria-expanded={exportMenuOpen ? "true" : undefined}
+              aria-haspopup="true"
+              id="export-menu-trigger"
+              onClick={({ currentTarget }) =>
+                setExportMenuTrigger(currentTarget)
+              }
+            >
+              <FileDownload fontSize="small" />
+            </ToolbarButton>
+          </Tooltip>
+          <Menu
+            anchorEl={exportMenuTrigger}
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            id="export-menu"
+            onClose={() => setExportMenuTrigger(null)}
+            open={exportMenuOpen}
+            slotProps={{
+              list: {
+                "aria-labelledby": "export-menu-trigger",
+              },
+            }}
+            transformOrigin={{ vertical: "top", horizontal: "right" }}
+          >
+            <ExportPrint
+              onClick={() => setExportMenuTrigger(null)}
+              options={{ fileName: exportFileName }}
+              render={<MenuItem />}
+            >
+              {tToolbar("export.print")}
+            </ExportPrint>
+            <ExportCsv
+              onClick={() => setExportMenuTrigger(null)}
+              options={{ fileName: exportFileName }}
+              render={<MenuItem />}
+            >
+              {tToolbar("export.csv")}
+            </ExportCsv>
+            {/* Available to MUI X Premium users */}
+            {/* <ExportExcel render={<MenuItem />}>
           Download as Excel
         </ExportExcel> */}
-      </Menu>
+          </Menu>
+        </>
+      )}
       <StyledQuickFilter>
         <QuickFilterTrigger
           render={(triggerProps, state) => (

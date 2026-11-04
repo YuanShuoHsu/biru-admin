@@ -24,7 +24,7 @@
   "label": "Reports",
   "sales": {
     "discount": "Discount",
-    "net": "Net",
+    "net": "Net sales",
     "orders": "Orders",
     "quantity": "Quantity",
     "refunded": "Refunded",

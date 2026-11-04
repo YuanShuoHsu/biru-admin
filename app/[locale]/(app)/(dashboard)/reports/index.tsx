@@ -8,12 +8,27 @@ import { enqueueSnackbar } from "notistack";
 import { useMemo, useState } from "react";
 import useSWR from "swr";
 
+import {
+  DATE_FORMAT,
+  getReportPath,
+  getReportQuery,
+  isValidRange,
+  MAX_RANGE_DAYS,
+  REPORT_TABS,
+  type ReportTab,
+  type ReportView,
+  resolveReportView,
+  toStoreDate,
+} from "./definitions";
+
 import DataGrid from "@/components/DataGrid";
+import ErrorAlert from "@/components/ErrorAlert";
 
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { useFormatMoney } from "@/hooks/useFormatMoney";
+import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { Download } from "@mui/icons-material";
 import {
@@ -28,6 +43,7 @@ import {
 import { styled } from "@mui/material/styles";
 import type { GridColDef } from "@mui/x-data-grid";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import type { PickerChangeHandlerContext } from "@mui/x-date-pickers/models";
 
 import { salesReportGroupByValues } from "@/types/api";
 import type { ApiOrderMode } from "@/types/orderMode";
@@ -42,14 +58,12 @@ import type {
 } from "@/types/reports";
 
 import { getExportDateRange, getExportFileName } from "@/utils/dataGrid";
-import { getErrorMessage } from "@/utils/errors";
+import { getErrorMessage, toFetchError } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
-
-const MAX_RANGE_DAYS = 366;
 
 const UNCATEGORIZED_KEY = "uncategorized";
 
@@ -69,8 +83,6 @@ const GroupByTextField = styled(TextField)({
   minWidth: 160,
 });
 
-type ReportTab = "inventory" | "sales";
-
 const MONEY_FIELDS = ["revenue", "discount", "refunded", "net"] as const;
 
 const INVENTORY_FIELDS = [
@@ -84,33 +96,42 @@ const INVENTORY_FIELDS = [
   "variance",
 ] as const;
 
+const REPORT_DATA_GRID_PROPS = {
+  ...DATA_GRID_PROPS,
+  slotProps: {
+    ...DATA_GRID_PROPS.slotProps,
+    toolbar: { disableExport: true },
+  },
+};
+
 interface ReportsProps {
   canViewInventory?: boolean;
   canViewSales?: boolean;
+  inventory?: InventoryReportResponse;
   loading?: boolean;
   organization?: Organization;
+  sales?: SalesReportResponse;
+  view?: ReportView;
 }
 
 const Reports = ({
   canViewInventory = false,
   canViewSales = false,
+  inventory: initialInventory,
   loading = false,
   organization,
+  sales: initialSales,
+  view: initialView,
 }: ReportsProps) => {
   const organizationSlug = organization?.slug ?? "";
   const currency = organization?.currency ?? "";
 
-  const [tab, setTab] = useState<ReportTab>(
-    canViewSales || loading ? "sales" : "inventory",
+  const [view, setView] = useState<ReportView>(
+    () => initialView ?? resolveReportView({}, REPORT_TABS),
   );
-  const [startDate, setStartDate] = useState<Dayjs>(() =>
-    dayjs().tz(STORE_TIMEZONE).startOf("month"),
-  );
-  const [endDate, setEndDate] = useState<Dayjs>(() =>
-    dayjs().tz(STORE_TIMEZONE).startOf("day"),
-  );
-  const [groupBy, setGroupBy] = useState<SalesReportGroupBy>("day");
   const [exporting, setExporting] = useState(false);
+
+  const { groupBy, since, tab, until } = view;
 
   const format = useFormatter();
 
@@ -118,45 +139,65 @@ const Reports = ({
 
   const locale = useLocale();
 
+  const tCommon = useTranslations("common");
   const tInventory = useTranslations("inventory");
   const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
   const tReports = useTranslations("reports");
 
-  const reportPath = `/api/organizations/${organizationSlug}/reports/${tab}`;
+  const updateQuery = useUpdateQuery();
 
-  const query = new URLSearchParams({
-    since: startDate.startOf("day").format(),
-    until: endDate.add(1, "day").startOf("day").format(),
-    ...(tab === "sales" && { groupBy }),
-  }).toString();
+  const reportPath = getReportPath(organizationSlug, tab);
+  const query = getReportQuery(view);
 
-  const { data: sales, isValidating: isValidatingSales } = useSWR(
-    !loading && canViewSales && tab === "sales"
-      ? `${reportPath}?${query}`
-      : null,
+  const {
+    data: sales,
+    error: salesError,
+    isValidating: isValidatingSales,
+    mutate: mutateSales,
+  } = useSWR(
+    !loading && tab === "sales" ? `${reportPath}?${query}` : null,
     (url: string) => fetcher<SalesReportResponse>(url),
-    { keepPreviousData: true },
+    { fallbackData: initialSales, keepPreviousData: true },
   );
 
-  const { data: inventory, isValidating: isValidatingInventory } = useSWR(
-    !loading && canViewInventory && tab === "inventory"
-      ? `${reportPath}?${query}`
-      : null,
+  const {
+    data: inventory,
+    error: inventoryError,
+    isValidating: isValidatingInventory,
+    mutate: mutateInventory,
+  } = useSWR(
+    !loading && tab === "inventory" ? `${reportPath}?${query}` : null,
     (url: string) => fetcher<InventoryReportResponse>(url),
-    { keepPreviousData: true },
+    { fallbackData: initialInventory, keepPreviousData: true },
   );
 
-  const handleStartDateChange = (value: Dayjs | null) => {
-    if (!value?.isValid()) return;
+  const updateView = (changes: Partial<ReportView>) => {
+    setView((previous) => ({ ...previous, ...changes }));
+    updateQuery(changes);
+  };
 
-    setStartDate(value);
+  const handleSinceChange = (
+    value: Dayjs | null,
+    { validationError }: PickerChangeHandlerContext<unknown>,
+  ) => {
+    if (validationError || !value?.isValid()) return;
 
-    if (
-      endDate.isBefore(value, "day") ||
-      endDate.diff(value, "day") >= MAX_RANGE_DAYS
-    )
-      setEndDate(value);
+    const nextSince = value.format(DATE_FORMAT);
+
+    updateView({
+      since: nextSince,
+      ...(!isValidRange(nextSince, until) && { until: nextSince }),
+    });
+  };
+
+  const handleUntilChange = (
+    value: Dayjs | null,
+    { validationError }: PickerChangeHandlerContext<unknown>,
+  ) => {
+    if (validationError || !value?.isValid()) return;
+
+    updateView({ until: value.format(DATE_FORMAT) });
   };
 
   const handleExport = async () => {
@@ -167,7 +208,18 @@ const Reports = ({
         headers: { "Accept-Language": locale },
       });
 
-      if (!response.ok) throw new Error((await response.json()).message);
+      if (!response.ok) {
+        const { message } = response.headers
+          .get("content-type")
+          ?.includes("application/json")
+          ? await response.json().catch(() => ({}))
+          : {};
+
+        throw toFetchError({
+          message: message || tCommon("error.title"),
+          status: response.status,
+        });
+      }
 
       const url = URL.createObjectURL(await response.blob());
       const anchor = document.createElement("a");
@@ -176,10 +228,7 @@ const Reports = ({
         organization?.name,
         tReports("label"),
         tReports(`tabs.${tab}`),
-        getExportDateRange([
-          startDate.format("YYYY-MM-DD"),
-          endDate.format("YYYY-MM-DD"),
-        ]),
+        getExportDateRange([since, until]),
       )}.csv`;
       anchor.click();
       URL.revokeObjectURL(url);
@@ -220,6 +269,7 @@ const Reports = ({
       {
         field: "key",
         headerName: tReports(`groupBy.${shownGroupBy}`),
+        type: shownGroupBy === "hour" ? "number" : "string",
         valueGetter: (value: string, row: SalesReportRow) =>
           shownGroupBy === "hour"
             ? Number(value)
@@ -284,14 +334,16 @@ const Reports = ({
     [format, locale, tInventory, tReports],
   );
 
-  const isValidating =
-    tab === "sales" ? isValidatingSales : isValidatingInventory;
+  const isSales = tab === "sales";
+  const error = isSales ? salesError : inventoryError;
+  const isValidating = isSales ? isValidatingSales : isValidatingInventory;
+  const startDate = toStoreDate(since);
 
   return (
     <>
       <Tabs
         aria-label="report tabs"
-        onChange={(_, value: ReportTab) => setTab(value)}
+        onChange={(_, value: ReportTab) => updateView({ tab: value })}
         scrollButtons="auto"
         value={tab}
         variant="scrollable"
@@ -308,7 +360,7 @@ const Reports = ({
           disabled={loading}
           disableFuture
           label={tReports("since")}
-          onChange={handleStartDateChange}
+          onChange={handleSinceChange}
           timezone={STORE_TIMEZONE}
           value={startDate}
         />
@@ -318,16 +370,16 @@ const Reports = ({
           label={tReports("until")}
           maxDate={startDate.add(MAX_RANGE_DAYS - 1, "day")}
           minDate={startDate}
-          onChange={(value) => value?.isValid() && setEndDate(value)}
+          onChange={handleUntilChange}
           timezone={STORE_TIMEZONE}
-          value={endDate}
+          value={toStoreDate(until)}
         />
-        {tab === "sales" && (
+        {isSales && (
           <GroupByTextField
             disabled={loading}
             label={tReports("groupBy.label")}
             onChange={({ target }) =>
-              setGroupBy(target.value as SalesReportGroupBy)
+              updateView({ groupBy: target.value as SalesReportGroupBy })
             }
             select
             value={groupBy}
@@ -349,32 +401,40 @@ const Reports = ({
           {tReports("export")}
         </Button>
       </ToolbarStack>
-      {tab === "sales" && sales && (
-        <TotalsStack direction="row">
-          <Typography variant="subtitle2">{tReports("sales.total")}</Typography>
-          <Typography variant="body2">
-            {tReports("sales.orders")} {format.number(sales.totals.orders)}
-          </Typography>
-          {MONEY_FIELDS.map((field) => (
-            <Typography key={field} variant="body2">
-              {tReports(`sales.${field}`)}{" "}
-              {formatMoney(sales.totals[field], currency)}
-            </Typography>
-          ))}
-        </TotalsStack>
-      )}
-      {tab === "sales" ? (
-        <DataGrid
-          {...DATA_GRID_PROPS}
-          columns={salesColumns}
-          getRowId={({ key }) => key}
-          key={shownGroupBy}
-          loading={loading || isValidating}
-          rows={sales?.rows ?? []}
+      {error ? (
+        <ErrorAlert
+          onRetry={() => (isSales ? mutateSales() : mutateInventory())}
         />
+      ) : isSales ? (
+        <>
+          {sales && (
+            <TotalsStack direction="row">
+              <Typography variant="subtitle2">
+                {tReports("sales.total")}
+              </Typography>
+              <Typography variant="body2">
+                {tReports("sales.orders")} {format.number(sales.totals.orders)}
+              </Typography>
+              {MONEY_FIELDS.map((field) => (
+                <Typography key={field} variant="body2">
+                  {tReports(`sales.${field}`)}{" "}
+                  {formatMoney(sales.totals[field], currency)}
+                </Typography>
+              ))}
+            </TotalsStack>
+          )}
+          <DataGrid
+            {...REPORT_DATA_GRID_PROPS}
+            columns={salesColumns}
+            getRowId={({ key }) => key}
+            key={shownGroupBy}
+            loading={loading || isValidating}
+            rows={sales?.rows ?? []}
+          />
+        </>
       ) : (
         <DataGrid
-          {...DATA_GRID_PROPS}
+          {...REPORT_DATA_GRID_PROPS}
           columns={inventoryColumns}
           getRowId={({ ingredientId }) => ingredientId}
           loading={loading || isValidating}
