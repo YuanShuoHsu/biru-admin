@@ -124,7 +124,7 @@ const windowCounter = (
 });
 
 const RESTROOM_WALL = 0.1;
-export const STORE_LAYOUT_RESTROOM_DOOR_HEIGHT = 2.1;
+const STORE_LAYOUT_RESTROOM_DOOR_HEIGHT = 2.1;
 const STALL_PARTITION = 0.03;
 const STALL_PARTITION_HEIGHT = 1.85;
 const STALL_PARTITION_GAP = 0.15;
@@ -1387,7 +1387,7 @@ export const STORE_LAYOUT_STAIRWELL = {
   z: STAIR_Z,
 } as const;
 
-export const STORE_LAYOUT_STAIR_EXIT = {
+const STORE_LAYOUT_STAIR_EXIT = {
   x: STAIR_X + STAIR_FLIGHT_WIDTH / 2,
   z: STAIR_Z - 0.5,
 } as const;
