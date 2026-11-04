@@ -70,7 +70,11 @@ const StorePhotoDialog = ({ mutate, storePhoto }: StorePhotoDialogProps) => {
     try {
       setDialog({ confirmLoading: true });
 
-      const body: CreateStorePhotoDto = { alt, image: imageSrc, isActive };
+      const body: Partial<CreateStorePhotoDto> = {
+        alt,
+        isActive,
+        ...(imageSrc !== storePhoto?.image && { image: imageSrc }),
+      };
 
       await fetcher(
         storePhoto ? `/api/store-photos/${storePhoto.id}` : "/api/store-photos",
