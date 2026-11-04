@@ -774,7 +774,32 @@ const routes: Route[] = [
         segment: "market",
       },
       {
-        children: [{ icon: SmartToy, segment: "[botId]" }],
+        children: [
+          {
+            children: [
+              {
+                icon: EventNote,
+                label: "quant.bots.detail.events",
+                query: ["page", "pageSize"],
+                segment: "events",
+              },
+              {
+                icon: SwapVert,
+                label: "quant.bots.detail.fills",
+                query: ["page", "pageSize"],
+                segment: "fills",
+              },
+              {
+                icon: ReceiptLong,
+                label: "quant.bots.detail.orders",
+                query: ["page", "pageSize"],
+                segment: "orders",
+              },
+            ],
+            icon: SmartToy,
+            segment: "[botId]",
+          },
+        ],
         icon: SmartToy,
         label: "quant.bots.label",
         query: ["page", "pageSize"],

@@ -180,6 +180,7 @@ const BalancesContent = async ({ params, searchParams }: BalancesPageProps) => {
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
+      key={organization.slug}
       leaveTypes={leaveTypes.filter(
         ({ statutoryKind }) => statutoryKind === "custom",
       )}

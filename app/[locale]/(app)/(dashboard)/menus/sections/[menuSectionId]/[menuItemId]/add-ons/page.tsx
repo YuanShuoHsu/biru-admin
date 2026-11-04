@@ -139,6 +139,7 @@ const MenuItemAddOnsContent = async ({
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
+      key={selectedOrganization.slug}
       menuId={section.menuId}
       menuItemId={menuItemId}
       page={page}

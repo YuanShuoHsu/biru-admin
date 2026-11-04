@@ -199,6 +199,7 @@ const AuditLogsPage = async ({
       filterOperator={filterOperator}
       filterValue={filterValue}
       ingredient={ingredient}
+      key={selectedOrganization?.slug}
       logs={logs}
       organizations={organizations}
       organization={selectedOrganization}

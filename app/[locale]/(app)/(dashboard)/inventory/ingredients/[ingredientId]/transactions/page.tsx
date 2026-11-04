@@ -137,6 +137,7 @@ const IngredientTransactionsContent = async ({
       filterOperator={filterOperator}
       filterValue={filterValue}
       ingredient={ingredient}
+      key={organization.slug}
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}

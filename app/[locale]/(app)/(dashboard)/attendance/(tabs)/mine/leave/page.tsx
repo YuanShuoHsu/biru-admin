@@ -146,6 +146,7 @@ const MyLeaveContent = async ({ params, searchParams }: MyLeavePageProps) => {
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
+      key={organization.slug}
       leaveTypes={[]}
       organization={organization}
       page={page}

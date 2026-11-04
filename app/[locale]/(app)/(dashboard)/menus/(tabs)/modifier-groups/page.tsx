@@ -127,6 +127,7 @@ const ModifierGroupsContent = async ({
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
+      key={selectedOrganization.slug}
       menu={menu}
       page={page}
       pageSize={pageSize}

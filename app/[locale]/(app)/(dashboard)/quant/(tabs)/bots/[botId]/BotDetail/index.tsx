@@ -18,6 +18,7 @@ import StartBotConfirm from "../../StartBotConfirm";
 import StopBotConfirm from "../../StopBotConfirm";
 import WebhookSetup from "../../WebhookSetup";
 import { useBotFormDialog } from "../../BotForm";
+import { useBotMarket } from "../useBotMarket";
 import FuturesGridOperationDialog, {
   FUTURES_GRID_OPERATION_FORM_ID,
   type FuturesGridOperation,
@@ -31,10 +32,8 @@ import AiRequests from "./AiRequests";
 import EquityChart from "./EquityChart";
 import SignalPanel from "./SignalPanel";
 
-import DataGrid from "@/components/DataGrid";
+import RouteTabs from "@/components/RouteTabs";
 
-import { DATA_GRID_PROPS } from "@/constants/dataGrid";
-import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 import { quantMarketTypeOf, quantPairOf } from "@/constants/quant";
 
 import {
@@ -47,7 +46,6 @@ import {
 } from "@mui/icons-material";
 import {
   Alert,
-  Box,
   Button,
   Chip,
   DialogContentText,
@@ -57,18 +55,10 @@ import {
   Paper,
   Skeleton,
   Stack,
-  Tab,
-  Tabs,
   Tooltip,
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import type {
-  GridColDef,
-  GridPaginationModel,
-  GridRenderCellParams,
-  GridSortModel,
-} from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -77,23 +67,15 @@ import type {
   FuturesGridConfig,
   FuturesPositionConfig,
   QuantBot,
-  QuantBotEvent,
-  QuantBotFill,
-  QuantBotOrder,
-  QuantMarket,
   SignalBotConfig,
   StopQuantBotDto,
   WebhookToken,
 } from "@/types/quant";
 
-import { getDataGridSearchParams } from "@/utils/dataGrid";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 const BotChart = dynamic(() => import("./BotChart"), { ssr: false });
-
-const GRID_HEIGHT = 420;
-const TIME_COLUMN_MIN_WIDTH = 180;
 
 const STATUS_COLORS = {
   error: "error",
@@ -107,15 +89,6 @@ const Panel = styled(Paper)(({ theme }) => ({
   gap: theme.spacing(2),
   padding: theme.spacing(2),
 }));
-
-type DetailTab = "events" | "fills" | "orders";
-
-type DetailRow = QuantBotEvent | QuantBotFill | QuantBotOrder;
-
-const FIRST_PAGE: GridPaginationModel = {
-  page: 0,
-  pageSize: DEFAULT_PAGE_SIZE,
-};
 
 const Stat = ({
   color,
@@ -136,9 +109,13 @@ const Stat = ({
   </Stack>
 );
 
-const BotDetail = ({ botId }: { botId: string }) => {
+interface BotDetailProps {
+  botId: string;
+  children: React.ReactNode;
+}
+
+const BotDetail = ({ botId, children }: BotDetailProps) => {
   const tBots = useTranslations("quant.bots");
-  const tQuant = useTranslations("quant");
   const format = useFormatter();
   const { mutate } = useSWRConfig();
   const setDialog = useDialogStore((state) => state.setDialog);
@@ -149,43 +126,23 @@ const BotDetail = ({ botId }: { botId: string }) => {
 
   const botUrl = `${QUANT_BOTS_URL}/${botId}`;
   const { data: bot, error } = useSWR<QuantBot>(botUrl, fetcher);
-  const { data: markets } = useSWR<QuantMarket[]>(
-    bot ? `/api/quant/markets?type=${quantMarketTypeOf(bot.symbol)}` : null,
-    fetcher,
-  );
+  const {
+    base,
+    formatPrice,
+    formatQuote,
+    formatSize,
+    market,
+    pricePrecision,
+    quote,
+  } = useBotMarket(bot?.symbol);
 
-  const [tab, setTab] = useState<DetailTab>("orders");
-  const [paginationModel, setPaginationModel] =
-    useState<GridPaginationModel>(FIRST_PAGE);
-  const [sortModel, setSortModel] = useState<GridSortModel>([]);
   const [operationAnchor, setOperationAnchor] = useState<HTMLElement | null>(
     null,
-  );
-
-  const {
-    data: { data: rows, total: rowCount } = { data: [], total: 0 },
-    isLoading: rowsLoading,
-  } = useSWR(
-    [
-      `${botUrl}/${tab}`,
-      paginationModel.page,
-      paginationModel.pageSize,
-      sortModel,
-    ],
-    async ([url]) =>
-      fetcher<{ data: DetailRow[]; total: number }>(
-        `${url}?${getDataGridSearchParams(paginationModel, { items: [] }, sortModel)}`,
-      ),
   );
 
   if (error) return <Alert severity="error">{getErrorMessage(error)}</Alert>;
   if (!bot) return <Skeleton height={480} variant="rounded" />;
 
-  const market = markets?.find(({ symbol }) => symbol === bot.symbol);
-  const pricePrecision = market?.pricePrecision ?? 2;
-  const sizePrecision = market?.sizePrecision ?? 6;
-  const quote = market?.quoteCurrency ?? "";
-  const base = market?.baseCurrency ?? "";
   const isPionexGrid = bot.executor === "pionex";
   const isGrid = bot.type === "grid" || bot.type === "futures_grid";
   const futuresConfig =
@@ -194,8 +151,6 @@ const BotDetail = ({ botId }: { botId: string }) => {
   const isFutures = quantMarketTypeOf(bot.symbol) === "PERP";
   const position = (bot.config as { futures?: FuturesPositionConfig }).futures;
 
-  const formatQuote = (value: number) =>
-    `${format.number(value, { maximumFractionDigits: 2, minimumFractionDigits: 2, signDisplay: "negative" })} ${quote}`;
   const formatStop = (stop?: FuturesGridConfig["lossStop"]) => {
     if (!stop) return "—";
     if (stop.type === "profit_amount") return formatQuote(stop.value);
@@ -209,19 +164,6 @@ const BotDetail = ({ botId }: { botId: string }) => {
   };
   const formatQuoteWithRatio = (value: number) =>
     `${formatQuote(value)} (${format.number(value / bot.investment, { maximumFractionDigits: 2, signDisplay: "exceptZero", style: "percent" })})`;
-  const formatPrice = (value?: number) =>
-    value === undefined
-      ? "—"
-      : format.number(value, {
-          maximumFractionDigits: pricePrecision,
-          minimumFractionDigits: pricePrecision,
-        });
-  const formatSize = (value?: number) =>
-    value === undefined
-      ? "—"
-      : format.number(value, { maximumFractionDigits: sizePrecision });
-  const formatTime = (value: string) =>
-    format.dateTime(new Date(value), "short");
   const formatAnnualized = (value?: number) =>
     value === undefined
       ? "—"
@@ -357,130 +299,6 @@ const BotDetail = ({ botId }: { botId: string }) => {
     });
 
   const { summary } = bot;
-
-  const sideCell = ({
-    row,
-  }: GridRenderCellParams<QuantBotFill | QuantBotOrder>) => (
-    <Box
-      component="span"
-      sx={{ color: row.side === "BUY" ? "success.main" : "error.main" }}
-    >
-      {tQuant(`order.side.${row.side}`)}
-    </Box>
-  );
-
-  const orderColumns: GridColDef[] = [
-    {
-      field: "createdAt",
-      headerName: tQuant("account.columns.time"),
-      minWidth: TIME_COLUMN_MIN_WIDTH,
-      valueFormatter: (value: string) => formatTime(value),
-    },
-    {
-      field: "side",
-      headerName: tQuant("account.columns.side"),
-      renderCell: sideCell,
-    },
-    {
-      field: "type",
-      headerName: tQuant("account.columns.type"),
-      valueFormatter: (value: QuantBotOrder["type"]) =>
-        tQuant(`order.type.${value}`),
-    },
-    {
-      field: "price",
-      headerName: tQuant("account.columns.price"),
-      valueFormatter: (value?: number) => formatPrice(value),
-    },
-    {
-      field: "size",
-      headerName: tQuant("account.columns.size"),
-      minWidth: 140,
-      sortable: false,
-      valueGetter: (_, { amount, size }: QuantBotOrder) =>
-        size !== undefined
-          ? `${formatSize(size)} ${base}`
-          : amount !== undefined
-            ? formatQuote(amount)
-            : "—",
-    },
-    {
-      field: "filledSize",
-      headerName: tQuant("account.columns.filled"),
-      valueFormatter: (value: number) => formatSize(value),
-    },
-    {
-      field: "status",
-      headerName: tQuant("account.columns.status"),
-      valueFormatter: (value: QuantBotOrder["status"]) =>
-        value === "rejected"
-          ? tBots("events.order_rejected")
-          : tQuant(`account.status.${value}`),
-    },
-    { field: "tag", headerName: tBots("columns.tag"), minWidth: 140 },
-  ];
-
-  const fillColumns: GridColDef[] = [
-    {
-      field: "filledAt",
-      headerName: tQuant("account.columns.time"),
-      minWidth: TIME_COLUMN_MIN_WIDTH,
-      valueFormatter: (value: string) => formatTime(value),
-    },
-    {
-      field: "side",
-      headerName: tQuant("account.columns.side"),
-      renderCell: sideCell,
-    },
-    {
-      field: "price",
-      headerName: tQuant("account.columns.price"),
-      valueFormatter: (value: number) => formatPrice(value),
-    },
-    {
-      field: "size",
-      headerName: tQuant("account.columns.size"),
-      valueFormatter: (value: number) => formatSize(value),
-    },
-    {
-      field: "fee",
-      headerName: tQuant("account.columns.fee"),
-      valueGetter: (_, { fee, feeCoin }: QuantBotFill) =>
-        `${format.number(fee, "precise")} ${feeCoin}`,
-    },
-  ];
-
-  const describeEvent = ({ kind, payload }: QuantBotEvent) => {
-    const reason = payload?.reason;
-    if (typeof reason === "string")
-      return kind === "order_skipped"
-        ? labels.skipReason(reason)
-        : (labels.reason(reason) ?? reason);
-    if (typeof payload?.message === "string") return payload.message;
-
-    return payload ? JSON.stringify(payload) : "—";
-  };
-
-  const eventColumns: GridColDef[] = [
-    {
-      field: "createdAt",
-      headerName: tQuant("account.columns.time"),
-      minWidth: TIME_COLUMN_MIN_WIDTH,
-      valueFormatter: (value: string) => formatTime(value),
-    },
-    {
-      field: "kind",
-      headerName: tBots("detail.events"),
-      valueFormatter: (value: string) => labels.event(value),
-    },
-    {
-      field: "payload",
-      flex: 1,
-      headerName: "",
-      sortable: false,
-      valueGetter: (_, row: QuantBotEvent) => describeEvent(row),
-    },
-  ];
 
   return (
     <Stack sx={{ gap: 2 }}>
@@ -833,46 +651,15 @@ const BotDetail = ({ botId }: { botId: string }) => {
       )}
       {!isPionexGrid && (
         <Panel>
-          <Tabs
-            onChange={(_, value: DetailTab) => {
-              setTab(value);
-              setPaginationModel(FIRST_PAGE);
-              setSortModel([]);
-            }}
-            value={tab}
-          >
-            <Tab label={tBots("detail.orders")} value="orders" />
-            <Tab label={tBots("detail.fills")} value="fills" />
-            <Tab label={tBots("detail.events")} value="events" />
-          </Tabs>
-          <Box sx={{ height: GRID_HEIGHT }}>
-            <DataGrid
-              {...DATA_GRID_PROPS}
-              columns={
-                tab === "orders"
-                  ? orderColumns
-                  : tab === "fills"
-                    ? fillColumns
-                    : eventColumns
-              }
-              disableColumnFilter
-              key={tab}
-              loading={rowsLoading}
-              onPaginationModelChange={setPaginationModel}
-              onSortModelChange={(newModel) => {
-                setSortModel(newModel);
-                setPaginationModel((previous) => ({ ...previous, page: 0 }));
-              }}
-              pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
-              paginationMode="server"
-              paginationModel={paginationModel}
-              rowCount={rowCount}
-              rows={rows}
-              showToolbar={false}
-              sortingMode="server"
-              sortModel={sortModel}
-            />
-          </Box>
+          <RouteTabs
+            ariaLabel={bot.name}
+            tabs={[
+              { path: `/quant/bots/${botId}/orders` },
+              { path: `/quant/bots/${botId}/fills` },
+              { path: `/quant/bots/${botId}/events` },
+            ]}
+          />
+          {children}
         </Panel>
       )}
     </Stack>

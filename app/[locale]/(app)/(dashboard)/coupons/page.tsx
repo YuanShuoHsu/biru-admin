@@ -153,6 +153,7 @@ const CouponsContent = async ({ params, searchParams }: CouponsPageProps) => {
       filterField={filterField}
       filterOperator={filterOperator}
       filterValue={filterValue}
+      key={selectedOrganization?.slug}
       organization={selectedOrganization}
       organizations={organizations}
       page={page}
