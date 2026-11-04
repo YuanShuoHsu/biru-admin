@@ -1,0 +1,41 @@
+{
+  "export": "匯出 CSV",
+  "groupBy": {
+    "category": "分類",
+    "day": "日期",
+    "hour": "小時",
+    "label": "分組依據",
+    "menuItem": "品項",
+    "mode": "點餐方式",
+    "paymentMethod": "付款方式"
+  },
+  "inventory": {
+    "actualConsumption": "實際耗用",
+    "adjusted": "調整",
+    "closing": "期末",
+    "consumed": "耗用",
+    "ingredient": "食材",
+    "opening": "期初",
+    "received": "入庫",
+    "theoreticalConsumption": "理論耗用",
+    "unit": "單位",
+    "variance": "差異"
+  },
+  "label": "報表",
+  "sales": {
+    "discount": "折扣",
+    "net": "淨額",
+    "orders": "訂單數",
+    "quantity": "份數",
+    "refunded": "退款",
+    "refundedQuantity": "退款份數",
+    "revenue": "營收",
+    "total": "合計"
+  },
+  "since": "開始日期",
+  "tabs": {
+    "inventory": "庫存",
+    "sales": "銷售"
+  },
+  "until": "結束日期"
+}

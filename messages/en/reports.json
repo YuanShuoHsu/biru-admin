@@ -1,0 +1,41 @@
+{
+  "export": "Export CSV",
+  "groupBy": {
+    "category": "Category",
+    "day": "Date",
+    "hour": "Hour",
+    "label": "Group by",
+    "menuItem": "Item",
+    "mode": "Order mode",
+    "paymentMethod": "Payment method"
+  },
+  "inventory": {
+    "actualConsumption": "Actual consumption",
+    "adjusted": "Adjusted",
+    "closing": "Closing",
+    "consumed": "Consumed",
+    "ingredient": "Ingredient",
+    "opening": "Opening",
+    "received": "Received",
+    "theoreticalConsumption": "Theoretical consumption",
+    "unit": "Unit",
+    "variance": "Variance"
+  },
+  "label": "Reports",
+  "sales": {
+    "discount": "Discount",
+    "net": "Net",
+    "orders": "Orders",
+    "quantity": "Quantity",
+    "refunded": "Refunded",
+    "refundedQuantity": "Refunded quantity",
+    "revenue": "Revenue",
+    "total": "Total"
+  },
+  "since": "Start date",
+  "tabs": {
+    "inventory": "Inventory",
+    "sales": "Sales"
+  },
+  "until": "End date"
+}
