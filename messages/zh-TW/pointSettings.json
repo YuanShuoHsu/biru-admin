@@ -19,13 +19,6 @@
     "empty": "未啟用",
     "label": "點數啟用時間"
   },
-  "pointsValidityYears": {
-    "disabled": "啟用點數後才能設定效期",
-    "empty": "永久有效",
-    "label": "點數效期（年）",
-    "placeholder": "請輸入點數效期",
-    "value": "{value} 年"
-  },
   "update": {
     "success": "已更新點數設定",
     "title": "編輯點數設定"

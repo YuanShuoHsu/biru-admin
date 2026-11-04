@@ -13,7 +13,6 @@ export const useUpdatePointSettingFormSchema = () => {
         (value) => value === "" || Number(value) > 0,
         tPointSettings("amountPerPoint.invalid"),
       ),
-    pointsValidityYears: z.string().trim(),
   });
 };
 

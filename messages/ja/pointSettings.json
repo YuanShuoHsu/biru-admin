@@ -19,13 +19,6 @@
     "empty": "無効",
     "label": "ポイント有効化日時"
   },
-  "pointsValidityYears": {
-    "disabled": "ポイントを有効にすると有効期限を設定できます",
-    "empty": "無期限",
-    "label": "ポイント有効期限（年）",
-    "placeholder": "ポイント有効期限を入力してください",
-    "value": "{value}年"
-  },
   "update": {
     "success": "ポイント設定を更新しました",
     "title": "ポイント設定を編集"

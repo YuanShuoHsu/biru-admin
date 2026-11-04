@@ -95,7 +95,6 @@ export const authClient = createAuthClient({
             amountPerPoint: { type: "number", required: false },
             pointsEnabledAt: { type: "date", required: false },
             closedAt: { type: "date", required: false, input: false },
-            pointsValidityYears: { type: "number", required: false },
 
             pickupLeadMinutes: { type: "number", required: false },
             pickupMaxAdvanceDays: { type: "number", required: false },

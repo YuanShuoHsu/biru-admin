@@ -19,13 +19,6 @@
     "empty": "Disabled",
     "label": "Points enabled at"
   },
-  "pointsValidityYears": {
-    "disabled": "Enable points to set the points validity",
-    "empty": "Never expires",
-    "label": "Points validity (years)",
-    "placeholder": "Please enter the points validity",
-    "value": "{value, plural, one {# year} other {# years}}"
-  },
   "update": {
     "success": "Point settings updated",
     "title": "Edit point settings"
