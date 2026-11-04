@@ -76,12 +76,12 @@ const lengthOf = (segment: Segment) =>
         segment.to[1] - segment.from[1],
       );
 
-export const DRIVE_THRU_LOOP_LENGTH = SEGMENTS.reduce(
+const DRIVE_THRU_LOOP_LENGTH = SEGMENTS.reduce(
   (total, segment) => total + lengthOf(segment),
   0,
 );
 
-export interface DriveThruPose {
+interface DriveThruPose {
   headingX: number;
   headingZ: number;
   x: number;
@@ -134,7 +134,7 @@ const STOPS = stopLines.map(
   (line) => front - (line + DRIVE_THRU_CAR.length / 2),
 );
 
-export interface DriveThruState {
+interface DriveThruState {
   distance: number;
   nextStop: number;
   odometer: number;

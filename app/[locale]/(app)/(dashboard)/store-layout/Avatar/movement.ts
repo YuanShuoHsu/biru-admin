@@ -225,7 +225,7 @@ export const createAvatarState = (): AvatarState => ({
   z: STORE_LAYOUT_AVATAR.start.z,
 });
 
-export interface AvatarInput {
+interface AvatarInput {
   forwardX: number;
   forwardZ: number;
   jump: boolean;
