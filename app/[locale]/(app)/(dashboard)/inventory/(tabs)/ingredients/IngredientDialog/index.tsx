@@ -256,7 +256,9 @@ const IngredientDialog = ({
   const [recipe, setRecipe] = useState<RecipeOption | null>();
   const selectedRecipe = recipe === undefined ? (savedRecipe ?? null) : recipe;
   const recipeSearch = useServerSearchOptions(
-    editable ? `/api/organizations/${organizationSlug}/recipes` : null,
+    editable
+      ? `/api/organizations/${organizationSlug}/recipes?hasMenuItem=false`
+      : null,
     selectedRecipe ? [selectedRecipe] : [],
   );
 

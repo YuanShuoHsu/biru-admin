@@ -39,7 +39,9 @@ export const useServerSearchOptions = <
   });
 
   const { data, isLoading } = useSWR<{ data: Option[]; total: number }>(
-    path && open ? `${path}?${params.toString()}` : null,
+    path && open
+      ? `${path}${path.includes("?") ? "&" : "?"}${params.toString()}`
+      : null,
     { keepPreviousData: true },
   );
 
