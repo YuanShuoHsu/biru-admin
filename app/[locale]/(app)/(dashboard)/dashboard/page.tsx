@@ -11,7 +11,7 @@ import { DASHBOARD_RANGES, resolveDashboardRange } from "./definitions";
 
 import ErrorAlert from "@/components/ErrorAlert";
 
-import { STORE_TIMEZONE } from "@/constants/timezone";
+import { PLATFORM_TIMEZONE, STORE_TIMEZONE } from "@/constants/timezone";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -53,8 +53,8 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
     await Promise.all([cookies(), params, searchParams]);
 
   const range = resolveDashboardRange(rangeParam);
-  const { hourly, bucketDays, buckets, offsetDays } = DASHBOARD_RANGES[range];
-  const trendPeriodDays = hourly ? 1 : buckets * bucketDays;
+  const { bucketUnit, bucketSize, buckets, offsetDays } =
+    DASHBOARD_RANGES[range];
 
   const fetchOptions = {
     headers: {
@@ -86,15 +86,24 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
     .startOf("day")
     .subtract(offsetDays, "day");
 
-  const trendEnd = lastDay.toDate();
-
-  const periodStart = lastDay.subtract(trendPeriodDays - 1, "day").toDate();
+  const periodStart = (
+    bucketUnit === "hour"
+      ? lastDay
+      : bucketUnit === "day"
+        ? lastDay.subtract(buckets * bucketSize - 1, "day")
+        : dayjs.tz(
+            dayjs(lastDay.format("YYYY-MM-01"))
+              .subtract((buckets - 1) * bucketSize, "month")
+              .format("YYYY-MM-DD"),
+            PLATFORM_TIMEZONE,
+          )
+  ).toDate();
   const periodEnd = lastDay.add(1, "day").toDate();
 
   const statsQuery = new URLSearchParams({
     since: periodStart.toISOString(),
-    bucketUnit: hourly ? "hour" : "day",
-    bucketSize: String(bucketDays),
+    bucketUnit,
+    bucketSize: String(bucketSize),
     bucketCount: String(buckets),
   });
 
@@ -237,7 +246,7 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
     <Dashboard
       organization={selectedOrganization}
       range={range}
-      trendEnd={trendEnd.toISOString()}
+      trendStarts={organizationStats?.buckets.map(({ start }) => start) ?? []}
       stats={{
         totalUsers: userStats?.total ?? null,
         totalOrganizations: organizationStats?.total ?? 0,

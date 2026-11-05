@@ -5,7 +5,7 @@ import { useMemo } from "react";
 
 import { DASHBOARD_RANGES, type DashboardRange } from "./definitions";
 
-import { STORE_TIMEZONE } from "@/constants/timezone";
+import { PLATFORM_TIMEZONE, STORE_TIMEZONE } from "@/constants/timezone";
 
 import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useRoutes } from "@/hooks/useRoutes";
@@ -131,7 +131,7 @@ interface Trend {
 interface DashboardProps {
   organization?: Organization;
   range: DashboardRange;
-  trendEnd: string;
+  trendStarts: string[];
   stats: {
     totalUsers: number | null;
     totalOrganizations: number;
@@ -162,7 +162,7 @@ interface DashboardProps {
 const Dashboard = ({
   organization,
   range,
-  trendEnd,
+  trendStarts,
   stats,
   charts,
   waitlist,
@@ -188,32 +188,25 @@ const Dashboard = ({
   const ordersHref = navItem("/orders/list").to;
   const waitlistHref = navItem("/waitlist/list").to;
 
-  const { hourly, bucketDays, tickStep } = DASHBOARD_RANGES[range];
+  const { bucketUnit, tickStep } = DASHBOARD_RANGES[range];
 
-  const trendLabels = useMemo(() => {
-    const count = stats.ordersTrend.data.length;
-    const end = new Date(trendEnd).getTime();
-
-    if (hourly) {
-      return Array.from({ length: count }, (_, index) =>
-        format.dateTime(new Date(end + index * 3_600_000), "time", {
-          timeZone: STORE_TIMEZONE,
-        }),
-      );
-    }
-
-    const stepMs = bucketDays * 86_400_000;
-
-    return Array.from({ length: count }, (_, index) =>
-      format.dateTime(
-        new Date(end - (count - 1 - index) * stepMs),
-        "monthDay",
-        {
-          timeZone: STORE_TIMEZONE,
-        },
+  const trendLabels = useMemo(
+    () =>
+      trendStarts.map((start) =>
+        bucketUnit === "month"
+          ? format.dateTime(new Date(start), {
+              year: "numeric",
+              month: "2-digit",
+              timeZone: PLATFORM_TIMEZONE,
+            })
+          : format.dateTime(
+              new Date(start),
+              bucketUnit === "hour" ? "time" : "monthDay",
+              { timeZone: STORE_TIMEZONE },
+            ),
       ),
-    );
-  }, [bucketDays, format, hourly, stats.ordersTrend.data.length, trendEnd]);
+    [bucketUnit, format, trendStarts],
+  );
 
   const periodLabel = tDashboard(`stats.period.${range}`);
 
