@@ -326,7 +326,7 @@
     "invalid": "URL format is invalid."
   },
   "validFrom": {
-    "beforeValidThrough": "Start date must be before end date."
+    "order": "The end date can't be before the start date."
   },
   "workPermit": {
     "required": "Select the permit start and end dates.",

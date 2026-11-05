@@ -326,7 +326,7 @@
     "invalid": "网址格式无效。"
   },
   "validFrom": {
-    "beforeValidThrough": "生效日期必须早于截止日期。"
+    "order": "截止日期不可早于生效日期。"
   },
   "workPermit": {
     "required": "请选择工作许可起讫日。",

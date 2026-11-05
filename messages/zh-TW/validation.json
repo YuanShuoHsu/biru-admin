@@ -326,7 +326,7 @@
     "invalid": "網址格式無效。"
   },
   "validFrom": {
-    "beforeValidThrough": "生效日期必須早於截止日期。"
+    "order": "截止日期不可早於生效日期。"
   },
   "workPermit": {
     "required": "請選擇工作許可起訖日。",
