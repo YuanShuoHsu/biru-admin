@@ -20,6 +20,7 @@
 | [全國食材廣場](https://www.cross-country.com.tw)       |                        | 吉利丁、香草精、果凍粉                                     |      |
 | [全聯全電商](https://pxbox.es.pxmart.com.tw)           |                        | 蘋果汁、番茄糊                                             |      |
 | [光泉牧場](https://www.kuangchuan.com.tw/Business/B2B) | (02) 8751-8788 分機238 | 光泉全脂鮮乳                                               |      |
+| [家酪優](https://www.jarou.com.tw)                     |                        | 優格菌                                                     |      |
 | [萬家福](https://online.uni-prosperity.com.tw)         |                        | 鮮奶油、鹽、糖、牛番茄、西芹、蒜頭                         |      |
 | [義大利廚房](https://shop.hseiyi.com)                  |                        | 橄欖油                                                     |      |
 | [蝦皮（碩田）](https://shopee.tw/shop/6517228)         |                        | 焙茶粉、抹茶粉                                             |      |
