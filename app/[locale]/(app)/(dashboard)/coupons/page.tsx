@@ -102,9 +102,8 @@ const CouponsContent = async ({ params, searchParams }: CouponsPageProps) => {
   const canGrantCoupon =
     isAdmin || hasRolePermission(memberRole, { coupon: ["create"] });
 
-  const canViewAuditLog = hasRolePermission(memberRole, {
-    auditLog: ["read"],
-  });
+  const canViewAuditLog =
+    isAdmin || hasRolePermission(memberRole, { auditLog: ["read"] });
 
   const { data: organizations, error: organizationsError } = await settle(
     isAdmin ? getOrganizations(fetchOptions) : Promise.resolve([]),
