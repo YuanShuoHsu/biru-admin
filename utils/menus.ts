@@ -1,9 +1,13 @@
+import dayjs from "dayjs";
+import timezonePlugin from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import { cache } from "react";
 
 import { fetcher } from "./fetcher";
 
 import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
 import { LOW_STOCK_THRESHOLD } from "@/constants/menus";
+import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import type {
   Menu,
@@ -19,12 +23,25 @@ import type {
   OrderMenuOffer,
 } from "@/types/menus";
 
+dayjs.extend(utc);
+dayjs.extend(timezonePlugin);
+
 export const isLowStock = (offer?: OrderMenuOffer): boolean => {
   const stock = offer?.inventoryLevel?.value;
   if (stock == null || stock <= 0) return false;
   if (offer?.availability === "SoldOut") return false;
 
   return stock <= LOW_STOCK_THRESHOLD;
+};
+
+// API 計價用同一個格式判斷促銷期間，改這裡要一起改
+const PROMO_DATE_PATTERN =
+  /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2}))?$/;
+
+export const storeDateOf = (value: string): string | null => {
+  if (!PROMO_DATE_PATTERN.test(value)) return null;
+  const date = dayjs.utc(value);
+  return date.isValid() ? date.tz(STORE_TIMEZONE).format("YYYY-MM-DD") : null;
 };
 
 export const getAdminMenu = cache(
