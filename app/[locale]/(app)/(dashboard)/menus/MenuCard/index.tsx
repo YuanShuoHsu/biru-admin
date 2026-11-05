@@ -118,8 +118,10 @@ const MenuCard = ({
 
   return (
     <StyledCard variant="outlined">
-      <StyledCardMedia image={menu?.image || undefined}>
-        {!menu?.image && <RestaurantMenu color="disabled" fontSize="large" />}
+      <StyledCardMedia image={menu?.imageUrl || undefined}>
+        {!menu?.imageUrl && (
+          <RestaurantMenu color="disabled" fontSize="large" />
+        )}
       </StyledCardMedia>
       <InfoStack>
         <StyledCardContent>

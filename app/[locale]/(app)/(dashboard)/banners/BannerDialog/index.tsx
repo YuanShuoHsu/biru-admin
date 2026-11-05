@@ -75,7 +75,7 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
   const uploadKey = banner
     ? `update-banner-image-${banner.id}`
     : "create-banner-image";
-  const imageSrc = useUploadAvatarSrc(uploadKey, banner?.image);
+  const imageSrc = useUploadAvatarSrc(uploadKey, banner?.imageUrl);
 
   const onSubmitHandler = async ({
     alt,
@@ -102,7 +102,7 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
           isActive,
           startsAt: startsAt || null,
           url: url || null,
-          ...(imageSrc !== banner?.image && { image: imageSrc }),
+          ...(imageSrc !== banner?.imageUrl && { image: imageSrc }),
         } satisfies UpdateBannerDto),
       });
 
@@ -138,7 +138,7 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
         aspectRatio="16/9"
         fullWidth
         highQuality
-        initialSrc={banner?.image}
+        initialSrc={banner?.imageUrl}
         shape="square"
         uploadKey={uploadKey}
       />

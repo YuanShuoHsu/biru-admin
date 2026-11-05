@@ -7117,8 +7117,7 @@ export interface components {
     };
     BannerResponseDto: {
       id: string;
-      /** @description 圖片來源（data URL） */
-      image: string;
+      imageUrl: string | null;
       alt?: components["schemas"]["LocalizedTextDto"] | null;
       url?: string | null;
       isActive: boolean;
@@ -10177,7 +10176,7 @@ export interface components {
       organizationId: string;
       name: components["schemas"]["LocalizedTextDto"];
       description?: components["schemas"]["LocalizedTextDto"] | null;
-      image?: string | null;
+      imageUrl: string | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -10215,7 +10214,7 @@ export interface components {
       parentSectionId?: string | null;
       name: components["schemas"]["LocalizedTextDto"];
       description?: components["schemas"]["LocalizedTextDto"] | null;
-      image?: string | null;
+      imageUrl: string | null;
       /** @description 工作單印表機；null 時沿用上層分類，最上層也沒設就印到預設工作單印表機 */
       orderTicketPrinterId: string | null;
       /** Format: date-time */
@@ -10413,7 +10412,7 @@ export interface components {
       orderTicketPrinterId: string | null;
       name: components["schemas"]["LocalizedTextDto"];
       description?: components["schemas"]["LocalizedTextDto"] | null;
-      image?: string | null;
+      imageUrl: string | null;
       suitableForDiet?:
         | (
             | "DiabeticDiet"
@@ -10807,7 +10806,7 @@ export interface components {
     OrderMenuAddOnItemResponseDto: {
       id: string;
       name: string;
-      image?: string | null;
+      imageUrl: string | null;
       /** @description 可販售的點餐模式 */
       availableModes: components["schemas"]["OrderMode"][];
       /** @description 可供應的飲品溫度；空陣列代表不適用 */
@@ -10846,7 +10845,7 @@ export interface components {
       menuSectionId?: string | null;
       name: string;
       description?: string | null;
-      image?: string | null;
+      imageUrl: string | null;
       suitableForDiet?:
         | (
             | "DiabeticDiet"
@@ -10896,7 +10895,7 @@ export interface components {
       parentSectionId?: string | null;
       name: string;
       description?: string | null;
-      image?: string | null;
+      imageUrl: string | null;
       sortOrder: number;
       menuItems: components["schemas"]["OrderMenuItemResponseDto"][];
       /** Format: date-time */
@@ -10908,7 +10907,7 @@ export interface components {
       id: string;
       name: string;
       description?: string | null;
-      image?: string | null;
+      imageUrl: string | null;
       /** @description 店家定價幣別；整份菜單共用一個 */
       currency: string;
       sections: components["schemas"]["OrderMenuSectionResponseDto"][];
@@ -12766,8 +12765,7 @@ export interface components {
     };
     PublicStorePhotoResponseDto: {
       id: string;
-      /** @description 圖片來源（data URL） */
-      image: string;
+      imageUrl: string | null;
       /** @description 依 lang 取出的替代文字 */
       alt: string;
     };
@@ -12788,8 +12786,7 @@ export interface components {
     };
     StorePhotoResponseDto: {
       id: string;
-      /** @description 圖片來源（data URL） */
-      image: string;
+      imageUrl: string | null;
       alt: Record<string, never>;
       isActive: boolean;
       sortOrder: number;

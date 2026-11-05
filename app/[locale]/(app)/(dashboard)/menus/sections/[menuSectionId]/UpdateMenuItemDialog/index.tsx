@@ -83,7 +83,7 @@ const UpdateMenuItemDialog = ({
   const tOrder = useTranslations("order");
 
   const uploadKey = `update-menu-item-image-${item.id}`;
-  const imageSrc = useUploadAvatarSrc(uploadKey, item.image);
+  const imageSrc = useUploadAvatarSrc(uploadKey, item.imageUrl);
 
   const updateMenuItemFormSchema = useUpdateMenuItemFormSchema();
   const {
@@ -232,7 +232,7 @@ const UpdateMenuItemDialog = ({
         body: {
           name,
           description,
-          ...(imageSrc !== (item.image || null) && { image: imageSrc }),
+          ...(imageSrc !== (item.imageUrl || null) && { image: imageSrc }),
           availableModes,
           servingTemperatures,
           recommendedServingTemperatureLevel,
@@ -304,7 +304,7 @@ const UpdateMenuItemDialog = ({
         aspectRatio="16/9"
         disabled={!canWrite}
         fullWidth
-        initialSrc={item.image}
+        initialSrc={item.imageUrl}
         shape="square"
         uploadKey={uploadKey}
       />

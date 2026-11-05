@@ -449,11 +449,11 @@ const StorePhotos = ({
             })}
           </DialogContentText>
           <List dense disablePadding>
-            {selectedRows.map(({ alt, id, image }) => (
+            {selectedRows.map(({ alt, id, imageUrl }) => (
               <ListItem disableGutters key={id}>
                 <StyledAvatar
                   alt={localize(alt, locale)}
-                  src={image}
+                  src={imageUrl ?? undefined}
                   variant="rounded"
                 />
               </ListItem>
@@ -579,16 +579,16 @@ const StorePhotos = ({
         : []),
       {
         disableColumnMenu: true,
-        field: "image",
+        field: "imageUrl",
         filterable: false,
         headerName: tStorePhotos("image.label"),
         renderCell: ({
-          row: { alt, image },
+          row: { alt, imageUrl },
         }: GridRenderCellParams<StorePhoto>) => (
           <ImageStack direction="row">
             <StyledAvatar
               alt={localize(alt, locale)}
-              src={image}
+              src={imageUrl ?? undefined}
               variant="rounded"
             />
           </ImageStack>
