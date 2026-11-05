@@ -5,7 +5,7 @@ import { useMemo } from "react";
 
 import { DASHBOARD_RANGES, type DashboardRange } from "./definitions";
 
-import { STORE_TIMEZONE } from "@/constants/timezone";
+import { PLATFORM_TIMEZONE, STORE_TIMEZONE } from "@/constants/timezone";
 
 import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useRoutes } from "@/hooks/useRoutes";
@@ -197,7 +197,7 @@ const Dashboard = ({
           ? format.dateTime(new Date(start), {
               year: "numeric",
               month: "2-digit",
-              timeZone: STORE_TIMEZONE,
+              timeZone: PLATFORM_TIMEZONE,
             })
           : format.dateTime(
               new Date(start),

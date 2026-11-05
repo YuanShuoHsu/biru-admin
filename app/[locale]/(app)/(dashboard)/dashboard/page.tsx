@@ -86,20 +86,18 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
     .startOf("day")
     .subtract(offsetDays, "day");
 
-  const trendStart =
+  const periodStart = (
     bucketUnit === "hour"
       ? lastDay
       : bucketUnit === "day"
-        ? lastDay.subtract(buckets - 1, "day")
-        : dayjs()
-            .tz(PLATFORM_TIMEZONE)
-            .startOf("month")
-            .subtract(buckets - 1, "month");
-  const trendStarts = Array.from({ length: buckets }, (_, index) =>
-    trendStart.add(index * bucketSize, bucketUnit).toISOString(),
-  );
-
-  const periodStart = trendStart.toDate();
+        ? lastDay.subtract(buckets * bucketSize - 1, "day")
+        : dayjs.tz(
+            dayjs(lastDay.format("YYYY-MM-01"))
+              .subtract((buckets - 1) * bucketSize, "month")
+              .format("YYYY-MM-DD"),
+            PLATFORM_TIMEZONE,
+          )
+  ).toDate();
   const periodEnd = lastDay.add(1, "day").toDate();
 
   const statsQuery = new URLSearchParams({
@@ -248,7 +246,7 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
     <Dashboard
       organization={selectedOrganization}
       range={range}
-      trendStarts={trendStarts}
+      trendStarts={organizationStats?.buckets.map(({ start }) => start) ?? []}
       stats={{
         totalUsers: userStats?.total ?? null,
         totalOrganizations: organizationStats?.total ?? 0,
