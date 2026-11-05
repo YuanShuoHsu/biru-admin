@@ -4,6 +4,7 @@
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | ------- | ------ | ------------- |
 | 牛奶       | 光泉全脂鮮乳                                                                                                                                    | [光泉牧場](https://www.kuangchuan.com.tw/Business/B2B)             | 70元    | 936ml  | 0.075元/ml    |
 | 鮮奶油     | [安佳鮮奶油](https://www.wlscook.com.tw/SalePage/Index/9491524?lang=zh-TW)                                                                      | [萬家福](https://online.uni-prosperity.com.tw)                     | 98元    | 250ml  | 0.392元/ml    |
+| 優格菌     | [家酪優 MESO 常溫優格菌（1g×8包）](https://www.jarou.com.tw/products/meso-yogurt-starter-culture)                                               | [家酪優](https://www.jarou.com.tw)                                 | 360元   | 8g     | 45元/g        |
 | 糖         | [台糖貳號砂糖](https://online.uni-prosperity.com.tw/zh/台糖/1437000400101.html)                                                                 | [萬家福](https://online.uni-prosperity.com.tw)                     | 36元    | 1kg    | 0.036元/g     |
 | 鹽         | [台鹽高級碘鹽](https://online.uni-prosperity.com.tw/zh/台鹽/1460000500101.html)                                                                 | [萬家福](https://online.uni-prosperity.com.tw)                     | 17元    | 1kg    | 0.017元/g     |
 | 吉利丁     | [愛唯金級吉利丁片](https://www.cross-country.com.tw/SalePage/Index/4656811)                                                                     | [全國食材廣場](https://www.cross-country.com.tw)                   | 1100元  | 1kg    | 1.1元/g       |
@@ -27,12 +28,16 @@
 | 番茄糊     | [漢斯蕃茄配司 340g](https://pxbox.es.pxmart.com.tw/product/270022)                                                                              | [全聯全電商](https://pxbox.es.pxmart.com.tw)                       | 131元   | 340g   | 0.385元/g     |
 | 水         | 飲用水                                                                                                                                          | [台水](https://www.water.gov.tw/ch/Subject/Detail/1288?nodeId=813) | 12.08元 | 1000L  | 0.000012元/ml |
 | 紅醬       | 自製，見 [食譜](recipes.md#紅醬)                                                                                                                | 自製                                                               | 284元   | 2300g  | 0.123元/g     |
+| 優格       | 自製，見 [食譜](recipes.md#優格)                                                                                                                | 自製                                                               | 165元   | 1000g  | 0.165元/g     |
+| 希臘優格   | 自製，見 [食譜](recipes.md#希臘優格)                                                                                                            | 自製                                                               | 82.5元  | 200g   | 0.413元/g     |
 
 ## 備註
 
 - 牛奶：70 元是先前向光泉牧場打探到的價格，不是正式報價。
+- 優格菌：做優格與希臘優格用，1 包（1g）約可做 500ml 優格，室溫發酵，不適用優格機；360 元是單盒售價，3 盒以上有量購價。收到後冷凍保存。
 - 水：以 `costs.md` 台水最高級距 12.075 元/度（1 度 = 1000L）計，四捨五入到 2 位小數，不含基本費。
 - 紅醬：價格與內容量是一鍋的總成本與估算成品量；材料漲價時要手動更新，做好一鍋要手動入庫。
+- 優格、希臘優格：同紅醬，價格與內容量是一鍋的總成本與估算成品量。
 
 ## 對應資料庫
 
