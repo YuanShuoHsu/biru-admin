@@ -5,7 +5,7 @@ import { useParams, useSearchParams } from "next/navigation";
 
 import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";
 
-import { Link, usePathname } from "@/i18n/navigation";
+import { usePathname } from "@/i18n/navigation";
 
 import {
   Extension,
@@ -77,7 +77,6 @@ const MenuItemLayout = ({ children }: { children: React.ReactNode }) => {
       >
         {tabs.map(({ Icon, label, value }) => (
           <Tab
-            component={Link}
             href={`${value}${tabQuery}`}
             icon={<Icon fontSize="small" />}
             iconPosition="start"

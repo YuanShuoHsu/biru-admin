@@ -39,7 +39,7 @@ import {
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Link, useRouter } from "@/i18n/navigation";
+import { useRouter } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import {
@@ -386,7 +386,6 @@ const BotFormFields = ({
                   <Alert
                     action={
                       <Button
-                        component={Link}
                         href="/quant/settings"
                         onClick={closeDialog}
                         size="small"

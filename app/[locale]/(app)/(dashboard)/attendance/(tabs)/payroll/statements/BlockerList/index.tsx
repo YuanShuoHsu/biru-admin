@@ -6,8 +6,6 @@ import { PAYROLL_BLOCKER_TARGETS } from "@/constants/attendance";
 
 import { useRoutes } from "@/hooks/useRoutes";
 
-import { Link } from "@/i18n/navigation";
-
 import { Button, List, ListItem, ListItemText } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -62,7 +60,6 @@ const BlockerList = ({
             )}
             {item?.to && (
               <StyledButton
-                component={Link}
                 href={
                   query
                     ? `${item.to}${item.to.includes("?") ? "&" : "?"}${query}`

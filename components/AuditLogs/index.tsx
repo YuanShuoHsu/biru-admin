@@ -29,7 +29,6 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { Link } from "@/i18n/navigation";
 import { routing, type Locale } from "@/i18n/routing";
 
 import { FilterAlt } from "@mui/icons-material";
@@ -831,7 +830,6 @@ const AuditLogs = ({
 
                 return label && href ? (
                   <MuiLink
-                    component={Link}
                     href={getHref(href, {
                       ...DEFAULT_PAGINATION_QUERY,
                       organization: searchParams.get("organization"),

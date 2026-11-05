@@ -9,8 +9,6 @@ import DetailsCard from "@/components/DetailsCard";
 
 import { Link as MuiLink, Typography } from "@mui/material";
 
-import { Link } from "@/i18n/navigation";
-
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { WaitlistSettingsResponse } from "@/types/waitlist";
@@ -117,10 +115,7 @@ const OrganizationsSlugWaitlist = ({
         <Typography color="textSecondary" variant="body2">
           {tOrganizations.rich("waitlist.entranceQrCode", {
             link: (chunks) => (
-              <MuiLink
-                component={Link}
-                href={`/organizations/${organizationSlug}/in-store`}
-              >
+              <MuiLink href={`/organizations/${organizationSlug}/in-store`}>
                 {chunks}
               </MuiLink>
             ),
