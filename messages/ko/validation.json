@@ -152,6 +152,9 @@
   "invoiceType": {
     "notSelected": "영수증 유형을 선택해 주세요."
   },
+  "jobTitle": {
+    "maxLength": "직책은 50자를 초과할 수 없습니다."
+  },
   "laborInsuranceUnitCode": {
     "invalid": "보험증 번호는 숫자 8자리와 대문자 영문 1자리여야 합니다."
   },

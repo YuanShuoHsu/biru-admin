@@ -22,6 +22,17 @@
     "variance": "差異"
   },
   "label": "レポート",
+  "personnel": {
+    "employerInsurance": "雇用主負担保険料",
+    "employerPension": "雇用主年金拠出",
+    "gross": "総支給額",
+    "headcount": "人数",
+    "missingEmployerInsurance": "{count} 件の給与明細に雇用主負担保険料のデータがありません。その分は含まれていないため、合計は実際より低い可能性があります。",
+    "month": "給与月",
+    "noJobTitle": "職種未設定",
+    "total": "人件費",
+    "unpublished": "当月在籍で公開済み給与明細のない従業員 {count} 名は含まれていません。"
+  },
   "sales": {
     "discount": "割引",
     "net": "純売上",
@@ -35,6 +46,7 @@
   "since": "開始日",
   "tabs": {
     "inventory": "在庫",
+    "personnel": "人件費",
     "sales": "売上"
   },
   "until": "終了日"

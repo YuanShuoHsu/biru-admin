@@ -22,6 +22,17 @@
     "variance": "차이"
   },
   "label": "보고서",
+  "personnel": {
+    "employerInsurance": "고용주 부담 보험료",
+    "employerPension": "고용주 연금",
+    "gross": "총 지급액",
+    "headcount": "인원",
+    "missingEmployerInsurance": "급여 명세서 {count}건에 고용주 부담 보험료 데이터가 없습니다. 해당 금액이 포함되지 않아 합계가 실제보다 낮을 수 있습니다.",
+    "month": "급여 월",
+    "noJobTitle": "직책 미설정",
+    "total": "인건비",
+    "unpublished": "이번 달 재직 중이지만 발행된 급여 명세서가 없는 직원 {count}명은 포함되지 않았습니다."
+  },
   "sales": {
     "discount": "할인",
     "net": "순매출",
@@ -35,6 +46,7 @@
   "since": "시작일",
   "tabs": {
     "inventory": "재고",
+    "personnel": "인건비",
     "sales": "매출"
   },
   "until": "종료일"

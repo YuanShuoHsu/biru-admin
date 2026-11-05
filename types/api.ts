@@ -5204,6 +5204,40 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/reports/personnel": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢人事成本報表 */
+    get: operations["ReportsController_findPersonnel"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/reports/personnel/export.csv": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 匯出人事成本報表 CSV */
+    get: operations["ReportsController_exportPersonnel"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/store-photos/active": {
     parameters: {
       query?: never;
@@ -5457,6 +5491,7 @@ export interface components {
       userId: string;
       name: string;
       email: string;
+      jobTitle?: string | null;
       employmentType: components["schemas"]["AttendanceEmploymentType"];
       legalStatus: components["schemas"]["AttendanceLegalStatus"];
       studentVacations: components["schemas"]["DatePeriodDto"][];
@@ -5531,6 +5566,7 @@ export interface components {
     AttendanceEmployeeFilterField:
       | "name"
       | "email"
+      | "jobTitle"
       | "hiredAt"
       | "terminatedAt"
       | "employmentType"
@@ -5541,6 +5577,7 @@ export interface components {
     AttendanceEmployeeSortField:
       | "name"
       | "email"
+      | "jobTitle"
       | "hiredAt"
       | "terminatedAt"
       | "employmentType"
@@ -5554,6 +5591,7 @@ export interface components {
     AttendanceWorkPermitStatus: "valid" | "expiring" | "invalid";
     AttendanceMemberEmploymentResponseDto: {
       id: string;
+      jobTitle?: string | null;
       employmentType: components["schemas"]["AttendanceEmploymentType"];
       legalStatus: components["schemas"]["AttendanceLegalStatus"];
       workPermits: components["schemas"]["DatePeriodDto"][];
@@ -5630,6 +5668,7 @@ export interface components {
       indigenousHolidays: string[];
       terminationReason?: components["schemas"]["AttendanceTerminationReason"];
       userId: string;
+      jobTitle?: string;
       birthDate: string;
       taiwanStaySince?: string;
       regularLeaveWeekday?: number;
@@ -12762,6 +12801,43 @@ export interface components {
     InventoryReportResponseDto: {
       /** @description 店家目前所有食材，依食材排序；數量為小數點後三位的字串，與食材庫存相同 */
       rows: components["schemas"]["InventoryReportRowDto"][];
+    };
+    PersonnelCostReportTotalsDto: {
+      /** @description 已發布薪資單的人數 */
+      headcount: number;
+      /** @description 應發薪資（分） */
+      grossCents: string;
+      /** @description 雇主負擔的勞保、就保、健保、職災與工資墊償（分）；所有薪資單都沒有這筆資料時為 null */
+      employerInsuranceCents: string | null;
+      /** @description 沒有雇主勞健保資料、該項未計入的薪資單張數 */
+      missingEmployerInsurance: number;
+      /** @description 雇主提繳勞退（分） */
+      employerPensionCents: string;
+      /** @description 以上三項中有資料者的合計（分）；不含補充保費 */
+      totalCents: string;
+    };
+    PersonnelCostReportRowDto: {
+      /** @description 已發布薪資單的人數 */
+      headcount: number;
+      /** @description 應發薪資（分） */
+      grossCents: string;
+      /** @description 雇主負擔的勞保、就保、健保、職災與工資墊償（分）；所有薪資單都沒有這筆資料時為 null */
+      employerInsuranceCents: string | null;
+      /** @description 沒有雇主勞健保資料、該項未計入的薪資單張數 */
+      missingEmployerInsurance: number;
+      /** @description 雇主提繳勞退（分） */
+      employerPensionCents: string;
+      /** @description 以上三項中有資料者的合計（分）；不含補充保費 */
+      totalCents: string;
+      /** @description 員工目前的職位；未設定為 null */
+      jobTitle: string | null;
+    };
+    PersonnelCostReportResponseDto: {
+      month: string;
+      rows: components["schemas"]["PersonnelCostReportRowDto"][];
+      totals: components["schemas"]["PersonnelCostReportTotalsDto"];
+      /** @description 當月在職但沒有已發布薪資單、未計入的員工數 */
+      unpublishedEmployees: number;
     };
     PublicStorePhotoResponseDto: {
       id: string;
@@ -25015,6 +25091,68 @@ export interface operations {
       };
     };
   };
+  ReportsController_findPersonnel: {
+    parameters: {
+      query: {
+        /** @description 薪資計算月份 */
+        month: string;
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PersonnelCostReportResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ReportsController_exportPersonnel: {
+    parameters: {
+      query: {
+        /** @description 薪資計算月份 */
+        month: string;
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "text/csv": string;
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   StorePhotosController_findAllActive: {
     parameters: {
       query: {
@@ -25485,6 +25623,7 @@ export const attendanceEmployeeFilterFieldValues: ReadonlyArray<
 > = [
   "name",
   "email",
+  "jobTitle",
   "hiredAt",
   "terminatedAt",
   "employmentType",
@@ -25497,6 +25636,7 @@ export const attendanceEmployeeSortFieldValues: ReadonlyArray<
 > = [
   "name",
   "email",
+  "jobTitle",
   "hiredAt",
   "terminatedAt",
   "employmentType",

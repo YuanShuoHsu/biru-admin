@@ -32,6 +32,10 @@ export const useEmployeeFormSchema = () => {
   return z
     .object({
       userId: z.string(),
+      jobTitle: z
+        .string()
+        .trim()
+        .max(50, { error: tValidation("jobTitle.maxLength") }),
       hiredAt: z.string().min(1, { error: tValidation("hiredAt.required") }),
       terminatedAt: z.string(),
       birthDate: z

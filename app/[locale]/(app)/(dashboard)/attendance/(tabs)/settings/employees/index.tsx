@@ -667,6 +667,13 @@ const Employees = ({
         headerName: tAttendance("account"),
       },
       {
+        field: "jobTitle",
+        filterOperators: stringFilterOperators,
+        headerName: `${tAttendance("jobTitle")} ${tCommon("optional")}`,
+        renderCell: renderEmptyableCell,
+        valueGetter: (_, row: AttendanceMember) => row.employee?.jobTitle,
+      },
+      {
         field: "hiredAt",
         filterOperators: dateFilterOperators,
         headerName: tAttendance("hiredAt"),

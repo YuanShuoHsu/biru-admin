@@ -247,6 +247,7 @@
   "graceMinutes": {
     "label": "유예 시간(분)"
   },
+  "jobTitle": "직책",
   "laborInsuranceUnitCode": {
     "label": "노동보험 가입 단위 보험증 번호",
     "none": "미설정(당점 인원만 계산)"

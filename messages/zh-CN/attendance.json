@@ -247,6 +247,7 @@
   "graceMinutes": {
     "label": "迟到早退宽限（分钟）"
   },
+  "jobTitle": "职位",
   "laborInsuranceUnitCode": {
     "label": "劳保投保单位保险证号",
     "none": "未设置（仅计算本店人数）"

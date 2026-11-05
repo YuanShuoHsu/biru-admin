@@ -247,6 +247,7 @@
   "graceMinutes": {
     "label": "Grace period (minutes)"
   },
+  "jobTitle": "Job title",
   "laborInsuranceUnitCode": {
     "label": "Labor insurance unit number",
     "none": "Not set (counts this store only)"

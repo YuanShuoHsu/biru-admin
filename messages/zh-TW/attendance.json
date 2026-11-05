@@ -247,6 +247,7 @@
   "graceMinutes": {
     "label": "遲到早退寬限（分鐘）"
   },
+  "jobTitle": "職位",
   "laborInsuranceUnitCode": {
     "label": "勞保投保單位保險證號",
     "none": "未設定（僅計算本店人數）"

@@ -245,6 +245,7 @@ const EmployeeDialog = ({
     control,
     formState: { errors, isSubmitted },
     handleSubmit,
+    register,
     setValue,
   } = useForm<EmployeeForm>({
     defaultValues: {
@@ -252,6 +253,7 @@ const EmployeeDialog = ({
       hiredAt:
         employee?.hiredAt ??
         dayjs(member.joinedAt).tz(STORE_TIMEZONE).startOf("day").toISOString(),
+      jobTitle: employee?.jobTitle ?? "",
       taiwanStaySince:
         employee?.taiwanStaySince ??
         dayjs(employee?.hiredAt ?? member.joinedAt)
@@ -318,6 +320,7 @@ const EmployeeDialog = ({
       const body: SaveAttendanceEmployee = {
         birthDate: values.birthDate,
         hiredAt: values.hiredAt,
+        ...(values.jobTitle && { jobTitle: values.jobTitle }),
         legalStatus: values.legalStatus,
         indigenousHolidays: values.indigenousHolidays.map(({ date }) => date),
         nursingPeriods: values.nursingPeriods,
@@ -397,6 +400,13 @@ const EmployeeDialog = ({
           />
         </MenuItem>
       </TextField>
+      <TextField
+        {...register("jobTitle")}
+        error={!!errors.jobTitle}
+        fullWidth
+        helperText={errors.jobTitle?.message}
+        label={`${tAttendance("jobTitle")} ${tCommon("optional")}`}
+      />
       <TextField
         fullWidth
         label={tAttendance("legalStatus.label")}

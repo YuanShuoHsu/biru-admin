@@ -152,6 +152,9 @@
   "invoiceType": {
     "notSelected": "请选择您的发票类型。"
   },
+  "jobTitle": {
+    "maxLength": "职位不能超过 50 个字符。"
+  },
   "laborInsuranceUnitCode": {
     "invalid": "保险证号须为 8 码数字加 1 码大写英文字母。"
   },

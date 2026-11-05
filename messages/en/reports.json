@@ -22,6 +22,17 @@
     "variance": "Variance"
   },
   "label": "Reports",
+  "personnel": {
+    "employerInsurance": "Employer insurance",
+    "employerPension": "Employer pension",
+    "gross": "Gross pay",
+    "headcount": "Headcount",
+    "missingEmployerInsurance": "{count, plural, one {# payslip has} other {# payslips have}} no employer insurance data. That amount is not included, so the total may be understated.",
+    "month": "Payroll month",
+    "noJobTitle": "No job title",
+    "total": "Personnel cost",
+    "unpublished": "{count, plural, one {# employee} other {# employees}} active this month without a published payslip {count, plural, one {is} other {are}} not included."
+  },
   "sales": {
     "discount": "Discount",
     "net": "Net sales",
@@ -35,6 +46,7 @@
   "since": "Start date",
   "tabs": {
     "inventory": "Inventory",
+    "personnel": "Personnel cost",
     "sales": "Sales"
   },
   "until": "End date"

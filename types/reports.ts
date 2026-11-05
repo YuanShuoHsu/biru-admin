@@ -7,3 +7,7 @@ export type SalesReportRow = components["schemas"]["SalesReportRowDto"];
 export type InventoryReportResponse =
   components["schemas"]["InventoryReportResponseDto"];
 export type InventoryReportRow = components["schemas"]["InventoryReportRowDto"];
+export type PersonnelCostReportResponse =
+  components["schemas"]["PersonnelCostReportResponseDto"];
+export type PersonnelCostReportRow =
+  components["schemas"]["PersonnelCostReportRowDto"];

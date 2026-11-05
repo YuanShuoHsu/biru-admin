@@ -152,6 +152,9 @@
   "invoiceType": {
     "notSelected": "Please select your invoice type."
   },
+  "jobTitle": {
+    "maxLength": "Job title cannot exceed 50 characters."
+  },
   "laborInsuranceUnitCode": {
     "invalid": "The unit number must be 8 digits followed by 1 uppercase letter."
   },

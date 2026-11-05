@@ -22,6 +22,17 @@
     "variance": "差异"
   },
   "label": "报表",
+  "personnel": {
+    "employerInsurance": "雇主劳健保",
+    "employerPension": "雇主劳退提缴",
+    "gross": "应发薪资",
+    "headcount": "人数",
+    "missingEmployerInsurance": "有 {count} 张工资单没有雇主劳健保数据，该项未计入，总额可能偏低。",
+    "month": "薪资月份",
+    "noJobTitle": "未设置职位",
+    "total": "人事成本",
+    "unpublished": "另有 {count} 位当月在职的员工没有已发布的工资单，未计入。"
+  },
   "sales": {
     "discount": "折扣",
     "net": "净额",
@@ -35,6 +46,7 @@
   "since": "开始日期",
   "tabs": {
     "inventory": "库存",
+    "personnel": "人事成本",
     "sales": "销售"
   },
   "until": "结束日期"

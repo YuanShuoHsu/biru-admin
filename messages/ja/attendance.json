@@ -247,6 +247,7 @@
   "graceMinutes": {
     "label": "猶予時間（分）"
   },
+  "jobTitle": "職種",
   "laborInsuranceUnitCode": {
     "label": "労工保険の投保単位保険証番号",
     "none": "未設定（当店の人数のみ計算）"

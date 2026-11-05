@@ -14,6 +14,7 @@ import {
   getReportQuery,
   isValidRange,
   MAX_RANGE_DAYS,
+  MONTH_FORMAT,
   REPORT_TABS,
   type ReportTab,
   type ReportView,
@@ -22,12 +23,14 @@ import {
 } from "./definitions";
 
 import DataGrid from "@/components/DataGrid";
+import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 import ErrorAlert from "@/components/ErrorAlert";
 
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { useFormatMoney } from "@/hooks/useFormatMoney";
+import { useMonthFormat } from "@/hooks/useMonthFormat";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { Download } from "@mui/icons-material";
@@ -52,11 +55,14 @@ import type { Organization } from "@/types/organizations";
 import type {
   InventoryReportResponse,
   InventoryReportRow,
+  PersonnelCostReportResponse,
+  PersonnelCostReportRow,
   SalesReportGroupBy,
   SalesReportResponse,
   SalesReportRow,
 } from "@/types/reports";
 
+import { fromCents } from "@/utils/attendance";
 import { getExportDateRange, getExportFileName } from "@/utils/dataGrid";
 import { getErrorMessage, toFetchError } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
@@ -96,6 +102,20 @@ const INVENTORY_FIELDS = [
   "variance",
 ] as const;
 
+const PERSONNEL_MONEY_FIELDS = [
+  "grossCents",
+  "employerInsuranceCents",
+  "employerPensionCents",
+  "totalCents",
+] as const;
+
+const PERSONNEL_MONEY_LABELS = {
+  employerInsuranceCents: "employerInsurance",
+  employerPensionCents: "employerPension",
+  grossCents: "gross",
+  totalCents: "total",
+} as const;
+
 const REPORT_DATA_GRID_PROPS = {
   ...DATA_GRID_PROPS,
   slotProps: {
@@ -106,20 +126,24 @@ const REPORT_DATA_GRID_PROPS = {
 
 interface ReportsProps {
   canViewInventory?: boolean;
+  canViewPersonnel?: boolean;
   canViewSales?: boolean;
   inventory?: InventoryReportResponse;
   loading?: boolean;
   organization?: Organization;
+  personnel?: PersonnelCostReportResponse;
   sales?: SalesReportResponse;
   view?: ReportView;
 }
 
 const Reports = ({
   canViewInventory = false,
+  canViewPersonnel = false,
   canViewSales = false,
   inventory: initialInventory,
   loading = false,
   organization,
+  personnel: initialPersonnel,
   sales: initialSales,
   view: initialView,
 }: ReportsProps) => {
@@ -131,7 +155,7 @@ const Reports = ({
   );
   const [exporting, setExporting] = useState(false);
 
-  const { groupBy, since, tab, until } = view;
+  const { groupBy, month, since, tab, until } = view;
 
   const format = useFormatter();
 
@@ -139,6 +163,9 @@ const Reports = ({
 
   const locale = useLocale();
 
+  const monthFormat = useMonthFormat();
+
+  const tAttendance = useTranslations("attendance");
   const tCommon = useTranslations("common");
   const tInventory = useTranslations("inventory");
   const tMenus = useTranslations("menus");
@@ -170,6 +197,17 @@ const Reports = ({
     !loading && tab === "inventory" ? `${reportPath}?${query}` : null,
     (url: string) => fetcher<InventoryReportResponse>(url),
     { fallbackData: initialInventory, keepPreviousData: true },
+  );
+
+  const {
+    data: personnel,
+    error: personnelError,
+    isValidating: isValidatingPersonnel,
+    mutate: mutatePersonnel,
+  } = useSWR(
+    !loading && tab === "personnel" ? `${reportPath}?${query}` : null,
+    (url: string) => fetcher<PersonnelCostReportResponse>(url),
+    { fallbackData: initialPersonnel, keepPreviousData: true },
   );
 
   const updateView = (changes: Partial<ReportView>) => {
@@ -228,7 +266,7 @@ const Reports = ({
         organization?.name,
         tReports("label"),
         tReports(`tabs.${tab}`),
-        getExportDateRange([since, until]),
+        tab === "personnel" ? month : getExportDateRange([since, until]),
       )}.csv`;
       anchor.click();
       URL.revokeObjectURL(url);
@@ -334,9 +372,50 @@ const Reports = ({
     [format, locale, tInventory, tReports],
   );
 
+  const personnelColumns = useMemo<GridColDef[]>(
+    () => [
+      {
+        field: "jobTitle",
+        headerName: tAttendance("jobTitle"),
+        valueGetter: (value: PersonnelCostReportRow["jobTitle"]) =>
+          value ?? tReports("personnel.noJobTitle"),
+      },
+      {
+        field: "headcount",
+        headerName: tReports("personnel.headcount"),
+        type: "number",
+      },
+      ...PERSONNEL_MONEY_FIELDS.map((field) => ({
+        field,
+        headerName: tReports(`personnel.${PERSONNEL_MONEY_LABELS[field]}`),
+        type: "number" as const,
+        renderCell: renderEmptyableCell,
+        valueGetter: (value: string | null) =>
+          value === null ? null : fromCents(value),
+        valueFormatter: (value: number | null) =>
+          value === null ? "" : formatMoney(value, currency),
+      })),
+    ],
+    [currency, formatMoney, tAttendance, tReports],
+  );
+
   const isSales = tab === "sales";
-  const error = isSales ? salesError : inventoryError;
-  const isValidating = isSales ? isValidatingSales : isValidatingInventory;
+  const isPersonnel = tab === "personnel";
+  const error = {
+    inventory: inventoryError,
+    personnel: personnelError,
+    sales: salesError,
+  }[tab];
+  const isValidating = {
+    inventory: isValidatingInventory,
+    personnel: isValidatingPersonnel,
+    sales: isValidatingSales,
+  }[tab];
+  const retry = {
+    inventory: mutateInventory,
+    personnel: mutatePersonnel,
+    sales: mutateSales,
+  }[tab];
   const startDate = toStoreDate(since);
 
   return (
@@ -354,26 +433,47 @@ const Reports = ({
         {canViewInventory && (
           <Tab label={tReports("tabs.inventory")} value="inventory" />
         )}
+        {canViewPersonnel && (
+          <Tab label={tReports("tabs.personnel")} value="personnel" />
+        )}
       </Tabs>
       <ToolbarStack direction="row">
-        <DatePicker
-          disabled={loading}
-          disableFuture
-          label={tReports("since")}
-          onChange={handleSinceChange}
-          timezone={STORE_TIMEZONE}
-          value={startDate}
-        />
-        <DatePicker
-          disabled={loading}
-          disableFuture
-          label={tReports("until")}
-          maxDate={startDate.add(MAX_RANGE_DAYS - 1, "day")}
-          minDate={startDate}
-          onChange={handleUntilChange}
-          timezone={STORE_TIMEZONE}
-          value={toStoreDate(until)}
-        />
+        {isPersonnel ? (
+          <DatePicker
+            disabled={loading}
+            disableFuture
+            format={monthFormat}
+            label={tReports("personnel.month")}
+            onChange={(value) => {
+              if (value?.isValid())
+                updateView({ month: value.format(MONTH_FORMAT) });
+            }}
+            timezone={STORE_TIMEZONE}
+            value={toStoreDate(`${month}-01`)}
+            views={["year", "month"]}
+          />
+        ) : (
+          <>
+            <DatePicker
+              disabled={loading}
+              disableFuture
+              label={tReports("since")}
+              onChange={handleSinceChange}
+              timezone={STORE_TIMEZONE}
+              value={startDate}
+            />
+            <DatePicker
+              disabled={loading}
+              disableFuture
+              label={tReports("until")}
+              maxDate={startDate.add(MAX_RANGE_DAYS - 1, "day")}
+              minDate={startDate}
+              onChange={handleUntilChange}
+              timezone={STORE_TIMEZONE}
+              value={toStoreDate(until)}
+            />
+          </>
+        )}
         {isSales && (
           <GroupByTextField
             disabled={loading}
@@ -402,9 +502,7 @@ const Reports = ({
         </Button>
       </ToolbarStack>
       {error ? (
-        <ErrorAlert
-          onRetry={() => (isSales ? mutateSales() : mutateInventory())}
-        />
+        <ErrorAlert onRetry={() => retry()} />
       ) : isSales ? (
         <>
           {sales && (
@@ -430,6 +528,53 @@ const Reports = ({
             key={shownGroupBy}
             loading={loading || isValidating}
             rows={sales?.rows ?? []}
+          />
+        </>
+      ) : isPersonnel ? (
+        <>
+          {personnel && (
+            <>
+              <TotalsStack direction="row">
+                <Typography variant="subtitle2">
+                  {tReports("sales.total")}
+                </Typography>
+                <Typography variant="body2">
+                  {tReports("personnel.headcount")}{" "}
+                  {format.number(personnel.totals.headcount)}
+                </Typography>
+                {PERSONNEL_MONEY_FIELDS.map((field) => (
+                  <Typography key={field} variant="body2">
+                    {tReports(`personnel.${PERSONNEL_MONEY_LABELS[field]}`)}{" "}
+                    {personnel.totals[field] === null ? (
+                      <EmptyCell />
+                    ) : (
+                      formatMoney(fromCents(personnel.totals[field]), currency)
+                    )}
+                  </Typography>
+                ))}
+              </TotalsStack>
+              {personnel.totals.missingEmployerInsurance > 0 && (
+                <Typography color="textSecondary" variant="body2">
+                  {tReports("personnel.missingEmployerInsurance", {
+                    count: personnel.totals.missingEmployerInsurance,
+                  })}
+                </Typography>
+              )}
+              {personnel.unpublishedEmployees > 0 && (
+                <Typography color="textSecondary" variant="body2">
+                  {tReports("personnel.unpublished", {
+                    count: personnel.unpublishedEmployees,
+                  })}
+                </Typography>
+              )}
+            </>
+          )}
+          <DataGrid
+            {...REPORT_DATA_GRID_PROPS}
+            columns={personnelColumns}
+            getRowId={({ jobTitle }) => jobTitle ?? ""}
+            loading={loading || isValidating}
+            rows={personnel?.rows ?? []}
           />
         </>
       ) : (

@@ -22,6 +22,17 @@
     "variance": "差異"
   },
   "label": "報表",
+  "personnel": {
+    "employerInsurance": "雇主勞健保",
+    "employerPension": "雇主勞退提繳",
+    "gross": "應發薪資",
+    "headcount": "人數",
+    "missingEmployerInsurance": "有 {count} 張薪資單沒有雇主勞健保資料，該項未計入，總額可能偏低。",
+    "month": "薪資月份",
+    "noJobTitle": "未設定職位",
+    "total": "人事成本",
+    "unpublished": "另有 {count} 位當月在職的員工沒有已發布的薪資單，未計入。"
+  },
   "sales": {
     "discount": "折扣",
     "net": "淨額",
@@ -35,6 +46,7 @@
   "since": "開始日期",
   "tabs": {
     "inventory": "庫存",
+    "personnel": "人事成本",
     "sales": "銷售"
   },
   "until": "結束日期"

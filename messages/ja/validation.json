@@ -152,6 +152,9 @@
   "invoiceType": {
     "notSelected": "インボイスの種類を選択してください。"
   },
+  "jobTitle": {
+    "maxLength": "職種は50文字以内で入力してください。"
+  },
   "laborInsuranceUnitCode": {
     "invalid": "保険証番号は数字 8 桁と大文字英字 1 文字で入力してください。"
   },

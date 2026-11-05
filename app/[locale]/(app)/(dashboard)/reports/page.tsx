@@ -19,6 +19,7 @@ import type { Locale } from "@/i18n/routing";
 
 import type {
   InventoryReportResponse,
+  PersonnelCostReportResponse,
   SalesReportResponse,
 } from "@/types/reports";
 
@@ -34,6 +35,7 @@ interface ReportsPageProps {
   params: Promise<{ locale: Locale }>;
   searchParams: Promise<{
     groupBy?: string;
+    month?: string;
     organization?: string;
     since?: string;
     tab?: string;
@@ -73,9 +75,16 @@ const ReportsContent = async ({ params, searchParams }: ReportsPageProps) => {
     isAdmin ||
     hasRolePermission(memberRole, { inventoryTransaction: ["read"] });
 
-  const tabs = REPORT_TABS.filter((tab) =>
-    tab === "sales" ? canViewSales : canViewInventory,
-  );
+  const canViewPersonnel =
+    isAdmin || hasRolePermission(memberRole, { payslip: ["read"] });
+
+  const tabPermissions = {
+    inventory: canViewInventory,
+    personnel: canViewPersonnel,
+    sales: canViewSales,
+  };
+
+  const tabs = REPORT_TABS.filter((tab) => tabPermissions[tab]);
 
   if (!tabs.length) notFound();
 
@@ -87,6 +96,7 @@ const ReportsContent = async ({ params, searchParams }: ReportsPageProps) => {
     since: view.since,
     until: view.until,
     groupBy: view.groupBy,
+    month: view.month,
   });
 
   if (
@@ -102,7 +112,7 @@ const ReportsContent = async ({ params, searchParams }: ReportsPageProps) => {
   };
   const reportUrl = `${getReportPath(organization.slug, view.tab)}?${getReportQuery(view)}`;
 
-  const [salesResult, inventoryResult] = await Promise.all([
+  const [salesResult, inventoryResult, personnelResult] = await Promise.all([
     settle(
       view.tab === "sales"
         ? fetcher<SalesReportResponse>(reportUrl, fetchOptions)
@@ -113,17 +123,25 @@ const ReportsContent = async ({ params, searchParams }: ReportsPageProps) => {
         ? fetcher<InventoryReportResponse>(reportUrl, fetchOptions)
         : Promise.resolve(undefined),
     ),
+    settle(
+      view.tab === "personnel"
+        ? fetcher<PersonnelCostReportResponse>(reportUrl, fetchOptions)
+        : Promise.resolve(undefined),
+    ),
   ]);
 
-  if (salesResult.error || inventoryResult.error) return <ErrorAlert />;
+  if (salesResult.error || inventoryResult.error || personnelResult.error)
+    return <ErrorAlert />;
 
   return (
     <Reports
       canViewInventory={canViewInventory}
+      canViewPersonnel={canViewPersonnel}
       canViewSales={canViewSales}
       inventory={inventoryResult.data}
       key={organization.slug}
       organization={organization}
+      personnel={personnelResult.data}
       sales={salesResult.data}
       view={view}
     />
