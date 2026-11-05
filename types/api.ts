@@ -5136,6 +5136,74 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/reports/sales": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢銷售報表 */
+    get: operations["ReportsController_findSales"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/reports/sales/export.csv": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 匯出銷售報表 CSV */
+    get: operations["ReportsController_exportSales"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/reports/inventory": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢庫存報表 */
+    get: operations["ReportsController_findInventory"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/reports/inventory/export.csv": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 匯出庫存報表 CSV */
+    get: operations["ReportsController_exportInventory"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/store-photos/active": {
     parameters: {
       query?: never;
@@ -12623,6 +12691,78 @@ export interface components {
       amount?: number;
       /** @description 訊號 id，重送同一個 id 只會執行一次 */
       id?: string;
+    };
+    /** @enum {string} */
+    SalesReportGroupBy:
+      | "day"
+      | "hour"
+      | "paymentMethod"
+      | "mode"
+      | "menuItem"
+      | "category";
+    SalesReportRowDto: {
+      /** @description 計入時間落在區間內的計入訂單數；menuItem／category 為含該品項或分類的訂單數，同一訂單會計入多列 */
+      orders: number;
+      /** @description 上述訂單的總額合計；menuItem／category 為訂單總額依品項小計分攤到該列的金額 */
+      revenue: number;
+      /** @description 上述訂單的折扣合計；menuItem／category 為整單折扣依品項小計分攤到該列的金額 */
+      discount: number;
+      /** @description 退款時間落在區間內的確認退款金額；日／小時依退款時間歸組，付款方式／點餐方式依原訂單歸組，品項／分類依退款明細歸組 */
+      refunded: number;
+      /** @description revenue 減 refunded */
+      net: number;
+      /** @description day：店家時區日期 YYYY-MM-DD；hour：店家時區小時 0–23；paymentMethod／mode：該列舉值；menuItem：品項 id；category：品項目前所屬菜單分類 id，品項已刪除或未分類為 uncategorized */
+      key: string;
+      /** @description 僅 menuItem／category：目前的品項或分類名稱；品項已刪除時為最近一次訂單快照的名稱（以預設語系為 key 存放，快照當時未必是該語系的文字），未分類為 null */
+      name?: components["schemas"]["LocalizedTextDto"] | null;
+      /** @description 僅 menuItem／category：售出份數，含被加購的次數 */
+      quantity?: number;
+      /** @description 僅 menuItem／category：退款時間落在區間內的退款份數 */
+      refundedQuantity?: number;
+    };
+    SalesReportTotalsDto: {
+      /** @description 計入時間落在區間內的計入訂單數 */
+      orders: number;
+      /** @description 上述訂單的總額合計 */
+      revenue: number;
+      /** @description 上述訂單的折扣合計 */
+      discount: number;
+      /** @description 退款時間落在區間內的確認退款金額；日／小時依退款時間歸組，付款方式／點餐方式依原訂單歸組，品項／分類依退款明細歸組 */
+      refunded: number;
+      /** @description revenue 減 refunded */
+      net: number;
+    };
+    SalesReportResponseDto: {
+      groupBy: components["schemas"]["SalesReportGroupBy"];
+      /** @description 只列有訂單或退款的組；day／hour 依 key 由小到大，其餘依 revenue 由大到小。menuItem／category 的金額依品項小計分攤整單折扣、依退款明細分攤退款，加購計入加購品項，四捨五入到分，加總可能與 totals 差幾分；沒有退款明細（refund.items 為空）的退款無法歸到品項，只計入 totals，此時 rows 加總會少整筆退款 */
+      rows: components["schemas"]["SalesReportRowDto"][];
+      totals: components["schemas"]["SalesReportTotalsDto"];
+    };
+    InventoryReportRowDto: {
+      ingredientId: string;
+      name: components["schemas"]["LocalizedTextDto"];
+      /** @description 以下數量皆為此單位 */
+      unitCode: components["schemas"]["UnitCode"];
+      /** @description 期初：since 當下的帳上數量 */
+      opening: string;
+      /** @description 入庫：區間內盤點調增的數量合計；異動沒有進貨或更正之分，調增一律算入庫 */
+      received: string;
+      /** @description 耗用：區間內訂單扣庫存減去取消／全額退款回補的數量 */
+      consumed: string;
+      /** @description 調整：區間內盤點調減的數量合計，為負數或 0 */
+      adjusted: string;
+      /** @description 期末：until 當下的帳上數量，等於期初＋入庫－耗用＋調整 */
+      closing: string;
+      /** @description 理論耗用：區間內扣庫存的訂單份數（含加購）減去區間內回補的訂單份數，乘以品項目前的配方用量；部分退款不回補，不扣份數 */
+      theoreticalConsumption: string;
+      /** @description 實際耗用：期初＋入庫－期末，即耗用減去調整 */
+      actualConsumption: string;
+      /** @description 差異：實際耗用減理論耗用，正數表示用得比目前配方多；盤點調增算入庫，不會抵銷差異 */
+      variance: string;
+    };
+    InventoryReportResponseDto: {
+      /** @description 店家目前所有食材，依食材排序；數量為小數點後三位的字串，與食材庫存相同 */
+      rows: components["schemas"]["InventoryReportRowDto"][];
     };
     PublicStorePhotoResponseDto: {
       id: string;
@@ -24744,6 +24884,140 @@ export interface operations {
       };
     };
   };
+  ReportsController_findSales: {
+    parameters: {
+      query: {
+        /** @description 統計起始時間 */
+        since: string;
+        /** @description 統計結束時間（不含）；須晚於 since，區間最多 366 天 */
+        until: string;
+        groupBy: components["schemas"]["SalesReportGroupBy"];
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SalesReportResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ReportsController_exportSales: {
+    parameters: {
+      query: {
+        /** @description 統計起始時間 */
+        since: string;
+        /** @description 統計結束時間（不含）；須晚於 since，區間最多 366 天 */
+        until: string;
+        groupBy: components["schemas"]["SalesReportGroupBy"];
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "text/csv": string;
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ReportsController_findInventory: {
+    parameters: {
+      query: {
+        /** @description 統計起始時間 */
+        since: string;
+        /** @description 統計結束時間（不含）；須晚於 since，區間最多 366 天 */
+        until: string;
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["InventoryReportResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ReportsController_exportInventory: {
+    parameters: {
+      query: {
+        /** @description 統計起始時間 */
+        since: string;
+        /** @description 統計結束時間（不含）；須晚於 since，區間最多 366 天 */
+        until: string;
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "text/csv": string;
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   StorePhotosController_findAllActive: {
     parameters: {
       query: {
@@ -26928,6 +27202,9 @@ export const quantFeeTypeValues: ReadonlyArray<
 export const quantWebhookActionValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantWebhookAction"]
 > = ["buy", "sell", "close"];
+export const salesReportGroupByValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["SalesReportGroupBy"]
+> = ["day", "hour", "paymentMethod", "mode", "menuItem", "category"];
 export const storePhotoFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["StorePhotoFilterField"]
 > = ["alt", "isActive", "createdAt", "updatedAt"];

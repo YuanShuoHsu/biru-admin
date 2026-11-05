@@ -58,6 +58,11 @@ const useNavItems = (): NavItem[][] => {
             ...(inventoryChildren.length
               ? [{ ...navItem("/inventory"), children: inventoryChildren }]
               : []),
+            ...(isAdmin ||
+            hasRolePermission(memberRole, { revenue: ["read"] }) ||
+            hasRolePermission(memberRole, { inventoryTransaction: ["read"] })
+              ? [navItem("/reports")]
+              : []),
             ...(isAdmin ? [navItem("/store-layout")] : []),
           ],
         ]
