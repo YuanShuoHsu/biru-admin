@@ -85,10 +85,10 @@ export const useUpdateMenuItemFormSchema = () => {
           .refine(
             ({ validFrom, validThrough }) => {
               if (!validFrom || !validThrough) return true;
-              return new Date(validFrom) < new Date(validThrough);
+              return validFrom <= validThrough;
             },
             {
-              message: tValidation("validFrom.beforeValidThrough"),
+              message: tValidation("validFrom.order"),
               path: ["validThrough"],
             },
           )

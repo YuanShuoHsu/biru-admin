@@ -326,7 +326,7 @@
     "invalid": "URLの形式が無効です。"
   },
   "validFrom": {
-    "beforeValidThrough": "開始日は終了日より前でなければなりません。"
+    "order": "終了日は開始日より前にできません。"
   },
   "workPermit": {
     "required": "就労許可の開始日と終了日を選択してください。",

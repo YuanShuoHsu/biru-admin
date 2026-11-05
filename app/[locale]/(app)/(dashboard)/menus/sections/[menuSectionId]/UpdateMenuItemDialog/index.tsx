@@ -52,11 +52,15 @@ import type {
 import type { ApiOrderMode } from "@/types/orderMode";
 
 import { localize } from "@/utils/locale";
+import { storeDateOf } from "@/utils/menus";
 
 const StyledGrid = styled(Grid)({
   width: "100%",
   alignItems: "flex-end",
 });
+
+const toFormDate = (value?: string): string =>
+  value ? (storeDateOf(value) ?? value) : "";
 
 interface UpdateMenuItemDialogProps {
   canWrite: boolean;
@@ -117,8 +121,10 @@ const UpdateMenuItemDialog = ({
             : "",
         priceSpecification: {
           price: item.offer?.priceSpecification?.price || "",
-          validFrom: item.offer?.priceSpecification?.validFrom || "",
-          validThrough: item.offer?.priceSpecification?.validThrough || "",
+          validFrom: toFormDate(item.offer?.priceSpecification?.validFrom),
+          validThrough: toFormDate(
+            item.offer?.priceSpecification?.validThrough,
+          ),
         },
       },
     },
