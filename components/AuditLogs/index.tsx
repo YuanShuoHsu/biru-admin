@@ -447,6 +447,13 @@ const getTargetLabel = (
 ): string =>
   typeof label === "string" ? label : localize(label ?? undefined, locale);
 
+const sortChanges = (changes: AuditLogResponse["changes"]) =>
+  Object.entries(changes).sort(
+    ([a], [b]) =>
+      (FIELD_RANK.get(a) ?? FIELD_RANK.size) -
+      (FIELD_RANK.get(b) ?? FIELD_RANK.size),
+  );
+
 const isLocalizedField = (
   value: object,
   field: string,
@@ -744,6 +751,21 @@ const AuditLogs = ({
     valueLabels,
   ]);
 
+  const getFieldLabel = useCallback(
+    (field: string, row: AuditLogResponse) => {
+      const scopedField = `${row.resource}.${field}`;
+
+      return isAttendanceField(scopedField)
+        ? tAttendance(ATTENDANCE_FIELD_LABEL_KEYS[scopedField])
+        : isTranslatableField(field)
+          ? tAudit(FIELD_LABEL_KEYS[field])
+          : isAttendanceField(field)
+            ? tAttendance(ATTENDANCE_FIELD_LABEL_KEYS[field])
+            : field;
+    },
+    [tAttendance, tAudit],
+  );
+
   const columns = useMemo<GridColDef[]>(
     () => [
       ...(organizations.length
@@ -842,6 +864,8 @@ const AuditLogs = ({
                 );
               },
               sortable: false,
+              valueGetter: (value: AuditLogResponse["resourceLabel"]) =>
+                getTargetLabel(value, locale),
             },
           ]),
       {
@@ -853,77 +877,85 @@ const AuditLogs = ({
             direction="row"
             divider={<StyledDivider flexItem orientation="vertical" />}
           >
-            {Object.entries(row.changes)
-              .sort(
-                ([a], [b]) =>
-                  (FIELD_RANK.get(a) ?? FIELD_RANK.size) -
-                  (FIELD_RANK.get(b) ?? FIELD_RANK.size),
-              )
-              .map(([field, change]) => {
-                const scopedField = `${row.resource}.${field}`;
-                const label = isAttendanceField(scopedField)
-                  ? tAttendance(ATTENDANCE_FIELD_LABEL_KEYS[scopedField])
-                  : isTranslatableField(field)
-                    ? tAudit(FIELD_LABEL_KEYS[field])
-                    : isAttendanceField(field)
-                      ? tAttendance(ATTENDANCE_FIELD_LABEL_KEYS[field])
-                      : field;
+            {sortChanges(row.changes).map(([field, change]) => {
+              const label = getFieldLabel(field, row);
 
-                const renderValue = (
-                  value: unknown,
-                  state?: "previous" | "removed",
-                ) =>
-                  isImageValue(value) ? (
-                    <ChangeImage
-                      alt={tAudit("value.image")}
-                      dimmed={!!state}
-                      src={value}
-                    />
-                  ) : isUrlValue(value) ? (
-                    <StyledLink
-                      color={state ? "textDisabled" : undefined}
-                      href={value}
-                      rel="noopener"
-                      removed={state === "removed"}
-                      target="_blank"
-                      variant="caption"
-                    >
-                      {value}
-                    </StyledLink>
-                  ) : (
-                    <StyledTypography
-                      color={state ? "textDisabled" : undefined}
-                      removed={state === "removed"}
-                      variant="caption"
-                    >
-                      {getValueText(field, value, row)}
-                    </StyledTypography>
-                  );
-
-                return (
-                  <ChangeRowStack direction="row" key={field}>
-                    <Typography color="textSecondary" variant="caption">
-                      {label}
-                    </Typography>
-                    {row.action === "delete" ? (
-                      renderValue(change.before, "removed")
-                    ) : row.action !== "update" || !("before" in change) ? (
-                      renderValue(change.after)
-                    ) : (
-                      <>
-                        {renderValue(change.before, "previous")}
-                        <Typography color="textSecondary" variant="caption">
-                          →
-                        </Typography>
-                        {renderValue(change.after)}
-                      </>
-                    )}
-                  </ChangeRowStack>
+              const renderValue = (
+                value: unknown,
+                state?: "previous" | "removed",
+              ) =>
+                isImageValue(value) ? (
+                  <ChangeImage
+                    alt={tAudit("value.image")}
+                    dimmed={!!state}
+                    src={value}
+                  />
+                ) : isUrlValue(value) ? (
+                  <StyledLink
+                    color={state ? "textDisabled" : undefined}
+                    href={value}
+                    rel="noopener"
+                    removed={state === "removed"}
+                    target="_blank"
+                    variant="caption"
+                  >
+                    {value}
+                  </StyledLink>
+                ) : (
+                  <StyledTypography
+                    color={state ? "textDisabled" : undefined}
+                    removed={state === "removed"}
+                    variant="caption"
+                  >
+                    {getValueText(field, value, row)}
+                  </StyledTypography>
                 );
-              })}
+
+              return (
+                <ChangeRowStack direction="row" key={field}>
+                  <Typography color="textSecondary" variant="caption">
+                    {label}
+                  </Typography>
+                  {row.action === "delete" ? (
+                    renderValue(change.before, "removed")
+                  ) : row.action !== "update" || !("before" in change) ? (
+                    renderValue(change.after)
+                  ) : (
+                    <>
+                      {renderValue(change.before, "previous")}
+                      <Typography color="textSecondary" variant="caption">
+                        →
+                      </Typography>
+                      {renderValue(change.after)}
+                    </>
+                  )}
+                </ChangeRowStack>
+              );
+            })}
           </ChangesStack>
         ),
         sortable: false,
+        valueFormatter: (
+          value: AuditLogResponse["changes"],
+          row: AuditLogResponse,
+        ) => {
+          const toText = (field: string, item: unknown) =>
+            isImageValue(item)
+              ? tAudit("value.image")
+              : getValueText(field, item, row);
+
+          return sortChanges(value)
+            .map(([field, change]) => {
+              const label = getFieldLabel(field, row);
+
+              return row.action === "delete"
+                ? `${label}: ${toText(field, change.before)}`
+                : row.action !== "update" || !("before" in change)
+                  ? `${label}: ${toText(field, change.after)}`
+                  : `${label}: ${toText(field, change.before)} → ${toText(field, change.after)}`;
+            })
+            .join("; ");
+        },
       },
       {
         field: "createdAt",
@@ -939,6 +971,7 @@ const AuditLogs = ({
       enumFilterOperators,
       enumOptions,
       format,
+      getFieldLabel,
       getValueText,
       handleActorIdChange,
       locale,
@@ -946,7 +979,6 @@ const AuditLogs = ({
       resource,
       searchParams,
       stringFilterOperators,
-      tAttendance,
       tAudit,
     ],
   );
