@@ -440,11 +440,11 @@ const Banners = ({
             })}
           </DialogContentText>
           <List dense disablePadding>
-            {selectedRows.map(({ alt, id, image }) => (
+            {selectedRows.map(({ alt, id, imageUrl }) => (
               <ListItem disableGutters key={id}>
                 <StyledAvatar
                   alt={localize(alt, locale) || tBanners("image.label")}
-                  src={image}
+                  src={imageUrl ?? undefined}
                   variant="rounded"
                 />
               </ListItem>
@@ -559,14 +559,16 @@ const Banners = ({
         : []),
       {
         disableColumnMenu: true,
-        field: "image",
+        field: "imageUrl",
         filterable: false,
         headerName: tBanners("image.label"),
-        renderCell: ({ row: { alt, image } }: GridRenderCellParams<Banner>) => (
+        renderCell: ({
+          row: { alt, imageUrl },
+        }: GridRenderCellParams<Banner>) => (
           <ImageStack direction="row">
             <StyledAvatar
               alt={localize(alt, locale) || tBanners("image.label")}
-              src={image}
+              src={imageUrl ?? undefined}
               variant="rounded"
             />
           </ImageStack>

@@ -44,7 +44,7 @@ const UpdateMenuSectionDialog = ({
   const tMenus = useTranslations("menus");
 
   const uploadKey = `update-menu-section-image-${section.id}`;
-  const imageSrc = useUploadAvatarSrc(uploadKey, section.image);
+  const imageSrc = useUploadAvatarSrc(uploadKey, section.imageUrl);
 
   const updateMenuSectionFormSchema = useUpdateMenuSectionFormSchema();
   const {
@@ -81,7 +81,7 @@ const UpdateMenuSectionDialog = ({
         body: {
           name,
           description,
-          ...(imageSrc !== (section.image || null) && { image: imageSrc }),
+          ...(imageSrc !== (section.imageUrl || null) && { image: imageSrc }),
           orderTicketPrinterId,
         },
       });
@@ -113,7 +113,7 @@ const UpdateMenuSectionDialog = ({
       <UploadAvatars
         aspectRatio="16/9"
         fullWidth
-        initialSrc={section.image}
+        initialSrc={section.imageUrl}
         shape="square"
         uploadKey={uploadKey}
       />

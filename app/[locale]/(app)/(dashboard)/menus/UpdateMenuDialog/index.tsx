@@ -37,7 +37,7 @@ const UpdateMenuDialog = ({ menu, mutate }: UpdateMenuDialogProps) => {
   const tMenus = useTranslations("menus");
 
   const uploadKey = `update-menu-image-${menu.id}`;
-  const imageSrc = useUploadAvatarSrc(uploadKey, menu.image);
+  const imageSrc = useUploadAvatarSrc(uploadKey, menu.imageUrl);
 
   const updateMenuFormSchema = useUpdateMenuFormSchema();
   const {
@@ -48,7 +48,7 @@ const UpdateMenuDialog = ({ menu, mutate }: UpdateMenuDialogProps) => {
   } = useForm<UpdateMenuForm>({
     defaultValues: {
       description: menu.description ?? {},
-      image: menu.image ?? "",
+      image: menu.imageUrl ?? "",
       name: menu.name ?? {},
     },
     resolver: zodResolver(updateMenuFormSchema),
@@ -68,7 +68,7 @@ const UpdateMenuDialog = ({ menu, mutate }: UpdateMenuDialogProps) => {
         body: {
           name,
           description,
-          ...(imageSrc !== (menu.image || null) && { image: imageSrc }),
+          ...(imageSrc !== (menu.imageUrl || null) && { image: imageSrc }),
         },
       });
 
@@ -97,7 +97,7 @@ const UpdateMenuDialog = ({ menu, mutate }: UpdateMenuDialogProps) => {
       <UploadAvatars
         aspectRatio="16/9"
         fullWidth
-        initialSrc={menu.image ?? undefined}
+        initialSrc={menu.imageUrl ?? undefined}
         shape="square"
         uploadKey={uploadKey}
       />

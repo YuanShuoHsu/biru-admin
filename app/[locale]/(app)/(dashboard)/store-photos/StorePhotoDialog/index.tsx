@@ -41,7 +41,7 @@ const StorePhotoDialog = ({ mutate, storePhoto }: StorePhotoDialogProps) => {
   const uploadKey = storePhoto
     ? `update-store-photo-image-${storePhoto.id}`
     : "create-store-photo-image";
-  const imageSrc = useUploadAvatarSrc(uploadKey, storePhoto?.image);
+  const imageSrc = useUploadAvatarSrc(uploadKey, storePhoto?.imageUrl);
 
   const storePhotoFormSchema = useStorePhotoFormSchema();
   const {
@@ -73,7 +73,7 @@ const StorePhotoDialog = ({ mutate, storePhoto }: StorePhotoDialogProps) => {
       const body: Partial<CreateStorePhotoDto> = {
         alt,
         isActive,
-        ...(imageSrc !== storePhoto?.image && { image: imageSrc }),
+        ...(imageSrc !== storePhoto?.imageUrl && { image: imageSrc }),
       };
 
       await fetcher(
@@ -119,7 +119,7 @@ const StorePhotoDialog = ({ mutate, storePhoto }: StorePhotoDialogProps) => {
         aspectRatio="4/3"
         fullWidth
         highQuality
-        initialSrc={storePhoto?.image}
+        initialSrc={storePhoto?.imageUrl}
         shape="square"
         uploadKey={uploadKey}
       />

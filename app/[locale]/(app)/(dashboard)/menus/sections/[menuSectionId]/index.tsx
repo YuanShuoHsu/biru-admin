@@ -710,7 +710,7 @@ const MenusMenuIdSectionId = ({
           ]
         : []),
       {
-        field: "image",
+        field: "imageUrl",
         filterable: false,
         headerName: tMenus("items.image.label"),
         renderCell: ({ value }: { value?: string | null }) =>
