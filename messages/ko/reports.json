@@ -1,0 +1,41 @@
+{
+  "export": "CSV 내보내기",
+  "groupBy": {
+    "category": "카테고리",
+    "day": "날짜",
+    "hour": "시간대",
+    "label": "그룹 기준",
+    "menuItem": "품목",
+    "mode": "주문 방식",
+    "paymentMethod": "결제 수단"
+  },
+  "inventory": {
+    "actualConsumption": "실제 소모량",
+    "adjusted": "조정",
+    "closing": "기말 재고",
+    "consumed": "소모",
+    "ingredient": "식자재",
+    "opening": "기초 재고",
+    "received": "입고",
+    "theoreticalConsumption": "이론 소모량",
+    "unit": "단위",
+    "variance": "차이"
+  },
+  "label": "보고서",
+  "sales": {
+    "discount": "할인",
+    "net": "순매출",
+    "orders": "주문 수",
+    "quantity": "수량",
+    "refunded": "환불",
+    "refundedQuantity": "환불 수량",
+    "revenue": "매출",
+    "total": "합계"
+  },
+  "since": "시작일",
+  "tabs": {
+    "inventory": "재고",
+    "sales": "매출"
+  },
+  "until": "종료일"
+}

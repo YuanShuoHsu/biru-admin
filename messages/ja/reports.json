@@ -1,0 +1,41 @@
+{
+  "export": "CSV をエクスポート",
+  "groupBy": {
+    "category": "カテゴリ",
+    "day": "日付",
+    "hour": "時間帯",
+    "label": "集計単位",
+    "menuItem": "商品",
+    "mode": "注文方法",
+    "paymentMethod": "支払方法"
+  },
+  "inventory": {
+    "actualConsumption": "実消費量",
+    "adjusted": "調整",
+    "closing": "期末在庫",
+    "consumed": "消費",
+    "ingredient": "食材",
+    "opening": "期首在庫",
+    "received": "入庫",
+    "theoreticalConsumption": "理論消費量",
+    "unit": "単位",
+    "variance": "差異"
+  },
+  "label": "レポート",
+  "sales": {
+    "discount": "割引",
+    "net": "純売上",
+    "orders": "注文数",
+    "quantity": "数量",
+    "refunded": "返金",
+    "refundedQuantity": "返金数量",
+    "revenue": "売上",
+    "total": "合計"
+  },
+  "since": "開始日",
+  "tabs": {
+    "inventory": "在庫",
+    "sales": "売上"
+  },
+  "until": "終了日"
+}

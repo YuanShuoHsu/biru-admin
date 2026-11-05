@@ -21,6 +21,7 @@ import organizations from "./en/organizations.json";
 import payrollRuleSets from "./en/payrollRuleSets.json";
 import pointSettings from "./en/pointSettings.json";
 import quant from "./en/quant.json";
+import reports from "./en/reports.json";
 import storeLayout from "./en/storeLayout.json";
 import storePhotos from "./en/storePhotos.json";
 import validation from "./en/validation.json";
@@ -50,6 +51,7 @@ const messages = {
   payrollRuleSets,
   pointSettings,
   quant,
+  reports,
   storeLayout,
   storePhotos,
   validation,

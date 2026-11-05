@@ -31,6 +31,7 @@ import {
   AddCard,
   AdminPanelSettings,
   Apartment,
+  Assessment,
   Assignment,
   AssignmentReturn,
   Badge,
@@ -629,6 +630,12 @@ const routes: Route[] = [
     label: "inventory.label",
     segment: "inventory",
     to: null,
+  },
+  {
+    icon: Assessment,
+    label: "reports.label",
+    query: ["organization"],
+    segment: "reports",
   },
   auditLogsRoute,
   {
