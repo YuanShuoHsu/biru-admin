@@ -99,7 +99,7 @@ const RecipeIngredientDialog = ({
 
       let target = recipe ?? createdRecipe.current;
 
-      // 食譜對使用者不是獨立的東西，第一次加材料時才隱式建立；份量由後端預設帶 1
+      // 品項第一次加材料時才隱式建立食譜；份量由後端預設帶 1
       if (!target) {
         target = await fetcher<Recipe>(
           `/api/organizations/${organizationSlug}/recipes`,

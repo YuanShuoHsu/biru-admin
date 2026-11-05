@@ -4,8 +4,10 @@ import {
   ingredientSortFieldValues,
   inventoryTransactionFilterFieldValues,
   inventoryTransactionSortFieldValues,
+  recipeFilterFieldValues,
   recipeIngredientFilterFieldValues,
   recipeIngredientSortFieldValues,
+  recipeSortFieldValues,
   supplierFilterFieldValues,
   supplierSortFieldValues,
   type components,
@@ -19,6 +21,7 @@ export type InventoryTransaction =
 export type InventoryTransactionListResponse =
   components["schemas"]["InventoryTransactionListResponseDto"];
 export type Recipe = components["schemas"]["RecipeResponseDto"];
+export type RecipeListResponse = components["schemas"]["RecipeListResponseDto"];
 export type MenuItemRecipeDetail =
   components["schemas"]["MenuItemRecipeDetailResponseDto"];
 export type RecipeIngredient =
@@ -41,6 +44,8 @@ export type InventoryTransactionFilterField =
   (typeof inventoryTransactionFilterFieldValues)[number];
 export type InventoryTransactionSortField =
   (typeof inventoryTransactionSortFieldValues)[number];
+export type RecipeFilterField = (typeof recipeFilterFieldValues)[number];
+export type RecipeSortField = (typeof recipeSortFieldValues)[number];
 export type RecipeIngredientFilterField =
   (typeof recipeIngredientFilterFieldValues)[number];
 export type RecipeIngredientSortField =

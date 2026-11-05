@@ -274,6 +274,9 @@
   "recipeYield": {
     "required": "出来上がり分量は必須です。"
   },
+  "recipeYieldUnitCode": {
+    "notSelected": "出来高の単位を選択してください。"
+  },
   "remark": {
     "maxLength": "備考は160文字以内で入力してください。"
   },

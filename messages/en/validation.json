@@ -274,6 +274,9 @@
   "recipeYield": {
     "required": "Servings is required."
   },
+  "recipeYieldUnitCode": {
+    "notSelected": "Please select your yield unit."
+  },
   "remark": {
     "maxLength": "Notes must not exceed 160 characters."
   },

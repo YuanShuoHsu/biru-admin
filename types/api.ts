@@ -9199,6 +9199,13 @@ export interface components {
        */
       recipeYield: number;
       /**
+       * @description 做出的總量；作為食材來源食譜時必填，與 recipeYieldUnitCode 一起帶
+       * @example 1500.000
+       */
+      recipeYieldQuantity?: string | null;
+      /** @description recipeYieldQuantity 的單位 */
+      recipeYieldUnitCode?: components["schemas"]["UnitCode"] | null;
+      /**
        * @example [
        *       {
        *         "zh-TW": "吉利丁片泡冷水軟化，約 5 分鐘。"
@@ -9231,6 +9238,9 @@ export interface components {
       menuItemName?: components["schemas"]["LocalizedTextDto"] | null;
       name: components["schemas"]["LocalizedTextDto"];
       recipeYield: number;
+      recipeYieldQuantity?: string | null;
+      /** @description recipeYieldQuantity 的單位 */
+      recipeYieldUnitCode?: components["schemas"]["UnitCode"] | null;
       recipeInstructions?: components["schemas"]["LocalizedTextDto"][] | null;
       /** @description 全部材料成本合計；任一材料缺單價時為 null，無 purchasing 權限時不回傳 */
       cost?: number | null;
@@ -9363,6 +9373,13 @@ export interface components {
        * @default 1
        */
       recipeYield: number;
+      /**
+       * @description 做出的總量；作為食材來源食譜時必填，與 recipeYieldUnitCode 一起帶
+       * @example 1500.000
+       */
+      recipeYieldQuantity?: string | null;
+      /** @description recipeYieldQuantity 的單位 */
+      recipeYieldUnitCode?: components["schemas"]["UnitCode"] | null;
       /**
        * @example [
        *       {
@@ -18225,6 +18242,8 @@ export interface operations {
         sortDirection?: components["schemas"]["SortDirection"];
         filterField?: components["schemas"]["RecipeFilterField"];
         sortBy?: components["schemas"]["RecipeSortField"];
+        /** @description true 只列綁定菜單品項的食譜，false 只列未綁定的 */
+        hasMenuItem?: boolean;
         limit?: number;
         offset?: number;
         filterValue?: string;

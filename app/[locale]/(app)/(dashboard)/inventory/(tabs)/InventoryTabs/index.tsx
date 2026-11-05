@@ -11,7 +11,7 @@ const InventoryTabs = () => {
 
   const tabs = [
     ...(hasRolePermission(memberRole, { inventory: ["read"] })
-      ? [{ path: "/inventory/ingredients" }]
+      ? [{ path: "/inventory/ingredients" }, { path: "/inventory/recipes" }]
       : []),
     ...(hasRolePermission(memberRole, { purchasing: ["read"] })
       ? [{ path: "/inventory/suppliers" }]

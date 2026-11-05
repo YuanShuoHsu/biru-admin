@@ -54,7 +54,7 @@ export const useNavChildren = (): Record<string, NavItem[]> => {
     "/company": [navItem("/company/terms"), navItem("/company/privacy")],
     "/inventory": [
       ...(hasRolePermission(memberRole, { inventory: ["read"] })
-        ? [navItem("/inventory/ingredients")]
+        ? [navItem("/inventory/ingredients"), navItem("/inventory/recipes")]
         : []),
       ...(hasRolePermission(memberRole, { purchasing: ["read"] })
         ? [navItem("/inventory/suppliers")]

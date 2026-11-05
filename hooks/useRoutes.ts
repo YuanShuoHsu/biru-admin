@@ -615,6 +615,21 @@ const routes: Route[] = [
         children: [
           {
             children: [auditLogsRoute],
+            icon: Scale,
+            label: "inventory.recipes.ingredients.label",
+            query: ["organization", "page", "pageSize"],
+            segment: "[recipeId]",
+          },
+        ],
+        icon: SoupKitchen,
+        label: "inventory.recipes.label",
+        query: ["organization", "page", "pageSize"],
+        segment: "recipes",
+      },
+      {
+        children: [
+          {
+            children: [auditLogsRoute],
             icon: LocalShipping,
             segment: "[supplierId]",
             to: null,

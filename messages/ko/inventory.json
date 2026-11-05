@@ -113,6 +113,20 @@
   "label": "재고",
   "recipes": {
     "actions": {
+      "createRecipe": {
+        "success": "레시피가 추가되었습니다",
+        "title": "레시피 추가"
+      },
+      "deleteRecipe": {
+        "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+        "success": "레시피가 삭제되었습니다",
+        "title": "레시피 삭제"
+      },
+      "editRecipe": {
+        "success": "레시피가 업데이트되었습니다",
+        "title": "레시피 편집"
+      },
+      "label": "작업",
       "updateRecipe": {
         "success": "분량이 업데이트되었습니다",
         "title": "분량 편집"
@@ -192,10 +206,23 @@
     "margin": {
       "label": "마진율"
     },
+    "name": {
+      "label": "레시피 이름",
+      "placeholder": "레시피 이름을 입력해 주세요"
+    },
     "recipeYield": {
       "label": "분량",
       "placeholder": "분량을 입력해 주세요",
       "unit": "인분"
+    },
+    "recipeYieldQuantity": {
+      "helperText": "자가제조 식재료의 원본 레시피로 사용할 때는 생산량과 생산량 단위를 함께 입력해 주세요",
+      "label": "생산량",
+      "placeholder": "생산량을 입력해 주세요"
+    },
+    "recipeYieldUnitCode": {
+      "label": "생산량 단위",
+      "placeholder": "생산량 단위를 선택해 주세요"
     }
   },
   "reorder": "순서",
