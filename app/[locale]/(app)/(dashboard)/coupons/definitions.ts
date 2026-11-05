@@ -9,6 +9,7 @@ import {
 
 export const useCouponFormSchema = () => {
   const tCoupons = useTranslations("coupons");
+  const tValidation = useTranslations("validation");
 
   return z
     .object({
@@ -62,6 +63,18 @@ export const useCouponFormSchema = () => {
           code: "custom",
           message: tCoupons("issueMinSpend.required"),
           path: ["issueMinSpend"],
+        });
+      }
+
+      if (
+        data.validFrom &&
+        data.validThrough &&
+        new Date(data.validThrough) <= new Date(data.validFrom)
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          message: tValidation("endsAt.afterStartsAt"),
+          path: ["validThrough"],
         });
       }
 
