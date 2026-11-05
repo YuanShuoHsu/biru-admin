@@ -7034,7 +7034,7 @@ export interface components {
       total: number;
     };
     /** @enum {string} */
-    StatsBucketUnit: "day" | "hour";
+    StatsBucketUnit: "day" | "hour" | "month";
     UserStatsBucketDto: {
       /** Format: date-time */
       start: string;
@@ -25918,7 +25918,7 @@ export const userListItemDtoLangValues: ReadonlyArray<
 > = ["en", "ja", "ko", "zh-CN", "zh-TW"];
 export const statsBucketUnitValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["StatsBucketUnit"]
-> = ["day", "hour"];
+> = ["day", "hour", "month"];
 export const userSessionFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserSessionFilterField"]
 > = ["userAgent", "ipAddress", "createdAt", "expiresAt"];
