@@ -7,6 +7,7 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
+import IngredientBatchDialog from "./IngredientBatchDialog";
 import IngredientDialog from "./IngredientDialog";
 import StockCell from "../../StockCell";
 
@@ -49,6 +50,7 @@ import {
   Error as ErrorIcon,
   Save,
   Sort,
+  SoupKitchen,
   SwapVert,
   Warning,
 } from "@mui/icons-material";
@@ -152,6 +154,12 @@ const StockStack = styled(Stack, {
     }),
   }),
 );
+
+const NameStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
 
 const ToolbarStack = styled(Stack)(({ theme }) => ({
   flexWrap: "wrap",
@@ -541,6 +549,24 @@ const Ingredients = ({
     ],
   );
 
+  const handleMakeBatch = useCallback(
+    (ingredient: Ingredient) => {
+      setDialog({
+        content: (
+          <IngredientBatchDialog
+            ingredient={ingredient}
+            mutate={mutate}
+            organizationSlug={organizationSlug}
+          />
+        ),
+        formId: "ingredient-batch-form",
+        open: true,
+        title: tInventory("ingredients.actions.makeBatch.title"),
+      });
+    },
+    [mutate, organizationSlug, setDialog, tInventory],
+  );
+
   const handleViewTransactions = useCallback(
     ({ id }: Ingredient) => {
       const params = new URLSearchParams({
@@ -709,6 +735,18 @@ const Ingredients = ({
                       <SwapVert fontSize="small" />
                     </IconButton>
                   </Tooltip>
+                  {canRecordTransaction && row.recipeId && (
+                    <Tooltip
+                      title={tInventory("ingredients.actions.makeBatch.title")}
+                    >
+                      <IconButton
+                        onClick={() => handleMakeBatch(row)}
+                        size="small"
+                      >
+                        <SoupKitchen fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
                   {(canWrite || canRecordTransaction) && (
                     <Tooltip
                       title={tInventory(
@@ -717,11 +755,19 @@ const Ingredients = ({
                     >
                       <StyledIconButton
                         onClick={() => {
-                          if (canWrite || row.packageBaseQuantity)
+                          if (
+                            canWrite ||
+                            row.packageBaseQuantity ||
+                            row.recipeId
+                          )
                             handleUpdateIngredient(row);
                         }}
                         size="small"
-                        visible={canWrite || !!row.packageBaseQuantity}
+                        visible={
+                          canWrite ||
+                          !!row.packageBaseQuantity ||
+                          !!row.recipeId
+                        }
                       >
                         <Edit fontSize="small" />
                       </StyledIconButton>
@@ -775,6 +821,17 @@ const Ingredients = ({
         field: "name",
         filterOperators: stringFilterOperators,
         headerName: tInventory("ingredients.name.label"),
+        renderCell: ({ row, value }: GridRenderCellParams<Ingredient>) => (
+          <NameStack direction="row">
+            {value}
+            {row.recipeId && (
+              <Chip
+                label={tInventory("ingredients.recipeId.chip")}
+                size="small"
+              />
+            )}
+          </NameStack>
+        ),
         valueGetter: (_value: unknown, row: Ingredient) =>
           localize(row.name, locale),
       },
@@ -943,6 +1000,7 @@ const Ingredients = ({
       format,
       formatMoney,
       handleDeleteIngredient,
+      handleMakeBatch,
       handleUpdateIngredient,
       handleViewTransactions,
       isReorderMode,

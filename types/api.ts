@@ -2184,6 +2184,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/ingredients/{ingredientId}/batches": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 依來源食譜製作一批食材 */
+    post: operations["OrganizationInventoryController_createIngredientBatch"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/ingredients/reorder": {
     parameters: {
       query?: never;
@@ -9055,18 +9072,20 @@ export interface components {
        * @example 100.000
        */
       lowStockThreshold?: string | null;
+      /** @description 自製半成品的來源食譜；設定後單價由食譜材料成本與產量推算，不能再帶 price、eligibleQuantity、eligibleQuantityUnitCode、supplierId */
+      recipeId?: string | null;
       /**
-       * @description 一個包裝的價錢
+       * @description 一個包裝的價錢；未帶 recipeId 時必填
        * @example 950.00
        */
-      price: string;
+      price?: string;
       /**
-       * @description 一個包裝的量
+       * @description 一個包裝的量；未帶 recipeId 時必填
        * @example 100.000
        */
-      eligibleQuantity: string;
-      /** @description eligibleQuantity 的單位，需與 unitCode 同維度 */
-      eligibleQuantityUnitCode: components["schemas"]["UnitCode"];
+      eligibleQuantity?: string;
+      /** @description eligibleQuantity 的單位，需與 unitCode 同維度；未帶 recipeId 時必填 */
+      eligibleQuantityUnitCode?: components["schemas"]["UnitCode"];
       /**
        * Format: uri
        * @description 採購連結
@@ -9116,6 +9135,8 @@ export interface components {
       /** @description 採購連結；無 purchasing 權限時不回傳 */
       url?: string | null;
       note?: string | null;
+      /** @description 自製半成品的來源食譜 */
+      recipeId?: string | null;
       /** @description 每基準單位價格 */
       unitPrice?: number | null;
       /** @description 包裝量，與 eligibleQuantity 相同 */
@@ -9278,17 +9299,19 @@ export interface components {
        * @example 100.000
        */
       lowStockThreshold?: string | null;
+      /** @description 自製半成品的來源食譜；設定後單價由食譜材料成本與產量推算，不能再帶 price、eligibleQuantity、eligibleQuantityUnitCode、supplierId */
+      recipeId?: string | null;
       /**
-       * @description 一個包裝的價錢
+       * @description 一個包裝的價錢；未帶 recipeId 時必填
        * @example 950.00
        */
       price?: string;
       /**
-       * @description 一個包裝的量
+       * @description 一個包裝的量；未帶 recipeId 時必填
        * @example 100.000
        */
       eligibleQuantity?: string;
-      /** @description eligibleQuantity 的單位，需與 unitCode 同維度 */
+      /** @description eligibleQuantity 的單位，需與 unitCode 同維度；未帶 recipeId 時必填 */
       eligibleQuantityUnitCode?: components["schemas"]["UnitCode"];
       /**
        * Format: uri
@@ -9341,8 +9364,17 @@ export interface components {
       /** @description 異動原因，自由填寫 */
       note?: string | null;
     };
+    CreateIngredientBatchDto: {
+      /**
+       * @description 這批實際產出的數量，單位為食材的 unitCode
+       * @example 2300.000
+       */
+      quantity: string;
+      /** @description 異動原因，自由填寫 */
+      note?: string | null;
+    };
     /** @enum {string} */
-    InventoryTransactionReason: "count" | "consume" | "restore";
+    InventoryTransactionReason: "count" | "consume" | "restore" | "batch";
     InventoryTransactionResponseDto: {
       id: string;
       ingredientId: string;
@@ -18096,6 +18128,39 @@ export interface operations {
       };
     };
   };
+  OrganizationInventoryController_createIngredientBatch: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        ingredientId: string;
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateIngredientBatchDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["InventoryTransactionResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   OrganizationInventoryController_reorderIngredients: {
     parameters: {
       query?: never;
@@ -26663,7 +26728,7 @@ export const inventoryTransactionSortFieldValues: ReadonlyArray<
 > = ["note", "quantity", "unitCost", "createdAt", "reason"];
 export const inventoryTransactionReasonValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["InventoryTransactionReason"]
-> = ["count", "consume", "restore"];
+> = ["count", "consume", "restore", "batch"];
 export const recipeIngredientFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["RecipeIngredientFilterField"]
 > = ["ingredientName", "requiredQuantity", "createdAt", "updatedAt"];

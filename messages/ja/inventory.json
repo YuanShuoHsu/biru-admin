@@ -23,6 +23,16 @@
         "title": "食材を削除"
       },
       "label": "操作",
+      "makeBatch": {
+        "quantity": {
+          "helperText": "このバッチで実際にできた総量を入力してください。材料はレシピの分量に応じて差し引かれます",
+          "label": "実際の出来高",
+          "placeholder": "実際の出来高を入力してください"
+        },
+        "shortfall": "材料の在庫が不足しています：{names}。先に仕入れまたは棚卸を行ってください",
+        "success": "{name} を1バッチ仕込みました",
+        "title": "1バッチ仕込む"
+      },
       "reorderIngredient": {
         "cancel": {
           "confirm": "<bold>食材</bold>の並び替えをキャンセルしますか？保存していない変更は失われます。",
@@ -89,6 +99,12 @@
       "label": "価格",
       "placeholder": "価格を入力してください"
     },
+    "recipeId": {
+      "chip": "自家製",
+      "helperText": "選択するとレシピの材料原価と出来高から単位原価を算出するため、価格・内容量・仕入先は不要です",
+      "label": "元のレシピ",
+      "placeholder": "元のレシピを選択してください"
+    },
     "supplierId": {
       "label": "仕入先",
       "placeholder": "仕入先を選択してください"
@@ -96,6 +112,10 @@
     "transactionNote": {
       "label": "在庫変動の備考",
       "placeholder": "在庫変動の備考を入力してください"
+    },
+    "unitCode": {
+      "label": "計量単位",
+      "placeholder": "計量単位を選択してください"
     },
     "unitPrice": {
       "label": "単位原価"
@@ -296,7 +316,8 @@
       "options": {
         "count": "棚卸",
         "consume": "注文消費",
-        "restore": "返品戻し"
+        "restore": "返品戻し",
+        "batch": "仕込み"
       }
     },
     "unitCost": {

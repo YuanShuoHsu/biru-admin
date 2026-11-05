@@ -23,6 +23,16 @@
         "title": "删除食材"
       },
       "label": "操作",
+      "makeBatch": {
+        "quantity": {
+          "helperText": "请填写这批实际做出的总量，原料会按食谱用量按比例扣除",
+          "label": "实际产量",
+          "placeholder": "请输入您的实际产量"
+        },
+        "shortfall": "原料库存不足：{names}。请先进货或盘点",
+        "success": "已制作一批 {name}",
+        "title": "制作一批"
+      },
       "reorderIngredient": {
         "cancel": {
           "confirm": "确定要取消<bold>食材</bold>排序吗？未保存的更改将会丢失。",
@@ -89,6 +99,12 @@
       "label": "价格",
       "placeholder": "请输入您的价格"
     },
+    "recipeId": {
+      "chip": "自制",
+      "helperText": "选择后由食谱材料成本与产量推算单位成本，无需填写价格、内容量与供应商",
+      "label": "来源食谱",
+      "placeholder": "请选择您的来源食谱"
+    },
     "supplierId": {
       "label": "供应商",
       "placeholder": "请选择您的供应商"
@@ -96,6 +112,10 @@
     "transactionNote": {
       "label": "库存异动备注",
       "placeholder": "请输入您的库存异动备注"
+    },
+    "unitCode": {
+      "label": "计量单位",
+      "placeholder": "请选择您的计量单位"
     },
     "unitPrice": {
       "label": "单位成本"
@@ -296,7 +316,8 @@
       "options": {
         "count": "人工盘点",
         "consume": "订单耗用",
-        "restore": "退单回补"
+        "restore": "退单回补",
+        "batch": "制作批次"
       }
     },
     "unitCost": {

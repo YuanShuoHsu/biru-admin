@@ -14,23 +14,14 @@ export const useIngredientFormSchema = (
   return z
     .object({
       brand: z.string().trim().optional(),
-      eligibleQuantity: z
-        .string()
-        .trim()
-        .min(1, {
-          error: tValidation("eligibleQuantity.required"),
-        }),
+      eligibleQuantity: z.string().trim(),
       inventoryLevel: z.string().trim().optional(),
       inventoryLevelUnitText: z.string().trim().optional(),
       lowStockThreshold: z.string().trim().optional(),
       note: z.string().trim().optional(),
       transactionNote: z.string().trim().optional(),
-      price: z
-        .string()
-        .trim()
-        .min(canViewPurchasing ? 1 : 0, {
-          error: tValidation("price.required"),
-        }),
+      price: z.string().trim(),
+      recipeId: z.string(),
       supplierId: z.string().trim().optional(),
       name: z
         .record(z.string(), z.string().trim())
@@ -53,14 +44,33 @@ export const useIngredientFormSchema = (
         )
         .optional(),
     })
-    .superRefine(({ inventoryLevel, unlimitedStock }, ctx) => {
-      if (recountOnTrackingRestore && !unlimitedStock && !inventoryLevel)
-        ctx.addIssue({
-          code: "custom",
-          message: tValidation("inventoryLevel.required"),
-          path: ["inventoryLevel"],
-        });
-    });
+    .superRefine(
+      (
+        { eligibleQuantity, inventoryLevel, price, recipeId, unlimitedStock },
+        ctx,
+      ) => {
+        if (!recipeId && !eligibleQuantity)
+          ctx.addIssue({
+            code: "custom",
+            message: tValidation("eligibleQuantity.required"),
+            path: ["eligibleQuantity"],
+          });
+
+        if (!recipeId && canViewPurchasing && !price)
+          ctx.addIssue({
+            code: "custom",
+            message: tValidation("price.required"),
+            path: ["price"],
+          });
+
+        if (recountOnTrackingRestore && !unlimitedStock && !inventoryLevel)
+          ctx.addIssue({
+            code: "custom",
+            message: tValidation("inventoryLevel.required"),
+            path: ["inventoryLevel"],
+          });
+      },
+    );
 };
 
 export type IngredientFormInput = z.input<

@@ -23,6 +23,16 @@
         "title": "식자재 삭제"
       },
       "label": "작업",
+      "makeBatch": {
+        "quantity": {
+          "helperText": "이번 배치에서 실제로 만든 총량을 입력해 주세요. 재료는 레시피 사용량에 비례해 차감됩니다",
+          "label": "실제 생산량",
+          "placeholder": "실제 생산량을 입력해 주세요"
+        },
+        "shortfall": "재료 재고가 부족합니다: {names}. 먼저 입고하거나 재고 실사를 해 주세요",
+        "success": "{name} 1배치를 만들었습니다",
+        "title": "1배치 만들기"
+      },
       "reorderIngredient": {
         "cancel": {
           "confirm": "<bold>식자재</bold> 정렬을 취소하시겠습니까? 저장하지 않은 변경 사항은 사라집니다.",
@@ -89,6 +99,12 @@
       "label": "가격",
       "placeholder": "가격을 입력해 주세요"
     },
+    "recipeId": {
+      "chip": "자체 제작",
+      "helperText": "선택하면 레시피 재료 원가와 생산량으로 단위 원가를 계산하므로 가격, 내용량, 공급업체는 입력하지 않아도 됩니다",
+      "label": "원본 레시피",
+      "placeholder": "원본 레시피를 선택해 주세요"
+    },
     "supplierId": {
       "label": "공급업체",
       "placeholder": "공급업체를 선택해 주세요"
@@ -96,6 +112,10 @@
     "transactionNote": {
       "label": "재고 변동 비고",
       "placeholder": "재고 변동 비고를 입력해 주세요"
+    },
+    "unitCode": {
+      "label": "계량 단위",
+      "placeholder": "계량 단위를 선택해 주세요"
     },
     "unitPrice": {
       "label": "단위 원가"
@@ -296,7 +316,8 @@
       "options": {
         "count": "재고 실사",
         "consume": "주문 소비",
-        "restore": "주문 환불"
+        "restore": "주문 환불",
+        "batch": "배치 생산"
       }
     },
     "unitCost": {

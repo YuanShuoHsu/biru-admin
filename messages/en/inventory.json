@@ -23,6 +23,16 @@
         "title": "Delete ingredient"
       },
       "label": "Actions",
+      "makeBatch": {
+        "quantity": {
+          "helperText": "Enter the total amount this batch actually made; materials are deducted in proportion to the recipe",
+          "label": "Actual yield",
+          "placeholder": "Please enter your actual yield"
+        },
+        "shortfall": "Not enough stock of: {names}. Please restock or count first",
+        "success": "Made a batch of {name}",
+        "title": "Make a batch"
+      },
       "reorderIngredient": {
         "cancel": {
           "confirm": "Are you sure you want to cancel <bold>ingredients</bold> reorder? Unsaved changes will be lost.",
@@ -89,6 +99,12 @@
       "label": "Price",
       "placeholder": "Please enter your price"
     },
+    "recipeId": {
+      "chip": "House-made",
+      "helperText": "Unit cost is derived from the recipe's material cost and yield, so price, content and supplier are not needed",
+      "label": "Source recipe",
+      "placeholder": "Please select your source recipe"
+    },
     "supplierId": {
       "label": "Supplier",
       "placeholder": "Please select your Supplier"
@@ -96,6 +112,10 @@
     "transactionNote": {
       "label": "Stock change notes",
       "placeholder": "Please enter your Stock change notes"
+    },
+    "unitCode": {
+      "label": "Unit",
+      "placeholder": "Please select your unit"
     },
     "unitPrice": {
       "label": "Unit cost"
@@ -296,7 +316,8 @@
       "options": {
         "count": "Stock count",
         "consume": "Order usage",
-        "restore": "Order refund"
+        "restore": "Order refund",
+        "batch": "Batch made"
       }
     },
     "unitCost": {
