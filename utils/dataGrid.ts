@@ -115,7 +115,7 @@ export const getFilterItemParams = (filterItem?: GridFilterItem) => {
   };
 };
 
-export type QuickFilterEnumOptions = Record<
+type QuickFilterEnumOptions = Record<
   string,
   { label: string; value: string }[]
 >;
