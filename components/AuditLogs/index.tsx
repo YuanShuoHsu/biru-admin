@@ -864,7 +864,7 @@ const AuditLogs = ({
                 );
               },
               sortable: false,
-              valueGetter: (value: AuditLogResponse["resourceLabel"]) =>
+              valueFormatter: (value: AuditLogResponse["resourceLabel"]) =>
                 getTargetLabel(value, locale),
             },
           ]),
