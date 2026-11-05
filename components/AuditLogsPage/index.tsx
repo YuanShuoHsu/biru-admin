@@ -7,9 +7,6 @@ import { Suspense } from "react";
 import AuditLogs from "@/components/AuditLogs";
 import ErrorAlert from "@/components/ErrorAlert";
 
-import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
-import { DEFAULT_PAGE_SIZE } from "@/constants/pagination";
-
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -17,13 +14,12 @@ import {
   auditLogFilterFieldValues,
   auditLogSortFieldValues,
   filterOperatorValues,
-  sortDirectionValues,
 } from "@/types/api";
 import type { AuditResource } from "@/types/audit";
 import type { Ingredient } from "@/types/inventory";
 
 import { getAuditLogs } from "@/utils/audit";
-import { getQuickFilterEnums } from "@/utils/dataGrid";
+import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAuditLogEnumOptions } from "@/utils/enumOptions";
 import { settle } from "@/utils/fetcher";
 import { getOrganizations, hasRolePermission } from "@/utils/organizations";
@@ -68,41 +64,7 @@ const AuditLogsPage = async ({
   resourceId,
   searchParams,
 }: AuditLogsPageProps) => {
-  const {
-    actorId,
-    filterField: rawFilterField,
-    filterOperator: rawFilterOperator,
-    filterValue,
-    organization,
-    page: rawPage,
-    pageSize: rawPageSize,
-    quickFilterEnums: rawQuickFilterEnums,
-    quickFilterValue,
-    sortBy: rawSortBy,
-    sortDirection: rawSortDirection,
-    ...restSearchParams
-  } = searchParams;
-
   const cookieStore = await cookies();
-
-  const page = Math.max(1, Number(rawPage) || 1);
-  const pageSize = Math.max(1, Number(rawPageSize) || DEFAULT_PAGE_SIZE);
-
-  const sortBy = auditLogSortFieldValues.find((field) => field === rawSortBy);
-  const sortDirection = sortDirectionValues.find(
-    (direction) => direction === rawSortDirection,
-  );
-
-  const filterField = auditLogFilterFieldValues.find(
-    (field) => field === rawFilterField,
-  );
-  const filterOperator = filterOperatorValues.find(
-    (operator) => operator === rawFilterOperator,
-  );
-  const isNoValueOperator =
-    !!filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
-  const hasFilter =
-    !!filterField && !!filterOperator && (!!filterValue || isNoValueOperator);
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
@@ -112,40 +74,29 @@ const AuditLogsPage = async ({
 
   const selectedOrganization = isAdmin
     ? undefined
-    : await getResolvedAdminOrganization(organization);
+    : await getResolvedAdminOrganization(searchParams.organization);
   if (!isAdmin && !selectedOrganization) notFound();
 
-  if (
-    rawQuickFilterEnums !== undefined ||
-    (!isAdmin && organization !== selectedOrganization?.slug) ||
-    rawPage !== String(page) ||
-    rawPageSize !== String(pageSize) ||
-    rawSortBy !== sortBy ||
-    rawSortDirection !== sortDirection ||
-    !!sortBy !== !!sortDirection ||
-    rawFilterField !== filterField ||
-    rawFilterOperator !== filterOperator ||
-    !!(filterField || filterOperator || filterValue) !== hasFilter
-  ) {
-    const params = new URLSearchParams({
-      ...restSearchParams,
-      ...(selectedOrganization && { organization: selectedOrganization.slug }),
-      page: String(page),
-      pageSize: String(pageSize),
-      ...(sortBy && sortDirection && { sortBy, sortDirection }),
-      ...(hasFilter &&
-        filterField &&
-        filterOperator && {
-          filterField,
-          filterOperator,
-          ...(filterValue && { filterValue }),
-        }),
-      ...(quickFilterValue && { quickFilterValue }),
-      ...(actorId && { actorId }),
-    });
+  const {
+    filterField,
+    filterOperator,
+    filterValue,
+    page,
+    pageSize,
+    quickFilterValue,
+    redirectParams,
+    sortBy,
+    sortDirection,
+  } = resolveGridSearchParams({
+    searchParams,
+    sortFields: auditLogSortFieldValues,
+    filterFields: auditLogFilterFieldValues,
+    filterOperators: filterOperatorValues,
+    organizationSlug: selectedOrganization?.slug,
+  });
 
-    redirect({ href: `${href}?${params.toString()}`, locale });
-  }
+  if (redirectParams)
+    redirect({ href: `${href}?${redirectParams.toString()}`, locale });
 
   if (selectedOrganization) {
     const memberRole = await getMemberRole(selectedOrganization.id);
@@ -174,7 +125,7 @@ const AuditLogsPage = async ({
       resourceId,
       ancestorId,
       {
-        actorId,
+        actorId: searchParams.actorId,
         page,
         pageSize,
         filterField,
