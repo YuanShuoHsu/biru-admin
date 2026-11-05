@@ -35,8 +35,6 @@ import { useRowSelection } from "@/hooks/useRowSelection";
 import { useSession } from "@/hooks/useSession";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { Link } from "@/i18n/navigation";
-
 import {
   Add,
   Cancel,
@@ -520,7 +518,6 @@ const Coupons = ({
                   {canManageCoupon && (
                     <Tooltip title={tCoupons("recipients.label")}>
                       <IconButton
-                        component={Link}
                         href={getHref(
                           `/coupons/${row.id}`,
                           DEFAULT_PAGINATION_QUERY,

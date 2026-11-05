@@ -7,7 +7,7 @@ import UpdateMenuDialog from "../UpdateMenuDialog";
 
 import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";
 
-import { Link, useRouter } from "@/i18n/navigation";
+import { useRouter } from "@/i18n/navigation";
 
 import { Edit, History, RestaurantMenu } from "@mui/icons-material";
 import {
@@ -147,7 +147,6 @@ const MenuCard = ({
           )}
           {canViewAuditLog && (
             <Button
-              component={Link}
               href={getHref("/menus/audit-logs", {
                 ...DEFAULT_PAGINATION_QUERY,
                 organization: searchParams.get("organization"),

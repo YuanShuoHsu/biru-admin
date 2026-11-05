@@ -2,7 +2,7 @@
 
 import { useRoutes } from "@/hooks/useRoutes";
 
-import { Link, usePathname } from "@/i18n/navigation";
+import { usePathname } from "@/i18n/navigation";
 
 import { Badge, Tab, Tabs } from "@mui/material";
 
@@ -39,7 +39,7 @@ const RouteTabs = ({ ariaLabel, tabs }: RouteTabsProps) => {
 
         return (
           <Tab
-            {...(to ? { component: Link, href: to } : {})}
+            {...(to ? { href: to } : {})}
             icon={
               Icon && (
                 <Badge badgeContent={badge} color="error">

@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 
 import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";
 
-import { Link, usePathname } from "@/i18n/navigation";
+import { usePathname } from "@/i18n/navigation";
 
 import { History } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
@@ -26,7 +26,6 @@ const AuditLogButton = ({ resourceId }: AuditLogButtonProps) => {
   return (
     <Tooltip title={tAudit("title")}>
       <IconButton
-        component={Link}
         href={getHref(`${pathname}/${resourceId}/audit-logs`, {
           ...DEFAULT_PAGINATION_QUERY,
           organization: searchParams.get("organization"),

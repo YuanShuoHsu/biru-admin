@@ -91,13 +91,7 @@ const RouterBreadcrumbs = () => {
         {label}
       </StyledTypography>
     ) : (
-      <StyledLink
-        color="textSecondary"
-        component={Link}
-        href={to}
-        key={path}
-        underline="always"
-      >
+      <StyledLink color="textSecondary" href={to} key={path} underline="always">
         {Icon && <Icon fontSize="inherit" />}
         {label}
       </StyledLink>

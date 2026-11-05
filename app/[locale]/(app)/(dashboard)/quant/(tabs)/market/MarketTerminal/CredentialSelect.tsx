@@ -2,8 +2,6 @@
 
 import { useTranslations } from "next-intl";
 
-import { Link } from "@/i18n/navigation";
-
 import { Alert, Button, Chip, MenuItem, Stack, TextField } from "@mui/material";
 
 import type { QuantCredential } from "@/types/quant";
@@ -20,7 +18,7 @@ export const NoCredential = () => {
   return (
     <Stack sx={{ gap: 2 }}>
       <Alert severity="info">{tQuant("account.noCredential")}</Alert>
-      <Button component={Link} href="/quant/settings" variant="outlined">
+      <Button href="/quant/settings" variant="outlined">
         {tQuant("account.goToSettings")}
       </Button>
     </Stack>
