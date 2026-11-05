@@ -113,6 +113,20 @@
   "label": "庫存",
   "recipes": {
     "actions": {
+      "createRecipe": {
+        "success": "已新增食譜",
+        "title": "新增食譜"
+      },
+      "deleteRecipe": {
+        "confirm": "確定要刪除 <bold>{name}</bold> 嗎？此操作無法復原。",
+        "success": "已刪除食譜",
+        "title": "刪除食譜"
+      },
+      "editRecipe": {
+        "success": "已更新食譜",
+        "title": "編輯食譜"
+      },
+      "label": "操作",
       "updateRecipe": {
         "success": "已更新份量",
         "title": "編輯份量"
@@ -192,10 +206,23 @@
     "margin": {
       "label": "毛利率"
     },
+    "name": {
+      "label": "食譜名稱",
+      "placeholder": "請輸入您的食譜名稱"
+    },
     "recipeYield": {
       "label": "份量",
       "placeholder": "請輸入您的份量",
       "unit": "份"
+    },
+    "recipeYieldQuantity": {
+      "helperText": "作為自製食材的來源食譜時，產量與產量單位需一起填寫",
+      "label": "產量",
+      "placeholder": "請輸入您的產量"
+    },
+    "recipeYieldUnitCode": {
+      "label": "產量單位",
+      "placeholder": "請選擇您的產量單位"
     }
   },
   "reorder": "排序",

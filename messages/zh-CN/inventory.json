@@ -113,6 +113,20 @@
   "label": "库存",
   "recipes": {
     "actions": {
+      "createRecipe": {
+        "success": "已新增食谱",
+        "title": "新增食谱"
+      },
+      "deleteRecipe": {
+        "confirm": "确定要删除 <bold>{name}</bold> 吗？此操作无法复原。",
+        "success": "已删除食谱",
+        "title": "删除食谱"
+      },
+      "editRecipe": {
+        "success": "已更新食谱",
+        "title": "编辑食谱"
+      },
+      "label": "操作",
       "updateRecipe": {
         "success": "已更新份量",
         "title": "编辑份量"
@@ -192,10 +206,23 @@
     "margin": {
       "label": "毛利率"
     },
+    "name": {
+      "label": "食谱名称",
+      "placeholder": "请输入您的食谱名称"
+    },
     "recipeYield": {
       "label": "份量",
       "placeholder": "请输入您的份量",
       "unit": "份"
+    },
+    "recipeYieldQuantity": {
+      "helperText": "作为自制食材的来源食谱时，产量与产量单位需一起填写",
+      "label": "产量",
+      "placeholder": "请输入您的产量"
+    },
+    "recipeYieldUnitCode": {
+      "label": "产量单位",
+      "placeholder": "请选择您的产量单位"
     }
   },
   "reorder": "排序",

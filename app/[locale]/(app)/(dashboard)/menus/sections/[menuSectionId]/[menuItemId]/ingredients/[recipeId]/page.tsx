@@ -4,9 +4,8 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-import RecipeIngredients from ".";
-
 import ErrorAlert from "@/components/ErrorAlert";
+import RecipeIngredients from "@/components/RecipeIngredients";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -168,10 +167,10 @@ const RecipeIngredientsContent = async ({
       filterOperator={filterOperator}
       filterValue={filterValue}
       key={selectedOrganization.slug}
-      menuItem={menuItem}
       organizationSlug={selectedOrganization.slug}
       page={page}
       pageSize={pageSize}
+      priceCurrency={menuItem.offer?.priceCurrency}
       quickFilterValue={quickFilterValue}
       recipe={recipe}
       rowCount={rowCount}

@@ -11,9 +11,13 @@ import type {
   InventoryTransactionListResponse,
   InventoryTransactionSortField,
   MenuItemRecipeDetail,
+  Recipe,
+  RecipeFilterField,
   RecipeIngredientFilterField,
   RecipeIngredientListResponse,
   RecipeIngredientSortField,
+  RecipeListResponse,
+  RecipeSortField,
   SupplierFilterField,
   SupplierListResponse,
   SupplierSortField,
@@ -119,4 +123,30 @@ export const getRecipeByMenuItem = cache(
 
     return recipe;
   },
+);
+
+export const getRecipes = cache(
+  async (
+    organizationSlug: string,
+    query: GridQuery<RecipeFilterField, RecipeSortField> = {},
+    init?: RequestInit,
+  ) => {
+    const params = getGridSearchParams(query);
+
+    params.set("hasMenuItem", "false");
+
+    const result = await fetcher<RecipeListResponse>(
+      `/api/organizations/${organizationSlug}/recipes?${params}`,
+      init,
+    );
+
+    return {
+      recipes: Array.isArray(result.data) ? result.data : [],
+      total: result.total || 0,
+    };
+  },
+);
+
+export const getRecipe = cache(async (recipeId: string, init?: RequestInit) =>
+  fetcher<Recipe>(`/api/recipes/${recipeId}`, init),
 );

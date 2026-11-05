@@ -4,11 +4,10 @@ import { useFormatter, useTranslations } from "next-intl";
 import { useCallback, useMemo } from "react";
 import useSWR from "swr";
 
-import RecipeIngredientDialog from "./RecipeIngredientDialog";
-
 import AuditLogButton from "@/components/AuditLogButton";
 import DataGrid from "@/components/DataGrid";
 import RecipeDialog from "@/components/RecipeDialog";
+import RecipeIngredientDialog from "@/components/RecipeIngredientDialog";
 
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { DEFAULT_PAGINATION_QUERY } from "@/constants/pagination";

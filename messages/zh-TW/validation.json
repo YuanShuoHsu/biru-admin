@@ -277,6 +277,9 @@
   "recipeYield": {
     "required": "份量為必填。"
   },
+  "recipeYieldUnitCode": {
+    "notSelected": "請選擇您的產量單位。"
+  },
   "remark": {
     "maxLength": "備註不能超過 160 個字元。"
   },

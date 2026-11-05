@@ -277,6 +277,9 @@
   "recipeYield": {
     "required": "份量为必填。"
   },
+  "recipeYieldUnitCode": {
+    "notSelected": "请选择您的产量单位。"
+  },
   "remark": {
     "maxLength": "备注不能超过 160 个字符。"
   },

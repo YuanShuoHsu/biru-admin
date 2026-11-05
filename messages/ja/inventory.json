@@ -113,6 +113,20 @@
   "label": "在庫",
   "recipes": {
     "actions": {
+      "createRecipe": {
+        "success": "レシピを追加しました",
+        "title": "レシピを追加"
+      },
+      "deleteRecipe": {
+        "confirm": "<bold>{name}</bold> を削除しますか？この操作は取り消せません。",
+        "success": "レシピを削除しました",
+        "title": "レシピを削除"
+      },
+      "editRecipe": {
+        "success": "レシピを更新しました",
+        "title": "レシピを編集"
+      },
+      "label": "操作",
       "updateRecipe": {
         "success": "出来上がり分量を更新しました",
         "title": "出来上がり分量を編集"
@@ -192,10 +206,23 @@
     "margin": {
       "label": "粗利率"
     },
+    "name": {
+      "label": "レシピ名",
+      "placeholder": "レシピ名を入力してください"
+    },
     "recipeYield": {
       "label": "出来上がり分量",
       "placeholder": "出来上がり分量を入力してください",
       "unit": "人分"
+    },
+    "recipeYieldQuantity": {
+      "helperText": "自家製食材の元レシピにする場合は、出来高と出来高の単位を一緒に入力してください",
+      "label": "出来高",
+      "placeholder": "出来高を入力してください"
+    },
+    "recipeYieldUnitCode": {
+      "label": "出来高の単位",
+      "placeholder": "出来高の単位を選択してください"
     }
   },
   "reorder": "並び替え",

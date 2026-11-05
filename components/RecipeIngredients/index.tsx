@@ -5,10 +5,9 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
-import RecipeIngredientDialog from "../RecipeIngredientDialog";
-
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
+import RecipeIngredientDialog from "@/components/RecipeIngredientDialog";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
 import {
@@ -60,14 +59,12 @@ import type {
   ToolbarMode,
 } from "@/types/dataGrid";
 import type {
-  MenuItemRecipeDetail,
   Recipe,
   RecipeIngredient,
   RecipeIngredientFilterField,
   RecipeIngredientListResponse,
   RecipeIngredientSortField,
 } from "@/types/inventory";
-import type { MenuItem } from "@/types/menus";
 
 import {
   getDataGridSearchParams,
@@ -104,10 +101,10 @@ interface RecipeIngredientsProps {
   filterOperator?: FilterOperator;
   filterValue?: string;
   loading?: boolean;
-  menuItem?: MenuItem;
   organizationSlug?: string;
   page?: number;
   pageSize?: number;
+  priceCurrency?: string;
   quickFilterValue?: string;
   recipe?: Recipe;
   rowCount?: number;
@@ -125,10 +122,10 @@ const RecipeIngredients = ({
   filterOperator: initialFilterOperator,
   filterValue: initialFilterValue,
   loading = false,
-  menuItem,
   organizationSlug = "",
   page = 1,
   pageSize = DEFAULT_PAGE_SIZE,
+  priceCurrency,
   quickFilterValue: initialQuickFilterValue,
   recipe: initialRecipe,
   rowCount: initialRowCount = 0,
@@ -179,8 +176,6 @@ const RecipeIngredients = ({
 
   const formatMoney = useFormatMoney();
 
-  const priceCurrency = menuItem?.offer?.priceCurrency;
-
   const locale = useLocale();
 
   const tCommon = useTranslations("common");
@@ -189,11 +184,8 @@ const RecipeIngredients = ({
   const updateQuery = useUpdateQuery();
 
   const { data: recipe, mutate: mutateRecipe } = useSWR(
-    !loading && `/api/menu-items/${menuItem?.id}/recipe`,
-    (url: string) =>
-      fetcher<MenuItemRecipeDetail>(url).then(
-        ({ recipe }) => recipe ?? initialRecipe,
-      ),
+    !loading && `/api/recipes/${initialRecipe?.id}`,
+    (url: string) => fetcher<Recipe>(url),
     { fallbackData: initialRecipe },
   );
 

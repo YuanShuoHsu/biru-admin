@@ -113,6 +113,20 @@
   "label": "Inventory",
   "recipes": {
     "actions": {
+      "createRecipe": {
+        "success": "Recipe added",
+        "title": "Add recipe"
+      },
+      "deleteRecipe": {
+        "confirm": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone.",
+        "success": "Recipe deleted",
+        "title": "Delete recipe"
+      },
+      "editRecipe": {
+        "success": "Recipe updated",
+        "title": "Edit recipe"
+      },
+      "label": "Actions",
       "updateRecipe": {
         "success": "Servings updated",
         "title": "Edit servings"
@@ -192,10 +206,23 @@
     "margin": {
       "label": "Margin"
     },
+    "name": {
+      "label": "Recipe name",
+      "placeholder": "Please enter your recipe name"
+    },
     "recipeYield": {
       "label": "Servings",
       "placeholder": "Please enter your Servings",
       "unit": "servings"
+    },
+    "recipeYieldQuantity": {
+      "helperText": "Required together with the yield unit when this recipe is the source of a house-made ingredient",
+      "label": "Yield quantity",
+      "placeholder": "Please enter your yield quantity"
+    },
+    "recipeYieldUnitCode": {
+      "label": "Yield unit",
+      "placeholder": "Please select your yield unit"
     }
   },
   "reorder": "Order",

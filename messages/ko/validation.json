@@ -277,6 +277,9 @@
   "recipeYield": {
     "required": "분량은 필수입니다."
   },
+  "recipeYieldUnitCode": {
+    "notSelected": "생산량 단위를 선택해 주세요."
+  },
   "remark": {
     "maxLength": "메모는 160자를 초과할 수 없습니다."
   },
