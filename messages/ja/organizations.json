@@ -372,7 +372,7 @@
         "placeholder": "例：付与漏れの購入分",
         "required": "調整理由を入力してください"
       },
-      "ownerOnly": "{points, plural, =0 {ポイントの付与・減算はオーナーのみ行えます} other {この店舗で同じ会員への付与と減算が 1 日の合計で {points, number} ポイントを超える場合は、オーナーのみ行えます}}",
+      "ownerOnly": "{points, plural, =0 {ポイントの付与・減算はオーナーのみ行えます} other {この店舗で同じ会員への付与と減算が 1 日の合計で {points, number} ポイントを超える場合は、オーナーのみ調整できます}}",
       "points": {
         "hint": "正の数で付与、負の数で減算します。減算は当店が付与した有効期限内のポイントのみが対象です",
         "invalid": "-{limit, number}〜{limit, number} の 0 以外の整数を入力してください",
