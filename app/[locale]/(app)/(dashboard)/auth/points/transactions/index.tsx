@@ -12,14 +12,14 @@ import PaginationActions, {
 
 import { getPageSizeOptions } from "@/constants/pagination";
 
-import { usePathname, useRouter } from "@/i18n/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 
 import { LocalOffer, ShoppingBag, Stars } from "@mui/icons-material";
 import {
   Avatar,
   Card,
   CardHeader,
-  Link,
+  Link as MuiLink,
   List,
   ListItem,
   ListItemAvatar,
@@ -44,9 +44,9 @@ const StyledListItemText = styled(ListItemText)({
   },
 });
 
-const StyledExpiringLink = styled(Link)({
+const StyledExpiringLink = styled(MuiLink)({
   alignSelf: "flex-start",
-});
+}) as typeof MuiLink;
 
 const StyledTransactionCardHeader = styled(CardHeader)(({ theme }) => ({
   "& .MuiCardHeader-action": {
@@ -141,6 +141,7 @@ const Points = ({ page, pageSize, points }: PointsProps) => {
         {points.expiringSoon.map((expiring) => (
           <StyledExpiringLink
             color="textSecondary"
+            component={Link}
             href="/auth/points/store"
             key={expiring.expiresAt}
             underline="always"
