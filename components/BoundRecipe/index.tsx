@@ -47,7 +47,7 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-interface MenuItemRecipeProps {
+interface BoundRecipeProps {
   canCreate?: boolean;
   canViewAuditLog?: boolean;
   canViewPurchasing?: boolean;
@@ -59,7 +59,7 @@ interface MenuItemRecipeProps {
   recipe?: Recipe | null;
 }
 
-const MenuItemRecipe = ({
+const BoundRecipe = ({
   canCreate = false,
   canViewAuditLog = false,
   canViewPurchasing = false,
@@ -69,7 +69,7 @@ const MenuItemRecipe = ({
   modifier,
   organization,
   recipe: initialRecipe,
-}: MenuItemRecipeProps) => {
+}: BoundRecipeProps) => {
   const organizationSlug = organization?.slug ?? "";
 
   const { setDialog } = useDialogStore((state) => state);
@@ -287,4 +287,4 @@ const MenuItemRecipe = ({
   );
 };
 
-export default MenuItemRecipe;
+export default BoundRecipe;

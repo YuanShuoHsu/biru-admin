@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-import MenuItemRecipe from ".";
+import BoundRecipe from "@/components/BoundRecipe";
 
 import ErrorAlert from "@/components/ErrorAlert";
 
@@ -104,7 +104,7 @@ const MenuItemRecipeContent = async ({
   });
 
   return (
-    <MenuItemRecipe
+    <BoundRecipe
       canCreate={canCreate}
       canViewAuditLog={canViewAuditLog}
       canViewPurchasing={canViewPurchasing}
@@ -117,7 +117,7 @@ const MenuItemRecipeContent = async ({
 };
 
 const MenuItemRecipePage = (props: MenuItemRecipePageProps) => (
-  <Suspense fallback={<MenuItemRecipe loading />}>
+  <Suspense fallback={<BoundRecipe loading />}>
     <MenuItemRecipeContent {...props} />
   </Suspense>
 );
