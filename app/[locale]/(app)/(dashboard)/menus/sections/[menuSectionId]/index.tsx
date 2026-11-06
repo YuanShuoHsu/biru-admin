@@ -464,8 +464,9 @@ const MenusMenuIdSectionId = ({
 
   const handleManageItem = useCallback(
     ({ id }: MenuItem) => {
+      const organizationQuery = searchParams.get("organization");
       const params = new URLSearchParams({
-        ...Object.fromEntries(searchParams),
+        ...(organizationQuery && { organization: organizationQuery }),
         ...DEFAULT_PAGINATION_QUERY,
       });
       router.push(
