@@ -100,6 +100,7 @@
       },
       "refusal": "모델이 답변을 거부함: {reason}",
       "error": "호출 실패: {message}",
+      "keyMissing": "먼저 설정 페이지에서 Claude API 키를 연결하세요",
       "subscription": "Claude Code 구독 한도로 판단하며 추가 비용이 없습니다.",
       "request": {
         "title": "Claude Code 판단",
