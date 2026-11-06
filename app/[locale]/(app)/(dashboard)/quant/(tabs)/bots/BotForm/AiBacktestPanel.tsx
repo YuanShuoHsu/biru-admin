@@ -47,6 +47,7 @@ interface AiBacktestPanelProps {
 const AiBacktestPanel = ({ form, market }: AiBacktestPanelProps) => {
   const tBacktest = useTranslations("quant.bots.backtest");
   const tAiBacktest = useTranslations("quant.bots.aiBacktest");
+  const tAi = useTranslations("quant.bots.ai");
   const format = useFormatter();
 
   const [candleCount, setCandleCount] = useState(CANDLE_COUNTS[0]);
@@ -255,7 +256,9 @@ const AiBacktestPanel = ({ form, market }: AiBacktestPanelProps) => {
                 reason:
                   run.error === "ai_cost_limit"
                     ? tAiBacktest("costLimit")
-                    : (run.error ?? ""),
+                    : run.error === "aiKeyMissing"
+                      ? tAi("keyMissing")
+                      : (run.error ?? ""),
               })}
             </Alert>
           )}

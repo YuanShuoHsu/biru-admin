@@ -100,6 +100,7 @@
       },
       "refusal": "モデルが回答を拒否：{reason}",
       "error": "呼び出し失敗：{message}",
+      "keyMissing": "先に設定ページで Claude API キーを連携してください",
       "subscription": "Claude Code のサブスクリプション枠で判断し、追加費用はかかりません。",
       "request": {
         "title": "Claude Code の判断",

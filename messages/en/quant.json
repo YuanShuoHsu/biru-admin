@@ -100,6 +100,7 @@
       },
       "refusal": "Model declined: {reason}",
       "error": "Call failed: {message}",
+      "keyMissing": "Bind a Claude API key on the settings page first",
       "subscription": "Decisions use your Claude Code subscription at no extra cost.",
       "request": {
         "title": "Claude Code decisions",

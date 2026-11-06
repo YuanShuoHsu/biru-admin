@@ -100,6 +100,7 @@
       },
       "refusal": "模型拒答：{reason}",
       "error": "调用失败：{message}",
+      "keyMissing": "请先在设置页绑定 Claude API key",
       "subscription": "使用 Claude Code 订阅额度判断，不另外计费。",
       "request": {
         "title": "Claude Code 判断",

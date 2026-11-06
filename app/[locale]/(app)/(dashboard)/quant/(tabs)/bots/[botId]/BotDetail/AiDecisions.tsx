@@ -128,7 +128,12 @@ const AiDecisions = ({ bot }: { bot: QuantBot }) => {
               {kind === "ai_refusal"
                 ? tAi("refusal", { reason: String(payload.reason ?? "") })
                 : kind === "ai_error"
-                  ? tAi("error", { message: String(payload.message ?? "") })
+                  ? tAi("error", {
+                      message:
+                        payload.message === "aiKeyMissing"
+                          ? tAi("keyMissing")
+                          : String(payload.message ?? ""),
+                    })
                   : String(payload.reasoning ?? "")}
             </Typography>
           </Stack>
