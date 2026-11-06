@@ -927,6 +927,8 @@ const MenusMenuIdSectionId = ({
         filterOperators: dateFilterOperators,
         headerName: `${tMenus("items.offers.priceSpecification.validFrom.label")} ${tCommon("optional")}`,
         renderCell: renderEmptyableCell,
+        valueFormatter: (value?: string | null) =>
+          value ? format.dateTime(new Date(value), "date") : "",
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
           offer?.priceSpecification?.validFrom,
       },
@@ -935,6 +937,8 @@ const MenusMenuIdSectionId = ({
         filterOperators: dateFilterOperators,
         headerName: `${tMenus("items.offers.priceSpecification.validThrough.label")} ${tCommon("optional")}`,
         renderCell: renderEmptyableCell,
+        valueFormatter: (value?: string | null) =>
+          value ? format.dateTime(new Date(value), "date") : "",
         valueGetter: (_value: unknown, { offer }: MenuItem) =>
           offer?.priceSpecification?.validThrough,
       },
