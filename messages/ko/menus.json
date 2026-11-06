@@ -421,6 +421,10 @@
         "error": "옵션 수정에 실패했습니다",
         "success": "옵션 {name}을(를) 수정했습니다",
         "title": "옵션 편집"
+      },
+      "viewRecipe": {
+        "empty": "이 옵션에는 아직 레시피가 없습니다",
+        "title": "레시피"
       }
     },
     "displayName": {

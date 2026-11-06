@@ -11,6 +11,7 @@ import UpdateModifierDialog from "./UpdateModifierDialog";
 import AuditLogButton from "@/components/AuditLogButton";
 import DataGrid from "@/components/DataGrid";
 import EmptyCell from "@/components/EmptyCell";
+import RecipeDialog from "@/components/RecipeDialog";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
 import {
@@ -20,7 +21,11 @@ import {
 } from "@/constants/dataGrid";
 import { ITEM_AVAILABILITY_COLOR_MAP } from "@/constants/itemAvailability";
 import { MODE_COLORS } from "@/constants/orderMode";
-import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
+import {
+  DEFAULT_PAGE_SIZE,
+  DEFAULT_PAGINATION_QUERY,
+  getPageSizeOptions,
+} from "@/constants/pagination";
 
 import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
@@ -36,7 +41,17 @@ import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { Add, Cancel, Delete, Edit, Save, Sort } from "@mui/icons-material";
+import { useRouter } from "@/i18n/navigation";
+
+import {
+  Add,
+  Cancel,
+  Delete,
+  Edit,
+  Save,
+  Sort,
+  SoupKitchen,
+} from "@mui/icons-material";
 import {
   Button,
   Chip,
@@ -66,6 +81,7 @@ import type {
   SortDirection,
   ToolbarMode,
 } from "@/types/dataGrid";
+import type { MenuItemRecipeDetail } from "@/types/inventory";
 import type {
   Modifier,
   ModifierFilterField,
@@ -80,7 +96,9 @@ import {
   isFilteredOrSorted,
 } from "@/utils/dataGrid";
 import { getMenuEnumOptions } from "@/utils/enumOptions";
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
+import { getHref } from "@/utils/href";
 import { localize } from "@/utils/locale";
 
 const ConfirmStack = styled(Stack)(({ theme }) => ({
@@ -106,7 +124,9 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface ModifiersProps {
+  canCreateRecipe?: boolean;
   canViewAuditLog?: boolean;
+  canViewRecipe?: boolean;
   canUpdateAvailability?: boolean;
   canWrite?: boolean;
   filterField?: ModifierFilterField;
@@ -114,6 +134,7 @@ interface ModifiersProps {
   filterValue?: string;
   group?: ModifierGroup;
   loading?: boolean;
+  organizationSlug?: string;
   page?: number;
   pageSize?: number;
   quickFilterValue?: string;
@@ -124,7 +145,9 @@ interface ModifiersProps {
 }
 
 const Modifiers = ({
+  canCreateRecipe = false,
   canViewAuditLog = false,
+  canViewRecipe = false,
   canUpdateAvailability = false,
   canWrite = false,
   filterField: initialFilterField,
@@ -132,6 +155,7 @@ const Modifiers = ({
   filterValue: initialFilterValue,
   group,
   loading = false,
+  organizationSlug = "",
   page = 1,
   pageSize = DEFAULT_PAGE_SIZE,
   quickFilterValue: initialQuickFilterValue,
@@ -186,7 +210,10 @@ const Modifiers = ({
 
   const locale = useLocale();
 
+  const router = useRouter();
+
   const tCommon = useTranslations("common");
+  const tInventory = useTranslations("inventory");
   const tMenus = useTranslations("menus");
 
   const formatMoney = useFormatMoney();
@@ -465,6 +492,65 @@ const Modifiers = ({
     [locale, mutate, setDialog, tMenus],
   );
 
+  const openModifierRecipe = useCallback(
+    async (modifierId: string) => {
+      const { recipe } = await fetcher<MenuItemRecipeDetail>(
+        `/api/modifiers/${modifierId}/recipe`,
+      );
+
+      if (recipe)
+        router.push(
+          getHref(`/inventory/recipes/${recipe.id}`, {
+            organization: organizationSlug,
+            ...DEFAULT_PAGINATION_QUERY,
+          }),
+        );
+
+      return recipe;
+    },
+    [organizationSlug, router],
+  );
+
+  const handleViewRecipe = useCallback(
+    async (modifier: Modifier) => {
+      try {
+        if (await openModifierRecipe(modifier.id)) return;
+
+        if (!canCreateRecipe) {
+          enqueueSnackbar(tMenus("modifiers.actions.viewRecipe.empty"), {
+            variant: "info",
+          });
+
+          return;
+        }
+
+        setDialog({
+          content: (
+            <RecipeDialog
+              modifier={modifier}
+              mutate={() => openModifierRecipe(modifier.id)}
+              organizationSlug={organizationSlug}
+              recipe={null}
+            />
+          ),
+          formId: "recipe-form",
+          open: true,
+          title: tInventory("recipes.actions.createRecipe.title"),
+        });
+      } catch (error) {
+        enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+      }
+    },
+    [
+      canCreateRecipe,
+      openModifierRecipe,
+      organizationSlug,
+      setDialog,
+      tInventory,
+      tMenus,
+    ],
+  );
+
   const handleEnterBatchDeleteMode = useCallback(() => {
     setToolbarMode("select");
     setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
@@ -562,7 +648,11 @@ const Modifiers = ({
             },
           ]
         : []),
-      ...((canWrite || canUpdateAvailability || canViewAuditLog) && !toolbarMode
+      ...((canWrite ||
+        canUpdateAvailability ||
+        canViewAuditLog ||
+        canViewRecipe) &&
+      !toolbarMode
         ? [
             {
               disableColumnMenu: true,
@@ -585,6 +675,22 @@ const Modifiers = ({
                         size="small"
                       >
                         <Edit fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {canViewRecipe && (
+                    <Tooltip
+                      title={tMenus("modifiers.actions.viewRecipe.title")}
+                    >
+                      <IconButton
+                        onClick={(event) => {
+                          event.stopPropagation();
+
+                          handleViewRecipe(row);
+                        }}
+                        size="small"
+                      >
+                        <SoupKitchen fontSize="small" />
                       </IconButton>
                     </Tooltip>
                   )}
@@ -696,6 +802,7 @@ const Modifiers = ({
     [
       canUpdateAvailability,
       canViewAuditLog,
+      canViewRecipe,
       canWrite,
       dateFilterOperators,
       enumFilterOperators,
@@ -704,6 +811,7 @@ const Modifiers = ({
       formatMoney,
       handleDeleteModifier,
       handleUpdateModifier,
+      handleViewRecipe,
       isReorderMode,
       locale,
       numberFilterOperators,

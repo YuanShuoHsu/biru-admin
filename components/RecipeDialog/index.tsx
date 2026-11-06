@@ -20,17 +20,20 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { unitCodeValues } from "@/types/api";
 import type { Recipe } from "@/types/inventory";
+import type { Modifier } from "@/types/menus";
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 interface RecipeDialogProps {
+  modifier?: Modifier;
   mutate: () => void;
   organizationSlug?: string;
   recipe: Recipe | null;
 }
 
 const RecipeDialog = ({
+  modifier,
   mutate,
   organizationSlug,
   recipe,
@@ -41,6 +44,7 @@ const RecipeDialog = ({
   const tInventory = useTranslations("inventory");
 
   const unbound = !recipe?.menuItemId;
+  const modifierId = recipe ? recipe.modifierId : modifier?.id;
 
   const recipeFormSchema = useRecipeFormSchema(unbound);
   const {
@@ -51,7 +55,7 @@ const RecipeDialog = ({
     setValue,
   } = useForm<RecipeForm>({
     defaultValues: {
-      name: recipe?.name || {},
+      name: recipe?.name || modifier?.displayName || {},
       recipeYield: String(recipe?.recipeYield ?? 1),
       recipeYieldQuantity: recipe?.recipeYieldQuantity || "",
       recipeYieldUnitCode: recipe?.recipeYieldUnitCode || "",
@@ -87,15 +91,19 @@ const RecipeDialog = ({
         {
           method: recipe ? "PATCH" : "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            recipeYield: Number(values.recipeYield),
-            ...(unbound && {
-              menuItemId: null,
-              name: values.name,
-              recipeYieldQuantity: values.recipeYieldQuantity || null,
-              recipeYieldUnitCode: values.recipeYieldUnitCode || null,
-            }),
-          }),
+          body: JSON.stringify(
+            modifierId
+              ? { modifierId, name: values.name }
+              : {
+                  recipeYield: Number(values.recipeYield),
+                  ...(unbound && {
+                    menuItemId: null,
+                    name: values.name,
+                    recipeYieldQuantity: values.recipeYieldQuantity || null,
+                    recipeYieldUnitCode: values.recipeYieldUnitCode || null,
+                  }),
+                },
+          ),
         },
       );
 
@@ -135,22 +143,24 @@ const RecipeDialog = ({
           ]}
         />
       )}
-      <NumberSpinner
-        error={!!errors.recipeYield}
-        fullWidth
-        helperText={errors.recipeYield?.message}
-        label={tInventory("recipes.recipeYield.label")}
-        min={1}
-        onValueChange={(value) =>
-          setValue("recipeYield", value != null ? String(value) : "", {
-            shouldValidate: isSubmitted,
-          })
-        }
-        placeholder={tInventory("recipes.recipeYield.placeholder")}
-        required
-        value={recipeYield ? Number(recipeYield) : null}
-      />
-      {unbound && (
+      {!modifierId && (
+        <NumberSpinner
+          error={!!errors.recipeYield}
+          fullWidth
+          helperText={errors.recipeYield?.message}
+          label={tInventory("recipes.recipeYield.label")}
+          min={1}
+          onValueChange={(value) =>
+            setValue("recipeYield", value != null ? String(value) : "", {
+              shouldValidate: isSubmitted,
+            })
+          }
+          placeholder={tInventory("recipes.recipeYield.placeholder")}
+          required
+          value={recipeYield ? Number(recipeYield) : null}
+        />
+      )}
+      {unbound && !modifierId && (
         <>
           <NumericFormat
             allowNegative={false}
