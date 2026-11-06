@@ -152,6 +152,22 @@ const auditLogsRoute: Route = {
   segment: "audit-logs",
 };
 
+const recipeRoute: Route = {
+  children: [
+    {
+      children: [auditLogsRoute],
+      icon: Scale,
+      label: "inventory.recipes.ingredients.label",
+      query: ["organization", "page", "pageSize"],
+      segment: "[recipeId]",
+    },
+  ],
+  icon: SoupKitchen,
+  label: "inventory.recipes.label",
+  query: ["organization"],
+  segment: "ingredients",
+};
+
 const routes: Route[] = [
   {
     icon: Dashboard,
@@ -496,7 +512,7 @@ const routes: Route[] = [
             children: [
               auditLogsRoute,
               {
-                children: [auditLogsRoute],
+                children: [auditLogsRoute, recipeRoute],
                 icon: Checklist,
                 label: "menus.modifiers.label",
                 segment: "[modifierId]",
@@ -535,21 +551,7 @@ const routes: Route[] = [
                     segment: "add-ons",
                   },
                   auditLogsRoute,
-                  {
-                    children: [
-                      {
-                        children: [auditLogsRoute],
-                        icon: Scale,
-                        label: "inventory.recipes.ingredients.label",
-                        query: ["organization", "page", "pageSize"],
-                        segment: "[recipeId]",
-                      },
-                    ],
-                    icon: SoupKitchen,
-                    label: "inventory.recipes.label",
-                    query: ["organization"],
-                    segment: "ingredients",
-                  },
+                  recipeRoute,
                   {
                     children: [
                       {

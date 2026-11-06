@@ -421,10 +421,6 @@
         "error": "更新選項失敗",
         "success": "成功更新選項 {name}",
         "title": "編輯選項"
-      },
-      "viewRecipe": {
-        "empty": "此選項尚未建立食譜",
-        "title": "食譜"
       }
     },
     "displayName": {

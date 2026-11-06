@@ -421,10 +421,6 @@
         "error": "更新选项失败",
         "success": "成功更新选项 {name}",
         "title": "编辑选项"
-      },
-      "viewRecipe": {
-        "empty": "此选项尚未建立食谱",
-        "title": "食谱"
       }
     },
     "displayName": {

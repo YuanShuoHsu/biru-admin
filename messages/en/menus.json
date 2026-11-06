@@ -421,10 +421,6 @@
         "error": "Failed to update modifier",
         "success": "Modifier {name} updated",
         "title": "Edit modifier"
-      },
-      "viewRecipe": {
-        "empty": "This modifier has no recipe yet",
-        "title": "Recipe"
       }
     },
     "displayName": {

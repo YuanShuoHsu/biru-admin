@@ -22,7 +22,7 @@ import { Autocomplete, CircularProgress, TextField } from "@mui/material";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Ingredient, Recipe, RecipeIngredient } from "@/types/inventory";
-import type { MenuItem } from "@/types/menus";
+import type { MenuItem, Modifier } from "@/types/menus";
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
@@ -34,6 +34,7 @@ interface RecipeIngredientDialogProps {
   material: RecipeIngredient | null;
   materials: RecipeIngredient[];
   menuItem?: MenuItem;
+  modifier?: Modifier;
   mutate: () => void;
   organizationSlug: string;
   recipe: Recipe | null;
@@ -43,6 +44,7 @@ const RecipeIngredientDialog = ({
   material,
   materials,
   menuItem,
+  modifier,
   mutate,
   organizationSlug,
   recipe,
@@ -99,17 +101,18 @@ const RecipeIngredientDialog = ({
 
       let target = recipe ?? createdRecipe.current;
 
-      // 品項第一次加材料時才隱式建立食譜；份量由後端預設帶 1
+      // 品項或選項第一次加材料時才隱式建立食譜；份量由後端預設帶 1
       if (!target) {
         target = await fetcher<Recipe>(
           `/api/organizations/${organizationSlug}/recipes`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              menuItemId: menuItem?.id,
-              name: menuItem?.name,
-            }),
+            body: JSON.stringify(
+              modifier
+                ? { modifierId: modifier.id, name: modifier.displayName }
+                : { menuItemId: menuItem?.id, name: menuItem?.name },
+            ),
           },
         );
 

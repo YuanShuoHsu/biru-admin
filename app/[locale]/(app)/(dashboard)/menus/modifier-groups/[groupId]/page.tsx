@@ -142,16 +142,12 @@ const ModifiersContent = async ({
   const canUpdateAvailability = hasRolePermission(role, {
     itemAvailability: ["update"],
   });
-  const canCreateRecipe = hasRolePermission(role, {
-    inventory: ["create"],
-  });
   const canViewRecipe = hasRolePermission(role, {
     inventory: ["read"],
   });
 
   return (
     <Modifiers
-      canCreateRecipe={canCreateRecipe}
       canUpdateAvailability={canUpdateAvailability}
       canViewAuditLog={canViewAuditLog}
       canViewRecipe={canViewRecipe}
@@ -161,7 +157,6 @@ const ModifiersContent = async ({
       filterValue={filterValue}
       group={group}
       key={selectedOrganization.slug}
-      organizationSlug={selectedOrganization.slug}
       page={page}
       pageSize={pageSize}
       quickFilterValue={quickFilterValue}
