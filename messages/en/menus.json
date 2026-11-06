@@ -427,7 +427,6 @@
       "label": "Modifier name",
       "placeholder": "Please enter your modifier name"
     },
-    "label": "Modifiers",
     "priceAdjustment": {
       "label": "Price adjustment",
       "placeholder": "Please enter your price adjustment"

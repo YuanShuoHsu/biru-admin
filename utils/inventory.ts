@@ -125,6 +125,17 @@ export const getRecipeByMenuItem = cache(
   },
 );
 
+export const getRecipeByModifier = cache(
+  async (modifierId: string, init?: RequestInit) => {
+    const { recipe } = await fetcher<MenuItemRecipeDetail>(
+      `/api/modifiers/${modifierId}/recipe`,
+      init,
+    );
+
+    return recipe;
+  },
+);
+
 export const getRecipes = cache(
   async (
     organizationSlug: string,

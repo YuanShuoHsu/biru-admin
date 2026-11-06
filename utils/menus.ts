@@ -17,6 +17,7 @@ import type {
   MenuItemModifierGroupListResponse,
   MenuSection,
   MenuSectionListResponse,
+  Modifier,
   ModifierGroup,
   ModifierGroupListResponse,
   ModifierListResponse,
@@ -233,6 +234,12 @@ export const getAdminModifierGroups = cache(
 export const getAdminModifierGroup = cache(
   async (groupId: string, init?: RequestInit) => {
     return fetcher<ModifierGroup>(`/api/modifier-groups/${groupId}`, init);
+  },
+);
+
+export const getAdminModifier = cache(
+  async (modifierId: string, init?: RequestInit) => {
+    return fetcher<Modifier>(`/api/modifiers/${modifierId}`, init);
   },
 );
 

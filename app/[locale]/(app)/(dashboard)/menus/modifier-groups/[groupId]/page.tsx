@@ -142,11 +142,15 @@ const ModifiersContent = async ({
   const canUpdateAvailability = hasRolePermission(role, {
     itemAvailability: ["update"],
   });
+  const canViewRecipe = hasRolePermission(role, {
+    inventory: ["read"],
+  });
 
   return (
     <Modifiers
       canUpdateAvailability={canUpdateAvailability}
       canViewAuditLog={canViewAuditLog}
+      canViewRecipe={canViewRecipe}
       canWrite={canWrite}
       filterField={filterField}
       filterOperator={filterOperator}

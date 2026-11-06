@@ -427,7 +427,6 @@
       "label": "옵션 이름",
       "placeholder": "옵션 이름을 입력해 주세요"
     },
-    "label": "옵션",
     "priceAdjustment": {
       "label": "추가 금액",
       "placeholder": "가격 조정을 입력해 주세요"

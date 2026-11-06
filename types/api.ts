@@ -2309,6 +2309,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/modifiers/{modifierId}/recipe": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得客製選項食譜 */
+    get: operations["ModifierInventoryController_findRecipe"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/recipes/{recipeId}": {
     parameters: {
       query?: never;
@@ -3281,7 +3298,8 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get?: never;
+    /** 取得選項詳情 */
+    get: operations["MenusController_findModifier"];
     put?: never;
     post?: never;
     /** 刪除選項 */
@@ -9221,6 +9239,8 @@ export interface components {
       name: components["schemas"]["LocalizedTextDto"];
       /** @description 對應的菜單品項，一個品項只能有一份食譜 */
       menuItemId?: string | null;
+      /** @description 對應的客製選項，一個選項只能有一份食譜；與 menuItemId 擇一，份量必須為 1 */
+      modifierId?: string | null;
       /**
        * @description 份量
        * @default 1
@@ -9264,6 +9284,7 @@ export interface components {
       organizationId: string;
       menuItemId?: string | null;
       menuItemName?: components["schemas"]["LocalizedTextDto"] | null;
+      modifierId?: string | null;
       name: components["schemas"]["LocalizedTextDto"];
       recipeYield: number;
       recipeYieldQuantity?: string | null;
@@ -9407,6 +9428,8 @@ export interface components {
       name?: components["schemas"]["LocalizedTextDto"];
       /** @description 對應的菜單品項，一個品項只能有一份食譜 */
       menuItemId?: string | null;
+      /** @description 對應的客製選項，一個選項只能有一份食譜；與 menuItemId 擇一，份量必須為 1 */
+      modifierId?: string | null;
       /**
        * @description 份量
        * @default 1
@@ -18548,6 +18571,34 @@ export interface operations {
       };
     };
   };
+  ModifierInventoryController_findRecipe: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        modifierId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MenuItemRecipeDetailResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   RecipesController_findOne: {
     parameters: {
       query?: never;
@@ -21168,6 +21219,34 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenusController_findModifier: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        modifierId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ModifierResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {

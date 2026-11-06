@@ -62,7 +62,7 @@ const RecipeIngredientsContent = async ({
   if (isMissingResource(recipeError)) notFound();
   if (recipeError) return <ErrorAlert />;
 
-  if (recipe.menuItemId) notFound();
+  if (recipe.menuItemId || recipe.modifierId) notFound();
 
   const selectedOrganization = await getAdminOrganization(
     recipe.organizationId,

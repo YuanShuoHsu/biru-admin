@@ -24,7 +24,7 @@ import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { MenuItemRecipeDetail, Recipe } from "@/types/inventory";
-import type { MenuItem } from "@/types/menus";
+import type { MenuItem, Modifier } from "@/types/menus";
 import type { Organization } from "@/types/organizations";
 
 import { fetcher } from "@/utils/fetcher";
@@ -47,27 +47,29 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-interface MenuItemRecipeProps {
+interface BoundRecipeProps {
   canCreate?: boolean;
   canViewAuditLog?: boolean;
   canViewPurchasing?: boolean;
   canWrite?: boolean;
   loading?: boolean;
   menuItem?: MenuItem;
+  modifier?: Modifier;
   organization?: Organization;
   recipe?: Recipe | null;
 }
 
-const MenuItemRecipe = ({
+const BoundRecipe = ({
   canCreate = false,
   canViewAuditLog = false,
   canViewPurchasing = false,
   canWrite = false,
   loading = false,
   menuItem,
+  modifier,
   organization,
   recipe: initialRecipe,
-}: MenuItemRecipeProps) => {
+}: BoundRecipeProps) => {
   const organizationSlug = organization?.slug ?? "";
 
   const { setDialog } = useDialogStore((state) => state);
@@ -80,10 +82,14 @@ const MenuItemRecipe = ({
 
   const tInventory = useTranslations("inventory");
 
-  const priceCurrency = menuItem?.offer?.priceCurrency;
+  const priceCurrency =
+    modifier?.priceCurrency ?? menuItem?.offer?.priceCurrency;
 
   const { data: recipe, mutate: mutateRecipe } = useSWR(
-    !loading && `/api/menu-items/${menuItem?.id}/recipe`,
+    !loading &&
+      (modifier
+        ? `/api/modifiers/${modifier.id}/recipe`
+        : `/api/menu-items/${menuItem?.id}/recipe`),
     (url: string) =>
       fetcher<MenuItemRecipeDetail>(url).then(({ recipe }) => recipe),
     { fallbackData: initialRecipe },
@@ -119,6 +125,7 @@ const MenuItemRecipe = ({
           material={null}
           materials={recipe?.recipeIngredients || []}
           menuItem={menuItem}
+          modifier={modifier}
           mutate={mutateRecipe}
           organizationSlug={organizationSlug}
           recipe={recipe ?? null}
@@ -130,7 +137,15 @@ const MenuItemRecipe = ({
         "recipes.ingredients.actions.createRecipeIngredient.title",
       ),
     });
-  }, [menuItem, mutateRecipe, organizationSlug, recipe, setDialog, tInventory]);
+  }, [
+    menuItem,
+    modifier,
+    mutateRecipe,
+    organizationSlug,
+    recipe,
+    setDialog,
+    tInventory,
+  ]);
 
   const columns = useMemo<GridColDef[]>(() => {
     const unavailable = tInventory("recipes.cost.unavailable");
@@ -272,4 +287,4 @@ const MenuItemRecipe = ({
   );
 };
 
-export default MenuItemRecipe;
+export default BoundRecipe;

@@ -1,6 +1,7 @@
 "use client";
 
 import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
@@ -36,7 +37,15 @@ import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { Add, Cancel, Delete, Edit, Save, Sort } from "@mui/icons-material";
+import {
+  Add,
+  Cancel,
+  Delete,
+  Edit,
+  Save,
+  Sort,
+  SoupKitchen,
+} from "@mui/icons-material";
 import {
   Button,
   Chip,
@@ -81,6 +90,7 @@ import {
 } from "@/utils/dataGrid";
 import { getMenuEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
+import { getHref } from "@/utils/href";
 import { localize } from "@/utils/locale";
 
 const ConfirmStack = styled(Stack)(({ theme }) => ({
@@ -107,6 +117,7 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 
 interface ModifiersProps {
   canViewAuditLog?: boolean;
+  canViewRecipe?: boolean;
   canUpdateAvailability?: boolean;
   canWrite?: boolean;
   filterField?: ModifierFilterField;
@@ -125,6 +136,7 @@ interface ModifiersProps {
 
 const Modifiers = ({
   canViewAuditLog = false,
+  canViewRecipe = false,
   canUpdateAvailability = false,
   canWrite = false,
   filterField: initialFilterField,
@@ -186,7 +198,10 @@ const Modifiers = ({
 
   const locale = useLocale();
 
+  const searchParams = useSearchParams();
+
   const tCommon = useTranslations("common");
+  const tInventory = useTranslations("inventory");
   const tMenus = useTranslations("menus");
 
   const formatMoney = useFormatMoney();
@@ -562,7 +577,11 @@ const Modifiers = ({
             },
           ]
         : []),
-      ...((canWrite || canUpdateAvailability || canViewAuditLog) && !toolbarMode
+      ...((canWrite ||
+        canUpdateAvailability ||
+        canViewAuditLog ||
+        canViewRecipe) &&
+      !toolbarMode
         ? [
             {
               disableColumnMenu: true,
@@ -585,6 +604,19 @@ const Modifiers = ({
                         size="small"
                       >
                         <Edit fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {canViewRecipe && (
+                    <Tooltip title={tInventory("recipes.label")}>
+                      <IconButton
+                        href={getHref(
+                          `/menus/modifier-groups/${groupId}/${row.id}/ingredients`,
+                          { organization: searchParams.get("organization") },
+                        )}
+                        size="small"
+                      >
+                        <SoupKitchen fontSize="small" />
                       </IconButton>
                     </Tooltip>
                   )}
@@ -696,19 +728,23 @@ const Modifiers = ({
     [
       canUpdateAvailability,
       canViewAuditLog,
+      canViewRecipe,
       canWrite,
       dateFilterOperators,
       enumFilterOperators,
       enumOptions,
       format,
       formatMoney,
+      groupId,
       handleDeleteModifier,
       handleUpdateModifier,
       isReorderMode,
       locale,
       numberFilterOperators,
+      searchParams,
       stringFilterOperators,
       tCommon,
+      tInventory,
       tMenus,
       toolbarMode,
       tOrder,
