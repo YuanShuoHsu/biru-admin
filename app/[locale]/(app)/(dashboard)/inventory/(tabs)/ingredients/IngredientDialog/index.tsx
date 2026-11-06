@@ -5,6 +5,7 @@ import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
+import useSWR from "swr";
 
 import {
   useIngredientFormSchema,
@@ -46,6 +47,7 @@ import { unitCodeValues } from "@/types/api";
 import type {
   CreateIngredientDto,
   Ingredient,
+  Recipe,
   Supplier,
 } from "@/types/inventory";
 
@@ -60,6 +62,7 @@ import { localize } from "@/utils/locale";
 
 const INGREDIENT_IMAGE_KEY = "ingredient-image";
 
+type RecipeOption = Pick<Recipe, "id" | "name">;
 type SupplierOption = Pick<Supplier, "id" | "name">;
 
 const StyledGrid = styled(Grid)({
@@ -110,22 +113,26 @@ const IngredientDialog = ({
     ingredient?.image || null,
   );
 
+  const savedPackageBaseQuantity = ingredient?.recipeId
+    ? 1
+    : ingredient?.packageBaseQuantity;
+
   const initialStock =
-    ingredient?.packageBaseQuantity && ingredient.inventoryLevel
+    savedPackageBaseQuantity && ingredient?.inventoryLevel
       ? String(
           toPackages(
             Number(ingredient.inventoryLevel),
-            Number(ingredient.packageBaseQuantity),
+            Number(savedPackageBaseQuantity),
           ),
         )
       : "";
 
   const initialLowStockThreshold =
-    ingredient?.lowStockThreshold && ingredient.packageBaseQuantity
+    ingredient?.lowStockThreshold && savedPackageBaseQuantity
       ? String(
           toPackages(
             Number(ingredient.lowStockThreshold),
-            Number(ingredient.packageBaseQuantity),
+            Number(savedPackageBaseQuantity),
           ),
         )
       : "";
@@ -151,6 +158,7 @@ const IngredientDialog = ({
       transactionNote: "",
       lowStockThreshold: initialLowStockThreshold,
       price: ingredient?.price || "",
+      recipeId: ingredient?.recipeId || "",
       url: ingredient?.url || "",
       name: ingredient?.name || {},
       supplierId: ingredient?.supplierId || "",
@@ -165,6 +173,7 @@ const IngredientDialog = ({
   const inventoryLevel = useWatch({ control, name: "inventoryLevel" });
   const lowStockThreshold = useWatch({ control, name: "lowStockThreshold" });
   const price = useWatch({ control, name: "price" });
+  const recipeId = useWatch({ control, name: "recipeId" });
   const name = useWatch({ control, name: "name" });
   const unitCode = useWatch({ control, name: "unitCode" });
   const unlimitedStock = useWatch({ control, name: "unlimitedStock" });
@@ -173,7 +182,7 @@ const IngredientDialog = ({
     unitCodeValues.find((unit) => unit === unitCode) ?? null;
   const baseUnitCode = packageUnitCode && BASE_UNIT_CODES[packageUnitCode];
   const baseQuantity =
-    Number(eligibleQuantity) *
+    (recipeId ? 1 : Number(eligibleQuantity)) *
     (packageUnitCode ? UNIT_FACTORS[packageUnitCode] : 0);
   const unitCostHint =
     baseQuantity > 0 && Number(price) > 0 && baseUnitCode
@@ -229,6 +238,10 @@ const IngredientDialog = ({
       : amount;
   };
 
+  const unitField = recipeId
+    ? "ingredients.unitCode"
+    : "ingredients.eligibleQuantityUnitCode";
+
   const editable = !ingredient || canWrite;
   const stockEditable = !ingredient || canRecordTransaction;
 
@@ -237,6 +250,18 @@ const IngredientDialog = ({
       ? { id: ingredient.supplierId, name: ingredient.supplierName ?? "" }
       : null,
   );
+  const { data: savedRecipe } = useSWR<Recipe>(
+    ingredient?.recipeId ? `/api/recipes/${ingredient.recipeId}` : null,
+  );
+  const [recipe, setRecipe] = useState<RecipeOption | null>();
+  const selectedRecipe = recipe === undefined ? (savedRecipe ?? null) : recipe;
+  const recipeSearch = useServerSearchOptions(
+    editable
+      ? `/api/organizations/${organizationSlug}/recipes?hasMenuItem=false`
+      : null,
+    selectedRecipe ? [selectedRecipe] : [],
+  );
+
   const supplierSearch = useServerSearchOptions(
     canViewPurchasing && editable
       ? `/api/organizations/${organizationSlug}/suppliers`
@@ -304,8 +329,13 @@ const IngredientDialog = ({
       name: values.name,
       brand: values.brand || null,
       image: imageSrc || null,
-      eligibleQuantity: values.eligibleQuantity,
-      eligibleQuantityUnitCode: values.unitCode,
+      ...(!values.recipeId && {
+        eligibleQuantity: values.eligibleQuantity,
+        eligibleQuantityUnitCode: values.unitCode,
+        price: values.price,
+        supplierId: values.supplierId || null,
+      }),
+      recipeId: values.recipeId || null,
       unitCode: BASE_UNIT_CODES[values.unitCode],
       lowStockThreshold:
         values.lowStockThreshold === initialLowStockThreshold
@@ -321,8 +351,6 @@ const IngredientDialog = ({
       ...(stockChanged && {
         transactionNote: values.transactionNote || null,
       }),
-      price: values.price,
-      supplierId: values.supplierId || null,
       unlimitedStock: values.unlimitedStock,
       url: values.url || null,
     };
@@ -401,7 +429,41 @@ const IngredientDialog = ({
         placeholder={tInventory("ingredients.brand.placeholder")}
         {...register("brand")}
       />
-      {canViewPurchasing && (
+      <Autocomplete
+        {...recipeSearch}
+        disabled={!editable}
+        fullWidth
+        getOptionLabel={({ name }) => localize(name, locale)}
+        isOptionEqualToValue={(option, value) => option.id === value.id}
+        onChange={(_, value) => {
+          setRecipe(value);
+          setValue("recipeId", value?.id ?? "");
+        }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            helperText={tInventory("ingredients.recipeId.helperText")}
+            label={`${tInventory("ingredients.recipeId.label")} ${tCommon("optional")}`}
+            placeholder={tInventory("ingredients.recipeId.placeholder")}
+            slotProps={{
+              ...params.slotProps,
+              input: {
+                ...params.slotProps.input,
+                endAdornment: (
+                  <>
+                    {recipeSearch.loading && (
+                      <CircularProgress color="inherit" size={20} />
+                    )}
+                    {params.slotProps.input.endAdornment}
+                  </>
+                ),
+              },
+            }}
+          />
+        )}
+        value={selectedRecipe}
+      />
+      {canViewPurchasing && !recipeId && (
         <NumericFormat
           allowNegative={false}
           customInput={TextField}
@@ -425,38 +487,42 @@ const IngredientDialog = ({
         />
       )}
       <StyledGrid container spacing={2}>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <NumericFormat
-            allowNegative={false}
-            customInput={TextField}
-            decimalScale={3}
-            disabled={!editable}
-            error={!!errors.eligibleQuantity}
-            fullWidth
-            helperText={errors.eligibleQuantity?.message}
-            isAllowed={({ floatValue }) =>
-              floatValue === undefined || floatValue <= 999999999.999
-            }
-            label={tInventory("ingredients.eligibleQuantity.label")}
-            onValueChange={({ value }) =>
-              setValue("eligibleQuantity", value, {
-                shouldValidate: isSubmitted,
-              })
-            }
-            placeholder={tInventory("ingredients.eligibleQuantity.placeholder")}
-            required
-            thousandSeparator=","
-            value={eligibleQuantity}
-            valueIsNumericString
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
+        {!recipeId && (
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <NumericFormat
+              allowNegative={false}
+              customInput={TextField}
+              decimalScale={3}
+              disabled={!editable}
+              error={!!errors.eligibleQuantity}
+              fullWidth
+              helperText={errors.eligibleQuantity?.message}
+              isAllowed={({ floatValue }) =>
+                floatValue === undefined || floatValue <= 999999999.999
+              }
+              label={tInventory("ingredients.eligibleQuantity.label")}
+              onValueChange={({ value }) =>
+                setValue("eligibleQuantity", value, {
+                  shouldValidate: isSubmitted,
+                })
+              }
+              placeholder={tInventory(
+                "ingredients.eligibleQuantity.placeholder",
+              )}
+              required
+              thousandSeparator=","
+              value={eligibleQuantity}
+              valueIsNumericString
+            />
+          </Grid>
+        )}
+        <Grid size={{ xs: 12, sm: recipeId ? 12 : 6 }}>
           <TextField
             disabled={!editable}
             error={!!errors.unitCode}
             fullWidth
             helperText={errors.unitCode?.message}
-            label={tInventory("ingredients.eligibleQuantityUnitCode.label")}
+            label={tInventory(`${unitField}.label`)}
             required
             select
             slotProps={{
@@ -471,11 +537,7 @@ const IngredientDialog = ({
                   return value ? (
                     tInventory(`units.${value}`)
                   ) : (
-                    <em>
-                      {tInventory(
-                        "ingredients.eligibleQuantityUnitCode.placeholder",
-                      )}
-                    </em>
+                    <em>{tInventory(`${unitField}.placeholder`)}</em>
                   );
                 },
               },
@@ -484,9 +546,7 @@ const IngredientDialog = ({
             {...register("unitCode")}
           >
             <MenuItem disabled value="">
-              <em>
-                {tInventory("ingredients.eligibleQuantityUnitCode.placeholder")}
-              </em>
+              <em>{tInventory(`${unitField}.placeholder`)}</em>
             </MenuItem>
             {unitCodeValues.map((value) => (
               <MenuItem key={value} value={value}>
@@ -616,43 +676,45 @@ const IngredientDialog = ({
       )}
       {canViewPurchasing && (
         <>
-          <Autocomplete
-            {...supplierSearch}
-            disabled={!editable}
-            fullWidth
-            getOptionLabel={({ name }) => name}
-            isOptionEqualToValue={(option, value) => option.id === value.id}
-            onChange={(_, value) => {
-              setSupplier(value);
-              setValue("supplierId", value?.id ?? "", {
-                shouldValidate: isSubmitted,
-              });
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                error={!!errors.supplierId}
-                helperText={errors.supplierId?.message}
-                label={`${tInventory("ingredients.supplierId.label")} ${tCommon("optional")}`}
-                placeholder={tInventory("ingredients.supplierId.placeholder")}
-                slotProps={{
-                  ...params.slotProps,
-                  input: {
-                    ...params.slotProps.input,
-                    endAdornment: (
-                      <>
-                        {supplierSearch.loading && (
-                          <CircularProgress color="inherit" size={20} />
-                        )}
-                        {params.slotProps.input.endAdornment}
-                      </>
-                    ),
-                  },
-                }}
-              />
-            )}
-            value={supplier}
-          />
+          {!recipeId && (
+            <Autocomplete
+              {...supplierSearch}
+              disabled={!editable}
+              fullWidth
+              getOptionLabel={({ name }) => name}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              onChange={(_, value) => {
+                setSupplier(value);
+                setValue("supplierId", value?.id ?? "", {
+                  shouldValidate: isSubmitted,
+                });
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  error={!!errors.supplierId}
+                  helperText={errors.supplierId?.message}
+                  label={`${tInventory("ingredients.supplierId.label")} ${tCommon("optional")}`}
+                  placeholder={tInventory("ingredients.supplierId.placeholder")}
+                  slotProps={{
+                    ...params.slotProps,
+                    input: {
+                      ...params.slotProps.input,
+                      endAdornment: (
+                        <>
+                          {supplierSearch.loading && (
+                            <CircularProgress color="inherit" size={20} />
+                          )}
+                          {params.slotProps.input.endAdornment}
+                        </>
+                      ),
+                    },
+                  }}
+                />
+              )}
+              value={supplier}
+            />
+          )}
           <TextField
             disabled={!editable}
             error={!!errors.url}
