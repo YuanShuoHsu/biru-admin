@@ -16,8 +16,8 @@ import { getHref } from "@/utils/href";
 import { getRecipeByModifier } from "@/utils/inventory";
 import {
   getAdminMenu,
+  getAdminModifier,
   getAdminModifierGroup,
-  getAdminModifiers,
 } from "@/utils/menus";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAdminOrganization, getMemberRole } from "@/utils/session";
@@ -48,38 +48,24 @@ const ModifierRecipeContent = async ({
     await Promise.all([cookies(), params, searchParams]);
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
-  const { data: group, error: groupError } = await settle(
-    getAdminModifierGroup(groupId, fetchOptions),
-  );
-  if (isMissingResource(groupError)) notFound();
-  if (groupError) return <ErrorAlert />;
-
   const [
-    { data: menu, error: menuError },
-    { data: modifiers, error: modifiersError },
+    { data: group, error: groupError },
+    { data: modifier, error: modifierError },
   ] = await Promise.all([
-    settle(getAdminMenu(group.menuId, fetchOptions)),
-    settle(
-      getAdminModifiers(
-        groupId,
-        1,
-        100,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        fetchOptions,
-      ),
-    ),
+    settle(getAdminModifierGroup(groupId, fetchOptions)),
+    settle(getAdminModifier(modifierId, fetchOptions)),
   ]);
-  if (isMissingResource(menuError)) notFound();
-  if (menuError || modifiersError) return <ErrorAlert />;
+  if (isMissingResource(groupError) || isMissingResource(modifierError))
+    notFound();
+  if (groupError || modifierError) return <ErrorAlert />;
 
-  const modifier = modifiers.modifiers.find(({ id }) => id === modifierId);
-  if (!modifier) notFound();
+  if (modifier.modifierGroupId !== groupId) notFound();
+
+  const { data: menu, error: menuError } = await settle(
+    getAdminMenu(group.menuId, fetchOptions),
+  );
+  if (isMissingResource(menuError)) notFound();
+  if (menuError) return <ErrorAlert />;
 
   const selectedOrganization = await getAdminOrganization(
     menu.organizationId,

@@ -107,7 +107,12 @@ import type { SvgIconProps } from "@mui/material";
 
 import type { Coupon } from "@/types/coupons";
 import type { Ingredient, Supplier } from "@/types/inventory";
-import type { MenuItem, MenuSection, ModifierGroup } from "@/types/menus";
+import type {
+  MenuItem,
+  MenuSection,
+  Modifier,
+  ModifierGroup,
+} from "@/types/menus";
 import type { NavItem } from "@/types/navItem";
 import type { AdminOrderResponse } from "@/types/orders";
 import type { QuantBot } from "@/types/quant";
@@ -514,7 +519,6 @@ const routes: Route[] = [
               {
                 children: [auditLogsRoute, recipeRoute],
                 icon: Checklist,
-                label: "menus.modifiers.label",
                 segment: "[modifierId]",
                 to: null,
               },
@@ -1020,6 +1024,7 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
     ingredientId,
     menuItemId,
     menuSectionId,
+    modifierId,
     orderId,
     slug,
     supplierId,
@@ -1172,6 +1177,19 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
     },
   );
 
+  const { data: modifierName = "" } = useSWR(
+    modifierId ? `/api/modifiers/${modifierId}` : null,
+    async (url) => {
+      try {
+        const { displayName } = await fetcher<Modifier>(url);
+
+        return localize(displayName, locale);
+      } catch {
+        return "";
+      }
+    },
+  );
+
   return {
     botId: botName,
     couponId: couponCode,
@@ -1179,6 +1197,7 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
     ingredientId: ingredientName,
     menuItemId: menuItemName,
     menuSectionId: menuSectionName,
+    modifierId: modifierName,
     orderId: orderNumber,
     slug: organizationSlugName,
     supplierId: supplierName,

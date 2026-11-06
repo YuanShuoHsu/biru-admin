@@ -3298,7 +3298,8 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get?: never;
+    /** 取得選項詳情 */
+    get: operations["MenusController_findModifier"];
     put?: never;
     post?: never;
     /** 刪除選項 */
@@ -21218,6 +21219,34 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenusController_findModifier: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        modifierId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ModifierResponseDto"];
+        };
       };
       /** @description Internal server error */
       500: {

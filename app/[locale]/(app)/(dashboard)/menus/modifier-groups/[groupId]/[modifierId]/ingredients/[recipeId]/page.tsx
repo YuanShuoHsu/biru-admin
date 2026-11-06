@@ -19,7 +19,11 @@ import {
 import { resolveGridSearchParams } from "@/utils/dataGrid";
 import { isMissingResource, settle } from "@/utils/fetcher";
 import { getRecipeByModifier, getRecipeIngredients } from "@/utils/inventory";
-import { getAdminMenu, getAdminModifierGroup } from "@/utils/menus";
+import {
+  getAdminMenu,
+  getAdminModifier,
+  getAdminModifierGroup,
+} from "@/utils/menus";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAdminOrganization, getMemberRole } from "@/utils/session";
 
@@ -65,11 +69,18 @@ const RecipeIngredientsContent = async ({
   const fetchOptions = {
     headers: { "Accept-Language": locale, cookie: cookieStore.toString() },
   };
-  const { data: group, error: groupError } = await settle(
-    getAdminModifierGroup(groupId, fetchOptions),
-  );
-  if (isMissingResource(groupError)) notFound();
-  if (groupError) return <ErrorAlert />;
+  const [
+    { data: group, error: groupError },
+    { data: modifier, error: modifierError },
+  ] = await Promise.all([
+    settle(getAdminModifierGroup(groupId, fetchOptions)),
+    settle(getAdminModifier(modifierId, fetchOptions)),
+  ]);
+  if (isMissingResource(groupError) || isMissingResource(modifierError))
+    notFound();
+  if (groupError || modifierError) return <ErrorAlert />;
+
+  if (modifier.modifierGroupId !== groupId) notFound();
 
   const { data: menu, error: menuError } = await settle(
     getAdminMenu(group.menuId, fetchOptions),
@@ -87,7 +98,6 @@ const RecipeIngredientsContent = async ({
     getMemberRole(selectedOrganization.id),
     settle(getRecipeByModifier(modifierId, fetchOptions)),
   ]);
-  if (isMissingResource(recipeError)) notFound();
   if (recipeError) return <ErrorAlert />;
 
   if (recipe?.id !== recipeId) notFound();
@@ -162,7 +172,7 @@ const RecipeIngredientsContent = async ({
       organizationSlug={selectedOrganization.slug}
       page={page}
       pageSize={pageSize}
-      priceCurrency={selectedOrganization.currency}
+      priceCurrency={modifier.priceCurrency}
       quickFilterValue={quickFilterValue}
       recipe={recipe}
       rowCount={rowCount}
