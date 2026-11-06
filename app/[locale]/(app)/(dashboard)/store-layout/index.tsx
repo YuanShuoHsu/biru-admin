@@ -831,21 +831,28 @@ const StoreLayout = ({
     );
     const file = new File([bytes], name, { type: "image/png" });
 
+    const download = () => {
+      const url = URL.createObjectURL(file);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = name;
+      document.body.append(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url));
+    };
+
     if (savesToPhotoLibrary(file)) {
-      void navigator.share({ files: [file] }).catch(() => {});
+      void navigator.share({ files: [file] }).catch((error: unknown) => {
+        if (!(error instanceof DOMException && error.name === "AbortError"))
+          download();
+      });
 
       return;
     }
 
-    const url = URL.createObjectURL(file);
-    const link = document.createElement("a");
-
-    link.href = url;
-    link.download = name;
-    document.body.append(link);
-    link.click();
-    link.remove();
-    setTimeout(() => URL.revokeObjectURL(url));
+    download();
   };
 
   const handleTableSelect = (tableNumber: number) => {
