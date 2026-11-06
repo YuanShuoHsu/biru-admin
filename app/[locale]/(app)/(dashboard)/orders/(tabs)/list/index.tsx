@@ -721,6 +721,7 @@ const Orders = ({
         filterOperators: stringFilterOperators,
         headerName: tOrders("confirmationNumber"),
         renderCell: renderEmptyableCell,
+        sortable: false,
       },
     ],
     [
