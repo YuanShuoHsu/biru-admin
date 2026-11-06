@@ -1,6 +1,11 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
+import {
+  BUSINESS_NUMBER_PATTERN,
+  isValidBusinessNumber,
+} from "@/utils/businessNumber";
+
 export const useVoidInvoiceFormSchema = (nameRequiresTaxId: boolean) => {
   const tOrders = useTranslations("orders");
   const tValidation = useTranslations("validation");
@@ -10,8 +15,12 @@ export const useVoidInvoiceFormSchema = (nameRequiresTaxId: boolean) => {
       customerIdentifier: z
         .string()
         .trim()
-        .regex(/^(\d{8})?$/, {
-          error: tOrders("actions.voidInvoice.customerIdentifier.invalid"),
+        .refine((val) => !val || BUSINESS_NUMBER_PATTERN.test(val), {
+          abort: true,
+          error: tValidation("businessNumber.invalid"),
+        })
+        .refine((val) => !val || isValidBusinessNumber(val), {
+          error: tValidation("businessNumber.checksum"),
         }),
       customerName: z.string().trim(),
       reason: z

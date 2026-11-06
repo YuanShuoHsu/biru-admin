@@ -83,8 +83,6 @@
     "required": "公司地址为必填。"
   },
   "customerIdentifier": {
-    "invalid": "统一编号格式无效。",
-    "notFound": "查无对应的公司资料。",
     "required": "统一编号为必填。"
   },
   "customerName": {
@@ -374,6 +372,7 @@
     "notSelected": "请选择加项名目。"
   },
   "businessNumber": {
+    "checksum": "统一编号校验码不符，请确认号码是否正确。",
     "invalid": "请输入 8 位统一编号。"
   },
   "taxId": {

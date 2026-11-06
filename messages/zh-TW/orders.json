@@ -98,7 +98,6 @@
       "confirm": "確定要作廢發票 <bold>{invoiceNumber}</bold> 嗎？作廢無法復原；系統會立即以下方的買受人資訊重新開立一張。已開過折讓或已跨稅期的發票無法作廢。",
       "customerIdentifier": {
         "helperText": "留空則沿用原發票的買受人資訊",
-        "invalid": "統一編號需為 8 位數字",
         "label": "更正統一編號"
       },
       "customerName": {
@@ -205,6 +204,7 @@
         "longWait": "等候過久",
         "customerMistake": "顧客點錯",
         "customerCancelled": "顧客取消",
+        "storeClosed": "門市停業",
         "other": "其他"
       },
       "scope": {

@@ -83,8 +83,6 @@
     "required": "회사 주소는 필수입니다."
   },
   "customerIdentifier": {
-    "invalid": "사업자 등록번호가 유효하지 않습니다.",
-    "notFound": "해당 번호의 회사를 찾을 수 없습니다.",
     "required": "사업자 등록번호는 필수입니다."
   },
   "customerName": {
@@ -374,6 +372,7 @@
     "notSelected": "가산 항목을 선택하세요."
   },
   "businessNumber": {
+    "checksum": "사업자 번호의 검증 번호가 일치하지 않습니다. 번호를 확인하세요.",
     "invalid": "8자리 사업자 번호를 입력하세요."
   },
   "taxId": {

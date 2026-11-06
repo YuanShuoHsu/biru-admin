@@ -1,14 +1,25 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-export const UNIT_ADDRESS_MAX_LENGTH = 26;
+import {
+  BUSINESS_NUMBER_PATTERN,
+  isValidBusinessNumber,
+} from "@/utils/businessNumber";
+
+export const UNIT_TEXT_MAX_LENGTH = {
+  address: 26,
+  agentName: 50,
+  contactName: 20,
+  name: 50,
+  representativeName: 20,
+} as const;
 
 export const UNIT_TEXT_FIELDS = [
-  { max: 50, name: "name" },
-  { max: UNIT_ADDRESS_MAX_LENGTH, name: "address" },
-  { max: 20, name: "representativeName" },
-  { max: 50, name: "agentName" },
-  { max: 20, name: "contactName" },
+  "name",
+  "address",
+  "representativeName",
+  "agentName",
+  "contactName",
 ] as const;
 
 export const useUnitFormSchema = () => {
@@ -22,20 +33,26 @@ export const useUnitFormSchema = () => {
       .max(max, { error: tValidation("withholdingUnit.maxLength", { max }) });
 
   return z.object({
-    address: text(UNIT_ADDRESS_MAX_LENGTH),
-    agentName: text(50),
+    address: text(UNIT_TEXT_MAX_LENGTH.address),
+    agentName: text(UNIT_TEXT_MAX_LENGTH.agentName),
     businessNumber: z
       .string()
-      .regex(/^\d{8}$/, { error: tValidation("businessNumber.invalid") }),
+      .regex(BUSINESS_NUMBER_PATTERN, {
+        abort: true,
+        error: tValidation("businessNumber.invalid"),
+      })
+      .refine(isValidBusinessNumber, {
+        error: tValidation("businessNumber.checksum"),
+      }),
     contactEmail: z.email({ error: tValidation("email.invalid") }).max(30, {
       error: tValidation("withholdingUnit.maxLength", { max: 30 }),
     }),
-    contactName: text(20),
+    contactName: text(UNIT_TEXT_MAX_LENGTH.contactName),
     contactPhone: z
       .string()
       .regex(/^[\d-]{1,15}$/, { error: tValidation("withholdingUnit.phone") }),
-    name: text(50),
-    representativeName: text(20),
+    name: text(UNIT_TEXT_MAX_LENGTH.name),
+    representativeName: text(UNIT_TEXT_MAX_LENGTH.representativeName),
     taxOfficeCode: z
       .string()
       .trim()

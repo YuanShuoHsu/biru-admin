@@ -31,7 +31,7 @@ import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import { refundReasonCodeValues } from "@/types/api";
+import { staffRefundReasonCodeValues } from "@/types/api";
 import type {
   AdminOrderResponse,
   CreateOrderRefundDto,
@@ -302,7 +302,7 @@ const RefundOrderDialogContent = ({
         value={reasonCode}
         {...register("reasonCode")}
       >
-        {refundReasonCodeValues.map((code) => (
+        {staffRefundReasonCodeValues.map((code) => (
           <MenuItem key={code} value={code}>
             {tOrders(`detail.refunds.reasonCode.${code}`)}
           </MenuItem>

@@ -83,8 +83,6 @@
     "required": "会社住所は必須です。"
   },
   "customerIdentifier": {
-    "invalid": "統一番号が無効です。",
-    "notFound": "該当する会社が見つかりません。",
     "required": "統一番号は必須です。"
   },
   "customerName": {
@@ -374,6 +372,7 @@
     "notSelected": "加算項目を選択してください。"
   },
   "businessNumber": {
+    "checksum": "統一番号のチェックディジットが一致しません。番号をご確認ください。",
     "invalid": "8 桁の統一番号を入力してください。"
   },
   "taxId": {

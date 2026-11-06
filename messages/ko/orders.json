@@ -98,7 +98,6 @@
       "confirm": "세금계산서 <bold>{invoiceNumber}</bold>를 취소하시겠습니까? 취소는 되돌릴 수 없습니다. 아래 공급받는자 정보로 즉시 다시 발행됩니다. 이미 에누리를 발행했거나 신고 기간이 지난 경우에는 취소할 수 없습니다.",
       "customerIdentifier": {
         "helperText": "비워 두면 취소된 세금계산서의 공급받는자 정보를 그대로 사용합니다",
-        "invalid": "사업자번호는 8자리 숫자여야 합니다",
         "label": "사업자번호 정정"
       },
       "customerName": {
@@ -205,6 +204,7 @@
         "longWait": "대기 시간 초과",
         "customerMistake": "고객 주문 실수",
         "customerCancelled": "고객 취소",
+        "storeClosed": "매장 폐업",
         "other": "기타"
       },
       "scope": {

@@ -83,8 +83,6 @@
     "required": "Company address is required."
   },
   "customerIdentifier": {
-    "invalid": "Tax ID is not valid.",
-    "notFound": "No company found for this Tax ID.",
     "required": "Tax ID is required."
   },
   "customerName": {
@@ -374,6 +372,7 @@
     "notSelected": "Select a pay item."
   },
   "businessNumber": {
+    "checksum": "This business ID number fails the check digit. Make sure it is correct.",
     "invalid": "Enter an 8-digit business ID number."
   },
   "taxId": {

@@ -98,7 +98,6 @@
       "confirm": "インボイス <bold>{invoiceNumber}</bold> を無効化しますか？無効化は取り消せません。下記の買受人情報ですぐに再発行されます。値引伝票を発行済み、または期をまたいだインボイスは無効化できません。",
       "customerIdentifier": {
         "helperText": "空欄の場合は元のインボイスの買受人情報を引き継ぎます",
-        "invalid": "統一番号は 8 桁の数字で入力してください",
         "label": "統一番号の訂正"
       },
       "customerName": {
@@ -205,6 +204,7 @@
         "longWait": "待ち時間が長い",
         "customerMistake": "お客様の注文間違い",
         "customerCancelled": "お客様都合のキャンセル",
+        "storeClosed": "店舗の閉業",
         "other": "その他"
       },
       "scope": {

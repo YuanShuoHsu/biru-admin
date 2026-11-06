@@ -98,7 +98,6 @@
       "confirm": "确定要作废发票 <bold>{invoiceNumber}</bold> 吗？作废后无法恢复；系统会立即以下方的买受人信息重新开立一张。已开过折让或已跨税期的发票无法作废。",
       "customerIdentifier": {
         "helperText": "留空则沿用原发票的买受人信息",
-        "invalid": "统一编号需为 8 位数字",
         "label": "更正统一编号"
       },
       "customerName": {
@@ -205,6 +204,7 @@
         "longWait": "等候过久",
         "customerMistake": "顾客点错",
         "customerCancelled": "顾客取消",
+        "storeClosed": "门店停业",
         "other": "其他"
       },
       "scope": {

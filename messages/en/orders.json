@@ -98,7 +98,6 @@
       "confirm": "Void invoice <bold>{invoiceNumber}</bold>? Voiding cannot be undone. A replacement invoice is issued right away with the buyer details below. Invoices that already have a credit note, or that fall outside the filing period, cannot be voided.",
       "customerIdentifier": {
         "helperText": "Leave blank to keep the buyer details from the voided invoice",
-        "invalid": "The tax ID must be 8 digits",
         "label": "Correct the tax ID"
       },
       "customerName": {
@@ -205,6 +204,7 @@
         "longWait": "Long wait",
         "customerMistake": "Ordered by mistake",
         "customerCancelled": "Customer cancelled",
+        "storeClosed": "Store closed",
         "other": "Other"
       },
       "scope": {

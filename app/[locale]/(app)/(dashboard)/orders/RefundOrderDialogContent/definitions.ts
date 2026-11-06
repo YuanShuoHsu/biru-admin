@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { refundReasonCodeValues } from "@/types/api";
+import { staffRefundReasonCodeValues } from "@/types/api";
 
 export const getSelectedQuantities = (
   quantities: Record<string, number>,
@@ -28,7 +28,7 @@ export const useRefundOrderFormSchema = (remaining: Map<string, number>) => {
         ),
       reason: z.string().trim(),
       reasonCode: z.string().pipe(
-        z.enum(refundReasonCodeValues, {
+        z.enum(staffRefundReasonCodeValues, {
           error: tValidation("refundReasonCode.notSelected"),
         }),
       ),

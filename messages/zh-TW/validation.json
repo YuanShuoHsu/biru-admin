@@ -83,8 +83,6 @@
     "required": "公司地址為必填。"
   },
   "customerIdentifier": {
-    "invalid": "統一編號格式無效。",
-    "notFound": "查無對應的公司資料。",
     "required": "統一編號為必填。"
   },
   "customerName": {
@@ -374,6 +372,7 @@
     "notSelected": "請選擇加項名目。"
   },
   "businessNumber": {
+    "checksum": "統一編號檢查碼不符，請確認號碼是否正確。",
     "invalid": "請輸入 8 碼統一編號。"
   },
   "taxId": {
