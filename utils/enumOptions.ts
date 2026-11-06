@@ -200,10 +200,12 @@ export const getOrderEnumOptions = (
     label: tOrder(`checkout.invoice.${value}`),
     value,
   })),
-  invoiceStatus: invoiceStatusValues.map((value) => ({
-    label: tOrders(`invoiceStatusValue.${value}`),
-    value,
-  })),
+  invoiceStatus: invoiceStatusValues
+    .filter((value) => value !== "voided")
+    .map((value) => ({
+      label: tOrders(`invoiceStatusValue.${value}`),
+      value,
+    })),
 });
 
 export const getIngredientEnumOptions = (
