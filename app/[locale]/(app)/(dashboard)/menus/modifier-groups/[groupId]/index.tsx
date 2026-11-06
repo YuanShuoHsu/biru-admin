@@ -528,7 +528,11 @@ const Modifiers = ({
           content: (
             <RecipeDialog
               modifier={modifier}
-              mutate={() => openModifierRecipe(modifier.id)}
+              mutate={() =>
+                openModifierRecipe(modifier.id).catch((error) =>
+                  enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
+                )
+              }
               organizationSlug={organizationSlug}
               recipe={null}
             />
