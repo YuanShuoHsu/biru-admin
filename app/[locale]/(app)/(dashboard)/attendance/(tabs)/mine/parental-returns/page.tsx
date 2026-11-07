@@ -65,32 +65,37 @@ export const generateMetadata = async ({
 };
 
 interface MyParentalReturnsContentProps {
-  context: Promise<FetchResult<AttendanceContext>>;
   filterField?: AttendanceParentalReturnFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
   organization: Organization;
   page: number;
   pageSize: number;
-  parentalReturns: Promise<
-    FetchResult<{ parentalReturns: AttendanceParentalReturn[]; total: number }>
-  >;
   quickFilterValue?: string;
+  results: Promise<
+    | {
+        employee: AttendanceContext["employee"];
+        parentalReturns: FetchResult<{
+          parentalReturns: AttendanceParentalReturn[];
+          total: number;
+        }>;
+      }
+    | undefined
+  >;
   sortBy?: AttendanceParentalReturnSortField;
   sortDirection?: SortDirection;
 }
 
 const MyParentalReturnsContent = async ({
-  context: contextResult,
-  parentalReturns: parentalReturnsResult,
+  results,
   ...props
 }: MyParentalReturnsContentProps) => {
-  const { data: context, error: contextError } = await contextResult;
-  if (contextError) return <ErrorAlert />;
+  const result = await results;
+  if (!result) return <ErrorAlert />;
 
-  const { employee } = context;
+  const { employee } = result;
 
-  const { data: parentalReturns, error } = await parentalReturnsResult;
+  const { data: parentalReturns, error } = result.parentalReturns;
   if (error) return <ErrorAlert />;
 
   const { parentalReturns: rows, total: rowCount } = parentalReturns;
@@ -163,43 +168,49 @@ const MyParentalReturnsPage = async ({
       )
     : [];
 
-  const context = settle(getAttendanceContext(organization.slug, fetchOptions));
+  const results = settle(
+    getAttendanceContext(organization.slug, fetchOptions),
+  ).then(async ({ data: context }) => {
+    if (!context) return;
 
-  const parentalReturns = context.then(({ data }) =>
-    settle(
-      data?.employee
-        ? getAttendanceParentalReturns(
-            organization.slug,
-            "me",
-            {
-              page,
-              pageSize,
-              filterField,
-              filterOperator,
-              filterValue,
-              quickFilterEnums,
-              quickFilterValue,
-              sortBy,
-              sortDirection,
-            },
-            fetchOptions,
-          )
-        : Promise.resolve({ parentalReturns: [], total: 0 }),
-    ),
-  );
+    const { employee } = context;
+
+    return {
+      employee,
+      parentalReturns: await settle(
+        employee
+          ? getAttendanceParentalReturns(
+              organization.slug,
+              "me",
+              {
+                page,
+                pageSize,
+                filterField,
+                filterOperator,
+                filterValue,
+                quickFilterEnums,
+                quickFilterValue,
+                sortBy,
+                sortDirection,
+              },
+              fetchOptions,
+            )
+          : Promise.resolve({ parentalReturns: [], total: 0 }),
+      ),
+    };
+  });
 
   return (
     <Suspense fallback={<ParentalReturns loading />}>
       <MyParentalReturnsContent
-        context={context}
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}
         organization={organization}
         page={page}
         pageSize={pageSize}
-        parentalReturns={parentalReturns}
         quickFilterValue={quickFilterValue}
+        results={results}
         sortBy={sortBy}
         sortDirection={sortDirection}
       />

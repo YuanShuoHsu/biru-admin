@@ -19,7 +19,6 @@ import {
   filterOperatorValues,
 } from "@/types/api";
 import type {
-  AttendanceContext,
   AttendanceLeaveBalance,
   AttendanceLeaveBalanceFilterField,
   AttendanceLeaveBalanceSortField,
@@ -66,9 +65,9 @@ export const generateMetadata = async ({
 
 interface MyLeaveContentProps {
   balances: Promise<
-    FetchResult<{ balances: AttendanceLeaveBalance[]; total: number }>
+    | FetchResult<{ balances: AttendanceLeaveBalance[]; total: number }>
+    | undefined
   >;
-  context: Promise<FetchResult<AttendanceContext>>;
   filterField?: AttendanceLeaveBalanceFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
@@ -81,14 +80,13 @@ interface MyLeaveContentProps {
 }
 
 const MyLeaveContent = async ({
-  balances: balancesResult,
-  context: contextResult,
+  balances: balancesPromise,
   ...props
 }: MyLeaveContentProps) => {
-  const { error: contextError } = await contextResult;
-  if (contextError) return <ErrorAlert />;
+  const balancesResult = await balancesPromise;
+  if (!balancesResult) return <ErrorAlert />;
 
-  const { data: balances, error } = await balancesResult;
+  const { data: balances, error } = balancesResult;
   if (error) return <ErrorAlert />;
 
   const { balances: rows, total: rowCount } = balances;
@@ -160,36 +158,37 @@ const MyLeavePage = async ({ params, searchParams }: MyLeavePageProps) => {
       )
     : [];
 
-  const context = settle(getAttendanceContext(organization.slug, fetchOptions));
-
-  const balances = context.then(({ data }) =>
-    settle(
-      data?.employee
-        ? getAttendanceLeaveBalances(
-            organization.slug,
-            "me",
-            {
-              page,
-              pageSize,
-              filterField,
-              filterOperator,
-              filterValue,
-              quickFilterEnums,
-              quickFilterValue,
-              sortBy,
-              sortDirection,
-            },
-            fetchOptions,
-          )
-        : Promise.resolve({ balances: [], total: 0 }),
-    ),
+  const balances = settle(
+    getAttendanceContext(organization.slug, fetchOptions),
+  ).then(({ data: context }) =>
+    context
+      ? settle(
+          context.employee
+            ? getAttendanceLeaveBalances(
+                organization.slug,
+                "me",
+                {
+                  page,
+                  pageSize,
+                  filterField,
+                  filterOperator,
+                  filterValue,
+                  quickFilterEnums,
+                  quickFilterValue,
+                  sortBy,
+                  sortDirection,
+                },
+                fetchOptions,
+              )
+            : Promise.resolve({ balances: [], total: 0 }),
+        )
+      : undefined,
   );
 
   return (
     <Suspense fallback={<Balances loading />}>
       <MyLeaveContent
         balances={balances}
-        context={context}
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}

@@ -21,7 +21,6 @@ import {
   filterOperatorValues,
 } from "@/types/api";
 import type {
-  AttendanceContext,
   AttendanceLeaveCase,
   AttendanceLeaveType,
   AttendanceRequest,
@@ -74,7 +73,6 @@ export const generateMetadata = async ({
 };
 
 interface RequestsContentProps {
-  context: Promise<FetchResult<AttendanceContext>>;
   filterField?: AttendanceRequestFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
@@ -83,33 +81,34 @@ interface RequestsContentProps {
   pageSize: number;
   quickFilterValue?: string;
   results: Promise<
-    [
-      FetchResult<{ requests: AttendanceRequest[]; total: number }>,
-      FetchResult<{ leaveTypes: AttendanceLeaveType[]; total: number }>,
-      FetchResult<{ leaveCases: AttendanceLeaveCase[]; total: number }>,
-    ]
+    | {
+        enabled: boolean;
+        fetched: [
+          FetchResult<{ requests: AttendanceRequest[]; total: number }>,
+          FetchResult<{ leaveTypes: AttendanceLeaveType[]; total: number }>,
+          FetchResult<{ leaveCases: AttendanceLeaveCase[]; total: number }>,
+        ];
+      }
+    | undefined
   >;
   sortBy?: AttendanceRequestSortField;
   sortDirection?: SortDirection;
 }
 
 const RequestsContent = async ({
-  context: contextResult,
-  results,
+  results: resultsPromise,
   ...props
 }: RequestsContentProps) => {
-  const { data: context, error: contextError } = await contextResult;
-  if (contextError) return <ErrorAlert />;
+  const results = await resultsPromise;
+  if (!results) return <ErrorAlert />;
 
-  const { employee } = context;
-
-  const enabled = employee?.status === "active";
+  const { enabled, fetched } = results;
 
   const [
     { data: requests, error },
     { data: leaveTypePage, error: leaveTypesError },
     { data: leaveCasePage, error: leaveCasesError },
-  ] = await results;
+  ] = fetched;
   if (error || leaveTypesError || leaveCasesError) return <ErrorAlert />;
 
   const { requests: rows, total: rowCount } = requests;
@@ -180,58 +179,62 @@ const RequestsPage = async ({ params, searchParams }: RequestsPageProps) => {
       })
     : [];
 
-  const context = settle(getAttendanceContext(organization.slug, fetchOptions));
+  const results = settle(
+    getAttendanceContext(organization.slug, fetchOptions),
+  ).then(async ({ data: context }) => {
+    if (!context) return;
 
-  const results = context.then(({ data }) => {
-    const enabled = data?.employee?.status === "active";
+    const enabled = context.employee?.status === "active";
 
-    return Promise.all([
-      settle(
-        enabled
-          ? getAttendanceRequests(
-              organization.slug,
-              "me",
-              {
-                page,
-                pageSize,
-                filterField,
-                filterOperator,
-                filterValue,
-                quickFilterEnums,
-                quickFilterValue,
-                sortBy,
-                sortDirection,
-              },
-              fetchOptions,
-            )
-          : Promise.resolve({ requests: [], total: 0 }),
-      ),
-      settle(
-        enabled
-          ? getAttendanceLeaveTypes(
-              organization.slug,
-              { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
-              fetchOptions,
-            )
-          : Promise.resolve({ leaveTypes: [], total: 0 }),
-      ),
-      settle(
-        enabled
-          ? getAttendanceLeaveCases(
-              organization.slug,
-              "me",
-              { pageSize: MAX_PAGE_SIZE },
-              fetchOptions,
-            )
-          : Promise.resolve({ leaveCases: [], total: 0 }),
-      ),
-    ]);
+    return {
+      enabled,
+      fetched: await Promise.all([
+        settle(
+          enabled
+            ? getAttendanceRequests(
+                organization.slug,
+                "me",
+                {
+                  page,
+                  pageSize,
+                  filterField,
+                  filterOperator,
+                  filterValue,
+                  quickFilterEnums,
+                  quickFilterValue,
+                  sortBy,
+                  sortDirection,
+                },
+                fetchOptions,
+              )
+            : Promise.resolve({ requests: [], total: 0 }),
+        ),
+        settle(
+          enabled
+            ? getAttendanceLeaveTypes(
+                organization.slug,
+                { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
+                fetchOptions,
+              )
+            : Promise.resolve({ leaveTypes: [], total: 0 }),
+        ),
+        settle(
+          enabled
+            ? getAttendanceLeaveCases(
+                organization.slug,
+                "me",
+                { pageSize: MAX_PAGE_SIZE },
+                fetchOptions,
+              )
+            : Promise.resolve({ leaveCases: [], total: 0 }),
+        ),
+      ]),
+    };
   });
 
   return (
     <Suspense fallback={<Requests loading />}>
       <RequestsContent
-        context={context}
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}

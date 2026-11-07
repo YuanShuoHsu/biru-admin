@@ -22,7 +22,6 @@ import type {
   AttendanceAnnualLeaveNotice,
   AttendanceAnnualLeaveNoticeFilterField,
   AttendanceAnnualLeaveNoticeSortField,
-  AttendanceContext,
 } from "@/types/attendance";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
@@ -65,12 +64,12 @@ export const generateMetadata = async ({
 };
 
 interface MyAnnualLeaveNoticesContentProps {
-  context: Promise<FetchResult<AttendanceContext>>;
   filterField?: AttendanceAnnualLeaveNoticeFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
   notices: Promise<
-    FetchResult<{ notices: AttendanceAnnualLeaveNotice[]; total: number }>
+    | FetchResult<{ notices: AttendanceAnnualLeaveNotice[]; total: number }>
+    | undefined
   >;
   organization: Organization;
   page: number;
@@ -81,14 +80,13 @@ interface MyAnnualLeaveNoticesContentProps {
 }
 
 const MyAnnualLeaveNoticesContent = async ({
-  context: contextResult,
-  notices: noticesResult,
+  notices: noticesPromise,
   ...props
 }: MyAnnualLeaveNoticesContentProps) => {
-  const { error: contextError } = await contextResult;
-  if (contextError) return <ErrorAlert />;
+  const noticesResult = await noticesPromise;
+  if (!noticesResult) return <ErrorAlert />;
 
-  const { data: notices, error } = await noticesResult;
+  const { data: notices, error } = noticesResult;
   if (error) return <ErrorAlert />;
 
   const { notices: rows, total: rowCount } = notices;
@@ -158,35 +156,36 @@ const MyAnnualLeaveNoticesPage = async ({
       )
     : [];
 
-  const context = settle(getAttendanceContext(organization.slug, fetchOptions));
-
-  const notices = context.then(({ data }) =>
-    settle(
-      data?.employee
-        ? getAttendanceAnnualLeaveNotices(
-            organization.slug,
-            "me",
-            {
-              page,
-              pageSize,
-              filterField,
-              filterOperator,
-              filterValue,
-              quickFilterEnums,
-              quickFilterValue,
-              sortBy,
-              sortDirection,
-            },
-            fetchOptions,
-          )
-        : Promise.resolve({ notices: [], total: 0 }),
-    ),
+  const notices = settle(
+    getAttendanceContext(organization.slug, fetchOptions),
+  ).then(({ data: context }) =>
+    context
+      ? settle(
+          context.employee
+            ? getAttendanceAnnualLeaveNotices(
+                organization.slug,
+                "me",
+                {
+                  page,
+                  pageSize,
+                  filterField,
+                  filterOperator,
+                  filterValue,
+                  quickFilterEnums,
+                  quickFilterValue,
+                  sortBy,
+                  sortDirection,
+                },
+                fetchOptions,
+              )
+            : Promise.resolve({ notices: [], total: 0 }),
+        )
+      : undefined,
   );
 
   return (
     <Suspense fallback={<AnnualLeaveNotices loading />}>
       <MyAnnualLeaveNoticesContent
-        context={context}
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}

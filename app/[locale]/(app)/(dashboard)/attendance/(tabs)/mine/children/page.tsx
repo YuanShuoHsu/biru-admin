@@ -19,7 +19,6 @@ import {
   filterOperatorValues,
 } from "@/types/api";
 import type {
-  AttendanceContext,
   AttendanceParentalChild,
   AttendanceParentalChildFilterField,
   AttendanceParentalChildSortField,
@@ -63,7 +62,6 @@ export const generateMetadata = async ({
 };
 
 interface MyChildrenContentProps {
-  context: Promise<FetchResult<AttendanceContext>>;
   filterField?: AttendanceParentalChildFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
@@ -71,7 +69,11 @@ interface MyChildrenContentProps {
   page: number;
   pageSize: number;
   parentalChildren: Promise<
-    FetchResult<{ parentalChildren: AttendanceParentalChild[]; total: number }>
+    | FetchResult<{
+        parentalChildren: AttendanceParentalChild[];
+        total: number;
+      }>
+    | undefined
   >;
   quickFilterValue?: string;
   sortBy?: AttendanceParentalChildSortField;
@@ -79,14 +81,13 @@ interface MyChildrenContentProps {
 }
 
 const MyChildrenContent = async ({
-  context: contextResult,
-  parentalChildren: parentalChildrenResult,
+  parentalChildren: parentalChildrenPromise,
   ...props
 }: MyChildrenContentProps) => {
-  const { error: contextError } = await contextResult;
-  if (contextError) return <ErrorAlert />;
+  const parentalChildrenResult = await parentalChildrenPromise;
+  if (!parentalChildrenResult) return <ErrorAlert />;
 
-  const { data: parentalChildren, error } = await parentalChildrenResult;
+  const { data: parentalChildren, error } = parentalChildrenResult;
   if (error) return <ErrorAlert />;
 
   const { parentalChildren: rows, total: rowCount } = parentalChildren;
@@ -143,34 +144,35 @@ const MyChildrenPage = async ({
       locale,
     });
 
-  const context = settle(getAttendanceContext(organization.slug, fetchOptions));
-
-  const parentalChildren = context.then(({ data }) =>
-    settle(
-      data?.employee
-        ? getAttendanceParentalChildren(
-            organization.slug,
-            "me",
-            {
-              page,
-              pageSize,
-              filterField,
-              filterOperator,
-              filterValue,
-              quickFilterValue,
-              sortBy,
-              sortDirection,
-            },
-            fetchOptions,
-          )
-        : Promise.resolve({ parentalChildren: [], total: 0 }),
-    ),
+  const parentalChildren = settle(
+    getAttendanceContext(organization.slug, fetchOptions),
+  ).then(({ data: context }) =>
+    context
+      ? settle(
+          context.employee
+            ? getAttendanceParentalChildren(
+                organization.slug,
+                "me",
+                {
+                  page,
+                  pageSize,
+                  filterField,
+                  filterOperator,
+                  filterValue,
+                  quickFilterValue,
+                  sortBy,
+                  sortDirection,
+                },
+                fetchOptions,
+              )
+            : Promise.resolve({ parentalChildren: [], total: 0 }),
+        )
+      : undefined,
   );
 
   return (
     <Suspense fallback={<MyChildren loading />}>
       <MyChildrenContent
-        context={context}
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}

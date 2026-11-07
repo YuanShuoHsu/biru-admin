@@ -21,7 +21,6 @@ import {
   filterOperatorValues,
 } from "@/types/api";
 import type {
-  AttendanceContext,
   AttendanceLeaveCase,
   AttendanceLeaveType,
   AttendanceShift,
@@ -72,7 +71,6 @@ export const generateMetadata = async ({
 };
 
 interface MineContentProps {
-  context: Promise<FetchResult<AttendanceContext>>;
   filterField?: AttendanceShiftFilterField;
   filterOperator?: FilterOperator;
   filterValue?: string;
@@ -81,35 +79,36 @@ interface MineContentProps {
   pageSize: number;
   quickFilterValue?: string;
   results: Promise<
-    [
-      FetchResult<{ shifts: AttendanceShift[]; total: number }>,
-      FetchResult<AttendanceShift[]>,
-      FetchResult<{ leaveTypes: AttendanceLeaveType[]; total: number }>,
-      FetchResult<{ leaveCases: AttendanceLeaveCase[]; total: number }>,
-    ]
+    | {
+        enabled: boolean;
+        fetched: [
+          FetchResult<{ shifts: AttendanceShift[]; total: number }>,
+          FetchResult<AttendanceShift[]>,
+          FetchResult<{ leaveTypes: AttendanceLeaveType[]; total: number }>,
+          FetchResult<{ leaveCases: AttendanceLeaveCase[]; total: number }>,
+        ];
+      }
+    | undefined
   >;
   sortBy?: AttendanceShiftSortField;
   sortDirection?: SortDirection;
 }
 
 const MineContent = async ({
-  context: contextResult,
-  results,
+  results: resultsPromise,
   ...props
 }: MineContentProps) => {
-  const { data: context, error: contextError } = await contextResult;
-  if (contextError) return <ErrorAlert />;
+  const results = await resultsPromise;
+  if (!results) return <ErrorAlert />;
 
-  const { employee } = context;
-
-  const enabled = employee?.status === "active";
+  const { enabled, fetched } = results;
 
   const [
     { data: shifts, error },
     { data: punchableShifts, error: punchableShiftsError },
     { data: leaveTypePage, error: leaveTypesError },
     { data: leaveCasePage, error: leaveCasesError },
-  ] = await results;
+  ] = fetched;
   if (error || punchableShiftsError || leaveTypesError || leaveCasesError)
     return <ErrorAlert />;
 
@@ -182,63 +181,67 @@ const MinePage = async ({ params, searchParams }: MinePageProps) => {
       )
     : [];
 
-  const context = settle(getAttendanceContext(organization.slug, fetchOptions));
+  const results = settle(
+    getAttendanceContext(organization.slug, fetchOptions),
+  ).then(async ({ data: context }) => {
+    if (!context) return;
 
-  const results = context.then(({ data }) => {
-    const enabled = data?.employee?.status === "active";
+    const enabled = context.employee?.status === "active";
 
-    return Promise.all([
-      settle(
-        enabled
-          ? getAttendanceShifts(
-              organization.slug,
-              "me",
-              {
-                page,
-                pageSize,
-                filterField,
-                filterOperator,
-                filterValue,
-                quickFilterEnums,
-                quickFilterValue,
-                sortBy,
-                sortDirection,
-              },
-              fetchOptions,
-            )
-          : Promise.resolve({ shifts: [], total: 0 }),
-      ),
-      settle(
-        enabled
-          ? getAttendancePunchableShifts(organization.slug, fetchOptions)
-          : Promise.resolve([]),
-      ),
-      settle(
-        enabled
-          ? getAttendanceLeaveTypes(
-              organization.slug,
-              { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
-              fetchOptions,
-            )
-          : Promise.resolve({ leaveTypes: [], total: 0 }),
-      ),
-      settle(
-        enabled
-          ? getAttendanceLeaveCases(
-              organization.slug,
-              "me",
-              { pageSize: MAX_PAGE_SIZE },
-              fetchOptions,
-            )
-          : Promise.resolve({ leaveCases: [], total: 0 }),
-      ),
-    ]);
+    return {
+      enabled,
+      fetched: await Promise.all([
+        settle(
+          enabled
+            ? getAttendanceShifts(
+                organization.slug,
+                "me",
+                {
+                  page,
+                  pageSize,
+                  filterField,
+                  filterOperator,
+                  filterValue,
+                  quickFilterEnums,
+                  quickFilterValue,
+                  sortBy,
+                  sortDirection,
+                },
+                fetchOptions,
+              )
+            : Promise.resolve({ shifts: [], total: 0 }),
+        ),
+        settle(
+          enabled
+            ? getAttendancePunchableShifts(organization.slug, fetchOptions)
+            : Promise.resolve([]),
+        ),
+        settle(
+          enabled
+            ? getAttendanceLeaveTypes(
+                organization.slug,
+                { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
+                fetchOptions,
+              )
+            : Promise.resolve({ leaveTypes: [], total: 0 }),
+        ),
+        settle(
+          enabled
+            ? getAttendanceLeaveCases(
+                organization.slug,
+                "me",
+                { pageSize: MAX_PAGE_SIZE },
+                fetchOptions,
+              )
+            : Promise.resolve({ leaveCases: [], total: 0 }),
+        ),
+      ]),
+    };
   });
 
   return (
     <Suspense fallback={<Mine loading />}>
       <MineContent
-        context={context}
         filterField={filterField}
         filterOperator={filterOperator}
         filterValue={filterValue}
