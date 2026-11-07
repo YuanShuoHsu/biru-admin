@@ -123,7 +123,9 @@ const AdjustPointsDialog = ({
       <TextField
         error={!!errors.note}
         fullWidth
-        helperText={errors.note?.message}
+        helperText={
+          errors.note?.message || tOrganizations("points.adjust.note.hint")
+        }
         label={tOrganizations("points.adjust.note.label")}
         multiline
         placeholder={tOrganizations("points.adjust.note.placeholder")}

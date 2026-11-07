@@ -10337,6 +10337,8 @@ export interface components {
       createdAt: string;
       /** Format: date-time */
       expiresAt?: string | null;
+      /** @description adjust 的調整原因，會員看得到 */
+      note?: string | null;
       /** @description earn 來源訂單編號 */
       orderNumber?: string | null;
       /** @description 交易發生店家；redeem 屬品牌層為 null */

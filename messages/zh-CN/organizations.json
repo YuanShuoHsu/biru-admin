@@ -368,6 +368,7 @@
         "placeholder": "请输入在本店消费过的会员 Email"
       },
       "note": {
+        "hint": "会员可在点数明细看到这段原因",
         "label": "调整原因",
         "placeholder": "例如：补登漏掉的消费",
         "required": "请输入调整原因"

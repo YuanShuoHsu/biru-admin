@@ -368,6 +368,7 @@
         "placeholder": "Enter the email of a member who has bought at this store"
       },
       "note": {
+        "hint": "Members see this reason in their points history",
         "label": "Reason",
         "placeholder": "e.g. Add a purchase that was missed",
         "required": "Enter a reason"
