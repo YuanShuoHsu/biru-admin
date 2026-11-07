@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
@@ -7,12 +8,15 @@ import OrganizationsSlugMembers from ".";
 
 import ErrorAlert from "@/components/ErrorAlert";
 
-import { ROLE_RANK } from "@/constants/organizations";
-
 import type { Locale } from "@/i18n/routing";
 
 import { settle } from "@/utils/fetcher";
-import { hasRolePermission, sortByCreatedAtDesc } from "@/utils/organizations";
+import {
+  getMemberPermissions,
+  getPlatformAdminMemberIds,
+  hasRolePermission,
+  sortByCreatedAtDesc,
+} from "@/utils/organizations";
 import { getFullOrganization, getSession } from "@/utils/session";
 
 interface OrganizationsSlugMembersPageProps {
@@ -62,30 +66,34 @@ const OrganizationsSlugMembersContent = async ({
   });
 
   const members = sortByCreatedAtDesc(data.members);
-  const ownerCount = members.filter(({ role }) => role === "owner").length;
+  const isPlatformAdmin = session.user.role === "admin";
+  const { data: platformAdminMemberIds = [] } = isPlatformAdmin
+    ? { data: [] }
+    : await settle(
+        getPlatformAdminMemberIds(data.id, {
+          headers: { cookie: (await cookies()).toString() },
+        }),
+      );
 
-  const canUpdateMemberRoles =
-    canUpdateMember &&
-    members.some(({ role }) => {
-      const isOnlyOwner = role === "owner" && ownerCount === 1;
-      const isHigherRoleRank = ROLE_RANK[currentUserRole] >= ROLE_RANK[role];
-
-      return !isOnlyOwner && isHigherRoleRank;
-    });
-  const canRemoveMembers =
-    canDeleteMember &&
-    members.some(({ role, userId }) => {
-      const isOnlyOwner = role === "owner" && ownerCount === 1;
-      const isCurrentUser = userId === session.user.id;
-      const isHigherRoleRank = ROLE_RANK[currentUserRole] >= ROLE_RANK[role];
-
-      return !isCurrentUser && !isOnlyOwner && isHigherRoleRank;
-    });
-  const canLeaveOrganizations = members.some(({ role, userId }) => {
-    const isOnlyOwner = role === "owner" && ownerCount === 1;
-
-    return userId === session.user.id && !isOnlyOwner;
-  });
+  const permissions = members.map((member) =>
+    getMemberPermissions(member, {
+      canDeleteMember,
+      canUpdateMember,
+      currentUserId: session.user.id,
+      currentUserRole,
+      members,
+      platformAdminMemberIds,
+    }),
+  );
+  const canUpdateMemberRoles = permissions.some(
+    ({ canUpdateMemberRole }) => canUpdateMemberRole,
+  );
+  const canRemoveMembers = permissions.some(
+    ({ canRemoveMember }) => canRemoveMember,
+  );
+  const canLeaveOrganizations = permissions.some(
+    ({ canLeaveOrganization }) => canLeaveOrganization,
+  );
 
   return (
     <OrganizationsSlugMembers
@@ -98,6 +106,8 @@ const OrganizationsSlugMembersContent = async ({
       canUpdateMemberRoles={canUpdateMemberRoles}
       currentUserId={session.user.id}
       currentUserRole={currentUserRole}
+      initialPlatformAdminMemberIds={platformAdminMemberIds}
+      isPlatformAdmin={isPlatformAdmin}
     />
   );
 };
