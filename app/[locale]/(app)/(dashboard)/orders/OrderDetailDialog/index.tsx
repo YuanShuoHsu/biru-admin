@@ -496,14 +496,12 @@ const OrderDetailDialog = ({
           )}
         </Section>
       )}
-      {voidedInvoicesError && (
+      {(voidedInvoicesError || !!voidedInvoices?.length) && (
         <Section title={tOrders("detail.voidedInvoices.title")}>
-          <ErrorAlert onRetry={() => mutateVoidedInvoices()} />
-        </Section>
-      )}
-      {!!voidedInvoices?.length && (
-        <Section title={tOrders("detail.voidedInvoices.title")}>
-          {voidedInvoices.map((voidedInvoice) => (
+          {voidedInvoicesError && (
+            <ErrorAlert onRetry={() => mutateVoidedInvoices()} />
+          )}
+          {voidedInvoices?.map((voidedInvoice) => (
             <EntryStack key={voidedInvoice.id}>
               {voidedInvoice.invoiceNumber && (
                 <InfoRow
@@ -548,14 +546,10 @@ const OrderDetailDialog = ({
           ))}
         </Section>
       )}
-      {refundsError && (
+      {(refundsError || !!refunds?.length) && (
         <Section title={tOrders("detail.refunds.title")}>
-          <ErrorAlert onRetry={() => mutateRefunds()} />
-        </Section>
-      )}
-      {!!refunds?.length && (
-        <Section title={tOrders("detail.refunds.title")}>
-          {refunds.map((refund) => (
+          {refundsError && <ErrorAlert onRetry={() => mutateRefunds()} />}
+          {refunds?.map((refund) => (
             <EntryStack key={refund.id}>
               <EntryRowStack direction="row">
                 <Typography variant="body2">
@@ -629,14 +623,12 @@ const OrderDetailDialog = ({
           ))}
         </Section>
       )}
-      {notificationsError && (
+      {(notificationsError || !!notifications?.length) && (
         <Section title={tOrders("detail.notifications.title")}>
-          <ErrorAlert onRetry={() => mutateNotifications()} />
-        </Section>
-      )}
-      {!!notifications?.length && (
-        <Section title={tOrders("detail.notifications.title")}>
-          {notifications.map((notification) => (
+          {notificationsError && (
+            <ErrorAlert onRetry={() => mutateNotifications()} />
+          )}
+          {notifications?.map((notification) => (
             <InfoRow
               key={notification.id}
               label={format.dateTime(new Date(notification.createdAt), "short")}
