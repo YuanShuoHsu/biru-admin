@@ -1,7 +1,10 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { PICKUP_MAX_ADVANCE_DAYS } from "@/constants/pickup";
+import {
+  PICKUP_MAX_ADVANCE_DAYS,
+  PICKUP_MAX_MINUTES,
+} from "@/constants/pickup";
 
 export const usePickupFormSchema = () => {
   const tValidation = useTranslations("validation");
@@ -34,6 +37,14 @@ export const usePickupFormSchema = () => {
           message: tValidation("pickupLeadMinutes.required"),
           path: ["pickupLeadMinutes"],
         });
+      else if (Number(pickupLeadMinutes) > PICKUP_MAX_MINUTES)
+        ctx.addIssue({
+          code: "custom",
+          message: tValidation("pickupLeadMinutes.max", {
+            minutes: PICKUP_MAX_MINUTES,
+          }),
+          path: ["pickupLeadMinutes"],
+        });
 
       if (!pickupMaxAdvanceDays)
         ctx.addIssue({
@@ -54,6 +65,14 @@ export const usePickupFormSchema = () => {
         ctx.addIssue({
           code: "custom",
           message: tValidation("pickupCutoffMinutes.required"),
+          path: ["pickupCutoffMinutes"],
+        });
+      else if (Number(pickupCutoffMinutes) > PICKUP_MAX_MINUTES)
+        ctx.addIssue({
+          code: "custom",
+          message: tValidation("pickupCutoffMinutes.max", {
+            minutes: PICKUP_MAX_MINUTES,
+          }),
           path: ["pickupCutoffMinutes"],
         });
     });
