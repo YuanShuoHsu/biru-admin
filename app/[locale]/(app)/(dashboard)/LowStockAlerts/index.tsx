@@ -72,7 +72,13 @@ const LowStockAlerts = () => {
           }),
           { variant: "warning" },
         );
-      mutate((key) => Array.isArray(key) && key[0] === ingredientsUrl);
+      const urls = new Set([
+        ingredientsUrl,
+        ...ingredients.map(
+          ({ id }) => `/api/ingredients/${id}/inventory-transactions`,
+        ),
+      ]);
+      mutate((key) => Array.isArray(key) && urls.has(key[0]));
     };
 
     menuSocket.on("lowStockReached", handleLowStock);
