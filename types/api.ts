@@ -9744,6 +9744,8 @@ export interface components {
       hourlyOrders: number[];
       /** @description 期間內首次確認退款的訂單數（依首次退款日歸期，同一訂單只算一次） */
       refundedOrders: number;
+      /** @description 期間內計入的訂單中，至今已有確認退款的訂單數（不論退款日）；除以各區間 orders 合計即為退款率 */
+      refundedPeriodOrders: number;
       /** @description 期間內確認退款份數前 10 名品項（依退款日歸期） */
       refundedItems: components["schemas"]["OrderStatsRefundedItemDto"][];
       /** @description 期間內確認退款依原因分類的筆數（依退款日歸期）；導入分類前的舊紀錄不計 */

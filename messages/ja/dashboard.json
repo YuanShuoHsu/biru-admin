@@ -22,7 +22,7 @@
     "orderModes": "注文方式",
     "paymentMethods": "支払い方法",
     "peakHours": "ピーク時間帯",
-    "refundRate": "注文の {rate}",
+    "refundRate": "期間内の注文の {rate} が返金済み",
     "refundReasons": "返金理由",
     "refundedItems": "返金された商品",
     "refundedOrders": "返金された注文",

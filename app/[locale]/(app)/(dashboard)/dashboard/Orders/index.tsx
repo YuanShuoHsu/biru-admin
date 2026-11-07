@@ -49,6 +49,7 @@ const Orders = ({ loading = false, orderStats, range }: OrdersProps) => {
 
   const refundedOrders = {
     data: orderBuckets.map(({ refundedOrders }) => refundedOrders),
+    refundedPeriodOrders: orderStats?.refundedPeriodOrders ?? 0,
     total: orderStats?.refundedOrders ?? 0,
   };
 
@@ -216,7 +217,7 @@ const Orders = ({ loading = false, orderStats, range }: OrdersProps) => {
                   <Typography color="textSecondary" variant="body2">
                     {tDashboard("charts.refundRate", {
                       rate: format.number(
-                        refundedOrders.total / periodOrderCount,
+                        refundedOrders.refundedPeriodOrders / periodOrderCount,
                         { maximumFractionDigits: 1, style: "percent" },
                       ),
                     })}
