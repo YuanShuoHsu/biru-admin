@@ -126,8 +126,8 @@ interface OrganizationsSlugMembersProps {
   canUpdateMemberRoles?: boolean;
   currentUserId?: string;
   currentUserRole?: string;
+  fetchesPlatformAdminMemberIds?: boolean;
   initialPlatformAdminMemberIds?: Member["id"][];
-  isPlatformAdmin?: boolean;
   loading?: boolean;
 }
 
@@ -141,8 +141,8 @@ const OrganizationsSlugMembers = ({
   canUpdateMemberRoles = false,
   currentUserId = "",
   currentUserRole = "",
+  fetchesPlatformAdminMemberIds = false,
   initialPlatformAdminMemberIds = [],
-  isPlatformAdmin = false,
   loading = false,
 }: OrganizationsSlugMembersProps) => {
   const organizationId = activeOrganization?.id ?? "";
@@ -186,9 +186,9 @@ const OrganizationsSlugMembers = ({
         authClient.organization.getFullOrganization({
           query: { organizationSlug: decodeURIComponent(slug) },
         }),
-        isPlatformAdmin
-          ? { data: [] }
-          : settle(getPlatformAdminMemberIds(organizationId)),
+        fetchesPlatformAdminMemberIds
+          ? settle(getPlatformAdminMemberIds(organizationId))
+          : { data: [] },
       ]);
       if (error) throw toFetchError(error);
 

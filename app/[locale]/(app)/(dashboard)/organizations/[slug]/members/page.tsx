@@ -66,14 +66,15 @@ const OrganizationsSlugMembersContent = async ({
   });
 
   const members = sortByCreatedAtDesc(data.members);
-  const isPlatformAdmin = session.user.role === "admin";
-  const { data: platformAdminMemberIds = [] } = isPlatformAdmin
-    ? { data: [] }
-    : await settle(
+  const fetchesPlatformAdminMemberIds =
+    canUpdateMember && session.user.role !== "admin";
+  const { data: platformAdminMemberIds = [] } = fetchesPlatformAdminMemberIds
+    ? await settle(
         getPlatformAdminMemberIds(data.id, {
           headers: { cookie: (await cookies()).toString() },
         }),
-      );
+      )
+    : { data: [] };
 
   const permissions = members.map((member) =>
     getMemberPermissions(member, {
@@ -106,8 +107,8 @@ const OrganizationsSlugMembersContent = async ({
       canUpdateMemberRoles={canUpdateMemberRoles}
       currentUserId={session.user.id}
       currentUserRole={currentUserRole}
+      fetchesPlatformAdminMemberIds={fetchesPlatformAdminMemberIds}
       initialPlatformAdminMemberIds={platformAdminMemberIds}
-      isPlatformAdmin={isPlatformAdmin}
     />
   );
 };
