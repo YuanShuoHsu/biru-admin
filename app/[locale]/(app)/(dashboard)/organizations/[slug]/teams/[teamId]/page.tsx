@@ -85,14 +85,17 @@ const OrganizationsSlugTeamsTeamIdContent = async ({
   const canUpdateTeam = hasRolePermission(currentUserRole, {
     team: ["update"],
   });
-  const { data: platformAdminMemberIds = [] } =
-    canUpdateTeam && session.user.role !== "admin"
-      ? await settle(
-          getPlatformAdminMemberIds(activeOrganization.id, {
-            headers: cookieHeader,
-          }),
-        )
-      : { data: [] };
+  const fetchesPlatformAdminMemberIds =
+    canUpdateTeam &&
+    hasRolePermission(currentUserRole, { member: ["update"] }) &&
+    session.user.role !== "admin";
+  const { data: platformAdminMemberIds = [] } = fetchesPlatformAdminMemberIds
+    ? await settle(
+        getPlatformAdminMemberIds(activeOrganization.id, {
+          headers: cookieHeader,
+        }),
+      )
+    : { data: [] };
 
   return (
     <OrganizationsSlugTeamsTeamId
