@@ -79,7 +79,7 @@ const ConfirmStack = styled(Stack)(({ theme }) => ({
 }));
 
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
-  width: theme.spacing(10),
+  width: theme.spacing(8),
   height: "auto",
   aspectRatio: "4/3",
 }));
