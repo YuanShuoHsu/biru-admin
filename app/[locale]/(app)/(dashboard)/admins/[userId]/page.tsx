@@ -30,6 +30,7 @@ import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
 import { getGridSearchParams, resolveGridSearchParams } from "@/utils/dataGrid";
 import { type FetchResult, fetcher, settle } from "@/utils/fetcher";
+import { getSession } from "@/utils/session";
 
 interface UserSessionsPageProps {
   params: Promise<{ locale: Locale; userId: string }>;
@@ -84,11 +85,10 @@ const UserSessionsPage = async ({
   params,
   searchParams,
 }: UserSessionsPageProps) => {
-  const [cookieStore, { locale, userId }, rawSearchParams] = await Promise.all([
-    cookies(),
-    params,
-    searchParams,
-  ]);
+  const [session, cookieStore, { locale, userId }, rawSearchParams] =
+    await Promise.all([getSession(), cookies(), params, searchParams]);
+
+  if (session?.user?.role !== "admin") notFound();
 
   const {
     filterField,

@@ -29,6 +29,7 @@ import { getCoupon, getCouponRecipients } from "@/utils/coupons";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getCouponRecipientEnumOptions } from "@/utils/enumOptions";
 import { type FetchResult, settle } from "@/utils/fetcher";
+import { getSession } from "@/utils/session";
 
 interface CouponRecipientsPageProps {
   params: Promise<{ couponId: string; locale: Locale }>;
@@ -86,8 +87,10 @@ const CouponRecipientsPage = async ({
   params,
   searchParams,
 }: CouponRecipientsPageProps) => {
-  const [cookieStore, { couponId, locale }, rawSearchParams] =
-    await Promise.all([cookies(), params, searchParams]);
+  const [session, cookieStore, { couponId, locale }, rawSearchParams] =
+    await Promise.all([getSession(), cookies(), params, searchParams]);
+
+  if (session?.user?.role !== "admin") notFound();
 
   const {
     filterField,
