@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,6 +18,13 @@ import {
   attendanceLeaveTypeSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
+import type {
+  AttendanceLeaveType,
+  AttendanceLeaveTypeFilterField,
+  AttendanceLeaveTypeSortField,
+} from "@/types/attendance";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import { getAttendanceLeaveTypes } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
@@ -23,7 +32,7 @@ import {
   getAttendanceLeaveTypeEnumOptions,
   getAttendanceLeaveTypeNameEnumOptions,
 } from "@/utils/enumOptions";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -55,7 +64,42 @@ export const generateMetadata = async ({
   return { title: tAttendance("leaveTypes.label") };
 };
 
+interface LeaveTypesContentProps {
+  canViewAuditLog: boolean;
+  filterField?: AttendanceLeaveTypeFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  leaveTypes: Promise<
+    FetchResult<{ leaveTypes: AttendanceLeaveType[]; total: number }>
+  >;
+  organization: Organization;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sortBy?: AttendanceLeaveTypeSortField;
+  sortDirection?: SortDirection;
+}
+
 const LeaveTypesContent = async ({
+  leaveTypes: leaveTypesResult,
+  ...props
+}: LeaveTypesContentProps) => {
+  const { data: leaveTypes, error } = await leaveTypesResult;
+  if (error) return <ErrorAlert />;
+
+  const { leaveTypes: rows, total: rowCount } = leaveTypes;
+
+  return (
+    <LeaveTypes
+      {...props}
+      key={props.organization.slug}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const LeaveTypesPage = async ({
   params,
   searchParams,
 }: LeaveTypesPageProps) => {
@@ -115,7 +159,7 @@ const LeaveTypesContent = async ({
       })
     : [];
 
-  const { data: leaveTypes, error } = await settle(
+  const leaveTypes = settle(
     getAttendanceLeaveTypes(
       organization.slug,
       {
@@ -132,33 +176,24 @@ const LeaveTypesContent = async ({
       fetchOptions,
     ),
   );
-  if (error) return <ErrorAlert />;
-
-  const { leaveTypes: rows, total: rowCount } = leaveTypes;
 
   return (
-    <LeaveTypes
-      canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={organization.slug}
-      organization={organization}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<LeaveTypes loading />}>
+      <LeaveTypesContent
+        canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        leaveTypes={leaveTypes}
+        organization={organization}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const LeaveTypesPage = (props: LeaveTypesPageProps) => (
-  <Suspense fallback={<LeaveTypes loading />}>
-    <LeaveTypesContent {...props} />
-  </Suspense>
-);
 
 export default LeaveTypesPage;

@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -18,6 +20,15 @@ import {
   attendanceLeaveBalanceSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
+import type {
+  AttendanceEmployeeSummary,
+  AttendanceLeaveBalance,
+  AttendanceLeaveBalanceFilterField,
+  AttendanceLeaveBalanceSortField,
+  AttendanceLeaveType,
+} from "@/types/attendance";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import {
   getAttendanceEmployees,
@@ -26,7 +37,7 @@ import {
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceLeaveTypeNameEnumOptions } from "@/utils/enumOptions";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -58,7 +69,57 @@ export const generateMetadata = async ({
   return { title: tAttendance("balances.label") };
 };
 
-const BalancesContent = async ({ params, searchParams }: BalancesPageProps) => {
+interface BalancesContentProps {
+  canDefer: boolean;
+  canRevokeDeferral: boolean;
+  canViewAuditLog: boolean;
+  canWrite: boolean;
+  filterField?: AttendanceLeaveBalanceFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  organization: Organization;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  results: Promise<
+    [
+      FetchResult<{ balances: AttendanceLeaveBalance[]; total: number }>,
+      FetchResult<{ employees: AttendanceEmployeeSummary[]; total: number }>,
+      FetchResult<{ leaveTypes: AttendanceLeaveType[]; total: number }>,
+    ]
+  >;
+  sortBy?: AttendanceLeaveBalanceSortField;
+  sortDirection?: SortDirection;
+}
+
+const BalancesContent = async ({ results, ...props }: BalancesContentProps) => {
+  const [
+    { data: balances, error },
+    { data: employeePage, error: employeesError },
+    { data: leaveTypePage, error: leaveTypesError },
+  ] = await results;
+  if (error || employeesError || leaveTypesError) return <ErrorAlert />;
+
+  const { balances: rows, total: rowCount } = balances;
+  const { employees } = employeePage;
+  const { leaveTypes } = leaveTypePage;
+
+  return (
+    <Balances
+      {...props}
+      canViewAll
+      employees={employees}
+      key={props.organization.slug}
+      leaveTypes={leaveTypes.filter(
+        ({ statutoryKind }) => statutoryKind === "custom",
+      )}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const BalancesPage = async ({ params, searchParams }: BalancesPageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -121,11 +182,7 @@ const BalancesContent = async ({ params, searchParams }: BalancesPageProps) => {
       )
     : [];
 
-  const [
-    { data: balances, error },
-    { data: employeePage, error: employeesError },
-    { data: leaveTypePage, error: leaveTypesError },
-  ] = await Promise.all([
+  const results = Promise.all([
     settle(
       getAttendanceLeaveBalances(
         organization.slug,
@@ -163,43 +220,27 @@ const BalancesContent = async ({ params, searchParams }: BalancesPageProps) => {
         : Promise.resolve({ leaveTypes: [], total: 0 }),
     ),
   ]);
-  if (error || employeesError || leaveTypesError) return <ErrorAlert />;
-
-  const { balances: rows, total: rowCount } = balances;
-  const { employees } = employeePage;
-  const { leaveTypes } = leaveTypePage;
 
   return (
-    <Balances
-      canDefer={canDefer}
-      canRevokeDeferral={canRevokeDeferral}
-      canViewAll
-      canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
-      canWrite={canWrite}
-      employees={employees}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={organization.slug}
-      leaveTypes={leaveTypes.filter(
-        ({ statutoryKind }) => statutoryKind === "custom",
-      )}
-      organization={organization}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<Balances canViewAll loading />}>
+      <BalancesContent
+        canDefer={canDefer}
+        canRevokeDeferral={canRevokeDeferral}
+        canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
+        canWrite={canWrite}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        organization={organization}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        results={results}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const BalancesPage = (props: BalancesPageProps) => (
-  <Suspense fallback={<Balances canViewAll loading />}>
-    <BalancesContent {...props} />
-  </Suspense>
-);
 
 export default BalancesPage;

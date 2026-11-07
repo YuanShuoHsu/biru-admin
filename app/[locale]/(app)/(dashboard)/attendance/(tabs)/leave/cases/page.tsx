@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -18,6 +20,17 @@ import {
   attendanceLeaveCaseSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
+import type {
+  AttendanceContext,
+  AttendanceEmployeeSummary,
+  AttendanceLeaveCase,
+  AttendanceLeaveCaseFilterField,
+  AttendanceLeaveCaseSortField,
+  AttendanceLeaveType,
+  AttendanceParentalChild,
+} from "@/types/attendance";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import {
   getAttendanceContext,
@@ -28,7 +41,7 @@ import {
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceLeaveTypeNameEnumOptions } from "@/utils/enumOptions";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -60,7 +73,76 @@ export const generateMetadata = async ({
   return { title: tAttendance("leaveCases.label") };
 };
 
+interface LeaveCasesContentProps {
+  canAssignChild: boolean;
+  canDelete: boolean;
+  canUpdate: boolean;
+  canViewAuditLog: boolean;
+  canWrite: boolean;
+  context: Promise<FetchResult<AttendanceContext>>;
+  filterField?: AttendanceLeaveCaseFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  organization: Organization;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  results: Promise<
+    [
+      FetchResult<{ leaveCases: AttendanceLeaveCase[]; total: number }>,
+      FetchResult<{ employees: AttendanceEmployeeSummary[]; total: number }>,
+      FetchResult<{ leaveTypes: AttendanceLeaveType[]; total: number }>,
+      FetchResult<{
+        parentalChildren: AttendanceParentalChild[];
+        total: number;
+      }>,
+    ]
+  >;
+  sortBy?: AttendanceLeaveCaseSortField;
+  sortDirection?: SortDirection;
+}
+
 const LeaveCasesContent = async ({
+  context: contextResult,
+  results,
+  ...props
+}: LeaveCasesContentProps) => {
+  const { data: context, error: contextError } = await contextResult;
+  if (contextError) return <ErrorAlert />;
+
+  const { employee, selfReviewAllowed } = context;
+
+  const [
+    { data: leaveCases, error },
+    { data: employeePage, error: employeesError },
+    { data: leaveTypePage, error: leaveTypesError },
+    { data: parentalChildPage, error: parentalChildrenError },
+  ] = await results;
+  if (error || employeesError || leaveTypesError || parentalChildrenError)
+    return <ErrorAlert />;
+
+  const { leaveCases: rows, total: rowCount } = leaveCases;
+  const { employees } = employeePage;
+  const { leaveTypes } = leaveTypePage;
+  const { parentalChildren } = parentalChildPage;
+
+  return (
+    <LeaveCases
+      {...props}
+      canReviewOwn={selfReviewAllowed.leaveCase}
+      canViewAll
+      employeeId={employee?.id}
+      employees={employees}
+      key={props.organization.slug}
+      leaveTypes={leaveTypes}
+      parentalChildren={parentalChildren}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const LeaveCasesPage = async ({
   params,
   searchParams,
 }: LeaveCasesPageProps) => {
@@ -121,107 +203,81 @@ const LeaveCasesContent = async ({
       )
     : [];
 
-  const { data: context, error: contextError } = await settle(
-    getAttendanceContext(organization.slug, fetchOptions),
+  const context = settle(getAttendanceContext(organization.slug, fetchOptions));
+
+  const results = context.then(({ data }) =>
+    Promise.all([
+      settle(
+        getAttendanceLeaveCases(
+          organization.slug,
+          "org",
+          {
+            page,
+            pageSize,
+            filterField,
+            filterOperator,
+            filterValue,
+            quickFilterEnums,
+            quickFilterValue,
+            sortBy,
+            sortDirection,
+          },
+          fetchOptions,
+        ),
+      ),
+      settle(
+        canWrite
+          ? getAttendanceEmployees(
+              organization.slug,
+              { pageSize: MAX_PAGE_SIZE },
+              fetchOptions,
+            )
+          : Promise.resolve({ employees: [], total: 0 }),
+      ),
+      settle(
+        getAttendanceLeaveTypes(
+          organization.slug,
+          { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
+          fetchOptions,
+        ),
+      ),
+      settle(
+        canViewAllParentalChildren || data?.employee
+          ? getAttendanceParentalChildren(
+              organization.slug,
+              canViewAllParentalChildren ? "org" : "me",
+              { pageSize: MAX_PAGE_SIZE },
+              fetchOptions,
+            )
+          : Promise.resolve({ parentalChildren: [], total: 0 }),
+      ),
+    ]),
   );
-  if (contextError) return <ErrorAlert />;
-
-  const { employee, selfReviewAllowed } = context;
-
-  const [
-    { data: leaveCases, error },
-    { data: employeePage, error: employeesError },
-    { data: leaveTypePage, error: leaveTypesError },
-    { data: parentalChildPage, error: parentalChildrenError },
-  ] = await Promise.all([
-    settle(
-      getAttendanceLeaveCases(
-        organization.slug,
-        "org",
-        {
-          page,
-          pageSize,
-          filterField,
-          filterOperator,
-          filterValue,
-          quickFilterEnums,
-          quickFilterValue,
-          sortBy,
-          sortDirection,
-        },
-        fetchOptions,
-      ),
-    ),
-    settle(
-      canWrite
-        ? getAttendanceEmployees(
-            organization.slug,
-            { pageSize: MAX_PAGE_SIZE },
-            fetchOptions,
-          )
-        : Promise.resolve({ employees: [], total: 0 }),
-    ),
-    settle(
-      getAttendanceLeaveTypes(
-        organization.slug,
-        { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
-        fetchOptions,
-      ),
-    ),
-    settle(
-      canViewAllParentalChildren || employee
-        ? getAttendanceParentalChildren(
-            organization.slug,
-            canViewAllParentalChildren ? "org" : "me",
-            { pageSize: MAX_PAGE_SIZE },
-            fetchOptions,
-          )
-        : Promise.resolve({ parentalChildren: [], total: 0 }),
-    ),
-  ]);
-  if (error || employeesError || leaveTypesError || parentalChildrenError)
-    return <ErrorAlert />;
-
-  const { leaveCases: rows, total: rowCount } = leaveCases;
-  const { employees } = employeePage;
-  const { leaveTypes } = leaveTypePage;
-  const { parentalChildren } = parentalChildPage;
 
   return (
-    <LeaveCases
-      canDelete={hasRolePermission(memberRole, { leaveCase: ["delete"] })}
-      canUpdate={hasRolePermission(memberRole, { leaveCase: ["update"] })}
-      canAssignChild={hasRolePermission(memberRole, {
-        leaveCase: ["update"],
-      })}
-      canViewAll
-      canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
-      canWrite={canWrite}
-      canReviewOwn={selfReviewAllowed.leaveCase}
-      employeeId={employee?.id}
-      employees={employees}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={organization.slug}
-      leaveTypes={leaveTypes}
-      organization={organization}
-      page={page}
-      pageSize={pageSize}
-      parentalChildren={parentalChildren}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<LeaveCases canViewAll loading />}>
+      <LeaveCasesContent
+        canAssignChild={hasRolePermission(memberRole, {
+          leaveCase: ["update"],
+        })}
+        canDelete={hasRolePermission(memberRole, { leaveCase: ["delete"] })}
+        canUpdate={hasRolePermission(memberRole, { leaveCase: ["update"] })}
+        canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
+        canWrite={canWrite}
+        context={context}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        organization={organization}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        results={results}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const LeaveCasesPage = (props: LeaveCasesPageProps) => (
-  <Suspense fallback={<LeaveCases canViewAll loading />}>
-    <LeaveCasesContent {...props} />
-  </Suspense>
-);
 
 export default LeaveCasesPage;
