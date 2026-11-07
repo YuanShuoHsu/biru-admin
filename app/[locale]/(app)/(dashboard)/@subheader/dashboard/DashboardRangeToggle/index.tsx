@@ -1,5 +1,7 @@
 "use client";
 
+import { useOptimistic, useTransition } from "react";
+
 import { useTranslations } from "next-intl";
 
 import {
@@ -49,6 +51,9 @@ const DashboardRangeToggle = ({
   const pathname = usePathname();
   const router = useRouter();
 
+  const [optimisticRange, setOptimisticRange] = useOptimistic(range);
+  const [, startTransition] = useTransition();
+
   const tDashboard = useTranslations("dashboard");
 
   const handleChange = (
@@ -62,7 +67,10 @@ const DashboardRangeToggle = ({
       range: value,
     });
 
-    router.push(`${pathname}?${params.toString()}`);
+    startTransition(() => {
+      setOptimisticRange(value);
+      router.push(`${pathname}?${params.toString()}`);
+    });
   };
 
   return (
@@ -71,7 +79,7 @@ const DashboardRangeToggle = ({
       fullWidth
       onChange={handleChange}
       size="small"
-      value={range}
+      value={optimisticRange}
     >
       {(Object.keys(DASHBOARD_RANGES) as DashboardRange[]).map((value) => (
         <ToggleButton key={value} value={value}>
