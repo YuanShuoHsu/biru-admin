@@ -35,7 +35,7 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { ActiveOrganization, Team } from "@/types/organizations";
+import type { ActiveOrganization, Member, Team } from "@/types/organizations";
 
 import { getErrorMessage, toFetchError } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
@@ -82,6 +82,7 @@ interface OrganizationsSlugTeamsTeamIdProps {
   canUpdateTeam?: boolean;
   currentUserId?: string;
   loading?: boolean;
+  platformAdminMemberIds?: Member["id"][];
   team?: Team;
   teamMembers?: TeamMemberRow[];
 }
@@ -91,6 +92,7 @@ const OrganizationsSlugTeamsTeamId = ({
   canUpdateTeam = false,
   currentUserId = "",
   loading = false,
+  platformAdminMemberIds = [],
   team,
   teamMembers: initialTeamMembers = [],
 }: OrganizationsSlugTeamsTeamIdProps) => {
@@ -138,12 +140,21 @@ const OrganizationsSlugTeamsTeamId = ({
     },
   );
 
+  const isRemovable = useCallback(
+    ({ id }: TeamMemberRow) => !platformAdminMemberIds.includes(id),
+    [platformAdminMemberIds],
+  );
+
   const {
     clearRowSelection,
     hasSelectableRows,
     rowSelectionProps,
     selectedRows,
-  } = useRowSelection({ enabled: isSelectMode, rows });
+  } = useRowSelection({
+    enabled: isSelectMode,
+    isRowSelectable: isRemovable,
+    rows,
+  });
 
   const handleAddTeamMember = () => {
     if (!team) return;
@@ -304,20 +315,21 @@ const OrganizationsSlugTeamsTeamId = ({
               field: "actions",
               filterable: false,
               headerName: tTeams("actions.label"),
-              renderCell: ({ row }: GridRenderCellParams<TeamMemberRow>) => (
-                <Tooltip title={tMembers("actions.removeTeamMember.title")}>
-                  <IconButton
-                    color="error"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      handleRemoveTeamMember(row.userId);
-                    }}
-                    size="small"
-                  >
-                    <PersonRemove fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              ),
+              renderCell: ({ row }: GridRenderCellParams<TeamMemberRow>) =>
+                isRemovable(row) && (
+                  <Tooltip title={tMembers("actions.removeTeamMember.title")}>
+                    <IconButton
+                      color="error"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleRemoveTeamMember(row.userId);
+                      }}
+                      size="small"
+                    >
+                      <PersonRemove fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                ),
               resizable: false,
               sortable: false,
             },
@@ -370,6 +382,7 @@ const OrganizationsSlugTeamsTeamId = ({
       canUpdateTeam,
       format,
       handleRemoveTeamMember,
+      isRemovable,
       isSelectMode,
       tMembers,
       tTeams,
