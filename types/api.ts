@@ -21950,8 +21950,9 @@ export interface operations {
   };
   PublicMenusController_findOrderMenu: {
     parameters: {
-      query: {
-        lang: "en" | "ja" | "ko" | "zh-CN" | "zh-TW";
+      query?: {
+        /** @description 未帶或不支援時依 x-lang、Accept-Language */
+        lang?: "en" | "ja" | "ko" | "zh-CN" | "zh-TW";
       };
       header?: never;
       path: {
@@ -25922,8 +25923,9 @@ export interface operations {
   };
   StorePhotosController_findAllActive: {
     parameters: {
-      query: {
-        lang: "en" | "ja" | "ko" | "zh-CN" | "zh-TW";
+      query?: {
+        /** @description 未帶或不支援時依 x-lang、Accept-Language */
+        lang?: "en" | "ja" | "ko" | "zh-CN" | "zh-TW";
       };
       header?: never;
       path?: never;
