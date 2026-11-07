@@ -14,7 +14,12 @@ import { getPageSizeOptions } from "@/constants/pagination";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
-import { LocalOffer, ShoppingBag, Stars } from "@mui/icons-material";
+import {
+  LocalOffer,
+  ShoppingBag,
+  Stars,
+  Storefront,
+} from "@mui/icons-material";
 import {
   Avatar,
   Card,
@@ -162,9 +167,7 @@ const Points = ({ page, pageSize, points }: PointsProps) => {
             <StyledTransactionCardHeader
               action={
                 <StyledTypography
-                  color={
-                    transaction.type === "earn" ? "primary" : "textSecondary"
-                  }
+                  color={transaction.points > 0 ? "primary" : "textSecondary"}
                   variant="body2"
                 >
                   {tAuth("points.points", {
@@ -178,6 +181,8 @@ const Points = ({ page, pageSize, points }: PointsProps) => {
                 <StyledAvatar>
                   {transaction.type === "earn" ? (
                     <ShoppingBag fontSize="small" />
+                  ) : transaction.type === "adjust" ? (
+                    <Storefront fontSize="small" />
                   ) : (
                     <LocalOffer fontSize="small" />
                   )}
@@ -188,7 +193,8 @@ const Points = ({ page, pageSize, points }: PointsProps) => {
                 title: { variant: "subtitle2" },
               }}
               subheader={[
-                organizationCount > 1 && transaction.organizationName,
+                (organizationCount > 1 || transaction.type === "adjust") &&
+                  transaction.organizationName,
                 format.dateTime(new Date(transaction.createdAt), "short"),
                 transaction.type === "earn"
                   ? (transaction.confirmationNumber ||
