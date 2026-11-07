@@ -899,6 +899,7 @@
   "notProvided": "미입력",
   "earningCategory": {
     "label": "구분",
+    "typeOption": "{name} ({category})",
     "options": {
       "wage": "정기 임금",
       "bonus": "비정기 상여"

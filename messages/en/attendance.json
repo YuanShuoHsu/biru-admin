@@ -899,6 +899,7 @@
   "notProvided": "Missing",
   "earningCategory": {
     "label": "Category",
+    "typeOption": "{name} ({category})",
     "options": {
       "wage": "Regular wages",
       "bonus": "Non-regular bonus"
