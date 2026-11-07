@@ -23,6 +23,18 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  // https://nextjs.org/docs/app/api-reference/components/image#remotepatterns
+  images: {
+    remotePatterns: process.env.NEXT_PUBLIC_IMAGE_HOST
+      ? [
+          {
+            protocol: "https",
+            hostname: process.env.NEXT_PUBLIC_IMAGE_HOST,
+            pathname: "/storage/v1/object/public/**",
+          },
+        ]
+      : [],
+  },
 };
 
 const withNextIntl = createNextIntlPlugin();
