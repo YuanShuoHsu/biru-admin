@@ -5,6 +5,7 @@ import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import useSWR from "swr";
 
+import ErrorAlert from "@/components/ErrorAlert";
 import OrderTicketJobChips from "@/components/OrderTicketJobChips";
 import PrintJobChip from "@/components/PrintJobChip";
 
@@ -148,17 +149,29 @@ const OrderDetailDialog = ({
   const tOrder = useTranslations("order");
   const tOrders = useTranslations("orders");
 
-  const { data: refunds } = useSWR<OrderRefund[]>(
+  const {
+    data: refunds,
+    error: refundsError,
+    mutate: mutateRefunds,
+  } = useSWR<OrderRefund[]>(
     `/api/organizations/${organizationSlug}/orders/${order.id}/refunds`,
     fetcher,
   );
 
-  const { data: voidedInvoices } = useSWR<OrderVoidedInvoice[]>(
+  const {
+    data: voidedInvoices,
+    error: voidedInvoicesError,
+    mutate: mutateVoidedInvoices,
+  } = useSWR<OrderVoidedInvoice[]>(
     `/api/organizations/${organizationSlug}/orders/${order.id}/invoice/voided`,
     fetcher,
   );
 
-  const { data: notifications } = useSWR<OrderPaymentNotification[]>(
+  const {
+    data: notifications,
+    error: notificationsError,
+    mutate: mutateNotifications,
+  } = useSWR<OrderPaymentNotification[]>(
     `/api/organizations/${organizationSlug}/orders/${order.id}/payment-notifications`,
     fetcher,
   );
@@ -483,6 +496,11 @@ const OrderDetailDialog = ({
           )}
         </Section>
       )}
+      {voidedInvoicesError && (
+        <Section title={tOrders("detail.voidedInvoices.title")}>
+          <ErrorAlert onRetry={() => mutateVoidedInvoices()} />
+        </Section>
+      )}
       {!!voidedInvoices?.length && (
         <Section title={tOrders("detail.voidedInvoices.title")}>
           {voidedInvoices.map((voidedInvoice) => (
@@ -528,6 +546,11 @@ const OrderDetailDialog = ({
               )}
             </EntryStack>
           ))}
+        </Section>
+      )}
+      {refundsError && (
+        <Section title={tOrders("detail.refunds.title")}>
+          <ErrorAlert onRetry={() => mutateRefunds()} />
         </Section>
       )}
       {!!refunds?.length && (
@@ -604,6 +627,11 @@ const OrderDetailDialog = ({
               )}
             </EntryStack>
           ))}
+        </Section>
+      )}
+      {notificationsError && (
+        <Section title={tOrders("detail.notifications.title")}>
+          <ErrorAlert onRetry={() => mutateNotifications()} />
         </Section>
       )}
       {!!notifications?.length && (
