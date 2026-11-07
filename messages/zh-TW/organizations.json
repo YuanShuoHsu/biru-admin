@@ -368,7 +368,6 @@
         "placeholder": "請輸入在本店消費過的會員 Email"
       },
       "note": {
-        "hint": "會員可在點數明細看到這段原因",
         "label": "調整原因",
         "placeholder": "例如：補登漏掉的消費",
         "required": "請輸入調整原因"
