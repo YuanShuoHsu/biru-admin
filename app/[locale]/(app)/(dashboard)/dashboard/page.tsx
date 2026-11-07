@@ -269,10 +269,11 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
     },
   };
 
-  const session = await getSession();
+  const [session, selectedOrganization] = await Promise.all([
+    getSession(),
+    getResolvedAdminOrganization(organization),
+  ]);
   const isAdmin = session?.user?.role === "admin";
-
-  const selectedOrganization = await getResolvedAdminOrganization(organization);
 
   if (organization && !selectedOrganization) notFound();
 

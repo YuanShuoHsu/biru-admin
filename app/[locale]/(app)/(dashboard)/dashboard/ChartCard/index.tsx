@@ -15,7 +15,7 @@ interface ChartCardProps {
   children?: React.ReactNode;
   href?: string;
   loading?: boolean;
-  period?: string;
+  period: string;
   title: string;
   value?: React.ReactNode;
 }
@@ -44,7 +44,7 @@ const ChartCard = ({
           )
         : value}
       <Typography color="textSecondary" variant="caption">
-        {period ?? <Skeleton width={60} />}
+        {period}
       </Typography>
       {loading
         ? chartHeight !== undefined && (
