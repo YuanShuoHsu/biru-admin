@@ -282,7 +282,7 @@ const OrganizationsSlugMembers = ({
         title: tMembers("actions.updateMemberRole.title"),
       });
     },
-    [mutate, organizationId, setDialog, tMembers],
+    [currentUserRole, mutate, organizationId, setDialog, tMembers],
   );
 
   const handleRemoveMember = useCallback(
