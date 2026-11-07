@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -18,8 +20,19 @@ import {
   attendanceShiftSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
+import type {
+  AttendanceEmployeeSummary,
+  AttendanceShift,
+  AttendanceShiftFilterField,
+  AttendanceShiftSortField,
+  AttendanceShiftType,
+  AttendanceTeam,
+} from "@/types/attendance";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import {
+  type AttendanceShiftFilter,
   getAttendanceEmployees,
   getAttendanceShifts,
   getAttendanceShiftTypes,
@@ -27,7 +40,7 @@ import {
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceDayKindEnumOptions } from "@/utils/enumOptions";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -61,7 +74,59 @@ export const generateMetadata = async ({
   return { title: tAttendance("shifts.label") };
 };
 
-const ShiftsContent = async ({ params, searchParams }: ShiftsPageProps) => {
+interface ShiftsContentProps {
+  canCancel: boolean;
+  canCreate: boolean;
+  canReviewExtraWork: boolean;
+  canViewAuditLog: boolean;
+  filterField?: AttendanceShiftFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  organization: Organization;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  results: Promise<
+    [
+      FetchResult<{ shifts: AttendanceShift[]; total: number }>,
+      FetchResult<{ employees: AttendanceEmployeeSummary[]; total: number }>,
+      FetchResult<{ shiftTypes: AttendanceShiftType[]; total: number }>,
+      FetchResult<AttendanceTeam[]>,
+    ]
+  >;
+  shiftFilter?: AttendanceShiftFilter;
+  sortBy?: AttendanceShiftSortField;
+  sortDirection?: SortDirection;
+}
+
+const ShiftsContent = async ({ results, ...props }: ShiftsContentProps) => {
+  const [
+    { data: shifts, error },
+    { data: employeePage, error: employeesError },
+    { data: shiftTypePage, error: shiftTypesError },
+    { data: teams, error: teamsError },
+  ] = await results;
+  if (error || employeesError || shiftTypesError || teamsError)
+    return <ErrorAlert />;
+
+  const { shifts: rows, total: rowCount } = shifts;
+  const { employees } = employeePage;
+  const { shiftTypes } = shiftTypePage;
+
+  return (
+    <Shifts
+      {...props}
+      employees={employees}
+      key={props.organization.slug}
+      rowCount={rowCount}
+      rows={rows}
+      shiftTypes={shiftTypes}
+      teams={teams}
+    />
+  );
+};
+
+const ShiftsPage = async ({ params, searchParams }: ShiftsPageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -125,12 +190,7 @@ const ShiftsContent = async ({ params, searchParams }: ShiftsPageProps) => {
         ? "incompleteAttendance"
         : undefined;
 
-  const [
-    { data: shifts, error },
-    { data: employeePage, error: employeesError },
-    { data: shiftTypePage, error: shiftTypesError },
-    { data: teams, error: teamsError },
-  ] = await Promise.all([
+  const results = Promise.all([
     settle(
       getAttendanceShifts(
         organization.slug,
@@ -166,43 +226,28 @@ const ShiftsContent = async ({ params, searchParams }: ShiftsPageProps) => {
     ),
     settle(getAttendanceTeams(organization.slug, fetchOptions)),
   ]);
-  if (error || employeesError || shiftTypesError || teamsError)
-    return <ErrorAlert />;
-
-  const { shifts: rows, total: rowCount } = shifts;
-  const { employees } = employeePage;
-  const { shiftTypes } = shiftTypePage;
 
   return (
-    <Shifts
-      canCancel={hasRolePermission(memberRole, { shift: ["update"] })}
-      canCreate={hasRolePermission(memberRole, { shift: ["create"] })}
-      canReviewExtraWork={canReviewExtraWork}
-      canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
-      employees={employees}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={organization.slug}
-      organization={organization}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      shiftTypes={shiftTypes}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-      teams={teams}
-      shiftFilter={shiftFilter}
-    />
+    <Suspense fallback={<Shifts loading />}>
+      <ShiftsContent
+        canCancel={hasRolePermission(memberRole, { shift: ["update"] })}
+        canCreate={hasRolePermission(memberRole, { shift: ["create"] })}
+        canReviewExtraWork={canReviewExtraWork}
+        canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        organization={organization}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        results={results}
+        shiftFilter={shiftFilter}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const ShiftsPage = (props: ShiftsPageProps) => (
-  <Suspense fallback={<Shifts loading />}>
-    <ShiftsContent {...props} />
-  </Suspense>
-);
 
 export default ShiftsPage;
