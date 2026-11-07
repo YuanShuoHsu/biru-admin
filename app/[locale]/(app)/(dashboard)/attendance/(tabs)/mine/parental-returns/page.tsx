@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,6 +18,14 @@ import {
   attendanceParentalReturnSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
+import type {
+  AttendanceContext,
+  AttendanceParentalReturn,
+  AttendanceParentalReturnFilterField,
+  AttendanceParentalReturnSortField,
+} from "@/types/attendance";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import {
   getAttendanceContext,
@@ -23,7 +33,7 @@ import {
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceParentalReturnEnumOptions } from "@/utils/enumOptions";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { getAttendanceAccess } from "@/utils/session";
 
 interface MyMyParentalReturnsPageProps {
@@ -54,7 +64,52 @@ export const generateMetadata = async ({
   return { title: tAttendance("parentalReturns.label") };
 };
 
+interface MyParentalReturnsContentProps {
+  context: Promise<FetchResult<AttendanceContext>>;
+  filterField?: AttendanceParentalReturnFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  organization: Organization;
+  page: number;
+  pageSize: number;
+  parentalReturns: Promise<
+    FetchResult<{ parentalReturns: AttendanceParentalReturn[]; total: number }>
+  >;
+  quickFilterValue?: string;
+  sortBy?: AttendanceParentalReturnSortField;
+  sortDirection?: SortDirection;
+}
+
 const MyParentalReturnsContent = async ({
+  context: contextResult,
+  parentalReturns: parentalReturnsResult,
+  ...props
+}: MyParentalReturnsContentProps) => {
+  const { data: context, error: contextError } = await contextResult;
+  if (contextError) return <ErrorAlert />;
+
+  const { employee } = context;
+
+  const { data: parentalReturns, error } = await parentalReturnsResult;
+  if (error) return <ErrorAlert />;
+
+  const { parentalReturns: rows, total: rowCount } = parentalReturns;
+
+  return (
+    <ParentalReturns
+      {...props}
+      canReview={false}
+      canReviewOwn={false}
+      canViewAll={false}
+      employeeId={employee?.id}
+      key={props.organization.slug}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const MyParentalReturnsPage = async ({
   params,
   searchParams,
 }: MyMyParentalReturnsPageProps) => {
@@ -108,63 +163,48 @@ const MyParentalReturnsContent = async ({
       )
     : [];
 
-  const { data: context, error: contextError } = await settle(
-    getAttendanceContext(organization.slug, fetchOptions),
+  const context = settle(getAttendanceContext(organization.slug, fetchOptions));
+
+  const parentalReturns = context.then(({ data }) =>
+    settle(
+      data?.employee
+        ? getAttendanceParentalReturns(
+            organization.slug,
+            "me",
+            {
+              page,
+              pageSize,
+              filterField,
+              filterOperator,
+              filterValue,
+              quickFilterEnums,
+              quickFilterValue,
+              sortBy,
+              sortDirection,
+            },
+            fetchOptions,
+          )
+        : Promise.resolve({ parentalReturns: [], total: 0 }),
+    ),
   );
-  if (contextError) return <ErrorAlert />;
-
-  const { employee } = context;
-
-  const { data: parentalReturns, error } = await settle(
-    employee
-      ? getAttendanceParentalReturns(
-          organization.slug,
-          "me",
-          {
-            page,
-            pageSize,
-            filterField,
-            filterOperator,
-            filterValue,
-            quickFilterEnums,
-            quickFilterValue,
-            sortBy,
-            sortDirection,
-          },
-          fetchOptions,
-        )
-      : Promise.resolve({ parentalReturns: [], total: 0 }),
-  );
-  if (error) return <ErrorAlert />;
-
-  const { parentalReturns: rows, total: rowCount } = parentalReturns;
 
   return (
-    <ParentalReturns
-      canReview={false}
-      canReviewOwn={false}
-      canViewAll={false}
-      employeeId={employee?.id}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={organization.slug}
-      organization={organization}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<ParentalReturns loading />}>
+      <MyParentalReturnsContent
+        context={context}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        organization={organization}
+        page={page}
+        pageSize={pageSize}
+        parentalReturns={parentalReturns}
+        quickFilterValue={quickFilterValue}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const MyParentalReturnsPage = (props: MyMyParentalReturnsPageProps) => (
-  <Suspense fallback={<ParentalReturns loading />}>
-    <MyParentalReturnsContent {...props} />
-  </Suspense>
-);
 
 export default MyParentalReturnsPage;

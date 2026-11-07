@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -18,6 +20,16 @@ import {
   attendanceLeaveCaseSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
+import type {
+  AttendanceContext,
+  AttendanceLeaveCase,
+  AttendanceLeaveCaseFilterField,
+  AttendanceLeaveCaseSortField,
+  AttendanceLeaveType,
+  AttendanceParentalChild,
+} from "@/types/attendance";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import {
   getAttendanceContext,
@@ -27,7 +39,7 @@ import {
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceLeaveTypeNameEnumOptions } from "@/utils/enumOptions";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { getAttendanceAccess } from "@/utils/session";
 
 interface MyLeaveCasesPageProps {
@@ -58,7 +70,68 @@ export const generateMetadata = async ({
   return { title: tAttendance("leaveCases.label") };
 };
 
+interface MyLeaveCasesContentProps {
+  context: Promise<FetchResult<AttendanceContext>>;
+  filterField?: AttendanceLeaveCaseFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  organization: Organization;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  results: Promise<
+    [
+      FetchResult<{ leaveCases: AttendanceLeaveCase[]; total: number }>,
+      FetchResult<{ leaveTypes: AttendanceLeaveType[]; total: number }>,
+      FetchResult<{
+        parentalChildren: AttendanceParentalChild[];
+        total: number;
+      }>,
+    ]
+  >;
+  sortBy?: AttendanceLeaveCaseSortField;
+  sortDirection?: SortDirection;
+}
+
 const MyLeaveCasesContent = async ({
+  context: contextResult,
+  results,
+  ...props
+}: MyLeaveCasesContentProps) => {
+  const { error: contextError } = await contextResult;
+  if (contextError) return <ErrorAlert />;
+
+  const [
+    { data: leaveCases, error },
+    { data: leaveTypePage, error: leaveTypesError },
+    { data: parentalChildPage, error: parentalChildrenError },
+  ] = await results;
+  if (error || leaveTypesError || parentalChildrenError) return <ErrorAlert />;
+
+  const { leaveCases: rows, total: rowCount } = leaveCases;
+  const { leaveTypes } = leaveTypePage;
+  const { parentalChildren } = parentalChildPage;
+
+  return (
+    <LeaveCases
+      {...props}
+      canAssignChild={false}
+      canDelete={false}
+      canReviewOwn={false}
+      canUpdate={false}
+      canViewAll={false}
+      canWrite={false}
+      employees={[]}
+      key={props.organization.slug}
+      leaveTypes={leaveTypes}
+      parentalChildren={parentalChildren}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const MyLeaveCasesPage = async ({
   params,
   searchParams,
 }: MyLeaveCasesPageProps) => {
@@ -112,93 +185,67 @@ const MyLeaveCasesContent = async ({
       )
     : [];
 
-  const { data: context, error: contextError } = await settle(
-    getAttendanceContext(organization.slug, fetchOptions),
-  );
-  if (contextError) return <ErrorAlert />;
+  const context = settle(getAttendanceContext(organization.slug, fetchOptions));
 
-  const { employee } = context;
-
-  const [
-    { data: leaveCases, error },
-    { data: leaveTypePage, error: leaveTypesError },
-    { data: parentalChildPage, error: parentalChildrenError },
-  ] = await Promise.all([
-    settle(
-      employee
-        ? getAttendanceLeaveCases(
-            organization.slug,
-            "me",
-            {
-              page,
-              pageSize,
-              filterField,
-              filterOperator,
-              filterValue,
-              quickFilterEnums,
-              quickFilterValue,
-              sortBy,
-              sortDirection,
-            },
-            fetchOptions,
-          )
-        : Promise.resolve({ leaveCases: [], total: 0 }),
-    ),
-    settle(
-      getAttendanceLeaveTypes(
-        organization.slug,
-        { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
-        fetchOptions,
+  const results = context.then(({ data }) =>
+    Promise.all([
+      settle(
+        data?.employee
+          ? getAttendanceLeaveCases(
+              organization.slug,
+              "me",
+              {
+                page,
+                pageSize,
+                filterField,
+                filterOperator,
+                filterValue,
+                quickFilterEnums,
+                quickFilterValue,
+                sortBy,
+                sortDirection,
+              },
+              fetchOptions,
+            )
+          : Promise.resolve({ leaveCases: [], total: 0 }),
       ),
-    ),
-    settle(
-      employee
-        ? getAttendanceParentalChildren(
-            organization.slug,
-            "me",
-            { pageSize: MAX_PAGE_SIZE },
-            fetchOptions,
-          )
-        : Promise.resolve({ parentalChildren: [], total: 0 }),
-    ),
-  ]);
-  if (error || leaveTypesError || parentalChildrenError) return <ErrorAlert />;
-
-  const { leaveCases: rows, total: rowCount } = leaveCases;
-  const { leaveTypes } = leaveTypePage;
-  const { parentalChildren } = parentalChildPage;
+      settle(
+        getAttendanceLeaveTypes(
+          organization.slug,
+          { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
+          fetchOptions,
+        ),
+      ),
+      settle(
+        data?.employee
+          ? getAttendanceParentalChildren(
+              organization.slug,
+              "me",
+              { pageSize: MAX_PAGE_SIZE },
+              fetchOptions,
+            )
+          : Promise.resolve({ parentalChildren: [], total: 0 }),
+      ),
+    ]),
+  );
 
   return (
-    <LeaveCases
-      canAssignChild={false}
-      canDelete={false}
-      canReviewOwn={false}
-      canUpdate={false}
-      canViewAll={false}
-      canWrite={false}
-      employees={[]}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={organization.slug}
-      leaveTypes={leaveTypes}
-      organization={organization}
-      page={page}
-      pageSize={pageSize}
-      parentalChildren={parentalChildren}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<LeaveCases loading />}>
+      <MyLeaveCasesContent
+        context={context}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        organization={organization}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        results={results}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const MyLeaveCasesPage = (props: MyLeaveCasesPageProps) => (
-  <Suspense fallback={<LeaveCases loading />}>
-    <MyLeaveCasesContent {...props} />
-  </Suspense>
-);
 
 export default MyLeaveCasesPage;

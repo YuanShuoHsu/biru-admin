@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,13 +18,21 @@ import {
   attendanceParentalChildSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
+import type {
+  AttendanceContext,
+  AttendanceParentalChild,
+  AttendanceParentalChildFilterField,
+  AttendanceParentalChildSortField,
+} from "@/types/attendance";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import {
   getAttendanceContext,
   getAttendanceParentalChildren,
 } from "@/utils/attendance";
 import { resolveGridSearchParams } from "@/utils/dataGrid";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { getAttendanceAccess } from "@/utils/session";
 
 interface MyChildrenPageProps {
@@ -52,7 +62,46 @@ export const generateMetadata = async ({
   return { title: tAttendance("parentalChildren.label") };
 };
 
+interface MyChildrenContentProps {
+  context: Promise<FetchResult<AttendanceContext>>;
+  filterField?: AttendanceParentalChildFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  organization: Organization;
+  page: number;
+  pageSize: number;
+  parentalChildren: Promise<
+    FetchResult<{ parentalChildren: AttendanceParentalChild[]; total: number }>
+  >;
+  quickFilterValue?: string;
+  sortBy?: AttendanceParentalChildSortField;
+  sortDirection?: SortDirection;
+}
+
 const MyChildrenContent = async ({
+  context: contextResult,
+  parentalChildren: parentalChildrenResult,
+  ...props
+}: MyChildrenContentProps) => {
+  const { error: contextError } = await contextResult;
+  if (contextError) return <ErrorAlert />;
+
+  const { data: parentalChildren, error } = await parentalChildrenResult;
+  if (error) return <ErrorAlert />;
+
+  const { parentalChildren: rows, total: rowCount } = parentalChildren;
+
+  return (
+    <MyChildren
+      {...props}
+      key={props.organization.slug}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const MyChildrenPage = async ({
   params,
   searchParams,
 }: MyChildrenPageProps) => {
@@ -94,58 +143,47 @@ const MyChildrenContent = async ({
       locale,
     });
 
-  const { data: context, error: contextError } = await settle(
-    getAttendanceContext(organization.slug, fetchOptions),
+  const context = settle(getAttendanceContext(organization.slug, fetchOptions));
+
+  const parentalChildren = context.then(({ data }) =>
+    settle(
+      data?.employee
+        ? getAttendanceParentalChildren(
+            organization.slug,
+            "me",
+            {
+              page,
+              pageSize,
+              filterField,
+              filterOperator,
+              filterValue,
+              quickFilterValue,
+              sortBy,
+              sortDirection,
+            },
+            fetchOptions,
+          )
+        : Promise.resolve({ parentalChildren: [], total: 0 }),
+    ),
   );
-  if (contextError) return <ErrorAlert />;
-
-  const { employee } = context;
-
-  const { data: parentalChildren, error } = await settle(
-    employee
-      ? getAttendanceParentalChildren(
-          organization.slug,
-          "me",
-          {
-            page,
-            pageSize,
-            filterField,
-            filterOperator,
-            filterValue,
-            quickFilterValue,
-            sortBy,
-            sortDirection,
-          },
-          fetchOptions,
-        )
-      : Promise.resolve({ parentalChildren: [], total: 0 }),
-  );
-  if (error) return <ErrorAlert />;
-
-  const { parentalChildren: rows, total: rowCount } = parentalChildren;
 
   return (
-    <MyChildren
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={organization.slug}
-      organization={organization}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<MyChildren loading />}>
+      <MyChildrenContent
+        context={context}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        organization={organization}
+        page={page}
+        pageSize={pageSize}
+        parentalChildren={parentalChildren}
+        quickFilterValue={quickFilterValue}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const MyChildrenPage = (props: MyChildrenPageProps) => (
-  <Suspense fallback={<MyChildren loading />}>
-    <MyChildrenContent {...props} />
-  </Suspense>
-);
 
 export default MyChildrenPage;

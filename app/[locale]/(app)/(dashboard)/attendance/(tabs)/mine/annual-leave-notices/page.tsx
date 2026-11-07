@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,6 +18,14 @@ import {
   attendanceAnnualLeaveNoticeSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
+import type {
+  AttendanceAnnualLeaveNotice,
+  AttendanceAnnualLeaveNoticeFilterField,
+  AttendanceAnnualLeaveNoticeSortField,
+  AttendanceContext,
+} from "@/types/attendance";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import {
   getAttendanceAnnualLeaveNotices,
@@ -23,7 +33,7 @@ import {
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceAnnualLeaveNoticeEnumOptions } from "@/utils/enumOptions";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { getAttendanceAccess } from "@/utils/session";
 
 interface MyAnnualLeaveNoticesPageProps {
@@ -54,7 +64,47 @@ export const generateMetadata = async ({
   return { title: tAttendance("annualLeaveNotices.label") };
 };
 
+interface MyAnnualLeaveNoticesContentProps {
+  context: Promise<FetchResult<AttendanceContext>>;
+  filterField?: AttendanceAnnualLeaveNoticeFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  notices: Promise<
+    FetchResult<{ notices: AttendanceAnnualLeaveNotice[]; total: number }>
+  >;
+  organization: Organization;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sortBy?: AttendanceAnnualLeaveNoticeSortField;
+  sortDirection?: SortDirection;
+}
+
 const MyAnnualLeaveNoticesContent = async ({
+  context: contextResult,
+  notices: noticesResult,
+  ...props
+}: MyAnnualLeaveNoticesContentProps) => {
+  const { error: contextError } = await contextResult;
+  if (contextError) return <ErrorAlert />;
+
+  const { data: notices, error } = await noticesResult;
+  if (error) return <ErrorAlert />;
+
+  const { notices: rows, total: rowCount } = notices;
+
+  return (
+    <AnnualLeaveNotices
+      {...props}
+      canViewAll={false}
+      key={props.organization.slug}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const MyAnnualLeaveNoticesPage = async ({
   params,
   searchParams,
 }: MyAnnualLeaveNoticesPageProps) => {
@@ -108,60 +158,48 @@ const MyAnnualLeaveNoticesContent = async ({
       )
     : [];
 
-  const { data: context, error: contextError } = await settle(
-    getAttendanceContext(organization.slug, fetchOptions),
+  const context = settle(getAttendanceContext(organization.slug, fetchOptions));
+
+  const notices = context.then(({ data }) =>
+    settle(
+      data?.employee
+        ? getAttendanceAnnualLeaveNotices(
+            organization.slug,
+            "me",
+            {
+              page,
+              pageSize,
+              filterField,
+              filterOperator,
+              filterValue,
+              quickFilterEnums,
+              quickFilterValue,
+              sortBy,
+              sortDirection,
+            },
+            fetchOptions,
+          )
+        : Promise.resolve({ notices: [], total: 0 }),
+    ),
   );
-  if (contextError) return <ErrorAlert />;
-
-  const { employee } = context;
-
-  const { data: notices, error } = await settle(
-    employee
-      ? getAttendanceAnnualLeaveNotices(
-          organization.slug,
-          "me",
-          {
-            page,
-            pageSize,
-            filterField,
-            filterOperator,
-            filterValue,
-            quickFilterEnums,
-            quickFilterValue,
-            sortBy,
-            sortDirection,
-          },
-          fetchOptions,
-        )
-      : Promise.resolve({ notices: [], total: 0 }),
-  );
-  if (error) return <ErrorAlert />;
-
-  const { notices: rows, total: rowCount } = notices;
 
   return (
-    <AnnualLeaveNotices
-      canViewAll={false}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={organization.slug}
-      organization={organization}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<AnnualLeaveNotices loading />}>
+      <MyAnnualLeaveNoticesContent
+        context={context}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        notices={notices}
+        organization={organization}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const MyAnnualLeaveNoticesPage = (props: MyAnnualLeaveNoticesPageProps) => (
-  <Suspense fallback={<AnnualLeaveNotices loading />}>
-    <MyAnnualLeaveNoticesContent {...props} />
-  </Suspense>
-);
 
 export default MyAnnualLeaveNoticesPage;

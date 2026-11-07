@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -18,6 +20,16 @@ import {
   attendanceShiftSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
+import type {
+  AttendanceContext,
+  AttendanceLeaveCase,
+  AttendanceLeaveType,
+  AttendanceShift,
+  AttendanceShiftFilterField,
+  AttendanceShiftSortField,
+} from "@/types/attendance";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import {
   getAttendanceContext,
@@ -28,7 +40,7 @@ import {
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceDayKindEnumOptions } from "@/utils/enumOptions";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { getAttendanceAccess } from "@/utils/session";
 
 interface MinePageProps {
@@ -59,7 +71,67 @@ export const generateMetadata = async ({
   return { title: tAttendance("mine.label") };
 };
 
-const MineContent = async ({ params, searchParams }: MinePageProps) => {
+interface MineContentProps {
+  context: Promise<FetchResult<AttendanceContext>>;
+  filterField?: AttendanceShiftFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  organization: Organization;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  results: Promise<
+    [
+      FetchResult<{ shifts: AttendanceShift[]; total: number }>,
+      FetchResult<AttendanceShift[]>,
+      FetchResult<{ leaveTypes: AttendanceLeaveType[]; total: number }>,
+      FetchResult<{ leaveCases: AttendanceLeaveCase[]; total: number }>,
+    ]
+  >;
+  sortBy?: AttendanceShiftSortField;
+  sortDirection?: SortDirection;
+}
+
+const MineContent = async ({
+  context: contextResult,
+  results,
+  ...props
+}: MineContentProps) => {
+  const { data: context, error: contextError } = await contextResult;
+  if (contextError) return <ErrorAlert />;
+
+  const { employee } = context;
+
+  const enabled = employee?.status === "active";
+
+  const [
+    { data: shifts, error },
+    { data: punchableShifts, error: punchableShiftsError },
+    { data: leaveTypePage, error: leaveTypesError },
+    { data: leaveCasePage, error: leaveCasesError },
+  ] = await results;
+  if (error || punchableShiftsError || leaveTypesError || leaveCasesError)
+    return <ErrorAlert />;
+
+  const { shifts: rows, total: rowCount } = shifts;
+  const { leaveTypes } = leaveTypePage;
+  const { leaveCases } = leaveCasePage;
+
+  return (
+    <Mine
+      {...props}
+      enabled={enabled}
+      key={props.organization.slug}
+      leaveCases={leaveCases}
+      leaveTypes={leaveTypes}
+      punchableShifts={punchableShifts}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const MinePage = async ({ params, searchParams }: MinePageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -110,99 +182,76 @@ const MineContent = async ({ params, searchParams }: MinePageProps) => {
       )
     : [];
 
-  const { data: context, error: contextError } = await settle(
-    getAttendanceContext(organization.slug, fetchOptions),
-  );
-  if (contextError) return <ErrorAlert />;
+  const context = settle(getAttendanceContext(organization.slug, fetchOptions));
 
-  const { employee } = context;
+  const results = context.then(({ data }) => {
+    const enabled = data?.employee?.status === "active";
 
-  const enabled = employee?.status === "active";
-
-  const [
-    { data: shifts, error },
-    { data: punchableShifts, error: punchableShiftsError },
-    { data: leaveTypePage, error: leaveTypesError },
-    { data: leaveCasePage, error: leaveCasesError },
-  ] = await Promise.all([
-    settle(
-      enabled
-        ? getAttendanceShifts(
-            organization.slug,
-            "me",
-            {
-              page,
-              pageSize,
-              filterField,
-              filterOperator,
-              filterValue,
-              quickFilterEnums,
-              quickFilterValue,
-              sortBy,
-              sortDirection,
-            },
-            fetchOptions,
-          )
-        : Promise.resolve({ shifts: [], total: 0 }),
-    ),
-    settle(
-      enabled
-        ? getAttendancePunchableShifts(organization.slug, fetchOptions)
-        : Promise.resolve([]),
-    ),
-    settle(
-      enabled
-        ? getAttendanceLeaveTypes(
-            organization.slug,
-            { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
-            fetchOptions,
-          )
-        : Promise.resolve({ leaveTypes: [], total: 0 }),
-    ),
-    settle(
-      enabled
-        ? getAttendanceLeaveCases(
-            organization.slug,
-            "me",
-            { pageSize: MAX_PAGE_SIZE },
-            fetchOptions,
-          )
-        : Promise.resolve({ leaveCases: [], total: 0 }),
-    ),
-  ]);
-  if (error || punchableShiftsError || leaveTypesError || leaveCasesError)
-    return <ErrorAlert />;
-
-  const { shifts: rows, total: rowCount } = shifts;
-  const { leaveTypes } = leaveTypePage;
-  const { leaveCases } = leaveCasePage;
+    return Promise.all([
+      settle(
+        enabled
+          ? getAttendanceShifts(
+              organization.slug,
+              "me",
+              {
+                page,
+                pageSize,
+                filterField,
+                filterOperator,
+                filterValue,
+                quickFilterEnums,
+                quickFilterValue,
+                sortBy,
+                sortDirection,
+              },
+              fetchOptions,
+            )
+          : Promise.resolve({ shifts: [], total: 0 }),
+      ),
+      settle(
+        enabled
+          ? getAttendancePunchableShifts(organization.slug, fetchOptions)
+          : Promise.resolve([]),
+      ),
+      settle(
+        enabled
+          ? getAttendanceLeaveTypes(
+              organization.slug,
+              { pageSize: MAX_PAGE_SIZE, sortDirection: "asc" },
+              fetchOptions,
+            )
+          : Promise.resolve({ leaveTypes: [], total: 0 }),
+      ),
+      settle(
+        enabled
+          ? getAttendanceLeaveCases(
+              organization.slug,
+              "me",
+              { pageSize: MAX_PAGE_SIZE },
+              fetchOptions,
+            )
+          : Promise.resolve({ leaveCases: [], total: 0 }),
+      ),
+    ]);
+  });
 
   return (
-    <Mine
-      enabled={enabled}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={organization.slug}
-      leaveCases={leaveCases}
-      leaveTypes={leaveTypes}
-      organization={organization}
-      page={page}
-      pageSize={pageSize}
-      punchableShifts={punchableShifts}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<Mine loading />}>
+      <MineContent
+        context={context}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        organization={organization}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        results={results}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const MinePage = (props: MinePageProps) => (
-  <Suspense fallback={<Mine loading />}>
-    <MineContent {...props} />
-  </Suspense>
-);
 
 export default MinePage;
