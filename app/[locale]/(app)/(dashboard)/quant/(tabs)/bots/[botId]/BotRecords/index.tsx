@@ -46,7 +46,7 @@ export interface BotRecordListResponse {
   total: number;
 }
 
-export type BotRecordSortField =
+type BotRecordSortField =
   | QuantBotEventSortField
   | QuantBotFillSortField
   | QuantBotOrderSortField;

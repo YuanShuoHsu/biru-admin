@@ -14,7 +14,7 @@ export interface IndicatorPoint {
   value: number;
 }
 
-export interface IndicatorLine {
+interface IndicatorLine {
   key: string;
   points: IndicatorPoint[];
 }
