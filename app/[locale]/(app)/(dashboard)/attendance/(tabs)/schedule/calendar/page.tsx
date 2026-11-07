@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { SWRConfig } from "swr";
 
 import Calendar from ".";
 
@@ -15,6 +16,7 @@ import { MAX_PAGE_SIZE } from "@/constants/pagination";
 import {
   ATTENDANCE_CALENDAR_VIEWS,
   attendanceCalendarDate,
+  attendanceCalendarPath,
   attendanceCalendarRange,
   DEFAULT_ATTENDANCE_CALENDAR_VIEW,
   getAttendanceCalendarDayKinds,
@@ -146,21 +148,32 @@ const CalendarPage = async ({ params, searchParams }: CalendarPageProps) => {
   const { employees } = employeePage;
   const { shiftTypes } = shiftTypePage;
 
+  // https://swr.vercel.app/docs/with-nextjs#pre-rendering-with-default-data
   return (
-    <Calendar
-      canCreate={hasRolePermission(memberRole, { shift: ["create"] })}
-      canReadLeaves={canReadLeaves}
-      canUpdate={hasRolePermission(memberRole, { shift: ["update"] })}
-      dayKinds={dayKinds}
-      employees={employees}
-      leaves={leaves}
-      organization={organization}
-      shifts={shifts}
-      shiftTypes={shiftTypes}
-      teams={teams}
-      date={date}
-      view={view}
-    />
+    <SWRConfig
+      value={{
+        fallback: {
+          [attendanceCalendarPath(organization.slug, "shifts", from, to)]:
+            shifts,
+          [attendanceCalendarPath(organization.slug, "day-kinds", from, to)]:
+            dayKinds,
+          [attendanceCalendarPath(organization.slug, "leaves", from, to)]:
+            leaves,
+        },
+      }}
+    >
+      <Calendar
+        canCreate={hasRolePermission(memberRole, { shift: ["create"] })}
+        canReadLeaves={canReadLeaves}
+        canUpdate={hasRolePermission(memberRole, { shift: ["update"] })}
+        employees={employees}
+        organization={organization}
+        shiftTypes={shiftTypes}
+        teams={teams}
+        date={date}
+        view={view}
+      />
+    </SWRConfig>
   );
 };
 

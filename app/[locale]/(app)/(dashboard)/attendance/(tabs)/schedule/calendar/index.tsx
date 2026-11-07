@@ -17,10 +17,9 @@ import ShiftDialog, { type ShiftChange } from "../../../ShiftDialog";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { useCancelShift } from "@/hooks/useCancelShift";
-import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { Add, ContentCopy } from "@mui/icons-material";
-import { Box, Button, Stack } from "@mui/material";
+import { Box, Button, LinearProgress, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
   EventCalendar,
@@ -113,11 +112,8 @@ interface CalendarProps {
   canCreate: boolean;
   canReadLeaves: boolean;
   canUpdate: boolean;
-  dayKinds: AttendanceCalendarDayKinds;
   employees: AttendanceEmployeeSummary[];
-  leaves: AttendanceRequest[];
   organization: Organization;
-  shifts: AttendanceShift[];
   shiftTypes: AttendanceShiftType[];
   teams: AttendanceTeam[];
   date: string;
@@ -129,11 +125,8 @@ const Calendar = ({
   canReadLeaves,
   canUpdate,
   date: initialDate,
-  dayKinds: initialDayKinds,
   employees,
-  leaves: initialLeaves,
   organization: { openingHours = "", slug: organizationSlug },
-  shifts: initialShifts,
   shiftTypes,
   teams,
   view: initialView,
@@ -144,16 +137,21 @@ const Calendar = ({
 
   const tAttendance = useTranslations("attendance");
 
-  const updateQuery = useUpdateQuery();
-
   const [date, setDate] = useState(initialDate);
 
   const [view, setView] = useState(initialView);
 
+  // https://nextjs.org/docs/app/getting-started/linking-and-navigating#native-history-api
   useEffect(() => {
-    if (date !== initialDate || view !== initialView)
-      updateQuery({ date, view });
-  }, [date, initialDate, initialView, updateQuery, view]);
+    if (date === initialDate && view === initialView) return;
+
+    const params = new URLSearchParams(window.location.search);
+
+    params.set("date", date);
+    params.set("view", view);
+
+    window.history.replaceState(null, "", `?${params.toString()}`);
+  }, [date, initialDate, initialView, view]);
 
   const range = useMemo(
     () => attendanceCalendarRange(view, date),
@@ -163,19 +161,29 @@ const Calendar = ({
   const from = range.from.toISOString();
   const to = range.to.toISOString();
 
-  const { data: shifts = initialShifts, mutate: mutateShifts } = useSWR(
+  // https://swr.vercel.app/docs/advanced/understanding#return-previous-data-for-better-ux
+  const {
+    data: shifts = [],
+    isLoading: shiftsLoading,
+    mutate: mutateShifts,
+  } = useSWR(
     attendanceCalendarPath(organizationSlug, "shifts", from, to),
     (url: string) => fetcher<AttendanceShift[]>(url),
-    { fallbackData: initialShifts },
+    { keepPreviousData: true },
   );
 
   const {
-    data: { dayKinds, holidays, pendingSubstitutes } = initialDayKinds,
+    data: { dayKinds, holidays, pendingSubstitutes } = {
+      dayKinds: [],
+      holidays: [],
+      pendingSubstitutes: [],
+    },
+    isLoading: dayKindsLoading,
     mutate: mutateDayKinds,
   } = useSWR(
     attendanceCalendarPath(organizationSlug, "day-kinds", from, to),
     (url: string) => fetcher<AttendanceCalendarDayKinds>(url),
-    { fallbackData: initialDayKinds },
+    { keepPreviousData: true },
   );
 
   const mutate = useCallback(() => {
@@ -183,12 +191,12 @@ const Calendar = ({
     mutateShifts();
   }, [mutateDayKinds, mutateShifts]);
 
-  const { data: leaves = initialLeaves } = useSWR(
+  const { data: leaves = [], isLoading: leavesLoading } = useSWR(
     canReadLeaves
       ? attendanceCalendarPath(organizationSlug, "leaves", from, to)
       : null,
     (url: string) => fetcher<AttendanceRequest[]>(url),
-    { fallbackData: initialLeaves },
+    { keepPreviousData: true },
   );
 
   const employeeLabels = useMemo(() => {
@@ -807,6 +815,9 @@ const Calendar = ({
             </Button>
           )}
         </ToolbarStack>
+      )}
+      {(shiftsLoading || dayKindsLoading || leavesLoading) && (
+        <LinearProgress />
       )}
       <CalendarBox breakPatterns={breaks.patterns}>
         <EventCalendar
