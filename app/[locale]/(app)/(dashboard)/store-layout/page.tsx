@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -13,7 +15,10 @@ import type { Locale } from "@/i18n/routing";
 
 import { STORE_LAYOUT_ORGANIZATION_SLUG } from "@/constants/storeLayout";
 
-import { settle } from "@/utils/fetcher";
+import type { AdminOrderBoardColumn } from "@/types/orders";
+import type { Organization } from "@/types/organizations";
+
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { getAdminOrderBoard } from "@/utils/orders";
 import { getResolvedAdminOrganization, getSession } from "@/utils/session";
 
@@ -34,7 +39,23 @@ export const generateMetadata = async ({
   return { title: tStoreLayout("label") };
 };
 
+interface StoreLayoutContentProps {
+  columns: Promise<FetchResult<AdminOrderBoardColumn[]>>;
+  empty: boolean;
+  organization: Organization;
+}
+
 const StoreLayoutContent = async ({
+  columns: columnsResult,
+  ...props
+}: StoreLayoutContentProps) => {
+  const { data: columns, error } = await columnsResult;
+  if (error) return <ErrorAlert />;
+
+  return <StoreLayout {...props} columns={columns} />;
+};
+
+const StoreLayoutPage = async ({
   params,
   searchParams,
 }: StoreLayoutPageProps) => {
@@ -55,24 +76,23 @@ const StoreLayoutContent = async ({
 
   const empty = organization.slug !== STORE_LAYOUT_ORGANIZATION_SLUG;
 
-  const { data: columns, error } = await settle(
+  const columns = settle(
     empty
       ? Promise.resolve([])
       : getAdminOrderBoard(organization.slug, {
           headers: { cookie: cookieStore.toString() },
         }),
   );
-  if (error) return <ErrorAlert />;
 
   return (
-    <StoreLayout columns={columns} empty={empty} organization={organization} />
+    <Suspense fallback={<StoreLayout loading />}>
+      <StoreLayoutContent
+        columns={columns}
+        empty={empty}
+        organization={organization}
+      />
+    </Suspense>
   );
 };
-
-const StoreLayoutPage = (props: StoreLayoutPageProps) => (
-  <Suspense fallback={<StoreLayout loading />}>
-    <StoreLayoutContent {...props} />
-  </Suspense>
-);
 
 export default StoreLayoutPage;

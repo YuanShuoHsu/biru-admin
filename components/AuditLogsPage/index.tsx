@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -15,13 +17,20 @@ import {
   auditLogSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
-import type { AuditResource } from "@/types/audit";
+import type {
+  AuditLogFilterField,
+  AuditLogResponse,
+  AuditLogSortField,
+  AuditResource,
+} from "@/types/audit";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Ingredient } from "@/types/inventory";
+import type { Organization, OrganizationResponse } from "@/types/organizations";
 
 import { getAuditLogs } from "@/utils/audit";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAuditLogEnumOptions } from "@/utils/enumOptions";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { getOrganizations, hasRolePermission } from "@/utils/organizations";
 import {
   getMemberRole,
@@ -53,6 +62,49 @@ interface AuditLogsPageProps {
   resourceId?: string;
   searchParams: AuditLogSearchParams;
 }
+
+interface AuditLogsContentProps {
+  ancestorId?: string;
+  auditLogs: Promise<FetchResult<{ logs: AuditLogResponse[]; total: number }>>;
+  filterField?: AuditLogFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  ingredient?: Ingredient;
+  organization?: Organization;
+  organizations: Promise<FetchResult<OrganizationResponse[]>>;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  resource?: AuditResource;
+  resourceId?: string;
+  sortBy?: AuditLogSortField;
+  sortDirection?: SortDirection;
+}
+
+const AuditLogsContent = async ({
+  auditLogs: auditLogsResult,
+  organizations: organizationsResult,
+  ...props
+}: AuditLogsContentProps) => {
+  const { data: organizations, error: organizationsError } =
+    await organizationsResult;
+  if (organizationsError) return <ErrorAlert />;
+
+  const { data: auditLogs, error } = await auditLogsResult;
+  if (error) return <ErrorAlert />;
+
+  const { logs, total } = auditLogs;
+
+  return (
+    <AuditLogs
+      {...props}
+      key={props.organization?.slug}
+      logs={logs}
+      organizations={organizations}
+      rowCount={total}
+    />
+  );
+};
 
 const AuditLogsPage = async ({
   adminScope = false,
@@ -103,66 +155,68 @@ const AuditLogsPage = async ({
     if (!hasRolePermission(memberRole, { auditLog: ["read"] })) notFound();
   }
 
-  const [tAudit, tCommon, { data: organizations, error: organizationsError }] =
-    await Promise.all([
-      getTranslations({ locale, namespace: "audit" }),
-      getTranslations({ locale, namespace: "common" }),
-      settle(isAdmin ? getOrganizations(fetchOptions) : Promise.resolve([])),
-    ]);
-  if (organizationsError) return <ErrorAlert />;
-
-  const quickFilterEnums = quickFilterValue
-    ? getQuickFilterEnums(
-        quickFilterValue,
-        getAuditLogEnumOptions(tAudit, tCommon, !resource, organizations),
-      )
-    : [];
-
-  const { data: auditLogs, error } = await settle(
-    getAuditLogs(
-      selectedOrganization?.slug,
-      resource,
-      resourceId,
-      ancestorId,
-      {
-        actorId: searchParams.actorId,
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterEnums,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-      },
-      fetchOptions,
-    ),
+  const organizations = settle(
+    isAdmin ? getOrganizations(fetchOptions) : Promise.resolve([]),
   );
-  if (error) return <ErrorAlert />;
 
-  const { logs, total } = auditLogs;
+  const [tAudit, tCommon] = await Promise.all([
+    getTranslations({ locale, namespace: "audit" }),
+    getTranslations({ locale, namespace: "common" }),
+  ]);
+
+  const auditLogs = organizations.then(({ data, error }) => {
+    if (error) return { error };
+
+    const quickFilterEnums = quickFilterValue
+      ? getQuickFilterEnums(
+          quickFilterValue,
+          getAuditLogEnumOptions(tAudit, tCommon, !resource, data),
+        )
+      : [];
+
+    return settle(
+      getAuditLogs(
+        selectedOrganization?.slug,
+        resource,
+        resourceId,
+        ancestorId,
+        {
+          actorId: searchParams.actorId,
+          page,
+          pageSize,
+          filterField,
+          filterOperator,
+          filterValue,
+          quickFilterEnums,
+          quickFilterValue,
+          sortBy,
+          sortDirection,
+        },
+        fetchOptions,
+      ),
+    );
+  });
 
   return (
-    <AuditLogs
-      ancestorId={ancestorId}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      ingredient={ingredient}
-      key={selectedOrganization?.slug}
-      logs={logs}
-      organizations={organizations}
-      organization={selectedOrganization}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      resource={resource}
-      resourceId={resourceId}
-      rowCount={total}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<AuditLogs loading resource={resource} />}>
+      <AuditLogsContent
+        ancestorId={ancestorId}
+        auditLogs={auditLogs}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        ingredient={ingredient}
+        organization={selectedOrganization}
+        organizations={organizations}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        resource={resource}
+        resourceId={resourceId}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
 
@@ -201,7 +255,7 @@ export const createAuditLogsPage = <Params extends object>({
   resolveTarget,
   resource,
 }: CreateAuditLogsPageOptions<Params>) => {
-  const AuditLogsContent = async ({
+  const AuditLogsRoute = async ({
     params,
     searchParams,
   }: AuditLogsRouteProps<Params>) => {
@@ -219,12 +273,6 @@ export const createAuditLogsPage = <Params extends object>({
       />
     );
   };
-
-  const AuditLogsRoute = (props: AuditLogsRouteProps<Params>) => (
-    <Suspense fallback={<AuditLogs loading resource={resource} />}>
-      <AuditLogsContent {...props} />
-    </Suspense>
-  );
 
   return AuditLogsRoute;
 };
