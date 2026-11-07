@@ -800,12 +800,12 @@ const Ingredients = ({
         field: "image",
         filterable: false,
         headerName: `${tInventory("ingredients.image.label")} ${tCommon("optional")}`,
-        renderCell: ({ value }: { value?: string | null }) =>
+        renderCell: ({ row, value }: GridRenderCellParams<Ingredient>) =>
           value && (
             <ImageStack>
               <StyledBox>
                 <Image
-                  alt={value}
+                  alt={localize(row.name, locale)}
                   fill
                   sizes="32px"
                   src={value}
