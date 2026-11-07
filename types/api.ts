@@ -3903,6 +3903,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationId}/platform-admin-members": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 列出身為平台管理員的成員 id；只有平台管理員能移除或改動這些成員 */
+    get: operations["OrganizationPlatformAdminController_platformAdminMemberIds"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationId}/members/{memberId}/confirm-owner": {
     parameters: {
       query?: never;
@@ -22900,6 +22917,34 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["MemberResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrganizationPlatformAdminController_platformAdminMemberIds: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": string[];
         };
       };
       /** @description Internal server error */

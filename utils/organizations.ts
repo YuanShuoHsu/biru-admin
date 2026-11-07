@@ -3,13 +3,28 @@ import { cache } from "react";
 
 import { fetcher } from "./fetcher";
 
+import { ROLE_RANK } from "@/constants/organizations";
+
 import { authClient } from "@/lib/auth-client";
 
-import type { Organization, OrganizationResponse } from "@/types/organizations";
+import type {
+  Member,
+  Organization,
+  OrganizationResponse,
+} from "@/types/organizations";
 
 export const getOrganization = cache((slug: OrganizationResponse["slug"]) =>
   fetcher<OrganizationResponse>(`/api/organizations/${slug}`),
 );
+
+export const getPlatformAdminMemberIds = (
+  organizationId: Organization["id"],
+  init?: RequestInit,
+) =>
+  fetcher<Member["id"][]>(
+    `/api/organizations/${organizationId}/platform-admin-members`,
+    init,
+  );
 
 export const getOrganizations = cache(
   (fetchOptions?: { headers: { cookie: string } }) =>
@@ -52,3 +67,49 @@ export const hasRolePermission = (
   permissions: CheckRolePermissionInput["permissions"],
 ): boolean =>
   !!role && authClient.organization.checkRolePermission({ role, permissions });
+
+type PermissionMember = Pick<
+  Member,
+  "id" | "joinedAsPlatformAdmin" | "role" | "userId"
+>;
+
+interface MemberPermissionContext {
+  canDeleteMember: boolean;
+  canUpdateMember: boolean;
+  currentUserId: string;
+  currentUserRole: string;
+  members: Pick<Member, "joinedAsPlatformAdmin" | "role">[];
+  platformAdminMemberIds: Member["id"][];
+}
+
+export const getMemberPermissions = (
+  { id, joinedAsPlatformAdmin, role, userId }: PermissionMember,
+  {
+    canDeleteMember,
+    canUpdateMember,
+    currentUserId,
+    currentUserRole,
+    members,
+    platformAdminMemberIds,
+  }: MemberPermissionContext,
+) => {
+  const owners = members.filter((member) => member.role === "owner");
+  const isOnlyOwner =
+    role === "owner" &&
+    (owners.length === 1 ||
+      (!joinedAsPlatformAdmin &&
+        owners.filter((owner) => !owner.joinedAsPlatformAdmin).length === 1));
+  const isManageable =
+    ROLE_RANK[currentUserRole] >= ROLE_RANK[role] &&
+    !platformAdminMemberIds.includes(id);
+  const isCurrentUser = userId === currentUserId;
+
+  return {
+    canUpdateMemberRole: canUpdateMember && !isOnlyOwner && isManageable,
+    canRemoveMember:
+      canDeleteMember && !isCurrentUser && !isOnlyOwner && isManageable,
+    canLeaveOrganization: isCurrentUser && !isOnlyOwner,
+    canTurnOnShowcase: isCurrentUser,
+    canTurnOffShowcase: isCurrentUser || canUpdateMember,
+  };
+};
