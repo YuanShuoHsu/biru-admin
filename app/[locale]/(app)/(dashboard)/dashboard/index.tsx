@@ -139,7 +139,7 @@ interface DashboardProps {
     ordersTrend: Trend;
     revenueTrend: Trend | null;
     discountTrend: Trend | null;
-    refundedOrders: { data: number[]; total: number };
+    refundedOrders: { data: number[]; periodOrders: number; total: number };
     usersTrend: Trend | null;
     organizationsTrend: Trend;
   };
@@ -644,7 +644,7 @@ const Dashboard = ({
                   <Typography color="textSecondary" variant="body2">
                     {tDashboard("charts.refundRate", {
                       rate: format.number(
-                        stats.refundedOrders.total / periodOrderCount,
+                        stats.refundedOrders.periodOrders / periodOrderCount,
                         { maximumFractionDigits: 1, style: "percent" },
                       ),
                     })}
