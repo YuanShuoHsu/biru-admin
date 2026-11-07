@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,9 +18,16 @@ import {
   menuSectionFilterFieldValues,
   menuSectionSortFieldValues,
 } from "@/types/api";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  Menu,
+  MenuSection,
+  MenuSectionFilterField,
+  MenuSectionSortField,
+} from "@/types/menus";
 
 import { resolveGridSearchParams } from "@/utils/dataGrid";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { getAdminMenuSections } from "@/utils/menus";
 import { hasRolePermission } from "@/utils/organizations";
 import {
@@ -50,7 +59,43 @@ export const generateMetadata = async ({
   return { title: tMenus("sections.label") };
 };
 
+interface MenusSectionsContentProps {
+  canViewAuditLog: boolean;
+  canWrite: boolean;
+  filterField?: MenuSectionFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  menu: Menu;
+  organizationSlug: string;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sections: Promise<FetchResult<{ sections: MenuSection[]; total: number }>>;
+  sortBy?: MenuSectionSortField;
+  sortDirection?: SortDirection;
+}
+
 const MenusSectionsContent = async ({
+  organizationSlug,
+  sections: sectionsResult,
+  ...props
+}: MenusSectionsContentProps) => {
+  const { data: sections, error: sectionsError } = await sectionsResult;
+  if (sectionsError) return <ErrorAlert />;
+
+  const { sections: rows, total: rowCount } = sections;
+
+  return (
+    <MenusSections
+      {...props}
+      key={organizationSlug}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const MenusSectionsPage = async ({
   params,
   searchParams,
 }: MenusSectionsPageProps) => {
@@ -91,26 +136,21 @@ const MenusSectionsContent = async ({
   if (redirectParams)
     redirect({ href: `/menus/sections?${redirectParams.toString()}`, locale });
 
-  const [{ data: sections, error: sectionsError }, role] = await Promise.all([
-    settle(
-      getAdminMenuSections(
-        menu.id,
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-        fetchOptions,
-      ),
+  const sections = settle(
+    getAdminMenuSections(
+      menu.id,
+      page,
+      pageSize,
+      filterField,
+      filterOperator,
+      filterValue,
+      quickFilterValue,
+      sortBy,
+      sortDirection,
+      fetchOptions,
     ),
-    getMemberRole(menu.organizationId),
-  ]);
-  if (sectionsError) return <ErrorAlert />;
-
-  const { sections: rows, total: rowCount } = sections;
+  );
+  const role = await getMemberRole(menu.organizationId);
 
   const canWrite = hasRolePermission(role, { menu: ["update"] });
   const canViewAuditLog = hasRolePermission(role, {
@@ -118,29 +158,24 @@ const MenusSectionsContent = async ({
   });
 
   return (
-    <MenusSections
-      canViewAuditLog={canViewAuditLog}
-      canWrite={canWrite}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={selectedOrganization.slug}
-      menu={menu}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<MenusSections loading />}>
+      <MenusSectionsContent
+        canViewAuditLog={canViewAuditLog}
+        canWrite={canWrite}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        menu={menu}
+        organizationSlug={selectedOrganization.slug}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        sections={sections}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const MenusSectionsPage = (props: MenusSectionsPageProps) => (
-  <Suspense fallback={<MenusSections loading />}>
-    <MenusSectionsContent {...props} />
-  </Suspense>
-);
 
 export default MenusSectionsPage;

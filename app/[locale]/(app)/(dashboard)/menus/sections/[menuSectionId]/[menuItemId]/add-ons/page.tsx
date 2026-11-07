@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,11 +18,18 @@ import {
   addOnSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  AddOnFilterField,
+  AddOnSortField,
+  MenuItemAddOn,
+} from "@/types/menus";
 
 import { resolveGridSearchParams } from "@/utils/dataGrid";
-import { isMissingResource, settle } from "@/utils/fetcher";
+import { type FetchResult, isMissingResource, settle } from "@/utils/fetcher";
 import {
   getAdminMenu,
+  getAdminMenuItem,
   getAdminMenuItemAddOns,
   getAdminMenuSection,
 } from "@/utils/menus";
@@ -55,7 +64,45 @@ export const generateMetadata = async ({
   return { title: tMenus("items.addOns.label") };
 };
 
+interface MenuItemAddOnsContentProps {
+  addOns: Promise<FetchResult<{ addOns: MenuItemAddOn[]; total: number }>>;
+  canViewAuditLog: boolean;
+  canWrite: boolean;
+  filterField?: AddOnFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  menuId: string;
+  menuItemId: string;
+  organizationSlug: string;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sortBy?: AddOnSortField;
+  sortDirection?: SortDirection;
+}
+
 const MenuItemAddOnsContent = async ({
+  addOns: addOnsResult,
+  organizationSlug,
+  ...props
+}: MenuItemAddOnsContentProps) => {
+  const { data: addOns, error: addOnsError } = await addOnsResult;
+  if (isMissingResource(addOnsError)) notFound();
+  if (addOnsError) return <ErrorAlert />;
+
+  const { addOns: rows, total: rowCount } = addOns;
+
+  return (
+    <MenuItemAddOns
+      {...props}
+      key={organizationSlug}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const MenuItemAddOnsPage = async ({
   params,
   searchParams,
 }: MenuItemAddOnsPageProps) => {
@@ -69,11 +116,14 @@ const MenuItemAddOnsContent = async ({
   if (isMissingResource(sectionError)) notFound();
   if (sectionError) return <ErrorAlert />;
 
-  const { data: menu, error: menuError } = await settle(
-    getAdminMenu(section.menuId, fetchOptions),
-  );
-  if (isMissingResource(menuError)) notFound();
-  if (menuError) return <ErrorAlert />;
+  const [{ data: menu, error: menuError }, { error: menuItemError }] =
+    await Promise.all([
+      settle(getAdminMenu(section.menuId, fetchOptions)),
+      settle(getAdminMenuItem(menuItemId, fetchOptions)),
+    ]);
+  if (isMissingResource(menuError) || isMissingResource(menuItemError))
+    notFound();
+  if (menuError || menuItemError) return <ErrorAlert />;
 
   const selectedOrganization = await getAdminOrganization(
     menu.organizationId,
@@ -105,27 +155,21 @@ const MenuItemAddOnsContent = async ({
       locale,
     });
 
-  const [{ data: addOns, error: addOnsError }, role] = await Promise.all([
-    settle(
-      getAdminMenuItemAddOns(
-        menuItemId,
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-        fetchOptions,
-      ),
+  const addOns = settle(
+    getAdminMenuItemAddOns(
+      menuItemId,
+      page,
+      pageSize,
+      filterField,
+      filterOperator,
+      filterValue,
+      quickFilterValue,
+      sortBy,
+      sortDirection,
+      fetchOptions,
     ),
-    getMemberRole(selectedOrganization.id),
-  ]);
-  if (isMissingResource(addOnsError)) notFound();
-  if (addOnsError) return <ErrorAlert />;
-
-  const { addOns: rows, total: rowCount } = addOns;
+  );
+  const role = await getMemberRole(selectedOrganization.id);
 
   const canWrite = hasRolePermission(role, { menu: ["update"] });
   const canViewAuditLog = hasRolePermission(role, {
@@ -133,30 +177,25 @@ const MenuItemAddOnsContent = async ({
   });
 
   return (
-    <MenuItemAddOns
-      canViewAuditLog={canViewAuditLog}
-      canWrite={canWrite}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={selectedOrganization.slug}
-      menuId={section.menuId}
-      menuItemId={menuItemId}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<MenuItemAddOns loading />}>
+      <MenuItemAddOnsContent
+        addOns={addOns}
+        canViewAuditLog={canViewAuditLog}
+        canWrite={canWrite}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        menuId={section.menuId}
+        menuItemId={menuItemId}
+        organizationSlug={selectedOrganization.slug}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const MenuItemAddOnsPage = (props: MenuItemAddOnsPageProps) => (
-  <Suspense fallback={<MenuItemAddOns loading />}>
-    <MenuItemAddOnsContent {...props} />
-  </Suspense>
-);
 
 export default MenuItemAddOnsPage;

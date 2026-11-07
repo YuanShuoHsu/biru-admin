@@ -1,8 +1,9 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 
 import BoundRecipe from "@/components/BoundRecipe";
 
@@ -40,7 +41,7 @@ export const generateMetadata = async ({
   return { title: tInventory("recipes.label") };
 };
 
-const MenuItemRecipeContent = async ({
+const MenuItemRecipePage = async ({
   params,
   searchParams,
 }: MenuItemRecipePageProps) => {
@@ -115,11 +116,5 @@ const MenuItemRecipeContent = async ({
     />
   );
 };
-
-const MenuItemRecipePage = (props: MenuItemRecipePageProps) => (
-  <Suspense fallback={<BoundRecipe loading />}>
-    <MenuItemRecipeContent {...props} />
-  </Suspense>
-);
 
 export default MenuItemRecipePage;

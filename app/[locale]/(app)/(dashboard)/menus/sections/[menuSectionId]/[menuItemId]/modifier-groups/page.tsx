@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,11 +18,18 @@ import {
   modifierGroupFilterFieldValues,
   modifierGroupSortFieldValues,
 } from "@/types/api";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  MenuItemModifierGroup,
+  ModifierGroupFilterField,
+  ModifierGroupSortField,
+} from "@/types/menus";
 
 import { resolveGridSearchParams } from "@/utils/dataGrid";
-import { isMissingResource, settle } from "@/utils/fetcher";
+import { type FetchResult, isMissingResource, settle } from "@/utils/fetcher";
 import {
   getAdminMenu,
+  getAdminMenuItem,
   getAdminMenuItemModifierGroups,
   getAdminMenuSection,
 } from "@/utils/menus";
@@ -55,7 +64,47 @@ export const generateMetadata = async ({
   return { title: tMenus("items.modifierGroups.label") };
 };
 
+interface MenuItemModifierGroupsContentProps {
+  canViewAuditLog: boolean;
+  canWrite: boolean;
+  filterField?: ModifierGroupFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  links: Promise<
+    FetchResult<{ links: MenuItemModifierGroup[]; total: number }>
+  >;
+  menuId: string;
+  menuItemId: string;
+  organizationSlug: string;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sortBy?: ModifierGroupSortField;
+  sortDirection?: SortDirection;
+}
+
 const MenuItemModifierGroupsContent = async ({
+  links: linksResult,
+  organizationSlug,
+  ...props
+}: MenuItemModifierGroupsContentProps) => {
+  const { data: links, error: linksError } = await linksResult;
+  if (isMissingResource(linksError)) notFound();
+  if (linksError) return <ErrorAlert />;
+
+  const { links: rows, total: rowCount } = links;
+
+  return (
+    <MenuItemModifierGroups
+      {...props}
+      key={organizationSlug}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const MenuItemModifierGroupsPage = async ({
   params,
   searchParams,
 }: MenuItemModifierGroupsPageProps) => {
@@ -69,11 +118,14 @@ const MenuItemModifierGroupsContent = async ({
   if (isMissingResource(sectionError)) notFound();
   if (sectionError) return <ErrorAlert />;
 
-  const { data: menu, error: menuError } = await settle(
-    getAdminMenu(section.menuId, fetchOptions),
-  );
-  if (isMissingResource(menuError)) notFound();
-  if (menuError) return <ErrorAlert />;
+  const [{ data: menu, error: menuError }, { error: menuItemError }] =
+    await Promise.all([
+      settle(getAdminMenu(section.menuId, fetchOptions)),
+      settle(getAdminMenuItem(menuItemId, fetchOptions)),
+    ]);
+  if (isMissingResource(menuError) || isMissingResource(menuItemError))
+    notFound();
+  if (menuError || menuItemError) return <ErrorAlert />;
 
   const selectedOrganization = await getAdminOrganization(
     menu.organizationId,
@@ -105,27 +157,21 @@ const MenuItemModifierGroupsContent = async ({
       locale,
     });
 
-  const [{ data: links, error: linksError }, role] = await Promise.all([
-    settle(
-      getAdminMenuItemModifierGroups(
-        menuItemId,
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-        fetchOptions,
-      ),
+  const links = settle(
+    getAdminMenuItemModifierGroups(
+      menuItemId,
+      page,
+      pageSize,
+      filterField,
+      filterOperator,
+      filterValue,
+      quickFilterValue,
+      sortBy,
+      sortDirection,
+      fetchOptions,
     ),
-    getMemberRole(selectedOrganization.id),
-  ]);
-  if (isMissingResource(linksError)) notFound();
-  if (linksError) return <ErrorAlert />;
-
-  const { links: rows, total: rowCount } = links;
+  );
+  const role = await getMemberRole(selectedOrganization.id);
 
   const canWrite = hasRolePermission(role, { menu: ["update"] });
   const canViewAuditLog = hasRolePermission(role, {
@@ -133,30 +179,25 @@ const MenuItemModifierGroupsContent = async ({
   });
 
   return (
-    <MenuItemModifierGroups
-      canViewAuditLog={canViewAuditLog}
-      canWrite={canWrite}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={selectedOrganization.slug}
-      menuId={section.menuId}
-      menuItemId={menuItemId}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<MenuItemModifierGroups loading />}>
+      <MenuItemModifierGroupsContent
+        canViewAuditLog={canViewAuditLog}
+        canWrite={canWrite}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        links={links}
+        menuId={section.menuId}
+        menuItemId={menuItemId}
+        organizationSlug={selectedOrganization.slug}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const MenuItemModifierGroupsPage = (props: MenuItemModifierGroupsPageProps) => (
-  <Suspense fallback={<MenuItemModifierGroups loading />}>
-    <MenuItemModifierGroupsContent {...props} />
-  </Suspense>
-);
 
 export default MenuItemModifierGroupsPage;
