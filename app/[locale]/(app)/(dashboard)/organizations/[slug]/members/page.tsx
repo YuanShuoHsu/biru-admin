@@ -1,7 +1,8 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 
 import OrganizationsSlugMembers from ".";
 
@@ -31,7 +32,7 @@ export const generateMetadata = async ({
   return { title: tOrganizations("members.label") };
 };
 
-const OrganizationsSlugMembersContent = async ({
+const OrganizationsSlugMembersPage = async ({
   params,
 }: OrganizationsSlugMembersPageProps) => {
   const { slug } = await params;
@@ -101,13 +102,5 @@ const OrganizationsSlugMembersContent = async ({
     />
   );
 };
-
-const OrganizationsSlugMembersPage = (
-  props: OrganizationsSlugMembersPageProps,
-) => (
-  <Suspense fallback={<OrganizationsSlugMembers loading />}>
-    <OrganizationsSlugMembersContent {...props} />
-  </Suspense>
-);
 
 export default OrganizationsSlugMembersPage;

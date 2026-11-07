@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,10 +18,17 @@ import {
   ingredientFilterFieldValues,
   ingredientSortFieldValues,
 } from "@/types/api";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  Ingredient,
+  IngredientFilterField,
+  IngredientSortField,
+} from "@/types/inventory";
+import type { Organization } from "@/types/organizations";
 
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getIngredientEnumOptions } from "@/utils/enumOptions";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { getIngredients } from "@/utils/inventory";
 import { hasRolePermission } from "@/utils/organizations";
 import { getMemberRole, getResolvedAdminOrganization } from "@/utils/session";
@@ -50,7 +59,46 @@ export const generateMetadata = async ({
   return { title: tInventory("ingredients.label") };
 };
 
+interface IngredientsContentProps {
+  canRecordTransaction: boolean;
+  canViewAuditLog: boolean;
+  canViewPurchasing: boolean;
+  canWrite: boolean;
+  filterField?: IngredientFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  ingredients: Promise<
+    FetchResult<{ ingredients: Ingredient[]; total: number }>
+  >;
+  lowStock: boolean;
+  organization: Organization;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sortBy?: IngredientSortField;
+  sortDirection?: SortDirection;
+}
+
 const IngredientsContent = async ({
+  ingredients: ingredientsResult,
+  ...props
+}: IngredientsContentProps) => {
+  const { data: ingredients, error } = await ingredientsResult;
+  if (error) return <ErrorAlert />;
+
+  const { ingredients: rows, total: rowCount } = ingredients;
+
+  return (
+    <Ingredients
+      {...props}
+      key={props.organization.slug}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const IngredientsPage = async ({
   params,
   searchParams,
 }: IngredientsPageProps) => {
@@ -125,7 +173,7 @@ const IngredientsContent = async ({
 
   const lowStock = rawSearchParams.lowStock === "true";
 
-  const { data: ingredients, error } = await settle(
+  const ingredients = settle(
     getIngredients(
       organization.slug,
       {
@@ -143,37 +191,28 @@ const IngredientsContent = async ({
       lowStock,
     ),
   );
-  if (error) return <ErrorAlert />;
-
-  const { ingredients: rows, total: rowCount } = ingredients;
 
   return (
-    <Ingredients
-      canRecordTransaction={canRecordTransaction}
-      canViewAuditLog={canViewAuditLog}
-      canViewPurchasing={canViewPurchasing}
-      canWrite={canWrite}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={organization.slug}
-      lowStock={lowStock}
-      organization={organization}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<Ingredients loading />}>
+      <IngredientsContent
+        canRecordTransaction={canRecordTransaction}
+        canViewAuditLog={canViewAuditLog}
+        canViewPurchasing={canViewPurchasing}
+        canWrite={canWrite}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        ingredients={ingredients}
+        lowStock={lowStock}
+        organization={organization}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const IngredientsPage = (props: IngredientsPageProps) => (
-  <Suspense fallback={<Ingredients loading />}>
-    <IngredientsContent {...props} />
-  </Suspense>
-);
 
 export default IngredientsPage;

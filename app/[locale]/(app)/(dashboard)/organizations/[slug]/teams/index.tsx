@@ -64,22 +64,20 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface OrganizationsSlugTeamsProps {
-  activeOrganization?: ActiveOrganization;
-  canCreateTeam?: boolean;
-  canDeleteTeam?: boolean;
-  canUpdateTeam?: boolean;
-  loading?: boolean;
+  activeOrganization: ActiveOrganization;
+  canCreateTeam: boolean;
+  canDeleteTeam: boolean;
+  canUpdateTeam: boolean;
 }
 
 const OrganizationsSlugTeams = ({
   activeOrganization,
-  canCreateTeam = false,
-  canDeleteTeam = false,
-  canUpdateTeam = false,
-  loading = false,
+  canCreateTeam,
+  canDeleteTeam,
+  canUpdateTeam,
 }: OrganizationsSlugTeamsProps) => {
-  const organizationId = activeOrganization?.id ?? "";
-  const initialTeams = activeOrganization?.teams ?? [];
+  const organizationId = activeOrganization.id;
+  const initialTeams = activeOrganization.teams;
 
   const [isSelectMode, setIsSelectMode] = useState(false);
 
@@ -100,7 +98,7 @@ const OrganizationsSlugTeams = ({
     mutate,
     isValidating,
   } = useSWR(
-    !loading && ["organization-teams", slug],
+    ["organization-teams", slug],
     async () => {
       const { data, error } = await authClient.organization.getFullOrganization(
         {
@@ -419,7 +417,7 @@ const OrganizationsSlugTeams = ({
         {...rowSelectionProps}
         apiRef={apiRef}
         columns={columns}
-        loading={loading || isValidating}
+        loading={isValidating}
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }

@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -11,6 +13,8 @@ import ErrorAlert from "@/components/ErrorAlert";
 import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
+
+import type { ActiveOrganization, Team } from "@/types/organizations";
 
 import { settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
@@ -33,36 +37,20 @@ export const generateMetadata = async ({
   return { title: tOrganizations("teams.label") };
 };
 
+interface OrganizationsSlugTeamsTeamIdContentProps {
+  activeOrganization: ActiveOrganization;
+  canUpdateTeam: boolean;
+  currentUserId: string;
+  team: Team;
+  teamMembers: ReturnType<typeof authClient.organization.listTeamMembers>;
+}
+
 const OrganizationsSlugTeamsTeamIdContent = async ({
-  params,
-}: OrganizationsSlugTeamsTeamIdPageProps) => {
-  const [cookieStore, { slug, teamId }] = await Promise.all([
-    cookies(),
-    params,
-  ]);
-
-  const cookieHeader = { cookie: cookieStore.toString() };
-
-  const [
-    { data: activeOrganization, error: organizationError },
-    { data: teamMemberData, error: teamMembersError },
-    session,
-  ] = await Promise.all([
-    settle(getFullOrganization(decodeURIComponent(slug))),
-    authClient.organization.listTeamMembers({
-      query: { teamId },
-      fetchOptions: { headers: cookieHeader },
-    }),
-    getSession(),
-  ]);
-
-  if (organizationError?.status === 400 || organizationError?.status === 403)
-    notFound();
-  if (organizationError) return <ErrorAlert />;
-  if (!activeOrganization || !session?.user?.id) notFound();
-
-  const team = activeOrganization.teams.find(({ id }) => id === teamId);
-  if (!team) notFound();
+  teamMembers: teamMembersResult,
+  ...props
+}: OrganizationsSlugTeamsTeamIdContentProps) => {
+  const { data: teamMemberData, error: teamMembersError } =
+    await teamMembersResult;
 
   if (
     teamMembersError &&
@@ -72,8 +60,39 @@ const OrganizationsSlugTeamsTeamIdContent = async ({
 
   const teamMembers = buildTeamMembers(
     teamMemberData || [],
-    activeOrganization.members,
+    props.activeOrganization.members,
   );
+
+  return <OrganizationsSlugTeamsTeamId {...props} teamMembers={teamMembers} />;
+};
+
+const OrganizationsSlugTeamsTeamIdPage = async ({
+  params,
+}: OrganizationsSlugTeamsTeamIdPageProps) => {
+  const [cookieStore, { slug, teamId }] = await Promise.all([
+    cookies(),
+    params,
+  ]);
+
+  const cookieHeader = { cookie: cookieStore.toString() };
+
+  const teamMembers = authClient.organization.listTeamMembers({
+    query: { teamId },
+    fetchOptions: { headers: cookieHeader },
+  });
+  const [{ data: activeOrganization, error: organizationError }, session] =
+    await Promise.all([
+      settle(getFullOrganization(decodeURIComponent(slug))),
+      getSession(),
+    ]);
+
+  if (organizationError?.status === 400 || organizationError?.status === 403)
+    notFound();
+  if (organizationError) return <ErrorAlert />;
+  if (!activeOrganization || !session?.user?.id) notFound();
+
+  const team = activeOrganization.teams.find(({ id }) => id === teamId);
+  if (!team) notFound();
 
   const currentUserRole = activeOrganization.members.find(
     ({ userId }) => userId === session.user.id,
@@ -84,22 +103,16 @@ const OrganizationsSlugTeamsTeamIdContent = async ({
   });
 
   return (
-    <OrganizationsSlugTeamsTeamId
-      activeOrganization={activeOrganization}
-      canUpdateTeam={canUpdateTeam}
-      currentUserId={session.user.id}
-      team={team}
-      teamMembers={teamMembers}
-    />
+    <Suspense fallback={<OrganizationsSlugTeamsTeamId loading />}>
+      <OrganizationsSlugTeamsTeamIdContent
+        activeOrganization={activeOrganization}
+        canUpdateTeam={canUpdateTeam}
+        currentUserId={session.user.id}
+        team={team}
+        teamMembers={teamMembers}
+      />
+    </Suspense>
   );
 };
-
-const OrganizationsSlugTeamsTeamIdPage = (
-  props: OrganizationsSlugTeamsTeamIdPageProps,
-) => (
-  <Suspense fallback={<OrganizationsSlugTeamsTeamId loading />}>
-    <OrganizationsSlugTeamsTeamIdContent {...props} />
-  </Suspense>
-);
 
 export default OrganizationsSlugTeamsTeamIdPage;
