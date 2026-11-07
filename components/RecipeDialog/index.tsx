@@ -140,6 +140,7 @@ const RecipeDialog = ({
         fullWidth
         helperText={errors.recipeYield?.message}
         label={tInventory("recipes.recipeYield.label")}
+        max={9999}
         min={1}
         onValueChange={(value) =>
           setValue("recipeYield", value != null ? String(value) : "", {
