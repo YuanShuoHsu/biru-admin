@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import dayjs from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
@@ -16,8 +18,11 @@ import { STORE_TIMEZONE } from "@/constants/timezone";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
+import type { PayrollWithholdingSummary } from "@/types/attendance";
+import type { Organization } from "@/types/organizations";
+
 import { getPayrollWithholdingSummary } from "@/utils/attendance";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -43,7 +48,24 @@ export const generateMetadata = async ({
   return { title: tAttendance("withholding.label") };
 };
 
+interface WithholdingContentProps {
+  canManage: boolean;
+  canViewAuditLog: boolean;
+  organization: Organization;
+  summary: Promise<FetchResult<PayrollWithholdingSummary>>;
+}
+
 const WithholdingContent = async ({
+  summary: summaryResult,
+  ...props
+}: WithholdingContentProps) => {
+  const { data: summary, error } = await summaryResult;
+  if (error) return <ErrorAlert />;
+
+  return <Withholding {...props} summary={summary} />;
+};
+
+const WithholdingPage = async ({
   params,
   searchParams,
 }: WithholdingPageProps) => {
@@ -87,25 +109,20 @@ const WithholdingContent = async ({
         ? now.year() - 1
         : now.year();
 
-  const { data: summary, error } = await settle(
+  const summary = settle(
     getPayrollWithholdingSummary(organization.slug, year, fetchOptions),
   );
-  if (error) return <ErrorAlert />;
 
   return (
-    <Withholding
-      canManage={hasRolePermission(memberRole, { payrollTerm: ["update"] })}
-      canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
-      organization={organization}
-      summary={summary}
-    />
+    <Suspense fallback={<Withholding loading />}>
+      <WithholdingContent
+        canManage={hasRolePermission(memberRole, { payrollTerm: ["update"] })}
+        canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
+        organization={organization}
+        summary={summary}
+      />
+    </Suspense>
   );
 };
-
-const WithholdingPage = (props: WithholdingPageProps) => (
-  <Suspense fallback={<Withholding loading />}>
-    <WithholdingContent {...props} />
-  </Suspense>
-);
 
 export default WithholdingPage;
