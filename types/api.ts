@@ -11530,7 +11530,6 @@ export interface components {
        * @example TWD
        */
       currency: string;
-      amountPerPoint?: string | null;
       pickupLeadMinutes: number;
       pickupMaxAdvanceDays: number;
       pickupCutoffMinutes: number;
@@ -11568,7 +11567,6 @@ export interface components {
        * @example TWD
        */
       currency: string;
-      amountPerPoint?: string | null;
       pickupLeadMinutes: number;
       pickupMaxAdvanceDays: number;
       pickupCutoffMinutes: number;
@@ -11615,7 +11613,6 @@ export interface components {
        * @example TWD
        */
       currency: string;
-      amountPerPoint?: string | null;
       pickupLeadMinutes: number;
       pickupMaxAdvanceDays: number;
       pickupCutoffMinutes: number;
