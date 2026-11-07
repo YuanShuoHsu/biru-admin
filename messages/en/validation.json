@@ -194,6 +194,7 @@
     "required": "Please select a modifier group."
   },
   "name": {
+    "maxLength": "Name cannot exceed 50 characters.",
     "required": "Name is required."
   },
   "newPassword": {

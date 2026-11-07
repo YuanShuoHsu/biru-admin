@@ -194,6 +194,7 @@
     "required": "수정자 그룹을 선택해 주세요."
   },
   "name": {
+    "maxLength": "이름은 50자를 초과할 수 없습니다.",
     "required": "이름은 필수입니다."
   },
   "newPassword": {

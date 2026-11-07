@@ -17,7 +17,8 @@ export const useWaitlistTicketFormSchema = () => {
       name: z
         .string()
         .trim()
-        .min(1, { error: tValidation("name.required") }),
+        .min(1, { error: tValidation("name.required") })
+        .max(50, { error: tValidation("name.maxLength") }),
       partySize: z
         .string()
         .min(1, { error: tValidation("partySize.notSelected") }),

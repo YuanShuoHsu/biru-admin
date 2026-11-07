@@ -194,6 +194,7 @@
     "required": "修飾グループを選択してください。"
   },
   "name": {
+    "maxLength": "氏名は50文字以内で入力してください。",
     "required": "氏名は必須です。"
   },
   "newPassword": {
