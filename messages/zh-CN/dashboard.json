@@ -22,7 +22,7 @@
     "orderModes": "点餐方式",
     "paymentMethods": "付款方式",
     "peakHours": "高峰时段",
-    "refundRate": "占订单 {rate}",
+    "refundRate": "本期订单退款率 {rate}",
     "refundReasons": "退款原因",
     "refundedItems": "退款品项",
     "refundedOrders": "退款订单",

@@ -22,7 +22,7 @@
     "orderModes": "Order Modes",
     "paymentMethods": "Payment Methods",
     "peakHours": "Peak Hours",
-    "refundRate": "{rate} of orders",
+    "refundRate": "{rate} of this period's orders refunded",
     "refundReasons": "Refund Reasons",
     "refundedItems": "Refunded Items",
     "refundedOrders": "Refunded Orders",
