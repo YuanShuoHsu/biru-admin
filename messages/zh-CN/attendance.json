@@ -899,6 +899,7 @@
   "notProvided": "未填",
   "earningCategory": {
     "label": "类别",
+    "typeOption": "{name}（{category}）",
     "options": {
       "wage": "经常性工资",
       "bonus": "非经常性奖金"

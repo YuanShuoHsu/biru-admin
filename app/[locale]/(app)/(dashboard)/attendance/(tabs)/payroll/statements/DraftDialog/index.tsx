@@ -343,7 +343,12 @@ const DraftDialog = ({
               >
                 {earningTypes.map(({ category, id: typeId, name }) => (
                   <MenuItem key={typeId} value={typeId}>
-                    {`${name}（${tAttendance(`earningCategory.options.${category}`)}）`}
+                    {tAttendance("earningCategory.typeOption", {
+                      category: tAttendance(
+                        `earningCategory.options.${category}`,
+                      ),
+                      name,
+                    })}
                   </MenuItem>
                 ))}
               </TextField>

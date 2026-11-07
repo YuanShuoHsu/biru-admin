@@ -899,6 +899,7 @@
   "notProvided": "未入力",
   "earningCategory": {
     "label": "区分",
+    "typeOption": "{name}（{category}）",
     "options": {
       "wage": "経常的賃金",
       "bonus": "非経常的賞与"
