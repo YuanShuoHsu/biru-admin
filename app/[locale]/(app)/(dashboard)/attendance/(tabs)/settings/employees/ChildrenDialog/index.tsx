@@ -22,11 +22,13 @@ import { Delete, Edit } from "@mui/icons-material";
 import {
   Button,
   IconButton,
+  LinearProgress,
   List,
   ListItem,
   ListItemText,
   TextField,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
@@ -77,16 +79,21 @@ const ChildrenDialog = ({
 
   const base = attendancePath(organizationSlug, "org", "children");
 
-  const { data: { data: children } = { data: [] }, mutate: mutateChildren } =
-    useSWR(
-      `${base}?${new URLSearchParams({
-        filterField: "employeeEmail",
-        filterOperator: "equals",
-        filterValue: employee.email,
-        limit: String(MAX_PAGE_SIZE),
-      }).toString()}`,
-      (url: string) => fetcher<AttendanceParentalChildPage>(url),
-    );
+  const {
+    data: { data: children } = { data: [] },
+    error: childrenError,
+    isLoading: childrenLoading,
+    mutate: mutateChildren,
+  } = useSWR(
+    `${base}?${new URLSearchParams({
+      filterField: "employeeEmail",
+      filterOperator: "equals",
+      filterValue: employee.email,
+      limit: String(MAX_PAGE_SIZE),
+    }).toString()}`,
+    (url: string) => fetcher<AttendanceParentalChildPage>(url),
+    { onError: () => undefined },
+  );
 
   const {
     control,
@@ -220,6 +227,10 @@ const ChildrenDialog = ({
 
   return (
     <FormBox id="attendance-child-form" onSubmit={onSubmit}>
+      {childrenLoading && <LinearProgress />}
+      {childrenError && (
+        <Typography color="error">{getErrorMessage(childrenError)}</Typography>
+      )}
       {children.length > 0 && (
         <List dense disablePadding>
           {children.map((child) => (
