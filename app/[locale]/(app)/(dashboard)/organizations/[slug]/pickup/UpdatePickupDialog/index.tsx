@@ -11,8 +11,9 @@ import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
 
 import {
+  getPickupMaxLeadMinutes,
   PICKUP_MAX_ADVANCE_DAYS,
-  PICKUP_MAX_MINUTES,
+  PICKUP_MAX_CUTOFF_MINUTES,
 } from "@/constants/pickup";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -43,6 +44,7 @@ const UpdatePickupDialog = ({
     formState: { errors, isSubmitted },
     handleSubmit,
     setValue,
+    trigger,
   } = useForm<UpdatePickupForm>({
     defaultValues: {
       pickupCutoffMinutes: String(organization.pickupCutoffMinutes),
@@ -115,7 +117,7 @@ const UpdatePickupDialog = ({
           tOrganizations("pickup.pickupLeadMinutes.helperText")
         }
         label={tOrganizations("pickup.pickupLeadMinutes.label")}
-        max={PICKUP_MAX_MINUTES}
+        max={getPickupMaxLeadMinutes(PICKUP_MAX_ADVANCE_DAYS)}
         min={0}
         onValueChange={(value) =>
           setValue("pickupLeadMinutes", value != null ? String(value) : "", {
@@ -137,11 +139,12 @@ const UpdatePickupDialog = ({
         label={tOrganizations("pickup.pickupMaxAdvanceDays.label")}
         max={PICKUP_MAX_ADVANCE_DAYS}
         min={0}
-        onValueChange={(value) =>
-          setValue("pickupMaxAdvanceDays", value != null ? String(value) : "", {
-            shouldValidate: isSubmitted,
-          })
-        }
+        onValueChange={(value) => {
+          setValue("pickupMaxAdvanceDays", value != null ? String(value) : "");
+
+          if (isSubmitted)
+            trigger(["pickupMaxAdvanceDays", "pickupLeadMinutes"]);
+        }}
         placeholder={tOrganizations("pickup.pickupMaxAdvanceDays.placeholder")}
         value={
           pickupMaxAdvanceDays !== "" ? Number(pickupMaxAdvanceDays) : null
@@ -155,7 +158,7 @@ const UpdatePickupDialog = ({
           tOrganizations("pickup.pickupCutoffMinutes.helperText")
         }
         label={tOrganizations("pickup.pickupCutoffMinutes.label")}
-        max={PICKUP_MAX_MINUTES}
+        max={PICKUP_MAX_CUTOFF_MINUTES}
         min={0}
         onValueChange={(value) =>
           setValue("pickupCutoffMinutes", value != null ? String(value) : "", {

@@ -243,7 +243,7 @@
   },
   "pickupLeadMinutes": {
     "invalid": "最短前置時間格式無效。",
-    "max": "最短前置時間不可超過 {minutes} 分鐘。",
+    "max": "最短前置時間需短於 {days} 天，否則顧客沒有可預約的時段。",
     "required": "最短前置時間為必填。"
   },
   "pickupMaxAdvanceDays": {

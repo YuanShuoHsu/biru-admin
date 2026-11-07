@@ -2,8 +2,9 @@ import { useTranslations } from "next-intl";
 import * as z from "zod";
 
 import {
+  getPickupMaxLeadMinutes,
   PICKUP_MAX_ADVANCE_DAYS,
-  PICKUP_MAX_MINUTES,
+  PICKUP_MAX_CUTOFF_MINUTES,
 } from "@/constants/pickup";
 
 export const usePickupFormSchema = () => {
@@ -30,6 +31,7 @@ export const usePickupFormSchema = () => {
     .superRefine((data, ctx) => {
       const { pickupCutoffMinutes, pickupLeadMinutes, pickupMaxAdvanceDays } =
         data;
+      const advanceDays = Number(pickupMaxAdvanceDays);
 
       if (!pickupLeadMinutes)
         ctx.addIssue({
@@ -37,11 +39,15 @@ export const usePickupFormSchema = () => {
           message: tValidation("pickupLeadMinutes.required"),
           path: ["pickupLeadMinutes"],
         });
-      else if (Number(pickupLeadMinutes) > PICKUP_MAX_MINUTES)
+      else if (
+        pickupMaxAdvanceDays &&
+        advanceDays <= PICKUP_MAX_ADVANCE_DAYS &&
+        Number(pickupLeadMinutes) > getPickupMaxLeadMinutes(advanceDays)
+      )
         ctx.addIssue({
           code: "custom",
           message: tValidation("pickupLeadMinutes.max", {
-            minutes: PICKUP_MAX_MINUTES,
+            days: advanceDays + 1,
           }),
           path: ["pickupLeadMinutes"],
         });
@@ -52,7 +58,7 @@ export const usePickupFormSchema = () => {
           message: tValidation("pickupMaxAdvanceDays.required"),
           path: ["pickupMaxAdvanceDays"],
         });
-      else if (Number(pickupMaxAdvanceDays) > PICKUP_MAX_ADVANCE_DAYS)
+      else if (advanceDays > PICKUP_MAX_ADVANCE_DAYS)
         ctx.addIssue({
           code: "custom",
           message: tValidation("pickupMaxAdvanceDays.max", {
@@ -67,11 +73,11 @@ export const usePickupFormSchema = () => {
           message: tValidation("pickupCutoffMinutes.required"),
           path: ["pickupCutoffMinutes"],
         });
-      else if (Number(pickupCutoffMinutes) > PICKUP_MAX_MINUTES)
+      else if (Number(pickupCutoffMinutes) > PICKUP_MAX_CUTOFF_MINUTES)
         ctx.addIssue({
           code: "custom",
           message: tValidation("pickupCutoffMinutes.max", {
-            minutes: PICKUP_MAX_MINUTES,
+            minutes: PICKUP_MAX_CUTOFF_MINUTES,
           }),
           path: ["pickupCutoffMinutes"],
         });
