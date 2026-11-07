@@ -46,7 +46,7 @@ const StorePhotoDialog = ({ mutate, storePhoto }: StorePhotoDialogProps) => {
   const storePhotoFormSchema = useStorePhotoFormSchema();
   const {
     control,
-    formState: { errors },
+    formState: { errors, isSubmitted },
     handleSubmit,
     setValue,
   } = useForm<StorePhotoForm>({
@@ -132,7 +132,11 @@ const StorePhotoDialog = ({ mutate, storePhoto }: StorePhotoDialogProps) => {
               errors.alt?.[lang]?.message ?? tStorePhotos("alt.helperText"),
             label: tStorePhotos("alt.label"),
             onChange: (event) =>
-              setValue("alt", { ...altValue, [lang]: event.target.value }),
+              setValue(
+                "alt",
+                { ...altValue, [lang]: event.target.value },
+                { shouldValidate: isSubmitted },
+              ),
             placeholder: tStorePhotos("alt.placeholder"),
             required: true,
             value: altValue?.[lang] || "",
