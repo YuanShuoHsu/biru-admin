@@ -262,7 +262,7 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
         discountTrend: getMoneyTrend("discount"),
         refundedOrders: {
           data: orderBuckets.map(({ refundedOrders }) => refundedOrders),
-          periodOrders: orderStats?.refundedPeriodOrders ?? 0,
+          refundedPeriodOrders: orderStats?.refundedPeriodOrders ?? 0,
           total: orderStats?.refundedOrders ?? 0,
         },
         usersTrend: userStats && {

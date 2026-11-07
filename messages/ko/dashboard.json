@@ -22,7 +22,7 @@
     "orderModes": "주문 방식",
     "paymentMethods": "결제 수단",
     "peakHours": "피크 시간대",
-    "refundRate": "기간 내 주문의 {rate} 환불됨",
+    "refundRate": "기간 내 주문 환불률 {rate}",
     "refundReasons": "환불 사유",
     "refundedItems": "환불된 메뉴",
     "refundedOrders": "환불된 주문",
