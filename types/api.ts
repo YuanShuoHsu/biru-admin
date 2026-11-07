@@ -22561,7 +22561,7 @@ export interface operations {
       path: {
         kind: "menu" | "menuSection" | "menuItem" | "banner" | "storePhoto";
         id: string;
-        /** @description 圖片所屬資料的 updatedAt（毫秒） */
+        /** @description 圖片內容的雜湊；舊網址的 updatedAt 毫秒數也接受 */
         version: string;
         extension: "avif" | "gif" | "jpg" | "png" | "svg" | "webp";
       };
