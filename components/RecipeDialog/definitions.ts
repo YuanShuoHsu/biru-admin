@@ -24,6 +24,9 @@ export const useRecipeFormSchema = (unbound: boolean) => {
         .trim()
         .min(1, {
           error: tValidation("recipeYield.required"),
+        })
+        .refine((value) => Number(value) <= 9999, {
+          error: tValidation("number.max", { max: 9999 }),
         }),
       recipeYieldQuantity: z.string().trim(),
       recipeYieldUnitCode: z.enum(unitCodeValues).or(z.literal("")),
