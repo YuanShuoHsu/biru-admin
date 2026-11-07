@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
-import { type ComponentProps, Suspense } from "react";
+import { Suspense } from "react";
 
 import Coupons from ".";
 
@@ -18,7 +18,9 @@ import {
   couponSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
-import type { OrganizationResponse } from "@/types/organizations";
+import type { CouponFilterField, CouponSortField } from "@/types/coupons";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization, OrganizationResponse } from "@/types/organizations";
 
 import { getCoupons } from "@/utils/coupons";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
@@ -56,15 +58,22 @@ export const generateMetadata = async ({
   return { title: tCoupons("label") };
 };
 
-interface CouponsContentProps
-  extends Omit<
-    ComponentProps<typeof Coupons>,
-    "loading" | "organizations" | "rowCount" | "rows"
-  > {
+interface CouponsContentProps {
+  canGrantCoupon: boolean;
+  canViewAuditLog: boolean;
   fetchOptions: { headers: { cookie: string } };
+  filterField?: CouponFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
   isAdmin: boolean;
   locale: Locale;
+  organization?: Organization;
   organizations: Promise<FetchResult<OrganizationResponse[]>>;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sortBy?: CouponSortField;
+  sortDirection?: SortDirection;
 }
 
 const CouponsContent = async ({

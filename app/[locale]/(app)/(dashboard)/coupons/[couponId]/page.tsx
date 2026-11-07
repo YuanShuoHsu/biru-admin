@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
-import { type ComponentProps, Suspense } from "react";
+import { Suspense } from "react";
 
 import CouponRecipients from ".";
 
@@ -18,6 +18,12 @@ import {
   couponRecipientSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
+import type {
+  CouponRecipient,
+  CouponRecipientFilterField,
+  CouponRecipientSortField,
+} from "@/types/coupons";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
 import { getCoupon, getCouponRecipients } from "@/utils/coupons";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
@@ -48,14 +54,19 @@ export const generateMetadata = async ({
   return { title: tCoupons("recipients.label") };
 };
 
-interface CouponRecipientsContentProps
-  extends Omit<
-    ComponentProps<typeof CouponRecipients>,
-    "loading" | "rowCount" | "rows"
-  > {
+interface CouponRecipientsContentProps {
+  couponId: string;
+  filterField?: CouponRecipientFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
   recipients: Promise<
-    FetchResult<Awaited<ReturnType<typeof getCouponRecipients>>>
+    FetchResult<{ recipients: CouponRecipient[]; total: number }>
   >;
+  sortBy?: CouponRecipientSortField;
+  sortDirection?: SortDirection;
 }
 
 const CouponRecipientsContent = async ({

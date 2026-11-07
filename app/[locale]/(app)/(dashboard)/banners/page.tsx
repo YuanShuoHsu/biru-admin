@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
-import { type ComponentProps, Suspense } from "react";
+import { Suspense } from "react";
 
 import Banners from ".";
 
@@ -18,6 +18,12 @@ import {
   bannerSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
+import type {
+  Banner,
+  BannerFilterField,
+  BannerSortField,
+} from "@/types/banners";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
 import { getBanners } from "@/utils/banners";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
@@ -49,12 +55,16 @@ export const generateMetadata = async ({
   return { title: tBanners("label") };
 };
 
-interface BannersContentProps
-  extends Omit<
-    ComponentProps<typeof Banners>,
-    "loading" | "rowCount" | "rows"
-  > {
-  banners: Promise<FetchResult<Awaited<ReturnType<typeof getBanners>>>>;
+interface BannersContentProps {
+  banners: Promise<FetchResult<{ banners: Banner[]; total: number }>>;
+  filterField?: BannerFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sortBy?: BannerSortField;
+  sortDirection?: SortDirection;
 }
 
 const BannersContent = async ({ banners, ...props }: BannersContentProps) => {
@@ -71,6 +81,8 @@ const BannersPage = async ({ params, searchParams }: BannersPageProps) => {
   const [session, cookieStore, { locale }, rawSearchParams] = await Promise.all(
     [getSession(), cookies(), params, searchParams],
   );
+
+  if (session?.user?.role !== "admin") notFound();
 
   const {
     filterField,
@@ -91,8 +103,6 @@ const BannersPage = async ({ params, searchParams }: BannersPageProps) => {
 
   if (redirectParams)
     redirect({ href: `/banners?${redirectParams.toString()}`, locale });
-
-  if (session?.user?.role !== "admin") notFound();
 
   const tBanners = await getTranslations({ locale, namespace: "banners" });
 

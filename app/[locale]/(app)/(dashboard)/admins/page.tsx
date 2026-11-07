@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
-import { type ComponentProps, Suspense } from "react";
+import { Suspense } from "react";
 
 import Admins from ".";
 
@@ -19,7 +19,14 @@ import {
   userSortFieldValues,
 } from "@/types/api";
 
-import type { User, UserListResponse } from "@/types/admins";
+import type {
+  User,
+  UserFilterField,
+  UserFilterOperator,
+  UserListResponse,
+  UserSortField,
+} from "@/types/admins";
+import type { SortDirection } from "@/types/dataGrid";
 
 import {
   getGridSearchParams,
@@ -54,8 +61,15 @@ export const generateMetadata = async ({
   return { title: tAdmins("label") };
 };
 
-interface AdminsContentProps
-  extends Omit<ComponentProps<typeof Admins>, "loading" | "rowCount" | "rows"> {
+interface AdminsContentProps {
+  filterField?: UserFilterField;
+  filterOperator?: UserFilterOperator;
+  filterValue?: string;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sortBy?: UserSortField;
+  sortDirection?: SortDirection;
   users: Promise<FetchResult<UserListResponse>>;
 }
 
@@ -74,6 +88,8 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
   const [session, cookieStore, { locale }, rawSearchParams] = await Promise.all(
     [getSession(), cookies(), params, searchParams],
   );
+
+  if (session?.user?.role !== "admin") notFound();
 
   const {
     filterField,
@@ -94,8 +110,6 @@ const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
 
   if (redirectParams)
     redirect({ href: `/admins?${redirectParams.toString()}`, locale });
-
-  if (session?.user?.role !== "admin") notFound();
 
   const tAdmins = await getTranslations({ locale, namespace: "admins" });
 

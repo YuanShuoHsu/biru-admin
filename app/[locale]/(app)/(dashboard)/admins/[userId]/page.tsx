@@ -1,10 +1,11 @@
 // https://nextjs.org/docs/app/guides/streaming#status-codes
 
+import type { UserWithRole } from "better-auth/client/plugins";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
-import { type ComponentProps, Suspense } from "react";
+import { Suspense } from "react";
 
 import UserSessions from ".";
 
@@ -20,7 +21,12 @@ import {
   userSessionFilterFieldValues,
   userSessionSortFieldValues,
 } from "@/types/api";
-import type { UserSessionListResponse } from "@/types/admins";
+import type {
+  UserSessionFilterField,
+  UserSessionListResponse,
+  UserSessionSortField,
+} from "@/types/admins";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
 import { getGridSearchParams, resolveGridSearchParams } from "@/utils/dataGrid";
 import { type FetchResult, fetcher, settle } from "@/utils/fetcher";
@@ -48,12 +54,17 @@ export const generateMetadata = async ({
   return { title: tAdmins("label") };
 };
 
-interface UserSessionsContentProps
-  extends Omit<
-    ComponentProps<typeof UserSessions>,
-    "loading" | "rowCount" | "rows"
-  > {
+interface UserSessionsContentProps {
+  filterField?: UserSessionFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
   sessions: Promise<FetchResult<UserSessionListResponse>>;
+  sortBy?: UserSessionSortField;
+  sortDirection?: SortDirection;
+  user: UserWithRole;
 }
 
 const UserSessionsContent = async ({

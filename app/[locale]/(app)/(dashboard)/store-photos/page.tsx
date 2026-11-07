@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
-import { type ComponentProps, Suspense } from "react";
+import { Suspense } from "react";
 
 import StorePhotos from ".";
 
@@ -18,6 +18,12 @@ import {
   storePhotoSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  StorePhoto,
+  StorePhotoFilterField,
+  StorePhotoSortField,
+} from "@/types/storePhotos";
 
 import { getStorePhotos } from "@/utils/storePhotos";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
@@ -52,12 +58,18 @@ export const generateMetadata = async ({
   return { title: tStorePhotos("label") };
 };
 
-interface StorePhotosContentProps
-  extends Omit<
-    ComponentProps<typeof StorePhotos>,
-    "loading" | "rowCount" | "rows"
-  > {
-  storePhotos: Promise<FetchResult<Awaited<ReturnType<typeof getStorePhotos>>>>;
+interface StorePhotosContentProps {
+  filterField?: StorePhotoFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  storePhotos: Promise<
+    FetchResult<{ storePhotos: StorePhoto[]; total: number }>
+  >;
+  sortBy?: StorePhotoSortField;
+  sortDirection?: SortDirection;
 }
 
 const StorePhotosContent = async ({
@@ -81,6 +93,8 @@ const StorePhotosPage = async ({
     [getSession(), cookies(), params, searchParams],
   );
 
+  if (session?.user?.role !== "admin") notFound();
+
   const {
     filterField,
     filterOperator,
@@ -100,8 +114,6 @@ const StorePhotosPage = async ({
 
   if (redirectParams)
     redirect({ href: `/store-photos?${redirectParams.toString()}`, locale });
-
-  if (session?.user?.role !== "admin") notFound();
 
   const tStorePhotos = await getTranslations({
     locale,
