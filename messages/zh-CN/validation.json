@@ -170,6 +170,7 @@
   },
   "localizedText": {
     "completeOrEmpty": "所有语言字段必须同时填写或同时留空。",
+    "maxLength": "每种语言最多 {max} 个字符。",
     "required": "请填写多语言文字。"
   },
   "longitude": {

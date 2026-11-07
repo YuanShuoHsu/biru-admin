@@ -154,11 +154,17 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
       <LocalizedTextFields
         fields={(lang) => [
           {
+            error: !!errors.alt?.[lang],
             fullWidth: true,
-            helperText: tBanners("alt.helperText"),
+            helperText:
+              errors.alt?.[lang]?.message ?? tBanners("alt.helperText"),
             label: `${tBanners("alt.label")} ${tCommon("optional")}`,
             onChange: (event) =>
-              setValue("alt", { ...alt, [lang]: event.target.value }),
+              setValue(
+                "alt",
+                { ...alt, [lang]: event.target.value },
+                { shouldValidate: isSubmitted },
+              ),
             value: alt[lang] || "",
           },
         ]}

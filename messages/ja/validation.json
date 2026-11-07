@@ -170,6 +170,7 @@
   },
   "localizedText": {
     "completeOrEmpty": "すべての言語フィールドを入力するか、すべて空白にしてください。",
+    "maxLength": "各言語{max}文字以内で入力してください。",
     "required": "多言語テキストを入力してください。"
   },
   "longitude": {

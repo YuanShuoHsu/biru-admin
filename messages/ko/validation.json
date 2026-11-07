@@ -170,6 +170,7 @@
   },
   "localizedText": {
     "completeOrEmpty": "모든 언어 필드를 함께 채우거나 비워두어야 합니다.",
+    "maxLength": "각 언어는 {max}자를 초과할 수 없습니다.",
     "required": "다국어 텍스트를 입력해 주세요."
   },
   "longitude": {
