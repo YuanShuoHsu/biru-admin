@@ -14,7 +14,7 @@ import {
 
 import FormBox from "@/components/FormBox";
 
-import { roles } from "@/constants/organizations";
+import { ROLE_RANK, roles } from "@/constants/organizations";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -27,12 +27,14 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { Organization, Team } from "@/types/organizations";
 
 interface InviteMemberDialogProps {
+  currentUserRole: string;
   mutate: () => void;
   organizationId: Organization["id"];
   teams: Team[];
 }
 
 const InviteMemberDialog = ({
+  currentUserRole,
   mutate,
   organizationId,
   teams,
@@ -131,11 +133,13 @@ const InviteMemberDialog = ({
         <MenuItem disabled value="">
           <em>{tMembers("role.placeholder")}</em>
         </MenuItem>
-        {roles.map((role) => (
-          <MenuItem key={role} value={role}>
-            {tMembers(`role.${role}`)}
-          </MenuItem>
-        ))}
+        {roles
+          .filter((role) => ROLE_RANK[role] <= ROLE_RANK[currentUserRole])
+          .map((role) => (
+            <MenuItem key={role} value={role}>
+              {tMembers(`role.${role}`)}
+            </MenuItem>
+          ))}
       </TextField>
       <TextField
         error={!!errors.teamId}

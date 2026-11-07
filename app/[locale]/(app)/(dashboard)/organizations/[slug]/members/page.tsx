@@ -77,8 +77,9 @@ const OrganizationsSlugMembersContent = async ({
     members.some(({ role, userId }) => {
       const isOnlyOwner = role === "owner" && ownerCount === 1;
       const isCurrentUser = userId === session.user.id;
+      const isHigherRoleRank = ROLE_RANK[currentUserRole] >= ROLE_RANK[role];
 
-      return !isCurrentUser && !isOnlyOwner;
+      return !isCurrentUser && !isOnlyOwner && isHigherRoleRank;
     });
   const canLeaveOrganizations = members.some(({ role, userId }) => {
     const isOnlyOwner = role === "owner" && ownerCount === 1;

@@ -13,7 +13,7 @@ import {
 
 import FormBox from "@/components/FormBox";
 
-import { roles } from "@/constants/organizations";
+import { ROLE_RANK, roles } from "@/constants/organizations";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -26,12 +26,14 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { Member, Organization } from "@/types/organizations";
 
 interface UpdateMemberRoleDialogProps {
+  currentUserRole: string;
   member: Member;
   mutate: () => void;
   organizationId: Organization["id"];
 }
 
 const UpdateMemberRoleDialog = ({
+  currentUserRole,
   member,
   mutate,
   organizationId,
@@ -122,11 +124,13 @@ const UpdateMemberRoleDialog = ({
         <MenuItem disabled value="">
           <em>{tMembers("role.placeholder")}</em>
         </MenuItem>
-        {roles.map((role) => (
-          <MenuItem key={role} value={role}>
-            {tMembers(`role.${role}`)}
-          </MenuItem>
-        ))}
+        {roles
+          .filter((role) => ROLE_RANK[role] <= ROLE_RANK[currentUserRole])
+          .map((role) => (
+            <MenuItem key={role} value={role}>
+              {tMembers(`role.${role}`)}
+            </MenuItem>
+          ))}
       </TextField>
     </FormBox>
   );

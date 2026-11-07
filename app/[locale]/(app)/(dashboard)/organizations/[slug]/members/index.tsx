@@ -218,7 +218,8 @@ const OrganizationsSlugMembers = ({
       return {
         canUpdateMemberRole:
           canUpdateMember && !isOnlyOwner && isHigherRoleRank,
-        canRemoveMember: canDeleteMember && !isCurrentUser && !isOnlyOwner,
+        canRemoveMember:
+          canDeleteMember && !isCurrentUser && !isOnlyOwner && isHigherRoleRank,
         canLeaveOrganization: isCurrentUser && !isOnlyOwner,
         canTurnOnShowcase: isCurrentUser,
         canTurnOffShowcase: isCurrentUser || canUpdateMember,
@@ -253,6 +254,7 @@ const OrganizationsSlugMembers = ({
     setDialog({
       content: (
         <InviteMemberDialog
+          currentUserRole={currentUserRole}
           mutate={mutate}
           organizationId={organizationId}
           teams={teams}
@@ -269,6 +271,7 @@ const OrganizationsSlugMembers = ({
       setDialog({
         content: (
           <UpdateMemberRoleDialog
+            currentUserRole={currentUserRole}
             member={member}
             mutate={mutate}
             organizationId={organizationId}
