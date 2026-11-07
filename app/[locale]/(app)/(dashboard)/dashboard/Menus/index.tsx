@@ -26,7 +26,7 @@ export interface MenuItemSales {
 interface MenusProps {
   loading?: boolean;
   orderStats?: OrderStatsResponse | null;
-  range?: DashboardRange;
+  range: DashboardRange;
   slowItems?: MenuItemSales[];
   topItems?: MenuItemSales[];
 }

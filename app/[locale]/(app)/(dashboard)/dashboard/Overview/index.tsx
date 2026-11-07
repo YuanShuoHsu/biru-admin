@@ -29,7 +29,7 @@ interface OverviewProps {
   currency?: string;
   isAdmin?: boolean;
   loading?: boolean;
-  range?: DashboardRange;
+  range: DashboardRange;
   stats?: {
     totalUsers: number | null;
     totalOrganizations: number;

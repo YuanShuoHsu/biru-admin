@@ -25,7 +25,7 @@ import { emptyWhenAllZero, sumOf, toHourlyRows } from "@/utils/dashboard";
 interface OrdersProps {
   loading?: boolean;
   orderStats?: OrderStatsResponse | null;
-  range?: DashboardRange;
+  range: DashboardRange;
 }
 
 const Orders = ({ loading = false, orderStats, range }: OrdersProps) => {

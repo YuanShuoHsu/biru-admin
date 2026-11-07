@@ -11,7 +11,7 @@ const TREND_NEUTRAL_THRESHOLD = 5;
 
 export const AXIS_TICK_NUMBER = 5;
 
-export const useDashboardCharts = (range?: DashboardRange) => {
+export const useDashboardCharts = (range: DashboardRange) => {
   const format = useFormatter();
 
   const theme = useTheme();
@@ -48,19 +48,19 @@ export const useDashboardCharts = (range?: DashboardRange) => {
     countAxis,
     getTrendColors,
     moneyAxis,
-    periodLabel: range && tDashboard(`stats.period.${range}`),
-    tickStep: range ? DASHBOARD_RANGES[range].tickStep : 1,
+    periodLabel: tDashboard(`stats.period.${range}`),
+    tickStep: DASHBOARD_RANGES[range].tickStep,
     warningColor: theme.vars.palette.warning.main,
   };
 };
 
 export const useTrendLabels = (
   trendStarts: string[],
-  range?: DashboardRange,
+  range: DashboardRange,
 ) => {
   const format = useFormatter();
 
-  const bucketUnit = range && DASHBOARD_RANGES[range].bucketUnit;
+  const bucketUnit = DASHBOARD_RANGES[range].bucketUnit;
 
   return useMemo(
     () =>

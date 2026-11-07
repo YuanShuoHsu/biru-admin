@@ -1,4 +1,5 @@
 // https://nextjs.org/docs/app/guides/interactive-apps#step-1-stream-slow-data-with-suspense
+// https://nextjs.org/docs/app/guides/streaming#status-codes
 
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
@@ -256,10 +257,7 @@ const WaitlistContent = async ({
   return <Waitlist range={range} waitlist={waitlistStats} />;
 };
 
-const DashboardContent = async ({
-  params,
-  searchParams,
-}: DashboardPageProps) => {
+const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
   const [cookieStore, { locale }, { organization = "", range: rangeParam }] =
     await Promise.all([cookies(), params, searchParams]);
 
@@ -396,20 +394,5 @@ const DashboardContent = async ({
     </SectionsStack>
   );
 };
-
-const DashboardPage = (props: DashboardPageProps) => (
-  <Suspense
-    fallback={
-      <SectionsStack>
-        <Overview loading />
-        <Orders loading />
-        <Menus loading />
-        <Coupons loading />
-      </SectionsStack>
-    }
-  >
-    <DashboardContent {...props} />
-  </Suspense>
-);
 
 export default DashboardPage;

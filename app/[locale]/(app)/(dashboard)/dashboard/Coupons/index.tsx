@@ -20,7 +20,7 @@ interface CouponsProps {
   currency?: string;
   loading?: boolean;
   orderStats?: OrderStatsResponse | null;
-  range?: DashboardRange;
+  range: DashboardRange;
 }
 
 const Coupons = ({
