@@ -8,7 +8,15 @@ export const useStorePhotoFormSchema = () => {
 
   return z.object({
     alt: z
-      .record(z.string(), z.string().trim())
+      .record(
+        z.string(),
+        z
+          .string()
+          .trim()
+          .max(160, {
+            error: tValidation("localizedText.maxLength", { max: 160 }),
+          }),
+      )
       .superRefine(
         refineRequiredLocalizedText(tValidation("localizedText.required")),
       ),
