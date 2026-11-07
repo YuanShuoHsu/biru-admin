@@ -1,5 +1,7 @@
 "use client";
 
+import { startTransition, useOptimistic } from "react";
+
 import { useTranslations } from "next-intl";
 
 import {
@@ -49,6 +51,10 @@ const DashboardRangeToggle = ({
   const pathname = usePathname();
   const router = useRouter();
 
+  // https://nextjs.org/docs/app/guides/interactive-apps#step-3-filter-with-pending-feedback
+  const [optimisticRange, setOptimisticRange] = useOptimistic(range);
+  const [isPending, setIsPending] = useOptimistic(false);
+
   const tDashboard = useTranslations("dashboard");
 
   const handleChange = (
@@ -62,16 +68,21 @@ const DashboardRangeToggle = ({
       range: value,
     });
 
-    router.push(`${pathname}?${params.toString()}`);
+    startTransition(() => {
+      setOptimisticRange(value);
+      setIsPending(true);
+      router.push(`${pathname}?${params.toString()}`);
+    });
   };
 
   return (
     <StyledToggleButtonGroup
+      data-pending={isPending ? "" : undefined}
       exclusive
       fullWidth
       onChange={handleChange}
       size="small"
-      value={range}
+      value={optimisticRange}
     >
       {(Object.keys(DASHBOARD_RANGES) as DashboardRange[]).map((value) => (
         <ToggleButton key={value} value={value}>

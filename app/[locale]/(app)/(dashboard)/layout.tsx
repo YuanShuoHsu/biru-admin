@@ -13,7 +13,8 @@ const DashboardLayout = ({
   subheader,
   toolbar,
 }: DashboardLayoutProps) => (
-  <DashboardStack>
+  // https://nextjs.org/docs/app/guides/interactive-apps#step-3-filter-with-pending-feedback
+  <DashboardStack className="group">
     <HeaderStack direction="row">
       {breadcrumb}
       {toolbar}

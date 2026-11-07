@@ -1,17 +1,24 @@
-import dayjs from "dayjs";
-import timezonePlugin from "dayjs/plugin/timezone";
-import utc from "dayjs/plugin/utc";
+// https://nextjs.org/docs/app/guides/interactive-apps#step-1-stream-slow-data-with-suspense
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
-import Dashboard from ".";
-import { DASHBOARD_RANGES, resolveDashboardRange } from "./definitions";
+import Coupons from "./Coupons";
+import Menus, { type MenuItemSales } from "./Menus";
+import Orders from "./Orders";
+import Overview from "./Overview";
+import Waitlist from "./Waitlist";
+import {
+  DASHBOARD_RANGES,
+  type DashboardRange,
+  resolveDashboardRange,
+} from "./definitions";
+import { SectionsStack } from "./styled";
 
 import ErrorAlert from "@/components/ErrorAlert";
-
-import { PLATFORM_TIMEZONE, STORE_TIMEZONE } from "@/constants/timezone";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -22,17 +29,19 @@ import type { MenuItemSalesResponse, OrderStatsResponse } from "@/types/orders";
 import type { OrganizationStats } from "@/types/organizations";
 import type { WaitlistStats, WaitlistStatusResponse } from "@/types/waitlist";
 
-import { getChangePercent } from "@/utils/dashboard";
-import { fetcher, settle } from "@/utils/fetcher";
+import {
+  getChangePercent,
+  getDashboardPeriod,
+  getMoneyTrend,
+  sumOf,
+} from "@/utils/dashboard";
+import { type FetchResult, fetcher, settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import {
   getMemberRole,
   getResolvedAdminOrganization,
   getSession,
 } from "@/utils/session";
-
-dayjs.extend(utc);
-dayjs.extend(timezonePlugin);
 
 interface DashboardPageProps {
   params: Promise<{ locale: Locale }>;
@@ -48,13 +57,213 @@ export const generateMetadata = async ({
   return { title: tDashboard("label") };
 };
 
-const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
+interface OverviewContentProps {
+  currency: string;
+  isAdmin: boolean;
+  orderStats: Promise<FetchResult<OrderStatsResponse | null>>;
+  organizationStats: Promise<FetchResult<OrganizationStats>>;
+  range: DashboardRange;
+  userStats: Promise<FetchResult<UserStatsResponse | null>>;
+}
+
+const OverviewContent = async ({
+  currency,
+  isAdmin,
+  orderStats: orderStatsPromise,
+  organizationStats: organizationStatsPromise,
+  range,
+  userStats: userStatsPromise,
+}: OverviewContentProps) => {
+  const [userStatsResult, organizationStatsResult, orderStatsResult] =
+    await Promise.all([
+      userStatsPromise,
+      organizationStatsPromise,
+      orderStatsPromise,
+    ]);
+
+  if (
+    userStatsResult.error ||
+    organizationStatsResult.error ||
+    orderStatsResult.error
+  )
+    return <ErrorAlert />;
+
+  const userStats = userStatsResult.data;
+  const organizationStats = organizationStatsResult.data;
+  const orderStats = orderStatsResult.data;
+
+  const orderBuckets = orderStats?.buckets ?? [];
+
+  const ordersTrendData = orderBuckets.length
+    ? orderBuckets.map(({ orders }) => orders)
+    : Array<number>(DASHBOARD_RANGES[range].buckets).fill(0);
+  const usersTrendData = (userStats?.buckets ?? []).map(({ users }) => users);
+  const organizationsTrendData = organizationStats.buckets.map(
+    ({ organizations }) => organizations,
+  );
+
+  return (
+    <Overview
+      currency={currency}
+      isAdmin={isAdmin}
+      range={range}
+      trendStarts={organizationStats.buckets.map(({ start }) => start)}
+      stats={{
+        totalUsers: userStats?.total ?? null,
+        totalOrganizations: organizationStats.total,
+        totalOrders: orderStats?.lifetimeOrders ?? 0,
+        ordersTrend: {
+          data: ordersTrendData,
+          percent: getChangePercent(
+            orderStats?.previous.orders ?? 0,
+            sumOf(ordersTrendData),
+          ),
+        },
+        revenueTrend: getMoneyTrend(orderStats, "revenue"),
+        usersTrend: userStats && {
+          data: usersTrendData,
+          percent: getChangePercent(userStats.previous, sumOf(usersTrendData)),
+        },
+        organizationsTrend: {
+          data: organizationsTrendData,
+          percent: getChangePercent(
+            organizationStats.previous,
+            sumOf(organizationsTrendData),
+          ),
+        },
+      }}
+    />
+  );
+};
+
+interface OrdersContentProps {
+  orderStats: Promise<FetchResult<OrderStatsResponse | null>>;
+  range: DashboardRange;
+}
+
+const OrdersContent = async ({
+  orderStats: orderStatsPromise,
+  range,
+}: OrdersContentProps) => {
+  const orderStatsResult = await orderStatsPromise;
+
+  if (orderStatsResult.error) return <ErrorAlert />;
+
+  return <Orders orderStats={orderStatsResult.data} range={range} />;
+};
+
+interface MenusContentProps {
+  orderMenu: Promise<FetchResult<OrderMenu | null>>;
+  orderStats: Promise<FetchResult<OrderStatsResponse | null>>;
+  range: DashboardRange;
+  sales: Promise<FetchResult<MenuItemSalesResponse[]>>;
+}
+
+const MenusContent = async ({
+  orderMenu: orderMenuPromise,
+  orderStats: orderStatsPromise,
+  range,
+  sales: salesPromise,
+}: MenusContentProps) => {
+  const [orderMenuResult, orderStatsResult, salesResult] = await Promise.all([
+    orderMenuPromise,
+    orderStatsPromise,
+    salesPromise,
+  ]);
+
+  if (orderMenuResult.error || orderStatsResult.error || salesResult.error)
+    return <ErrorAlert />;
+
+  const orderMenu = orderMenuResult.data;
+  const sales = salesResult.data;
+
+  const topItems: MenuItemSales[] = [...sales]
+    .sort((a, b) => b.sold - a.sold)
+    .slice(0, 10)
+    .map(({ menuItemName, sold }) => ({ name: menuItemName, quantity: sold }));
+
+  const menuItems = (orderMenu?.sections || []).flatMap(
+    ({ menuItems }) => menuItems,
+  );
+  const soldByMenuItemId = new Map(
+    sales.map(({ menuItemId, sold }) => [menuItemId, sold]),
+  );
+
+  const slowItems: MenuItemSales[] = menuItems
+    .map(({ id, name }) => ({ name, quantity: soldByMenuItemId.get(id) || 0 }))
+    .sort((a, b) => a.quantity - b.quantity)
+    .slice(0, 10);
+
+  return (
+    <Menus
+      orderStats={orderStatsResult.data}
+      range={range}
+      slowItems={slowItems}
+      topItems={topItems}
+    />
+  );
+};
+
+interface CouponsContentProps {
+  currency: string;
+  orderStats: Promise<FetchResult<OrderStatsResponse | null>>;
+  range: DashboardRange;
+}
+
+const CouponsContent = async ({
+  currency,
+  orderStats: orderStatsPromise,
+  range,
+}: CouponsContentProps) => {
+  const orderStatsResult = await orderStatsPromise;
+
+  if (orderStatsResult.error) return <ErrorAlert />;
+
+  return (
+    <Coupons
+      currency={currency}
+      orderStats={orderStatsResult.data}
+      range={range}
+    />
+  );
+};
+
+interface WaitlistContentProps {
+  range: DashboardRange;
+  waitlist: Promise<
+    [
+      FetchResult<WaitlistStats | null>,
+      FetchResult<WaitlistStatusResponse | null>,
+    ]
+  >;
+}
+
+const WaitlistContent = async ({
+  range,
+  waitlist: waitlistPromise,
+}: WaitlistContentProps) => {
+  const [waitlistStatsResult, waitlistStatusResult] = await waitlistPromise;
+
+  if (waitlistStatsResult.error || waitlistStatusResult.error)
+    return <ErrorAlert />;
+
+  const waitlistStats = waitlistStatsResult.data;
+  const waitlistStatus = waitlistStatusResult.data;
+
+  if (!waitlistStats || !(waitlistStatus?.enabled || waitlistStats.total))
+    return null;
+
+  return <Waitlist range={range} waitlist={waitlistStats} />;
+};
+
+const DashboardContent = async ({
+  params,
+  searchParams,
+}: DashboardPageProps) => {
   const [cookieStore, { locale }, { organization = "", range: rangeParam }] =
     await Promise.all([cookies(), params, searchParams]);
 
   const range = resolveDashboardRange(rangeParam);
-  const { bucketUnit, bucketSize, buckets, offsetDays } =
-    DASHBOARD_RANGES[range];
 
   const fetchOptions = {
     headers: {
@@ -80,34 +289,49 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
 
   const organizationSlug = selectedOrganization?.slug ?? "";
   const resolvedOrganizationId = selectedOrganization?.id;
+  const currency = selectedOrganization?.currency ?? "";
 
-  const lastDay = dayjs()
-    .tz(STORE_TIMEZONE)
-    .startOf("day")
-    .subtract(offsetDays, "day");
+  const { periodStart, periodEnd, statsQuery } = getDashboardPeriod(range);
 
-  const periodStart = (
-    bucketUnit === "hour"
-      ? lastDay
-      : bucketUnit === "day"
-        ? lastDay.subtract(buckets * bucketSize - 1, "day")
-        : dayjs.tz(
-            dayjs(lastDay.format("YYYY-MM-01"))
-              .subtract((buckets - 1) * bucketSize, "month")
-              .format("YYYY-MM-DD"),
-            PLATFORM_TIMEZONE,
-          )
-  ).toDate();
-  const periodEnd = lastDay.add(1, "day").toDate();
-
-  const statsQuery = new URLSearchParams({
-    since: periodStart.toISOString(),
-    bucketUnit,
-    bucketSize: String(bucketSize),
-    bucketCount: String(buckets),
-  });
-
-  const waitlistPromise = (
+  const userStats = settle(
+    isAdmin
+      ? fetcher<UserStatsResponse>(
+          `/api/users/stats?${statsQuery}`,
+          fetchOptions,
+        )
+      : Promise.resolve(null),
+  );
+  const organizationStats = settle(
+    fetcher<OrganizationStats>(
+      `/api/users/me/organization-stats?${statsQuery}`,
+      fetchOptions,
+    ),
+  );
+  const orderStats = settle(
+    organizationSlug
+      ? fetcher<OrderStatsResponse>(
+          `/api/organizations/${organizationSlug}/order-stats?${statsQuery}`,
+          fetchOptions,
+        )
+      : Promise.resolve(null),
+  );
+  const orderMenu = settle(
+    resolvedOrganizationId
+      ? fetcher<OrderMenu | null>(
+          `/api/organizations/${resolvedOrganizationId}/order-menu?lang=${locale}`,
+          fetchOptions,
+        )
+      : Promise.resolve(null),
+  );
+  const sales = settle(
+    organizationSlug
+      ? fetcher<MenuItemSalesResponse[]>(
+          `/api/organizations/${organizationSlug}/menu-item-sales?since=${periodStart.toISOString()}&until=${periodEnd.toISOString()}`,
+          fetchOptions,
+        )
+      : Promise.resolve([]),
+  );
+  const waitlist = (
     resolvedOrganizationId
       ? getMemberRole(resolvedOrganizationId)
       : Promise.resolve(null)
@@ -136,169 +360,56 @@ const DashboardPage = async ({ params, searchParams }: DashboardPageProps) => {
     ]);
   });
 
-  const [
-    userStatsResult,
-    organizationStatsResult,
-    orderStatsResult,
-    orderMenuResult,
-    salesResult,
-    [waitlistStatsResult, waitlistStatusResult],
-  ] = await Promise.all([
-    settle(
-      isAdmin
-        ? fetcher<UserStatsResponse>(
-            `/api/users/stats?${statsQuery}`,
-            fetchOptions,
-          )
-        : Promise.resolve(null),
-    ),
-    settle(
-      fetcher<OrganizationStats>(
-        `/api/users/me/organization-stats?${statsQuery}`,
-        fetchOptions,
-      ),
-    ),
-    settle(
-      organizationSlug
-        ? fetcher<OrderStatsResponse>(
-            `/api/organizations/${organizationSlug}/order-stats?${statsQuery}`,
-            fetchOptions,
-          )
-        : Promise.resolve(null),
-    ),
-    settle(
-      resolvedOrganizationId
-        ? fetcher<OrderMenu | null>(
-            `/api/organizations/${resolvedOrganizationId}/order-menu?lang=${locale}`,
-            fetchOptions,
-          )
-        : Promise.resolve(null),
-    ),
-    settle(
-      organizationSlug
-        ? fetcher<MenuItemSalesResponse[]>(
-            `/api/organizations/${organizationSlug}/menu-item-sales?since=${periodStart.toISOString()}&until=${periodEnd.toISOString()}`,
-            fetchOptions,
-          )
-        : Promise.resolve([]),
-    ),
-    waitlistPromise,
-  ]);
-
-  if (
-    userStatsResult.error ||
-    organizationStatsResult.error ||
-    orderStatsResult.error ||
-    orderMenuResult.error ||
-    salesResult.error ||
-    waitlistStatsResult.error ||
-    waitlistStatusResult.error
-  )
-    return <ErrorAlert />;
-
-  const userStats = userStatsResult.data;
-  const organizationStats = organizationStatsResult.data;
-  const orderStats = orderStatsResult.data;
-  const orderMenu = orderMenuResult.data;
-  const sales = salesResult.data;
-  const waitlistStats = waitlistStatsResult.data;
-  const waitlistStatus = waitlistStatusResult.data;
-
-  const topItems = [...sales]
-    .sort((a, b) => b.sold - a.sold)
-    .slice(0, 10)
-    .map(({ menuItemName, sold }) => ({ name: menuItemName, quantity: sold }));
-
-  const menuItems = (orderMenu?.sections || []).flatMap(
-    ({ menuItems }) => menuItems,
-  );
-  const soldByMenuItemId = new Map(
-    sales.map(({ menuItemId, sold }) => [menuItemId, sold]),
-  );
-
-  const slowItems = menuItems
-    .map(({ id, name }) => ({ name, quantity: soldByMenuItemId.get(id) || 0 }))
-    .sort((a, b) => a.quantity - b.quantity)
-    .slice(0, 10);
-
-  const orderBuckets = orderStats?.buckets ?? [];
-
-  const sumOf = (values: number[]) => values.reduce((sum, n) => sum + n, 0);
-
-  const getMoneyTrend = (key: "discount" | "revenue") => {
-    const previous = orderStats?.previous[key];
-    if (previous === undefined) return null;
-
-    const data = orderBuckets.map((bucket) => bucket[key] ?? 0);
-
-    return { data, percent: getChangePercent(previous, sumOf(data)) };
-  };
-
-  const ordersTrendData = orderBuckets.length
-    ? orderBuckets.map(({ orders }) => orders)
-    : Array<number>(buckets).fill(0);
-
-  const organizationsTrendData = organizationStats
-    ? organizationStats.buckets.map(({ organizations }) => organizations)
-    : Array<number>(buckets).fill(0);
-
   return (
-    <Dashboard
-      organization={selectedOrganization}
-      range={range}
-      trendStarts={organizationStats?.buckets.map(({ start }) => start) ?? []}
-      stats={{
-        totalUsers: userStats?.total ?? null,
-        totalOrganizations: organizationStats?.total ?? 0,
-        totalOrders: orderStats?.lifetimeOrders ?? 0,
-        ordersTrend: {
-          data: ordersTrendData,
-          percent: getChangePercent(
-            orderStats?.previous.orders ?? 0,
-            sumOf(ordersTrendData),
-          ),
-        },
-        revenueTrend: getMoneyTrend("revenue"),
-        discountTrend: getMoneyTrend("discount"),
-        refundedOrders: {
-          data: orderBuckets.map(({ refundedOrders }) => refundedOrders),
-          total: orderStats?.refundedOrders ?? 0,
-        },
-        usersTrend: userStats && {
-          data: userStats.buckets.map(({ users }) => users),
-          percent: getChangePercent(
-            userStats.previous,
-            sumOf(userStats.buckets.map(({ users }) => users)),
-          ),
-        },
-        organizationsTrend: {
-          data: organizationsTrendData,
-          percent: getChangePercent(
-            organizationStats?.previous ?? 0,
-            sumOf(organizationsTrendData),
-          ),
-        },
-      }}
-      waitlist={
-        waitlistStats && (waitlistStatus?.enabled || waitlistStats.total)
-          ? waitlistStats
-          : null
-      }
-      charts={{
-        coupons: orderStats?.coupons ?? [],
-        modifiers: orderStats?.modifiers ?? [],
-        refundedItems: orderStats?.refundedItems ?? [],
-        refundReasons: orderStats?.refundReasons ?? [],
-        servingTemperatureLevels: orderStats?.servingTemperatureLevels ?? [],
-        sweetnessLevels: orderStats?.sweetnessLevels ?? [],
-        topItems,
-        slowItems,
-        hourlyOrders: orderStats?.hourlyOrders ?? Array<number>(24).fill(0),
-        modes: orderStats?.modes ?? [],
-        paymentMethods: orderStats?.paymentMethods ?? [],
-      }}
-    />
+    <SectionsStack className="group-has-data-pending:opacity-50">
+      <Suspense fallback={<Overview isAdmin={isAdmin} loading range={range} />}>
+        <OverviewContent
+          currency={currency}
+          isAdmin={isAdmin}
+          orderStats={orderStats}
+          organizationStats={organizationStats}
+          range={range}
+          userStats={userStats}
+        />
+      </Suspense>
+      <Suspense fallback={<Orders loading range={range} />}>
+        <OrdersContent orderStats={orderStats} range={range} />
+      </Suspense>
+      <Suspense fallback={<Menus loading range={range} />}>
+        <MenusContent
+          orderMenu={orderMenu}
+          orderStats={orderStats}
+          range={range}
+          sales={sales}
+        />
+      </Suspense>
+      <Suspense fallback={<Coupons loading range={range} />}>
+        <CouponsContent
+          currency={currency}
+          orderStats={orderStats}
+          range={range}
+        />
+      </Suspense>
+      <Suspense>
+        <WaitlistContent range={range} waitlist={waitlist} />
+      </Suspense>
+    </SectionsStack>
   );
 };
+
+const DashboardPage = (props: DashboardPageProps) => (
+  <Suspense
+    fallback={
+      <SectionsStack>
+        <Overview loading />
+        <Orders loading />
+        <Menus loading />
+        <Coupons loading />
+      </SectionsStack>
+    }
+  >
+    <DashboardContent {...props} />
+  </Suspense>
+);
 
 export default DashboardPage;
