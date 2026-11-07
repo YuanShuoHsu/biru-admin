@@ -157,8 +157,10 @@ const CalendarPage = async ({ params, searchParams }: CalendarPageProps) => {
             shifts,
           [attendanceCalendarPath(organization.slug, "day-kinds", from, to)]:
             dayKinds,
-          [attendanceCalendarPath(organization.slug, "leaves", from, to)]:
-            leaves,
+          ...(canReadLeaves && {
+            [attendanceCalendarPath(organization.slug, "leaves", from, to)]:
+              leaves,
+          }),
         },
       }}
     >
@@ -167,6 +169,7 @@ const CalendarPage = async ({ params, searchParams }: CalendarPageProps) => {
         canReadLeaves={canReadLeaves}
         canUpdate={hasRolePermission(memberRole, { shift: ["update"] })}
         employees={employees}
+        key={organization.slug}
         organization={organization}
         shiftTypes={shiftTypes}
         teams={teams}

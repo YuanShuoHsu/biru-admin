@@ -143,15 +143,13 @@ const Calendar = ({
 
   // https://nextjs.org/docs/app/getting-started/linking-and-navigating#native-history-api
   useEffect(() => {
-    if (date === initialDate && view === initialView) return;
-
     const params = new URLSearchParams(window.location.search);
 
     params.set("date", date);
     params.set("view", view);
 
     window.history.replaceState(null, "", `?${params.toString()}`);
-  }, [date, initialDate, initialView, view]);
+  }, [date, view]);
 
   const range = useMemo(
     () => attendanceCalendarRange(view, date),
@@ -160,6 +158,15 @@ const Calendar = ({
 
   const from = range.from.toISOString();
   const to = range.to.toISOString();
+
+  const isServerRange = useMemo(() => {
+    const serverRange = attendanceCalendarRange(initialView, initialDate);
+
+    return (
+      from === serverRange.from.toISOString() &&
+      to === serverRange.to.toISOString()
+    );
+  }, [from, initialDate, initialView, to]);
 
   // https://swr.vercel.app/docs/advanced/understanding#return-previous-data-for-better-ux
   const {
@@ -816,9 +823,10 @@ const Calendar = ({
           )}
         </ToolbarStack>
       )}
-      {(shiftsLoading || dayKindsLoading || leavesLoading) && (
-        <LinearProgress />
-      )}
+      {!isServerRange &&
+        (shiftsLoading || dayKindsLoading || leavesLoading) && (
+          <LinearProgress />
+        )}
       <CalendarBox breakPatterns={breaks.patterns}>
         <EventCalendar
           areEventsDraggable={canUpdate}
