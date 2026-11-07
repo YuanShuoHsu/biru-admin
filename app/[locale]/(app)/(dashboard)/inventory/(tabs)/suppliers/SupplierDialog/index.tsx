@@ -23,7 +23,10 @@ import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
-type IngredientOption = Pick<Ingredient, "id" | "name" | "supplierId">;
+type IngredientOption = Pick<
+  Ingredient,
+  "id" | "name" | "recipeId" | "supplierId"
+>;
 
 interface SupplierDialogProps {
   mutate: () => void;
@@ -145,8 +148,8 @@ const SupplierDialog = ({
         {...ingredientSearch}
         disableCloseOnSelect
         fullWidth
-        getOptionDisabled={({ supplierId }) =>
-          !!supplierId && supplierId !== supplier?.id
+        getOptionDisabled={({ recipeId, supplierId }) =>
+          !!recipeId || (!!supplierId && supplierId !== supplier?.id)
         }
         getOptionLabel={({ name }) => localize(name, locale)}
         isOptionEqualToValue={(option, value) => option.id === value.id}
