@@ -194,6 +194,7 @@
     "required": "請選擇修飾組。"
   },
   "name": {
+    "maxLength": "姓名不能超過 50 個字元。",
     "required": "姓名為必填。"
   },
   "newPassword": {
