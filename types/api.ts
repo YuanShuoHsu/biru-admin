@@ -1118,6 +1118,23 @@ export interface paths {
     patch: operations["AdminBannersController_update"];
     trace?: never;
   };
+  "/api/images/{kind}/{id}/{version}.{extension}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得菜單、分類、品項、橫幅與門市照片的圖片 */
+    get: operations["ImagesController_find"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/coupons": {
     parameters: {
       query?: never;
@@ -3715,23 +3732,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/images/{kind}/{id}/{version}.{extension}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** 取得菜單、分類、品項、橫幅與門市照片的圖片 */
-    get: operations["ImagesController_find"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   "/api/users/me/organization-stats": {
     parameters: {
       query?: never;
@@ -5464,6 +5464,7 @@ export interface components {
       | "belowStatutoryPaidPercent"
       | "calendarLeaveInterval"
       | "calendarLeavePayRequired"
+      | "calendarRangeTooLong"
       | "cancelIrreversible"
       | "cancelReasonRequired"
       | "cannotReviewOwnDraft"
@@ -16196,6 +16197,38 @@ export interface operations {
       };
     };
   };
+  ImagesController_find: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        kind: "menu" | "menuSection" | "menuItem" | "banner" | "storePhoto";
+        id: string;
+        /** @description 圖片內容的雜湊；舊網址的 updatedAt 毫秒數也接受 */
+        version: string;
+        extension: "avif" | "gif" | "jpg" | "png" | "svg" | "webp";
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "image/*": string;
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   AdminCouponsController_findAll: {
     parameters: {
       query?: {
@@ -22574,38 +22607,6 @@ export interface operations {
       };
     };
   };
-  ImagesController_find: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        kind: "menu" | "menuSection" | "menuItem" | "banner" | "storePhoto";
-        id: string;
-        /** @description 圖片內容的雜湊；舊網址的 updatedAt 毫秒數也接受 */
-        version: string;
-        extension: "avif" | "gif" | "jpg" | "png" | "svg" | "webp";
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "image/*": string;
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
   MyOrganizationStatsController_getStats: {
     parameters: {
       query: {
@@ -26201,6 +26202,12 @@ export const pathsApiOrganizationsOrganizationSlugAttendanceShiftsGetParametersQ
 export const pathsApiOrganizationsOrganizationSlugAttendanceShiftsGetParametersQueryIncompleteAttendanceValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/organizations/{organizationSlug}/attendance/shifts"]["get"]["parameters"]["query"]["incompleteAttendance"]
 > = ["true"];
+export const pathsApiImagesKindIdVersionExtensionGetParametersPathKindValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/images/{kind}/{id}/{version}.{extension}"]["get"]["parameters"]["path"]["kind"]
+> = ["menu", "menuSection", "menuItem", "banner", "storePhoto"];
+export const pathsApiImagesKindIdVersionExtensionGetParametersPathExtensionValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/images/{kind}/{id}/{version}.{extension}"]["get"]["parameters"]["path"]["extension"]
+> = ["avif", "gif", "jpg", "png", "svg", "webp"];
 export const pathsApiCouponsGetParametersQueryLangValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/coupons"]["get"]["parameters"]["query"]["lang"]
 > = ["en", "ja", "ko", "zh-CN", "zh-TW"];
@@ -26242,12 +26249,6 @@ export const pathsApiOrganizationsOrganizationIdOrderMenuGetParametersQueryLangV
 export const pathsApiOrganizationsOrganizationSlugWaitlistTicketsTicketIdTransitionsStatusPatchParametersPathStatusValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/organizations/{organizationSlug}/waitlist/tickets/{ticketId}/transitions/{status}"]["patch"]["parameters"]["path"]["status"]
 > = ["cancelled", "waiting", "called", "seated", "noShow"];
-export const pathsApiImagesKindIdVersionExtensionGetParametersPathKindValues: ReadonlyArray<
-  FlattenedDeepRequired<paths>["/api/images/{kind}/{id}/{version}.{extension}"]["get"]["parameters"]["path"]["kind"]
-> = ["menu", "menuSection", "menuItem", "banner", "storePhoto"];
-export const pathsApiImagesKindIdVersionExtensionGetParametersPathExtensionValues: ReadonlyArray<
-  FlattenedDeepRequired<paths>["/api/images/{kind}/{id}/{version}.{extension}"]["get"]["parameters"]["path"]["extension"]
-> = ["avif", "gif", "jpg", "png", "svg", "webp"];
 export const pathsApiStorePhotosActiveGetParametersQueryLangValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/store-photos/active"]["get"]["parameters"]["query"]["lang"]
 > = ["en", "ja", "ko", "zh-CN", "zh-TW"];
@@ -26261,6 +26262,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "belowStatutoryPaidPercent",
   "calendarLeaveInterval",
   "calendarLeavePayRequired",
+  "calendarRangeTooLong",
   "cancelIrreversible",
   "cancelReasonRequired",
   "cannotReviewOwnDraft",
