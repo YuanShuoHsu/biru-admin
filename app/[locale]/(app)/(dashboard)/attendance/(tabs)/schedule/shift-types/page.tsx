@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,10 +18,17 @@ import {
   attendanceShiftTypeSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
+import type {
+  AttendanceShiftType,
+  AttendanceShiftTypeFilterField,
+  AttendanceShiftTypeSortField,
+} from "@/types/attendance";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import { getAttendanceShiftTypes } from "@/utils/attendance";
 import { resolveGridSearchParams } from "@/utils/dataGrid";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -51,7 +60,42 @@ export const generateMetadata = async ({
   return { title: tAttendance("shiftTypes.label") };
 };
 
+interface ShiftTypesContentProps {
+  canViewAuditLog: boolean;
+  filterField?: AttendanceShiftTypeFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  organization: Organization;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  shiftTypes: Promise<
+    FetchResult<{ shiftTypes: AttendanceShiftType[]; total: number }>
+  >;
+  sortBy?: AttendanceShiftTypeSortField;
+  sortDirection?: SortDirection;
+}
+
 const ShiftTypesContent = async ({
+  shiftTypes: shiftTypesResult,
+  ...props
+}: ShiftTypesContentProps) => {
+  const { data: shiftTypes, error } = await shiftTypesResult;
+  if (error) return <ErrorAlert />;
+
+  const { shiftTypes: rows, total: rowCount } = shiftTypes;
+
+  return (
+    <ShiftTypes
+      {...props}
+      key={props.organization.slug}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const ShiftTypesPage = async ({
   params,
   searchParams,
 }: ShiftTypesPageProps) => {
@@ -95,7 +139,7 @@ const ShiftTypesContent = async ({
       locale,
     });
 
-  const { data: shiftTypes, error } = await settle(
+  const shiftTypes = settle(
     getAttendanceShiftTypes(
       organization.slug,
       {
@@ -111,33 +155,24 @@ const ShiftTypesContent = async ({
       fetchOptions,
     ),
   );
-  if (error) return <ErrorAlert />;
-
-  const { shiftTypes: rows, total: rowCount } = shiftTypes;
 
   return (
-    <ShiftTypes
-      canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={organization.slug}
-      organization={organization}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<ShiftTypes loading />}>
+      <ShiftTypesContent
+        canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        organization={organization}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        shiftTypes={shiftTypes}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const ShiftTypesPage = (props: ShiftTypesPageProps) => (
-  <Suspense fallback={<ShiftTypes loading />}>
-    <ShiftTypesContent {...props} />
-  </Suspense>
-);
 
 export default ShiftTypesPage;
