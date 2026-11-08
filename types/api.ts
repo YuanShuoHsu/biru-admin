@@ -11177,6 +11177,7 @@ export interface components {
       | "waitlistClosed"
       | "waitlistCutoff"
       | "waitlistDisabled"
+      | "waitlistGroupsInUse"
       | "waitlistGroupsInvalid"
       | "waitlistIdempotencyConflict"
       | "waitlistPartySizeUnavailable"
@@ -27904,6 +27905,7 @@ export const waitlistErrorCodeValues: ReadonlyArray<
   "waitlistClosed",
   "waitlistCutoff",
   "waitlistDisabled",
+  "waitlistGroupsInUse",
   "waitlistGroupsInvalid",
   "waitlistIdempotencyConflict",
   "waitlistPartySizeUnavailable",
