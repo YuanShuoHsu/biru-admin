@@ -15,10 +15,8 @@ import {
   isValidRange,
   MAX_RANGE_DAYS,
   MONTH_FORMAT,
-  REPORT_TABS,
   type ReportTab,
   type ReportView,
-  resolveReportView,
   toStoreDate,
 } from "./definitions";
 
@@ -125,21 +123,21 @@ const REPORT_DATA_GRID_PROPS = {
 };
 
 interface ReportsProps {
-  canViewInventory?: boolean;
-  canViewPersonnel?: boolean;
-  canViewSales?: boolean;
+  canViewInventory: boolean;
+  canViewPersonnel: boolean;
+  canViewSales: boolean;
   inventory?: InventoryReportResponse;
   loading?: boolean;
-  organization?: Organization;
+  organization: Organization;
   personnel?: PersonnelCostReportResponse;
   sales?: SalesReportResponse;
-  view?: ReportView;
+  view: ReportView;
 }
 
 const Reports = ({
-  canViewInventory = false,
-  canViewPersonnel = false,
-  canViewSales = false,
+  canViewInventory,
+  canViewPersonnel,
+  canViewSales,
   inventory: initialInventory,
   loading = false,
   organization,
@@ -147,12 +145,9 @@ const Reports = ({
   sales: initialSales,
   view: initialView,
 }: ReportsProps) => {
-  const organizationSlug = organization?.slug ?? "";
-  const currency = organization?.currency ?? "";
+  const currency = organization.currency ?? "";
 
-  const [view, setView] = useState<ReportView>(
-    () => initialView ?? resolveReportView({}, REPORT_TABS),
-  );
+  const [view, setView] = useState<ReportView>(initialView);
   const [exporting, setExporting] = useState(false);
 
   const { groupBy, month, since, tab, until } = view;
@@ -174,7 +169,7 @@ const Reports = ({
 
   const updateQuery = useUpdateQuery();
 
-  const reportPath = getReportPath(organizationSlug, tab);
+  const reportPath = getReportPath(organization.slug, tab);
   const query = getReportQuery(view);
 
   const {
@@ -263,7 +258,7 @@ const Reports = ({
       const anchor = document.createElement("a");
       anchor.href = url;
       anchor.download = `${getExportFileName(
-        organization?.name,
+        organization.name,
         tReports("label"),
         tReports(`tabs.${tab}`),
         tab === "personnel" ? month : getExportDateRange([since, until]),
@@ -427,9 +422,7 @@ const Reports = ({
         value={tab}
         variant="scrollable"
       >
-        {(canViewSales || loading) && (
-          <Tab label={tReports("tabs.sales")} value="sales" />
-        )}
+        {canViewSales && <Tab label={tReports("tabs.sales")} value="sales" />}
         {canViewInventory && (
           <Tab label={tReports("tabs.inventory")} value="inventory" />
         )}

@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -9,6 +11,7 @@ import {
   getReportPath,
   getReportQuery,
   REPORT_TABS,
+  type ReportView,
   resolveReportView,
 } from "./definitions";
 
@@ -17,13 +20,14 @@ import ErrorAlert from "@/components/ErrorAlert";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
+import type { Organization } from "@/types/organizations";
 import type {
   InventoryReportResponse,
   PersonnelCostReportResponse,
   SalesReportResponse,
 } from "@/types/reports";
 
-import { fetcher, settle } from "@/utils/fetcher";
+import { type FetchResult, fetcher, settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import {
   getMemberRole,
@@ -52,7 +56,39 @@ export const generateMetadata = async ({
   return { title: tReports("label") };
 };
 
-const ReportsContent = async ({ params, searchParams }: ReportsPageProps) => {
+interface ReportsContentProps {
+  canViewInventory: boolean;
+  canViewPersonnel: boolean;
+  canViewSales: boolean;
+  organization: Organization;
+  reports: Promise<
+    [
+      FetchResult<SalesReportResponse | undefined>,
+      FetchResult<InventoryReportResponse | undefined>,
+      FetchResult<PersonnelCostReportResponse | undefined>,
+    ]
+  >;
+  view: ReportView;
+}
+
+const ReportsContent = async ({ reports, ...props }: ReportsContentProps) => {
+  const [salesResult, inventoryResult, personnelResult] = await reports;
+
+  if (salesResult.error || inventoryResult.error || personnelResult.error)
+    return <ErrorAlert />;
+
+  return (
+    <Reports
+      {...props}
+      inventory={inventoryResult.data}
+      key={props.organization.slug}
+      personnel={personnelResult.data}
+      sales={salesResult.data}
+    />
+  );
+};
+
+const ReportsPage = async ({ params, searchParams }: ReportsPageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -112,7 +148,7 @@ const ReportsContent = async ({ params, searchParams }: ReportsPageProps) => {
   };
   const reportUrl = `${getReportPath(organization.slug, view.tab)}?${getReportQuery(view)}`;
 
-  const [salesResult, inventoryResult, personnelResult] = await Promise.all([
+  const reports = Promise.all([
     settle(
       view.tab === "sales"
         ? fetcher<SalesReportResponse>(reportUrl, fetchOptions)
@@ -130,28 +166,19 @@ const ReportsContent = async ({ params, searchParams }: ReportsPageProps) => {
     ),
   ]);
 
-  if (salesResult.error || inventoryResult.error || personnelResult.error)
-    return <ErrorAlert />;
+  const reportsProps = {
+    canViewInventory,
+    canViewPersonnel,
+    canViewSales,
+    organization,
+    view,
+  };
 
   return (
-    <Reports
-      canViewInventory={canViewInventory}
-      canViewPersonnel={canViewPersonnel}
-      canViewSales={canViewSales}
-      inventory={inventoryResult.data}
-      key={organization.slug}
-      organization={organization}
-      personnel={personnelResult.data}
-      sales={salesResult.data}
-      view={view}
-    />
+    <Suspense fallback={<Reports {...reportsProps} loading />}>
+      <ReportsContent {...reportsProps} reports={reports} />
+    </Suspense>
   );
 };
-
-const ReportsPage = (props: ReportsPageProps) => (
-  <Suspense fallback={<Reports loading />}>
-    <ReportsContent {...props} />
-  </Suspense>
-);
 
 export default ReportsPage;
