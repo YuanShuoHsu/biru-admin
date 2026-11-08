@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,6 +18,12 @@ import {
   deletedRecordSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  DeletedRecordBatch,
+  DeletedRecordFilterField,
+  DeletedRecordSortField,
+} from "@/types/deletedRecords";
 
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import {
@@ -23,7 +31,7 @@ import {
   getDeletedRecords,
 } from "@/utils/deletedRecords";
 import { getDeletedRecordEnumOptions } from "@/utils/enumOptions";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { getResolvedAdminOrganization, getSession } from "@/utils/session";
 
 interface DeletedRecordsPageProps {
@@ -54,7 +62,41 @@ export const generateMetadata = async ({
   return { title: tDeletedRecords("label") };
 };
 
+interface DeletedRecordsContentProps {
+  deletedRecords: Promise<
+    FetchResult<{ deletedRecords: DeletedRecordBatch[]; total: number }>
+  >;
+  filterField?: DeletedRecordFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  organizationSlug?: string;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sortBy?: DeletedRecordSortField;
+  sortDirection?: SortDirection;
+}
+
 const DeletedRecordsContent = async ({
+  deletedRecords: deletedRecordsResult,
+  ...props
+}: DeletedRecordsContentProps) => {
+  const { data: deletedRecords, error } = await deletedRecordsResult;
+  if (error) return <ErrorAlert />;
+
+  const { deletedRecords: rows, total: rowCount } = deletedRecords;
+
+  return (
+    <DeletedRecords
+      {...props}
+      key={props.organizationSlug}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const DeletedRecordsPage = async ({
   params,
   searchParams,
 }: DeletedRecordsPageProps) => {
@@ -115,7 +157,7 @@ const DeletedRecordsContent = async ({
       )
     : [];
 
-  const { data: deletedRecords, error } = await settle(
+  const deletedRecords = settle(
     getDeletedRecords(
       organization?.slug,
       {
@@ -132,32 +174,23 @@ const DeletedRecordsContent = async ({
       init,
     ),
   );
-  if (error) return <ErrorAlert />;
-
-  const { deletedRecords: rows, total: rowCount } = deletedRecords;
 
   return (
-    <DeletedRecords
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={organization?.slug}
-      organizationSlug={organization?.slug}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<DeletedRecords loading />}>
+      <DeletedRecordsContent
+        deletedRecords={deletedRecords}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        organizationSlug={organization?.slug}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const DeletedRecordsPage = (props: DeletedRecordsPageProps) => (
-  <Suspense fallback={<DeletedRecords loading />}>
-    <DeletedRecordsContent {...props} />
-  </Suspense>
-);
 
 export default DeletedRecordsPage;

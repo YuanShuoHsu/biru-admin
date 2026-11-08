@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,10 +18,17 @@ import {
   orderFilterFieldValues,
   orderSortFieldValues,
 } from "@/types/api";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  AdminOrderResponse,
+  OrderFilterField,
+  OrderSortField,
+} from "@/types/orders";
+import type { Organization } from "@/types/organizations";
 
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getOrderEnumOptions } from "@/utils/enumOptions";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { getAdminOrders } from "@/utils/orders";
 import { hasRolePermission } from "@/utils/organizations";
 import {
@@ -53,7 +62,42 @@ export const generateMetadata = async ({
   return { title: tOrders("list.label") };
 };
 
-const OrdersContent = async ({ params, searchParams }: OrdersPageProps) => {
+interface OrdersContentProps {
+  canCreateRefund: boolean;
+  canViewAuditLog: boolean;
+  canVoidInvoices: boolean;
+  filterField?: OrderFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  orders: Promise<FetchResult<{ orders: AdminOrderResponse[]; total: number }>>;
+  organization: Organization;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sortBy?: OrderSortField;
+  sortDirection?: SortDirection;
+}
+
+const OrdersContent = async ({
+  orders: ordersResult,
+  ...props
+}: OrdersContentProps) => {
+  const { data: orders, error } = await ordersResult;
+  if (error) return <ErrorAlert />;
+
+  const { orders: rows, total: rowCount } = orders;
+
+  return (
+    <Orders
+      {...props}
+      key={props.organization.slug}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const OrdersPage = async ({ params, searchParams }: OrdersPageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -113,7 +157,7 @@ const OrdersContent = async ({ params, searchParams }: OrdersPageProps) => {
   const canVoidInvoices =
     isAdmin || hasRolePermission(memberRole, { invoice: ["void"] });
 
-  const { data: orders, error } = await settle(
+  const orders = settle(
     getAdminOrders(
       selectedOrganization.slug,
       {
@@ -130,35 +174,26 @@ const OrdersContent = async ({ params, searchParams }: OrdersPageProps) => {
       fetchOptions,
     ),
   );
-  if (error) return <ErrorAlert />;
-
-  const { orders: rows, total: rowCount } = orders;
 
   return (
-    <Orders
-      canCreateRefund={canCreateRefund}
-      canViewAuditLog={canViewAuditLog}
-      canVoidInvoices={canVoidInvoices}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={selectedOrganization.slug}
-      organization={selectedOrganization}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<Orders loading />}>
+      <OrdersContent
+        canCreateRefund={canCreateRefund}
+        canViewAuditLog={canViewAuditLog}
+        canVoidInvoices={canVoidInvoices}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        orders={orders}
+        organization={selectedOrganization}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const OrdersPage = (props: OrdersPageProps) => (
-  <Suspense fallback={<Orders loading />}>
-    <OrdersContent {...props} />
-  </Suspense>
-);
 
 export default OrdersPage;

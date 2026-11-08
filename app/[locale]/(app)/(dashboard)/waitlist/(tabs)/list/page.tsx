@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,10 +18,17 @@ import {
   waitlistTicketFilterFieldValues,
   waitlistTicketSortFieldValues,
 } from "@/types/api";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
+import type {
+  WaitlistTicketFilterField,
+  WaitlistTicketListItem,
+  WaitlistTicketSortField,
+} from "@/types/waitlist";
 
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getWaitlistEnumOptions } from "@/utils/enumOptions";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getMemberRole, getResolvedAdminOrganization } from "@/utils/session";
 import { getWaitlistTickets } from "@/utils/waitlist";
@@ -49,7 +58,43 @@ export const generateMetadata = async ({
   return { title: tWaitlist("list.label") };
 };
 
+interface WaitlistListContentProps {
+  canUpdate: boolean;
+  canViewAuditLog: boolean;
+  filterField?: WaitlistTicketFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  organization: Organization;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sortBy?: WaitlistTicketSortField;
+  sortDirection?: SortDirection;
+  tickets: Promise<
+    FetchResult<{ tickets: WaitlistTicketListItem[]; total: number }>
+  >;
+}
+
 const WaitlistListContent = async ({
+  tickets: ticketsResult,
+  ...props
+}: WaitlistListContentProps) => {
+  const { data: tickets, error } = await ticketsResult;
+  if (error) return <ErrorAlert />;
+
+  const { tickets: rows, total: rowCount } = tickets;
+
+  return (
+    <WaitlistTickets
+      {...props}
+      key={props.organization.slug}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const WaitlistListPage = async ({
   params,
   searchParams,
 }: WaitlistListPageProps) => {
@@ -93,29 +138,25 @@ const WaitlistListContent = async ({
     ? getQuickFilterEnums(quickFilterValue, getWaitlistEnumOptions(tWaitlist))
     : [];
 
-  const [memberRole, { data: tickets, error }] = await Promise.all([
-    getMemberRole(selectedOrganization.id),
-    settle(
-      getWaitlistTickets(
-        selectedOrganization.slug,
-        {
-          page,
-          pageSize,
-          filterField,
-          filterOperator,
-          filterValue,
-          quickFilterEnums,
-          quickFilterValue,
-          sortBy,
-          sortDirection,
-        },
-        fetchOptions,
-      ),
+  const tickets = settle(
+    getWaitlistTickets(
+      selectedOrganization.slug,
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterEnums,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
+      fetchOptions,
     ),
-  ]);
-  if (error) return <ErrorAlert />;
+  );
 
-  const { tickets: rows, total: rowCount } = tickets;
+  const memberRole = await getMemberRole(selectedOrganization.id);
 
   const canViewAuditLog = hasRolePermission(memberRole, {
     auditLog: ["read"],
@@ -125,29 +166,23 @@ const WaitlistListContent = async ({
   });
 
   return (
-    <WaitlistTickets
-      canUpdate={canUpdate}
-      canViewAuditLog={canViewAuditLog}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={selectedOrganization.slug}
-      organization={selectedOrganization}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<WaitlistTickets loading />}>
+      <WaitlistListContent
+        canUpdate={canUpdate}
+        canViewAuditLog={canViewAuditLog}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        organization={selectedOrganization}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+        tickets={tickets}
+      />
+    </Suspense>
   );
 };
-
-const WaitlistListPage = (props: WaitlistListPageProps) => (
-  <Suspense fallback={<WaitlistTickets loading />}>
-    <WaitlistListContent {...props} />
-  </Suspense>
-);
 
 export default WaitlistListPage;
