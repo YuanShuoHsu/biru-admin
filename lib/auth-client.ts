@@ -69,6 +69,11 @@ export const authClient = createAuthClient({
         member: {
           additionalFields: {
             showcase: { type: "boolean", required: false, input: false },
+            joinedAsPlatformAdmin: {
+              type: "boolean",
+              required: false,
+              input: false,
+            },
           },
         },
         organization: {

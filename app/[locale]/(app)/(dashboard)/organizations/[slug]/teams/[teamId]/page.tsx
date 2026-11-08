@@ -13,7 +13,10 @@ import type { Locale } from "@/i18n/routing";
 import { authClient } from "@/lib/auth-client";
 
 import { settle } from "@/utils/fetcher";
-import { hasRolePermission } from "@/utils/organizations";
+import {
+  getPlatformAdminMemberIds,
+  hasRolePermission,
+} from "@/utils/organizations";
 import { getFullOrganization, getSession } from "@/utils/session";
 import { buildTeamMembers } from "@/utils/teams";
 
@@ -82,12 +85,24 @@ const OrganizationsSlugTeamsTeamIdContent = async ({
   const canUpdateTeam = hasRolePermission(currentUserRole, {
     team: ["update"],
   });
+  const fetchesPlatformAdminMemberIds =
+    canUpdateTeam &&
+    hasRolePermission(currentUserRole, { member: ["update"] }) &&
+    session.user.role !== "admin";
+  const { data: platformAdminMemberIds = [] } = fetchesPlatformAdminMemberIds
+    ? await settle(
+        getPlatformAdminMemberIds(activeOrganization.id, {
+          headers: cookieHeader,
+        }),
+      )
+    : { data: [] };
 
   return (
     <OrganizationsSlugTeamsTeamId
       activeOrganization={activeOrganization}
       canUpdateTeam={canUpdateTeam}
       currentUserId={session.user.id}
+      platformAdminMemberIds={platformAdminMemberIds}
       team={team}
       teamMembers={teamMembers}
     />
