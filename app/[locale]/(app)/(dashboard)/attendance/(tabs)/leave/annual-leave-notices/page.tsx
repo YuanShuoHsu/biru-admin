@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,11 +18,18 @@ import {
   attendanceAnnualLeaveNoticeSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
+import type {
+  AttendanceAnnualLeaveNotice,
+  AttendanceAnnualLeaveNoticeFilterField,
+  AttendanceAnnualLeaveNoticeSortField,
+} from "@/types/attendance";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import { getAttendanceAnnualLeaveNotices } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceAnnualLeaveNoticeEnumOptions } from "@/utils/enumOptions";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -52,7 +61,42 @@ export const generateMetadata = async ({
   return { title: tAttendance("annualLeaveNotices.label") };
 };
 
+interface AnnualLeaveNoticesContentProps {
+  filterField?: AttendanceAnnualLeaveNoticeFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  notices: Promise<
+    FetchResult<{ notices: AttendanceAnnualLeaveNotice[]; total: number }>
+  >;
+  organization: Organization;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sortBy?: AttendanceAnnualLeaveNoticeSortField;
+  sortDirection?: SortDirection;
+}
+
 const AnnualLeaveNoticesContent = async ({
+  notices: noticesResult,
+  ...props
+}: AnnualLeaveNoticesContentProps) => {
+  const { data: notices, error } = await noticesResult;
+  if (error) return <ErrorAlert />;
+
+  const { notices: rows, total: rowCount } = notices;
+
+  return (
+    <AnnualLeaveNotices
+      {...props}
+      canViewAll
+      key={props.organization.slug}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const AnnualLeaveNoticesPage = async ({
   params,
   searchParams,
 }: AnnualLeaveNoticesPageProps) => {
@@ -112,7 +156,7 @@ const AnnualLeaveNoticesContent = async ({
       )
     : [];
 
-  const { data: notices, error } = await settle(
+  const notices = settle(
     getAttendanceAnnualLeaveNotices(
       organization.slug,
       "org",
@@ -130,33 +174,23 @@ const AnnualLeaveNoticesContent = async ({
       { headers: { cookie: cookieStore.toString() } },
     ),
   );
-  if (error) return <ErrorAlert />;
-
-  const { notices: rows, total: rowCount } = notices;
 
   return (
-    <AnnualLeaveNotices
-      canViewAll
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={organization.slug}
-      organization={organization}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<AnnualLeaveNotices canViewAll loading />}>
+      <AnnualLeaveNoticesContent
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        notices={notices}
+        organization={organization}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const AnnualLeaveNoticesPage = (props: AnnualLeaveNoticesPageProps) => (
-  <Suspense fallback={<AnnualLeaveNotices canViewAll loading />}>
-    <AnnualLeaveNoticesContent {...props} />
-  </Suspense>
-);
 
 export default AnnualLeaveNoticesPage;

@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,6 +18,14 @@ import {
   attendanceParentalReturnSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
+import type {
+  AttendanceContext,
+  AttendanceParentalReturn,
+  AttendanceParentalReturnFilterField,
+  AttendanceParentalReturnSortField,
+} from "@/types/attendance";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import {
   getAttendanceContext,
@@ -23,7 +33,7 @@ import {
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceParentalReturnEnumOptions } from "@/utils/enumOptions";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -55,7 +65,56 @@ export const generateMetadata = async ({
   return { title: tAttendance("parentalReturns.label") };
 };
 
+interface ParentalReturnsContentProps {
+  canReview: boolean;
+  canViewAuditLog: boolean;
+  filterField?: AttendanceParentalReturnFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  organization: Organization;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  results: Promise<
+    [
+      FetchResult<{
+        parentalReturns: AttendanceParentalReturn[];
+        total: number;
+      }>,
+      FetchResult<AttendanceContext>,
+    ]
+  >;
+  sortBy?: AttendanceParentalReturnSortField;
+  sortDirection?: SortDirection;
+}
+
 const ParentalReturnsContent = async ({
+  results,
+  ...props
+}: ParentalReturnsContentProps) => {
+  const [
+    { data: parentalReturns, error },
+    { data: context, error: contextError },
+  ] = await results;
+  if (error || contextError) return <ErrorAlert />;
+
+  const { parentalReturns: rows, total: rowCount } = parentalReturns;
+  const { employee, selfReviewAllowed } = context;
+
+  return (
+    <ParentalReturns
+      {...props}
+      canReviewOwn={selfReviewAllowed.parentalReturn}
+      canViewAll
+      employeeId={employee?.id}
+      key={props.organization.slug}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const ParentalReturnsPage = async ({
   params,
   searchParams,
 }: ParentalReturnsPageProps) => {
@@ -111,10 +170,7 @@ const ParentalReturnsContent = async ({
       )
     : [];
 
-  const [
-    { data: parentalReturns, error },
-    { data: context, error: contextError },
-  ] = await Promise.all([
+  const results = Promise.all([
     settle(
       getAttendanceParentalReturns(
         organization.slug,
@@ -135,40 +191,27 @@ const ParentalReturnsContent = async ({
     ),
     settle(getAttendanceContext(organization.slug, fetchOptions)),
   ]);
-  if (error || contextError) return <ErrorAlert />;
-
-  const { parentalReturns: rows, total: rowCount } = parentalReturns;
-  const { employee, selfReviewAllowed } = context;
 
   return (
-    <ParentalReturns
-      canReview={hasRolePermission(memberRole, {
-        parentalReturn: ["update"],
-      })}
-      canReviewOwn={selfReviewAllowed.parentalReturn}
-      canViewAll
-      canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
-      employeeId={employee?.id}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={organization.slug}
-      organization={organization}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<ParentalReturns canViewAll loading />}>
+      <ParentalReturnsContent
+        canReview={hasRolePermission(memberRole, {
+          parentalReturn: ["update"],
+        })}
+        canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        organization={organization}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        results={results}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const ParentalReturnsPage = (props: ParentalReturnsPageProps) => (
-  <Suspense fallback={<ParentalReturns canViewAll loading />}>
-    <ParentalReturnsContent {...props} />
-  </Suspense>
-);
 
 export default ParentalReturnsPage;
