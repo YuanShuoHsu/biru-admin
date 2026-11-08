@@ -238,10 +238,12 @@
   },
   "pickupCutoffMinutes": {
     "invalid": "Cutoff before closing is not valid.",
+    "max": "Cutoff before closing cannot exceed {minutes} minutes.",
     "required": "Cutoff before closing is required."
   },
   "pickupLeadMinutes": {
     "invalid": "Minimum lead time is not valid.",
+    "max": "Minimum lead time must be shorter than {days, plural, one {# day} other {# days}}, or customers will have no pickup times to choose from.",
     "required": "Minimum lead time is required."
   },
   "pickupMaxAdvanceDays": {

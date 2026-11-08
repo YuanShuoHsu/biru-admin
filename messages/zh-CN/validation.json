@@ -238,10 +238,12 @@
   },
   "pickupCutoffMinutes": {
     "invalid": "打烊前截止时间格式无效。",
+    "max": "打烊前截止时间不可超过 {minutes} 分钟。",
     "required": "打烊前截止时间为必填。"
   },
   "pickupLeadMinutes": {
     "invalid": "最短前置时间格式无效。",
+    "max": "最短前置时间需短于 {days} 天，否则顾客没有可预约的时段。",
     "required": "最短前置时间为必填。"
   },
   "pickupMaxAdvanceDays": {
