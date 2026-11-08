@@ -773,6 +773,7 @@ const Admins = ({
         filterable: false,
         headerName: `${tAdmins("bio")} ${tCommon("optional")}`,
         renderCell: renderEmptyableCell,
+        sortable: false,
       },
       {
         field: "email",
