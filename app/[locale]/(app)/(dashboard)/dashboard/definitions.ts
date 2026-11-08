@@ -48,7 +48,7 @@ export type DashboardRange = keyof typeof DASHBOARD_RANGES;
 const DEFAULT_DASHBOARD_RANGE: DashboardRange = "30d";
 
 const isDashboardRange = (value: string): value is DashboardRange =>
-  value in DASHBOARD_RANGES;
+  Object.hasOwn(DASHBOARD_RANGES, value);
 
 export const resolveDashboardRange = (value?: string): DashboardRange =>
   value && isDashboardRange(value) ? value : DEFAULT_DASHBOARD_RANGE;
