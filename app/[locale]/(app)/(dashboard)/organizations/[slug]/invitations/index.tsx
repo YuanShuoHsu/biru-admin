@@ -58,19 +58,17 @@ const ROLE_COLOR_MAP: Record<string, "error" | "warning" | "default"> = {
 };
 
 interface OrganizationsSlugInvitationsProps {
-  activeOrganization?: ActiveOrganization;
-  canCancelInvitation?: boolean;
-  loading?: boolean;
+  activeOrganization: ActiveOrganization;
+  canCancelInvitation: boolean;
 }
 
 const OrganizationsSlugInvitations = ({
   activeOrganization,
-  canCancelInvitation = false,
-  loading = false,
+  canCancelInvitation,
 }: OrganizationsSlugInvitationsProps) => {
-  const organizationId = activeOrganization?.id ?? "";
-  const initialInvitations = activeOrganization?.invitations ?? [];
-  const initialTeams = activeOrganization?.teams ?? [];
+  const organizationId = activeOrganization.id;
+  const initialInvitations = activeOrganization.invitations;
+  const initialTeams = activeOrganization.teams;
 
   const [isSelectMode, setIsSelectMode] = useState(false);
 
@@ -96,7 +94,7 @@ const OrganizationsSlugInvitations = ({
     mutate,
     isValidating,
   } = useSWR(
-    !loading && ["organization-invitations", slug],
+    ["organization-invitations", slug],
     async () => {
       const { data, error } = await authClient.organization.getFullOrganization(
         {
@@ -418,7 +416,7 @@ const OrganizationsSlugInvitations = ({
         {...rowSelectionProps}
         apiRef={apiRef}
         columns={columns}
-        loading={loading || isValidating}
+        loading={isValidating}
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }

@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,9 +18,16 @@ import {
   recipeFilterFieldValues,
   recipeSortFieldValues,
 } from "@/types/api";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  Recipe,
+  RecipeFilterField,
+  RecipeSortField,
+} from "@/types/inventory";
+import type { Organization } from "@/types/organizations";
 
 import { resolveGridSearchParams } from "@/utils/dataGrid";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { getRecipes } from "@/utils/inventory";
 import { hasRolePermission } from "@/utils/organizations";
 import { getMemberRole, getResolvedAdminOrganization } from "@/utils/session";
@@ -47,7 +56,44 @@ export const generateMetadata = async ({
   return { title: tInventory("recipes.label") };
 };
 
-const RecipesContent = async ({ params, searchParams }: RecipesPageProps) => {
+interface RecipesContentProps {
+  canCreate: boolean;
+  canDelete: boolean;
+  canViewAuditLog: boolean;
+  canViewPurchasing: boolean;
+  canWrite: boolean;
+  filterField?: RecipeFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  organization: Organization;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  recipes: Promise<FetchResult<{ recipes: Recipe[]; total: number }>>;
+  sortBy?: RecipeSortField;
+  sortDirection?: SortDirection;
+}
+
+const RecipesContent = async ({
+  recipes: recipesResult,
+  ...props
+}: RecipesContentProps) => {
+  const { data: recipes, error: recipesError } = await recipesResult;
+  if (recipesError) return <ErrorAlert />;
+
+  const { recipes: rows, total: rowCount } = recipes;
+
+  return (
+    <Recipes
+      {...props}
+      key={props.organization.slug}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const RecipesPage = async ({ params, searchParams }: RecipesPageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -111,7 +157,7 @@ const RecipesContent = async ({ params, searchParams }: RecipesPageProps) => {
 
   if (!canViewInventory) notFound();
 
-  const { data: recipes, error: recipesError } = await settle(
+  const recipes = settle(
     getRecipes(
       organization.slug,
       {
@@ -127,37 +173,28 @@ const RecipesContent = async ({ params, searchParams }: RecipesPageProps) => {
       fetchOptions,
     ),
   );
-  if (recipesError) return <ErrorAlert />;
-
-  const { recipes: rows, total: rowCount } = recipes;
 
   return (
-    <Recipes
-      canCreate={canCreate}
-      canDelete={canDelete}
-      canViewAuditLog={canViewAuditLog}
-      canViewPurchasing={canViewPurchasing}
-      canWrite={canWrite}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={organization.slug}
-      organization={organization}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<Recipes loading />}>
+      <RecipesContent
+        canCreate={canCreate}
+        canDelete={canDelete}
+        canViewAuditLog={canViewAuditLog}
+        canViewPurchasing={canViewPurchasing}
+        canWrite={canWrite}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        organization={organization}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        recipes={recipes}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const RecipesPage = (props: RecipesPageProps) => (
-  <Suspense fallback={<Recipes loading />}>
-    <RecipesContent {...props} />
-  </Suspense>
-);
 
 export default RecipesPage;
