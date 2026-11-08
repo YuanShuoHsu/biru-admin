@@ -17,6 +17,7 @@ import { countKeys, ROLE_RANK } from "@/constants/organizations";
 import {
   useDefaultOrganizationSlug,
   useOrganizations,
+  usePlatformAdminMemberIds,
 } from "@/hooks/organizations";
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useSession } from "@/hooks/useSession";
@@ -61,10 +62,9 @@ import type {
 
 import { isActiveSession } from "@/utils/auth";
 import { getErrorMessage, toFetchError } from "@/utils/errors";
-import { fetcher, settle } from "@/utils/fetcher";
+import { fetcher } from "@/utils/fetcher";
 import {
   getMemberPermissions,
-  getPlatformAdminMemberIds,
   sortByCreatedAtDesc,
 } from "@/utils/organizations";
 
@@ -172,8 +172,7 @@ const OrganizationsSlugMembers = ({
   const tOrganizations = useTranslations("organizations");
 
   const {
-    data: { platformAdminMemberIds, rows, teams } = {
-      platformAdminMemberIds: initialPlatformAdminMemberIds,
+    data: { rows, teams } = {
       rows: initialMembers,
       teams: initialTeams,
     },
@@ -182,18 +181,14 @@ const OrganizationsSlugMembers = ({
   } = useSWR(
     !loading && ["organization-members", slug],
     async () => {
-      const [{ data, error }, platformAdminMemberIds] = await Promise.all([
-        authClient.organization.getFullOrganization({
+      const { data, error } = await authClient.organization.getFullOrganization(
+        {
           query: { organizationSlug: decodeURIComponent(slug) },
-        }),
-        fetchesPlatformAdminMemberIds
-          ? settle(getPlatformAdminMemberIds(organizationId))
-          : { data: [] },
-      ]);
+        },
+      );
       if (error) throw toFetchError(error);
 
       return {
-        platformAdminMemberIds: platformAdminMemberIds.data ?? [],
         rows: sortByCreatedAtDesc(data.members),
         teams: data.teams,
         pendingInvitationCount: data.invitations.filter(
@@ -204,7 +199,6 @@ const OrganizationsSlugMembers = ({
     },
     {
       fallbackData: {
-        platformAdminMemberIds: initialPlatformAdminMemberIds,
         rows: initialMembers,
         teams: initialTeams,
         pendingInvitationCount: 0,
@@ -217,6 +211,11 @@ const OrganizationsSlugMembers = ({
       },
     },
   );
+
+  const platformAdminMemberIds = usePlatformAdminMemberIds(organizationId, {
+    enabled: !loading && fetchesPlatformAdminMemberIds,
+    fallbackData: initialPlatformAdminMemberIds,
+  });
 
   const permissionsOf = useCallback(
     (member: Member) =>

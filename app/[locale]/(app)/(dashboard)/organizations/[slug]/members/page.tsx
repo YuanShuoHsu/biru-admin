@@ -15,6 +15,7 @@ import {
   getMemberPermissions,
   getPlatformAdminMemberIds,
   hasRolePermission,
+  needsPlatformAdminMemberIds,
   sortByCreatedAtDesc,
 } from "@/utils/organizations";
 import { getFullOrganization, getSession } from "@/utils/session";
@@ -66,8 +67,10 @@ const OrganizationsSlugMembersContent = async ({
   });
 
   const members = sortByCreatedAtDesc(data.members);
-  const fetchesPlatformAdminMemberIds =
-    canUpdateMember && session.user.role !== "admin";
+  const fetchesPlatformAdminMemberIds = needsPlatformAdminMemberIds(
+    currentUserRole,
+    session.user.role,
+  );
   const { data: platformAdminMemberIds = [] } = fetchesPlatformAdminMemberIds
     ? await settle(
         getPlatformAdminMemberIds(data.id, {

@@ -12,6 +12,7 @@ import DataGrid from "@/components/DataGrid";
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { ROLE_RANK } from "@/constants/organizations";
 
+import { usePlatformAdminMemberIds } from "@/hooks/organizations";
 import { useRowSelection } from "@/hooks/useRowSelection";
 
 import { authClient } from "@/lib/auth-client";
@@ -81,8 +82,9 @@ interface OrganizationsSlugTeamsTeamIdProps {
   activeOrganization?: ActiveOrganization;
   canUpdateTeam?: boolean;
   currentUserId?: string;
+  fetchesPlatformAdminMemberIds?: boolean;
+  initialPlatformAdminMemberIds?: Member["id"][];
   loading?: boolean;
-  platformAdminMemberIds?: Member["id"][];
   team?: Team;
   teamMembers?: TeamMemberRow[];
 }
@@ -91,8 +93,9 @@ const OrganizationsSlugTeamsTeamId = ({
   activeOrganization,
   canUpdateTeam = false,
   currentUserId = "",
+  fetchesPlatformAdminMemberIds = false,
+  initialPlatformAdminMemberIds = [],
   loading = false,
-  platformAdminMemberIds = [],
   team,
   teamMembers: initialTeamMembers = [],
 }: OrganizationsSlugTeamsTeamIdProps) => {
@@ -137,6 +140,14 @@ const OrganizationsSlugTeamsTeamId = ({
           apiRef.current?.autosizeColumns(autosizeOptions);
         }, 0);
       },
+    },
+  );
+
+  const platformAdminMemberIds = usePlatformAdminMemberIds(
+    activeOrganization?.id ?? "",
+    {
+      enabled: !loading && fetchesPlatformAdminMemberIds,
+      fallbackData: initialPlatformAdminMemberIds,
     },
   );
 

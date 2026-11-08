@@ -5,19 +5,21 @@ import useSWR, { type SWRConfiguration } from "swr";
 
 import { authClient } from "@/lib/auth-client";
 
-import type { Organization } from "@/types/organizations";
+import type { Member, Organization } from "@/types/organizations";
 
 import { canRestoreDeletedRecords } from "@/utils/deletedRecords";
 import { toFetchError } from "@/utils/errors";
 import {
   activeMemberRoleKey,
   defaultOrganizationSlugKey,
+  getPlatformAdminMemberIds,
   resolveDefaultOrganizationSlug,
   sortByCreatedAtDesc,
 } from "@/utils/organizations";
 
 const deletedRecordPermissionKey = "deleted-record-permission";
 const organizationsKey = "organizations";
+const platformAdminMemberIdsKey = "platform-admin-member-ids";
 
 export const useDefaultOrganizationSlug = () =>
   useSWR<string>(defaultOrganizationSlugKey, async () => {
@@ -102,3 +104,18 @@ export const useOrganization = (organizationSlug?: string | null) => {
 
 export const useOrganizationName = (organizationSlug?: string | null) =>
   useOrganization(organizationSlug)?.name;
+
+export const usePlatformAdminMemberIds = (
+  organizationId: Organization["id"],
+  { enabled, fallbackData }: { enabled: boolean; fallbackData: Member["id"][] },
+) => {
+  const { data } = useSWR(
+    enabled && organizationId
+      ? [platformAdminMemberIdsKey, organizationId]
+      : null,
+    ([, id]: [string, string]) => getPlatformAdminMemberIds(id),
+    { fallbackData },
+  );
+
+  return data;
+};

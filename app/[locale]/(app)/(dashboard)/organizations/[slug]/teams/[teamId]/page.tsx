@@ -16,6 +16,7 @@ import { settle } from "@/utils/fetcher";
 import {
   getPlatformAdminMemberIds,
   hasRolePermission,
+  needsPlatformAdminMemberIds,
 } from "@/utils/organizations";
 import { getFullOrganization, getSession } from "@/utils/session";
 import { buildTeamMembers } from "@/utils/teams";
@@ -87,8 +88,7 @@ const OrganizationsSlugTeamsTeamIdContent = async ({
   });
   const fetchesPlatformAdminMemberIds =
     canUpdateTeam &&
-    hasRolePermission(currentUserRole, { member: ["update"] }) &&
-    session.user.role !== "admin";
+    needsPlatformAdminMemberIds(currentUserRole, session.user.role);
   const { data: platformAdminMemberIds = [] } = fetchesPlatformAdminMemberIds
     ? await settle(
         getPlatformAdminMemberIds(activeOrganization.id, {
@@ -102,7 +102,8 @@ const OrganizationsSlugTeamsTeamIdContent = async ({
       activeOrganization={activeOrganization}
       canUpdateTeam={canUpdateTeam}
       currentUserId={session.user.id}
-      platformAdminMemberIds={platformAdminMemberIds}
+      fetchesPlatformAdminMemberIds={fetchesPlatformAdminMemberIds}
+      initialPlatformAdminMemberIds={platformAdminMemberIds}
       team={team}
       teamMembers={teamMembers}
     />
