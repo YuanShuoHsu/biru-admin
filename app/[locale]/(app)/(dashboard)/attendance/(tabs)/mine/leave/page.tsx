@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,6 +18,13 @@ import {
   attendanceLeaveBalanceSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
+import type {
+  AttendanceLeaveBalance,
+  AttendanceLeaveBalanceFilterField,
+  AttendanceLeaveBalanceSortField,
+} from "@/types/attendance";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import {
   getAttendanceContext,
@@ -23,7 +32,7 @@ import {
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceLeaveTypeNameEnumOptions } from "@/utils/enumOptions";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { getAttendanceAccess } from "@/utils/session";
 
 interface MyLeavePageProps {
@@ -54,7 +63,51 @@ export const generateMetadata = async ({
   return { title: tAttendance("balances.label") };
 };
 
-const MyLeaveContent = async ({ params, searchParams }: MyLeavePageProps) => {
+interface MyLeaveContentProps {
+  balances: Promise<
+    | FetchResult<{ balances: AttendanceLeaveBalance[]; total: number }>
+    | undefined
+  >;
+  filterField?: AttendanceLeaveBalanceFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  organization: Organization;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sortBy?: AttendanceLeaveBalanceSortField;
+  sortDirection?: SortDirection;
+}
+
+const MyLeaveContent = async ({
+  balances: balancesPromise,
+  ...props
+}: MyLeaveContentProps) => {
+  const balancesResult = await balancesPromise;
+  if (!balancesResult) return <ErrorAlert />;
+
+  const { data: balances, error } = balancesResult;
+  if (error) return <ErrorAlert />;
+
+  const { balances: rows, total: rowCount } = balances;
+
+  return (
+    <Balances
+      {...props}
+      canDefer={false}
+      canRevokeDeferral={false}
+      canViewAll={false}
+      canWrite={false}
+      employees={[]}
+      key={props.organization.slug}
+      leaveTypes={[]}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const MyLeavePage = async ({ params, searchParams }: MyLeavePageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -105,65 +158,49 @@ const MyLeaveContent = async ({ params, searchParams }: MyLeavePageProps) => {
       )
     : [];
 
-  const { data: context, error: contextError } = await settle(
+  const balances = settle(
     getAttendanceContext(organization.slug, fetchOptions),
-  );
-  if (contextError) return <ErrorAlert />;
-
-  const { employee } = context;
-
-  const { data: balances, error } = await settle(
-    employee
-      ? getAttendanceLeaveBalances(
-          organization.slug,
-          "me",
-          {
-            page,
-            pageSize,
-            filterField,
-            filterOperator,
-            filterValue,
-            quickFilterEnums,
-            quickFilterValue,
-            sortBy,
-            sortDirection,
-          },
-          fetchOptions,
+  ).then(({ data: context }) =>
+    context
+      ? settle(
+          context.employee
+            ? getAttendanceLeaveBalances(
+                organization.slug,
+                "me",
+                {
+                  page,
+                  pageSize,
+                  filterField,
+                  filterOperator,
+                  filterValue,
+                  quickFilterEnums,
+                  quickFilterValue,
+                  sortBy,
+                  sortDirection,
+                },
+                fetchOptions,
+              )
+            : Promise.resolve({ balances: [], total: 0 }),
         )
-      : Promise.resolve({ balances: [], total: 0 }),
+      : undefined,
   );
-  if (error) return <ErrorAlert />;
-
-  const { balances: rows, total: rowCount } = balances;
 
   return (
-    <Balances
-      canDefer={false}
-      canRevokeDeferral={false}
-      canViewAll={false}
-      canWrite={false}
-      employees={[]}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={organization.slug}
-      leaveTypes={[]}
-      organization={organization}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<Balances loading />}>
+      <MyLeaveContent
+        balances={balances}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        organization={organization}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const MyLeavePage = (props: MyLeavePageProps) => (
-  <Suspense fallback={<Balances loading />}>
-    <MyLeaveContent {...props} />
-  </Suspense>
-);
 
 export default MyLeavePage;

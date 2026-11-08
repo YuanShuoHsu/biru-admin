@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,10 +18,17 @@ import {
   payrollStatementFilterFieldValues,
   payrollStatementSortFieldValues,
 } from "@/types/api";
+import type {
+  PayrollStatementFilterField,
+  PayrollStatementListItem,
+  PayrollStatementSortField,
+} from "@/types/attendance";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import { getPayrollStatements } from "@/utils/attendance";
 import { resolveGridSearchParams } from "@/utils/dataGrid";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { getAttendanceAccess } from "@/utils/session";
 
 interface PayslipsPageProps {
@@ -50,7 +59,41 @@ export const generateMetadata = async ({
   return { title: tAttendance("payslips.label") };
 };
 
-const PayslipsContent = async ({ params, searchParams }: PayslipsPageProps) => {
+interface PayslipsContentProps {
+  filterField?: PayrollStatementFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  organization: Organization;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sortBy?: PayrollStatementSortField;
+  sortDirection?: SortDirection;
+  statements: Promise<
+    FetchResult<{ statements: PayrollStatementListItem[]; total: number }>
+  >;
+}
+
+const PayslipsContent = async ({
+  statements: statementsResult,
+  ...props
+}: PayslipsContentProps) => {
+  const { data: statements, error } = await statementsResult;
+  if (error) return <ErrorAlert />;
+
+  const { statements: rows, total: rowCount } = statements;
+
+  return (
+    <Payslips
+      {...props}
+      key={props.organization.slug}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const PayslipsPage = async ({ params, searchParams }: PayslipsPageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -89,7 +132,7 @@ const PayslipsContent = async ({ params, searchParams }: PayslipsPageProps) => {
       locale,
     });
 
-  const { data: statements, error } = await settle(
+  const statements = settle(
     getPayrollStatements(
       organization.slug,
       "me",
@@ -106,32 +149,23 @@ const PayslipsContent = async ({ params, searchParams }: PayslipsPageProps) => {
       fetchOptions,
     ),
   );
-  if (error) return <ErrorAlert />;
-
-  const { statements: rows, total: rowCount } = statements;
 
   return (
-    <Payslips
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={organization.slug}
-      organization={organization}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<Payslips loading />}>
+      <PayslipsContent
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        organization={organization}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+        statements={statements}
+      />
+    </Suspense>
   );
 };
-
-const PayslipsPage = (props: PayslipsPageProps) => (
-  <Suspense fallback={<Payslips loading />}>
-    <PayslipsContent {...props} />
-  </Suspense>
-);
 
 export default PayslipsPage;
