@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,11 +18,18 @@ import {
   payrollEarningTypeFilterFieldValues,
   payrollEarningTypeSortFieldValues,
 } from "@/types/api";
+import type {
+  PayrollEarningType,
+  PayrollEarningTypeFilterField,
+  PayrollEarningTypeSortField,
+} from "@/types/attendance";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import { getPayrollEarningTypes } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getPayrollEarningTypeEnumOptions } from "@/utils/enumOptions";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -52,7 +61,42 @@ export const generateMetadata = async ({
   return { title: tAttendance("earningTypes.label") };
 };
 
+interface EarningTypesContentProps {
+  canViewAuditLog: boolean;
+  earningTypes: Promise<
+    FetchResult<{ earningTypes: PayrollEarningType[]; total: number }>
+  >;
+  filterField?: PayrollEarningTypeFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  organization: Organization;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sortBy?: PayrollEarningTypeSortField;
+  sortDirection?: SortDirection;
+}
+
 const EarningTypesContent = async ({
+  earningTypes: earningTypesResult,
+  ...props
+}: EarningTypesContentProps) => {
+  const { data: earningTypes, error } = await earningTypesResult;
+  if (error) return <ErrorAlert />;
+
+  const { earningTypes: rows, total: rowCount } = earningTypes;
+
+  return (
+    <EarningTypes
+      {...props}
+      key={props.organization.slug}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const EarningTypesPage = async ({
   params,
   searchParams,
 }: EarningTypesPageProps) => {
@@ -108,7 +152,7 @@ const EarningTypesContent = async ({
       )
     : [];
 
-  const { data: earningTypes, error } = await settle(
+  const earningTypes = settle(
     getPayrollEarningTypes(
       organization.slug,
       {
@@ -125,33 +169,24 @@ const EarningTypesContent = async ({
       fetchOptions,
     ),
   );
-  if (error) return <ErrorAlert />;
-
-  const { earningTypes: rows, total: rowCount } = earningTypes;
 
   return (
-    <EarningTypes
-      canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={organization.slug}
-      organization={organization}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<EarningTypes loading />}>
+      <EarningTypesContent
+        canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
+        earningTypes={earningTypes}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        organization={organization}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const EarningTypesPage = (props: EarningTypesPageProps) => (
-  <Suspense fallback={<EarningTypes loading />}>
-    <EarningTypesContent {...props} />
-  </Suspense>
-);
 
 export default EarningTypesPage;

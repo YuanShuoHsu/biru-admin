@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -18,6 +20,16 @@ import {
   payrollStatementFilterFieldValues,
   payrollStatementSortFieldValues,
 } from "@/types/api";
+import type {
+  AttendanceEmployeeSummary,
+  PayrollEarningType,
+  PayrollStatementFilterField,
+  PayrollStatementListItem,
+  PayrollStatementSortField,
+  PayrollTerms,
+} from "@/types/attendance";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import {
   getAttendanceEmployees,
@@ -27,7 +39,7 @@ import {
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getPayrollStatementEnumOptions } from "@/utils/enumOptions";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -59,7 +71,59 @@ export const generateMetadata = async ({
   return { title: tAttendance("payslips.label") };
 };
 
-const PayrollContent = async ({ params, searchParams }: PayrollPageProps) => {
+interface PayrollContentProps {
+  canCreate: boolean;
+  canManage: boolean;
+  canManageTerms: boolean;
+  canViewAuditLog: boolean;
+  canViewCosts: boolean;
+  filterField?: PayrollStatementFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  organization: Organization;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  results: Promise<
+    [
+      FetchResult<{ statements: PayrollStatementListItem[]; total: number }>,
+      FetchResult<{ employees: AttendanceEmployeeSummary[]; total: number }>,
+      FetchResult<PayrollTerms[]>,
+      FetchResult<{ earningTypes: PayrollEarningType[]; total: number }>,
+    ]
+  >;
+  sortBy?: PayrollStatementSortField;
+  sortDirection?: SortDirection;
+}
+
+const PayrollContent = async ({ results, ...props }: PayrollContentProps) => {
+  const [
+    { data: statements, error },
+    { data: employeePage, error: employeesError },
+    { data: terms, error: termsError },
+    { data: earningTypePage, error: earningTypesError },
+  ] = await results;
+  if (error || employeesError || termsError || earningTypesError)
+    return <ErrorAlert />;
+
+  const { statements: rows, total: rowCount } = statements;
+  const { employees } = employeePage;
+  const { earningTypes } = earningTypePage;
+
+  return (
+    <Payroll
+      {...props}
+      earningTypes={earningTypes}
+      employees={employees}
+      key={props.organization.slug}
+      rowCount={rowCount}
+      rows={rows}
+      terms={terms}
+    />
+  );
+};
+
+const PayrollPage = async ({ params, searchParams }: PayrollPageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -115,12 +179,7 @@ const PayrollContent = async ({ params, searchParams }: PayrollPageProps) => {
       )
     : [];
 
-  const [
-    { data: statements, error },
-    { data: employeePage, error: employeesError },
-    { data: terms, error: termsError },
-    { data: earningTypePage, error: earningTypesError },
-  ] = await Promise.all([
+  const results = Promise.all([
     settle(
       getPayrollStatements(
         organization.slug,
@@ -155,45 +214,30 @@ const PayrollContent = async ({ params, searchParams }: PayrollPageProps) => {
       ),
     ),
   ]);
-  if (error || employeesError || termsError || earningTypesError)
-    return <ErrorAlert />;
-
-  const { statements: rows, total: rowCount } = statements;
-  const { employees } = employeePage;
-  const { earningTypes } = earningTypePage;
 
   return (
-    <Payroll
-      canCreate={hasRolePermission(memberRole, { payslip: ["create"] })}
-      canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
-      canViewCosts={hasRolePermission(memberRole, { payslip: ["read"] })}
-      canManage={hasRolePermission(memberRole, { payslip: ["update"] })}
-      canManageTerms={hasRolePermission(memberRole, {
-        payrollTerm: ["create", "update"],
-      })}
-      earningTypes={earningTypes}
-      employees={employees}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={organization.slug}
-      organization={organization}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-      terms={terms}
-    />
+    <Suspense fallback={<Payroll loading />}>
+      <PayrollContent
+        canCreate={hasRolePermission(memberRole, { payslip: ["create"] })}
+        canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
+        canViewCosts={hasRolePermission(memberRole, { payslip: ["read"] })}
+        canManage={hasRolePermission(memberRole, { payslip: ["update"] })}
+        canManageTerms={hasRolePermission(memberRole, {
+          payrollTerm: ["create", "update"],
+        })}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        organization={organization}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        results={results}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const PayrollPage = (props: PayrollPageProps) => (
-  <Suspense fallback={<Payroll loading />}>
-    <PayrollContent {...props} />
-  </Suspense>
-);
 
 export default PayrollPage;

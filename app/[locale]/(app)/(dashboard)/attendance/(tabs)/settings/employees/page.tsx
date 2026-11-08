@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,6 +18,16 @@ import {
   attendanceEmployeeSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
+import type {
+  AttendanceContext,
+  AttendanceEmployeeFilterField,
+  AttendanceEmployeeSortField,
+  AttendanceLegalStatusObligation,
+  AttendanceMember,
+  PayrollTerms,
+} from "@/types/attendance";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import {
   getAttendanceContext,
@@ -25,7 +37,7 @@ import {
 } from "@/utils/attendance";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getAttendanceEmployeeEnumOptions } from "@/utils/enumOptions";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -57,10 +69,64 @@ export const generateMetadata = async ({
   return { title: tAttendance("employees.label") };
 };
 
+interface EmployeesContentProps {
+  canDelete: boolean;
+  canDeleteChildren: boolean;
+  canManageChildren: boolean;
+  canManageTaxIdentity: boolean;
+  canManageTerms: boolean;
+  canUpdateChildren: boolean;
+  canViewAuditLog: boolean;
+  canWrite: boolean;
+  filterField?: AttendanceEmployeeFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  organization: Organization;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  results: Promise<
+    [
+      FetchResult<{ members: AttendanceMember[]; total: number }>,
+      FetchResult<AttendanceLegalStatusObligation[]>,
+      FetchResult<PayrollTerms[]>,
+      FetchResult<AttendanceContext | null>,
+    ]
+  >;
+  sortBy?: AttendanceEmployeeSortField;
+  sortDirection?: SortDirection;
+}
+
 const EmployeesContent = async ({
-  params,
-  searchParams,
-}: EmployeesPageProps) => {
+  results,
+  ...props
+}: EmployeesContentProps) => {
+  const [
+    { data: members, error },
+    { data: legalStatusObligations, error: legalStatusObligationsError },
+    { data: terms, error: termsError },
+    { data: context, error: contextError },
+  ] = await results;
+  if (error || legalStatusObligationsError || termsError || contextError)
+    return <ErrorAlert />;
+
+  const { members: rows, total: rowCount } = members;
+
+  return (
+    <Employees
+      {...props}
+      canReviewOwnChildren={!!context?.selfReviewAllowed.parentalChild}
+      employeeId={context?.employee?.id}
+      key={props.organization.slug}
+      legalStatusObligations={legalStatusObligations}
+      rowCount={rowCount}
+      rows={rows}
+      terms={terms}
+    />
+  );
+};
+
+const EmployeesPage = async ({ params, searchParams }: EmployeesPageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -121,12 +187,7 @@ const EmployeesContent = async ({
     parentalChild: ["create", "read"],
   });
 
-  const [
-    { data: members, error },
-    { data: legalStatusObligations, error: legalStatusObligationsError },
-    { data: terms, error: termsError },
-    { data: context, error: contextError },
-  ] = await Promise.all([
+  const results = Promise.all([
     settle(
       getAttendanceMembers(
         organization.slug,
@@ -158,53 +219,39 @@ const EmployeesContent = async ({
         : Promise.resolve(null),
     ),
   ]);
-  if (error || legalStatusObligationsError || termsError || contextError)
-    return <ErrorAlert />;
-
-  const { members: rows, total: rowCount } = members;
 
   return (
-    <Employees
-      canDelete={hasRolePermission(memberRole, { employee: ["delete"] })}
-      canDeleteChildren={hasRolePermission(memberRole, {
-        parentalChild: ["delete"],
-      })}
-      canManageChildren={canManageChildren}
-      canUpdateChildren={hasRolePermission(memberRole, {
-        parentalChild: ["update"],
-      })}
-      canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
-      canReviewOwnChildren={!!context?.selfReviewAllowed.parentalChild}
-      canManageTaxIdentity={hasRolePermission(memberRole, {
-        payrollTerm: ["update"],
-      })}
-      canManageTerms={canManageTerms}
-      canWrite={hasRolePermission(memberRole, {
-        employee: ["create", "update"],
-      })}
-      employeeId={context?.employee?.id}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={organization.slug}
-      legalStatusObligations={legalStatusObligations}
-      organization={organization}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-      terms={terms}
-    />
+    <Suspense fallback={<Employees loading />}>
+      <EmployeesContent
+        canDelete={hasRolePermission(memberRole, { employee: ["delete"] })}
+        canDeleteChildren={hasRolePermission(memberRole, {
+          parentalChild: ["delete"],
+        })}
+        canManageChildren={canManageChildren}
+        canManageTaxIdentity={hasRolePermission(memberRole, {
+          payrollTerm: ["update"],
+        })}
+        canManageTerms={canManageTerms}
+        canUpdateChildren={hasRolePermission(memberRole, {
+          parentalChild: ["update"],
+        })}
+        canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
+        canWrite={hasRolePermission(memberRole, {
+          employee: ["create", "update"],
+        })}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        organization={organization}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        results={results}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const EmployeesPage = (props: EmployeesPageProps) => (
-  <Suspense fallback={<Employees loading />}>
-    <EmployeesContent {...props} />
-  </Suspense>
-);
 
 export default EmployeesPage;
