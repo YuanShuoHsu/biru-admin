@@ -238,10 +238,12 @@
   },
   "pickupCutoffMinutes": {
     "invalid": "閉店前の締め切りが無効です。",
+    "max": "閉店前の締め切りは {minutes} 分を超えることはできません。",
     "required": "閉店前の締め切りは必須です。"
   },
   "pickupLeadMinutes": {
     "invalid": "最短リードタイムが無効です。",
+    "max": "最短リードタイムは {days} 日未満にしてください。超えると予約できる時間帯がなくなります。",
     "required": "最短リードタイムは必須です。"
   },
   "pickupMaxAdvanceDays": {

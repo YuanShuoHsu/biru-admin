@@ -14,10 +14,13 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
-import type { ActiveOrganization, Team } from "@/types/organizations";
+import type { ActiveOrganization, Member, Team } from "@/types/organizations";
 
-import { settle } from "@/utils/fetcher";
-import { hasRolePermission } from "@/utils/organizations";
+import { type FetchResult, settle } from "@/utils/fetcher";
+import {
+  getPlatformAdminMemberIds,
+  hasRolePermission,
+} from "@/utils/organizations";
 import { getFullOrganization, getSession } from "@/utils/session";
 import { buildTeamMembers } from "@/utils/teams";
 
@@ -41,16 +44,20 @@ interface OrganizationsSlugTeamsTeamIdContentProps {
   activeOrganization: ActiveOrganization;
   canUpdateTeam: boolean;
   currentUserId: string;
+  platformAdminMemberIds: Promise<FetchResult<Member["id"][]>>;
   team: Team;
   teamMembers: ReturnType<typeof authClient.organization.listTeamMembers>;
 }
 
 const OrganizationsSlugTeamsTeamIdContent = async ({
+  platformAdminMemberIds: platformAdminMemberIdsResult,
   teamMembers: teamMembersResult,
   ...props
 }: OrganizationsSlugTeamsTeamIdContentProps) => {
-  const { data: teamMemberData, error: teamMembersError } =
-    await teamMembersResult;
+  const [
+    { data: teamMemberData, error: teamMembersError },
+    { data: platformAdminMemberIds = [] },
+  ] = await Promise.all([teamMembersResult, platformAdminMemberIdsResult]);
 
   if (
     teamMembersError &&
@@ -63,7 +70,13 @@ const OrganizationsSlugTeamsTeamIdContent = async ({
     props.activeOrganization.members,
   );
 
-  return <OrganizationsSlugTeamsTeamId {...props} teamMembers={teamMembers} />;
+  return (
+    <OrganizationsSlugTeamsTeamId
+      {...props}
+      platformAdminMemberIds={platformAdminMemberIds}
+      teamMembers={teamMembers}
+    />
+  );
 };
 
 const OrganizationsSlugTeamsTeamIdPage = async ({
@@ -101,6 +114,17 @@ const OrganizationsSlugTeamsTeamIdPage = async ({
   const canUpdateTeam = hasRolePermission(currentUserRole, {
     team: ["update"],
   });
+  const fetchesPlatformAdminMemberIds =
+    canUpdateTeam &&
+    hasRolePermission(currentUserRole, { member: ["update"] }) &&
+    session.user.role !== "admin";
+  const platformAdminMemberIds = fetchesPlatformAdminMemberIds
+    ? settle(
+        getPlatformAdminMemberIds(activeOrganization.id, {
+          headers: cookieHeader,
+        }),
+      )
+    : Promise.resolve({ data: [] });
 
   return (
     <Suspense fallback={<OrganizationsSlugTeamsTeamId loading />}>
@@ -108,6 +132,7 @@ const OrganizationsSlugTeamsTeamIdPage = async ({
         activeOrganization={activeOrganization}
         canUpdateTeam={canUpdateTeam}
         currentUserId={session.user.id}
+        platformAdminMemberIds={platformAdminMemberIds}
         team={team}
         teamMembers={teamMembers}
       />

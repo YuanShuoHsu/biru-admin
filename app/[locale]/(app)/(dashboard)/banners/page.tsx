@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,11 +18,18 @@ import {
   bannerSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
+import type {
+  Banner,
+  BannerFilterField,
+  BannerSortField,
+} from "@/types/banners";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
 import { getBanners } from "@/utils/banners";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getBannerEnumOptions } from "@/utils/enumOptions";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
+import { getSession } from "@/utils/session";
 
 interface BannersPageProps {
   params: Promise<{ locale: Locale }>;
@@ -46,12 +55,34 @@ export const generateMetadata = async ({
   return { title: tBanners("label") };
 };
 
-const BannersContent = async ({ params, searchParams }: BannersPageProps) => {
-  const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
-    cookies(),
-    params,
-    searchParams,
-  ]);
+interface BannersContentProps {
+  banners: Promise<FetchResult<{ banners: Banner[]; total: number }>>;
+  filterField?: BannerFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sortBy?: BannerSortField;
+  sortDirection?: SortDirection;
+}
+
+const BannersContent = async ({ banners, ...props }: BannersContentProps) => {
+  const { data, error } = await banners;
+  if (error?.status === 403) notFound();
+  if (error) return <ErrorAlert />;
+
+  const { banners: rows, total: rowCount } = data;
+
+  return <Banners {...props} rowCount={rowCount} rows={rows} />;
+};
+
+const BannersPage = async ({ params, searchParams }: BannersPageProps) => {
+  const [session, cookieStore, { locale }, rawSearchParams] = await Promise.all(
+    [getSession(), cookies(), params, searchParams],
+  );
+
+  if (session?.user?.role !== "admin") notFound();
 
   const {
     filterField,
@@ -79,7 +110,7 @@ const BannersContent = async ({ params, searchParams }: BannersPageProps) => {
     ? getQuickFilterEnums(quickFilterValue, getBannerEnumOptions(tBanners))
     : [];
 
-  const { data: banners, error } = await settle(
+  const banners = settle(
     getBanners(
       {
         page,
@@ -95,31 +126,23 @@ const BannersContent = async ({ params, searchParams }: BannersPageProps) => {
       { headers: { cookie: cookieStore.toString() } },
     ),
   );
-  if (error?.status === 403) notFound();
-  if (error) return <ErrorAlert />;
 
-  const { banners: rows, total: rowCount } = banners;
+  const bannersProps = {
+    filterField,
+    filterOperator,
+    filterValue,
+    page,
+    pageSize,
+    quickFilterValue,
+    sortBy,
+    sortDirection,
+  };
 
   return (
-    <Banners
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<Banners {...bannersProps} loading />}>
+      <BannersContent {...bannersProps} banners={banners} />
+    </Suspense>
   );
 };
-
-const BannersPage = (props: BannersPageProps) => (
-  <Suspense fallback={<Banners loading />}>
-    <BannersContent {...props} />
-  </Suspense>
-);
 
 export default BannersPage;

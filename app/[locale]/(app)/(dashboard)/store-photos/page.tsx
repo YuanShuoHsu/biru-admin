@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,11 +18,18 @@ import {
   storePhotoSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  StorePhoto,
+  StorePhotoFilterField,
+  StorePhotoSortField,
+} from "@/types/storePhotos";
 
 import { getStorePhotos } from "@/utils/storePhotos";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getStorePhotoEnumOptions } from "@/utils/enumOptions";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
+import { getSession } from "@/utils/session";
 
 interface StorePhotosPageProps {
   params: Promise<{ locale: Locale }>;
@@ -49,15 +58,42 @@ export const generateMetadata = async ({
   return { title: tStorePhotos("label") };
 };
 
+interface StorePhotosContentProps {
+  filterField?: StorePhotoFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  storePhotos: Promise<
+    FetchResult<{ storePhotos: StorePhoto[]; total: number }>
+  >;
+  sortBy?: StorePhotoSortField;
+  sortDirection?: SortDirection;
+}
+
 const StorePhotosContent = async ({
+  storePhotos,
+  ...props
+}: StorePhotosContentProps) => {
+  const { data, error } = await storePhotos;
+  if (error?.status === 403) notFound();
+  if (error) return <ErrorAlert />;
+
+  const { storePhotos: rows, total: rowCount } = data;
+
+  return <StorePhotos {...props} rowCount={rowCount} rows={rows} />;
+};
+
+const StorePhotosPage = async ({
   params,
   searchParams,
 }: StorePhotosPageProps) => {
-  const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
-    cookies(),
-    params,
-    searchParams,
-  ]);
+  const [session, cookieStore, { locale }, rawSearchParams] = await Promise.all(
+    [getSession(), cookies(), params, searchParams],
+  );
+
+  if (session?.user?.role !== "admin") notFound();
 
   const {
     filterField,
@@ -91,7 +127,7 @@ const StorePhotosContent = async ({
       )
     : [];
 
-  const { data: storePhotos, error } = await settle(
+  const storePhotos = settle(
     getStorePhotos(
       {
         page,
@@ -109,31 +145,23 @@ const StorePhotosContent = async ({
       },
     ),
   );
-  if (error?.status === 403) notFound();
-  if (error) return <ErrorAlert />;
 
-  const { storePhotos: rows, total: rowCount } = storePhotos;
+  const storePhotosProps = {
+    filterField,
+    filterOperator,
+    filterValue,
+    page,
+    pageSize,
+    quickFilterValue,
+    sortBy,
+    sortDirection,
+  };
 
   return (
-    <StorePhotos
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<StorePhotos {...storePhotosProps} loading />}>
+      <StorePhotosContent {...storePhotosProps} storePhotos={storePhotos} />
+    </Suspense>
   );
 };
-
-const StorePhotosPage = (props: StorePhotosPageProps) => (
-  <Suspense fallback={<StorePhotos loading />}>
-    <StorePhotosContent {...props} />
-  </Suspense>
-);
 
 export default StorePhotosPage;

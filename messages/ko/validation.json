@@ -238,10 +238,12 @@
   },
   "pickupCutoffMinutes": {
     "invalid": "마감 전 마감 시간이 유효하지 않습니다.",
+    "max": "마감 전 마감 시간은 {minutes}분을 초과할 수 없습니다.",
     "required": "마감 전 마감 시간은 필수입니다."
   },
   "pickupLeadMinutes": {
     "invalid": "최소 준비 시간이 유효하지 않습니다.",
+    "max": "최소 준비 시간은 {days}일 미만이어야 합니다. 그렇지 않으면 예약 가능한 시간대가 없습니다.",
     "required": "최소 준비 시간은 필수입니다."
   },
   "pickupMaxAdvanceDays": {

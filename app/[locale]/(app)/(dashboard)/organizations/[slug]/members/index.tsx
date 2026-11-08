@@ -61,8 +61,12 @@ import type {
 
 import { isActiveSession } from "@/utils/auth";
 import { getErrorMessage, toFetchError } from "@/utils/errors";
-import { fetcher } from "@/utils/fetcher";
-import { sortByCreatedAtDesc } from "@/utils/organizations";
+import { fetcher, settle } from "@/utils/fetcher";
+import {
+  getMemberPermissions,
+  getPlatformAdminMemberIds,
+  sortByCreatedAtDesc,
+} from "@/utils/organizations";
 
 const ConfirmStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(1),
@@ -122,6 +126,8 @@ interface OrganizationsSlugMembersProps {
   canUpdateMemberRoles: boolean;
   currentUserId: string;
   currentUserRole: string;
+  fetchesPlatformAdminMemberIds: boolean;
+  initialPlatformAdminMemberIds: Member["id"][];
 }
 
 const OrganizationsSlugMembers = ({
@@ -134,6 +140,8 @@ const OrganizationsSlugMembers = ({
   canUpdateMemberRoles,
   currentUserId,
   currentUserRole,
+  fetchesPlatformAdminMemberIds,
+  initialPlatformAdminMemberIds,
 }: OrganizationsSlugMembersProps) => {
   const organizationId = activeOrganization.id;
   const initialMembers = activeOrganization.members;
@@ -162,7 +170,8 @@ const OrganizationsSlugMembers = ({
   const tOrganizations = useTranslations("organizations");
 
   const {
-    data: { rows, teams } = {
+    data: { platformAdminMemberIds, rows, teams } = {
+      platformAdminMemberIds: initialPlatformAdminMemberIds,
       rows: initialMembers,
       teams: initialTeams,
     },
@@ -171,14 +180,18 @@ const OrganizationsSlugMembers = ({
   } = useSWR(
     ["organization-members", slug],
     async () => {
-      const { data, error } = await authClient.organization.getFullOrganization(
-        {
+      const [{ data, error }, platformAdminMemberIds] = await Promise.all([
+        authClient.organization.getFullOrganization({
           query: { organizationSlug: decodeURIComponent(slug) },
-        },
-      );
+        }),
+        fetchesPlatformAdminMemberIds
+          ? settle(getPlatformAdminMemberIds(organizationId))
+          : { data: [] },
+      ]);
       if (error) throw toFetchError(error);
 
       return {
+        platformAdminMemberIds: platformAdminMemberIds.data ?? [],
         rows: sortByCreatedAtDesc(data.members),
         teams: data.teams,
         pendingInvitationCount: data.invitations.filter(
@@ -189,6 +202,7 @@ const OrganizationsSlugMembers = ({
     },
     {
       fallbackData: {
+        platformAdminMemberIds: initialPlatformAdminMemberIds,
         rows: initialMembers,
         teams: initialTeams,
         pendingInvitationCount: 0,
@@ -202,39 +216,29 @@ const OrganizationsSlugMembers = ({
     },
   );
 
-  const ownerCount = useMemo(
-    () => rows.filter(({ role }) => role === "owner").length,
-    [rows],
-  );
-
-  const getMemberPermissions = useCallback(
-    ({ role, userId }: Pick<Member, "role" | "userId">) => {
-      const isOnlyOwner = role === "owner" && ownerCount === 1;
-      const isHigherRoleRank = ROLE_RANK[currentUserRole] >= ROLE_RANK[role];
-      const isCurrentUser = userId === currentUserId;
-
-      return {
-        canUpdateMemberRole:
-          canUpdateMember && !isOnlyOwner && isHigherRoleRank,
-        canRemoveMember:
-          canDeleteMember && !isCurrentUser && !isOnlyOwner && isHigherRoleRank,
-        canLeaveOrganization: isCurrentUser && !isOnlyOwner,
-        canTurnOnShowcase: isCurrentUser,
-        canTurnOffShowcase: isCurrentUser || canUpdateMember,
-      };
-    },
+  const permissionsOf = useCallback(
+    (member: Member) =>
+      getMemberPermissions(member, {
+        canDeleteMember,
+        canUpdateMember,
+        currentUserId,
+        currentUserRole,
+        members: rows,
+        platformAdminMemberIds,
+      }),
     [
       canDeleteMember,
       canUpdateMember,
       currentUserId,
       currentUserRole,
-      ownerCount,
+      platformAdminMemberIds,
+      rows,
     ],
   );
 
   const isMemberSelectable = useCallback(
-    (member: Member) => getMemberPermissions(member).canRemoveMember,
-    [getMemberPermissions],
+    (member: Member) => permissionsOf(member).canRemoveMember,
+    [permissionsOf],
   );
 
   const {
@@ -524,7 +528,7 @@ const OrganizationsSlugMembers = ({
                   canUpdateMemberRole,
                   canRemoveMember,
                   canLeaveOrganization,
-                } = getMemberPermissions(row);
+                } = permissionsOf(row);
 
                 return (
                   <ActionsStack direction="row">
@@ -631,8 +635,7 @@ const OrganizationsSlugMembers = ({
         headerName: tMembers("showcase.label"),
         type: "boolean",
         renderCell: ({ row }: GridRenderCellParams<Member>) => {
-          const { canTurnOffShowcase, canTurnOnShowcase } =
-            getMemberPermissions(row);
+          const { canTurnOffShowcase, canTurnOnShowcase } = permissionsOf(row);
           const canToggle = row.showcase
             ? canTurnOffShowcase
             : canTurnOnShowcase;
@@ -667,7 +670,7 @@ const OrganizationsSlugMembers = ({
       canRemoveMembers,
       canUpdateMemberRoles,
       format,
-      getMemberPermissions,
+      permissionsOf,
       handleLeaveOrganization,
       handleRemoveMember,
       handleUpdateMemberRole,

@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -17,7 +19,14 @@ import {
   userSortFieldValues,
 } from "@/types/api";
 
-import type { User, UserListResponse } from "@/types/admins";
+import type {
+  User,
+  UserFilterField,
+  UserFilterOperator,
+  UserListResponse,
+  UserSortField,
+} from "@/types/admins";
+import type { SortDirection } from "@/types/dataGrid";
 
 import {
   getGridSearchParams,
@@ -25,7 +34,8 @@ import {
   resolveGridSearchParams,
 } from "@/utils/dataGrid";
 import { getAdminEnumOptions } from "@/utils/enumOptions";
-import { fetcher, settle } from "@/utils/fetcher";
+import { type FetchResult, fetcher, settle } from "@/utils/fetcher";
+import { getSession } from "@/utils/session";
 
 interface AdminsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -51,12 +61,35 @@ export const generateMetadata = async ({
   return { title: tAdmins("label") };
 };
 
-const AdminsContent = async ({ params, searchParams }: AdminsPageProps) => {
-  const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
-    cookies(),
-    params,
-    searchParams,
-  ]);
+interface AdminsContentProps {
+  filterField?: UserFilterField;
+  filterOperator?: UserFilterOperator;
+  filterValue?: string;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sortBy?: UserSortField;
+  sortDirection?: SortDirection;
+  users: Promise<FetchResult<UserListResponse>>;
+}
+
+const AdminsContent = async ({ users, ...props }: AdminsContentProps) => {
+  const { data, error } = await users;
+  if (error?.status === 403) notFound();
+  if (error) return <ErrorAlert />;
+
+  const rows: User[] = data.data || [];
+  const rowCount = data.total || 0;
+
+  return <Admins {...props} rows={rows} rowCount={rowCount} />;
+};
+
+const AdminsPage = async ({ params, searchParams }: AdminsPageProps) => {
+  const [session, cookieStore, { locale }, rawSearchParams] = await Promise.all(
+    [getSession(), cookies(), params, searchParams],
+  );
+
+  if (session?.user?.role !== "admin") notFound();
 
   const {
     filterField,
@@ -103,37 +136,28 @@ const AdminsContent = async ({ params, searchParams }: AdminsPageProps) => {
     sortDirection,
   });
 
-  const { data: users, error } = await settle(
+  const users = settle(
     fetcher<UserListResponse>(`/api/users/list?${queryParams}`, {
       headers: fetchOptions.headers,
     }),
   );
-  if (error?.status === 403) notFound();
-  if (error) return <ErrorAlert />;
 
-  const rows: User[] = users.data || [];
-  const rowCount = users.total || 0;
+  const adminsProps = {
+    filterField,
+    filterOperator,
+    filterValue,
+    page,
+    pageSize,
+    quickFilterValue,
+    sortBy,
+    sortDirection,
+  };
 
   return (
-    <Admins
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rows={rows}
-      rowCount={rowCount}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<Admins {...adminsProps} loading />}>
+      <AdminsContent {...adminsProps} users={users} />
+    </Suspense>
   );
 };
-
-const AdminsPage = (props: AdminsPageProps) => (
-  <Suspense fallback={<Admins loading />}>
-    <AdminsContent {...props} />
-  </Suspense>
-);
 
 export default AdminsPage;
