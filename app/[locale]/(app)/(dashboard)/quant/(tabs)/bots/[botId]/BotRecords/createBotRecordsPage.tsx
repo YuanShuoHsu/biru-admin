@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -14,9 +16,16 @@ import {
   quantBotFillSortFieldValues,
   quantBotOrderSortFieldValues,
 } from "@/types/api";
+import type { SortDirection } from "@/types/dataGrid";
+import type {
+  QuantBot,
+  QuantBotEventSortField,
+  QuantBotFillSortField,
+  QuantBotOrderSortField,
+} from "@/types/quant";
 
 import { getGridSearchParams, resolveGridSearchParams } from "@/utils/dataGrid";
-import { fetcher, settle } from "@/utils/fetcher";
+import { type FetchResult, fetcher, settle } from "@/utils/fetcher";
 import { getQuantBot } from "@/utils/quant";
 
 const SORT_FIELDS = {
@@ -35,8 +44,33 @@ interface BotRecordsPageProps {
   }>;
 }
 
+interface BotRecordsContentProps {
+  bot: QuantBot;
+  page: number;
+  pageSize: number;
+  records: Promise<FetchResult<BotRecordListResponse>>;
+  sortBy?:
+    | QuantBotEventSortField
+    | QuantBotFillSortField
+    | QuantBotOrderSortField;
+  sortDirection?: SortDirection;
+  tab: BotRecordTab;
+}
+
+const BotRecordsContent = async ({
+  records: recordsResult,
+  ...props
+}: BotRecordsContentProps) => {
+  const { data: records, error } = await recordsResult;
+
+  if (error?.status === 403 || error?.status === 404) notFound();
+  if (error) return <ErrorAlert />;
+
+  return <BotRecords {...props} rowCount={records.total} rows={records.data} />;
+};
+
 export const createBotRecordsPage = (tab: BotRecordTab) => {
-  const BotRecordsContent = async ({
+  const BotRecordsPage = async ({
     params,
     searchParams,
   }: BotRecordsPageProps) => {
@@ -60,52 +94,39 @@ export const createBotRecordsPage = (tab: BotRecordTab) => {
 
     const init = { headers: { cookie: cookieStore.toString() } };
 
-    const [{ data: bot, error }, { data: records, error: recordsError }] =
-      await Promise.all([
-        settle(getQuantBot(botId, init)),
-        settle(
-          fetcher<BotRecordListResponse>(
-            `/api/quant/bots/${botId}/${tab}?${getGridSearchParams({
-              page,
-              pageSize,
-              sortBy,
-              sortDirection,
-            })}`,
-            init,
-          ),
-        ),
-      ]);
+    const records = settle(
+      fetcher<BotRecordListResponse>(
+        `/api/quant/bots/${botId}/${tab}?${getGridSearchParams({
+          page,
+          pageSize,
+          sortBy,
+          sortDirection,
+        })}`,
+        init,
+      ),
+    );
+    const { data: bot, error } = await settle(getQuantBot(botId, init));
 
-    if (
-      [error?.status, recordsError?.status].some(
-        (status) => status === 403 || status === 404,
-      )
-    )
-      notFound();
-    if (error || recordsError) return <ErrorAlert />;
+    if (error?.status === 403 || error?.status === 404) notFound();
+    if (error) return <ErrorAlert />;
 
     if (bot.executor === "pionex")
       redirect({ href: `/quant/bots/${botId}`, locale });
 
     return (
-      <BotRecords
-        bot={bot}
-        page={page}
-        pageSize={pageSize}
-        rowCount={records.total}
-        rows={records.data}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-        tab={tab}
-      />
+      <Suspense fallback={<BotRecords loading tab={tab} />}>
+        <BotRecordsContent
+          bot={bot}
+          page={page}
+          pageSize={pageSize}
+          records={records}
+          sortBy={sortBy}
+          sortDirection={sortDirection}
+          tab={tab}
+        />
+      </Suspense>
     );
   };
-
-  const BotRecordsPage = (props: BotRecordsPageProps) => (
-    <Suspense fallback={<BotRecords loading tab={tab} />}>
-      <BotRecordsContent {...props} />
-    </Suspense>
-  );
 
   return BotRecordsPage;
 };
