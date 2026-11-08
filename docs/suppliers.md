@@ -29,6 +29,7 @@
 | [Yahoo購物中心](https://tw.buy.yahoo.com)                           |                        | 低筋麵粉                                                                                                               |                                  |
 | [主婦聯盟](https://www.hucc-coop.tw)                                |                        | 蛤蠣                                                                                                                   |                                  |
 | [The EU Pantry](https://www.theeupantry.com)                        | 07-554-6820            | 白酒                                                                                                                   | 不能網路下單，電話或高雄門市購買 |
+| [明光行](https://hocom.tw)                                          |                        | 濃縮鮮雞汁                                                                                                             |                                  |
 
 ## 包材耗材
 
