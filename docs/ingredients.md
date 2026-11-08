@@ -34,7 +34,7 @@
 | 松露醬       | [Tartuferia 黑松露菌菇醬 500公克](https://www.costco.com.tw/p/125936)                                                                           | [Costco](https://www.costco.com.tw)                                 | 559元   | 500g   | 1.118元/g     |
 | 鴻喜菇       | [菇菇好 有機鴻喜菇雪白菇組合 150公克 X 20入](https://www.costco.com.tw/p/156840)                                                                | [Costco](https://www.costco.com.tw)                                 | 685元   | 3kg    | 0.228元/g     |
 | 奶油         | [安佳無鹽奶油 454g](https://tw.bid.yahoo.com/item/100065441419)                                                                                 | [Yahoo拍賣（烘焙百貨）](https://tw.bid.yahoo.com/item/100065441419) | 200元   | 454g   | 0.441元/g     |
-| 麵粉         | [嘉禾牌 中筋粉心麵粉 1KG](https://tw.buy.yahoo.com/brands/41237002)                                                                             | [Yahoo購物中心](https://tw.buy.yahoo.com)                           | 72元    | 1kg    | 0.072元/g     |
+| 低筋麵粉     | [嘉禾牌 低筋粉心麵粉 1KG](https://tw.buy.yahoo.com/brands/41237002)                                                                             | [Yahoo購物中心](https://tw.buy.yahoo.com)                           | 72元    | 1kg    | 0.072元/g     |
 | 蛤蠣         | [黑金文蛤 600g](https://www.hucc-coop.tw/product/content/03030110004)                                                                           | [主婦聯盟](https://www.hucc-coop.tw)                                | 199元   | 600g   | 0.332元/g     |
 | 白酒         | [CANTINE RONCO 料理白酒 250ml](https://www.theeupantry.com/products/cantine-ronco-cooking-wine-250ml)                                           | [The EU Pantry](https://www.theeupantry.com)                        | 120元   | 250ml  | 0.48元/ml     |
 | 紅醬         | 自製，見 [食譜](recipes.md#紅醬)                                                                                                                | 自製                                                                | 284元   | 2300g  | 0.123元/g     |
@@ -51,7 +51,7 @@
 - 白醬、優格、希臘優格：同紅醬，價格與內容量是一鍋的總成本與估算成品量。
 - 蛤蠣：海鮮價格隨季節浮動，199 元是主婦聯盟的牌價，進貨時以實際價格更新。
 - 白酒：依菸酒管理法不能網路下單，要打電話（07-554-6820）或到高雄門市購買；查價時網站顯示缺貨。
-- 奶油、麵粉：目前是網路零售價，開店前改找烘焙材料行報價。
+- 奶油、低筋麵粉：目前是網路零售價，開店前改找烘焙材料行報價。
 
 ## 對應資料庫
 
