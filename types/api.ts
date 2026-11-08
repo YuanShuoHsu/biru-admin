@@ -958,24 +958,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/users": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** 查詢所有使用者 */
-    get: operations["UsersController_findAll"];
-    put?: never;
-    post?: never;
-    /** 批次刪除使用者 */
-    delete: operations["UsersController_removeMany"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   "/api/users/list": {
     parameters: {
       query?: never;
@@ -1010,6 +992,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/users": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 批次刪除使用者 */
+    delete: operations["UsersController_removeMany"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/users/{id}/sessions": {
     parameters: {
       query?: never;
@@ -1026,25 +1025,6 @@ export interface paths {
     options?: never;
     head?: never;
     patch?: never;
-    trace?: never;
-  };
-  "/api/users/{id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** 查詢使用者 */
-    get: operations["UsersController_findOne"];
-    put?: never;
-    post?: never;
-    /** 刪除使用者 */
-    delete: operations["UsersController_remove"];
-    options?: never;
-    head?: never;
-    /** 更新使用者 */
-    patch: operations["UsersController_update"];
     trace?: never;
   };
   "/api/banners/active": {
@@ -6973,107 +6953,6 @@ export interface components {
       data: components["schemas"]["AuditLogResponseDto"][];
       total: number;
     };
-    /**
-     * @description 角色
-     * @enum {string}
-     */
-    UserRole: "admin" | "user";
-    UserResponseDto: {
-      /**
-       * @description ID
-       * @example 123e4567-e89b-12d3-a456-426614174000
-       */
-      id: string;
-      /**
-       * @description 角色
-       * @example user
-       */
-      role: components["schemas"]["UserRole"] | null;
-      /**
-       * @description 是否已封鎖
-       * @example false
-       */
-      banned: boolean | null;
-      /**
-       * @description 封鎖原因
-       * @example 違反使用條款
-       */
-      banReason?: string | null;
-      /**
-       * Format: date-time
-       * @description 封鎖到期時間；null 為永久
-       * @example 2025-12-31T23:59:59.000Z
-       */
-      banExpires?: string | null;
-      /**
-       * @description 個人簡介
-       * @example 喜歡精釀啤酒
-       */
-      bio?: string | null;
-      /**
-       * @description 姓名
-       * @example Coffee
-       */
-      name: string;
-      /**
-       * Format: date-time
-       * @description 建立時間
-       * @example 2025-10-14T12:34:56.000Z
-       */
-      createdAt: string;
-      /**
-       * @description 電子郵件
-       * @example biru@example.com
-       */
-      email: string;
-      /**
-       * @description 是否訂閱電子報
-       * @example true
-       */
-      emailSubscribed: boolean;
-      /**
-       * @description 是否已驗證電子郵件
-       * @example true
-       */
-      emailVerified: boolean;
-      /**
-       * @description 名
-       * @example Coffee
-       */
-      firstName: string;
-      /**
-       * @description 頭像 URL
-       * @example https://example.com/avatar.png
-       */
-      image?: string | null;
-      /**
-       * @description 語言
-       * @example zh-TW
-       * @enum {string}
-       */
-      lang: "en" | "ja" | "ko" | "zh-CN" | "zh-TW";
-      /**
-       * @description 姓
-       * @example Biru
-       */
-      lastName?: string | null;
-      /**
-       * @description 電話（E.164 格式）
-       * @example +886912345678
-       */
-      phoneNumber?: string | null;
-      /**
-       * @description 是否已驗證電話
-       * @example false
-       */
-      phoneNumberVerified: boolean;
-      /**
-       * Format: date-time
-       * @description 最後更新時間
-       * @example 2025-10-14T12:34:56.000Z
-       */
-      updatedAt: string;
-    };
     /** @enum {string} */
     UserFilterField:
       | "name"
@@ -7111,6 +6990,11 @@ export interface components {
       | "banned"
       | "emailSubscribed"
       | "createdAt";
+    /**
+     * @description 角色
+     * @enum {string}
+     */
+    UserRole: "admin" | "user";
     UserListItemDto: {
       /**
        * @description ID
@@ -7249,46 +7133,6 @@ export interface components {
     UserSessionListResponseDto: {
       data: components["schemas"]["UserSessionResponseDto"][];
       total: number;
-    };
-    UpdateUserDto: {
-      /**
-       * Format: date
-       * @description 生日；送 null 清除
-       * @example 2024-04-04
-       */
-      birthDate?: string | null;
-      /**
-       * @description 是否訂閱電子報
-       * @example true
-       */
-      emailSubscribed?: boolean;
-      /**
-       * @description 名
-       * @example Coffee
-       */
-      firstName?: string;
-      /**
-       * @description 性別
-       * @example other
-       * @enum {string}
-       */
-      gender?: "female" | "male" | "other";
-      /**
-       * Format: uri
-       * @description 頭像 URL；送 null 清除
-       * @example https://example.com/avatar.png
-       */
-      image?: string | null;
-      /**
-       * @description 姓；送空字串或 null 清除
-       * @example Biru
-       */
-      lastName?: string | null;
-      /**
-       * @description 聯絡電話（E.164 格式）；送空字串或 null 清除
-       * @example +886912345678
-       */
-      phoneNumber?: string | null;
     };
     LocalizedTextDto: {
       en?: string;
@@ -15695,60 +15539,6 @@ export interface operations {
       };
     };
   };
-  UsersController_findAll: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["UserResponseDto"][];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  UsersController_removeMany: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["IdsDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
   UsersController_findList: {
     parameters: {
       query?: {
@@ -15834,6 +15624,34 @@ export interface operations {
       };
     };
   };
+  UsersController_removeMany: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["IdsDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   UsersController_findSessions: {
     parameters: {
       query?: {
@@ -15893,94 +15711,6 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  UsersController_findOne: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["UserResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  UsersController_remove: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["UserResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  UsersController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateUserDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["UserResponseDto"];
-        };
       };
       /** @description Internal server error */
       500: {
@@ -26840,12 +26570,6 @@ export const auditActionValues: ReadonlyArray<
   "publish",
   "request",
 ];
-export const userRoleValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["UserRole"]
-> = ["admin", "user"];
-export const userResponseDtoLangValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["UserResponseDto"]["lang"]
-> = ["en", "ja", "ko", "zh-CN", "zh-TW"];
 export const userFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserFilterField"]
 > = ["name", "email", "role", "banned", "emailSubscribed", "createdAt"];
@@ -26877,6 +26601,9 @@ export const userSearchOperatorValues: ReadonlyArray<
 export const userSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserSortField"]
 > = ["name", "email", "role", "banned", "emailSubscribed", "createdAt"];
+export const userRoleValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["UserRole"]
+> = ["admin", "user"];
 export const userListItemDtoLangValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserListItemDto"]["lang"]
 > = ["en", "ja", "ko", "zh-CN", "zh-TW"];
@@ -26889,9 +26616,6 @@ export const userSessionFilterFieldValues: ReadonlyArray<
 export const userSessionSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserSessionSortField"]
 > = ["userAgent", "ipAddress", "createdAt", "expiresAt"];
-export const updateUserDtoGenderValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["UpdateUserDto"]["gender"]
-> = ["female", "male", "other"];
 export const bannerFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["BannerFilterField"]
 > = ["isActive", "startsAt", "endsAt", "createdAt", "updatedAt"];
