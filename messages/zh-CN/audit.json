@@ -135,6 +135,7 @@
     "printedAt": "正本打印时间",
     "purpose": "用途",
     "randomNumber": "随机码",
+    "readyAt": "可取餐时间",
     "reason": "退款说明",
     "reasonCode": "退款原因",
     "recipe": "食谱",

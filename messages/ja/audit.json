@@ -135,6 +135,7 @@
     "printedAt": "正本印刷日時",
     "purpose": "用途",
     "randomNumber": "ランダムコード",
+    "readyAt": "受け取り可能になった日時",
     "reason": "返金の補足",
     "reasonCode": "返金理由",
     "recipe": "レシピ",
