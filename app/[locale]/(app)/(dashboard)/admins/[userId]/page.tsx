@@ -1,3 +1,6 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
+import type { UserWithRole } from "better-auth/client/plugins";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -18,10 +21,16 @@ import {
   userSessionFilterFieldValues,
   userSessionSortFieldValues,
 } from "@/types/api";
-import type { UserSessionListResponse } from "@/types/admins";
+import type {
+  UserSessionFilterField,
+  UserSessionListResponse,
+  UserSessionSortField,
+} from "@/types/admins";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
 import { getGridSearchParams, resolveGridSearchParams } from "@/utils/dataGrid";
-import { fetcher, settle } from "@/utils/fetcher";
+import { type FetchResult, fetcher, settle } from "@/utils/fetcher";
+import { getSession } from "@/utils/session";
 
 interface UserSessionsPageProps {
   params: Promise<{ locale: Locale; userId: string }>;
@@ -46,15 +55,40 @@ export const generateMetadata = async ({
   return { title: tAdmins("label") };
 };
 
+interface UserSessionsContentProps {
+  filterField?: UserSessionFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sessions: Promise<FetchResult<UserSessionListResponse>>;
+  sortBy?: UserSessionSortField;
+  sortDirection?: SortDirection;
+  user: UserWithRole;
+}
+
 const UserSessionsContent = async ({
+  sessions,
+  ...props
+}: UserSessionsContentProps) => {
+  const { data, error } = await sessions;
+  if (error?.status === 403 || error?.status === 404) notFound();
+  if (error) return <ErrorAlert />;
+
+  const { data: rows, total: rowCount } = data;
+
+  return <UserSessions {...props} rowCount={rowCount} rows={rows} />;
+};
+
+const UserSessionsPage = async ({
   params,
   searchParams,
 }: UserSessionsPageProps) => {
-  const [cookieStore, { locale, userId }, rawSearchParams] = await Promise.all([
-    cookies(),
-    params,
-    searchParams,
-  ]);
+  const [session, cookieStore, { locale, userId }, rawSearchParams] =
+    await Promise.all([getSession(), cookies(), params, searchParams]);
+
+  if (session?.user?.role !== "admin") notFound();
 
   const {
     filterField,
@@ -81,63 +115,49 @@ const UserSessionsContent = async ({
 
   const cookie = cookieStore.toString();
 
-  const [{ data: user, error }, { data: sessions, error: sessionsError }] =
-    await Promise.all([
-      authClient.admin.getUser({
-        query: { id: userId },
-        fetchOptions: {
-          headers: { cookie, origin: process.env.NEXT_PUBLIC_ADMIN_URL! },
-        },
-      }),
-      settle(
-        fetcher<UserSessionListResponse>(
-          `/api/users/${userId}/sessions?${getGridSearchParams({
-            page,
-            pageSize,
-            filterField,
-            filterOperator,
-            filterValue,
-            quickFilterValue,
-            sortBy,
-            sortDirection,
-          })}`,
-          { headers: { cookie } },
-        ),
-      ),
-    ]);
+  const sessions = settle(
+    fetcher<UserSessionListResponse>(
+      `/api/users/${userId}/sessions?${getGridSearchParams({
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      })}`,
+      { headers: { cookie } },
+    ),
+  );
 
-  if (
-    [error?.status, sessionsError?.status].some(
-      (status) => status === 403 || status === 404,
-    )
-  )
-    notFound();
-  if (error || sessionsError) return <ErrorAlert />;
+  const { data: user, error } = await authClient.admin.getUser({
+    query: { id: userId },
+    fetchOptions: {
+      headers: { cookie, origin: process.env.NEXT_PUBLIC_ADMIN_URL! },
+    },
+  });
+  if (error?.status === 403 || error?.status === 404) notFound();
+  if (error) return <ErrorAlert />;
   if (!user) notFound();
 
-  const { data: rows, total: rowCount } = sessions;
+  const userSessionsProps = {
+    filterField,
+    filterOperator,
+    filterValue,
+    page,
+    pageSize,
+    quickFilterValue,
+    sortBy,
+    sortDirection,
+    user,
+  };
 
   return (
-    <UserSessions
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-      user={user}
-    />
+    <Suspense fallback={<UserSessions {...userSessionsProps} loading />}>
+      <UserSessionsContent {...userSessionsProps} sessions={sessions} />
+    </Suspense>
   );
 };
-
-const UserSessionsPage = (props: UserSessionsPageProps) => (
-  <Suspense fallback={<UserSessions loading />}>
-    <UserSessionsContent {...props} />
-  </Suspense>
-);
 
 export default UserSessionsPage;

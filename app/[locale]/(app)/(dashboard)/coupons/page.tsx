@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,11 +18,18 @@ import {
   couponSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
+import type {
+  CouponFilterField,
+  CouponListItem,
+  CouponSortField,
+} from "@/types/coupons";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization, OrganizationResponse } from "@/types/organizations";
 
 import { getCoupons } from "@/utils/coupons";
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getCouponEnumOptions } from "@/utils/enumOptions";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { getOrganizations, hasRolePermission } from "@/utils/organizations";
 import {
   getMemberRole,
@@ -53,7 +62,48 @@ export const generateMetadata = async ({
   return { title: tCoupons("label") };
 };
 
-const CouponsContent = async ({ params, searchParams }: CouponsPageProps) => {
+interface CouponsContentProps {
+  canGrantCoupon: boolean;
+  canViewAuditLog: boolean;
+  coupons: Promise<FetchResult<{ coupons: CouponListItem[]; total: number }>>;
+  filterField?: CouponFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  organization?: Organization;
+  organizations: Promise<FetchResult<OrganizationResponse[]>>;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sortBy?: CouponSortField;
+  sortDirection?: SortDirection;
+}
+
+const CouponsContent = async ({
+  coupons: couponsResult,
+  organizations: organizationsResult,
+  ...props
+}: CouponsContentProps) => {
+  const { data: organizations, error: organizationsError } =
+    await organizationsResult;
+  if (organizationsError) return <ErrorAlert />;
+
+  const { data: coupons, error } = await couponsResult;
+  if (error) return <ErrorAlert />;
+
+  const { coupons: rows, total: rowCount } = coupons;
+
+  return (
+    <Coupons
+      {...props}
+      key={props.organization?.slug}
+      organizations={organizations}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const CouponsPage = async ({ params, searchParams }: CouponsPageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -62,13 +112,11 @@ const CouponsContent = async ({ params, searchParams }: CouponsPageProps) => {
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const session = await getSession();
-
+  const [session, memberOrganization] = await Promise.all([
+    getSession(),
+    getResolvedAdminOrganization(rawSearchParams.organization),
+  ]);
   const isAdmin = session?.user?.role === "admin";
-
-  const memberOrganization = await getResolvedAdminOrganization(
-    rawSearchParams.organization,
-  );
 
   if (!isAdmin && !memberOrganization) notFound();
 
@@ -105,71 +153,70 @@ const CouponsContent = async ({ params, searchParams }: CouponsPageProps) => {
   const canViewAuditLog =
     isAdmin || hasRolePermission(memberRole, { auditLog: ["read"] });
 
-  const { data: organizations, error: organizationsError } = await settle(
+  const organizations = settle(
     isAdmin ? getOrganizations(fetchOptions) : Promise.resolve([]),
   );
-  if (organizationsError) return <ErrorAlert />;
 
-  const quickFilterEnums = quickFilterValue
-    ? getQuickFilterEnums(
-        quickFilterValue,
-        getCouponEnumOptions(
-          await getTranslations({ locale, namespace: "coupons" }),
-          await getTranslations({ locale, namespace: "common" }),
-          organizations,
-        ),
-      )
-    : [];
+  const [tCoupons, tCommon] = await Promise.all([
+    getTranslations({ locale, namespace: "coupons" }),
+    getTranslations({ locale, namespace: "common" }),
+  ]);
 
-  const { data: coupons, error } = await settle(
-    isAdmin || selectedOrganization
-      ? getCoupons(
-          locale,
-          {
-            page,
-            pageSize,
-            filterField,
-            filterOperator,
-            filterValue,
-            organizationSlug: selectedOrganization?.slug,
-            quickFilterEnums,
-            quickFilterValue,
-            sortBy,
-            sortDirection,
-          },
-          fetchOptions,
+  const coupons = organizations.then(({ data, error }) => {
+    if (error) return { error };
+
+    const quickFilterEnums = quickFilterValue
+      ? getQuickFilterEnums(
+          quickFilterValue,
+          getCouponEnumOptions(tCoupons, tCommon, data),
         )
-      : Promise.resolve({ coupons: [], total: 0 }),
-  );
-  if (error) return <ErrorAlert />;
+      : [];
 
-  const { coupons: rows, total: rowCount } = coupons;
+    return settle(
+      isAdmin || selectedOrganization
+        ? getCoupons(
+            locale,
+            {
+              page,
+              pageSize,
+              filterField,
+              filterOperator,
+              filterValue,
+              organizationSlug: selectedOrganization?.slug,
+              quickFilterEnums,
+              quickFilterValue,
+              sortBy,
+              sortDirection,
+            },
+            fetchOptions,
+          )
+        : Promise.resolve({ coupons: [], total: 0 }),
+    );
+  });
+
+  const couponsProps = {
+    canGrantCoupon,
+    canViewAuditLog,
+    filterField,
+    filterOperator,
+    filterValue,
+    organization: selectedOrganization,
+    page,
+    pageSize,
+    quickFilterValue,
+    sortBy,
+    sortDirection,
+  };
 
   return (
-    <Coupons
-      canGrantCoupon={canGrantCoupon}
-      canViewAuditLog={canViewAuditLog}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={selectedOrganization?.slug}
-      organization={selectedOrganization}
-      organizations={organizations}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<Coupons {...couponsProps} loading />}>
+      <CouponsContent
+        {...couponsProps}
+        coupons={coupons}
+        organizations={organizations}
+      />
+    </Suspense>
   );
 };
-
-const CouponsPage = (props: CouponsPageProps) => (
-  <Suspense fallback={<Coupons loading />}>
-    <CouponsContent {...props} />
-  </Suspense>
-);
 
 export default CouponsPage;
