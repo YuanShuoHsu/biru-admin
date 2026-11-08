@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,10 +18,17 @@ import {
   modifierFilterFieldValues,
   modifierSortFieldValues,
 } from "@/types/api";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  Modifier,
+  ModifierFilterField,
+  ModifierGroup,
+  ModifierSortField,
+} from "@/types/menus";
 
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getMenuEnumOptions } from "@/utils/enumOptions";
-import { isMissingResource, settle } from "@/utils/fetcher";
+import { type FetchResult, isMissingResource, settle } from "@/utils/fetcher";
 import {
   getAdminMenu,
   getAdminModifierGroup,
@@ -53,10 +62,45 @@ export const generateMetadata = async ({
   return { title: tMenus("modifierGroups.label") };
 };
 
+interface ModifiersContentProps {
+  canUpdateAvailability: boolean;
+  canViewAuditLog: boolean;
+  canViewRecipe: boolean;
+  canWrite: boolean;
+  filterField?: ModifierFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  group: ModifierGroup;
+  modifiers: Promise<FetchResult<{ modifiers: Modifier[]; total: number }>>;
+  organizationSlug: string;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sortBy?: ModifierSortField;
+  sortDirection?: SortDirection;
+}
+
 const ModifiersContent = async ({
-  params,
-  searchParams,
-}: ModifiersPageProps) => {
+  modifiers: modifiersResult,
+  organizationSlug,
+  ...props
+}: ModifiersContentProps) => {
+  const { data: modifiers, error: modifiersError } = await modifiersResult;
+  if (modifiersError) return <ErrorAlert />;
+
+  const { modifiers: rows, total: rowCount } = modifiers;
+
+  return (
+    <Modifiers
+      {...props}
+      key={organizationSlug}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const ModifiersPage = async ({ params, searchParams }: ModifiersPageProps) => {
   const [cookieStore, { locale, groupId }, rawSearchParams] = await Promise.all(
     [cookies(), params, searchParams],
   );
@@ -113,27 +157,22 @@ const ModifiersContent = async ({
     ? getQuickFilterEnums(quickFilterValue, getMenuEnumOptions(tMenus, tOrder))
     : [];
 
-  const [{ data: modifiers, error: modifiersError }, role] = await Promise.all([
-    settle(
-      getAdminModifiers(
-        groupId,
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterValue,
-        quickFilterEnums,
-        sortBy,
-        sortDirection,
-        fetchOptions,
-      ),
+  const modifiers = settle(
+    getAdminModifiers(
+      groupId,
+      page,
+      pageSize,
+      filterField,
+      filterOperator,
+      filterValue,
+      quickFilterValue,
+      quickFilterEnums,
+      sortBy,
+      sortDirection,
+      fetchOptions,
     ),
-    getMemberRole(selectedOrganization.id),
-  ]);
-  if (modifiersError) return <ErrorAlert />;
-
-  const { modifiers: rows, total: rowCount } = modifiers;
+  );
+  const role = await getMemberRole(selectedOrganization.id);
 
   const canWrite = hasRolePermission(role, { menu: ["update"] });
   const canViewAuditLog = hasRolePermission(role, {
@@ -147,31 +186,26 @@ const ModifiersContent = async ({
   });
 
   return (
-    <Modifiers
-      canUpdateAvailability={canUpdateAvailability}
-      canViewAuditLog={canViewAuditLog}
-      canViewRecipe={canViewRecipe}
-      canWrite={canWrite}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      group={group}
-      key={selectedOrganization.slug}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<Modifiers loading />}>
+      <ModifiersContent
+        canUpdateAvailability={canUpdateAvailability}
+        canViewAuditLog={canViewAuditLog}
+        canViewRecipe={canViewRecipe}
+        canWrite={canWrite}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        group={group}
+        modifiers={modifiers}
+        organizationSlug={selectedOrganization.slug}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const ModifiersPage = (props: ModifiersPageProps) => (
-  <Suspense fallback={<Modifiers loading />}>
-    <ModifiersContent {...props} />
-  </Suspense>
-);
 
 export default ModifiersPage;

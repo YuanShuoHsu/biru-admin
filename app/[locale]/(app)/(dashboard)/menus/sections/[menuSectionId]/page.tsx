@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,10 +18,18 @@ import {
   menuItemFilterFieldValues,
   menuItemSortFieldValues,
 } from "@/types/api";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  MenuItem,
+  MenuItemFilterField,
+  MenuItemSortField,
+} from "@/types/menus";
+import type { PrepTimeResponse } from "@/types/orders";
+import type { Organization } from "@/types/organizations";
 
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getMenuEnumOptions } from "@/utils/enumOptions";
-import { isMissingResource, settle } from "@/utils/fetcher";
+import { type FetchResult, isMissingResource, settle } from "@/utils/fetcher";
 import {
   getAdminMenu,
   getAdminMenuSection,
@@ -54,7 +64,49 @@ export const generateMetadata = async ({
   return { title: tMenus("sections.label") };
 };
 
+interface MenusMenuIdSectionIdContentProps {
+  canUpdateAvailability: boolean;
+  canViewAuditLog: boolean;
+  canWrite: boolean;
+  filterField?: MenuItemFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  items: Promise<FetchResult<{ items: MenuItem[]; total: number }>>;
+  menuId: string;
+  menuSectionId: string;
+  organization: Organization;
+  page: number;
+  pageSize: number;
+  prepTimes: Promise<PrepTimeResponse[] | undefined>;
+  quickFilterValue?: string;
+  sortBy?: MenuItemSortField;
+  sortDirection?: SortDirection;
+}
+
 const MenusMenuIdSectionIdContent = async ({
+  items: itemsResult,
+  prepTimes: prepTimesResult,
+  ...props
+}: MenusMenuIdSectionIdContentProps) => {
+  const { data: items, error: itemsError } = await itemsResult;
+  if (itemsError) return <ErrorAlert />;
+
+  const { items: rows, total: rowCount } = items;
+
+  const prepTimes = await prepTimesResult;
+
+  return (
+    <MenusMenuIdSectionId
+      {...props}
+      key={props.organization.slug}
+      prepTimes={prepTimes}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const MenusMenuIdSectionIdPage = async ({
   params,
   searchParams,
 }: MenusMenuIdSectionIdPageProps) => {
@@ -113,27 +165,22 @@ const MenusMenuIdSectionIdContent = async ({
     ? getQuickFilterEnums(quickFilterValue, getMenuEnumOptions(tMenus, tOrder))
     : [];
 
-  const [{ data: items, error: itemsError }, role] = await Promise.all([
-    settle(
-      getAdminMenuSectionItems(
-        menuSectionId,
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterValue,
-        quickFilterEnums,
-        sortBy,
-        sortDirection,
-        fetchOptions,
-      ),
+  const items = settle(
+    getAdminMenuSectionItems(
+      menuSectionId,
+      page,
+      pageSize,
+      filterField,
+      filterOperator,
+      filterValue,
+      quickFilterValue,
+      quickFilterEnums,
+      sortBy,
+      sortDirection,
+      fetchOptions,
     ),
-    getMemberRole(selectedOrganization.id),
-  ]);
-  if (itemsError) return <ErrorAlert />;
-
-  const { items: rows, total: rowCount } = items;
+  );
+  const role = await getMemberRole(selectedOrganization.id);
 
   const canWrite = hasRolePermission(role, { menu: ["update"] });
   const canViewAuditLog = hasRolePermission(role, {
@@ -142,38 +189,35 @@ const MenusMenuIdSectionIdContent = async ({
   const canUpdateAvailability = hasRolePermission(role, {
     itemAvailability: ["update"],
   });
-  const prepTimes = hasRolePermission(role, { order: ["read"] })
-    ? await getAdminPrepTimes(selectedOrganization.slug, fetchOptions)
-    : undefined;
+  const canReadOrders = hasRolePermission(role, { order: ["read"] });
+  const prepTimes = items.then(({ error }) =>
+    !error && canReadOrders
+      ? getAdminPrepTimes(selectedOrganization.slug, fetchOptions)
+      : undefined,
+  );
 
   return (
-    <MenusMenuIdSectionId
-      canUpdateAvailability={canUpdateAvailability}
-      canViewAuditLog={canViewAuditLog}
-      canWrite={canWrite}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={selectedOrganization.slug}
-      organization={selectedOrganization}
-      page={page}
-      pageSize={pageSize}
-      prepTimes={prepTimes}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      menuId={section.menuId}
-      menuSectionId={menuSectionId}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<MenusMenuIdSectionId loading />}>
+      <MenusMenuIdSectionIdContent
+        canUpdateAvailability={canUpdateAvailability}
+        canViewAuditLog={canViewAuditLog}
+        canWrite={canWrite}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        items={items}
+        menuId={section.menuId}
+        menuSectionId={menuSectionId}
+        organization={selectedOrganization}
+        page={page}
+        pageSize={pageSize}
+        prepTimes={prepTimes}
+        quickFilterValue={quickFilterValue}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const MenusMenuIdSectionIdPage = (props: MenusMenuIdSectionIdPageProps) => (
-  <Suspense fallback={<MenusMenuIdSectionId loading />}>
-    <MenusMenuIdSectionIdContent {...props} />
-  </Suspense>
-);
 
 export default MenusMenuIdSectionIdPage;

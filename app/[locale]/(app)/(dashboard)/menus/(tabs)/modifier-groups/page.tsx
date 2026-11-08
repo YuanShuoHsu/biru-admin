@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,9 +18,16 @@ import {
   modifierGroupFilterFieldValues,
   modifierGroupSortFieldValues,
 } from "@/types/api";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  Menu,
+  ModifierGroup,
+  ModifierGroupFilterField,
+  ModifierGroupSortField,
+} from "@/types/menus";
 
 import { resolveGridSearchParams } from "@/utils/dataGrid";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { getAdminModifierGroups } from "@/utils/menus";
 import { hasRolePermission } from "@/utils/organizations";
 import {
@@ -50,7 +59,43 @@ export const generateMetadata = async ({
   return { title: tMenus("modifierGroups.label") };
 };
 
+interface ModifierGroupsContentProps {
+  canViewAuditLog: boolean;
+  canWrite: boolean;
+  filterField?: ModifierGroupFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  groups: Promise<FetchResult<{ groups: ModifierGroup[]; total: number }>>;
+  menu: Menu;
+  organizationSlug: string;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sortBy?: ModifierGroupSortField;
+  sortDirection?: SortDirection;
+}
+
 const ModifierGroupsContent = async ({
+  groups: groupsResult,
+  organizationSlug,
+  ...props
+}: ModifierGroupsContentProps) => {
+  const { data: groups, error: groupsError } = await groupsResult;
+  if (groupsError) return <ErrorAlert />;
+
+  const { groups: rows, total: rowCount } = groups;
+
+  return (
+    <ModifierGroups
+      {...props}
+      key={organizationSlug}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const ModifierGroupsPage = async ({
   params,
   searchParams,
 }: ModifierGroupsPageProps) => {
@@ -94,26 +139,21 @@ const ModifierGroupsContent = async ({
       locale,
     });
 
-  const [{ data: groups, error: groupsError }, role] = await Promise.all([
-    settle(
-      getAdminModifierGroups(
-        menu.id,
-        page,
-        pageSize,
-        filterField,
-        filterOperator,
-        filterValue,
-        quickFilterValue,
-        sortBy,
-        sortDirection,
-        fetchOptions,
-      ),
+  const groups = settle(
+    getAdminModifierGroups(
+      menu.id,
+      page,
+      pageSize,
+      filterField,
+      filterOperator,
+      filterValue,
+      quickFilterValue,
+      sortBy,
+      sortDirection,
+      fetchOptions,
     ),
-    getMemberRole(menu.organizationId),
-  ]);
-  if (groupsError) return <ErrorAlert />;
-
-  const { groups: rows, total: rowCount } = groups;
+  );
+  const role = await getMemberRole(menu.organizationId);
 
   const canWrite = hasRolePermission(role, { menu: ["update"] });
   const canViewAuditLog = hasRolePermission(role, {
@@ -121,29 +161,24 @@ const ModifierGroupsContent = async ({
   });
 
   return (
-    <ModifierGroups
-      canViewAuditLog={canViewAuditLog}
-      canWrite={canWrite}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={selectedOrganization.slug}
-      menu={menu}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<ModifierGroups loading />}>
+      <ModifierGroupsContent
+        canViewAuditLog={canViewAuditLog}
+        canWrite={canWrite}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        groups={groups}
+        menu={menu}
+        organizationSlug={selectedOrganization.slug}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const ModifierGroupsPage = (props: ModifierGroupsPageProps) => (
-  <Suspense fallback={<ModifierGroups loading />}>
-    <ModifierGroupsContent {...props} />
-  </Suspense>
-);
 
 export default ModifierGroupsPage;

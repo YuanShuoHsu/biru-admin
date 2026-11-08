@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -15,9 +17,16 @@ import {
   recipeIngredientFilterFieldValues,
   recipeIngredientSortFieldValues,
 } from "@/types/api";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  Recipe,
+  RecipeIngredient,
+  RecipeIngredientFilterField,
+  RecipeIngredientSortField,
+} from "@/types/inventory";
 
 import { resolveGridSearchParams } from "@/utils/dataGrid";
-import { isMissingResource, settle } from "@/utils/fetcher";
+import { type FetchResult, isMissingResource, settle } from "@/utils/fetcher";
 import { getRecipeByMenuItem, getRecipeIngredients } from "@/utils/inventory";
 import {
   getAdminMenu,
@@ -56,7 +65,47 @@ export const generateMetadata = async ({
   return { title: tInventory("recipes.ingredients.label") };
 };
 
+interface RecipeIngredientsContentProps {
+  canCreate: boolean;
+  canDelete: boolean;
+  canViewPurchasing: boolean;
+  canWrite: boolean;
+  filterField?: RecipeIngredientFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  materials: Promise<
+    FetchResult<{ materials: RecipeIngredient[]; total: number }>
+  >;
+  organizationSlug: string;
+  page: number;
+  pageSize: number;
+  priceCurrency?: string;
+  quickFilterValue?: string;
+  recipe: Recipe;
+  sortBy?: RecipeIngredientSortField;
+  sortDirection?: SortDirection;
+}
+
 const RecipeIngredientsContent = async ({
+  materials: materialsResult,
+  ...props
+}: RecipeIngredientsContentProps) => {
+  const { data: materials, error: materialsError } = await materialsResult;
+  if (materialsError) return <ErrorAlert />;
+
+  const { materials: rows, total: rowCount } = materials;
+
+  return (
+    <RecipeIngredients
+      {...props}
+      key={props.organizationSlug}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const RecipeIngredientsPage = async ({
   params,
   searchParams,
 }: RecipeIngredientsPageProps) => {
@@ -124,7 +173,7 @@ const RecipeIngredientsContent = async ({
       locale,
     });
 
-  const { data: materials, error: materialsError } = await settle(
+  const materials = settle(
     getRecipeIngredients(
       recipe.id,
       {
@@ -140,9 +189,6 @@ const RecipeIngredientsContent = async ({
       fetchOptions,
     ),
   );
-  if (materialsError) return <ErrorAlert />;
-
-  const { materials: rows, total: rowCount } = materials;
 
   const canCreate = hasRolePermission(memberRole, {
     inventory: ["create"],
@@ -158,33 +204,27 @@ const RecipeIngredientsContent = async ({
   });
 
   return (
-    <RecipeIngredients
-      canCreate={canCreate}
-      canDelete={canDelete}
-      canViewPurchasing={canViewPurchasing}
-      canWrite={canWrite}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={selectedOrganization.slug}
-      organizationSlug={selectedOrganization.slug}
-      page={page}
-      pageSize={pageSize}
-      priceCurrency={menuItem.offer?.priceCurrency}
-      quickFilterValue={quickFilterValue}
-      recipe={recipe}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<RecipeIngredients loading />}>
+      <RecipeIngredientsContent
+        canCreate={canCreate}
+        canDelete={canDelete}
+        canViewPurchasing={canViewPurchasing}
+        canWrite={canWrite}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        materials={materials}
+        organizationSlug={selectedOrganization.slug}
+        page={page}
+        pageSize={pageSize}
+        priceCurrency={menuItem.offer?.priceCurrency}
+        quickFilterValue={quickFilterValue}
+        recipe={recipe}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+      />
+    </Suspense>
   );
 };
-
-const RecipeIngredientsPage = (props: RecipeIngredientsPageProps) => (
-  <Suspense fallback={<RecipeIngredients loading />}>
-    <RecipeIngredientsContent {...props} />
-  </Suspense>
-);
 
 export default RecipeIngredientsPage;
