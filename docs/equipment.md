@@ -6,16 +6,17 @@
 
 ## 吧台區
 
-| 品項   | 品牌             | 型號                                                                                           | 單價（TWD）                                                           | 數量 | 小計（TWD） | 尺寸（mm）                                                                                                                           | 淨重   | 電源     | 功率  |
-| ------ | ---------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- | ---- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------ | -------- | ----- |
-| 咖啡機 | Victoria Arduino |                                                                                                |                                                                       |      |             |                                                                                                                                      |        |          |       |
-| 磨豆機 | Mahlkönig        | [E80S GbW 義式定重磨豆機 (黑)](https://www.mahlkoenig.com/products/e80s-gbw-grinder)           | [120,000](https://www.93coffee.tw/products/mahlkonig-e80-supreme-gbw) | 1    | 120,000     | [寬234×深338×高636](https://downloads.mahlkoenig.de/Service/Mahlkoenig_E80S_GbW_Espresso_Grinder_Spare_Parts_List.pdf)               | 18kg   | 220V     | 500W  |
-| 填壓器 | PUQ              | [PUQ Press M5 自動填壓器 (黑)](https://puq.coffee/products/puqpress-integrated-m5-e80-grinder) |                                                                       | 1    |             | [寬233×深338×高140](https://cdn.puq.coffee/media/brochures/user-manual-integrated-puq-press-2025.pdf)                                | 5.5kg  | 110–240V | 76W   |
-| 製冰機 | HOSHIZAKI        | [115kg桌上型製冰機 DCM-115M](https://www.hoshizaki.com.tw/goods.php?act=view&no=248)           | 159,000                                                               | 1    | 159,000     | [寬350×深585×高815](https://www.hoshizaki.com.tw/download.php?act=get&no=367)                                                        | 47kg   | 100V     | 350W  |
-| 冷藏櫃 | HOSHIZAKI        | [RT-126MA-T 4呎60cm深工作台冷藏冰箱](https://www.hoshizaki.com.tw/goods.php?act=view&no=26)    |                                                                       | 1    |             | 寬1200×深600×高800                                                                                                                   |        | 220V     | 245W  |
-| 冷凍櫃 | HOSHIZAKI        | [FT-126MA-T 4呎60cm深工作台冷凍冰箱](https://www.hoshizaki.com.tw/goods.php?act=view&no=32)    |                                                                       | 1    |             | 寬1200×深600×高800                                                                                                                   |        | 220V     | 342W  |
-| 手沖壺 | Fellow           | [EKG PRO 電子溫控壺 - 旗艦版](https://www.fellowproducts.com.tw/products/ekgpro)               | [6,980](https://www.fellowproducts.com.tw/products/ekgpro)            | 1    | 6,980       | [寬282×深172×高196](https://cdn.shopify.com/s/files/1/0057/6235/1219/files/FELLOW_StaggEKGPro_StudioEdition_SafetyManual_V1_Use.pdf) | 1.20kg | 110V     | 1200W |
-| 果汁機 |                  |                                                                                                |                                                                       |      |             |                                                                                                                                      |        |          |       |
+| 品項   | 品牌                                  | 型號                                                                                           | 單價（TWD）                                                           | 數量 | 小計（TWD） | 尺寸（mm）                                                                                                                           | 淨重   | 電源     | 功率  |
+| ------ | ------------------------------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- | ---- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------ | -------- | ----- |
+| 咖啡機 | Victoria Arduino                      |                                                                                                |                                                                       |      |             |                                                                                                                                      |        |          |       |
+| 磨豆機 | Mahlkönig                             | [E80S GbW 義式定重磨豆機 (黑)](https://www.mahlkoenig.com/products/e80s-gbw-grinder)           | [120,000](https://www.93coffee.tw/products/mahlkonig-e80-supreme-gbw) | 1    | 120,000     | [寬234×深338×高636](https://downloads.mahlkoenig.de/Service/Mahlkoenig_E80S_GbW_Espresso_Grinder_Spare_Parts_List.pdf)               | 18kg   | 220V     | 500W  |
+| 填壓器 | PUQ                                   | [PUQ Press M5 自動填壓器 (黑)](https://puq.coffee/products/puqpress-integrated-m5-e80-grinder) |                                                                       | 1    |             | [寬233×深338×高140](https://cdn.puq.coffee/media/brochures/user-manual-integrated-puq-press-2025.pdf)                                | 5.5kg  | 110–240V | 76W   |
+| 製冰機 | HOSHIZAKI                             | [115kg桌上型製冰機 DCM-115M](https://www.hoshizaki.com.tw/goods.php?act=view&no=248)           | 159,000                                                               | 1    | 159,000     | [寬350×深585×高815](https://www.hoshizaki.com.tw/download.php?act=get&no=367)                                                        | 47kg   | 100V     | 350W  |
+| 冷藏櫃 | HOSHIZAKI                             | [RT-126MA-T 4呎60cm深工作台冷藏冰箱](https://www.hoshizaki.com.tw/goods.php?act=view&no=26)    |                                                                       | 1    |             | 寬1200×深600×高800                                                                                                                   |        | 220V     | 245W  |
+| 冷凍櫃 | HOSHIZAKI                             | [FT-126MA-T 4呎60cm深工作台冷凍冰箱](https://www.hoshizaki.com.tw/goods.php?act=view&no=32)    |                                                                       | 1    |             | 寬1200×深600×高800                                                                                                                   |        | 220V     | 342W  |
+| 手沖壺 | Fellow                                | [EKG PRO 電子溫控壺 - 旗艦版](https://www.fellowproducts.com.tw/products/ekgpro)               | [6,980](https://www.fellowproducts.com.tw/products/ekgpro)            | 1    | 6,980       | [寬282×深172×高196](https://cdn.shopify.com/s/files/1/0057/6235/1219/files/FELLOW_StaggEKGPro_StudioEdition_SafetyManual_V1_Use.pdf) | 1.20kg | 110V     | 1200W |
+| 果汁機 |                                       |                                                                                                |                                                                       |      |             |                                                                                                                                      |        |          |       |
+| 果糖機 | 尚未決定，見[果糖機候選](#果糖機候選) |                                                                                                |                                                                       |      |             |                                                                                                                                      |        |          |       |
 
 ## 廚房區
 
@@ -46,6 +47,22 @@
 - HOSHIZAKI：單相機種 220V 即可運作，三相電不足時的退路。土耳其 Ozti 製，非日本製
 
 決定前向三家確認：含安裝的報價、保固年限、報修到場時間、零件是否有台灣庫存。
+
+## 果糖機候選
+
+> **尚未決定。** 選定後依出糖精度與按鍵數，定案[甜度](recipes.md#甜度)每分的糖重並設定各鍵 ml 數。熱飲與冷飲小杯同為 12oz，6 個甜度 × 2 種杯量需 12 鍵。
+
+| 品牌 | 型號                                                                                  | 按鍵 | 單價（TWD）                                                  | 台灣窗口                                     |
+| ---- | ------------------------------------------------------------------------------------- | ---- | ------------------------------------------------------------ | -------------------------------------------- |
+| 益芳 | [ET-9CSN-S 果糖定量機（不鏽鋼）](https://www.nianhoang.com.tw/fructose-machine.html)  | 16   |                                                              | [晉源食品機械](https://www.nianhoang.com.tw) |
+| 益芳 | [ET-9EA 果糖定量機（高吧檯面板）](https://www.nianhoang.com.tw/fructose-machine.html) |      |                                                              | [晉源食品機械](https://www.nianhoang.com.tw) |
+| 元揚 | EZ850 果糖定量機（24 鍵、加熱）                                                       | 24   | [28,880](https://biggo.com.tw/s/%E6%9E%9C%E7%B3%96%E6%A9%9F) |                                              |
+
+- 益芳：台灣製，飲料店常用，二手機約 6,500 元上下，零件與維修較好找；目前傾向 ET-9CSN-S
+- 元揚：功能較多（加熱），價格約益芳二手機的四倍
+- 網路 4,000–5,000 元的 16 鍵機多為對岸製，耐用度與售後較無保障，不列入
+
+決定前確認：全新報價、出糖精度（最小可設 ml）、保固與維修、內桶容量。
 
 ## 外場區
 
