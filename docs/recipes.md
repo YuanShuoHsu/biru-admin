@@ -86,7 +86,7 @@
 | 杯蓋 | 90mm 杯蓋，可直接就口 |
 | 封膜 | 90mm 封口膜，搭配吸管 |
 
-上線前要先改 biru-api：目前必選檢查不分點餐模式，內用點餐時兩個選項都不可選，仍會被要求必選一個而無法下單。
+內用點餐不顯示這個群組也不要求選擇，需 [biru-api#367](https://github.com/YuanShuoHsu/biru-api/pull/367) 與 [biru#123](https://github.com/YuanShuoHsu/biru/pull/123) 上線後才生效；上線前內用會被要求必選而無法下單。
 
 ---
 
