@@ -17,6 +17,7 @@
 | 手沖壺     | Fellow           | [EKG PRO 電子溫控壺 - 旗艦版](https://www.fellowproducts.com.tw/products/ekgpro)               | [6,980](https://www.fellowproducts.com.tw/products/ekgpro)            | 1    | 6,980       | [寬282×深172×高196](https://cdn.shopify.com/s/files/1/0057/6235/1219/files/FELLOW_StaggEKGPro_StudioEdition_SafetyManual_V1_Use.pdf) | 1.20kg | 110V           | 1200W |
 | 果汁機     |                  |                                                                                                |                                                                       |      |             |                                                                                                                                      |        |                |       |
 | 果糖定量機 | 元揚             | [EZ-850H 加熱型果糖定量機](https://www.nianhoang.com.tw/product-detail-856393.html)            | 待詢價                                                                | 1    |             | [寬250×深380×高410](https://www.nianhoang.com.tw/product-detail-856393.html)                                                         | 8kg    | 單相 110V/220V | 150W  |
+| 封口機     | 封王             | [PH-588S 高階型飲料杯封口機](https://www.phoenixes.com.tw/bubble-tea-cup-sealer-ph-588s)       | 待詢價                                                                | 1    |             | [寬340×深300×高610](https://www.phoenixes.com.tw/bubble-tea-cup-sealer-ph-588s)                                                      | 21kg   | 110V／220V     |       |
 
 ## 廚房區
 
@@ -63,6 +64,22 @@
 - 網路 4,000–5,000 元的 16 鍵機多為對岸製，耐用度與售後較無保障，不列入
 
 詢價時確認：EZ-850H 全新含運報價、保固年限、桃園到府維修，並請廠商以實際糖漿示範 1cc 與 3cc 的出量。
+
+## 封口機選型
+
+> **已選定封王 PH-588S。** 標準模具為 95mm 塑膠杯／90mm 紙杯（杯高最高 180mm），冷飲杯因此統一為 95mm 口徑（見[餐具清單](tableware.md#外帶餐具)）。下單前請封王以實際的冷飲杯與封口膜試封。
+
+| 品牌 | 型號                                                                           | 進出杯軌道 | 產能（杯／小時） | 98mm 杯    | 單價（TWD）                                          |
+| ---- | ------------------------------------------------------------------------------ | ---------- | ---------------- | ---------- | ---------------------------------------------------- |
+| 封王 | [PH-588S](https://www.phoenixes.com.tw/bubble-tea-cup-sealer-ph-588s)          | 鋼製       | 約 450–500       | 需客製模具 | 待詢價                                               |
+| 封王 | [PH-999SN](https://www.phoenixes.com.tw/tabletop_cup_sealing_machine-ph-999sn) | 塑膠       | 約 450           | 需客製模具 | [19,500](https://www.keifu.com.tw/products/idx_2230) |
+| 歆宇 | [SY-950（98mm 版）](https://shinyugroup.com/product/sealing-machine-for-98mm/) | 未載明     | 約 600           | 原生支援   | 待詢價                                               |
+
+- PH-588S：430 不鏽鋼外殼、鋼製軌道與加強刀片（可切紙膜），官方稱五年維修費可省八成；封王另有客製印刷封口膜與杯子相容性測試
+- PH-999SN：銷量最高款，認證較齊（UL、CE、UKCA），但為塑膠軌道
+- SY-950：唯一原生支援 98mm，因冷飲杯改用 95mm 而不採用
+
+詢價時確認：PH-588S 全新報價、保固年限、桃園到府維修、PET 杯適用的封口膜與 Logo 印刷膜的 MOQ。
 
 ## 外場區
 
