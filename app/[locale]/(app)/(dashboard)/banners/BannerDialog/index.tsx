@@ -28,6 +28,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { Banner, UpdateBannerDto } from "@/types/banners";
 
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 dayjs.extend(utc);
@@ -117,13 +118,8 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
 
       closeDialog();
       mutate();
-    } catch {
-      enqueueSnackbar(
-        tBanners(
-          banner ? "actions.updateBanner.error" : "actions.createBanner.error",
-        ),
-        { variant: "error" },
-      );
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
 
       setDialog({ confirmLoading: false });
     }
