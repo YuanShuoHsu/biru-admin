@@ -19787,7 +19787,10 @@ export interface operations {
   };
   OrdersController_findPrepEstimate: {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description 本單品項與加購中最長的備餐時間（分鐘），會與門市備餐時間取較大者 */
+        leadMinutes?: number;
+      };
       header?: never;
       path: {
         organizationSlug: string;
