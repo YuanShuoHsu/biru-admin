@@ -6,6 +6,7 @@
 | 鮮奶油       | [安佳鮮奶油](https://www.wlscook.com.tw/SalePage/Index/9491524?lang=zh-TW)                                                                      | [萬家福](https://online.uni-prosperity.com.tw)                      | 98元    | 250ml  | 0.392元/ml    |
 | 優格菌       | [家酪優 MESO 常溫優格菌（1g×8包）](https://www.jarou.com.tw/products/meso-yogurt-starter-culture)                                               | [家酪優](https://www.jarou.com.tw)                                  | 360元   | 8g     | 45元/g        |
 | 糖           | [台糖精製細砂 1kg](https://www.momoshop.com.tw/TP/TP0005322/goodsDetail/TP00053220000068)                                                       | [momo購物網](https://www.momoshop.com.tw)                           | 36元    | 1kg    | 0.036元/g     |
+| 甘蔗液糖     | [台糖甘蔗液糖 5kg](https://www.ego888.com.tw/product/P230210004984?category_sn=617)                                                             | [台糖健康易購網](https://www.ego888.com.tw)                         | 235元   | 5kg    | 0.047元/g     |
 | 鹽           | [台鹽高級碘鹽](https://online.uni-prosperity.com.tw/zh/台鹽/1460000500101.html)                                                                 | [萬家福](https://online.uni-prosperity.com.tw)                      | 17元    | 1kg    | 0.017元/g     |
 | 吉利丁       | [愛唯金級吉利丁片](https://www.cross-country.com.tw/SalePage/Index/4656811)                                                                     | [全國食材廣場](https://www.cross-country.com.tw)                    | 1100元  | 1kg    | 1.1元/g       |
 | 果凍粉       | [惠昇12倍蒟蒻高纖果凍粉1kg](https://www.cross-country.com.tw/SalePage/Index/4656671)                                                            | [全國食材廣場](https://www.cross-country.com.tw)                    | 210元   | 1kg    | 0.21元/g      |
@@ -42,7 +43,6 @@
 | 紅醬         | 自製，見 [食譜](recipes.md#紅醬)                                                                                                                | 自製                                                                | 284元   | 2300g  | 0.123元/g     |
 | 白醬         | 自製，見 [食譜](recipes.md#白醬)                                                                                                                | 自製                                                                | 149元   | 850g   | 0.175元/g     |
 | 雞高湯       | 自製，見 [食譜](recipes.md#雞高湯)                                                                                                              | 自製                                                                | 16元    | 1040g  | 0.015元/g     |
-| 糖漿         | 自製，見 [食譜](recipes.md#糖漿)                                                                                                                | 自製                                                                | 18元    | 1000g  | 0.018元/g     |
 | 優格         | 自製，見 [食譜](recipes.md#優格)                                                                                                                | 自製                                                                | 165元   | 1000g  | 0.165元/g     |
 | 希臘優格     | 自製，見 [食譜](recipes.md#希臘優格)                                                                                                            | 自製                                                                | 82.5元  | 200g   | 0.413元/g     |
 
@@ -52,10 +52,11 @@
 - 優格菌：做優格與希臘優格用，1 包（1g）約可做 500ml 優格，室溫發酵，不適用優格機；360 元是單盒售價，3 盒以上有量購價。收到後冷凍保存。
 - 水：以 `costs.md` 台水最高級距 12.075 元/度（1 度 = 1000L）計，四捨五入到 2 位小數，不含基本費。
 - 紅醬：價格與內容量是一鍋的總成本與估算成品量；材料漲價時要手動更新，做好一鍋要手動入庫。
-- 白醬、雞高湯、糖漿、優格、希臘優格：同紅醬，價格與內容量是一鍋的總成本與估算成品量。
+- 白醬、雞高湯、優格、希臘優格：同紅醬，價格與內容量是一鍋的總成本與估算成品量。
 - 蛤蠣：海鮮價格隨季節浮動，199 元是主婦聯盟的牌價，進貨時以實際價格更新。
 - 白酒：依菸酒管理法不能網路下單，要打電話（07-554-6820）或到高雄門市購買；查價時網站顯示缺貨。
 - 乾辣椒片：由辣度選項的食譜扣庫存，不列進品項食譜（見 [辣度](recipes.md#辣度)）。網站只標示最低價 50 元，推定為 30g 夾鏈袋，下單前向店家確認；90g 大包裝較划算。
+- 甘蔗液糖：用於飲品甜度（見[甜度](recipes.md#甜度)）。開店初期用 5kg 瓶裝；每日用量穩定後可改 25kg 桶裝（網路約 890–970 元，每 kg 約 37 元）。
 - 奶油、低筋麵粉：目前是網路零售價，開店前改找烘焙材料行報價。
 
 ## 對應資料庫

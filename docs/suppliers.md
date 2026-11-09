@@ -31,6 +31,7 @@
 | [The EU Pantry](https://www.theeupantry.com)                        | 07-554-6820            | 白酒、乾辣椒片                                                                                                         | 不能網路下單，電話或高雄門市購買 |
 | [明光行](https://hocom.tw)                                          |                        | 濃縮鮮雞汁                                                                                                             |                                  |
 | [momo購物網](https://www.momoshop.com.tw)                           |                        | 糖                                                                                                                     |                                  |
+| [台糖健康易購網](https://www.ego888.com.tw)                         |                        | 甘蔗液糖                                                                                                               |                                  |
 
 ## 包材耗材
 
