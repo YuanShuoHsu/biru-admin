@@ -44,6 +44,7 @@
   },
   "code": {
     "label": "优惠码",
+    "maxLength": "优惠码不能超过 64 个字符。",
     "placeholder": "请输入您的优惠码",
     "required": "优惠码为必填"
   },
