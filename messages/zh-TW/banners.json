@@ -46,6 +46,7 @@
   "createdAt": "建立時間",
   "endsAt": "下架時間",
   "image": {
+    "helperText": "手機上只會顯示寬度中間的 3/4，文字與 logo 請避開左右兩側邊緣。",
     "label": "圖片",
     "notSelected": "請選擇您的圖片"
   },
