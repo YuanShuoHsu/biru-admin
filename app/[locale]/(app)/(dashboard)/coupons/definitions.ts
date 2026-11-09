@@ -17,7 +17,8 @@ export const useCouponFormSchema = () => {
       code: z
         .string()
         .trim()
-        .min(1, { error: tCoupons("code.required") }),
+        .min(1, { error: tCoupons("code.required") })
+        .max(64, { error: tCoupons("code.maxLength") }),
       discountType: z.enum(couponDiscountTypeValues),
       discountValue: z
         .string()
