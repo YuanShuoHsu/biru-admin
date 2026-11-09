@@ -1105,7 +1105,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 取得菜單、分類、品項、橫幅與門市照片的圖片 */
+    /** 取得菜單、分類、品項、客製選項、橫幅與門市照片的圖片 */
     get: operations["ImagesController_find"];
     put?: never;
     post?: never;
@@ -10740,6 +10740,7 @@ export interface components {
       id: string;
       modifierGroupId: string;
       displayName: components["schemas"]["LocalizedTextDto"];
+      imageUrl: string | null;
       /** @description 加價金額；null 代表不影響價格 */
       priceAdjustment?: string | null;
       /** @description priceAdjustment 的幣別；來自店家設定 */
@@ -10806,6 +10807,7 @@ export interface components {
        *     }
        */
       displayName: components["schemas"]["LocalizedTextDto"];
+      image?: string | null;
       /**
        * @description 加價金額；省略代表不影響價格
        * @example 10.00
@@ -10837,6 +10839,7 @@ export interface components {
     UpdateModifierDto: {
       /** @description 選項名稱 */
       displayName?: components["schemas"]["LocalizedTextDto"];
+      image?: string | null;
       /**
        * @description 加價金額
        * @example 10.00
@@ -10894,6 +10897,7 @@ export interface components {
       id: string;
       modifierGroupId: string;
       displayName: string;
+      imageUrl: string | null;
       /** @description 加價金額；null 代表不影響價格 */
       priceAdjustment?: string | null;
       /** @description priceAdjustment 的幣別；來自店家設定 */
@@ -15933,7 +15937,13 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
-        kind: "menu" | "menuSection" | "menuItem" | "banner" | "storePhoto";
+        kind:
+          | "menu"
+          | "menuSection"
+          | "menuItem"
+          | "modifier"
+          | "banner"
+          | "storePhoto";
         id: string;
         /** @description 圖片內容的雜湊；舊網址的 updatedAt 毫秒數也接受 */
         version: string;
@@ -25935,7 +25945,7 @@ export const pathsApiOrganizationsOrganizationSlugAttendanceShiftsGetParametersQ
 > = ["true"];
 export const pathsApiImagesKindIdVersionExtensionGetParametersPathKindValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/images/{kind}/{id}/{version}.{extension}"]["get"]["parameters"]["path"]["kind"]
-> = ["menu", "menuSection", "menuItem", "banner", "storePhoto"];
+> = ["menu", "menuSection", "menuItem", "modifier", "banner", "storePhoto"];
 export const pathsApiImagesKindIdVersionExtensionGetParametersPathExtensionValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/images/{kind}/{id}/{version}.{extension}"]["get"]["parameters"]["path"]["extension"]
 > = ["avif", "gif", "jpg", "png", "svg", "webp"];
