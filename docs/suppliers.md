@@ -21,7 +21,7 @@
 | [全聯全電商](https://pxbox.es.pxmart.com.tw)                        |                        | 蘋果汁、番茄糊                                                                                                         |                                  |
 | [光泉牧場](https://www.kuangchuan.com.tw/Business/B2B)              | (02) 8751-8788 分機238 | 光泉全脂鮮乳                                                                                                           |                                  |
 | [家酪優](https://www.jarou.com.tw)                                  |                        | 優格菌                                                                                                                 |                                  |
-| [萬家福](https://online.uni-prosperity.com.tw)                      |                        | 鮮奶油、鹽、糖、牛番茄、西芹、蒜頭                                                                                     |                                  |
+| [萬家福](https://online.uni-prosperity.com.tw)                      |                        | 鮮奶油、鹽、牛番茄、西芹、蒜頭                                                                                         |                                  |
 | [義大利廚房](https://shop.hseiyi.com)                               |                        | 橄欖油                                                                                                                 |                                  |
 | [蝦皮（碩田）](https://shopee.tw/shop/6517228)                      |                        | 焙茶粉、抹茶粉                                                                                                         |                                  |
 | [駿伸企業](https://www.ambrosia.tw)                                 |                        | 蘋果果醬                                                                                                               |                                  |
@@ -30,6 +30,7 @@
 | [主婦聯盟](https://www.hucc-coop.tw)                                |                        | 蛤蠣                                                                                                                   |                                  |
 | [The EU Pantry](https://www.theeupantry.com)                        | 07-554-6820            | 白酒、乾辣椒片                                                                                                         | 不能網路下單，電話或高雄門市購買 |
 | [明光行](https://hocom.tw)                                          |                        | 濃縮鮮雞汁                                                                                                             |                                  |
+| [momo購物網](https://www.momoshop.com.tw)                           |                        | 糖                                                                                                                     |                                  |
 
 ## 包材耗材
 
