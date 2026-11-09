@@ -20,7 +20,14 @@ import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { FormControlLabel, Grid, Switch, TextField } from "@mui/material";
+import {
+  FormControl,
+  FormControlLabel,
+  FormHelperText,
+  Grid,
+  Switch,
+  TextField,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
@@ -134,14 +141,17 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
 
   return (
     <FormBox id="banner-form" onSubmit={onSubmit}>
-      <UploadAvatars
-        aspectRatio="16/9"
-        fullWidth
-        highQuality
-        initialSrc={banner?.imageUrl}
-        shape="square"
-        uploadKey={uploadKey}
-      />
+      <FormControl>
+        <UploadAvatars
+          aspectRatio="16/9"
+          fullWidth
+          highQuality
+          initialSrc={banner?.imageUrl}
+          shape="square"
+          uploadKey={uploadKey}
+        />
+        <FormHelperText>{tBanners("image.helperText")}</FormHelperText>
+      </FormControl>
       <StyledFormControlLabel
         control={
           <Switch
