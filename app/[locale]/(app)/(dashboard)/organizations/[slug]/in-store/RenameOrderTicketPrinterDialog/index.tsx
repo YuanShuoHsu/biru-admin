@@ -25,14 +25,14 @@ import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 interface RenameOrderTicketPrinterDialogProps {
+  name: string;
   onChanged: () => Promise<unknown>;
-  printer: Printer;
   printerUrl: string;
 }
 
 const RenameOrderTicketPrinterDialog = ({
+  name,
   onChanged,
-  printer,
   printerUrl,
 }: RenameOrderTicketPrinterDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
@@ -46,7 +46,7 @@ const RenameOrderTicketPrinterDialog = ({
     handleSubmit,
     register,
   } = useForm<OrderTicketPrinterForm>({
-    defaultValues: { name: printer.name ?? "" },
+    defaultValues: { name },
     resolver: zodResolver(orderTicketPrinterFormSchema),
   });
 

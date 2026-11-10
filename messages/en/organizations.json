@@ -150,7 +150,7 @@
       "remove": "Remove printer",
       "removeConfirm": "Tickets not yet sent to \"{name}\" will go to the printers their items now route to, and sections and items set to this printer will be unset. Remove the printer?",
       "removeSuccess": "Removed \"{name}\"",
-      "rename": "Rename printer",
+      "rename": "Rename",
       "renameSuccess": "Renamed the printer to \"{name}\"",
       "reset": "Reset password",
       "resetConfirm": "The old password stops working immediately, and the printer can't print until you enter the new one. Reset the password?",

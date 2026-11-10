@@ -645,8 +645,8 @@ const OrderTicketPrinterItem = ({
     setDialog({
       content: (
         <RenameOrderTicketPrinterDialog
+          name={name}
           onChanged={onChanged}
-          printer={printer}
           printerUrl={printerUrl}
         />
       ),
