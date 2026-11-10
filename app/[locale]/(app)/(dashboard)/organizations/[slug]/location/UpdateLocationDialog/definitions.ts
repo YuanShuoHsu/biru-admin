@@ -43,7 +43,15 @@ export const useUpdateLocationFormSchema = () => {
         .min(1, { error: tValidation("streetAddress.required") }),
 
       // https://schema.org/LocalBusiness
-      hasMap: z.string().trim().optional(),
+      hasMap: z
+        .string()
+        .trim()
+        .refine(
+          (value) =>
+            !value || z.url({ protocol: /^https?$/ }).safeParse(value).success,
+          { error: tValidation("url.invalid") },
+        )
+        .optional(),
       openingHours: z
         .string()
         .trim()
