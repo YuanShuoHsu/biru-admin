@@ -11,6 +11,7 @@ import {
   type OrderTicketPrinterForm,
   useOrderTicketPrinterFormSchema,
 } from "./definitions";
+import RenameOrderTicketPrinterDialog from "./RenameOrderTicketPrinterDialog";
 import UpdateDineInTableCountDialog from "./UpdateDineInTableCountDialog";
 
 import { StyledCardContent } from "@/components/FormCard";
@@ -640,6 +641,20 @@ const OrderTicketPrinterItem = ({
       title: tOrganizations("inStore.orderTicketPrinters.remove"),
     });
 
+  const handleRename = () =>
+    setDialog({
+      content: (
+        <RenameOrderTicketPrinterDialog
+          onChanged={onChanged}
+          printer={printer}
+          printerUrl={printerUrl}
+        />
+      ),
+      formId: "rename-order-ticket-printer-form",
+      open: true,
+      title: tOrganizations("inStore.orderTicketPrinters.rename"),
+    });
+
   const [settingDefault, setSettingDefault] = useState(false);
 
   const handleSetDefault = async () => {
@@ -734,6 +749,9 @@ const OrderTicketPrinterItem = ({
             {tOrganizations("inStore.orderTicketPrinters.setDefault")}
           </Button>
         )}
+        <Button onClick={handleRename} variant="outlined">
+          {tOrganizations("inStore.orderTicketPrinters.rename")}
+        </Button>
         <Button onClick={handleReset} variant="outlined">
           {tOrganizations("inStore.orderTicketPrinters.reset")}
         </Button>

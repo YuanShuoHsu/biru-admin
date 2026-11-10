@@ -150,6 +150,8 @@
       "remove": "移除印表機",
       "removeConfirm": "移除「{name}」後，還沒送出的工作單會改送到品項現在對應的印表機，指定這台的分類與品項改回未指定。確定要移除嗎？",
       "removeSuccess": "已移除「{name}」",
+      "rename": "重新命名",
+      "renameSuccess": "已將印表機改名為「{name}」",
       "reset": "重設密碼",
       "resetConfirm": "重設後舊密碼立即失效，印表機要填入新密碼才能繼續列印。確定要重設嗎？",
       "setDefault": "設為預設",
