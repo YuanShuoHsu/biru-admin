@@ -257,6 +257,14 @@
   "paymentDate": "Payment date",
   "paymentMethod": "Payment method",
   "pickupTime": "Pickup time",
+  "prepEstimate": {
+    "basis": {
+      "leadTime": "Estimated from item prep times",
+      "observed": "Estimated from the actual pace over the last 30 minutes"
+    },
+    "label": "Currently ready in about {minutes} min",
+    "tooltip": "{basis}; {count, plural, one {# in-progress order} other {# in-progress orders}} counted in the estimate"
+  },
   "printJobError": {
     "DeviceNotFound": "Printer not found",
     "ECPAY_REJECTED": "ECPay refused to return this invoice. It will retry automatically; if it keeps failing, cancel the print and verify with ECPay",
