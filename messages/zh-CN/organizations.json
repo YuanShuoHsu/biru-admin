@@ -150,6 +150,8 @@
       "remove": "移除打印机",
       "removeConfirm": "移除「{name}」后，还没送出的工作单会改送到品项现在对应的打印机，指定这台的分类与品项改回未指定。确定要移除吗？",
       "removeSuccess": "已移除「{name}」",
+      "rename": "重命名",
+      "renameSuccess": "已将打印机重命名为「{name}」",
       "reset": "重设密码",
       "resetConfirm": "重设后旧密码立即失效，打印机要填入新密码才能继续打印。确定要重设吗？",
       "setDefault": "设为默认",

@@ -2651,7 +2651,8 @@ export interface paths {
     delete: operations["OrderTicketPrintersController_remove"];
     options?: never;
     head?: never;
-    patch?: never;
+    /** 重新命名工作單印表機 */
+    patch: operations["OrderTicketPrintersController_rename"];
     trace?: never;
   };
   "/api/organizations/{organizationSlug}/orders/{orderId}/order-tickets/reprint": {
@@ -9649,6 +9650,10 @@ export interface components {
       online: boolean;
     };
     CreateOrderTicketPrinterDto: {
+      /** @description 例如吧台、廚房 */
+      name: string;
+    };
+    UpdateOrderTicketPrinterDto: {
       /** @description 例如吧台、廚房 */
       name: string;
     };
@@ -19475,6 +19480,39 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["OrderTicketPrinterStatusDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrderTicketPrintersController_rename: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        printerId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateOrderTicketPrinterDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PrinterDto"];
         };
       };
       /** @description Internal server error */

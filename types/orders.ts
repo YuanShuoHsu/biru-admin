@@ -32,6 +32,8 @@ export type ResolvePrintJobDto = components["schemas"]["ResolvePrintJobDto"];
 export type OrderTicketJob = components["schemas"]["OrderTicketJobDto"];
 export type CreateOrderTicketPrinterDto =
   components["schemas"]["CreateOrderTicketPrinterDto"];
+export type UpdateOrderTicketPrinterDto =
+  components["schemas"]["UpdateOrderTicketPrinterDto"];
 export type ReprintOrderTicketDto =
   components["schemas"]["ReprintOrderTicketDto"];
 export type OrderTicketPrinterOption =
