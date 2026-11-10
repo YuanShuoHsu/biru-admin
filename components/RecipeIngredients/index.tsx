@@ -530,7 +530,7 @@ const RecipeIngredients = ({
           enqueueSnackbar(getErrorMessage(error), { variant: "error" });
         }
 
-        mutate();
+        handleMutate();
       },
       open: true,
       title: tInventory(
@@ -541,8 +541,8 @@ const RecipeIngredients = ({
   }, [
     apiRef,
     clearRowSelection,
+    handleMutate,
     locale,
-    mutate,
     recipeId,
     selectedRows,
     setDialog,
