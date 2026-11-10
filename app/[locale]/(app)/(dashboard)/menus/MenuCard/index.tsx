@@ -76,7 +76,10 @@ const NameTypography = styled(Typography)({
   fontWeight: "bold",
 });
 
-const WrapTypography = styled(Typography)(wrapStyle);
+const WrapTypography = styled(Typography)({
+  ...wrapStyle,
+  whiteSpace: "pre-line",
+});
 
 const StyledCardActions = styled(CardActions)(({ theme }) => ({
   padding: theme.spacing(2),
