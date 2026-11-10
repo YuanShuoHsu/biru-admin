@@ -36,10 +36,25 @@ export const useCouponFormSchema = () => {
       menuItemIds: z.array(z.string()),
       menuSectionIds: z.array(z.string()),
       minSubtotal: z.string().trim(),
-      perUserLimit: z.string().trim(),
-      pointsCost: z.string().trim(),
+      perUserLimit: z
+        .string()
+        .trim()
+        .refine((value) => !value || Number.isInteger(Number(value)), {
+          error: tValidation("number.integer"),
+        }),
+      pointsCost: z
+        .string()
+        .trim()
+        .refine((value) => !value || Number.isInteger(Number(value)), {
+          error: tValidation("number.integer"),
+        }),
       scope: z.enum(couponScopeValues),
-      totalLimit: z.string().trim(),
+      totalLimit: z
+        .string()
+        .trim()
+        .refine((value) => !value || Number.isInteger(Number(value)), {
+          error: tValidation("number.integer"),
+        }),
       validFrom: z.string(),
       validThrough: z.string(),
     })

@@ -512,7 +512,9 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
             clearable
             error={!!errors.perUserLimit}
             fullWidth
-            helperText={tCoupons("perUserLimit.hint")}
+            helperText={
+              errors.perUserLimit?.message || tCoupons("perUserLimit.hint")
+            }
             label={`${tCoupons("perUserLimit.label")} ${tCommon("optional")}`}
             max={PER_USER_LIMIT_MAX}
             min={1}
@@ -534,7 +536,9 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
             clearable
             error={!!errors.pointsCost}
             fullWidth
-            helperText={tCoupons("pointsCost.hint")}
+            helperText={
+              errors.pointsCost?.message || tCoupons("pointsCost.hint")
+            }
             label={`${tCoupons("pointsCost.label")} ${tCommon("optional")}`}
             max={POINTS_COST_MAX}
             min={1}
