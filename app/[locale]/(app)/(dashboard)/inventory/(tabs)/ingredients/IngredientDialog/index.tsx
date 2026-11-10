@@ -5,7 +5,6 @@ import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
-import useSWR from "swr";
 
 import {
   useIngredientFormSchema,
@@ -251,16 +250,16 @@ const IngredientDialog = ({
       ? { id: ingredient.supplierId, name: ingredient.supplierName ?? "" }
       : null,
   );
-  const { data: savedRecipe } = useSWR<Recipe>(
-    ingredient?.recipeId ? `/api/recipes/${ingredient.recipeId}` : null,
+  const [recipe, setRecipe] = useState<RecipeOption | null>(
+    ingredient?.recipeId
+      ? { id: ingredient.recipeId, name: ingredient.recipeName ?? {} }
+      : null,
   );
-  const [recipe, setRecipe] = useState<RecipeOption | null>();
-  const selectedRecipe = recipe === undefined ? (savedRecipe ?? null) : recipe;
   const recipeSearch = useServerSearchOptions(
     editable
       ? `/api/organizations/${organizationSlug}/recipes?hasMenuItem=false`
       : null,
-    selectedRecipe ? [selectedRecipe] : [],
+    recipe ? [recipe] : [],
   );
 
   const supplierSearch = useServerSearchOptions(
@@ -462,7 +461,7 @@ const IngredientDialog = ({
             }}
           />
         )}
-        value={selectedRecipe}
+        value={recipe}
       />
       {canViewPurchasing && !recipeId && (
         <NumericFormat

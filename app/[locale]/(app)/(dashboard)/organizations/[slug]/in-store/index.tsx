@@ -14,6 +14,7 @@ import {
 import RenameOrderTicketPrinterDialog from "./RenameOrderTicketPrinterDialog";
 import UpdateDineInTableCountDialog from "./UpdateDineInTableCountDialog";
 
+import FormBox from "@/components/FormBox";
 import { StyledCardContent } from "@/components/FormCard";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -69,9 +70,9 @@ const ActionsStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(1),
 }));
 
-const AddPrinterForm = styled("form")(({ theme }) => ({
+const AddPrinterForm = styled(FormBox)(({ theme }) => ({
   alignItems: "flex-start",
-  display: "flex",
+  flexDirection: "row",
   flexWrap: "wrap",
   gap: theme.spacing(1),
 }));
@@ -429,21 +430,23 @@ const InvoicePrinterCard = ({ organizationSlug }: InvoicePrinterCardProps) => {
   const [settingUp, setSettingUp] = useState(false);
 
   const register = async () => {
-    const registered = await fetcher<PrinterCredentials>(printerUrl, {
-      method: "PUT",
-    });
+    try {
+      const registered = await fetcher<PrinterCredentials>(printerUrl, {
+        method: "PUT",
+      });
 
-    setCredentials(registered);
+      setCredentials(registered);
 
-    if (registered.queuedCount)
-      enqueueSnackbar(
-        tOrganizations("inStore.invoicePrinter.queued", {
-          count: registered.queuedCount,
-        }),
-        { variant: "info" },
-      );
-
-    await mutate();
+      if (registered.queuedCount)
+        enqueueSnackbar(
+          tOrganizations("inStore.invoicePrinter.queued", {
+            count: registered.queuedCount,
+          }),
+          { variant: "info" },
+        );
+    } finally {
+      await mutate();
+    }
   };
 
   const handleSetup = async () => {
@@ -478,15 +481,18 @@ const InvoicePrinterCard = ({ organizationSlug }: InvoicePrinterCardProps) => {
         </DialogContentText>
       ),
       onConfirm: async () => {
-        await fetcher(printerUrl, { method: "DELETE" });
-        setCredentials(null);
-        enqueueSnackbar(
-          tOrganizations("inStore.invoicePrinter.removeSuccess"),
-          {
-            variant: "success",
-          },
-        );
-        await mutate();
+        try {
+          await fetcher(printerUrl, { method: "DELETE" });
+          setCredentials(null);
+          enqueueSnackbar(
+            tOrganizations("inStore.invoicePrinter.removeSuccess"),
+            {
+              variant: "success",
+            },
+          );
+        } finally {
+          await mutate();
+        }
       },
       open: true,
       title: tOrganizations("inStore.invoicePrinter.remove"),
@@ -608,12 +614,17 @@ const OrderTicketPrinterItem = ({
           {tOrganizations("inStore.orderTicketPrinters.resetConfirm")}
         </DialogContentText>
       ),
-      onConfirm: async () =>
-        onRegistered(
-          await fetcher<PrinterCredentials>(`${printerUrl}/credentials`, {
-            method: "PUT",
-          }),
-        ),
+      onConfirm: async () => {
+        try {
+          onRegistered(
+            await fetcher<PrinterCredentials>(`${printerUrl}/credentials`, {
+              method: "PUT",
+            }),
+          );
+        } finally {
+          await onChanged();
+        }
+      },
       open: true,
       title: tOrganizations("inStore.orderTicketPrinters.reset"),
     });
@@ -628,14 +639,17 @@ const OrderTicketPrinterItem = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
-        await fetcher(printerUrl, { method: "DELETE" });
-        enqueueSnackbar(
-          tOrganizations("inStore.orderTicketPrinters.removeSuccess", {
-            name,
-          }),
-          { variant: "success" },
-        );
-        await onChanged();
+        try {
+          await fetcher(printerUrl, { method: "DELETE" });
+          enqueueSnackbar(
+            tOrganizations("inStore.orderTicketPrinters.removeSuccess", {
+              name,
+            }),
+            { variant: "success" },
+          );
+        } finally {
+          await onChanged();
+        }
       },
       open: true,
       title: tOrganizations("inStore.orderTicketPrinters.remove"),
@@ -668,10 +682,10 @@ const OrderTicketPrinterItem = ({
         }),
         { variant: "success" },
       );
-      await onChanged();
     } catch (error) {
       enqueueSnackbar(getErrorMessage(error), { variant: "error" });
     } finally {
+      await onChanged();
       setSettingDefault(false);
     }
   };
@@ -822,11 +836,6 @@ const OrderTicketPrintersCard = ({
     }
   });
 
-  const handleRegistered = async (registered: PrinterCredentials) => {
-    setCredentials(registered);
-    await mutate();
-  };
-
   return (
     <Card variant="outlined">
       <StyledCardContent>
@@ -850,7 +859,7 @@ const OrderTicketPrintersCard = ({
                   key={printer.id}
                   multiple={printers.length > 1}
                   onChanged={mutate}
-                  onRegistered={handleRegistered}
+                  onRegistered={setCredentials}
                   organizationSlug={organizationSlug}
                   printer={printer}
                 />
@@ -862,7 +871,7 @@ const OrderTicketPrintersCard = ({
             </Typography>
           ))}
         {printers && (
-          <AddPrinterForm noValidate onSubmit={onSubmit}>
+          <AddPrinterForm onSubmit={onSubmit}>
             <TextField
               error={!!errors.name}
               helperText={errors.name?.message}
