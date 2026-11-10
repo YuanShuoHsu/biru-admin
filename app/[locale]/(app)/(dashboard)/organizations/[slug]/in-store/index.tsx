@@ -13,6 +13,7 @@ import {
 } from "./definitions";
 import UpdateDineInTableCountDialog from "./UpdateDineInTableCountDialog";
 
+import FormBox from "@/components/FormBox";
 import { StyledCardContent } from "@/components/FormCard";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -68,9 +69,8 @@ const ActionsStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(1),
 }));
 
-const AddPrinterForm = styled("form")(({ theme }) => ({
+const AddPrinterStack = styled(Stack)(({ theme }) => ({
   alignItems: "flex-start",
-  display: "flex",
   flexWrap: "wrap",
   gap: theme.spacing(1),
 }));
@@ -844,22 +844,24 @@ const OrderTicketPrintersCard = ({
             </Typography>
           ))}
         {printers && (
-          <AddPrinterForm noValidate onSubmit={onSubmit}>
-            <TextField
-              error={!!errors.name}
-              helperText={errors.name?.message}
-              label={tOrganizations("inStore.orderTicketPrinters.name.label")}
-              placeholder={tOrganizations(
-                "inStore.orderTicketPrinters.name.placeholder",
-              )}
-              size="small"
-              slotProps={{ htmlInput: { maxLength: 50 } }}
-              {...register("name")}
-            />
-            <Button loading={isSubmitting} type="submit" variant="outlined">
-              {tOrganizations("inStore.orderTicketPrinters.add")}
-            </Button>
-          </AddPrinterForm>
+          <FormBox onSubmit={onSubmit}>
+            <AddPrinterStack direction="row">
+              <TextField
+                error={!!errors.name}
+                helperText={errors.name?.message}
+                label={tOrganizations("inStore.orderTicketPrinters.name.label")}
+                placeholder={tOrganizations(
+                  "inStore.orderTicketPrinters.name.placeholder",
+                )}
+                size="small"
+                slotProps={{ htmlInput: { maxLength: 50 } }}
+                {...register("name")}
+              />
+              <Button loading={isSubmitting} type="submit" variant="outlined">
+                {tOrganizations("inStore.orderTicketPrinters.add")}
+              </Button>
+            </AddPrinterStack>
+          </FormBox>
         )}
       </StyledCardContent>
     </Card>
