@@ -114,7 +114,7 @@ const StorePhotoDialog = ({ mutate, storePhoto }: StorePhotoDialogProps) => {
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="store-photo-form" onSubmit={onSubmit}>
+    <FormBox id="store-photo-form" noValidate onSubmit={onSubmit}>
       <FormControl error={!!errors.image}>
         <UploadAvatars
           aspectRatio="4/3"
