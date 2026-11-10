@@ -67,12 +67,7 @@ const CredentialDialog = ({ onCreated }: CredentialDialogProps) => {
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox
-      autoComplete="off"
-      id={CREDENTIAL_FORM_ID}
-      noValidate
-      onSubmit={onSubmit}
-    >
+    <FormBox autoComplete="off" id={CREDENTIAL_FORM_ID} onSubmit={onSubmit}>
       <Alert severity="info">{tQuant("settings.hint")}</Alert>
       <TextField
         {...register("label")}

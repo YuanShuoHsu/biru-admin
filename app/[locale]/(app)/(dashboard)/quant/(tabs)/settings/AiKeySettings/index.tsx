@@ -55,12 +55,7 @@ const AiKeyDialog = ({ onSaved }: { onSaved: () => void }) => {
   };
 
   return (
-    <FormBox
-      autoComplete="off"
-      id={AI_KEY_FORM_ID}
-      noValidate
-      onSubmit={onSubmit}
-    >
+    <FormBox autoComplete="off" id={AI_KEY_FORM_ID} onSubmit={onSubmit}>
       <Alert severity="info">
         {tAi("description")}
         <br />

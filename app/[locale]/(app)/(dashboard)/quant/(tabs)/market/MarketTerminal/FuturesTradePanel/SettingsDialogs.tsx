@@ -83,7 +83,7 @@ export const LeverageDialog = ({
   };
 
   return (
-    <FormBox id={FUTURES_SETTINGS_FORM_ID} noValidate onSubmit={onSubmit}>
+    <FormBox id={FUTURES_SETTINGS_FORM_ID} onSubmit={onSubmit}>
       <Stack sx={{ alignItems: "center", flexDirection: "row", gap: 2 }}>
         <Slider
           max={max}
@@ -139,7 +139,7 @@ export const MarginModeDialog = ({
   };
 
   return (
-    <FormBox id={FUTURES_SETTINGS_FORM_ID} noValidate onSubmit={onSubmit}>
+    <FormBox id={FUTURES_SETTINGS_FORM_ID} onSubmit={onSubmit}>
       <ToggleButtonGroup
         exclusive
         fullWidth
@@ -180,7 +180,7 @@ export const PositionModeDialog = ({
   };
 
   return (
-    <FormBox id={FUTURES_SETTINGS_FORM_ID} noValidate onSubmit={onSubmit}>
+    <FormBox id={FUTURES_SETTINGS_FORM_ID} onSubmit={onSubmit}>
       <ToggleButtonGroup
         exclusive
         fullWidth

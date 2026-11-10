@@ -144,7 +144,7 @@ const WaitlistTicketDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id={WAITLIST_TICKET_FORM_ID} noValidate onSubmit={onSubmit}>
+    <FormBox id={WAITLIST_TICKET_FORM_ID} onSubmit={onSubmit}>
       {unavailable && (
         <Alert severity="info">
           {tWaitlist(`add.unavailable.${unavailable}`)}

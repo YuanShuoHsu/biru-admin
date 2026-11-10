@@ -379,7 +379,7 @@ const FuturesTradePanel = ({
   };
 
   return (
-    <FormBox noValidate onSubmit={(event) => event.preventDefault()}>
+    <FormBox onSubmit={(event) => event.preventDefault()}>
       <CredentialSelect
         credential={credential}
         credentials={credentials}
