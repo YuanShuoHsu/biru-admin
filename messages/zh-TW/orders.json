@@ -257,6 +257,14 @@
   "paymentDate": "付款時間",
   "paymentMethod": "付款方式",
   "pickupTime": "取餐時間",
+  "prepEstimate": {
+    "basis": {
+      "leadTime": "依品項備餐時間估算",
+      "observed": "依近 30 分鐘的實際出餐速度估算"
+    },
+    "label": "目前出餐約需 {minutes} 分鐘",
+    "tooltip": "{basis}，製作中 {count} 張"
+  },
   "printJobError": {
     "DeviceNotFound": "找不到印表機",
     "ECPAY_REJECTED": "綠界拒絕提供這張發票的資料，會自動重試；若一直失敗，可取消列印並向綠界查證",
