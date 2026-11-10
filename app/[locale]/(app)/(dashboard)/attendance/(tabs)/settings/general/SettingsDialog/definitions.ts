@@ -27,7 +27,7 @@ export const useSettingsFormSchema = () => {
         .max(ALLOWED_IPS_MAX, {
           error: tValidation("allowedIps.max", { max: ALLOWED_IPS_MAX }),
         }),
-      graceMinutes: range(0, 60),
+      graceMinutes: range(0, 60).int({ error: tValidation("number.integer") }),
       laborInsuranceUnitCode: z
         .string()
         .trim()
@@ -45,10 +45,14 @@ export const useSettingsFormSchema = () => {
         }),
       ),
       latitude: range(-90, 90).nullable(),
-      payday: range(1, 31).nullable(),
+      payday: range(1, 31)
+        .int({ error: tValidation("number.integer") })
+        .nullable(),
       paydayNextMonth: z.boolean(),
       longitude: range(-180, 180).nullable(),
-      radiusMeters: range(10, 10000),
+      radiusMeters: range(10, 10000).int({
+        error: tValidation("number.integer"),
+      }),
       voluntaryLaborInsuranceFrom: z.string(),
     })
     .superRefine((data, ctx) => {
