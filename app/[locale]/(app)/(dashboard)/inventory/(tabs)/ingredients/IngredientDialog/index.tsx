@@ -138,9 +138,13 @@ const IngredientDialog = ({
       : "";
 
   const savedUnlimited = !!ingredient?.unlimitedStock;
+  const editable = !ingredient || canWrite;
+  const stockEditable = !ingredient || canRecordTransaction;
   const ingredientFormSchema = useIngredientFormSchema(
     canViewPurchasing,
     savedUnlimited && canRecordTransaction,
+    stockEditable,
+    editable,
   );
   const {
     control,
@@ -241,9 +245,6 @@ const IngredientDialog = ({
   const unitField = recipeId
     ? "ingredients.unitCode"
     : "ingredients.eligibleQuantityUnitCode";
-
-  const editable = !ingredient || canWrite;
-  const stockEditable = !ingredient || canRecordTransaction;
 
   const [supplier, setSupplier] = useState<SupplierOption | null>(
     ingredient?.supplierId

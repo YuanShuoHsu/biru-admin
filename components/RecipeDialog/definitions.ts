@@ -25,6 +25,9 @@ export const useRecipeFormSchema = (unbound: boolean) => {
         .min(1, {
           error: tValidation("recipeYield.required"),
         })
+        .refine((value) => Number.isInteger(Number(value)), {
+          error: tValidation("number.integer"),
+        })
         .refine((value) => Number(value) <= 9999, {
           error: tValidation("number.max", { max: 9999 }),
         }),
