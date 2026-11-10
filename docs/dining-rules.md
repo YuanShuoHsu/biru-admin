@@ -44,7 +44,7 @@
 | 標籤        | 對應規定 |
 | ----------- | -------- |
 | #遠距辦公   | 遠距辦公 |
-| #WiFi       | Wi-Fi    |
+| #wifi       | Wi-Fi    |
 | #插座       | 插座     |
 | #個人不限時 | 用餐時間 |
 | #寵物友善   | 寵物     |
@@ -69,7 +69,7 @@
 ### `zh-TW`
 
 ```text
-#遠距辦公 #WiFi #插座 #個人不限時 #寵物友善 #親子友善
+#遠距辦公 #wifi #插座 #個人不限時 #寵物友善 #親子友善
 
 【點餐取餐】
 ・內用、現場外帶與貓速通請掃描店內 QR code 點餐，沒有手機可使用櫃檯的平板
@@ -99,7 +99,7 @@
 ### `zh-CN`
 
 ```text
-#远程办公 #WiFi #插座 #个人不限时 #宠物友好 #亲子友好
+#远程办公 #wifi #插座 #个人不限时 #宠物友好 #亲子友好
 
 【点餐取餐】
 ・堂食、现场外带与猫速通请扫描店内二维码点餐，没有手机可使用柜台的平板
@@ -129,7 +129,7 @@
 ### `en`
 
 ```text
-#RemoteWork #WiFi #PowerOutlets #SoloNoTimeLimit #PetFriendly #FamilyFriendly
+#RemoteWork #wifi #PowerOutlets #SoloNoTimeLimit #PetFriendly #FamilyFriendly
 
 【Ordering & Pickup】
 ・For Dine-in, In-store takeout and Meow-thru, scan the in-store QR code to order, or use the tablet at the counter if you don't have a phone
@@ -159,7 +159,7 @@
 ### `ja`
 
 ```text
-#リモートワーク #WiFi #コンセント #おひとり様時間無制限 #ペット同伴OK #お子様連れ歓迎
+#リモートワーク #wifi #コンセント #おひとり様時間無制限 #ペット同伴OK #お子様連れ歓迎
 
 【ご注文・お受け取り】
 ・店内・店頭お持ち帰り・ニャンスルーは店内の QR コードを読み取ってご注文ください。スマートフォンをお持ちでない方はカウンターのタブレットをご利用いただけます
