@@ -14,7 +14,13 @@ export const useUpdateModifierFormSchema = () => {
       .superRefine(
         refineRequiredLocalizedText(tValidation("localizedText.required")),
       ),
-    priceAdjustment: z.string().trim().optional(),
+    priceAdjustment: z
+      .string()
+      .trim()
+      .refine((value) => !value || Number.isInteger(Number(value)), {
+        error: tValidation("number.integer"),
+      })
+      .optional(),
     availability: z.enum(itemAvailabilityValues),
     availableModes: z
       .array(z.enum(orderModeValues))

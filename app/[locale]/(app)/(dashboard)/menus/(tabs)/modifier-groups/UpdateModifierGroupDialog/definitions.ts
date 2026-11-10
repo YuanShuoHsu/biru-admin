@@ -12,8 +12,20 @@ export const useUpdateModifierGroupFormSchema = () => {
       .superRefine(
         refineRequiredLocalizedText(tValidation("localizedText.required")),
       ),
-    minSelectionCount: z.string().trim().optional(),
-    maxSelectionCount: z.string().trim().optional(),
+    minSelectionCount: z
+      .string()
+      .trim()
+      .refine((value) => !value || Number.isInteger(Number(value)), {
+        error: tValidation("number.integer"),
+      })
+      .optional(),
+    maxSelectionCount: z
+      .string()
+      .trim()
+      .refine((value) => !value || Number.isInteger(Number(value)), {
+        error: tValidation("number.integer"),
+      })
+      .optional(),
   });
 };
 
