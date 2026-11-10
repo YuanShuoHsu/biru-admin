@@ -9,7 +9,7 @@ import {
 
 // https://developers.google.com/maps/documentation/embed/embedding-map
 const GOOGLE_MAPS_EMBED_URL =
-  /^https:\/\/www\.google\.com\/maps\/embed([/?#]|$)/i;
+  /^https:\/\/www\.google\.com\/maps\/embed(\/v1\/[a-z]+)?([?#][^\n]*)?$/;
 const IFRAME_SRC = /<iframe\b[^>]*\ssrc="([^"]*)"/i;
 
 export const useUpdateLocationFormSchema = () => {
