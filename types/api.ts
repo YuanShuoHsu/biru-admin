@@ -7627,10 +7627,14 @@ export interface components {
       | "attendance_holiday_substitute"
       | "payroll_earning_type";
     /**
-     * @description 不能還原的原因：ownerOnly＝要還原擁有者成員或邀請、操作者不是擁有者；forbidden＝角色沒有這些資料的權限；closed＝門市停業中。可以還原時為 null
+     * @description 不能還原的原因：ownerOnly＝要還原擁有者成員或邀請、操作者不是擁有者；forbidden＝角色沒有這些資料的權限；closed＝門市停業中；revokedPlatformAdmin＝要還原以平台管理員身分加入的成員、該使用者已不是平台管理員。可以還原時為 null
      * @enum {string}
      */
-    DeletedRecordRestoreBlockedBy: "ownerOnly" | "forbidden" | "closed";
+    DeletedRecordRestoreBlockedBy:
+      | "ownerOnly"
+      | "forbidden"
+      | "closed"
+      | "revokedPlatformAdmin";
     DeletedRecordBatchResponseDto: {
       /** @description 同一次刪除（同一個交易）的編號 */
       batchId: number;
@@ -7654,7 +7658,7 @@ export interface components {
       deletedBy?: string | null;
       /** @description 目前操作者可否還原（店內須具備各資料的建立權限） */
       canRestore: boolean;
-      /** @description 不能還原的原因：ownerOnly＝要還原擁有者成員或邀請、操作者不是擁有者；forbidden＝角色沒有這些資料的權限；closed＝門市停業中。可以還原時為 null */
+      /** @description 不能還原的原因：ownerOnly＝要還原擁有者成員或邀請、操作者不是擁有者；forbidden＝角色沒有這些資料的權限；closed＝門市停業中；revokedPlatformAdmin＝要還原以平台管理員身分加入的成員、該使用者已不是平台管理員。可以還原時為 null */
       restoreBlockedBy:
         | components["schemas"]["DeletedRecordRestoreBlockedBy"]
         | null;
@@ -26754,7 +26758,7 @@ export const deletedRecordTableValues: ReadonlyArray<
 ];
 export const deletedRecordRestoreBlockedByValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["DeletedRecordRestoreBlockedBy"]
-> = ["ownerOnly", "forbidden", "closed"];
+> = ["ownerOnly", "forbidden", "closed", "revokedPlatformAdmin"];
 export const payrollRuleSetResponseDtoUnconfirmedValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PayrollRuleSetResponseDto"]["unconfirmed"]
 > = ["minimumHourlyWageCents"];
