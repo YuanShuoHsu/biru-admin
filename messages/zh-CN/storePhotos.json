@@ -6,20 +6,17 @@
       },
       "submit": {
         "confirm": "确定要删除以下 <bold>{count} 张门店照片</bold>吗？",
-        "error": "批量删除门店照片失败",
         "label": "删除所选门店照片（{count}）",
         "success": "已删除 {count} 张门店照片"
       },
       "title": "批量删除门店照片"
     },
     "createStorePhoto": {
-      "error": "新增门店照片失败",
       "success": "已新增门店照片",
       "title": "新增门店照片"
     },
     "deleteStorePhoto": {
       "confirm": "确定要删除这张<bold>门店照片</bold>吗？此操作无法撤销。",
-      "error": "删除门店照片失败",
       "success": "已删除门店照片",
       "title": "删除门店照片"
     },
@@ -32,14 +29,12 @@
       "confirm": "确定要进行<bold>门店照片</bold>排序吗？",
       "save": {
         "confirm": "确定要保存<bold>门店照片</bold>排序吗？",
-        "error": "排序保存失败",
         "label": "保存门店照片排序",
         "success": "排序已保存"
       },
       "title": "门店照片排序"
     },
     "updateStorePhoto": {
-      "error": "更新门店照片失败",
       "success": "已更新门店照片",
       "title": "编辑门店照片"
     }

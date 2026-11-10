@@ -27,6 +27,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { CreateStorePhotoDto, StorePhoto } from "@/types/storePhotos";
 
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 const StyledFormControlLabel = styled(FormControlLabel)({
@@ -96,15 +97,8 @@ const StorePhotoDialog = ({ mutate, storePhoto }: StorePhotoDialogProps) => {
 
       closeDialog();
       mutate();
-    } catch {
-      enqueueSnackbar(
-        tStorePhotos(
-          storePhoto
-            ? "actions.updateStorePhoto.error"
-            : "actions.createStorePhoto.error",
-        ),
-        { variant: "error" },
-      );
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
 
       setDialog({ confirmLoading: false });
     }
