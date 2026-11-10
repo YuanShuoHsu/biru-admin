@@ -69,8 +69,9 @@ const ActionsStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(1),
 }));
 
-const AddPrinterStack = styled(Stack)(({ theme }) => ({
+const AddPrinterForm = styled(FormBox)(({ theme }) => ({
   alignItems: "flex-start",
+  flexDirection: "row",
   flexWrap: "wrap",
   gap: theme.spacing(1),
 }));
@@ -844,24 +845,22 @@ const OrderTicketPrintersCard = ({
             </Typography>
           ))}
         {printers && (
-          <FormBox onSubmit={onSubmit}>
-            <AddPrinterStack direction="row">
-              <TextField
-                error={!!errors.name}
-                helperText={errors.name?.message}
-                label={tOrganizations("inStore.orderTicketPrinters.name.label")}
-                placeholder={tOrganizations(
-                  "inStore.orderTicketPrinters.name.placeholder",
-                )}
-                size="small"
-                slotProps={{ htmlInput: { maxLength: 50 } }}
-                {...register("name")}
-              />
-              <Button loading={isSubmitting} type="submit" variant="outlined">
-                {tOrganizations("inStore.orderTicketPrinters.add")}
-              </Button>
-            </AddPrinterStack>
-          </FormBox>
+          <AddPrinterForm onSubmit={onSubmit}>
+            <TextField
+              error={!!errors.name}
+              helperText={errors.name?.message}
+              label={tOrganizations("inStore.orderTicketPrinters.name.label")}
+              placeholder={tOrganizations(
+                "inStore.orderTicketPrinters.name.placeholder",
+              )}
+              size="small"
+              slotProps={{ htmlInput: { maxLength: 50 } }}
+              {...register("name")}
+            />
+            <Button loading={isSubmitting} type="submit" variant="outlined">
+              {tOrganizations("inStore.orderTicketPrinters.add")}
+            </Button>
+          </AddPrinterForm>
         )}
       </StyledCardContent>
     </Card>
