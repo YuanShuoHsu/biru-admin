@@ -321,7 +321,6 @@ const MenusMenuId = ({
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               ids: rows.map(({ id }) => id),
-              offset: paginationModel.page * paginationModel.pageSize,
             }),
           });
 
@@ -345,17 +344,7 @@ const MenusMenuId = ({
       open: true,
       title: tMenus("sections.actions.reorderSection.save.label"),
     });
-  }, [
-    apiRef,
-    menuId,
-    mutate,
-    paginationModel.page,
-    paginationModel.pageSize,
-    rowCount,
-    rows,
-    setDialog,
-    tMenus,
-  ]);
+  }, [apiRef, menuId, mutate, rowCount, rows, setDialog, tMenus]);
 
   const handleCancelReorder = useCallback(() => {
     setDialog({

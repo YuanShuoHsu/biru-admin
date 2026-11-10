@@ -306,7 +306,6 @@ const Banners = ({
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               ids: rows.map(({ id }) => id),
-              offset: paginationModel.page * paginationModel.pageSize,
             }),
           });
 
@@ -326,16 +325,7 @@ const Banners = ({
       open: true,
       title: tBanners("actions.reorderBanner.save.label"),
     });
-  }, [
-    apiRef,
-    mutate,
-    paginationModel.page,
-    paginationModel.pageSize,
-    rowCount,
-    rows,
-    setDialog,
-    tBanners,
-  ]);
+  }, [apiRef, mutate, rowCount, rows, setDialog, tBanners]);
 
   const handleCancelReorder = useCallback(() => {
     setDialog({

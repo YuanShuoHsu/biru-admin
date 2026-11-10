@@ -329,7 +329,6 @@ const RecipeIngredients = ({
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               ids: rows.map(({ id }) => id),
-              offset: paginationModel.page * paginationModel.pageSize,
             }),
           });
 
@@ -354,17 +353,7 @@ const RecipeIngredients = ({
         "recipes.ingredients.actions.reorderRecipeIngredient.save.label",
       ),
     });
-  }, [
-    apiRef,
-    mutate,
-    paginationModel.page,
-    paginationModel.pageSize,
-    recipeId,
-    rowCount,
-    rows,
-    setDialog,
-    tInventory,
-  ]);
+  }, [apiRef, mutate, recipeId, rowCount, rows, setDialog, tInventory]);
 
   const handleCancelReorder = useCallback(() => {
     setDialog({
