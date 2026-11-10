@@ -64,11 +64,15 @@ export const useTermsFormSchema = () => {
     employeeId: z
       .string()
       .min(1, { error: tValidation("employee.notSelected") }),
-    employerPercent: number(6, 100),
+    employerPercent: number(6, 100).int({
+      error: tValidation("number.integer"),
+    }),
     employmentInsuranceExemption: z
       .enum(payrollEmploymentInsuranceExemptionValues)
       .nullable(),
-    healthDependents: number(0, 20),
+    healthDependents: number(0, 20).int({
+      error: tValidation("number.integer"),
+    }),
     healthInsuranceExemption: z
       .enum(payrollHealthInsuranceExemptionValues)
       .nullable(),
@@ -86,8 +90,12 @@ export const useTermsFormSchema = () => {
     sourceNote: z.string().trim(),
     taxMethod: z.enum(payrollTaxMethodValues),
     voluntaryHealthInsurance: z.boolean(),
-    voluntaryPercent: number(0, 6),
-    withholdingDependents: number(0, 99),
+    voluntaryPercent: number(0, 6).int({
+      error: tValidation("number.integer"),
+    }),
+    withholdingDependents: number(0, 99).int({
+      error: tValidation("number.integer"),
+    }),
   });
 };
 
