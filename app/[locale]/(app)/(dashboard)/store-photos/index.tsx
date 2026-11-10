@@ -308,7 +308,6 @@ const StorePhotos = ({
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               ids: rows.map(({ id }) => id),
-              offset: paginationModel.page * paginationModel.pageSize,
             }),
           });
 
@@ -336,16 +335,7 @@ const StorePhotos = ({
       open: true,
       title: tStorePhotos("actions.reorderStorePhoto.save.label"),
     });
-  }, [
-    apiRef,
-    mutate,
-    paginationModel.page,
-    paginationModel.pageSize,
-    rowCount,
-    rows,
-    setDialog,
-    tStorePhotos,
-  ]);
+  }, [apiRef, mutate, rowCount, rows, setDialog, tStorePhotos]);
 
   const handleCancelReorder = useCallback(() => {
     setDialog({

@@ -424,7 +424,6 @@ const Ingredients = ({
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 ids: rows.map(({ id }) => id),
-                offset: paginationModel.page * paginationModel.pageSize,
               }),
             },
           );
@@ -446,17 +445,7 @@ const Ingredients = ({
       open: true,
       title: tInventory("ingredients.actions.reorderIngredient.save.label"),
     });
-  }, [
-    apiRef,
-    mutate,
-    organizationSlug,
-    paginationModel.page,
-    paginationModel.pageSize,
-    rowCount,
-    rows,
-    setDialog,
-    tInventory,
-  ]);
+  }, [apiRef, mutate, organizationSlug, rowCount, rows, setDialog, tInventory]);
 
   const handleCancelReorder = useCallback(() => {
     setDialog({

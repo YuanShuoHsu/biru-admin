@@ -343,7 +343,6 @@ const Modifiers = ({
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               ids: rows.map(({ id }) => id),
-              offset: paginationModel.page * paginationModel.pageSize,
             }),
           });
 
@@ -367,17 +366,7 @@ const Modifiers = ({
       open: true,
       title: tMenus("modifiers.actions.reorderModifier.save.label"),
     });
-  }, [
-    apiRef,
-    groupId,
-    mutate,
-    paginationModel.page,
-    paginationModel.pageSize,
-    rowCount,
-    rows,
-    setDialog,
-    tMenus,
-  ]);
+  }, [apiRef, groupId, mutate, rowCount, rows, setDialog, tMenus]);
 
   const handleCancelReorder = useCallback(() => {
     setDialog({
