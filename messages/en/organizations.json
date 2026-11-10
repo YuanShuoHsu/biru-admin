@@ -205,6 +205,7 @@
   "label": "Organizations",
   "localBusiness": {
     "hasMap": {
+      "helperText": "In Google Maps, choose Share → Embed a map → Copy HTML and paste it here, or paste just its src URL",
       "label": "Map Link",
       "placeholder": "Please enter your Google Maps URL"
     },

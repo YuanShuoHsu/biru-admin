@@ -205,6 +205,7 @@
   "label": "組織",
   "localBusiness": {
     "hasMap": {
+      "helperText": "Google マップで「共有」→「地図を埋め込む」→「HTML をコピー」を選んで貼り付けるか、その src の URL だけを貼り付けてください",
       "label": "地図リンク",
       "placeholder": "あなたのGoogle マップURLを入力してください"
     },

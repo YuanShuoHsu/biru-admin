@@ -135,6 +135,9 @@
   "graceMinutes": {
     "required": "逾时宽限时间为必填。"
   },
+  "hasMap": {
+    "invalid": "请粘贴 Google 地图「嵌入地图」的 HTML 或网址。"
+  },
   "hiredAt": {
     "required": "入职时间为必填。"
   },

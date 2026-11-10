@@ -135,6 +135,9 @@
   "graceMinutes": {
     "required": "Grace period is required."
   },
+  "hasMap": {
+    "invalid": "Paste the HTML or URL from Google Maps “Embed a map”."
+  },
   "hiredAt": {
     "required": "Employment start is required."
   },

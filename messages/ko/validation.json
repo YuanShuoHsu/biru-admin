@@ -135,6 +135,9 @@
   "graceMinutes": {
     "required": "초과 유예 시간은 필수입니다."
   },
+  "hasMap": {
+    "invalid": "Google 지도 「지도 퍼가기」의 HTML 또는 URL을 붙여 넣어 주세요."
+  },
   "hiredAt": {
     "required": "입사 시간은 필수입니다."
   },
