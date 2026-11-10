@@ -4,11 +4,19 @@ import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { QRCodeCanvas } from "qrcode.react";
 import { useCallback, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 import useSWR, { useSWRConfig } from "swr";
 
+import {
+  type OrderTicketPrinterForm,
+  useOrderTicketPrinterFormSchema,
+} from "./definitions";
 import UpdateDineInTableCountDialog from "./UpdateDineInTableCountDialog";
 
+import FormBox from "@/components/FormBox";
 import { StyledCardContent } from "@/components/FormCard";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { API_ORDER_MODE, ORDER_MODE } from "@/constants/orderMode";
 import { PRINTER_STATUS_REFRESH_MS } from "@/constants/orders";
@@ -57,6 +65,13 @@ const UrlTypography = styled(Typography)({
 });
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
+  flexWrap: "wrap",
+  gap: theme.spacing(1),
+}));
+
+const AddPrinterForm = styled(FormBox)(({ theme }) => ({
+  alignItems: "flex-start",
+  flexDirection: "row",
   flexWrap: "wrap",
   gap: theme.spacing(1),
 }));
@@ -763,24 +778,30 @@ const OrderTicketPrintersCard = ({
     null,
   );
 
-  const [name, setName] = useState("");
+  const orderTicketPrinterFormSchema = useOrderTicketPrinterFormSchema();
 
-  const [adding, setAdding] = useState(false);
+  const {
+    formState: { errors, isSubmitting },
+    handleSubmit,
+    register,
+    reset,
+  } = useForm<OrderTicketPrinterForm>({
+    defaultValues: { name: "" },
+    resolver: zodResolver(orderTicketPrinterFormSchema),
+  });
 
-  const handleAdd = async () => {
-    setAdding(true);
-
+  const onSubmit = handleSubmit(async ({ name }) => {
     try {
       const created = await fetcher<PrinterCredentials>(printersUrl, {
         body: JSON.stringify({
-          name: name.trim(),
+          name,
         } satisfies CreateOrderTicketPrinterDto),
         headers: { "Content-Type": "application/json" },
         method: "POST",
       });
 
       setCredentials(created);
-      setName("");
+      reset();
 
       if (created.queuedCount)
         enqueueSnackbar(
@@ -794,10 +815,8 @@ const OrderTicketPrintersCard = ({
       await mutate();
     } catch (error) {
       enqueueSnackbar(getErrorMessage(error), { variant: "error" });
-    } finally {
-      setAdding(false);
     }
-  };
+  });
 
   return (
     <Card variant="outlined">
@@ -834,26 +853,22 @@ const OrderTicketPrintersCard = ({
             </Typography>
           ))}
         {printers && (
-          <ActionsStack direction="row">
+          <AddPrinterForm onSubmit={onSubmit}>
             <TextField
+              error={!!errors.name}
+              helperText={errors.name?.message}
               label={tOrganizations("inStore.orderTicketPrinters.name.label")}
-              onChange={(event) => setName(event.target.value)}
               placeholder={tOrganizations(
                 "inStore.orderTicketPrinters.name.placeholder",
               )}
               size="small"
               slotProps={{ htmlInput: { maxLength: 50 } }}
-              value={name}
+              {...register("name")}
             />
-            <Button
-              disabled={!name.trim()}
-              loading={adding}
-              onClick={handleAdd}
-              variant="outlined"
-            >
+            <Button loading={isSubmitting} type="submit" variant="outlined">
               {tOrganizations("inStore.orderTicketPrinters.add")}
             </Button>
-          </ActionsStack>
+          </AddPrinterForm>
         )}
       </StyledCardContent>
     </Card>

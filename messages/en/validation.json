@@ -439,5 +439,8 @@
   },
   "refundReason": {
     "required": "Details are required when the refund reason is “Other”."
+  },
+  "printerName": {
+    "required": "Enter a name."
   }
 }

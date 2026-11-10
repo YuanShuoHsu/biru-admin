@@ -439,5 +439,8 @@
   },
   "refundReason": {
     "required": "返金理由が「その他」の場合、補足説明は必須です。"
+  },
+  "printerName": {
+    "required": "名称を入力してください。"
   }
 }
