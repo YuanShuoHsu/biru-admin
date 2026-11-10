@@ -5,10 +5,10 @@
         "label": "Cancel Batch Delete Store Photos"
       },
       "submit": {
-        "confirm": "Are you sure you want to delete the following <bold>{count} store photos</bold>?",
+        "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# store photo} other {# store photos}}</bold>?",
         "error": "Failed to batch delete store photos",
         "label": "Delete Selected Store Photos ({count})",
-        "success": "Deleted {count} store photos"
+        "success": "Deleted {count, plural, one {# store photo} other {# store photos}}"
       },
       "title": "Batch Delete Store Photos"
     },

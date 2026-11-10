@@ -5,9 +5,9 @@
         "label": "Cancel Batch Delete Coupons"
       },
       "submit": {
-        "confirm": "Are you sure you want to delete the following <bold>{count} coupons</bold>?",
+        "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# coupon} other {# coupons}}</bold>?",
         "label": "Delete Selected Coupons ({count})",
-        "success": "Deleted {count} coupons"
+        "success": "Deleted {count, plural, one {# coupon} other {# coupons}}"
       },
       "title": "Batch Delete Coupons"
     },

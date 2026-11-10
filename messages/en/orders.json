@@ -52,7 +52,7 @@
         "label": "Reason for resetting",
         "placeholder": "e.g. Printer jammed, the original never came out"
       },
-      "resetCount": "This invoice has already been reset for printing {count} times",
+      "resetCount": "This invoice has already been reset for printing {count, plural, one {# time} other {# times}}",
       "success": "Invoice for order {orderNumber} reset to not printed",
       "title": "Reset to not printed"
     },

@@ -5,9 +5,9 @@
         "label": "Cancel Batch Delete Organizations"
       },
       "submit": {
-        "confirm": "Are you sure you want to delete the following <bold>{count} organizations</bold>? Their members, menus, inventory, and other data will be deleted too. A platform admin can restore them within 30 days.",
+        "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# organization} other {# organizations}}</bold>? Their members, menus, inventory, and other data will be deleted too. A platform admin can restore them within 30 days.",
         "label": "Delete Selected Organizations ({count})",
-        "success": "Deleted {count} organizations",
+        "success": "Deleted {count, plural, one {# organization} other {# organizations}}",
         "typeCount": "Type \"{count}\" to confirm the number of organizations to delete"
       },
       "title": "Batch Delete Organizations"
@@ -96,7 +96,7 @@
         "label": "Dine-in tables",
         "notSet": "Set the number of dine-in tables to generate table QR codes.",
         "placeholder": "Enter the number of dine-in tables",
-        "value": "{count} tables"
+        "value": "{count, plural, one {# table} other {# tables}}"
       },
       "tableNumber": {
         "helperText": "Printed QR codes stay valid indefinitely. Place each one on the table with the matching number.",
@@ -183,9 +183,9 @@
         },
         "confirm": "Are you sure you want to batch cancel <bold>invitations</bold>?",
         "submit": {
-          "confirm": "Are you sure you want to cancel the <bold>{count} selected invitations</bold>?",
+          "confirm": "Are you sure you want to cancel the <bold>{count, plural, one {# selected invitation} other {# selected invitations}}</bold>?",
           "label": "Cancel Selected Invitations ({count})",
-          "success": "Canceled {count} invitations"
+          "success": "Canceled {count, plural, one {# invitation} other {# invitations}}"
         },
         "title": "Batch Cancel Invitations"
       },
@@ -253,9 +253,9 @@
           "label": "Cancel Batch Remove Members"
         },
         "submit": {
-          "confirm": "Are you sure you want to remove the following <bold>{count} members</bold>?",
+          "confirm": "Are you sure you want to remove the following <bold>{count, plural, one {# member} other {# members}}</bold>?",
           "label": "Remove Selected Members ({count})",
-          "success": "Removed {count} members"
+          "success": "Removed {count, plural, one {# member} other {# members}}"
         },
         "title": "Batch Remove Members"
       },
@@ -264,9 +264,9 @@
           "label": "Cancel Batch Remove Team Members"
         },
         "submit": {
-          "confirm": "Are you sure you want to remove the following <bold>{count} team members</bold>?",
+          "confirm": "Are you sure you want to remove the following <bold>{count, plural, one {# team member} other {# team members}}</bold>?",
           "label": "Remove Selected Team Members ({count})",
-          "success": "Removed {count} team members"
+          "success": "Removed {count, plural, one {# team member} other {# team members}}"
         },
         "title": "Batch Remove Team Members"
       },
@@ -416,9 +416,9 @@
           "label": "Cancel Batch Delete Teams"
         },
         "submit": {
-          "confirm": "Are you sure you want to delete the following <bold>{count} teams</bold>?",
+          "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# team} other {# teams}}</bold>?",
           "label": "Delete Selected Teams ({count})",
-          "success": "Deleted {count} teams"
+          "success": "Deleted {count, plural, one {# team} other {# teams}}"
         },
         "title": "Batch Delete Teams"
       },

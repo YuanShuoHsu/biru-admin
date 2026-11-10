@@ -41,9 +41,9 @@
         },
         "confirm": "Are you sure you want to batch revoke <bold>deferral agreements</bold>?",
         "submit": {
-          "confirm": "Are you sure you want to revoke the <bold>{count} selected deferral agreements</bold>?",
+          "confirm": "Are you sure you want to revoke the <bold>{count, plural, one {# selected deferral agreement} other {# selected deferral agreements}}</bold>?",
           "label": "Revoke Selected Deferral Agreements ({count})",
-          "success": "Revoked {count} deferral agreements"
+          "success": "Revoked {count, plural, one {# deferral agreement} other {# deferral agreements}}"
         },
         "title": "Batch Revoke Deferral Agreements"
       },
@@ -132,8 +132,8 @@
         },
         "submit": {
           "label": "Delete Selected Employee Setups ({count})",
-          "confirm": "Are you sure you want to delete the following <bold>{count} employee setups</bold>? These employees have no attendance or payroll records and will return to “Not set up”.",
-          "success": "Deleted {count} employee setups"
+          "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# employee setup} other {# employee setups}}</bold>? These employees have no attendance or payroll records and will return to “Not set up”.",
+          "success": "Deleted {count, plural, one {# employee setup} other {# employee setups}}"
         }
       }
     },
@@ -322,9 +322,9 @@
           "label": "Cancel Batch Delete Event Leave Allowances"
         },
         "submit": {
-          "confirm": "Are you sure you want to delete the following <bold>{count} event leave allowances</bold>?",
+          "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# event leave allowance} other {# event leave allowances}}</bold>?",
           "label": "Delete Selected Event Leave Allowances ({count})",
-          "success": "Deleted {count} event leave allowances"
+          "success": "Deleted {count, plural, one {# event leave allowance} other {# event leave allowances}}"
         },
         "title": "Batch Delete Event Leave Allowances"
       },
@@ -363,9 +363,9 @@
           "label": "Cancel Batch Delete Leave Policies"
         },
         "submit": {
-          "confirm": "Are you sure you want to delete the following <bold>{count} leave policies</bold>? Unused leave balances will also be deleted, and this action cannot be undone.",
+          "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# leave policy} other {# leave policies}}</bold>? Unused leave balances will also be deleted, and this action cannot be undone.",
           "label": "Delete Selected Leave Policies ({count})",
-          "success": "Deleted {count} leave policies"
+          "success": "Deleted {count, plural, one {# leave policy} other {# leave policies}}"
         },
         "title": "Batch Delete Leave Policies"
       },
@@ -835,9 +835,9 @@
         },
         "confirm": "Are you sure you want to batch revoke <bold>substitute days</bold>?",
         "submit": {
-          "confirm": "Are you sure you want to revoke the <bold>{count} selected substitute days</bold>?",
+          "confirm": "Are you sure you want to revoke the <bold>{count, plural, one {# selected substitute day} other {# selected substitute days}}</bold>?",
           "label": "Revoke Selected Substitute Days ({count})",
-          "success": "Revoked {count} substitute days"
+          "success": "Revoked {count, plural, one {# substitute day} other {# substitute days}}"
         },
         "title": "Batch Revoke Substitute Days"
       },
@@ -863,7 +863,7 @@
     "salaryCents": "Taxable salary paid this month",
     "insuredCents": "Employees' insured amounts",
     "premiumCents": "Premium due",
-    "unpublished": "{count} employees have no published payslip this month, so the insured total may be incomplete."
+    "unpublished": "{count, plural, one {# employee has} other {# employees have}} no published payslip this month, so the insured total may be incomplete."
   },
   "copyWeek": {
     "weeks": "Weeks to copy",
@@ -933,8 +933,8 @@
         },
         "submit": {
           "label": "Delete Selected Pay Items ({count})",
-          "confirm": "Are you sure you want to delete the following <bold>{count} pay items</bold>?",
-          "success": "Deleted {count} pay items"
+          "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# pay item} other {# pay items}}</bold>?",
+          "success": "Deleted {count, plural, one {# pay item} other {# pay items}}"
         }
       }
     }
@@ -948,7 +948,7 @@
     "year": "Income year",
     "download": "Download filing file",
     "unitRequired": "Fill in the withholding unit details first",
-    "identitiesMissing": "{count} employees are missing their national ID number and registered address",
+    "identitiesMissing": "{count, plural, one {# employee is} other {# employees are}} missing their national ID number and registered address",
     "noCertificates": "No withholding records to file for this year",
     "taxId": "National ID number",
     "address": "Registered address",
@@ -1042,8 +1042,8 @@
         },
         "submit": {
           "label": "Delete Selected Shift Types ({count})",
-          "confirm": "Are you sure you want to delete the following <bold>{count} shift types</bold>?",
-          "success": "Deleted {count} shift types"
+          "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# shift type} other {# shift types}}</bold>?",
+          "success": "Deleted {count, plural, one {# shift type} other {# shift types}}"
         }
       }
     }

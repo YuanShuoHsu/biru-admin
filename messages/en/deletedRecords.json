@@ -6,9 +6,9 @@
     },
     "confirm": "Are you sure you want to batch restore <bold>records</bold>?",
     "submit": {
-      "confirm": "Are you sure you want to restore the <bold>{count} selected records</bold>? Related records deleted with them will be restored too.",
+      "confirm": "Are you sure you want to restore the <bold>{count, plural, one {# selected record} other {# selected records}}</bold>? Related records deleted with them will be restored too.",
       "label": "Restore Selected Records ({count})",
-      "success": "Restored {count} records"
+      "success": "Restored {count, plural, one {# record} other {# records}}"
     },
     "title": "Batch Restore Records"
   },
