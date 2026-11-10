@@ -14,8 +14,11 @@ import CheckboxesGroup from "@/components/CheckboxesGroup";
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
 import NumberSpinner from "@/components/NumberSpinner";
+import UploadAvatars from "@/components/UploadAvatars";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import { apiClient } from "@/lib/api-client";
 
@@ -46,6 +49,9 @@ const UpdateModifierDialog = ({
   const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
+
+  const uploadKey = `update-modifier-image-${modifier.id}`;
+  const imageSrc = useUploadAvatarSrc(uploadKey, modifier.imageUrl);
 
   const updateModifierFormSchema = useUpdateModifierFormSchema();
   const {
@@ -83,6 +89,9 @@ const UpdateModifierDialog = ({
           params: { path: { modifierId: modifier.id } },
           body: {
             displayName,
+            ...(imageSrc !== (modifier.imageUrl || null) && {
+              image: imageSrc,
+            }),
             priceAdjustment: priceAdjustment?.trim() ? priceAdjustment : null,
             ...(availability && { availability }),
             availableModes,
@@ -119,6 +128,14 @@ const UpdateModifierDialog = ({
 
   return (
     <FormBox id="update-modifier-form" onSubmit={onSubmit}>
+      <UploadAvatars
+        aspectRatio="16/9"
+        disabled={!canWrite}
+        fullWidth
+        initialSrc={modifier.imageUrl}
+        shape="square"
+        uploadKey={uploadKey}
+      />
       <LocalizedTextFields
         fields={(lang) => [
           {
