@@ -263,7 +263,7 @@
       "observed": "Estimated from the actual pace over the last 30 minutes"
     },
     "label": "Currently ready in about {minutes} min",
-    "tooltip": "{basis}; {count, plural, one {# order} other {# orders}} in progress"
+    "tooltip": "{basis}; {count, plural, one {# order} other {# orders}} in progress counted"
   },
   "printJobError": {
     "DeviceNotFound": "Printer not found",

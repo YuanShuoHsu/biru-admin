@@ -263,7 +263,7 @@
       "observed": "直近30分の実際の提供ペースから推定"
     },
     "label": "現在、提供まで約{minutes}分",
-    "tooltip": "{basis}・調理中 {count} 件"
+    "tooltip": "{basis}・推定に含めた調理中の注文 {count} 件"
   },
   "printJobError": {
     "DeviceNotFound": "プリンターが見つかりません",

@@ -263,7 +263,7 @@
       "observed": "按近 30 分钟的实际出餐速度估算"
     },
     "label": "目前出餐约需 {minutes} 分钟",
-    "tooltip": "{basis}，制作中 {count} 张"
+    "tooltip": "{basis}，计入估算的制作中订单 {count} 张"
   },
   "printJobError": {
     "DeviceNotFound": "找不到打印机",

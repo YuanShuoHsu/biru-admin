@@ -263,7 +263,7 @@
       "observed": "최근 30분 실제 제공 속도 기준 추정"
     },
     "label": "현재 준비 시간 약 {minutes}분",
-    "tooltip": "{basis} · 준비 중 {count}건"
+    "tooltip": "{basis} · 추정에 포함된 준비 중 주문 {count}건"
   },
   "printJobError": {
     "DeviceNotFound": "프린터를 찾을 수 없습니다",

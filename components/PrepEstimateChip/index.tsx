@@ -35,6 +35,8 @@ const PrepEstimateChip = ({ organizationSlug }: PrepEstimateChipProps) => {
       mutate();
     };
 
+    handleUpdate();
+
     menuSocket.on("prepEstimateUpdated", handleUpdate);
 
     return () => {
