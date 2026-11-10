@@ -8,6 +8,7 @@ import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import {
   type UpdateWaitlistForm,
   getMinPartySize,
+  PARTY_SIZE_MAX,
   useWaitlistFormSchema,
 } from "./definitions";
 
@@ -44,7 +45,6 @@ const CUTOFF_MINUTES_MAX = 240;
 const GRACE_MINUTES_MAX = 60;
 const GROUPS_MAX = 26;
 const HOLD_MINUTES_MAX = 60;
-const PARTY_SIZE_MAX = 99;
 
 const GroupRowStack = styled(Stack)(({ theme }) => ({
   alignItems: "flex-start",

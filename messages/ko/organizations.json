@@ -205,6 +205,7 @@
   "label": "조직",
   "localBusiness": {
     "hasMap": {
+      "helperText": "Google 지도에서 「공유」→「지도 퍼가기」→「HTML 복사」를 선택해 붙여 넣거나, 그 안의 src URL만 붙여 넣어 주세요",
       "label": "지도 링크",
       "placeholder": "귀하의 Google 지도 URL을 입력해 주세요"
     },

@@ -7,6 +7,11 @@ import {
   hasOpeningHoursConflict,
 } from "@/utils/openingHours";
 
+// https://developers.google.com/maps/documentation/embed/embedding-map
+const GOOGLE_MAPS_EMBED_URL =
+  /^https:\/\/www\.google\.com\/maps\/embed(\/v1\/[a-z]+)?([?#][^\n]*)?$/;
+const IFRAME_SRC = /<iframe\b[^>]*\ssrc="([^"]*)"/i;
+
 export const useUpdateLocationFormSchema = () => {
   const tValidation = useTranslations("validation");
 
@@ -43,7 +48,17 @@ export const useUpdateLocationFormSchema = () => {
         .min(1, { error: tValidation("streetAddress.required") }),
 
       // https://schema.org/LocalBusiness
-      hasMap: z.string().trim().optional(),
+      hasMap: z
+        .string()
+        .trim()
+        .transform(
+          (value) =>
+            IFRAME_SRC.exec(value)?.[1].replaceAll("&amp;", "&") ?? value,
+        )
+        .refine((value) => !value || GOOGLE_MAPS_EMBED_URL.test(value), {
+          error: tValidation("hasMap.invalid"),
+        })
+        .optional(),
       openingHours: z
         .string()
         .trim()

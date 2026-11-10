@@ -92,10 +92,12 @@ const LocalBusinessFields = ({
       <TextField
         error={!!errors.hasMap}
         fullWidth
-        helperText={errors.hasMap?.message}
+        helperText={
+          errors.hasMap?.message ||
+          tOrganizations("localBusiness.hasMap.helperText")
+        }
         label={`${tOrganizations("localBusiness.hasMap.label")} ${tCommon("optional")}`}
         placeholder={tOrganizations("localBusiness.hasMap.placeholder")}
-        type="url"
         {...register("hasMap")}
       />
     </>

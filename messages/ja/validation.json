@@ -135,6 +135,9 @@
   "graceMinutes": {
     "required": "超過猶予は必須です。"
   },
+  "hasMap": {
+    "invalid": "Google マップの「地図を埋め込む」の HTML または URL を貼り付けてください。"
+  },
   "hiredAt": {
     "required": "入社日時は必須です。"
   },

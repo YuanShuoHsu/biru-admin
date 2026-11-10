@@ -135,6 +135,9 @@
   "graceMinutes": {
     "required": "逾時寬限時間為必填。"
   },
+  "hasMap": {
+    "invalid": "請貼上 Google 地圖「嵌入地圖」的 HTML 或網址。"
+  },
   "hiredAt": {
     "required": "到職時間為必填。"
   },

@@ -205,6 +205,7 @@
   "label": "組織",
   "localBusiness": {
     "hasMap": {
+      "helperText": "在 Google 地圖按「分享」→「嵌入地圖」→「複製 HTML」後貼上，或只貼上其中的 src 網址",
       "label": "地圖連結",
       "placeholder": "請輸入您的 Google 地圖連結"
     },
