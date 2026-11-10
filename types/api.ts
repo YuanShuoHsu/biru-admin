@@ -5498,6 +5498,24 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/shared-carts/current/checkout": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 開始結帳並鎖定共享點餐單，鎖定中再呼叫即延長；鎖定期間只有自己能修改，任何人都不能離開 */
+    post: operations["SharedCartsController_acquireCheckout"];
+    /** 結束自己的結帳鎖定 */
+    delete: operations["SharedCartsController_releaseCheckout"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/shared-carts/current/request": {
     parameters: {
       query?: never;
@@ -13237,6 +13255,11 @@ export interface components {
       /** @enum {string} */
       mode: "counter" | "dineIn" | "driveThru" | "pickup";
     };
+    SharedCartCheckoutDto: {
+      participantId: string;
+      /** Format: date-time */
+      lockedUntil: string;
+    };
     SharedCartOutgoingRequestDto: {
       /** Format: date-time */
       requestedAt: string;
@@ -13302,6 +13325,8 @@ export interface components {
        * @description 已加入時為整張單的失效時間；待允許時為這筆加入請求的失效時間
        */
       expiresAt: string;
+      /** @description 正在結帳的人與鎖定的失效時間；鎖定期間只有他能修改品項或移除參與者，單內任何人都不能離開。沒有人在結帳或待允許時為 null */
+      checkout: components["schemas"]["SharedCartCheckoutDto"] | null;
       /** @description 已加入這張單、同時在等另一張單允許時的那筆請求；允許的那一刻才離開這張單 */
       outgoingRequest:
         | components["schemas"]["SharedCartOutgoingRequestDto"]
@@ -26306,6 +26331,62 @@ export interface operations {
       path: {
         organizationSlug: string;
         participantId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SharedCartResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SharedCartsController_acquireCheckout: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SharedCartResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SharedCartsController_releaseCheckout: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
       };
       cookie?: never;
     };
