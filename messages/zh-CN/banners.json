@@ -47,8 +47,7 @@
   "endsAt": "下架时间",
   "image": {
     "helperText": "手机上只显示宽度中间的 3/4，文字与 logo 请避开左右两侧边缘。",
-    "label": "图片",
-    "notSelected": "请选择您的图片"
+    "label": "图片"
   },
   "isActive": {
     "active": "启用中",

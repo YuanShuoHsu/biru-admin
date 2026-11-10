@@ -51,8 +51,7 @@
   },
   "createdAt": "建立時間",
   "image": {
-    "label": "圖片",
-    "notSelected": "請選擇您的圖片"
+    "label": "圖片"
   },
   "isActive": {
     "active": "啟用中",
