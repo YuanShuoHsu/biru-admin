@@ -227,7 +227,7 @@ const TradePanel = ({
   const total = Number(price) * Number(size);
 
   return (
-    <FormBox noValidate onSubmit={onSubmit}>
+    <FormBox onSubmit={onSubmit}>
       <CredentialSelect
         credential={credential}
         credentials={credentials}

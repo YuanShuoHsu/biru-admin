@@ -302,7 +302,7 @@ const FuturesGridOperationDialog = ({
   );
 
   return (
-    <FormBox id={FUTURES_GRID_OPERATION_FORM_ID} noValidate onSubmit={onSubmit}>
+    <FormBox id={FUTURES_GRID_OPERATION_FORM_ID} onSubmit={onSubmit}>
       <Typography color="text.secondary" variant="body2">
         {tOperation(`descriptions.${operation}`)}
       </Typography>

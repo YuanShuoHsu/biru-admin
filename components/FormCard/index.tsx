@@ -54,8 +54,9 @@ export const StyledCardActions = styled(CardActions)(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
+// https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fs-novalidate
 const FormCard = ({ ref, ...props }: CardProps<"form">) => (
-  <Card ref={ref} component="form" {...props} />
+  <Card ref={ref} component="form" noValidate {...props} />
 );
 
 FormCard.displayName = "FormCard";

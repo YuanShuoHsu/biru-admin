@@ -73,7 +73,7 @@ const IsolatedMarginDialog = ({
   };
 
   return (
-    <FormBox id={ISOLATED_MARGIN_FORM_ID} noValidate onSubmit={onSubmit}>
+    <FormBox id={ISOLATED_MARGIN_FORM_ID} onSubmit={onSubmit}>
       <ToggleButtonGroup
         exclusive
         fullWidth

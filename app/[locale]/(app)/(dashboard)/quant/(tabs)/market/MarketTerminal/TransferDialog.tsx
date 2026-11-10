@@ -104,7 +104,7 @@ const TransferDialog = ({
   };
 
   return (
-    <FormBox id={TRANSFER_FORM_ID} noValidate onSubmit={onSubmit}>
+    <FormBox id={TRANSFER_FORM_ID} onSubmit={onSubmit}>
       <Stack sx={{ alignItems: "center", flexDirection: "row", gap: 1 }}>
         <Stack sx={{ flex: 1, gap: 1 }}>
           <TextField

@@ -244,7 +244,6 @@ const BotFormFields = ({
     <Layout>
       <FormBox
         id={BOT_FORM_ID}
-        noValidate
         onSubmit={onSubmit}
         sx={{ flex: 1, minWidth: 0 }}
       >
