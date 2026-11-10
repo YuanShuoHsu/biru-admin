@@ -68,6 +68,14 @@ export const hasRolePermission = (
 ): boolean =>
   !!role && authClient.organization.checkRolePermission({ role, permissions });
 
+export const needsPlatformAdminMemberIds = (
+  role: CheckRolePermissionInput["role"] | null | undefined,
+  platformRole: string | null | undefined,
+) =>
+  platformRole !== "admin" &&
+  (hasRolePermission(role, { member: ["update"] }) ||
+    hasRolePermission(role, { member: ["delete"] }));
+
 type PermissionMember = Pick<
   Member,
   "id" | "joinedAsPlatformAdmin" | "role" | "userId"

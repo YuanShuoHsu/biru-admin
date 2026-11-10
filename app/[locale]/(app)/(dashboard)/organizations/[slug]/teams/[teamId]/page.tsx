@@ -20,6 +20,7 @@ import { type FetchResult, settle } from "@/utils/fetcher";
 import {
   getPlatformAdminMemberIds,
   hasRolePermission,
+  needsPlatformAdminMemberIds,
 } from "@/utils/organizations";
 import { getFullOrganization, getSession } from "@/utils/session";
 import { buildTeamMembers } from "@/utils/teams";
@@ -44,6 +45,7 @@ interface OrganizationsSlugTeamsTeamIdContentProps {
   activeOrganization: ActiveOrganization;
   canUpdateTeam: boolean;
   currentUserId: string;
+  fetchesPlatformAdminMemberIds: boolean;
   platformAdminMemberIds: Promise<FetchResult<Member["id"][]>>;
   team: Team;
   teamMembers: ReturnType<typeof authClient.organization.listTeamMembers>;
@@ -73,7 +75,7 @@ const OrganizationsSlugTeamsTeamIdContent = async ({
   return (
     <OrganizationsSlugTeamsTeamId
       {...props}
-      platformAdminMemberIds={platformAdminMemberIds}
+      initialPlatformAdminMemberIds={platformAdminMemberIds}
       teamMembers={teamMembers}
     />
   );
@@ -116,8 +118,7 @@ const OrganizationsSlugTeamsTeamIdPage = async ({
   });
   const fetchesPlatformAdminMemberIds =
     canUpdateTeam &&
-    hasRolePermission(currentUserRole, { member: ["update"] }) &&
-    session.user.role !== "admin";
+    needsPlatformAdminMemberIds(currentUserRole, session.user.role);
   const platformAdminMemberIds = fetchesPlatformAdminMemberIds
     ? settle(
         getPlatformAdminMemberIds(activeOrganization.id, {
@@ -132,6 +133,7 @@ const OrganizationsSlugTeamsTeamIdPage = async ({
         activeOrganization={activeOrganization}
         canUpdateTeam={canUpdateTeam}
         currentUserId={session.user.id}
+        fetchesPlatformAdminMemberIds={fetchesPlatformAdminMemberIds}
         platformAdminMemberIds={platformAdminMemberIds}
         team={team}
         teamMembers={teamMembers}
