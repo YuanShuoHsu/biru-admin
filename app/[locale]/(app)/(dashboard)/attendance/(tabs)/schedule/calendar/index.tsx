@@ -838,10 +838,9 @@ const Calendar = ({
         )}
       {(shiftsError || dayKindsError || leavesError) && (
         <ErrorAlert
-          onRetry={() => {
-            mutate();
-            mutateLeaves();
-          }}
+          onRetry={() =>
+            Promise.all([mutateDayKinds(), mutateShifts(), mutateLeaves()])
+          }
         />
       )}
       <CalendarBox breakPatterns={breaks.patterns}>
