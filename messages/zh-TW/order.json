@@ -148,7 +148,7 @@
       "LowLactoseDiet": "低乳糖",
       "LowSaltDiet": "低鹽",
       "VeganDiet": "純素",
-      "VegetarianDiet": "素食"
+      "VegetarianDiet": "蛋奶素"
     },
     "outsideAvailableHours": "非供應時間",
     "preparationTime": "預計準備約 {value} 分鐘",
