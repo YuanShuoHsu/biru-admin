@@ -439,5 +439,8 @@
   },
   "refundReason": {
     "required": "退款原因选择“其他”时，补充说明为必填。"
+  },
+  "printerName": {
+    "required": "请输入名称。"
   }
 }

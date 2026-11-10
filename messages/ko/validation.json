@@ -439,5 +439,8 @@
   },
   "refundReason": {
     "required": "환불 사유가 “기타”인 경우 보충 설명은 필수입니다."
+  },
+  "printerName": {
+    "required": "이름을 입력하세요."
   }
 }
