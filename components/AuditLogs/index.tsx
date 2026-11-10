@@ -541,7 +541,7 @@ const AuditLogs = ({
   const locale = useLocale();
 
   const searchParams = useSearchParams();
-  const actorId = searchParams.get("actorId") ?? "";
+  const [actorId, setActorId] = useState(searchParams.get("actorId") ?? "");
 
   const tAttendance = useTranslations("attendance");
   const tAudit = useTranslations("audit");
@@ -657,6 +657,7 @@ const AuditLogs = ({
 
   const handleActorIdChange = useCallback(
     (newActorId: string) => {
+      setActorId(newActorId);
       setPaginationModel((previous) => ({ ...previous, page: 0 }));
 
       updateQuery({ actorId: newActorId, page: "1" });
