@@ -179,7 +179,8 @@ const Points = ({ page, pageSize, points }: PointsProps) => {
               }
               avatar={
                 <StyledAvatar>
-                  {transaction.type === "earn" ? (
+                  {transaction.type === "earn" ||
+                  transaction.type === "revoke" ? (
                     <ShoppingBag fontSize="small" />
                   ) : transaction.type === "adjust" ? (
                     <Storefront fontSize="small" />
@@ -196,7 +197,7 @@ const Points = ({ page, pageSize, points }: PointsProps) => {
                 (organizationCount > 1 || transaction.type === "adjust") &&
                   transaction.organizationName,
                 format.dateTime(new Date(transaction.createdAt), "short"),
-                transaction.type === "earn"
+                transaction.type === "earn" || transaction.type === "revoke"
                   ? (transaction.confirmationNumber ||
                       transaction.orderNumber) &&
                     `${tOrder("complete.transaction.orderNo")} ${transaction.confirmationNumber || transaction.orderNumber}`
