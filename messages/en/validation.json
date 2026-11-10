@@ -141,6 +141,9 @@
   "holdMinutes": {
     "required": "Hold time is required."
   },
+  "image": {
+    "notSelected": "Please select your image."
+  },
   "ingredientId": {
     "notSelected": "Please select your ingredient."
   },

@@ -47,8 +47,7 @@
   "endsAt": "Ends at",
   "image": {
     "helperText": "Phones show the middle 3/4 of the width; keep text and logos away from the left and right edges.",
-    "label": "Image",
-    "notSelected": "Please select your image"
+    "label": "Image"
   },
   "isActive": {
     "active": "Active",

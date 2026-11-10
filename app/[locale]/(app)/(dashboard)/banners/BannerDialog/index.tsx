@@ -56,6 +56,11 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
   const tBanners = useTranslations("banners");
   const tCommon = useTranslations("common");
 
+  const uploadKey = banner
+    ? `update-banner-image-${banner.id}`
+    : "create-banner-image";
+  const imageSrc = useUploadAvatarSrc(uploadKey, banner?.imageUrl);
+
   const bannerFormSchema = useBannerFormSchema();
 
   const {
@@ -68,6 +73,7 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
     defaultValues: {
       alt: banner?.alt ?? {},
       endsAt: banner?.endsAt ?? "",
+      image: imageSrc ?? "",
       isActive: banner?.isActive ?? true,
       startsAt: banner?.startsAt ?? "",
       url: banner?.url ?? "",
@@ -80,24 +86,14 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
     name: ["alt", "endsAt", "isActive", "startsAt"],
   });
 
-  const uploadKey = banner
-    ? `update-banner-image-${banner.id}`
-    : "create-banner-image";
-  const imageSrc = useUploadAvatarSrc(uploadKey, banner?.imageUrl);
-
   const onSubmitHandler = async ({
     alt,
     endsAt,
+    image,
     isActive,
     startsAt,
     url,
   }: BannerForm) => {
-    if (!imageSrc) {
-      enqueueSnackbar(tBanners("image.notSelected"), { variant: "error" });
-
-      return;
-    }
-
     try {
       setDialog({ confirmLoading: true });
 
@@ -110,7 +106,7 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
           isActive,
           startsAt: startsAt || null,
           url: url || null,
-          ...(imageSrc !== banner?.imageUrl && { image: imageSrc }),
+          ...(image !== banner?.imageUrl && { image }),
         } satisfies UpdateBannerDto),
       });
 
@@ -137,16 +133,21 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
 
   return (
     <FormBox id="banner-form" onSubmit={onSubmit}>
-      <FormControl>
+      <FormControl error={!!errors.image}>
         <UploadAvatars
           aspectRatio="16/9"
           fullWidth
           highQuality
           initialSrc={banner?.imageUrl}
+          onChange={(src) =>
+            setValue("image", src ?? "", { shouldValidate: isSubmitted })
+          }
           shape="square"
           uploadKey={uploadKey}
         />
-        <FormHelperText>{tBanners("image.helperText")}</FormHelperText>
+        <FormHelperText>
+          {errors.image?.message ?? tBanners("image.helperText")}
+        </FormHelperText>
       </FormControl>
       <StyledFormControlLabel
         control={

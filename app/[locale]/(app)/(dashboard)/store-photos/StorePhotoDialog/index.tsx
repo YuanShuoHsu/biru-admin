@@ -15,7 +15,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
-import { FormControlLabel, Switch } from "@mui/material";
+import {
+  FormControl,
+  FormControlLabel,
+  FormHelperText,
+  Switch,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -52,6 +57,7 @@ const StorePhotoDialog = ({ mutate, storePhoto }: StorePhotoDialogProps) => {
   } = useForm<StorePhotoForm>({
     defaultValues: {
       alt: storePhoto?.alt ?? {},
+      image: imageSrc ?? "",
       isActive: storePhoto?.isActive ?? true,
     },
     resolver: zodResolver(storePhotoFormSchema),
@@ -60,20 +66,14 @@ const StorePhotoDialog = ({ mutate, storePhoto }: StorePhotoDialogProps) => {
   const altValue = useWatch({ control, name: "alt" });
   const isActive = useWatch({ control, name: "isActive" });
 
-  const onSubmitHandler = async ({ alt, isActive }: StorePhotoForm) => {
-    if (!imageSrc) {
-      enqueueSnackbar(tStorePhotos("image.notSelected"), { variant: "error" });
-
-      return;
-    }
-
+  const onSubmitHandler = async ({ alt, image, isActive }: StorePhotoForm) => {
     try {
       setDialog({ confirmLoading: true });
 
       const body: Partial<CreateStorePhotoDto> = {
         alt,
         isActive,
-        ...(imageSrc !== storePhoto?.imageUrl && { image: imageSrc }),
+        ...(image !== storePhoto?.imageUrl && { image }),
       };
 
       await fetcher(
@@ -115,14 +115,22 @@ const StorePhotoDialog = ({ mutate, storePhoto }: StorePhotoDialogProps) => {
 
   return (
     <FormBox id="store-photo-form" onSubmit={onSubmit}>
-      <UploadAvatars
-        aspectRatio="4/3"
-        fullWidth
-        highQuality
-        initialSrc={storePhoto?.imageUrl}
-        shape="square"
-        uploadKey={uploadKey}
-      />
+      <FormControl error={!!errors.image}>
+        <UploadAvatars
+          aspectRatio="4/3"
+          fullWidth
+          highQuality
+          initialSrc={storePhoto?.imageUrl}
+          onChange={(src) =>
+            setValue("image", src ?? "", { shouldValidate: isSubmitted })
+          }
+          shape="square"
+          uploadKey={uploadKey}
+        />
+        {errors.image && (
+          <FormHelperText>{errors.image.message}</FormHelperText>
+        )}
+      </FormControl>
       <LocalizedTextFields
         fields={(lang) => [
           {

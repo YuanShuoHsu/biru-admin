@@ -47,8 +47,7 @@
   "endsAt": "게시 종료",
   "image": {
     "helperText": "휴대폰에서는 가로 폭의 가운데 3/4만 표시됩니다. 글자와 로고는 좌우 가장자리에 두지 마세요.",
-    "label": "이미지",
-    "notSelected": "이미지를 선택해 주세요"
+    "label": "이미지"
   },
   "isActive": {
     "active": "활성",

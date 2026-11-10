@@ -89,6 +89,7 @@ interface UploadAvatarsProps {
   fullWidth?: boolean;
   highQuality?: boolean;
   initialSrc?: string | null;
+  onChange?: (src: string | null) => void;
   shape?: "circle" | "square";
   uploadKey: string;
 }
@@ -99,6 +100,7 @@ const UploadAvatars = ({
   fullWidth = false,
   highQuality = false,
   initialSrc,
+  onChange,
   shape = "circle",
   uploadKey,
 }: UploadAvatarsProps) => {
@@ -125,7 +127,12 @@ const UploadAvatars = ({
       );
 
       const reader = new FileReader();
-      reader.onload = () => setAvatarSrc(uploadKey, reader.result as string);
+      reader.onload = () => {
+        const src = reader.result as string;
+
+        setAvatarSrc(uploadKey, src);
+        onChange?.(src);
+      };
       reader.readAsDataURL(compressed);
     } catch {
       enqueueSnackbar(tCommon("imageProcessingFailed"), { variant: "error" });
@@ -136,12 +143,14 @@ const UploadAvatars = ({
     e.preventDefault();
 
     setAvatarSrc(uploadKey, null);
+    onChange?.(null);
   };
 
   const handleRestoreAvatar = (e: React.MouseEvent) => {
     e.preventDefault();
 
     resetAvatarSrc(uploadKey);
+    onChange?.(initialSrc ?? null);
   };
 
   const { Icon, label, onClick } = avatarSrc
