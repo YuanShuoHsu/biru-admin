@@ -403,7 +403,9 @@ const InvoicePrinterCard = ({ organizationSlug }: InvoicePrinterCardProps) => {
 
   const printerUrl = `/api/organizations/${organizationSlug}/invoice-printer`;
 
-  const { data, mutate } = useSWR<InvoicePrinterSetting>(printerUrl);
+  const { data, mutate } = useSWR<InvoicePrinterSetting>(printerUrl, {
+    refreshInterval: PRINTER_STATUS_REFRESH_MS,
+  });
 
   const [credentials, setCredentials] = useState<PrinterCredentials | null>(
     null,
@@ -476,6 +478,7 @@ const InvoicePrinterCard = ({ organizationSlug }: InvoicePrinterCardProps) => {
     });
 
   const printer = credentials ?? data?.printer;
+  const status = data?.printer ?? printer;
 
   return (
     <Card variant="outlined">
@@ -512,14 +515,14 @@ const InvoicePrinterCard = ({ organizationSlug }: InvoicePrinterCardProps) => {
               <Typography color="textSecondary" variant="body2">
                 {tOrganizations("inStore.invoicePrinter.lastSeenAt")}
                 {tCommon("colon")}
-                {printer.lastSeenAt
-                  ? format.dateTime(new Date(printer.lastSeenAt), "short")
+                {status?.lastSeenAt
+                  ? format.dateTime(new Date(status.lastSeenAt), "short")
                   : tOrganizations("inStore.invoicePrinter.neverSeen")}
               </Typography>
-              {printer.pollIntervalMs !== null && (
+              {status?.pollIntervalMs != null && (
                 <Typography color="textSecondary" variant="body2">
                   {tOrganizations("inStore.invoicePrinter.pollInterval", {
-                    seconds: Math.round(printer.pollIntervalMs / 1000),
+                    seconds: Math.round(status.pollIntervalMs / 1000),
                   })}
                 </Typography>
               )}
