@@ -14,6 +14,8 @@ import DayKindDialog from "./DayKindDialog";
 import EventsDialogContent from "../../../EventsDialogContent";
 import ShiftDialog, { type ShiftChange } from "../../../ShiftDialog";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import { useCancelShift } from "@/hooks/useCancelShift";
@@ -171,6 +173,7 @@ const Calendar = ({
   // https://swr.vercel.app/docs/advanced/understanding#return-previous-data-for-better-ux
   const {
     data: shifts = [],
+    error: shiftsError,
     isLoading: shiftsLoading,
     mutate: mutateShifts,
   } = useSWR(
@@ -185,6 +188,7 @@ const Calendar = ({
       holidays: [],
       pendingSubstitutes: [],
     },
+    error: dayKindsError,
     isLoading: dayKindsLoading,
     mutate: mutateDayKinds,
   } = useSWR(
@@ -198,7 +202,12 @@ const Calendar = ({
     mutateShifts();
   }, [mutateDayKinds, mutateShifts]);
 
-  const { data: leaves = [], isLoading: leavesLoading } = useSWR(
+  const {
+    data: leaves = [],
+    error: leavesError,
+    isLoading: leavesLoading,
+    mutate: mutateLeaves,
+  } = useSWR(
     canReadLeaves
       ? attendanceCalendarPath(organizationSlug, "leaves", from, to)
       : null,
@@ -827,6 +836,13 @@ const Calendar = ({
         (shiftsLoading || dayKindsLoading || leavesLoading) && (
           <LinearProgress />
         )}
+      {(shiftsError || dayKindsError || leavesError) && (
+        <ErrorAlert
+          onRetry={() =>
+            Promise.all([mutateDayKinds(), mutateShifts(), mutateLeaves()])
+          }
+        />
+      )}
       <CalendarBox breakPatterns={breaks.patterns}>
         <EventCalendar
           areEventsDraggable={canUpdate}
