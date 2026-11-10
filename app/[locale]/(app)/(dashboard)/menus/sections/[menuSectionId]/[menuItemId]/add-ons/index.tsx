@@ -472,7 +472,6 @@ const MenuItemAddOns = ({
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               ids: rows.map(({ id }) => id),
-              offset: paginationModel.page * paginationModel.pageSize,
             }),
           });
 
@@ -499,17 +498,7 @@ const MenuItemAddOns = ({
       open: true,
       title: tMenus("items.addOns.actions.reorderAddOn.save.label"),
     });
-  }, [
-    apiRef,
-    menuItemId,
-    mutate,
-    paginationModel.page,
-    paginationModel.pageSize,
-    rowCount,
-    rows,
-    setDialog,
-    tMenus,
-  ]);
+  }, [apiRef, menuItemId, mutate, rowCount, rows, setDialog, tMenus]);
 
   const handleCancelReorder = useCallback(() => {
     setDialog({

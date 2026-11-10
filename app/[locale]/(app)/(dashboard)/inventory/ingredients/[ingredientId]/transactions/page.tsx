@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,10 +18,17 @@ import {
   inventoryTransactionFilterFieldValues,
   inventoryTransactionSortFieldValues,
 } from "@/types/api";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  Ingredient,
+  InventoryTransaction,
+  InventoryTransactionFilterField,
+  InventoryTransactionSortField,
+} from "@/types/inventory";
 
 import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
 import { getInventoryTransactionEnumOptions } from "@/utils/enumOptions";
-import { isMissingResource, settle } from "@/utils/fetcher";
+import { type FetchResult, isMissingResource, settle } from "@/utils/fetcher";
 import { getIngredient, getInventoryTransactions } from "@/utils/inventory";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAdminOrganization, getMemberRole } from "@/utils/session";
@@ -49,7 +58,45 @@ export const generateMetadata = async ({
   return { title: tInventory("transactions.label") };
 };
 
+interface IngredientTransactionsContentProps {
+  canViewPurchasing: boolean;
+  filterField?: InventoryTransactionFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  ingredient: Ingredient;
+  organizationSlug: string;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sortBy?: InventoryTransactionSortField;
+  sortDirection?: SortDirection;
+  transactions: Promise<
+    FetchResult<{ transactions: InventoryTransaction[]; total: number }>
+  >;
+}
+
 const IngredientTransactionsContent = async ({
+  organizationSlug,
+  transactions: transactionsResult,
+  ...props
+}: IngredientTransactionsContentProps) => {
+  const { data: transactions, error: transactionsError } =
+    await transactionsResult;
+  if (transactionsError) return <ErrorAlert />;
+
+  const { transactions: rows, total: rowCount } = transactions;
+
+  return (
+    <IngredientTransactions
+      {...props}
+      key={organizationSlug}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const IngredientTransactionsPage = async ({
   params,
   searchParams,
 }: IngredientTransactionsPageProps) => {
@@ -109,7 +156,7 @@ const IngredientTransactionsContent = async ({
       )
     : [];
 
-  const { data: transactions, error: transactionsError } = await settle(
+  const transactions = settle(
     getInventoryTransactions(
       ingredientId,
       {
@@ -126,33 +173,25 @@ const IngredientTransactionsContent = async ({
       fetchOptions,
     ),
   );
-  if (transactionsError) return <ErrorAlert />;
-
-  const { transactions: rows, total: rowCount } = transactions;
 
   return (
-    <IngredientTransactions
-      canViewPurchasing={canViewPurchasing}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      ingredient={ingredient}
-      key={organization.slug}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<IngredientTransactions loading />}>
+      <IngredientTransactionsContent
+        canViewPurchasing={canViewPurchasing}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        ingredient={ingredient}
+        organizationSlug={organization.slug}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+        transactions={transactions}
+      />
+    </Suspense>
   );
 };
-
-const IngredientTransactionsPage = (props: IngredientTransactionsPageProps) => (
-  <Suspense fallback={<IngredientTransactions loading />}>
-    <IngredientTransactionsContent {...props} />
-  </Suspense>
-);
 
 export default IngredientTransactionsPage;

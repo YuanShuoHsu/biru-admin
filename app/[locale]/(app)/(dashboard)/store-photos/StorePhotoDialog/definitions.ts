@@ -20,6 +20,7 @@ export const useStorePhotoFormSchema = () => {
       .superRefine(
         refineRequiredLocalizedText(tValidation("localizedText.required")),
       ),
+    image: z.string().min(1, { error: tValidation("image.notSelected") }),
     isActive: z.boolean(),
   });
 };

@@ -141,6 +141,9 @@
   "holdMinutes": {
     "required": "叫號保留時間為必填。"
   },
+  "image": {
+    "notSelected": "請選擇您的圖片。"
+  },
   "ingredientId": {
     "notSelected": "請選擇您的食材。"
   },

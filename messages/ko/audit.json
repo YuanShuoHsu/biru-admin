@@ -135,6 +135,7 @@
     "printedAt": "정본 인쇄 시간",
     "purpose": "용도",
     "randomNumber": "랜덤 코드",
+    "readyAt": "픽업 가능 일시",
     "reason": "환불 추가 설명",
     "reasonCode": "환불 사유",
     "recipe": "레시피",

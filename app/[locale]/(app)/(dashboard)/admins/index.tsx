@@ -12,6 +12,7 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR, { useSWRConfig } from "swr";
@@ -221,6 +222,7 @@ const Admins = ({
   const apiRef = useGridApiRef();
 
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const router = useRouter();
 
@@ -477,7 +479,7 @@ const Admins = ({
 
                 sessionStorage.setItem(
                   IMPERSONATE_RETURN_KEY,
-                  `${pathname}?page=${paginationModel.page + 1}&pageSize=${paginationModel.pageSize}`,
+                  `${pathname}?${searchParams.toString()}`,
                 );
 
                 const canAccessAdmin =
@@ -497,7 +499,7 @@ const Admins = ({
         title: tAdmins("actions.impersonateUser.title"),
       });
     },
-    [paginationModel, pathname, router, setDialog, setSession, tAdmins],
+    [pathname, router, searchParams, setDialog, setSession, tAdmins],
   );
 
   const handleRemoveUser = useCallback(
@@ -773,6 +775,7 @@ const Admins = ({
         filterable: false,
         headerName: `${tAdmins("bio")} ${tCommon("optional")}`,
         renderCell: renderEmptyableCell,
+        sortable: false,
       },
       {
         field: "email",

@@ -6,20 +6,17 @@
       },
       "submit": {
         "confirm": "確定要刪除以下 <bold>{count} 張輪播圖</bold>嗎？",
-        "error": "批次刪除輪播圖失敗",
         "label": "刪除所選輪播圖（{count}）",
         "success": "已刪除 {count} 張輪播圖"
       },
       "title": "批次刪除輪播圖"
     },
     "createBanner": {
-      "error": "新增輪播圖失敗",
       "success": "已新增輪播圖",
       "title": "新增輪播圖"
     },
     "deleteBanner": {
       "confirm": "確定要刪除這張<bold>輪播圖</bold>嗎？此操作無法復原。",
-      "error": "刪除輪播圖失敗",
       "success": "已刪除輪播圖",
       "title": "刪除輪播圖"
     },
@@ -32,14 +29,12 @@
       "confirm": "確定要進行<bold>輪播圖</bold>排序嗎？",
       "save": {
         "confirm": "確定要儲存<bold>輪播圖</bold>排序嗎？",
-        "error": "排序儲存失敗",
         "label": "儲存輪播圖排序",
         "success": "排序已儲存"
       },
       "title": "輪播圖排序"
     },
     "updateBanner": {
-      "error": "更新輪播圖失敗",
       "success": "已更新輪播圖",
       "title": "編輯輪播圖"
     }
@@ -51,8 +46,8 @@
   "createdAt": "建立時間",
   "endsAt": "下架時間",
   "image": {
-    "label": "圖片",
-    "notSelected": "請選擇您的圖片"
+    "helperText": "手機上只會顯示寬度中間的 3/4，文字與 logo 請避開左右兩側邊緣。",
+    "label": "圖片"
   },
   "isActive": {
     "active": "啟用中",

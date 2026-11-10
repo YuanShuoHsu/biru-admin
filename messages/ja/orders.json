@@ -257,6 +257,14 @@
   "paymentDate": "支払い日時",
   "paymentMethod": "支払い方法",
   "pickupTime": "受け取り時間",
+  "prepEstimate": {
+    "basis": {
+      "leadTime": "商品の準備時間から推定",
+      "observed": "直近30分の実際の提供ペースから推定"
+    },
+    "label": "現在、提供まで約{minutes}分",
+    "tooltip": "{basis}・推定に含めた調理中の注文 {count} 件"
+  },
   "printJobError": {
     "DeviceNotFound": "プリンターが見つかりません",
     "ECPAY_REJECTED": "ECPay がこのインボイスのデータ提供を拒否しました。自動で再試行します。失敗が続く場合は印刷を取り消し、ECPay で確認してください",

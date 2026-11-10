@@ -51,8 +51,7 @@
   },
   "createdAt": "Created",
   "image": {
-    "label": "Image",
-    "notSelected": "Please select your image"
+    "label": "Image"
   },
   "isActive": {
     "active": "Active",

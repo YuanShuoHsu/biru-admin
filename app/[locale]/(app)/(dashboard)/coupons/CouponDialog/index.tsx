@@ -45,6 +45,10 @@ import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { getOrganizationLabel } from "@/utils/organizations";
 
+const PER_USER_LIMIT_MAX = 9999;
+const POINTS_COST_MAX = 100000;
+const TOTAL_LIMIT_MAX = 1000000;
+
 const StyledGrid = styled(Grid)({
   width: "100%",
 });
@@ -492,6 +496,7 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
             fullWidth
             helperText={errors.totalLimit?.message}
             label={`${tCoupons("totalLimit.label")} ${tCommon("optional")}`}
+            max={TOTAL_LIMIT_MAX}
             min={1}
             onValueChange={(value) =>
               setValue("totalLimit", value != null ? String(value) : "", {
@@ -509,6 +514,7 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
             fullWidth
             helperText={tCoupons("perUserLimit.hint")}
             label={`${tCoupons("perUserLimit.label")} ${tCommon("optional")}`}
+            max={PER_USER_LIMIT_MAX}
             min={1}
             onValueChange={(value) => {
               setValue("perUserLimit", value != null ? String(value) : "", {
@@ -530,6 +536,7 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
             fullWidth
             helperText={tCoupons("pointsCost.hint")}
             label={`${tCoupons("pointsCost.label")} ${tCommon("optional")}`}
+            max={POINTS_COST_MAX}
             min={1}
             onValueChange={(value) =>
               setValue("pointsCost", value != null ? String(value) : "", {

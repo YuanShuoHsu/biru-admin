@@ -51,8 +51,7 @@
   },
   "createdAt": "作成日時",
   "image": {
-    "label": "画像",
-    "notSelected": "画像を選択してください"
+    "label": "画像"
   },
   "isActive": {
     "active": "有効",

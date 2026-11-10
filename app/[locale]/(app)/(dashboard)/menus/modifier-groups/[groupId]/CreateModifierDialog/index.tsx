@@ -14,8 +14,11 @@ import CheckboxesGroup from "@/components/CheckboxesGroup";
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
 import NumberSpinner from "@/components/NumberSpinner";
+import UploadAvatars from "@/components/UploadAvatars";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import { useUploadAvatarSrc } from "@/hooks/useUploadAvatarSrc";
 
 import { apiClient } from "@/lib/api-client";
 
@@ -27,6 +30,8 @@ import { itemAvailabilityValues, orderModeValues } from "@/types/api";
 import type { ApiOrderMode } from "@/types/orderMode";
 
 import { localize } from "@/utils/locale";
+
+const CREATE_MODIFIER_IMAGE_KEY = "create-modifier-image";
 
 interface CreateModifierDialogProps {
   modifierGroupId: string;
@@ -43,6 +48,8 @@ const CreateModifierDialog = ({
   const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
+
+  const imageSrc = useUploadAvatarSrc(CREATE_MODIFIER_IMAGE_KEY);
 
   const createModifierFormSchema = useCreateModifierFormSchema();
   const {
@@ -78,6 +85,7 @@ const CreateModifierDialog = ({
         params: { path: { groupId: modifierGroupId } },
         body: {
           displayName,
+          ...(imageSrc && { image: imageSrc }),
           ...(priceAdjustment?.trim() && { priceAdjustment }),
           ...(availability && { availability }),
           availableModes,
@@ -108,6 +116,12 @@ const CreateModifierDialog = ({
 
   return (
     <FormBox id="create-modifier-form" onSubmit={onSubmit}>
+      <UploadAvatars
+        aspectRatio="16/9"
+        fullWidth
+        shape="square"
+        uploadKey={CREATE_MODIFIER_IMAGE_KEY}
+      />
       <LocalizedTextFields
         fields={(lang) => [
           {

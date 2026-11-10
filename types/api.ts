@@ -958,24 +958,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/users": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** 查詢所有使用者 */
-    get: operations["UsersController_findAll"];
-    put?: never;
-    post?: never;
-    /** 批次刪除使用者 */
-    delete: operations["UsersController_removeMany"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   "/api/users/list": {
     parameters: {
       query?: never;
@@ -1010,6 +992,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/users": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 批次刪除使用者 */
+    delete: operations["UsersController_removeMany"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/users/{id}/sessions": {
     parameters: {
       query?: never;
@@ -1026,25 +1025,6 @@ export interface paths {
     options?: never;
     head?: never;
     patch?: never;
-    trace?: never;
-  };
-  "/api/users/{id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** 查詢使用者 */
-    get: operations["UsersController_findOne"];
-    put?: never;
-    post?: never;
-    /** 刪除使用者 */
-    delete: operations["UsersController_remove"];
-    options?: never;
-    head?: never;
-    /** 更新使用者 */
-    patch: operations["UsersController_update"];
     trace?: never;
   };
   "/api/banners/active": {
@@ -1125,7 +1105,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 取得菜單、分類、品項、橫幅與門市照片的圖片 */
+    /** 取得菜單、分類、品項、客製選項、橫幅與門市照片的圖片 */
     get: operations["ImagesController_find"];
     put?: never;
     post?: never;
@@ -6973,107 +6953,6 @@ export interface components {
       data: components["schemas"]["AuditLogResponseDto"][];
       total: number;
     };
-    /**
-     * @description 角色
-     * @enum {string}
-     */
-    UserRole: "admin" | "user";
-    UserResponseDto: {
-      /**
-       * @description ID
-       * @example 123e4567-e89b-12d3-a456-426614174000
-       */
-      id: string;
-      /**
-       * @description 角色
-       * @example user
-       */
-      role: components["schemas"]["UserRole"] | null;
-      /**
-       * @description 是否已封鎖
-       * @example false
-       */
-      banned: boolean | null;
-      /**
-       * @description 封鎖原因
-       * @example 違反使用條款
-       */
-      banReason?: string | null;
-      /**
-       * Format: date-time
-       * @description 封鎖到期時間；null 為永久
-       * @example 2025-12-31T23:59:59.000Z
-       */
-      banExpires?: string | null;
-      /**
-       * @description 個人簡介
-       * @example 喜歡精釀啤酒
-       */
-      bio?: string | null;
-      /**
-       * @description 姓名
-       * @example Coffee
-       */
-      name: string;
-      /**
-       * Format: date-time
-       * @description 建立時間
-       * @example 2025-10-14T12:34:56.000Z
-       */
-      createdAt: string;
-      /**
-       * @description 電子郵件
-       * @example biru@example.com
-       */
-      email: string;
-      /**
-       * @description 是否訂閱電子報
-       * @example true
-       */
-      emailSubscribed: boolean;
-      /**
-       * @description 是否已驗證電子郵件
-       * @example true
-       */
-      emailVerified: boolean;
-      /**
-       * @description 名
-       * @example Coffee
-       */
-      firstName: string;
-      /**
-       * @description 頭像 URL
-       * @example https://example.com/avatar.png
-       */
-      image?: string | null;
-      /**
-       * @description 語言
-       * @example zh-TW
-       * @enum {string}
-       */
-      lang: "en" | "ja" | "ko" | "zh-CN" | "zh-TW";
-      /**
-       * @description 姓
-       * @example Biru
-       */
-      lastName?: string | null;
-      /**
-       * @description 電話（E.164 格式）
-       * @example +886912345678
-       */
-      phoneNumber?: string | null;
-      /**
-       * @description 是否已驗證電話
-       * @example false
-       */
-      phoneNumberVerified: boolean;
-      /**
-       * Format: date-time
-       * @description 最後更新時間
-       * @example 2025-10-14T12:34:56.000Z
-       */
-      updatedAt: string;
-    };
     /** @enum {string} */
     UserFilterField:
       | "name"
@@ -7111,6 +6990,11 @@ export interface components {
       | "banned"
       | "emailSubscribed"
       | "createdAt";
+    /**
+     * @description 角色
+     * @enum {string}
+     */
+    UserRole: "admin" | "user";
     UserListItemDto: {
       /**
        * @description ID
@@ -7250,46 +7134,6 @@ export interface components {
       data: components["schemas"]["UserSessionResponseDto"][];
       total: number;
     };
-    UpdateUserDto: {
-      /**
-       * Format: date
-       * @description 生日；送 null 清除
-       * @example 2024-04-04
-       */
-      birthDate?: string | null;
-      /**
-       * @description 是否訂閱電子報
-       * @example true
-       */
-      emailSubscribed?: boolean;
-      /**
-       * @description 名
-       * @example Coffee
-       */
-      firstName?: string;
-      /**
-       * @description 性別
-       * @example other
-       * @enum {string}
-       */
-      gender?: "female" | "male" | "other";
-      /**
-       * Format: uri
-       * @description 頭像 URL；送 null 清除
-       * @example https://example.com/avatar.png
-       */
-      image?: string | null;
-      /**
-       * @description 姓；送空字串或 null 清除
-       * @example Biru
-       */
-      lastName?: string | null;
-      /**
-       * @description 聯絡電話（E.164 格式）；送空字串或 null 清除
-       * @example +886912345678
-       */
-      phoneNumber?: string | null;
-    };
     LocalizedTextDto: {
       en?: string;
       ja?: string;
@@ -7356,8 +7200,11 @@ export interface components {
     };
     ReorderBannersDto: {
       ids: string[];
-      /** @default 0 */
-      offset: number;
+      /**
+       * @deprecated
+       * @description 已不使用，之後會移除
+       */
+      offset?: number;
     };
     UpdateBannerDto: {
       /** @description 圖片來源（data URL） */
@@ -9355,8 +9202,11 @@ export interface components {
     };
     ReorderDto: {
       ids: string[];
-      /** @default 0 */
-      offset: number;
+      /**
+       * @deprecated
+       * @description 已不使用，之後會移除
+       */
+      offset?: number;
     };
     /** @enum {string} */
     SupplierFilterField:
@@ -10896,6 +10746,7 @@ export interface components {
       id: string;
       modifierGroupId: string;
       displayName: components["schemas"]["LocalizedTextDto"];
+      imageUrl: string | null;
       /** @description 加價金額；null 代表不影響價格 */
       priceAdjustment?: string | null;
       /** @description priceAdjustment 的幣別；來自店家設定 */
@@ -10962,6 +10813,7 @@ export interface components {
        *     }
        */
       displayName: components["schemas"]["LocalizedTextDto"];
+      image?: string | null;
       /**
        * @description 加價金額；省略代表不影響價格
        * @example 10.00
@@ -10993,6 +10845,7 @@ export interface components {
     UpdateModifierDto: {
       /** @description 選項名稱 */
       displayName?: components["schemas"]["LocalizedTextDto"];
+      image?: string | null;
       /**
        * @description 加價金額
        * @example 10.00
@@ -11050,6 +10903,7 @@ export interface components {
       id: string;
       modifierGroupId: string;
       displayName: string;
+      imageUrl: string | null;
       /** @description 加價金額；null 代表不影響價格 */
       priceAdjustment?: string | null;
       /** @description priceAdjustment 的幣別；來自店家設定 */
@@ -11195,6 +11049,8 @@ export interface components {
       | "waitlistClosed"
       | "waitlistCutoff"
       | "waitlistDisabled"
+      | "waitlistGroupChanged"
+      | "waitlistGroupsInUse"
       | "waitlistGroupsInvalid"
       | "waitlistIdempotencyConflict"
       | "waitlistPartySizeUnavailable"
@@ -13292,8 +13148,11 @@ export interface components {
     };
     ReorderStorePhotosDto: {
       ids: string[];
-      /** @default 0 */
-      offset: number;
+      /**
+       * @deprecated
+       * @description 已不使用，之後會移除
+       */
+      offset?: number;
     };
     UpdateStorePhotoDto: {
       /** @description 圖片來源（data URL） */
@@ -15694,60 +15553,6 @@ export interface operations {
       };
     };
   };
-  UsersController_findAll: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["UserResponseDto"][];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  UsersController_removeMany: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["IdsDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
   UsersController_findList: {
     parameters: {
       query?: {
@@ -15833,6 +15638,34 @@ export interface operations {
       };
     };
   };
+  UsersController_removeMany: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["IdsDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   UsersController_findSessions: {
     parameters: {
       query?: {
@@ -15892,94 +15725,6 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  UsersController_findOne: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["UserResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  UsersController_remove: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["UserResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  UsersController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateUserDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["UserResponseDto"];
-        };
       };
       /** @description Internal server error */
       500: {
@@ -16202,7 +15947,13 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
-        kind: "menu" | "menuSection" | "menuItem" | "banner" | "storePhoto";
+        kind:
+          | "menu"
+          | "menuSection"
+          | "menuItem"
+          | "modifier"
+          | "banner"
+          | "storePhoto";
         id: string;
         /** @description 圖片內容的雜湊；舊網址的 updatedAt 毫秒數也接受 */
         version: string;
@@ -20046,7 +19797,10 @@ export interface operations {
   };
   OrdersController_findPrepEstimate: {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description 本單品項與加購中最長的備餐時間（分鐘），會與門市備餐時間取較大者 */
+        leadMinutes?: number;
+      };
       header?: never;
       path: {
         organizationSlug: string;
@@ -26204,7 +25958,7 @@ export const pathsApiOrganizationsOrganizationSlugAttendanceShiftsGetParametersQ
 > = ["true"];
 export const pathsApiImagesKindIdVersionExtensionGetParametersPathKindValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/images/{kind}/{id}/{version}.{extension}"]["get"]["parameters"]["path"]["kind"]
-> = ["menu", "menuSection", "menuItem", "banner", "storePhoto"];
+> = ["menu", "menuSection", "menuItem", "modifier", "banner", "storePhoto"];
 export const pathsApiImagesKindIdVersionExtensionGetParametersPathExtensionValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/images/{kind}/{id}/{version}.{extension}"]["get"]["parameters"]["path"]["extension"]
 > = ["avif", "gif", "jpg", "png", "svg", "webp"];
@@ -26839,12 +26593,6 @@ export const auditActionValues: ReadonlyArray<
   "publish",
   "request",
 ];
-export const userRoleValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["UserRole"]
-> = ["admin", "user"];
-export const userResponseDtoLangValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["UserResponseDto"]["lang"]
-> = ["en", "ja", "ko", "zh-CN", "zh-TW"];
 export const userFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserFilterField"]
 > = ["name", "email", "role", "banned", "emailSubscribed", "createdAt"];
@@ -26876,6 +26624,9 @@ export const userSearchOperatorValues: ReadonlyArray<
 export const userSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserSortField"]
 > = ["name", "email", "role", "banned", "emailSubscribed", "createdAt"];
+export const userRoleValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["UserRole"]
+> = ["admin", "user"];
 export const userListItemDtoLangValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserListItemDto"]["lang"]
 > = ["en", "ja", "ko", "zh-CN", "zh-TW"];
@@ -26888,9 +26639,6 @@ export const userSessionFilterFieldValues: ReadonlyArray<
 export const userSessionSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserSessionSortField"]
 > = ["userAgent", "ipAddress", "createdAt", "expiresAt"];
-export const updateUserDtoGenderValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["UpdateUserDto"]["gender"]
-> = ["female", "male", "other"];
 export const bannerFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["BannerFilterField"]
 > = ["isActive", "startsAt", "endsAt", "createdAt", "updatedAt"];
@@ -27951,6 +27699,8 @@ export const waitlistErrorCodeValues: ReadonlyArray<
   "waitlistClosed",
   "waitlistCutoff",
   "waitlistDisabled",
+  "waitlistGroupChanged",
+  "waitlistGroupsInUse",
   "waitlistGroupsInvalid",
   "waitlistIdempotencyConflict",
   "waitlistPartySizeUnavailable",

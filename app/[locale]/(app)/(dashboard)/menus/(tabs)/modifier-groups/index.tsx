@@ -323,7 +323,6 @@ const ModifierGroups = ({
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               ids: rows.map(({ id }) => id),
-              offset: paginationModel.page * paginationModel.pageSize,
             }),
           });
 
@@ -347,17 +346,7 @@ const ModifierGroups = ({
       open: true,
       title: tMenus("modifierGroups.actions.reorderGroup.save.label"),
     });
-  }, [
-    apiRef,
-    menuId,
-    mutate,
-    paginationModel.page,
-    paginationModel.pageSize,
-    rowCount,
-    rows,
-    setDialog,
-    tMenus,
-  ]);
+  }, [apiRef, menuId, mutate, rowCount, rows, setDialog, tMenus]);
 
   const handleCancelModifierGroupReorder = useCallback(() => {
     setDialog({

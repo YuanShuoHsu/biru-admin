@@ -18,6 +18,7 @@ export const useBannerFormSchema = () => {
           }),
       ),
       endsAt: z.string(),
+      image: z.string().min(1, { error: tValidation("image.notSelected") }),
       isActive: z.boolean(),
       startsAt: z.string(),
       url: z

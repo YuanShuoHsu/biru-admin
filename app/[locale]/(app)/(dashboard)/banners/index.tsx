@@ -72,6 +72,7 @@ import {
   isFilteredOrSorted,
 } from "@/utils/dataGrid";
 import { getBannerEnumOptions } from "@/utils/enumOptions";
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
@@ -305,7 +306,6 @@ const Banners = ({
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               ids: rows.map(({ id }) => id),
-              offset: paginationModel.page * paginationModel.pageSize,
             }),
           });
 
@@ -318,25 +318,14 @@ const Banners = ({
           enqueueSnackbar(tBanners("actions.reorderBanner.save.success"), {
             variant: "success",
           });
-        } catch {
-          enqueueSnackbar(tBanners("actions.reorderBanner.save.error"), {
-            variant: "error",
-          });
+        } catch (error) {
+          enqueueSnackbar(getErrorMessage(error), { variant: "error" });
         }
       },
       open: true,
       title: tBanners("actions.reorderBanner.save.label"),
     });
-  }, [
-    apiRef,
-    mutate,
-    paginationModel.page,
-    paginationModel.pageSize,
-    rowCount,
-    rows,
-    setDialog,
-    tBanners,
-  ]);
+  }, [apiRef, mutate, rowCount, rows, setDialog, tBanners]);
 
   const handleCancelReorder = useCallback(() => {
     setDialog({
@@ -409,10 +398,8 @@ const Banners = ({
             });
 
             mutate();
-          } catch {
-            enqueueSnackbar(tBanners("actions.deleteBanner.error"), {
-              variant: "error",
-            });
+          } catch (error) {
+            enqueueSnackbar(getErrorMessage(error), { variant: "error" });
           }
         },
         open: true,
@@ -471,10 +458,8 @@ const Banners = ({
               variant: "success",
             },
           );
-        } catch {
-          enqueueSnackbar(tBanners("actions.batchDeleteBanner.submit.error"), {
-            variant: "error",
-          });
+        } catch (error) {
+          enqueueSnackbar(getErrorMessage(error), { variant: "error" });
         }
 
         mutate();

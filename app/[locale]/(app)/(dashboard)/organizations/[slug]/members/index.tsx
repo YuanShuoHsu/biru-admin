@@ -117,37 +117,35 @@ const ROLE_COLOR_MAP: Record<string, "error" | "warning" | "default"> = {
 };
 
 interface OrganizationsSlugMembersProps {
-  activeOrganization?: ActiveOrganization;
-  canCreateInvitation?: boolean;
-  canDeleteMember?: boolean;
-  canLeaveOrganizations?: boolean;
-  canRemoveMembers?: boolean;
-  canUpdateMember?: boolean;
-  canUpdateMemberRoles?: boolean;
-  currentUserId?: string;
-  currentUserRole?: string;
-  fetchesPlatformAdminMemberIds?: boolean;
-  initialPlatformAdminMemberIds?: Member["id"][];
-  loading?: boolean;
+  activeOrganization: ActiveOrganization;
+  canCreateInvitation: boolean;
+  canDeleteMember: boolean;
+  canLeaveOrganizations: boolean;
+  canRemoveMembers: boolean;
+  canUpdateMember: boolean;
+  canUpdateMemberRoles: boolean;
+  currentUserId: string;
+  currentUserRole: string;
+  fetchesPlatformAdminMemberIds: boolean;
+  initialPlatformAdminMemberIds: Member["id"][];
 }
 
 const OrganizationsSlugMembers = ({
   activeOrganization,
-  canCreateInvitation = false,
-  canDeleteMember = false,
-  canLeaveOrganizations = false,
-  canRemoveMembers = false,
-  canUpdateMember = false,
-  canUpdateMemberRoles = false,
-  currentUserId = "",
-  currentUserRole = "",
-  fetchesPlatformAdminMemberIds = false,
-  initialPlatformAdminMemberIds = [],
-  loading = false,
+  canCreateInvitation,
+  canDeleteMember,
+  canLeaveOrganizations,
+  canRemoveMembers,
+  canUpdateMember,
+  canUpdateMemberRoles,
+  currentUserId,
+  currentUserRole,
+  fetchesPlatformAdminMemberIds,
+  initialPlatformAdminMemberIds,
 }: OrganizationsSlugMembersProps) => {
-  const organizationId = activeOrganization?.id ?? "";
-  const initialMembers = activeOrganization?.members ?? [];
-  const initialTeams = activeOrganization?.teams ?? [];
+  const organizationId = activeOrganization.id;
+  const initialMembers = activeOrganization.members;
+  const initialTeams = activeOrganization.teams;
 
   const [isSelectMode, setIsSelectMode] = useState(false);
 
@@ -179,7 +177,7 @@ const OrganizationsSlugMembers = ({
     mutate,
     isValidating,
   } = useSWR(
-    !loading && ["organization-members", slug],
+    ["organization-members", slug],
     async () => {
       const { data, error } = await authClient.organization.getFullOrganization(
         {
@@ -213,7 +211,7 @@ const OrganizationsSlugMembers = ({
   );
 
   const platformAdminMemberIds = usePlatformAdminMemberIds(organizationId, {
-    enabled: !loading && fetchesPlatformAdminMemberIds,
+    enabled: fetchesPlatformAdminMemberIds,
     fallbackData: initialPlatformAdminMemberIds,
   });
 
@@ -403,7 +401,7 @@ const OrganizationsSlugMembers = ({
         <DialogContentText>
           {tOrganizations.rich("actions.leaveOrganization.confirm", {
             bold: (chunks) => <strong>{chunks}</strong>,
-            name: activeOrganization?.name ?? slug,
+            name: activeOrganization.name,
           })}
         </DialogContentText>
       ),
@@ -455,7 +453,7 @@ const OrganizationsSlugMembers = ({
       title: tOrganizations("actions.leaveOrganization.title"),
     });
   }, [
-    activeOrganization?.name,
+    activeOrganization.name,
     mutateDefaultOrganizationSlug,
     mutateOrganizations,
     organizationId,
@@ -463,7 +461,6 @@ const OrganizationsSlugMembers = ({
     session,
     setDialog,
     setSession,
-    slug,
     tOrganizations,
   ]);
 
@@ -743,7 +740,7 @@ const OrganizationsSlugMembers = ({
         {...rowSelectionProps}
         apiRef={apiRef}
         columns={columns}
-        loading={loading || isValidating}
+        loading={isValidating}
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }

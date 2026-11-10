@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import dayjs from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
@@ -21,10 +23,17 @@ import {
   attendanceHolidaySubstituteSortFieldValues,
   filterOperatorValues,
 } from "@/types/api";
+import type {
+  AttendanceHolidaySubstitute,
+  AttendanceHolidaySubstituteFilterField,
+  AttendanceHolidaySubstituteSortField,
+} from "@/types/attendance";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type { Organization } from "@/types/organizations";
 
 import { getAttendanceHolidaySubstitutes } from "@/utils/attendance";
 import { resolveGridSearchParams } from "@/utils/dataGrid";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getAttendanceAccess } from "@/utils/session";
 
@@ -60,7 +69,44 @@ export const generateMetadata = async ({
   return { title: tAttendance("holidaySubstitutes.label") };
 };
 
+interface HolidaySubstitutesContentProps {
+  canUpdate: boolean;
+  canViewAuditLog: boolean;
+  filterField?: AttendanceHolidaySubstituteFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  organization: Organization;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sortBy?: AttendanceHolidaySubstituteSortField;
+  sortDirection?: SortDirection;
+  substitutes: Promise<
+    FetchResult<{ substitutes: AttendanceHolidaySubstitute[]; total: number }>
+  >;
+  year: number;
+}
+
 const HolidaySubstitutesContent = async ({
+  substitutes: substitutesResult,
+  ...props
+}: HolidaySubstitutesContentProps) => {
+  const { data: substitutes, error } = await substitutesResult;
+  if (error) return <ErrorAlert />;
+
+  const { substitutes: rows, total: rowCount } = substitutes;
+
+  return (
+    <HolidaySubstitutes
+      {...props}
+      key={props.organization.slug}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const HolidaySubstitutesPage = async ({
   params,
   searchParams,
 }: HolidaySubstitutesPageProps) => {
@@ -107,7 +153,7 @@ const HolidaySubstitutesContent = async ({
       locale,
     });
 
-  const { data: substitutes, error } = await settle(
+  const substitutes = settle(
     getAttendanceHolidaySubstitutes(
       organization.slug,
       resolvedYear,
@@ -124,35 +170,26 @@ const HolidaySubstitutesContent = async ({
       { headers: { cookie: cookieStore.toString() } },
     ),
   );
-  if (error) return <ErrorAlert />;
-
-  const { substitutes: rows, total: rowCount } = substitutes;
 
   return (
-    <HolidaySubstitutes
-      canUpdate={hasRolePermission(memberRole, { shift: ["update"] })}
-      canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={organization.slug}
-      organization={organization}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-      year={resolvedYear}
-    />
+    <Suspense fallback={<HolidaySubstitutes loading />}>
+      <HolidaySubstitutesContent
+        canUpdate={hasRolePermission(memberRole, { shift: ["update"] })}
+        canViewAuditLog={hasRolePermission(memberRole, { auditLog: ["read"] })}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        organization={organization}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+        substitutes={substitutes}
+        year={resolvedYear}
+      />
+    </Suspense>
   );
 };
-
-const HolidaySubstitutesPage = (props: HolidaySubstitutesPageProps) => (
-  <Suspense fallback={<HolidaySubstitutes loading />}>
-    <HolidaySubstitutesContent {...props} />
-  </Suspense>
-);
 
 export default HolidaySubstitutesPage;

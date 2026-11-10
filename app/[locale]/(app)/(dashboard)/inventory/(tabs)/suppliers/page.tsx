@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -16,9 +18,16 @@ import {
   supplierFilterFieldValues,
   supplierSortFieldValues,
 } from "@/types/api";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
+import type {
+  Supplier,
+  SupplierFilterField,
+  SupplierSortField,
+} from "@/types/inventory";
+import type { Organization } from "@/types/organizations";
 
 import { resolveGridSearchParams } from "@/utils/dataGrid";
-import { settle } from "@/utils/fetcher";
+import { type FetchResult, settle } from "@/utils/fetcher";
 import { getSuppliers } from "@/utils/inventory";
 import { hasRolePermission } from "@/utils/organizations";
 import { getMemberRole, getResolvedAdminOrganization } from "@/utils/session";
@@ -47,10 +56,41 @@ export const generateMetadata = async ({
   return { title: tInventory("suppliers.label") };
 };
 
+interface SuppliersContentProps {
+  canViewAuditLog: boolean;
+  canWrite: boolean;
+  filterField?: SupplierFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
+  organization: Organization;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
+  sortBy?: SupplierSortField;
+  sortDirection?: SortDirection;
+  suppliers: Promise<FetchResult<{ suppliers: Supplier[]; total: number }>>;
+}
+
 const SuppliersContent = async ({
-  params,
-  searchParams,
-}: SuppliersPageProps) => {
+  suppliers: suppliersResult,
+  ...props
+}: SuppliersContentProps) => {
+  const { data: suppliers, error: suppliersError } = await suppliersResult;
+  if (suppliersError) return <ErrorAlert />;
+
+  const { suppliers: rows, total: rowCount } = suppliers;
+
+  return (
+    <Suppliers
+      {...props}
+      key={props.organization.slug}
+      rowCount={rowCount}
+      rows={rows}
+    />
+  );
+};
+
+const SuppliersPage = async ({ params, searchParams }: SuppliersPageProps) => {
   const [cookieStore, { locale }, rawSearchParams] = await Promise.all([
     cookies(),
     params,
@@ -105,7 +145,7 @@ const SuppliersContent = async ({
 
   if (!canViewPurchasing) notFound();
 
-  const { data: suppliers, error: suppliersError } = await settle(
+  const suppliers = settle(
     getSuppliers(
       organization.slug,
       {
@@ -121,34 +161,25 @@ const SuppliersContent = async ({
       fetchOptions,
     ),
   );
-  if (suppliersError) return <ErrorAlert />;
-
-  const { suppliers: rows, total: rowCount } = suppliers;
 
   return (
-    <Suppliers
-      canViewAuditLog={canViewAuditLog}
-      canWrite={canWrite}
-      filterField={filterField}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
-      key={organization.slug}
-      organization={organization}
-      page={page}
-      pageSize={pageSize}
-      quickFilterValue={quickFilterValue}
-      rowCount={rowCount}
-      rows={rows}
-      sortBy={sortBy}
-      sortDirection={sortDirection}
-    />
+    <Suspense fallback={<Suppliers loading />}>
+      <SuppliersContent
+        canViewAuditLog={canViewAuditLog}
+        canWrite={canWrite}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
+        organization={organization}
+        page={page}
+        pageSize={pageSize}
+        quickFilterValue={quickFilterValue}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+        suppliers={suppliers}
+      />
+    </Suspense>
   );
 };
-
-const SuppliersPage = (props: SuppliersPageProps) => (
-  <Suspense fallback={<Suppliers loading />}>
-    <SuppliersContent {...props} />
-  </Suspense>
-);
 
 export default SuppliersPage;

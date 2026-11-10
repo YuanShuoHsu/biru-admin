@@ -6,20 +6,17 @@
       },
       "submit": {
         "confirm": "以下の <bold>{count} 件のバナー</bold>を削除しますか？",
-        "error": "バナーの一括削除に失敗しました",
         "label": "選択したバナーを削除（{count}）",
         "success": "バナー {count} 件を削除しました"
       },
       "title": "バナーを一括削除"
     },
     "createBanner": {
-      "error": "バナーの追加に失敗しました",
       "success": "バナーを追加しました",
       "title": "バナーを追加"
     },
     "deleteBanner": {
       "confirm": "この<bold>バナー</bold>を削除してもよろしいですか？この操作は元に戻せません。",
-      "error": "バナーの削除に失敗しました",
       "success": "バナーを削除しました",
       "title": "バナーを削除"
     },
@@ -32,14 +29,12 @@
       "confirm": "<bold>バナー</bold>を並び替えますか？",
       "save": {
         "confirm": "<bold>バナー</bold>の並び順を保存しますか？",
-        "error": "並び替えの保存に失敗しました",
         "label": "バナーの並び順を保存",
         "success": "並び替えを保存しました"
       },
       "title": "バナーを並び替え"
     },
     "updateBanner": {
-      "error": "バナーの更新に失敗しました",
       "success": "バナーを更新しました",
       "title": "バナーを編集"
     }
@@ -51,8 +46,8 @@
   "createdAt": "作成日時",
   "endsAt": "掲載終了",
   "image": {
-    "label": "画像",
-    "notSelected": "画像を選択してください"
+    "helperText": "スマートフォンでは横幅の中央 3/4 のみ表示されます。文字やロゴは左右の端に置かないでください。",
+    "label": "画像"
   },
   "isActive": {
     "active": "有効",

@@ -1,3 +1,5 @@
+// https://nextjs.org/docs/app/guides/streaming#status-codes
+
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -12,7 +14,9 @@ import type { Locale } from "@/i18n/routing";
 
 import { authClient } from "@/lib/auth-client";
 
-import { settle } from "@/utils/fetcher";
+import type { ActiveOrganization, Member, Team } from "@/types/organizations";
+
+import { type FetchResult, settle } from "@/utils/fetcher";
 import {
   getPlatformAdminMemberIds,
   hasRolePermission,
@@ -37,36 +41,25 @@ export const generateMetadata = async ({
   return { title: tOrganizations("teams.label") };
 };
 
+interface OrganizationsSlugTeamsTeamIdContentProps {
+  activeOrganization: ActiveOrganization;
+  canUpdateTeam: boolean;
+  currentUserId: string;
+  fetchesPlatformAdminMemberIds: boolean;
+  platformAdminMemberIds: Promise<FetchResult<Member["id"][]>>;
+  team: Team;
+  teamMembers: ReturnType<typeof authClient.organization.listTeamMembers>;
+}
+
 const OrganizationsSlugTeamsTeamIdContent = async ({
-  params,
-}: OrganizationsSlugTeamsTeamIdPageProps) => {
-  const [cookieStore, { slug, teamId }] = await Promise.all([
-    cookies(),
-    params,
-  ]);
-
-  const cookieHeader = { cookie: cookieStore.toString() };
-
+  platformAdminMemberIds: platformAdminMemberIdsResult,
+  teamMembers: teamMembersResult,
+  ...props
+}: OrganizationsSlugTeamsTeamIdContentProps) => {
   const [
-    { data: activeOrganization, error: organizationError },
     { data: teamMemberData, error: teamMembersError },
-    session,
-  ] = await Promise.all([
-    settle(getFullOrganization(decodeURIComponent(slug))),
-    authClient.organization.listTeamMembers({
-      query: { teamId },
-      fetchOptions: { headers: cookieHeader },
-    }),
-    getSession(),
-  ]);
-
-  if (organizationError?.status === 400 || organizationError?.status === 403)
-    notFound();
-  if (organizationError) return <ErrorAlert />;
-  if (!activeOrganization || !session?.user?.id) notFound();
-
-  const team = activeOrganization.teams.find(({ id }) => id === teamId);
-  if (!team) notFound();
+    { data: platformAdminMemberIds = [] },
+  ] = await Promise.all([teamMembersResult, platformAdminMemberIdsResult]);
 
   if (
     teamMembersError &&
@@ -76,8 +69,45 @@ const OrganizationsSlugTeamsTeamIdContent = async ({
 
   const teamMembers = buildTeamMembers(
     teamMemberData || [],
-    activeOrganization.members,
+    props.activeOrganization.members,
   );
+
+  return (
+    <OrganizationsSlugTeamsTeamId
+      {...props}
+      initialPlatformAdminMemberIds={platformAdminMemberIds}
+      teamMembers={teamMembers}
+    />
+  );
+};
+
+const OrganizationsSlugTeamsTeamIdPage = async ({
+  params,
+}: OrganizationsSlugTeamsTeamIdPageProps) => {
+  const [cookieStore, { slug, teamId }] = await Promise.all([
+    cookies(),
+    params,
+  ]);
+
+  const cookieHeader = { cookie: cookieStore.toString() };
+
+  const teamMembers = authClient.organization.listTeamMembers({
+    query: { teamId },
+    fetchOptions: { headers: cookieHeader },
+  });
+  const [{ data: activeOrganization, error: organizationError }, session] =
+    await Promise.all([
+      settle(getFullOrganization(decodeURIComponent(slug))),
+      getSession(),
+    ]);
+
+  if (organizationError?.status === 400 || organizationError?.status === 403)
+    notFound();
+  if (organizationError) return <ErrorAlert />;
+  if (!activeOrganization || !session?.user?.id) notFound();
+
+  const team = activeOrganization.teams.find(({ id }) => id === teamId);
+  if (!team) notFound();
 
   const currentUserRole = activeOrganization.members.find(
     ({ userId }) => userId === session.user.id,
@@ -89,33 +119,27 @@ const OrganizationsSlugTeamsTeamIdContent = async ({
   const fetchesPlatformAdminMemberIds =
     canUpdateTeam &&
     needsPlatformAdminMemberIds(currentUserRole, session.user.role);
-  const { data: platformAdminMemberIds = [] } = fetchesPlatformAdminMemberIds
-    ? await settle(
+  const platformAdminMemberIds = fetchesPlatformAdminMemberIds
+    ? settle(
         getPlatformAdminMemberIds(activeOrganization.id, {
           headers: cookieHeader,
         }),
       )
-    : { data: [] };
+    : Promise.resolve({ data: [] });
 
   return (
-    <OrganizationsSlugTeamsTeamId
-      activeOrganization={activeOrganization}
-      canUpdateTeam={canUpdateTeam}
-      currentUserId={session.user.id}
-      fetchesPlatformAdminMemberIds={fetchesPlatformAdminMemberIds}
-      initialPlatformAdminMemberIds={platformAdminMemberIds}
-      team={team}
-      teamMembers={teamMembers}
-    />
+    <Suspense fallback={<OrganizationsSlugTeamsTeamId loading />}>
+      <OrganizationsSlugTeamsTeamIdContent
+        activeOrganization={activeOrganization}
+        canUpdateTeam={canUpdateTeam}
+        currentUserId={session.user.id}
+        fetchesPlatformAdminMemberIds={fetchesPlatformAdminMemberIds}
+        platformAdminMemberIds={platformAdminMemberIds}
+        team={team}
+        teamMembers={teamMembers}
+      />
+    </Suspense>
   );
 };
-
-const OrganizationsSlugTeamsTeamIdPage = (
-  props: OrganizationsSlugTeamsTeamIdPageProps,
-) => (
-  <Suspense fallback={<OrganizationsSlugTeamsTeamId loading />}>
-    <OrganizationsSlugTeamsTeamIdContent {...props} />
-  </Suspense>
-);
 
 export default OrganizationsSlugTeamsTeamIdPage;

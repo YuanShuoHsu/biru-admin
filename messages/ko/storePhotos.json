@@ -51,8 +51,7 @@
   },
   "createdAt": "생성일",
   "image": {
-    "label": "이미지",
-    "notSelected": "이미지를 선택해 주세요"
+    "label": "이미지"
   },
   "isActive": {
     "active": "활성",
