@@ -60,10 +60,10 @@
           "label": "Cancel Batch Delete Items"
         },
         "submit": {
-          "confirm": "Are you sure you want to delete the following <bold>{count} items</bold>? All pricing settings will also be deleted.",
+          "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# item} other {# items}}</bold>? All pricing settings will also be deleted.",
           "error": "Failed to batch delete items",
           "label": "Delete Selected Items ({count})",
-          "success": "Deleted {count} items"
+          "success": "Deleted {count, plural, one {# item} other {# items}}"
         },
         "title": "Batch Delete Items"
       },
@@ -109,10 +109,10 @@
             "label": "Cancel Batch Delete Add-ons"
           },
           "submit": {
-            "confirm": "Are you sure you want to delete the following <bold>{count} add-ons</bold>?",
+            "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# add-on} other {# add-ons}}</bold>?",
             "error": "Failed to batch delete add-ons",
             "label": "Delete Selected Add-ons ({count})",
-            "success": "Deleted {count} add-ons"
+            "success": "Deleted {count, plural, one {# add-on} other {# add-ons}}"
           },
           "title": "Batch Delete Add-ons"
         },
@@ -189,10 +189,10 @@
           },
           "confirm": "Are you sure you want to batch detach <bold>modifier group attachments</bold>?",
           "submit": {
-            "confirm": "Are you sure you want to detach the <bold>{count} selected modifier group attachments</bold>? This does not delete the groups themselves.",
+            "confirm": "Are you sure you want to detach the <bold>{count, plural, one {# selected modifier group attachment} other {# selected modifier group attachments}}</bold>? This does not delete the groups themselves.",
             "error": "Failed to batch detach modifier group attachments",
             "label": "Detach Selected Modifier Group Attachments ({count})",
-            "success": "Detached {count} modifier group attachments"
+            "success": "Detached {count, plural, one {# modifier group attachment} other {# modifier group attachments}}"
           },
           "title": "Batch Detach Modifier Group Attachments"
         },
@@ -320,10 +320,10 @@
           "label": "Cancel Batch Delete Modifier Groups"
         },
         "submit": {
-          "confirm": "Are you sure you want to delete the following <bold>{count} modifier groups</bold>? The modifiers in these groups will also be deleted.",
+          "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# modifier group} other {# modifier groups}}</bold>? The modifiers in these groups will also be deleted.",
           "error": "Failed to batch delete modifier groups",
           "label": "Delete Selected Modifier Groups ({count})",
-          "success": "Deleted {count} modifier groups"
+          "success": "Deleted {count, plural, one {# modifier group} other {# modifier groups}}"
         },
         "title": "Batch Delete Modifier Groups"
       },
@@ -384,10 +384,10 @@
           "label": "Cancel Batch Delete Modifiers"
         },
         "submit": {
-          "confirm": "Are you sure you want to delete the following <bold>{count} modifiers</bold>?",
+          "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# modifier} other {# modifiers}}</bold>?",
           "error": "Failed to batch delete modifiers",
           "label": "Delete Selected Modifiers ({count})",
-          "success": "Deleted {count} modifiers"
+          "success": "Deleted {count, plural, one {# modifier} other {# modifiers}}"
         },
         "title": "Batch Delete Modifiers"
       },
@@ -456,10 +456,10 @@
           "label": "Cancel Batch Delete Sections"
         },
         "submit": {
-          "confirm": "Are you sure you want to delete the following <bold>{count} sections</bold>? All subsections and items will also be deleted.",
+          "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# section} other {# sections}}</bold>? All subsections and items will also be deleted.",
           "error": "Failed to batch delete sections",
           "label": "Delete Selected Sections ({count})",
-          "success": "Deleted {count} sections"
+          "success": "Deleted {count, plural, one {# section} other {# sections}}"
         },
         "title": "Batch Delete Sections"
       },

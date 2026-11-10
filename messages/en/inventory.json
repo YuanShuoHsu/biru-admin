@@ -7,9 +7,9 @@
           "label": "Cancel Batch Delete Ingredients"
         },
         "submit": {
-          "confirm": "Are you sure you want to delete the following <bold>{count} ingredients</bold>?",
+          "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# ingredient} other {# ingredients}}</bold>?",
           "label": "Delete Selected Ingredients ({count})",
-          "success": "Deleted {count} ingredients"
+          "success": "Deleted {count, plural, one {# ingredient} other {# ingredients}}"
         },
         "title": "Batch Delete Ingredients"
       },
@@ -172,9 +172,9 @@
             "label": "Cancel Batch Delete Recipe Ingredients"
           },
           "submit": {
-            "confirm": "Are you sure you want to delete the following <bold>{count} recipe ingredients</bold>?",
+            "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# recipe ingredient} other {# recipe ingredients}}</bold>?",
             "label": "Delete Selected Recipe Ingredients ({count})",
-            "success": "Deleted {count} recipe ingredients"
+            "success": "Deleted {count, plural, one {# recipe ingredient} other {# recipe ingredients}}"
           },
           "title": "Batch Delete Recipe Ingredients"
         },
@@ -253,9 +253,9 @@
           "label": "Cancel Batch Delete Suppliers"
         },
         "submit": {
-          "confirm": "Are you sure you want to delete the following <bold>{count} suppliers</bold>?",
+          "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# supplier} other {# suppliers}}</bold>?",
           "label": "Delete Selected Suppliers ({count})",
-          "success": "Deleted {count} suppliers"
+          "success": "Deleted {count, plural, one {# supplier} other {# suppliers}}"
         },
         "title": "Batch Delete Suppliers"
       },

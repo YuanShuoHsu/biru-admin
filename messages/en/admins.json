@@ -27,9 +27,9 @@
         "label": "Cancel Batch Delete Users"
       },
       "submit": {
-        "confirm": "Are you sure you want to delete the following <bold>{count} users</bold>?",
+        "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# user} other {# users}}</bold>?",
         "label": "Delete Selected Users ({count})",
-        "success": "Deleted {count} users"
+        "success": "Deleted {count, plural, one {# user} other {# users}}"
       },
       "title": "Batch Delete Users"
     },
@@ -118,9 +118,9 @@
         },
         "confirm": "Are you sure you want to batch revoke <bold>sessions</bold>?",
         "submit": {
-          "confirm": "Are you sure you want to revoke the <bold>{count} selected sessions</bold>?",
+          "confirm": "Are you sure you want to revoke the <bold>{count, plural, one {# selected session} other {# selected sessions}}</bold>?",
           "label": "Revoke Selected Sessions ({count})",
-          "success": "Revoked {count} sessions"
+          "success": "Revoked {count, plural, one {# session} other {# sessions}}"
         },
         "title": "Batch Revoke Sessions"
       },
