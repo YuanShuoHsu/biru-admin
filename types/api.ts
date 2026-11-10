@@ -9092,6 +9092,7 @@ export interface components {
       note?: string | null;
       /** @description 自製半成品的來源食譜 */
       recipeId?: string | null;
+      recipeName?: components["schemas"]["LocalizedTextDto"] | null;
       /** @description 每基準單位價格 */
       unitPrice?: number | null;
       /** @description 包裝量，與 eligibleQuantity 相同 */
