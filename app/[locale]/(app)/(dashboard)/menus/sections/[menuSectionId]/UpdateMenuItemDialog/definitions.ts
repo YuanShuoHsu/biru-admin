@@ -19,11 +19,6 @@ import {
   hasOpeningHoursConflict,
 } from "@/utils/openingHours";
 
-const quantitativeValueSchema = z.object({
-  unitText: z.string().trim().optional(),
-  value: z.string().optional(),
-});
-
 export const useUpdateMenuItemFormSchema = () => {
   const tValidation = useTranslations("validation");
 
@@ -74,8 +69,23 @@ export const useUpdateMenuItemFormSchema = () => {
           .optional()
           .refine((value) => !value || !hasIncompleteOpeningHours(value))
           .refine((value) => !value || !hasOpeningHoursConflict(value)),
-        inventoryLevel: quantitativeValueSchema.optional(),
-        deliveryLeadTimeMinutes: z.string().optional(),
+        inventoryLevel: z
+          .object({
+            unitText: z.string().trim().optional(),
+            value: z
+              .string()
+              .refine((value) => !value || Number.isInteger(Number(value)), {
+                error: tValidation("number.integer"),
+              })
+              .optional(),
+          })
+          .optional(),
+        deliveryLeadTimeMinutes: z
+          .string()
+          .refine((value) => !value || Number.isInteger(Number(value)), {
+            error: tValidation("number.integer"),
+          })
+          .optional(),
         priceSpecification: z
           .object({
             price: z.string().trim().optional(),
