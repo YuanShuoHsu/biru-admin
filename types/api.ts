@@ -7200,11 +7200,6 @@ export interface components {
     };
     ReorderBannersDto: {
       ids: string[];
-      /**
-       * @deprecated
-       * @description 已不使用，之後會移除
-       */
-      offset?: number;
     };
     UpdateBannerDto: {
       /** @description 圖片來源（data URL） */
@@ -9202,11 +9197,6 @@ export interface components {
     };
     ReorderDto: {
       ids: string[];
-      /**
-       * @deprecated
-       * @description 已不使用，之後會移除
-       */
-      offset?: number;
     };
     /** @enum {string} */
     SupplierFilterField:
@@ -13148,11 +13138,6 @@ export interface components {
     };
     ReorderStorePhotosDto: {
       ids: string[];
-      /**
-       * @deprecated
-       * @description 已不使用，之後會移除
-       */
-      offset?: number;
     };
     UpdateStorePhotoDto: {
       /** @description 圖片來源（data URL） */
