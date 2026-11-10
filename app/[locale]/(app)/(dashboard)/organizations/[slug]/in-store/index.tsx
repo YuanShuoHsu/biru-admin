@@ -613,14 +613,17 @@ const OrderTicketPrinterItem = ({
         </DialogContentText>
       ),
       onConfirm: async () => {
-        await fetcher(printerUrl, { method: "DELETE" });
-        enqueueSnackbar(
-          tOrganizations("inStore.orderTicketPrinters.removeSuccess", {
-            name,
-          }),
-          { variant: "success" },
-        );
-        await onChanged();
+        try {
+          await fetcher(printerUrl, { method: "DELETE" });
+          enqueueSnackbar(
+            tOrganizations("inStore.orderTicketPrinters.removeSuccess", {
+              name,
+            }),
+            { variant: "success" },
+          );
+        } finally {
+          await onChanged();
+        }
       },
       open: true,
       title: tOrganizations("inStore.orderTicketPrinters.remove"),
@@ -639,10 +642,10 @@ const OrderTicketPrinterItem = ({
         }),
         { variant: "success" },
       );
-      await onChanged();
     } catch (error) {
       enqueueSnackbar(getErrorMessage(error), { variant: "error" });
     } finally {
+      await onChanged();
       setSettingDefault(false);
     }
   };
