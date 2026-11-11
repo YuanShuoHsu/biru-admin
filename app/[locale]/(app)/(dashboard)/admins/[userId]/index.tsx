@@ -135,7 +135,10 @@ const UserSessions = ({
             {
               field: initialFilterField,
               operator: initialFilterOperator,
-              value: initialFilterValue,
+              value:
+                initialFilterOperator === "isAnyOf"
+                  ? initialFilterValue?.split(",")
+                  : initialFilterValue,
             },
           ]
         : [],
