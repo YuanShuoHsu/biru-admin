@@ -11700,7 +11700,7 @@ export interface components {
        * @description 停業時間；營業中為 null
        */
       closedAt?: string | null;
-      /** @description 與今天到 30 天後（含兩端）重疊的特殊營業日，不隨店家的自取預約天數設定變動 */
+      /** @description 與昨天到 31 天後（含兩端）重疊的特殊營業日，不隨店家的自取預約天數設定變動；含昨天是因為前一天特殊營業日的跨夜時段會延到今天凌晨 */
       specialHours: components["schemas"]["PublicSpecialHoursDto"][];
     };
     OrganizationMemberTeamDto: {
@@ -22810,7 +22810,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["OrganizationResponseDto"][];
+          "application/json": components["schemas"]["OrganizationDetailResponseDto"][];
         };
       };
       /** @description Internal server error */
