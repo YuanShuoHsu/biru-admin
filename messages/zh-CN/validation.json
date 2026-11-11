@@ -207,6 +207,7 @@
     "differentFromCurrent": "与当前密码不相同。",
     "letter": "包含至少一个英文字母。",
     "match": "与新密码一致。",
+    "maxLength": "最多 128 个字符长度。",
     "minLength": "至少 8 个字符长度。",
     "number": "包含至少一个数字。",
     "sameAsCurrent": "新密码不能与当前密码相同。"
@@ -240,6 +241,7 @@
   "password": {
     "letter": "包含至少一个英文字母。",
     "match": "与密码一致。",
+    "maxLength": "最多 128 个字符长度。",
     "minLength": "至少 8 个字符长度。",
     "number": "包含至少一个数字。"
   },

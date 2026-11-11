@@ -207,6 +207,7 @@
     "differentFromCurrent": "Be different from your current password.",
     "letter": "Contain at least one letter.",
     "match": "Matches the new password.",
+    "maxLength": "Be at most 128 characters long.",
     "minLength": "Be at least 8 characters long.",
     "number": "Contain at least one number.",
     "sameAsCurrent": "New password must be different from your current password."
@@ -240,6 +241,7 @@
   "password": {
     "letter": "Contain at least one letter.",
     "match": "Matches the password.",
+    "maxLength": "Be at most 128 characters long.",
     "minLength": "Be at least 8 characters long.",
     "number": "Contain at least one number."
   },

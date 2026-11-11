@@ -207,6 +207,7 @@
     "differentFromCurrent": "現在のパスワードと異なる。",
     "letter": "英字を1文字以上含む。",
     "match": "新しいパスワードと一致。",
+    "maxLength": "128文字以下の長さ。",
     "minLength": "8文字以上の長さ。",
     "number": "数字を1文字以上含む。",
     "sameAsCurrent": "新しいパスワードは現在のパスワードと異なる必要があります。"
@@ -240,6 +241,7 @@
   "password": {
     "letter": "英字を1文字以上含む。",
     "match": "パスワードと一致。",
+    "maxLength": "128文字以下の長さ。",
     "minLength": "8文字以上の長さ。",
     "number": "数字を1文字以上含む。"
   },
