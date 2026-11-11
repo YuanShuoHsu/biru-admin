@@ -1009,6 +1009,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/users/{id}/image/{version}.{extension}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得使用者的頭像 */
+    get: operations["UsersController_findImage"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/users/{id}/sessions": {
     parameters: {
       query?: never;
@@ -7240,47 +7257,20 @@ export interface components {
        */
       emailSubscribed: boolean;
       /**
-       * @description 是否已驗證電子郵件
-       * @example true
-       */
-      emailVerified: boolean;
-      /**
        * @description 名
        * @example Coffee
        */
       firstName: string;
       /**
-       * @description 頭像 URL
-       * @example https://example.com/avatar.png
+       * @description 頭像網址
+       * @example /api/users/123e4567-e89b-12d3-a456-426614174000/image/0123456789abcdef.webp
        */
-      image?: string | null;
-      /**
-       * @description 語言
-       * @example zh-TW
-       * @enum {string}
-       */
-      lang: "en" | "ja" | "ko" | "zh-CN" | "zh-TW";
+      imageUrl: string | null;
       /**
        * @description 姓
        * @example Biru
        */
       lastName?: string | null;
-      /**
-       * @description 電話（E.164 格式）
-       * @example +886912345678
-       */
-      phoneNumber?: string | null;
-      /**
-       * @description 是否已驗證電話
-       * @example false
-       */
-      phoneNumberVerified: boolean;
-      /**
-       * Format: date-time
-       * @description 最後更新時間
-       * @example 2025-10-14T12:34:56.000Z
-       */
-      updatedAt: string;
       /** @description 有出勤或薪資紀錄、或是某組織唯一的擁有者時不可刪除 */
       deletable: boolean;
       /** @description 有登入裝置紀錄（含已過期） */
@@ -15967,6 +15957,37 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  UsersController_findImage: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+        /** @description 頭像內容的雜湊 */
+        version: string;
+        extension: "avif" | "gif" | "jpg" | "png" | "svg" | "webp";
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "image/*": string;
+        };
       };
       /** @description Internal server error */
       500: {
@@ -26713,6 +26734,9 @@ export const pathsApiOrganizationsOrganizationSlugAttendanceShiftsGetParametersQ
 export const pathsApiOrganizationsOrganizationSlugAttendanceShiftsGetParametersQueryIncompleteAttendanceValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/organizations/{organizationSlug}/attendance/shifts"]["get"]["parameters"]["query"]["incompleteAttendance"]
 > = ["true"];
+export const pathsApiUsersIdImageVersionExtensionGetParametersPathExtensionValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/users/{id}/image/{version}.{extension}"]["get"]["parameters"]["path"]["extension"]
+> = ["avif", "gif", "jpg", "png", "svg", "webp"];
 export const pathsApiImagesKindIdVersionExtensionGetParametersPathKindValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/images/{kind}/{id}/{version}.{extension}"]["get"]["parameters"]["path"]["kind"]
 > = ["menu", "menuSection", "menuItem", "modifier", "banner", "storePhoto"];
@@ -27384,9 +27408,6 @@ export const userSortFieldValues: ReadonlyArray<
 export const userRoleValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserRole"]
 > = ["admin", "user"];
-export const userListItemDtoLangValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["UserListItemDto"]["lang"]
-> = ["en", "ja", "ko", "zh-CN", "zh-TW"];
 export const statsBucketUnitValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["StatsBucketUnit"]
 > = ["day", "hour", "month"];
