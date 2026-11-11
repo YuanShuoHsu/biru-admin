@@ -27,7 +27,10 @@ export const emptyWhenAllZero = <Row extends { count: number }>(
 
 export const toHourlyRows = (counts: number[]) =>
   emptyWhenAllZero(
-    counts.map((count, hour) => ({ count, label: `${hour}:00` })),
+    counts.map((count, hour) => ({
+      count,
+      label: `${String(hour).padStart(2, "0")}:00`,
+    })),
   );
 
 export const getDashboardPeriod = (range: DashboardRange) => {
