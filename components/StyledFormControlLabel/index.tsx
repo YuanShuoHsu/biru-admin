@@ -3,7 +3,7 @@
 import { FormControlLabel, type FormControlLabelProps } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-export interface StyledFormControlLabelProps extends FormControlLabelProps {
+interface StyledFormControlLabelProps extends FormControlLabelProps {
   checked: boolean;
 }
 

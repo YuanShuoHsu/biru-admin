@@ -452,7 +452,7 @@ export const getSingleDaySchedule = (
     : null;
 };
 
-export interface OpeningHoursDisplayConfig {
+interface OpeningHoursDisplayConfig {
   formatDay: (day: Day) => string;
   formatNextDayTime: (time: string) => string;
   allDayLabel: string;
