@@ -437,6 +437,7 @@ const Reports = ({
             disableFuture
             format={monthFormat}
             label={tReports("personnel.month")}
+            minDate={toStoreDate("2000-01-01")}
             onChange={(value) => {
               if (value?.isValid())
                 updateView({ month: value.format(MONTH_FORMAT) });
