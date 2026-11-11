@@ -5507,7 +5507,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** 開始結帳並鎖定共享點餐單，鎖定中再呼叫即延長；鎖定期間只有自己能修改，任何人都不能離開 */
+    /** 開始結帳並鎖定共享點餐單，鎖定中再呼叫即延長；鎖定期間只有自己能修改，任何人都不能離開。一張單從開始結帳起最多鎖 10 分鐘（中途換人接手也算在內），到期後 2 分鐘內任何人都不能再鎖 */
     post: operations["SharedCartsController_acquireCheckout"];
     /** 結束自己的結帳鎖定 */
     delete: operations["SharedCartsController_releaseCheckout"];
@@ -13325,7 +13325,7 @@ export interface components {
        * @description 已加入時為整張單的失效時間；待允許時為這筆加入請求的失效時間
        */
       expiresAt: string;
-      /** @description 正在結帳的人與鎖定的失效時間；鎖定期間只有他能修改品項或移除參與者，單內任何人都不能離開。沒有人在結帳或待允許時為 null */
+      /** @description 正在結帳的人與鎖定的失效時間：最後一次延長後 2 分鐘，且不超過開始結帳後 10 分鐘。鎖定期間只有他能修改品項、移除參與者或允許加入，單內任何人都不能離開。沒有人在結帳或待允許時為 null */
       checkout: components["schemas"]["SharedCartCheckoutDto"] | null;
       /** @description 已加入這張單、同時在等另一張單允許時的那筆請求；允許的那一刻才離開這張單 */
       outgoingRequest:
