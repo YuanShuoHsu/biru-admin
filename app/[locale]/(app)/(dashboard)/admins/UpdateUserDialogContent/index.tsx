@@ -97,7 +97,7 @@ const UpdateUserDialogContent = ({
               lastName,
               bio,
               emailSubscribed,
-              image,
+              ...(image !== (user.image || null) && { image }),
             },
           },
           {

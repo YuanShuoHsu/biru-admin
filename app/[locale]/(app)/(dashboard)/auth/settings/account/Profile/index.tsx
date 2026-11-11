@@ -150,7 +150,7 @@ const Profile = () => {
     const name = formatFullName(locale, firstName, lastName);
 
     await authClient.updateUser({
-      image: avatarSrc,
+      ...(isAvatarDirty && { image: avatarSrc }),
       lastName,
       firstName,
       name,
