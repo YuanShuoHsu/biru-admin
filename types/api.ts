@@ -9904,7 +9904,10 @@ export interface components {
         | "WeiXin";
       discountCode?: string;
       invoice: components["schemas"]["CreateOrderInvoiceDto"];
-      items: components["schemas"]["CreateOrderItemDto"][];
+      /** @description 從呼叫者所在的共享點餐單送單：品項取自共享點餐單，呼叫者須持有有效的結帳鎖定 */
+      sharedCart?: boolean;
+      /** @description 未帶 sharedCart 時必填；帶 sharedCart 時不可帶 */
+      items?: components["schemas"]["CreateOrderItemDto"][];
       partySize?: number;
       /** @example 2026-08-31T09:15:00+08:00 */
       pickupTime?: string;
@@ -9929,6 +9932,20 @@ export interface components {
       /** @description 甜度；可調為客人所選、固定為品項設定，不適用時為 null */
       sweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
     };
+    /**
+     * @description 從共享點餐單送單時，點這個品項的參與者送單當下顯示的頭像
+     * @enum {string}
+     */
+    SharedCartAvatar:
+      | "cat"
+      | "dog"
+      | "rabbit"
+      | "bear"
+      | "fox"
+      | "panda"
+      | "penguin"
+      | "koala"
+      | "member";
     OrderItemResponseDto: {
       id: string;
       orderId: string;
@@ -9947,6 +9964,10 @@ export interface components {
         | components["schemas"]["OrderItemModifierSnapshotDto"][]
         | null;
       addOns?: components["schemas"]["OrderItemAddOnSnapshotDto"][] | null;
+      /** @description 從共享點餐單送單時，點這個品項的參與者送單當下顯示的頭像 */
+      participantAvatar?: components["schemas"]["SharedCartAvatar"] | null;
+      /** @description 從共享點餐單送單時，點這個品項的參與者送單當下顯示的暱稱 */
+      participantNickname?: string | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -13223,20 +13244,6 @@ export interface components {
       /** @description 當月在職但沒有已發布薪資單、未計入的員工數 */
       unpublishedEmployees: number;
     };
-    /**
-     * @description 未帶時：登入會員為 member，其他人隨機動物；member 只限登入會員
-     * @enum {string}
-     */
-    SharedCartAvatar:
-      | "cat"
-      | "dog"
-      | "rabbit"
-      | "bear"
-      | "fox"
-      | "panda"
-      | "penguin"
-      | "koala"
-      | "member";
     CreateSharedCartDto: {
       /** @description 未帶時：登入會員為 member，其他人隨機動物；member 只限登入會員 */
       avatar?: components["schemas"]["SharedCartAvatar"];
@@ -28106,6 +28113,19 @@ export const createOrderDtoModeValues: ReadonlyArray<
 export const createOrderDtoPaymentValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CreateOrderDto"]["payment"]
 > = ["ApplePay", "Cash", "Credit", "iPASS", "Jkopay", "TWQR", "WeiXin"];
+export const sharedCartAvatarValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["SharedCartAvatar"]
+> = [
+  "cat",
+  "dog",
+  "rabbit",
+  "bear",
+  "fox",
+  "panda",
+  "penguin",
+  "koala",
+  "member",
+];
 export const createOrderResponseDtoModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CreateOrderResponseDto"]["mode"]
 > = ["counter", "dineIn", "driveThru", "pickup"];
@@ -28693,19 +28713,6 @@ export const quantWebhookActionValues: ReadonlyArray<
 export const salesReportGroupByValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["SalesReportGroupBy"]
 > = ["day", "hour", "paymentMethod", "mode", "menuItem", "category"];
-export const sharedCartAvatarValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["SharedCartAvatar"]
-> = [
-  "cat",
-  "dog",
-  "rabbit",
-  "bear",
-  "fox",
-  "panda",
-  "penguin",
-  "koala",
-  "member",
-];
 export const createSharedCartDtoModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CreateSharedCartDto"]["mode"]
 > = ["counter", "dineIn", "driveThru", "pickup"];
