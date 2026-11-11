@@ -13,7 +13,7 @@ import SpecialHoursDialog from "./SpecialHoursDialog";
 import DataGrid from "@/components/DataGrid";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
-import { STORE_TIMEZONE } from "@/constants/timezone";
+import { PLATFORM_TIMEZONE } from "@/constants/timezone";
 
 import { Delete, Edit, EventBusy } from "@mui/icons-material";
 import {
@@ -85,33 +85,18 @@ const OrganizationsSlugSpecialHours = ({
       validThrough,
     }: Pick<SpecialHours, "validFrom" | "validThrough">) =>
       format.dateTimeRange(
-        dayjs.tz(validFrom, STORE_TIMEZONE).toDate(),
-        dayjs.tz(validThrough, STORE_TIMEZONE).toDate(),
+        dayjs.tz(validFrom, PLATFORM_TIMEZONE).toDate(),
+        dayjs.tz(validThrough, PLATFORM_TIMEZONE).toDate(),
         "date",
       ),
     [format],
   );
 
-  const handleCreate = () =>
-    setDialog({
-      content: (
-        <SpecialHoursDialog
-          formatPeriod={formatPeriod}
-          mutate={mutate}
-          organizationSlug={organizationSlug}
-        />
-      ),
-      formId: "special-hours-form",
-      open: true,
-      title: tSpecialHours("actions.create.title"),
-    });
-
-  const handleUpdate = useCallback(
-    (specialHours: SpecialHours) =>
+  const handleSpecialHoursDialog = useCallback(
+    (specialHours?: SpecialHours) =>
       setDialog({
         content: (
           <SpecialHoursDialog
-            formatPeriod={formatPeriod}
             mutate={mutate}
             organizationSlug={organizationSlug}
             specialHours={specialHours}
@@ -119,9 +104,11 @@ const OrganizationsSlugSpecialHours = ({
         ),
         formId: "special-hours-form",
         open: true,
-        title: tSpecialHours("actions.update.title"),
+        title: tSpecialHours(
+          specialHours ? "actions.update.title" : "actions.create.title",
+        ),
       }),
-    [formatPeriod, mutate, organizationSlug, setDialog, tSpecialHours],
+    [mutate, organizationSlug, setDialog, tSpecialHours],
   );
 
   const handleRemove = useCallback(
@@ -143,12 +130,9 @@ const OrganizationsSlugSpecialHours = ({
               method: "DELETE",
             });
 
-            enqueueSnackbar(
-              tSpecialHours("actions.remove.success", { period }),
-              {
-                variant: "success",
-              },
-            );
+            enqueueSnackbar(tSpecialHours("actions.remove.success"), {
+              variant: "success",
+            });
           } finally {
             await mutate();
           }
@@ -171,7 +155,10 @@ const OrganizationsSlugSpecialHours = ({
         renderCell: ({ row }: GridRenderCellParams<SpecialHours>) => (
           <ActionsStack direction="row">
             <Tooltip title={tSpecialHours("actions.update.title")}>
-              <IconButton onClick={() => handleUpdate(row)} size="small">
+              <IconButton
+                onClick={() => handleSpecialHoursDialog(row)}
+                size="small"
+              >
                 <Edit fontSize="small" />
               </IconButton>
             </Tooltip>
@@ -192,7 +179,8 @@ const OrganizationsSlugSpecialHours = ({
       {
         field: "validFrom",
         headerName: tSpecialHours("period"),
-        valueGetter: (_value: unknown, row: SpecialHours) => formatPeriod(row),
+        valueFormatter: (value: string, row: SpecialHours) =>
+          formatPeriod({ validFrom: value, validThrough: row.validThrough }),
       },
       {
         field: "openingHours",
@@ -214,14 +202,20 @@ const OrganizationsSlugSpecialHours = ({
         headerName: tSpecialHours("note.label"),
       },
     ],
-    [formatPeriod, handleRemove, handleUpdate, tCommon, tSpecialHours],
+    [
+      formatPeriod,
+      handleRemove,
+      handleSpecialHoursDialog,
+      tCommon,
+      tSpecialHours,
+    ],
   );
 
   return (
     <>
       <ToolbarStack direction="row">
         <Button
-          onClick={handleCreate}
+          onClick={() => handleSpecialHoursDialog()}
           size="small"
           startIcon={<EventBusy />}
           variant="contained"

@@ -350,7 +350,6 @@
     "required": "Start date is required."
   },
   "validThrough": {
-    "beforeValidFrom": "The end date can't be before the start date.",
     "ended": "The end date can't be before today.",
     "required": "End date is required."
   },

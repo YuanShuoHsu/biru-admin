@@ -411,11 +411,11 @@
       "label": "Actions",
       "remove": {
         "confirm": "Are you sure you want to delete the special hours for <bold>{period}</bold>?",
-        "success": "Special hours for {period} deleted",
+        "success": "Special hours deleted",
         "title": "Delete special hours"
       },
       "update": {
-        "success": "Special hours for {period} updated",
+        "success": "Special hours updated",
         "title": "Edit special hours"
       }
     },

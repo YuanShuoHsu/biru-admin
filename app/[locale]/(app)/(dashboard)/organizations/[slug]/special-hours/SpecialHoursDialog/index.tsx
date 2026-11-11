@@ -16,7 +16,7 @@ import {
 import FormBox from "@/components/FormBox";
 import OpeningHoursField from "@/components/OpeningHoursField";
 
-import { STORE_TIMEZONE } from "@/constants/timezone";
+import { PLATFORM_TIMEZONE } from "@/constants/timezone";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -42,19 +42,15 @@ dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
 
 const toStoreDate = (date: string) =>
-  date ? dayjs.tz(date, STORE_TIMEZONE) : null;
+  date ? dayjs.tz(date, PLATFORM_TIMEZONE) : null;
 
 interface SpecialHoursDialogProps {
-  formatPeriod: (
-    specialHours: Pick<SpecialHours, "validFrom" | "validThrough">,
-  ) => string;
   mutate: () => Promise<unknown>;
   organizationSlug: string;
   specialHours?: SpecialHours;
 }
 
 const SpecialHoursDialog = ({
-  formatPeriod,
   mutate,
   organizationSlug,
   specialHours,
@@ -107,11 +103,11 @@ const SpecialHoursDialog = ({
       );
 
       enqueueSnackbar(
-        specialHours
-          ? tOrganizations("specialHours.actions.update.success", {
-              period: formatPeriod(values),
-            })
-          : tOrganizations("specialHours.actions.create.success"),
+        tOrganizations(
+          specialHours
+            ? "specialHours.actions.update.success"
+            : "specialHours.actions.create.success",
+        ),
         { variant: "success" },
       );
 
@@ -147,7 +143,7 @@ const SpecialHoursDialog = ({
             required: true,
           },
         }}
-        timezone={STORE_TIMEZONE}
+        timezone={PLATFORM_TIMEZONE}
         value={toStoreDate(validFrom)}
       />
       <DatePicker
@@ -169,7 +165,7 @@ const SpecialHoursDialog = ({
             required: true,
           },
         }}
-        timezone={STORE_TIMEZONE}
+        timezone={PLATFORM_TIMEZONE}
         value={toStoreDate(validThrough)}
       />
       <FormControlLabel

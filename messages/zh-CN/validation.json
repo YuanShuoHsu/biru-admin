@@ -350,7 +350,6 @@
     "required": "开始日期为必填。"
   },
   "validThrough": {
-    "beforeValidFrom": "结束日期不能早于开始日期。",
     "ended": "结束日期不能早于今天。",
     "required": "结束日期为必填。"
   },

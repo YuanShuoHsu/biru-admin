@@ -350,7 +350,6 @@
     "required": "시작일은 필수입니다."
   },
   "validThrough": {
-    "beforeValidFrom": "종료일은 시작일보다 앞설 수 없습니다.",
     "ended": "종료일은 오늘보다 앞설 수 없습니다.",
     "required": "종료일은 필수입니다."
   },

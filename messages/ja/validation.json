@@ -350,7 +350,6 @@
     "required": "開始日は必須です。"
   },
   "validThrough": {
-    "beforeValidFrom": "終了日は開始日より前にできません。",
     "ended": "終了日は今日より前にできません。",
     "required": "終了日は必須です。"
   },

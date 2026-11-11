@@ -4,7 +4,7 @@ import utc from "dayjs/plugin/utc";
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { STORE_TIMEZONE } from "@/constants/timezone";
+import { PLATFORM_TIMEZONE } from "@/constants/timezone";
 
 import {
   hasIncompleteOpeningHours,
@@ -36,12 +36,12 @@ export const useSpecialHoursFormSchema = () => {
       if (validThrough && validFrom && validThrough < validFrom)
         ctx.addIssue({
           code: "custom",
-          message: tValidation("validThrough.beforeValidFrom"),
+          message: tValidation("validFrom.order"),
           path: ["validThrough"],
         });
       else if (
         validThrough &&
-        validThrough < dayjs().tz(STORE_TIMEZONE).format("YYYY-MM-DD")
+        validThrough < dayjs().tz(PLATFORM_TIMEZONE).format("YYYY-MM-DD")
       )
         ctx.addIssue({
           code: "custom",

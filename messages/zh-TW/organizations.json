@@ -411,11 +411,11 @@
       "label": "操作",
       "remove": {
         "confirm": "確定要刪除 <bold>{period}</bold> 的特殊營業日嗎？",
-        "success": "已刪除 {period} 的特殊營業日",
+        "success": "已刪除特殊營業日",
         "title": "刪除特殊營業日"
       },
       "update": {
-        "success": "已更新 {period} 的特殊營業日",
+        "success": "已更新特殊營業日",
         "title": "編輯特殊營業日"
       }
     },
