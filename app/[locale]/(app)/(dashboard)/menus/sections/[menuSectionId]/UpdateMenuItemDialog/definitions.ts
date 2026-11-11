@@ -2,6 +2,11 @@ import { useTranslations } from "next-intl";
 import * as z from "zod";
 
 import {
+  getPickupMaxLeadMinutes,
+  PICKUP_MAX_ADVANCE_DAYS,
+} from "@/constants/pickup";
+
+import {
   itemAvailabilityValues,
   orderModeValues,
   servingTemperatureLevelValues,
@@ -85,6 +90,16 @@ export const useUpdateMenuItemFormSchema = () => {
           .refine((value) => !value || Number.isInteger(Number(value)), {
             error: tValidation("number.integer"),
           })
+          .refine(
+            (value) =>
+              !value ||
+              Number(value) <= getPickupMaxLeadMinutes(PICKUP_MAX_ADVANCE_DAYS),
+            {
+              error: tValidation("number.max", {
+                max: getPickupMaxLeadMinutes(PICKUP_MAX_ADVANCE_DAYS),
+              }),
+            },
+          )
           .optional(),
         priceSpecification: z
           .object({
