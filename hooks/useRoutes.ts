@@ -49,6 +49,7 @@ import {
   Devices,
   Email,
   EventAvailable,
+  EventBusy,
   EventNote,
   EventRepeat,
   Extension,
@@ -692,6 +693,11 @@ const routes: Route[] = [
             icon: Stars,
             label: "organizations.points.label",
             segment: "points",
+          },
+          {
+            icon: EventBusy,
+            label: "organizations.specialHours.label",
+            segment: "special-hours",
           },
           {
             icon: HourglassTop,

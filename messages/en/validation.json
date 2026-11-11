@@ -211,6 +211,9 @@
     "number": "Contain at least one number.",
     "sameAsCurrent": "New password must be different from your current password."
   },
+  "note": {
+    "maxLength": "Notes must not exceed 50 characters."
+  },
   "number": {
     "integer": "Please enter a whole number.",
     "max": "Please enter a value no greater than {max}.",
@@ -221,6 +224,9 @@
   "occurredAt": {
     "maxDateTime": "Please select a punch time on or before now.",
     "required": "Punch time is required."
+  },
+  "openingHours": {
+    "required": "Set the opening hours, or turn on closed all day."
   },
   "overtimeExtensionPeriod": {
     "invalid": "Select a start month."
@@ -340,7 +346,12 @@
     "invalid": "URL format is invalid."
   },
   "validFrom": {
-    "order": "The end date can't be before the start date."
+    "order": "The end date can't be before the start date.",
+    "required": "Start date is required."
+  },
+  "validThrough": {
+    "ended": "The end date can't be before today.",
+    "required": "End date is required."
   },
   "workPermit": {
     "required": "Select the permit start and end dates.",

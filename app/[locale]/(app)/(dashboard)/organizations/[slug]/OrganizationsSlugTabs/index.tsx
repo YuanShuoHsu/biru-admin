@@ -71,6 +71,7 @@ const OrganizationsSlugTabs = ({
           },
           { path: `/organizations/${slug}/location` },
           { path: `/organizations/${slug}/pickup` },
+          { path: `/organizations/${slug}/special-hours` },
           { path: `/organizations/${slug}/in-store` },
           { path: `/organizations/${slug}/waitlist` },
           { path: `/organizations/${slug}/points` },

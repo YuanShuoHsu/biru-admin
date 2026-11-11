@@ -402,6 +402,44 @@
     "label": "标识符",
     "placeholder": "请输入您的标识符"
   },
+  "specialHours": {
+    "actions": {
+      "create": {
+        "success": "已新增特殊营业日",
+        "title": "新增特殊营业日"
+      },
+      "label": "操作",
+      "remove": {
+        "confirm": "确定要删除 <bold>{period}</bold> 的特殊营业日吗？",
+        "success": "已删除特殊营业日",
+        "title": "删除特殊营业日"
+      },
+      "update": {
+        "success": "已更新特殊营业日",
+        "title": "编辑特殊营业日"
+      }
+    },
+    "closed": {
+      "label": "全天休息",
+      "value": "休息"
+    },
+    "label": "特殊营业日",
+    "note": {
+      "label": "备注",
+      "placeholder": "例如：台风停业"
+    },
+    "openingHours": {
+      "helperText": "期间内未设置时段的星期视为休息。",
+      "label": "营业时间"
+    },
+    "period": "期间",
+    "validFrom": {
+      "label": "开始日期"
+    },
+    "validThrough": {
+      "label": "结束日期"
+    }
+  },
   "status": {
     "label": "状态",
     "open": "营业中",
