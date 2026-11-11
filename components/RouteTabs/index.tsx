@@ -6,8 +6,10 @@ import { usePathname } from "@/i18n/navigation";
 
 import { Badge, Tab, Tabs } from "@mui/material";
 
+import type { NavBadge } from "@/types/navItem";
+
 interface RouteTab {
-  badge?: number;
+  badge?: NavBadge;
   label?: React.ReactNode;
   path: string;
 }

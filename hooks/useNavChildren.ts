@@ -4,7 +4,10 @@ import {
   useActiveMemberRole,
   useDefaultOrganizationSlug,
 } from "@/hooks/organizations";
-import { useAttendanceReviewCounts } from "@/hooks/useAttendanceReviewCounts";
+import {
+  sumReviewCountBadges,
+  useAttendanceReviewCounts,
+} from "@/hooks/useAttendanceReviewCounts";
 import { useAuthNavItems } from "@/hooks/useAuth";
 import { useRoutes } from "@/hooks/useRoutes";
 import { useSession } from "@/hooks/useSession";
@@ -43,9 +46,8 @@ export const useNavChildren = (): Record<string, NavItem[]> => {
               ? attendancePage(children[0])
               : {
                   ...navItem(path),
-                  badge: children.reduce(
-                    (sum, child) => sum + (reviewCounts[child] ?? 0),
-                    0,
+                  badge: sumReviewCountBadges(
+                    children.map((child) => reviewCounts[child]),
                   ),
                   children: children.map(attendancePage),
                 },

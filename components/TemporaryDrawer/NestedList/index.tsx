@@ -13,6 +13,7 @@ import {
   useCanRestoreDeletedRecords,
   useDefaultOrganizationSlug,
 } from "@/hooks/organizations";
+import { sumReviewCountBadges } from "@/hooks/useAttendanceReviewCounts";
 import { useNavChildren } from "@/hooks/useNavChildren";
 import { useRoutes } from "@/hooks/useRoutes";
 import { useSession } from "@/hooks/useSession";
@@ -46,9 +47,8 @@ const useNavItems = (): NavItem[][] => {
           [
             {
               ...navItem("/attendance"),
-              badge: attendanceChildren.reduce(
-                (sum, child) => sum + (child.badge ?? 0),
-                0,
+              badge: sumReviewCountBadges(
+                attendanceChildren.map(({ badge }) => badge),
               ),
               children: attendanceChildren,
             },

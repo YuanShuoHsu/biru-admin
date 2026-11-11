@@ -14,6 +14,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
+import type { NavBadge } from "@/types/navItem";
+
 interface StyledListItemButtonProps extends ListItemButtonProps {
   level?: number;
 }
@@ -50,7 +52,7 @@ const StyledExpandMore = styled(ExpandMore, {
 }));
 
 export interface ListItemLinkProps {
-  badge?: number;
+  badge?: NavBadge;
   href?: string;
   icon?: React.ComponentType<SvgIconProps>;
   isExpandable?: boolean;
