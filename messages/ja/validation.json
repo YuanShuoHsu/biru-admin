@@ -211,6 +211,9 @@
     "number": "数字を1文字以上含む。",
     "sameAsCurrent": "新しいパスワードは現在のパスワードと異なる必要があります。"
   },
+  "note": {
+    "maxLength": "備考は50文字以内で入力してください。"
+  },
   "number": {
     "integer": "整数を入力してください。",
     "max": "{max} 以下の値を入力してください。",
@@ -221,6 +224,9 @@
   "occurredAt": {
     "maxDateTime": "現在以前の打刻時刻を選択してください。",
     "required": "打刻日時は必須です。"
+  },
+  "openingHours": {
+    "required": "営業時間を設定するか、終日休業をオンにしてください。"
   },
   "overtimeExtensionPeriod": {
     "invalid": "開始月を選択してください。"
@@ -340,7 +346,13 @@
     "invalid": "URLの形式が無効です。"
   },
   "validFrom": {
-    "order": "終了日は開始日より前にできません。"
+    "order": "終了日は開始日より前にできません。",
+    "required": "開始日は必須です。"
+  },
+  "validThrough": {
+    "beforeValidFrom": "終了日は開始日より前にできません。",
+    "ended": "終了日は今日より前にできません。",
+    "required": "終了日は必須です。"
   },
   "workPermit": {
     "required": "就労許可の開始日と終了日を選択してください。",

@@ -211,6 +211,9 @@
     "number": "숫자를 최소 1개 포함.",
     "sameAsCurrent": "새 비밀번호는 현재 비밀번호와 달라야 합니다."
   },
+  "note": {
+    "maxLength": "메모는 50자를 초과할 수 없습니다."
+  },
   "number": {
     "integer": "정수를 입력해 주세요.",
     "max": "{max} 이하의 값을 입력해 주세요.",
@@ -221,6 +224,9 @@
   "occurredAt": {
     "maxDateTime": "현재 또는 그 이전 시간을 선택해 주세요.",
     "required": "기록 시간은 필수입니다."
+  },
+  "openingHours": {
+    "required": "영업 시간을 설정하거나 종일 휴무를 켜 주세요."
   },
   "overtimeExtensionPeriod": {
     "invalid": "시작 월을 선택하세요."
@@ -340,7 +346,13 @@
     "invalid": "URL 형식이 올바르지 않습니다."
   },
   "validFrom": {
-    "order": "종료일은 시작일보다 앞설 수 없습니다."
+    "order": "종료일은 시작일보다 앞설 수 없습니다.",
+    "required": "시작일은 필수입니다."
+  },
+  "validThrough": {
+    "beforeValidFrom": "종료일은 시작일보다 앞설 수 없습니다.",
+    "ended": "종료일은 오늘보다 앞설 수 없습니다.",
+    "required": "종료일은 필수입니다."
   },
   "workPermit": {
     "required": "취업 허가 시작일과 종료일을 선택하세요.",

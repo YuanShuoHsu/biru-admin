@@ -402,6 +402,44 @@
     "label": "スラッグ",
     "placeholder": "あなたのスラッグを入力してください"
   },
+  "specialHours": {
+    "actions": {
+      "create": {
+        "success": "特別営業日を追加しました",
+        "title": "特別営業日を追加"
+      },
+      "label": "操作",
+      "remove": {
+        "confirm": "<bold>{period}</bold> の特別営業日を削除しますか？",
+        "success": "{period} の特別営業日を削除しました",
+        "title": "特別営業日を削除"
+      },
+      "update": {
+        "success": "{period} の特別営業日を更新しました",
+        "title": "特別営業日を編集"
+      }
+    },
+    "closed": {
+      "label": "終日休業",
+      "value": "休業"
+    },
+    "label": "特別営業日",
+    "note": {
+      "label": "備考",
+      "placeholder": "例：台風のため休業"
+    },
+    "openingHours": {
+      "helperText": "期間中、時間帯を設定していない曜日は休業になります。",
+      "label": "営業時間"
+    },
+    "period": "期間",
+    "validFrom": {
+      "label": "開始日"
+    },
+    "validThrough": {
+      "label": "終了日"
+    }
+  },
   "status": {
     "label": "ステータス",
     "open": "営業中",

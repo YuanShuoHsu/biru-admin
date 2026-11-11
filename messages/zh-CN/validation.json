@@ -211,6 +211,9 @@
     "number": "包含至少一个数字。",
     "sameAsCurrent": "新密码不能与当前密码相同。"
   },
+  "note": {
+    "maxLength": "备注不能超过 50 个字符。"
+  },
   "number": {
     "integer": "请输入整数。",
     "max": "请输入不大于 {max} 的数值。",
@@ -221,6 +224,9 @@
   "occurredAt": {
     "maxDateTime": "请选择现在或之前的打卡时间。",
     "required": "打卡时间为必填。"
+  },
+  "openingHours": {
+    "required": "请设置营业时间，或开启全天休息。"
   },
   "overtimeExtensionPeriod": {
     "invalid": "请选择起始月份。"
@@ -340,7 +346,13 @@
     "invalid": "网址格式无效。"
   },
   "validFrom": {
-    "order": "截止日期不可早于生效日期。"
+    "order": "截止日期不可早于生效日期。",
+    "required": "开始日期为必填。"
+  },
+  "validThrough": {
+    "beforeValidFrom": "结束日期不能早于开始日期。",
+    "ended": "结束日期不能早于今天。",
+    "required": "结束日期为必填。"
   },
   "workPermit": {
     "required": "请选择工作许可起讫日。",
