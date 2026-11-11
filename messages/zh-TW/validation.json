@@ -207,9 +207,13 @@
     "differentFromCurrent": "與目前密碼不相同。",
     "letter": "包含至少一個英文字母。",
     "match": "與新密碼一致。",
+    "maxLength": "最多 128 個字元長度。",
     "minLength": "至少 8 個字元長度。",
     "number": "包含至少一個數字。",
     "sameAsCurrent": "新密碼不能與目前密碼相同。"
+  },
+  "note": {
+    "maxLength": "備註不能超過 50 個字元。"
   },
   "number": {
     "integer": "請輸入整數。",
@@ -221,6 +225,9 @@
   "occurredAt": {
     "maxDateTime": "請選擇現在或之前的打卡時間。",
     "required": "打卡時間為必填。"
+  },
+  "openingHours": {
+    "required": "請設定營業時間，或開啟整天公休。"
   },
   "overtimeExtensionPeriod": {
     "invalid": "請選擇起始月份。"
@@ -234,6 +241,7 @@
   "password": {
     "letter": "包含至少一個英文字母。",
     "match": "與密碼一致。",
+    "maxLength": "最多 128 個字元長度。",
     "minLength": "至少 8 個字元長度。",
     "number": "包含至少一個數字。"
   },
@@ -340,7 +348,12 @@
     "invalid": "網址格式無效。"
   },
   "validFrom": {
-    "order": "截止日期不可早於生效日期。"
+    "order": "截止日期不可早於生效日期。",
+    "required": "開始日期為必填。"
+  },
+  "validThrough": {
+    "ended": "結束日期不可早於今天。",
+    "required": "結束日期為必填。"
   },
   "workPermit": {
     "required": "請選擇工作許可起訖日。",

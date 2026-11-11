@@ -6,6 +6,8 @@ import type {
 
 export const LOW_STOCK_THRESHOLD = 5;
 
+export const MODIFIER_GROUP_MAX_SELECTION_COUNT = 99;
+
 export const SERVING_TEMPERATURE_COLOR_MAP: Record<
   ServingTemperature,
   "error" | "info"

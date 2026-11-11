@@ -402,6 +402,44 @@
     "label": "Slug",
     "placeholder": "Please enter your slug"
   },
+  "specialHours": {
+    "actions": {
+      "create": {
+        "success": "Special hours added",
+        "title": "Add special hours"
+      },
+      "label": "Actions",
+      "remove": {
+        "confirm": "Are you sure you want to delete the special hours for <bold>{period}</bold>?",
+        "success": "Special hours deleted",
+        "title": "Delete special hours"
+      },
+      "update": {
+        "success": "Special hours updated",
+        "title": "Edit special hours"
+      }
+    },
+    "closed": {
+      "label": "Closed all day",
+      "value": "Closed"
+    },
+    "label": "Special hours",
+    "note": {
+      "label": "Note",
+      "placeholder": "e.g. Closed for typhoon"
+    },
+    "openingHours": {
+      "helperText": "Days of the week without hours are closed during this period.",
+      "label": "Opening hours"
+    },
+    "period": "Period",
+    "validFrom": {
+      "label": "Start date"
+    },
+    "validThrough": {
+      "label": "End date"
+    }
+  },
   "status": {
     "label": "Status",
     "open": "Open",

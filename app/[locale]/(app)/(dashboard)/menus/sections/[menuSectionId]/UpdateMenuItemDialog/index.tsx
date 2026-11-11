@@ -22,6 +22,10 @@ import OpeningHoursField from "@/components/OpeningHoursField";
 import UploadAvatars from "@/components/UploadAvatars";
 
 import { SERVING_TEMPERATURE_OF_LEVEL } from "@/constants/menus";
+import {
+  getPickupMaxLeadMinutes,
+  PICKUP_MAX_ADVANCE_DAYS,
+} from "@/constants/pickup";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -740,6 +744,7 @@ const UpdateMenuItemDialog = ({
             fullWidth
             helperText={errors.offer?.deliveryLeadTimeMinutes?.message}
             label={`${tMenus("items.offers.deliveryLeadTimeMinutes.label")}${tCommon("parenthesisOpen")}${tMenus("items.offers.deliveryLeadTimeMinutes.unit")}${tCommon("parenthesisClose")} ${tCommon("optional")}`}
+            max={getPickupMaxLeadMinutes(PICKUP_MAX_ADVANCE_DAYS)}
             min={0}
             placeholder={tMenus(
               "items.offers.deliveryLeadTimeMinutes.placeholder",

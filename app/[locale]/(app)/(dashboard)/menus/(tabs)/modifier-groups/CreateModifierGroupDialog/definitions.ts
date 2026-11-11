@@ -1,6 +1,8 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
+import { MODIFIER_GROUP_MAX_SELECTION_COUNT } from "@/constants/menus";
+
 import { refineRequiredLocalizedText } from "@/utils/locale";
 
 export const useCreateModifierGroupFormSchema = () => {
@@ -18,6 +20,15 @@ export const useCreateModifierGroupFormSchema = () => {
       .refine((value) => !value || Number.isInteger(Number(value)), {
         error: tValidation("number.integer"),
       })
+      .refine(
+        (value) =>
+          !value || Number(value) <= MODIFIER_GROUP_MAX_SELECTION_COUNT,
+        {
+          error: tValidation("number.max", {
+            max: MODIFIER_GROUP_MAX_SELECTION_COUNT,
+          }),
+        },
+      )
       .optional(),
     maxSelectionCount: z
       .string()
@@ -25,6 +36,15 @@ export const useCreateModifierGroupFormSchema = () => {
       .refine((value) => !value || Number.isInteger(Number(value)), {
         error: tValidation("number.integer"),
       })
+      .refine(
+        (value) =>
+          !value || Number(value) <= MODIFIER_GROUP_MAX_SELECTION_COUNT,
+        {
+          error: tValidation("number.max", {
+            max: MODIFIER_GROUP_MAX_SELECTION_COUNT,
+          }),
+        },
+      )
       .optional(),
   });
 };

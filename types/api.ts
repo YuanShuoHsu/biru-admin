@@ -1009,6 +1009,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/users/{id}/image/{version}.{extension}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得使用者的頭像 */
+    get: operations["UsersController_findImage"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/users/{id}/sessions": {
     parameters: {
       query?: never;
@@ -7240,47 +7257,20 @@ export interface components {
        */
       emailSubscribed: boolean;
       /**
-       * @description 是否已驗證電子郵件
-       * @example true
-       */
-      emailVerified: boolean;
-      /**
        * @description 名
        * @example Coffee
        */
       firstName: string;
       /**
-       * @description 頭像 URL
-       * @example https://example.com/avatar.png
+       * @description 頭像網址
+       * @example /api/users/123e4567-e89b-12d3-a456-426614174000/image/0123456789abcdef.webp
        */
-      image?: string | null;
-      /**
-       * @description 語言
-       * @example zh-TW
-       * @enum {string}
-       */
-      lang: "en" | "ja" | "ko" | "zh-CN" | "zh-TW";
+      imageUrl: string | null;
       /**
        * @description 姓
        * @example Biru
        */
       lastName?: string | null;
-      /**
-       * @description 電話（E.164 格式）
-       * @example +886912345678
-       */
-      phoneNumber?: string | null;
-      /**
-       * @description 是否已驗證電話
-       * @example false
-       */
-      phoneNumberVerified: boolean;
-      /**
-       * Format: date-time
-       * @description 最後更新時間
-       * @example 2025-10-14T12:34:56.000Z
-       */
-      updatedAt: string;
       /** @description 有出勤或薪資紀錄、或是某組織唯一的擁有者時不可刪除 */
       deletable: boolean;
       /** @description 有登入裝置紀錄（含已過期） */
@@ -9904,7 +9894,10 @@ export interface components {
         | "WeiXin";
       discountCode?: string;
       invoice: components["schemas"]["CreateOrderInvoiceDto"];
-      items: components["schemas"]["CreateOrderItemDto"][];
+      /** @description 從呼叫者所在的共享點餐單送單：品項取自共享點餐單，呼叫者須持有有效的結帳鎖定 */
+      sharedCart?: boolean;
+      /** @description 未帶 sharedCart 時必填；帶 sharedCart 時不可帶 */
+      items?: components["schemas"]["CreateOrderItemDto"][];
       partySize?: number;
       /** @example 2026-08-31T09:15:00+08:00 */
       pickupTime?: string;
@@ -9929,6 +9922,20 @@ export interface components {
       /** @description 甜度；可調為客人所選、固定為品項設定，不適用時為 null */
       sweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
     };
+    /**
+     * @description 從共享點餐單送單時，點這個品項的參與者送單當下顯示的頭像
+     * @enum {string}
+     */
+    SharedCartAvatar:
+      | "cat"
+      | "dog"
+      | "rabbit"
+      | "bear"
+      | "fox"
+      | "panda"
+      | "penguin"
+      | "koala"
+      | "member";
     OrderItemResponseDto: {
       id: string;
       orderId: string;
@@ -9947,6 +9954,10 @@ export interface components {
         | components["schemas"]["OrderItemModifierSnapshotDto"][]
         | null;
       addOns?: components["schemas"]["OrderItemAddOnSnapshotDto"][] | null;
+      /** @description 從共享點餐單送單時，點這個品項的參與者送單當下顯示的頭像 */
+      participantAvatar?: components["schemas"]["SharedCartAvatar"] | null;
+      /** @description 從共享點餐單送單時，點這個品項的參與者送單當下顯示的暱稱 */
+      participantNickname?: string | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -11689,7 +11700,7 @@ export interface components {
        * @description 停業時間；營業中為 null
        */
       closedAt?: string | null;
-      /** @description 與今天到 30 天後（含兩端）重疊的特殊營業日，不隨店家的自取預約天數設定變動 */
+      /** @description 與昨天到 31 天後（含兩端）重疊的特殊營業日，不隨店家的自取預約天數設定變動；含昨天是因為前一天特殊營業日的跨夜時段會延到今天凌晨 */
       specialHours: components["schemas"]["PublicSpecialHoursDto"][];
     };
     OrganizationMemberTeamDto: {
@@ -13223,20 +13234,6 @@ export interface components {
       /** @description 當月在職但沒有已發布薪資單、未計入的員工數 */
       unpublishedEmployees: number;
     };
-    /**
-     * @description 未帶時：登入會員為 member，其他人隨機動物；member 只限登入會員
-     * @enum {string}
-     */
-    SharedCartAvatar:
-      | "cat"
-      | "dog"
-      | "rabbit"
-      | "bear"
-      | "fox"
-      | "panda"
-      | "penguin"
-      | "koala"
-      | "member";
     CreateSharedCartDto: {
       /** @description 未帶時：登入會員為 member，其他人隨機動物；member 只限登入會員 */
       avatar?: components["schemas"]["SharedCartAvatar"];
@@ -15967,6 +15964,37 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  UsersController_findImage: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+        /** @description 頭像內容的雜湊 */
+        version: string;
+        extension: "avif" | "gif" | "jpg" | "png" | "svg" | "webp";
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "image/*": string;
+        };
       };
       /** @description Internal server error */
       500: {
@@ -22782,7 +22810,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["OrganizationResponseDto"][];
+          "application/json": components["schemas"]["OrganizationDetailResponseDto"][];
         };
       };
       /** @description Internal server error */
@@ -26713,6 +26741,9 @@ export const pathsApiOrganizationsOrganizationSlugAttendanceShiftsGetParametersQ
 export const pathsApiOrganizationsOrganizationSlugAttendanceShiftsGetParametersQueryIncompleteAttendanceValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/organizations/{organizationSlug}/attendance/shifts"]["get"]["parameters"]["query"]["incompleteAttendance"]
 > = ["true"];
+export const pathsApiUsersIdImageVersionExtensionGetParametersPathExtensionValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/users/{id}/image/{version}.{extension}"]["get"]["parameters"]["path"]["extension"]
+> = ["avif", "gif", "jpg", "png", "svg", "webp"];
 export const pathsApiImagesKindIdVersionExtensionGetParametersPathKindValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/images/{kind}/{id}/{version}.{extension}"]["get"]["parameters"]["path"]["kind"]
 > = ["menu", "menuSection", "menuItem", "modifier", "banner", "storePhoto"];
@@ -27384,9 +27415,6 @@ export const userSortFieldValues: ReadonlyArray<
 export const userRoleValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserRole"]
 > = ["admin", "user"];
-export const userListItemDtoLangValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["UserListItemDto"]["lang"]
-> = ["en", "ja", "ko", "zh-CN", "zh-TW"];
 export const statsBucketUnitValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["StatsBucketUnit"]
 > = ["day", "hour", "month"];
@@ -28106,6 +28134,19 @@ export const createOrderDtoModeValues: ReadonlyArray<
 export const createOrderDtoPaymentValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CreateOrderDto"]["payment"]
 > = ["ApplePay", "Cash", "Credit", "iPASS", "Jkopay", "TWQR", "WeiXin"];
+export const sharedCartAvatarValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["SharedCartAvatar"]
+> = [
+  "cat",
+  "dog",
+  "rabbit",
+  "bear",
+  "fox",
+  "panda",
+  "penguin",
+  "koala",
+  "member",
+];
 export const createOrderResponseDtoModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CreateOrderResponseDto"]["mode"]
 > = ["counter", "dineIn", "driveThru", "pickup"];
@@ -28693,19 +28734,6 @@ export const quantWebhookActionValues: ReadonlyArray<
 export const salesReportGroupByValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["SalesReportGroupBy"]
 > = ["day", "hour", "paymentMethod", "mode", "menuItem", "category"];
-export const sharedCartAvatarValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["SharedCartAvatar"]
-> = [
-  "cat",
-  "dog",
-  "rabbit",
-  "bear",
-  "fox",
-  "panda",
-  "penguin",
-  "koala",
-  "member",
-];
 export const createSharedCartDtoModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CreateSharedCartDto"]["mode"]
 > = ["counter", "dineIn", "driveThru", "pickup"];

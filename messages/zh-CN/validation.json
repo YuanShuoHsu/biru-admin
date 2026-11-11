@@ -207,9 +207,13 @@
     "differentFromCurrent": "与当前密码不相同。",
     "letter": "包含至少一个英文字母。",
     "match": "与新密码一致。",
+    "maxLength": "最多 128 个字符长度。",
     "minLength": "至少 8 个字符长度。",
     "number": "包含至少一个数字。",
     "sameAsCurrent": "新密码不能与当前密码相同。"
+  },
+  "note": {
+    "maxLength": "备注不能超过 50 个字符。"
   },
   "number": {
     "integer": "请输入整数。",
@@ -221,6 +225,9 @@
   "occurredAt": {
     "maxDateTime": "请选择现在或之前的打卡时间。",
     "required": "打卡时间为必填。"
+  },
+  "openingHours": {
+    "required": "请设置营业时间，或开启全天休息。"
   },
   "overtimeExtensionPeriod": {
     "invalid": "请选择起始月份。"
@@ -234,6 +241,7 @@
   "password": {
     "letter": "包含至少一个英文字母。",
     "match": "与密码一致。",
+    "maxLength": "最多 128 个字符长度。",
     "minLength": "至少 8 个字符长度。",
     "number": "包含至少一个数字。"
   },
@@ -340,7 +348,12 @@
     "invalid": "网址格式无效。"
   },
   "validFrom": {
-    "order": "截止日期不可早于生效日期。"
+    "order": "截止日期不可早于生效日期。",
+    "required": "开始日期为必填。"
+  },
+  "validThrough": {
+    "ended": "结束日期不能早于今天。",
+    "required": "结束日期为必填。"
   },
   "workPermit": {
     "required": "请选择工作许可起讫日。",

@@ -3,7 +3,7 @@
 import { useFormatter, useTranslations } from "next-intl";
 import useSWR from "swr";
 
-import { ReportProblemOutlined } from "@mui/icons-material";
+import { ErrorOutlined, ReportProblemOutlined } from "@mui/icons-material";
 import {
   Badge,
   Divider,
@@ -39,11 +39,32 @@ const EcpayAttentionButton = ({
   const tCommon = useTranslations("common");
   const tOrders = useTranslations("orders");
 
-  const { data: items = [] } = useSWR<EcpayAttentionItem[]>(
+  const {
+    data: items = [],
+    error,
+    isValidating,
+    mutate,
+  } = useSWR<EcpayAttentionItem[]>(
     organizationSlug
       ? `/api/organizations/${organizationSlug}/ecpay/attention`
       : null,
   );
+
+  if (error && !items.length)
+    return (
+      <Tooltip
+        title={`${tOrders("attention.tooltip")}${tCommon("colon")}${tCommon("error.title")}`}
+      >
+        <IconButton
+          color="error"
+          loading={isValidating}
+          onClick={() => mutate()}
+          size="small"
+        >
+          <ErrorOutlined fontSize="small" />
+        </IconButton>
+      </Tooltip>
+    );
 
   if (!items.length) return null;
 

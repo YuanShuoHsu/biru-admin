@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 
-import { PASSWORD_MIN_LENGTH } from "@/constants/password";
+import { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH } from "@/constants/password";
 
 export const usePasswordValidation = (
   password: string,
@@ -18,6 +18,11 @@ export const usePasswordValidation = (
       key: "minLength",
       passed: password.length >= PASSWORD_MIN_LENGTH,
       label: tValidation("password.minLength"),
+    },
+    {
+      key: "maxLength",
+      passed: password.length <= PASSWORD_MAX_LENGTH,
+      label: tValidation("password.maxLength"),
     },
     {
       key: "letter",
