@@ -71,6 +71,7 @@ import {
   isFilteredOrSorted,
 } from "@/utils/dataGrid";
 import { getStorePhotoEnumOptions } from "@/utils/enumOptions";
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
@@ -323,13 +324,8 @@ const StorePhotos = ({
               variant: "success",
             },
           );
-        } catch {
-          enqueueSnackbar(
-            tStorePhotos("actions.reorderStorePhoto.save.error"),
-            {
-              variant: "error",
-            },
-          );
+        } catch (error) {
+          enqueueSnackbar(getErrorMessage(error), { variant: "error" });
         }
       },
       open: true,
@@ -408,10 +404,8 @@ const StorePhotos = ({
             });
 
             mutate();
-          } catch {
-            enqueueSnackbar(tStorePhotos("actions.deleteStorePhoto.error"), {
-              variant: "error",
-            });
+          } catch (error) {
+            enqueueSnackbar(getErrorMessage(error), { variant: "error" });
           }
         },
         open: true,
@@ -472,13 +466,8 @@ const StorePhotos = ({
               variant: "success",
             },
           );
-        } catch {
-          enqueueSnackbar(
-            tStorePhotos("actions.batchDeleteStorePhoto.submit.error"),
-            {
-              variant: "error",
-            },
-          );
+        } catch (error) {
+          enqueueSnackbar(getErrorMessage(error), { variant: "error" });
         }
 
         mutate();

@@ -6,20 +6,17 @@
       },
       "submit": {
         "confirm": "다음 <bold>{count}개의 매장 사진</bold>을 삭제하시겠습니까?",
-        "error": "매장 사진 일괄 삭제에 실패했습니다",
         "label": "선택한 매장 사진 삭제 ({count})",
         "success": "매장 사진 {count}개를 삭제했습니다"
       },
       "title": "매장 사진 일괄 삭제"
     },
     "createStorePhoto": {
-      "error": "매장 사진 추가에 실패했습니다",
       "success": "매장 사진을 추가했습니다",
       "title": "매장 사진 추가"
     },
     "deleteStorePhoto": {
       "confirm": "이 <bold>매장 사진</bold>을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
-      "error": "매장 사진 삭제에 실패했습니다",
       "success": "매장 사진을 삭제했습니다",
       "title": "매장 사진 삭제"
     },
@@ -32,14 +29,12 @@
       "confirm": "<bold>매장 사진</bold>을 정렬하시겠습니까?",
       "save": {
         "confirm": "<bold>매장 사진</bold> 정렬을 저장하시겠습니까?",
-        "error": "정렬 저장에 실패했습니다",
         "label": "매장 사진 정렬 저장",
         "success": "정렬이 저장되었습니다"
       },
       "title": "매장 사진 정렬"
     },
     "updateStorePhoto": {
-      "error": "매장 사진 업데이트에 실패했습니다",
       "success": "매장 사진을 업데이트했습니다",
       "title": "매장 사진 편집"
     }
