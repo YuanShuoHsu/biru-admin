@@ -207,6 +207,7 @@
     "differentFromCurrent": "현재 비밀번호와 달라야 함.",
     "letter": "영문자를 최소 1개 포함.",
     "match": "새 비밀번호와 일치.",
+    "maxLength": "128자 이하 길이.",
     "minLength": "8자 이상 길이.",
     "number": "숫자를 최소 1개 포함.",
     "sameAsCurrent": "새 비밀번호는 현재 비밀번호와 달라야 합니다."
@@ -234,6 +235,7 @@
   "password": {
     "letter": "영문자를 최소 1개 포함.",
     "match": "비밀번호와 일치.",
+    "maxLength": "128자 이하 길이.",
     "minLength": "8자 이상 길이.",
     "number": "숫자를 최소 1개 포함."
   },

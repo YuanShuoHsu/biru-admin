@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { PASSWORD_MIN_LENGTH } from "@/constants/password";
+import { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH } from "@/constants/password";
 
 export const useChangePasswordFormSchema = () => {
   const tValidation = useTranslations("validation");
@@ -17,6 +17,9 @@ export const useChangePasswordFormSchema = () => {
         .trim()
         .min(PASSWORD_MIN_LENGTH, {
           error: tValidation("newPassword.minLength"),
+        })
+        .max(PASSWORD_MAX_LENGTH, {
+          error: tValidation("newPassword.maxLength"),
         })
         .regex(/[a-zA-Z]/, { error: tValidation("newPassword.letter") })
         .regex(/[0-9]/, { error: tValidation("newPassword.number") }),
