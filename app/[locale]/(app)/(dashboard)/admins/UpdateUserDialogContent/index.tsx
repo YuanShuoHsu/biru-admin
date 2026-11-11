@@ -56,7 +56,7 @@ const UpdateUserDialogContent = ({
   const locale = useLocale();
 
   const uploadKey = `update-user-avatar-${user.id}`;
-  const image = useUploadAvatarSrc(uploadKey, user.image);
+  const image = useUploadAvatarSrc(uploadKey, user.imageUrl);
 
   const tAdmins = useTranslations("admins");
   const tCommon = useTranslations("common");
@@ -97,7 +97,7 @@ const UpdateUserDialogContent = ({
               lastName,
               bio,
               emailSubscribed,
-              image,
+              ...(image !== (user.imageUrl || null) && { image }),
             },
           },
           {
@@ -127,7 +127,7 @@ const UpdateUserDialogContent = ({
 
   return (
     <FormBox id="update-user-form" onSubmit={onSubmit}>
-      <UploadAvatars initialSrc={user.image} uploadKey={uploadKey} />
+      <UploadAvatars initialSrc={user.imageUrl} uploadKey={uploadKey} />
       <NameStack direction={locale === LocaleEnum.En ? "row-reverse" : "row"}>
         <TextField
           autoComplete="family-name"

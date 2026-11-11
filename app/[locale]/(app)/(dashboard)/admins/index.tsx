@@ -753,12 +753,14 @@ const Admins = ({
           ]
         : []),
       {
-        field: "image",
+        field: "imageUrl",
         filterable: false,
         headerName: tAdmins("image"),
-        renderCell: ({ row: { image, name } }: GridRenderCellParams<User>) => (
+        renderCell: ({
+          row: { imageUrl, name },
+        }: GridRenderCellParams<User>) => (
           <AvatarStack direction="row">
-            <StyledAvatar alt={name} src={image || undefined}>
+            <StyledAvatar alt={name} src={imageUrl || undefined}>
               {name[0]}
             </StyledAvatar>
           </AvatarStack>
