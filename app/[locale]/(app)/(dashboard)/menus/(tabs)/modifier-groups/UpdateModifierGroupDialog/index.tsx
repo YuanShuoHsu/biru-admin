@@ -14,6 +14,8 @@ import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
 import NumberSpinner from "@/components/NumberSpinner";
 
+import { MODIFIER_GROUP_MAX_SELECTION_COUNT } from "@/constants/menus";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { apiClient } from "@/lib/api-client";
@@ -126,7 +128,7 @@ const UpdateModifierGroupDialog = ({
         fullWidth
         helperText={errors.minSelectionCount?.message}
         label={`${tMenus("modifierGroups.minSelectionCount.label")} ${tCommon("optional")}`}
-        max={Number(maxSelectionCount) || undefined}
+        max={Number(maxSelectionCount) || MODIFIER_GROUP_MAX_SELECTION_COUNT}
         min={0}
         placeholder={tMenus("modifierGroups.minSelectionCount.placeholder")}
         value={minSelectionCount !== "" ? Number(minSelectionCount) : null}
@@ -140,6 +142,7 @@ const UpdateModifierGroupDialog = ({
         fullWidth
         helperText={errors.maxSelectionCount?.message}
         label={`${tMenus("modifierGroups.maxSelectionCount.label")} ${tCommon("optional")}`}
+        max={MODIFIER_GROUP_MAX_SELECTION_COUNT}
         min={Math.max(1, Number(minSelectionCount) || 0)}
         placeholder={tMenus("modifierGroups.maxSelectionCount.placeholder")}
         value={maxSelectionCount !== "" ? Number(maxSelectionCount) : null}
