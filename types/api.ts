@@ -22782,7 +22782,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["OrganizationResponseDto"][];
+          "application/json": components["schemas"]["OrganizationDetailResponseDto"][];
         };
       };
       /** @description Internal server error */
