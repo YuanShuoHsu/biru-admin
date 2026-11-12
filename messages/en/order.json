@@ -185,7 +185,7 @@
         "select": {
           "label": "Party size",
           "placeholder": "Please select your party size",
-          "value": "{count} people"
+          "value": "{count, plural, one {# person} other {# people}}"
         }
       },
       "tableNumber": {

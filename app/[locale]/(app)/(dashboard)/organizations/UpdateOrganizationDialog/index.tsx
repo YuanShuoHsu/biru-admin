@@ -58,7 +58,11 @@ const UpdateOrganizationDialog = ({
     await authClient.organization.update(
       {
         organizationId: organization.id,
-        data: { logo, name, slug },
+        data: {
+          ...(logo !== (organization.logo || null) && { logo }),
+          name,
+          slug,
+        },
       },
       {
         onError: ({ error: { message } }) => {
