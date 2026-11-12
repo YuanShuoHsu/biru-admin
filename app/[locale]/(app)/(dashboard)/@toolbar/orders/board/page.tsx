@@ -1,3 +1,4 @@
+import EcpayAttentionButton from "@/components/EcpayAttentionButton";
 import InvoicePrinterStatusChip from "@/components/InvoicePrinterStatusChip";
 import OrderTicketPrinterStatusChips from "@/components/OrderTicketPrinterStatusChips";
 import OrganizationSelectToolbar from "@/components/OrganizationSelectToolbar";
@@ -14,6 +15,7 @@ const ToolbarOrdersBoardPage = async ({
 
   return (
     <>
+      <EcpayAttentionButton organizationSlug={organization} />
       <PrepEstimateChip organizationSlug={organization} />
       <InvoicePrinterStatusChip organizationSlug={organization} />
       <OrderTicketPrinterStatusChips organizationSlug={organization} />
