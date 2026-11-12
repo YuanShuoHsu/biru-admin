@@ -91,6 +91,9 @@
   "cutoffMinutes": {
     "required": "Minutes before closing is required."
   },
+  "dateTime": {
+    "invalid": "Date and time is not valid."
+  },
   "description": {
     "maxLength": "Description must not exceed 160 characters."
   },

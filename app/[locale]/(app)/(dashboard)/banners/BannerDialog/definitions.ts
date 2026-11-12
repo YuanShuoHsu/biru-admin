@@ -17,10 +17,18 @@ export const useBannerFormSchema = () => {
             error: tValidation("localizedText.maxLength", { max: 160 }),
           }),
       ),
-      endsAt: z.string(),
+      endsAt: z
+        .string()
+        .refine((value) => !value || !Number.isNaN(Date.parse(value)), {
+          error: tValidation("dateTime.invalid"),
+        }),
       image: z.string().min(1, { error: tValidation("image.notSelected") }),
       isActive: z.boolean(),
-      startsAt: z.string(),
+      startsAt: z
+        .string()
+        .refine((value) => !value || !Number.isNaN(Date.parse(value)), {
+          error: tValidation("dateTime.invalid"),
+        }),
       url: z
         .string()
         .trim()
