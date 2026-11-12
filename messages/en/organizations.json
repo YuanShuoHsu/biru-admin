@@ -337,7 +337,6 @@
     "placeholder": "Please enter your organization name"
   },
   "operatingType": {
-    "label": "Operating type",
     "options": {
       "direct": "Company-owned",
       "franchise": "Franchise",

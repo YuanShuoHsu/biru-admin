@@ -337,7 +337,6 @@
     "placeholder": "あなたの組織名を入力してください"
   },
   "operatingType": {
-    "label": "経営形態",
     "options": {
       "direct": "直営",
       "franchise": "フランチャイズ",

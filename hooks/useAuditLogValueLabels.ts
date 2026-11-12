@@ -183,14 +183,14 @@ export const useAuditLogValueLabels = () => {
       mode: Object.fromEntries(
         orderModeValues.map((value) => [value, tOrder(`mode.${value}.label`)]),
       ),
+      orderStatus: Object.fromEntries(
+        orderStatusValues.map((value) => [value, tOrders(`status.${value}`)]),
+      ),
       "organization.operatingType": Object.fromEntries(
         organizationOperatingTypeValues.map((value) => [
           value,
           tOrganizations(`operatingType.options.${value}`),
         ]),
-      ),
-      orderStatus: Object.fromEntries(
-        orderStatusValues.map((value) => [value, tOrders(`status.${value}`)]),
       ),
       paymentMethod: Object.fromEntries(
         orderResponseDtoPaymentMethodValues.map((value) => [
