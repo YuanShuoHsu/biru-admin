@@ -4,12 +4,10 @@ import {
   STORE_LAYOUT_FLOORS,
   STORE_LAYOUT_FLOOR_BASE,
   STORE_LAYOUT_FLOOR_HEIGHT,
-  STORE_LAYOUT_ITEMS,
   STORE_LAYOUT_RESTROOM_WALLS,
   STORE_LAYOUT_ROOF_GUARDS,
   STORE_LAYOUT_ROOF_WALLS,
   STORE_LAYOUT_ROOM,
-  STORE_LAYOUT_SEATS,
   STORE_LAYOUT_SLAB_PANELS,
   STORE_LAYOUT_SLAB_THICKNESS,
   STORE_LAYOUT_STAIR_FLIGHTS,
@@ -19,6 +17,8 @@ import {
   STORE_LAYOUT_STAIR_STEPS,
   STORE_LAYOUT_STAIR_TREAD,
 } from "@/constants/storeLayout";
+
+import type { StoreLayoutItem, StoreLayoutSeat } from "@/types/storeLayout";
 
 import type { ElevatorBox } from "../Elevator/motion";
 
@@ -39,27 +39,41 @@ interface Footprint {
   z: number;
 }
 
-interface Solid extends Footprint {
+export interface Solid extends Footprint {
   bottom: number;
   top: number;
 }
 
-const SOLIDS: Solid[] = [
+interface FloorBox extends Footprint {
+  elevation: number;
+  floor: keyof typeof STORE_LAYOUT_FLOOR_BASE;
+  height: number;
+}
+
+const toFloorSolid = ({
+  depth,
+  elevation,
+  floor,
+  height,
+  width,
+  x,
+  z,
+}: FloorBox): Solid => ({
+  bottom: STORE_LAYOUT_FLOOR_BASE[floor] + elevation,
+  depth,
+  top: STORE_LAYOUT_FLOOR_BASE[floor] + elevation + height,
+  width,
+  x,
+  z,
+});
+
+const SHELL_SOLIDS: Solid[] = [
   ...[
-    ...STORE_LAYOUT_ITEMS,
-    ...STORE_LAYOUT_SEATS,
     ...STORE_LAYOUT_ELEVATOR_WALLS,
     ...STORE_LAYOUT_RESTROOM_WALLS,
     ...STORE_LAYOUT_ROOF_WALLS,
     ...STORE_LAYOUT_ROOF_GUARDS,
-  ].map(({ depth, elevation, floor, height, width, x, z }) => ({
-    bottom: STORE_LAYOUT_FLOOR_BASE[floor] + elevation,
-    depth,
-    top: STORE_LAYOUT_FLOOR_BASE[floor] + elevation + height,
-    width,
-    x,
-    z,
-  })),
+  ].map(toFloorSolid),
   ...STORE_LAYOUT_STAIR_STEPS.map(({ bottom, depth, top, width, x, z }) => ({
     bottom,
     depth,
@@ -87,6 +101,11 @@ const SOLIDS: Solid[] = [
     z,
   })),
 ];
+
+export const layoutSolids = (
+  items: StoreLayoutItem[],
+  seats: StoreLayoutSeat[],
+) => [...[...items, ...seats].map(toFloorSolid), ...SHELL_SOLIDS];
 
 const clampToRoom = (value: number, size: number) =>
   Math.min(Math.max(value, radius), size - radius);
@@ -185,11 +204,12 @@ export const footholdAt = (
   x: number,
   z: number,
   from: number,
+  layout: Solid[],
   movingBoxes: ElevatorBox[],
 ) => {
   const lowest = from - FOOT_REACH;
   const support = supportAt(
-    [...SOLIDS, ...movingBoxes.map(toSolid)],
+    [...layout, ...movingBoxes.map(toSolid)],
     x,
     z,
     from,
@@ -204,11 +224,12 @@ export const surfaceAt = (
   x: number,
   z: number,
   from: number,
+  layout: Solid[],
   movingBoxes: ElevatorBox[],
 ) => {
   const ramp = rampAt(x, z, from + FOOT_REACH);
 
-  return ramp ?? footholdAt(x, z, from, movingBoxes);
+  return ramp ?? footholdAt(x, z, from, layout, movingBoxes);
 };
 
 export interface AvatarState {
@@ -238,9 +259,10 @@ export const advanceAvatar = (
   state: AvatarState,
   { forwardX, forwardZ, jump, sideways, speed, towards }: AvatarInput,
   delta: number,
+  layout: Solid[],
   movingBoxes: ElevatorBox[],
 ) => {
-  const solids = [...SOLIDS, ...movingBoxes.map(toSolid)];
+  const solids = [...layout, ...movingBoxes.map(toSolid)];
   const feet = state.y;
   const airborne = Boolean(state.verticalSpeed);
   const reach = airborne ? 0 : STEP_UP;

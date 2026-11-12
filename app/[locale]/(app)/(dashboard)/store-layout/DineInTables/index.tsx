@@ -5,7 +5,6 @@ import { type RefObject, useRef } from "react";
 import {
   STORE_LAYOUT_FLOOR_BASE,
   STORE_LAYOUT_ROOM,
-  STORE_LAYOUT_TABLES,
 } from "@/constants/storeLayout";
 
 import { useFrame } from "@react-three/fiber";
@@ -13,6 +12,7 @@ import { useFrame } from "@react-three/fiber";
 import type {
   StoreLayoutFloor,
   StoreLayoutFloorFilter,
+  StoreLayoutTable,
 } from "@/types/storeLayout";
 
 import type { AvatarState } from "../Avatar/movement";
@@ -33,6 +33,7 @@ interface DineInTablesProps {
   isGhostFloor: (value: StoreLayoutFloor) => boolean;
   onNearbyTableChange: (tableNumber: number | null) => void;
   tableColors: Map<number, string>;
+  tables: StoreLayoutTable[];
 }
 
 const DineInTables = ({
@@ -42,6 +43,7 @@ const DineInTables = ({
   isGhostFloor,
   onNearbyTableChange,
   tableColors,
+  tables,
 }: DineInTablesProps) => {
   const nearbyRef = useRef<number | null>(null);
 
@@ -50,7 +52,7 @@ const DineInTables = ({
     let nearby: number | null = null;
     let nearest = TABLE_REACH;
 
-    for (const table of STORE_LAYOUT_TABLES) {
+    for (const table of tables) {
       if (table.floor !== floor || !tableColors.has(table.tableNumber))
         continue;
 
@@ -71,7 +73,7 @@ const DineInTables = ({
     onNearbyTableChange(nearby);
   });
 
-  return STORE_LAYOUT_TABLES.map(
+  return tables.map(
     ({ depth, floor: tableFloor, tableNumber, width, x, z }) => {
       const color = tableColors.get(tableNumber);
 

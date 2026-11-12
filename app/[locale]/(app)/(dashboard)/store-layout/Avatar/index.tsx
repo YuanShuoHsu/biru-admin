@@ -39,6 +39,7 @@ import Person from "../Person";
 import { advanceDoors, doorLeaves } from "../Restrooms/motion";
 import {
   type AvatarState,
+  type Solid,
   advanceAvatar,
   floorIndexAt,
   footholdAt,
@@ -109,6 +110,7 @@ interface AvatarProps {
   floor: StoreLayoutFloor;
   onFloorChange: (floor: StoreLayoutFloor) => void;
   avatarRef: RefObject<AvatarState>;
+  solids: Solid[];
   touchRef: RefObject<StoreLayoutTouchInput>;
   view: StoreLayoutView;
 }
@@ -121,9 +123,11 @@ const Avatar = ({
   floor,
   onFloorChange,
   avatarRef,
+  solids,
   touchRef,
   view,
 }: AvatarProps) => {
+  const solidsRef = useRef(solids);
   const groupRef = useRef<Group>(null);
   const previousRef = useRef<{ x: number; y: number; z: number }>({
     x: start.x,
@@ -154,6 +158,7 @@ const Avatar = ({
         position.x + right * cos - forward * sin,
         position.z - right * sin - forward * cos,
         position.y,
+        solidsRef.current,
         reachableCar(elevatorRef.current),
       ) - position.y
     );
@@ -162,6 +167,10 @@ const Avatar = ({
     STORE_LAYOUT_CHARACTERS[character];
   const camera = useThree((state) => state.camera);
   const [, getMove] = useKeyboardControls<StoreLayoutMove>();
+
+  useEffect(() => {
+    solidsRef.current = solids;
+  }, [solids]);
 
   useEffect(() => {
     const floorIndex = STORE_LAYOUT_FLOORS.indexOf(floor);
@@ -221,6 +230,7 @@ const Avatar = ({
         towards: Number(move.forward) - Number(move.backward) + touch.towards,
       },
       delta,
+      solids,
       [
         ...elevatorCar(elevator),
         ...elevatorDoors(elevator),
@@ -313,8 +323,20 @@ const Avatar = ({
         state.verticalSpeed || elevator.riding
           ? 0
           : Math.atan2(
-              surfaceAt(state.x + ahead, state.z + across, state.y, car) -
-                surfaceAt(state.x - ahead, state.z - across, state.y, car),
+              surfaceAt(
+                state.x + ahead,
+                state.z + across,
+                state.y,
+                solids,
+                car,
+              ) -
+                surfaceAt(
+                  state.x - ahead,
+                  state.z - across,
+                  state.y,
+                  solids,
+                  car,
+                ),
               2 * TILT_SPAN,
             );
 

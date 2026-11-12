@@ -1,13 +1,11 @@
 "use client";
 
-import { type ReactNode, useLayoutEffect, useRef } from "react";
+import { type ReactNode, useLayoutEffect, useMemo, useRef } from "react";
 
 import {
   STORE_LAYOUT_FLOORS,
   STORE_LAYOUT_FLOOR_BASE,
-  STORE_LAYOUT_ITEMS,
   STORE_LAYOUT_ROOM,
-  STORE_LAYOUT_SEATS,
 } from "@/constants/storeLayout";
 
 import {
@@ -21,6 +19,8 @@ import {
 import type {
   StoreLayoutFloor,
   StoreLayoutFloorFilter,
+  StoreLayoutItem,
+  StoreLayoutSeat,
 } from "@/types/storeLayout";
 
 import Surface, { SURFACES } from "./Surface";
@@ -82,13 +82,17 @@ const top = ({ depth, width, x, z }: Footprint, surface: number): Part => [
   depth,
 ];
 
-const partsOf = (floor: StoreLayoutFloor) => {
+const partsOf = (
+  floor: StoreLayoutFloor,
+  items: StoreLayoutItem[],
+  seats: StoreLayoutSeat[],
+) => {
   const base = STORE_LAYOUT_FLOOR_BASE[floor];
   const wood: Part[] = [];
   const metal: Part[] = [];
   const pendants: [number, number, number][] = [];
 
-  for (const table of STORE_LAYOUT_ITEMS) {
+  for (const table of items) {
     if (table.floor !== floor || table.label !== "table") continue;
 
     const surface = base + table.height;
@@ -110,7 +114,7 @@ const partsOf = (floor: StoreLayoutFloor) => {
     ]);
   }
 
-  for (const part of STORE_LAYOUT_SEATS) {
+  for (const part of seats) {
     if (part.floor !== floor) continue;
 
     if (part.elevation) {
@@ -161,10 +165,6 @@ const partsOf = (floor: StoreLayoutFloor) => {
   };
 };
 
-const PARTS = Object.fromEntries(
-  STORE_LAYOUT_FLOORS.map((floor) => [floor, partsOf(floor)]),
-) as Record<StoreLayoutFloor, ReturnType<typeof partsOf>>;
-
 const matrix = new Matrix4();
 const rotation = new Quaternion();
 const position = new Vector3();
@@ -210,14 +210,27 @@ const Instances = ({ castShadow, children, parts }: InstancesProps) => {
 interface FurnitureProps {
   floors: StoreLayoutFloorFilter;
   isGhostFloor: (floor: StoreLayoutFloor) => boolean;
+  items: StoreLayoutItem[];
+  seats: StoreLayoutSeat[];
 }
 
-const Furniture = ({ floors, isGhostFloor }: FurnitureProps) =>
-  STORE_LAYOUT_FLOORS.map((floor) => {
+const Furniture = ({ floors, isGhostFloor, items, seats }: FurnitureProps) => {
+  const parts = useMemo(
+    () =>
+      Object.fromEntries(
+        STORE_LAYOUT_FLOORS.map((floor) => [
+          floor,
+          partsOf(floor, items, seats),
+        ]),
+      ) as Record<StoreLayoutFloor, ReturnType<typeof partsOf>>,
+    [items, seats],
+  );
+
+  return STORE_LAYOUT_FLOORS.map((floor) => {
     if (floors !== "all" && floors !== floor) return null;
 
     const ghost = isGhostFloor(floor);
-    const { bulbs, cords, metal, shades, wood } = PARTS[floor];
+    const { bulbs, cords, metal, shades, wood } = parts[floor];
 
     return (
       <group key={floor}>
@@ -259,5 +272,6 @@ const Furniture = ({ floors, isGhostFloor }: FurnitureProps) =>
       </group>
     );
   });
+};
 
 export default Furniture;
