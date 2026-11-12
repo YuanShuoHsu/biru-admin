@@ -1,10 +1,11 @@
 // https://mui.com/material-ui/react-breadcrumbs/#RouterBreadcrumbs.tsx
 
+import NavItemBadge from "@/components/NavItemBadge";
+
 import { Link } from "@/i18n/navigation";
 
 import { ExpandMore } from "@mui/icons-material";
 import {
-  Badge,
   ListItem,
   ListItemButton,
   type ListItemButtonProps,
@@ -13,6 +14,8 @@ import {
   type SvgIconProps,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+
+import type { NavBadge } from "@/types/navItem";
 
 interface StyledListItemButtonProps extends ListItemButtonProps {
   level?: number;
@@ -50,7 +53,7 @@ const StyledExpandMore = styled(ExpandMore, {
 }));
 
 export interface ListItemLinkProps {
-  badge?: number;
+  badge?: NavBadge;
   href?: string;
   icon?: React.ComponentType<SvgIconProps>;
   isExpandable?: boolean;
@@ -81,9 +84,9 @@ const ListItemLink = ({
     >
       {Icon && (
         <ListItemIcon>
-          <Badge badgeContent={badge} color="error">
+          <NavItemBadge badge={badge}>
             <Icon />
-          </Badge>
+          </NavItemBadge>
         </ListItemIcon>
       )}
       <ListItemText primary={label} />

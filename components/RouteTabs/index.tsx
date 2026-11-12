@@ -1,13 +1,17 @@
 "use client";
 
+import NavItemBadge from "@/components/NavItemBadge";
+
 import { useRoutes } from "@/hooks/useRoutes";
 
 import { usePathname } from "@/i18n/navigation";
 
-import { Badge, Tab, Tabs } from "@mui/material";
+import { Tab, Tabs } from "@mui/material";
+
+import type { NavBadge } from "@/types/navItem";
 
 interface RouteTab {
-  badge?: number;
+  badge?: NavBadge;
   label?: React.ReactNode;
   path: string;
 }
@@ -42,9 +46,9 @@ const RouteTabs = ({ ariaLabel, tabs }: RouteTabsProps) => {
             {...(to ? { href: to } : {})}
             icon={
               Icon && (
-                <Badge badgeContent={badge} color="error">
+                <NavItemBadge badge={badge}>
                   <Icon fontSize="small" />
-                </Badge>
+                </NavItemBadge>
               )
             }
             iconPosition="start"
