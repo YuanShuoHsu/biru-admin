@@ -81,14 +81,14 @@ const UpdateModifierDialog = ({
     availability,
     availableModes,
   }: UpdateModifierForm) => {
+    if (listingLocked) {
+      closeDialog();
+
+      return;
+    }
+
     try {
       setDialog({ confirmLoading: true });
-
-      if (listingLocked) {
-        closeDialog();
-
-        return;
-      }
 
       // 只有 itemAvailability 權限時打窄端點，整包 PATCH 會被後端的 menu:update 擋掉
       if (canWrite) {

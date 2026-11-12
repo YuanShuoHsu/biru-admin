@@ -197,16 +197,16 @@ const UpdateMenuItemDialog = ({
     orderTicketPrinterId,
     offer,
   }: UpdateMenuItemForm) => {
+    if (!canWrite && (!item.offer || listingLocked)) {
+      closeDialog();
+
+      return;
+    }
+
     try {
       setDialog({ confirmLoading: true });
 
-      if (!canWrite) {
-        if (!item.offer || listingLocked) {
-          closeDialog();
-
-          return;
-        }
-
+      if (!canWrite && item.offer) {
         await apiClient.PATCH("/api/offers/{offerId}/availability", {
           params: { path: { offerId: item.offer.id } },
           body: {
