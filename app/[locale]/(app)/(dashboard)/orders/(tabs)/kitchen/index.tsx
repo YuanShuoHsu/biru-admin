@@ -24,7 +24,6 @@ import {
   Chip,
   Grid,
   List,
-  ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
@@ -69,13 +68,11 @@ const ItemText = styled(ListItemText, {
 }));
 
 interface OrdersKitchenProps {
-  canUpdateOrders: boolean;
   orders: KitchenOrderResponse[];
   organization: Organization;
 }
 
 const OrdersKitchen = ({
-  canUpdateOrders,
   orders: initialOrders,
   organization: { slug: organizationSlug },
 }: OrdersKitchenProps) => {
@@ -149,8 +146,12 @@ const OrdersKitchen = ({
     const refunded = item.refundedQuantity >= item.orderQuantity;
     const choiceNames = getOrderItemChoiceNames(item);
 
-    const content = (
-      <>
+    return (
+      <ListItemButton
+        disabled={refunded || pendingItemIds.has(item.id)}
+        key={item.id}
+        onClick={() => handleTogglePrepared(order, item)}
+      >
         <ListItemIcon>
           {item.preparedAt ? (
             <CheckCircle color="success" fontSize="large" />
@@ -166,19 +167,7 @@ const OrdersKitchen = ({
           }
           slotProps={{ primary: { variant: "h6" } }}
         />
-      </>
-    );
-
-    return canUpdateOrders ? (
-      <ListItemButton
-        disabled={refunded || pendingItemIds.has(item.id)}
-        key={item.id}
-        onClick={() => handleTogglePrepared(order, item)}
-      >
-        {content}
       </ListItemButton>
-    ) : (
-      <ListItem key={item.id}>{content}</ListItem>
     );
   };
 
@@ -219,7 +208,10 @@ const OrdersKitchen = ({
                     />
                     <Chip
                       color={waitColor ?? "default"}
-                      label={format.relativeTime(waitingSince, now)}
+                      label={format.relativeTime(waitingSince, {
+                        now,
+                        unit: "minute",
+                      })}
                     />
                   </HeaderStack>
                   {order.customer.remark && (
@@ -231,7 +223,7 @@ const OrdersKitchen = ({
                     {order.items.map((item) => renderItem(order, item))}
                   </List>
                 </CardContent>
-                {canUpdateOrders && serveTransition && (
+                {serveTransition && (
                   <CardActions>
                     <Button
                       fullWidth

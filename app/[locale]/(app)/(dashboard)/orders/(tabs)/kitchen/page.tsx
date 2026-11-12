@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
@@ -12,12 +13,7 @@ import type { Locale } from "@/i18n/routing";
 
 import { settle } from "@/utils/fetcher";
 import { getAdminKitchenOrders } from "@/utils/orders";
-import { hasRolePermission } from "@/utils/organizations";
-import {
-  getMemberRole,
-  getResolvedAdminOrganization,
-  getSession,
-} from "@/utils/session";
+import { getResolvedAdminOrganization } from "@/utils/session";
 
 interface OrdersKitchenPageProps {
   params: Promise<{ locale: Locale }>;
@@ -56,22 +52,16 @@ const OrdersKitchenPage = async ({
     redirect({ href: `/orders/kitchen?${params.toString()}`, locale });
   }
 
-  const [{ data: orders, error }, memberRole, session] = await Promise.all([
-    settle(getAdminKitchenOrders(selectedOrganization.slug, fetchOptions)),
-    getMemberRole(selectedOrganization.id),
-    getSession(),
-  ]);
+  const { data: orders, error } = await settle(
+    getAdminKitchenOrders(selectedOrganization.slug, fetchOptions),
+  );
   if (error) return <ErrorAlert />;
 
   return (
-    <OrdersKitchen
-      canUpdateOrders={
-        session?.user?.role === "admin" ||
-        hasRolePermission(memberRole, { order: ["update"] })
-      }
-      orders={orders}
-      organization={selectedOrganization}
-    />
+    // https://next-intl.dev/docs/usage/configuration#now
+    <NextIntlClientProvider now={new Date()}>
+      <OrdersKitchen orders={orders} organization={selectedOrganization} />
+    </NextIntlClientProvider>
   );
 };
 

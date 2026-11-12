@@ -24,12 +24,6 @@ const OrdersTabsLayout = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (!isConnected || !organization) return;
 
-    emitMenuWithAck("joinOrdersBoard", {
-      organizationId: organization.id,
-    }).catch((error) =>
-      enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
-    );
-
     const ordersUrl = `/api/organizations/${organization.slug}/orders`;
 
     const handleUpdate = () =>
@@ -39,6 +33,14 @@ const OrdersTabsLayout = ({ children }: { children: React.ReactNode }) => {
           key === `${ordersUrl}/kitchen` ||
           key === `/api/organizations/${organization.slug}/ecpay/attention` ||
           (Array.isArray(key) && key[0] === ordersUrl),
+      );
+
+    emitMenuWithAck("joinOrdersBoard", {
+      organizationId: organization.id,
+    })
+      .then(handleUpdate)
+      .catch((error) =>
+        enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
       );
 
     menuSocket.on("orderUpdated", handleUpdate);
