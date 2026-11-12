@@ -38,7 +38,7 @@ export const useBannerFormSchema = () => {
     })
     .refine(
       ({ endsAt, startsAt }) =>
-        !startsAt || !endsAt || new Date(endsAt) > new Date(startsAt),
+        !startsAt || !endsAt || !(new Date(endsAt) <= new Date(startsAt)),
       { error: tValidation("endsAt.afterStartsAt"), path: ["endsAt"] },
     );
 };
