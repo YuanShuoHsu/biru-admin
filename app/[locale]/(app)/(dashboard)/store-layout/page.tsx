@@ -13,14 +13,14 @@ import ErrorAlert from "@/components/ErrorAlert";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-import { STORE_LAYOUT_ORGANIZATION_SLUG } from "@/constants/storeLayout";
-
 import type { AdminOrderBoardColumn } from "@/types/orders";
 import type { Organization } from "@/types/organizations";
+import type { StoreLayoutData } from "@/types/storeLayout";
 
 import { type FetchResult, settle } from "@/utils/fetcher";
 import { getAdminOrderBoard } from "@/utils/orders";
 import { getResolvedAdminOrganization, getSession } from "@/utils/session";
+import { getStoreLayout } from "@/utils/storeLayout";
 
 interface StoreLayoutPageProps {
   params: Promise<{ locale: Locale }>;
@@ -41,18 +41,28 @@ export const generateMetadata = async ({
 
 interface StoreLayoutContentProps {
   columns: Promise<FetchResult<AdminOrderBoardColumn[]>>;
-  empty: boolean;
+  layout: Promise<FetchResult<StoreLayoutData | null>>;
   organization: Organization;
 }
 
 const StoreLayoutContent = async ({
   columns: columnsResult,
-  ...props
+  layout: layoutResult,
+  organization,
 }: StoreLayoutContentProps) => {
-  const { data: columns, error } = await columnsResult;
+  const [{ data: layout, error: layoutError }, { data: columns, error }] =
+    await Promise.all([layoutResult, columnsResult]);
+  if (layoutError) return <ErrorAlert />;
+  if (!layout) return <StoreLayout layout={null} organization={organization} />;
   if (error) return <ErrorAlert />;
 
-  return <StoreLayout {...props} columns={columns} />;
+  return (
+    <StoreLayout
+      columns={columns}
+      layout={layout}
+      organization={organization}
+    />
+  );
 };
 
 const StoreLayoutPage = async ({
@@ -74,21 +84,16 @@ const StoreLayoutPage = async ({
     redirect({ href: `/store-layout?${params.toString()}`, locale });
   }
 
-  const empty = organization.slug !== STORE_LAYOUT_ORGANIZATION_SLUG;
+  const init = { headers: { cookie: cookieStore.toString() } };
 
-  const columns = settle(
-    empty
-      ? Promise.resolve([])
-      : getAdminOrderBoard(organization.slug, {
-          headers: { cookie: cookieStore.toString() },
-        }),
-  );
+  const layout = settle(getStoreLayout(organization.slug, init));
+  const columns = settle(getAdminOrderBoard(organization.slug, init));
 
   return (
     <Suspense fallback={<StoreLayout loading />}>
       <StoreLayoutContent
         columns={columns}
-        empty={empty}
+        layout={layout}
         organization={organization}
       />
     </Suspense>

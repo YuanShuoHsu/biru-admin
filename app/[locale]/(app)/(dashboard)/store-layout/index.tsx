@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useMessages, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { enqueueSnackbar } from "notistack";
 import {
@@ -21,7 +21,7 @@ import { useSocketConnection } from "@/hooks/useSocketConnection";
 import { emitMenuWithAck, menuSocket } from "@/app/socket";
 
 import Avatar from "./Avatar";
-import { createAvatarState } from "./Avatar/movement";
+import { createAvatarState, layoutSolids } from "./Avatar/movement";
 import DineInTables from "./DineInTables";
 import DriveThru from "./DriveThru";
 import Elevator from "./Elevator";
@@ -47,11 +47,9 @@ import {
   STORE_LAYOUT_FLOOR_FILTERS,
   STORE_LAYOUT_FLOOR_HEIGHT,
   STORE_LAYOUT_FOV,
-  STORE_LAYOUT_ITEMS,
   STORE_LAYOUT_KIND_COLORS,
   STORE_LAYOUT_LOOK,
   STORE_LAYOUT_ROOM,
-  STORE_LAYOUT_SEATS,
   STORE_LAYOUT_SLAB_PANELS,
   STORE_LAYOUT_SLAB_THICKNESS,
   STORE_LAYOUT_STAIRWELL,
@@ -59,7 +57,6 @@ import {
   STORE_LAYOUT_STAIR_GUARD_HEIGHT,
   STORE_LAYOUT_STAIR_STEPS,
   STORE_LAYOUT_STAIR_STOREYS,
-  STORE_LAYOUT_TABLES,
   STORE_LAYOUT_TOUCH_MEDIA,
   STORE_LAYOUT_TOUCH_QUERY,
   STORE_LAYOUT_VIEWS,
@@ -114,10 +111,12 @@ import type {
 import type { Organization } from "@/types/organizations";
 import type {
   StoreLayoutCharacter,
+  StoreLayoutData,
   StoreLayoutFloor,
   StoreLayoutFloorFilter,
   StoreLayoutItem,
   StoreLayoutMove,
+  StoreLayoutTable,
   StoreLayoutTouchInput,
   StoreLayoutView,
 } from "@/types/storeLayout";
@@ -332,13 +331,10 @@ const savesToPhotoLibrary = (file: File) =>
   window.matchMedia(STORE_LAYOUT_TOUCH_QUERY).matches &&
   Boolean(navigator.canShare?.({ files: [file] }));
 
-const FLOOR_SUMMARIES = STORE_LAYOUT_FLOORS.map((floor) => ({
-  floor,
-  seats: STORE_LAYOUT_SEATS.filter(
-    (seat) => seat.floor === floor && !seat.elevation,
-  ).length,
-  tables: STORE_LAYOUT_TABLES.filter((table) => table.floor === floor),
-})).filter(({ tables }) => tables.length);
+const EMPTY_LAYOUT: StoreLayoutData = { items: [], seats: [] };
+
+const isTable = (item: StoreLayoutItem): item is StoreLayoutTable =>
+  typeof item.tableNumber === "number";
 
 const DRIVE_THRU_OUTDOOR_LABELS = new Set<StoreLayoutItem["label"]>([
   "driveThruMenuBoard",
@@ -546,25 +542,43 @@ const ItemAnnotations = ({
 
 interface StoreLayoutProps {
   columns?: AdminOrderBoardColumn[];
-  empty?: boolean;
+  layout?: StoreLayoutData | null;
   loading?: boolean;
   organization?: Organization;
 }
 
 const StoreLayout = ({
   columns: initialColumns = [],
-  empty,
+  layout,
   loading = false,
   organization,
 }: StoreLayoutProps) => {
   const organizationId = organization?.id;
   const organizationSlug = organization?.slug ?? "";
+  const empty = layout === null;
   const hasBoard = !empty && !loading;
+  const { items, seats } = layout ?? EMPTY_LAYOUT;
 
   const tCommon = useTranslations("common");
   const tOrder = useTranslations("order");
   const tOrders = useTranslations("orders");
   const tStoreLayout = useTranslations("storeLayout");
+  const { items: itemLabels } = useMessages().storeLayout;
+
+  const itemLabel = (label: string) =>
+    label in itemLabels
+      ? tStoreLayout(`items.${label as keyof typeof itemLabels}`)
+      : label;
+
+  const tables = useMemo(() => items.filter(isTable), [items]);
+  const solids = useMemo(() => layoutSolids(items, seats), [items, seats]);
+
+  const floorSummaries = STORE_LAYOUT_FLOORS.map((floor) => ({
+    floor,
+    seats: seats.filter((seat) => seat.floor === floor && !seat.elevation)
+      .length,
+    tables: tables.filter((table) => table.floor === floor),
+  })).filter(({ tables }) => tables.length);
 
   const { setDialog } = useDialogStore((state) => state);
 
@@ -874,16 +888,14 @@ const StoreLayout = ({
     });
   };
 
-  const tableLabel = (item: (typeof STORE_LAYOUT_TABLES)[number]) => {
+  const tableLabel = (item: StoreLayoutTable) => {
     const tableNumber = tOrder("mode.dineIn.tableNumber.value", {
       tableNumber: item.tableNumber,
     });
 
     return item.label === "table"
       ? tableNumber
-      : [tStoreLayout(`items.${item.label}`), tableNumber].join(
-          tCommon("delimiter"),
-        );
+      : [itemLabel(item.label), tableNumber].join(tCommon("delimiter"));
   };
 
   const handleShowLabelsChange = (
@@ -1268,7 +1280,7 @@ const StoreLayout = ({
                         </group>
                       ),
                   )}
-                  {STORE_LAYOUT_ITEMS.map((item) => {
+                  {items.map((item) => {
                     if (floors !== "all" && floors !== item.floor) return null;
 
                     const {
@@ -1314,9 +1326,9 @@ const StoreLayout = ({
                             label={
                               !showLabels
                                 ? null
-                                : "tableNumber" in item
+                                : isTable(item)
                                   ? tableLabel(item)
-                                  : tStoreLayout(`items.${label}`)
+                                  : itemLabel(label)
                             }
                             showDimensions={showDimensions}
                             width={width}
@@ -1352,12 +1364,18 @@ const StoreLayout = ({
                     isGhostFloor={isGhostFloor}
                     onNearbyTableChange={setNearbyTable}
                     tableColors={tableColors}
+                    tables={tables}
                   />
                   {realistic && (
-                    <Furniture floors={floors} isGhostFloor={isGhostFloor} />
+                    <Furniture
+                      floors={floors}
+                      isGhostFloor={isGhostFloor}
+                      items={items}
+                      seats={seats}
+                    />
                   )}
                   {!realistic &&
-                    STORE_LAYOUT_SEATS.map((seat) => {
+                    seats.map((seat) => {
                       if (floors !== "all" && floors !== seat.floor)
                         return null;
 
@@ -1384,7 +1402,7 @@ const StoreLayout = ({
                         </mesh>
                       );
                     })}
-                  {STORE_LAYOUT_SEATS.map((seat) => {
+                  {seats.map((seat) => {
                     if (floors !== "all" && floors !== seat.floor) return null;
                     if (seat.elevation || isGhostFloor(seat.floor)) return null;
 
@@ -1402,9 +1420,7 @@ const StoreLayout = ({
                         <ItemAnnotations
                           depth={depth}
                           height={height}
-                          label={
-                            showLabels ? tStoreLayout(`items.${label}`) : null
-                          }
+                          label={showLabels ? itemLabel(label) : null}
                           showDimensions={showDimensions}
                           width={width}
                         />
@@ -1445,6 +1461,7 @@ const StoreLayout = ({
                     floor={floor}
                     onFloorChange={showFloor}
                     avatarRef={avatarRef}
+                    solids={solids}
                     touchRef={touchRef}
                     view={view}
                   />
@@ -1473,7 +1490,7 @@ const StoreLayout = ({
             <Joystick inputRef={touchRef} />
             <CanvasOverlay onMouseDown={handleControlsMouseDown}>
               <Summary>
-                {FLOOR_SUMMARIES.map(({ floor: value, seats, tables }) => {
+                {floorSummaries.map(({ floor: value, seats, tables }) => {
                   if (floors !== "all" && floors !== value) return null;
 
                   return (
