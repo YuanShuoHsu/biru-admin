@@ -144,7 +144,7 @@ const UpdateMenuItemDialog = ({
   });
   const availability = useWatch({ control, name: "offer.availability" });
   const listingLocked =
-    !canWrite && item.offer?.availability === "Discontinued";
+    !canWrite && (!item.offer || item.offer.availability === "Discontinued");
   const availableHours = useWatch({ control, name: "offer.availableHours" });
   const availableModes = useWatch({ control, name: "availableModes" });
   const servingTemperatures = useWatch({
@@ -197,7 +197,7 @@ const UpdateMenuItemDialog = ({
     orderTicketPrinterId,
     offer,
   }: UpdateMenuItemForm) => {
-    if (!canWrite && (!item.offer || listingLocked)) {
+    if (listingLocked) {
       closeDialog();
 
       return;
