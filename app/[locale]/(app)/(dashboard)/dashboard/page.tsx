@@ -177,14 +177,19 @@ const MenusContent = async ({
   const orderMenu = orderMenuResult.data;
   const sales = salesResult.data;
 
-  const topItems: MenuItemSales[] = [...sales]
-    .sort((a, b) => b.sold - a.sold)
-    .slice(0, 10)
-    .map(({ menuItemName, sold }) => ({ name: menuItemName, quantity: sold }));
-
   const menuItems = (orderMenu?.sections || []).flatMap(
     ({ menuItems }) => menuItems,
   );
+  const nameByMenuItemId = new Map(menuItems.map(({ id, name }) => [id, name]));
+
+  const topItems: MenuItemSales[] = [...sales]
+    .sort((a, b) => b.sold - a.sold)
+    .slice(0, 10)
+    .map(({ menuItemId, menuItemName, sold }) => ({
+      name: nameByMenuItemId.get(menuItemId) ?? menuItemName,
+      quantity: sold,
+    }));
+
   const soldByMenuItemId = new Map(
     sales.map(({ menuItemId, sold }) => [menuItemId, sold]),
   );
