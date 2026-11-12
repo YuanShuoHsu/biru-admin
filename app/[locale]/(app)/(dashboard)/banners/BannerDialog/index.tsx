@@ -5,7 +5,7 @@ import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent } from "react";
+import { type BaseSyntheticEvent, useMemo } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 import { type BannerForm, useBannerFormSchema } from "./definitions";
@@ -85,6 +85,12 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
     control,
     name: ["alt", "endsAt", "isActive", "startsAt"],
   });
+
+  const startsAtDate = useMemo(
+    () => (startsAt ? dayjs(startsAt) : null),
+    [startsAt],
+  );
+  const endsAtDate = useMemo(() => (endsAt ? dayjs(endsAt) : null), [endsAt]);
 
   const onSubmitHandler = async ({
     alt,
@@ -189,11 +195,15 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
         <Grid size={{ xs: 12, sm: 6 }}>
           <DateTimePicker
             label={`${tBanners("startsAt")} ${tCommon("optional")}`}
-            maxDateTime={endsAt ? dayjs(endsAt) : undefined}
+            maxDateTime={endsAtDate?.isValid() ? endsAtDate : undefined}
             onChange={(date) =>
               setValue(
                 "startsAt",
-                date?.isValid() ? date.startOf("minute").toISOString() : "",
+                !date
+                  ? ""
+                  : date.isValid()
+                    ? date.startOf("minute").toISOString()
+                    : "Invalid Date",
                 {
                   shouldValidate: isSubmitted,
                 },
@@ -208,17 +218,21 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
               },
             }}
             timezone={PLATFORM_TIMEZONE}
-            value={startsAt ? dayjs(startsAt) : null}
+            value={startsAtDate}
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
           <DateTimePicker
             label={`${tBanners("endsAt")} ${tCommon("optional")}`}
-            minDateTime={startsAt ? dayjs(startsAt) : undefined}
+            minDateTime={startsAtDate?.isValid() ? startsAtDate : undefined}
             onChange={(date) =>
               setValue(
                 "endsAt",
-                date?.isValid() ? date.startOf("minute").toISOString() : "",
+                !date
+                  ? ""
+                  : date.isValid()
+                    ? date.startOf("minute").toISOString()
+                    : "Invalid Date",
                 {
                   shouldValidate: isSubmitted,
                 },
@@ -233,7 +247,7 @@ const BannerDialog = ({ banner, mutate }: BannerDialogProps) => {
               },
             }}
             timezone={PLATFORM_TIMEZONE}
-            value={endsAt ? dayjs(endsAt) : null}
+            value={endsAtDate}
           />
         </Grid>
       </Grid>
