@@ -16,8 +16,8 @@ export const attendanceReviewCountsKey = (organizationSlug: string) =>
 export const sumReviewCountBadges = (
   badges: (NavBadge | undefined)[],
 ): NavBadge =>
-  badges.includes("!")
-    ? "!"
+  badges.includes("error")
+    ? "error"
     : badges.reduce<number>(
         (sum, badge) => sum + (typeof badge === "number" ? badge : 0),
         0,
@@ -33,7 +33,7 @@ export const useAttendanceReviewCounts = (
   );
 
   const count = (value?: number): NavBadge =>
-    error && !data ? "!" : (value ?? 0);
+    error && !data ? "error" : (value ?? 0);
 
   return {
     "/attendance/schedule/shifts": count(data?.extraWork),

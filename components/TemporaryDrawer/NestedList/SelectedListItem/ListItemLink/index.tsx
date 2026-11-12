@@ -1,10 +1,11 @@
 // https://mui.com/material-ui/react-breadcrumbs/#RouterBreadcrumbs.tsx
 
+import NavItemBadge from "@/components/NavItemBadge";
+
 import { Link } from "@/i18n/navigation";
 
 import { ExpandMore } from "@mui/icons-material";
 import {
-  Badge,
   ListItem,
   ListItemButton,
   type ListItemButtonProps,
@@ -83,9 +84,9 @@ const ListItemLink = ({
     >
       {Icon && (
         <ListItemIcon>
-          <Badge badgeContent={badge} color="error">
+          <NavItemBadge badge={badge}>
             <Icon />
-          </Badge>
+          </NavItemBadge>
         </ListItemIcon>
       )}
       <ListItemText primary={label} />

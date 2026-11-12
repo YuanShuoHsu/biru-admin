@@ -1,6 +1,6 @@
 import type { SvgIconProps } from "@mui/material";
 
-export type NavBadge = number | "!";
+export type NavBadge = number | "error";
 
 export type Slot = React.ComponentType<{ level: number }>;
 
