@@ -2860,6 +2860,23 @@ export interface paths {
     patch: operations["OrdersController_applyTransitions"];
     trace?: never;
   };
+  "/api/users/me/frequent-items": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢我在此門市常點的品項與上次的客製 */
+    get: operations["UserFrequentItemsController_findAll"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/users/me/orders": {
     parameters: {
       query?: never;
@@ -10293,6 +10310,22 @@ export interface components {
     };
     ApplyTransitionsDto: {
       orderIds: string[];
+    };
+    FrequentItemDto: {
+      menuItemId: string;
+      /** @description modifierGroupId → modifierIds[] */
+      modifiers: {
+        [key: string]: string[];
+      };
+      addOns: components["schemas"]["CreateOrderItemAddOnDto"][];
+      /** @description 選擇的溫度細項；品項有冷熱供應時必填，否則省略 */
+      servingTemperatureLevel?:
+        | components["schemas"]["ServingTemperatureLevel"]
+        | null;
+      /** @description 選擇的甜度；品項甜度可調時必填，其他情況忽略 */
+      sweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
+      customizationChanged: boolean;
+      soldOut: boolean;
     };
     OrderSellerDto: {
       id: string;
@@ -20330,6 +20363,36 @@ export interface operations {
       };
     };
   };
+  UserFrequentItemsController_findAll: {
+    parameters: {
+      query: {
+        mode: "counter" | "dineIn" | "driveThru" | "pickup";
+        organizationSlug: string;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["FrequentItemDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   UserOrdersController_findAll: {
     parameters: {
       query?: {
@@ -26773,6 +26836,9 @@ export const pathsApiOrganizationsOrganizationSlugOrdersTransitionsToStatusPatch
   "OrderProblem",
   "OrderReturned",
 ];
+export const pathsApiUsersMeFrequentItemsGetParametersQueryModeValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/users/me/frequent-items"]["get"]["parameters"]["query"]["mode"]
+> = ["counter", "dineIn", "driveThru", "pickup"];
 export const pathsApiMenusMenuIdMenuSectionsGetParametersQuerySearchFieldValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/menus/{menuId}/menu-sections"]["get"]["parameters"]["query"]["searchField"]
 > = ["name", "description"];
