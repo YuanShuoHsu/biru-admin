@@ -143,6 +143,8 @@ const UpdateMenuItemDialog = ({
     name: "offer.priceSpecification.price",
   });
   const availability = useWatch({ control, name: "offer.availability" });
+  const listingLocked =
+    !canWrite && (!item.offer || item.offer.availability === "Discontinued");
   const availableHours = useWatch({ control, name: "offer.availableHours" });
   const availableModes = useWatch({ control, name: "availableModes" });
   const servingTemperatures = useWatch({
@@ -195,16 +197,16 @@ const UpdateMenuItemDialog = ({
     orderTicketPrinterId,
     offer,
   }: UpdateMenuItemForm) => {
+    if (listingLocked) {
+      closeDialog();
+
+      return;
+    }
+
     try {
       setDialog({ confirmLoading: true });
 
-      if (!canWrite) {
-        if (!item.offer) {
-          closeDialog();
-
-          return;
-        }
-
+      if (!canWrite && item.offer) {
         await apiClient.PATCH("/api/offers/{offerId}/availability", {
           params: { path: { offerId: item.offer.id } },
           body: {
@@ -558,6 +560,7 @@ const UpdateMenuItemDialog = ({
       />
       <TextField
         {...register("offer.availability")}
+        disabled={listingLocked}
         error={!!errors.offer?.availability}
         fullWidth
         helperText={
@@ -586,11 +589,15 @@ const UpdateMenuItemDialog = ({
         <MenuItem disabled value="">
           <em>{tMenus("availability.placeholder")}</em>
         </MenuItem>
-        {itemAvailabilityValues.map((value) => (
-          <MenuItem key={value} value={value}>
-            {tMenus(`availability.options.${value}`)}
-          </MenuItem>
-        ))}
+        {itemAvailabilityValues
+          .filter(
+            (value) => canWrite || value !== "Discontinued" || listingLocked,
+          )
+          .map((value) => (
+            <MenuItem key={value} value={value}>
+              {tMenus(`availability.options.${value}`)}
+            </MenuItem>
+          ))}
       </TextField>
       <CheckboxesGroup
         disabled={!canWrite}
@@ -705,6 +712,7 @@ const UpdateMenuItemDialog = ({
         <Grid size={{ xs: 12, sm: 6 }}>
           <NumberSpinner
             clearable
+            disabled={listingLocked}
             error={!!errors.offer?.inventoryLevel?.value}
             fullWidth
             helperText={errors.offer?.inventoryLevel?.value?.message}
