@@ -73,6 +73,7 @@ const UpdateModifierDialog = ({
   const displayNameValue = useWatch({ control, name: "displayName" });
   const priceAdjustment = useWatch({ control, name: "priceAdjustment" });
   const availableModes = useWatch({ control, name: "availableModes" });
+  const listingLocked = !canWrite && modifier.availability === "Discontinued";
 
   const onSubmitHandler = async ({
     displayName,
@@ -82,6 +83,12 @@ const UpdateModifierDialog = ({
   }: UpdateModifierForm) => {
     try {
       setDialog({ confirmLoading: true });
+
+      if (listingLocked) {
+        closeDialog();
+
+        return;
+      }
 
       // 只有 itemAvailability 權限時打窄端點，整包 PATCH 會被後端的 menu:update 擋掉
       if (canWrite) {
@@ -171,6 +178,7 @@ const UpdateModifierDialog = ({
         }
       />
       <TextField
+        disabled={listingLocked}
         error={!!errors.availability}
         fullWidth
         label={tMenus("availability.label")}
@@ -178,11 +186,15 @@ const UpdateModifierDialog = ({
         {...register("availability")}
         defaultValue={modifier.availability ?? "InStock"}
       >
-        {itemAvailabilityValues.map((value) => (
-          <MenuItem key={value} value={value}>
-            {tMenus(`availability.options.${value}`)}
-          </MenuItem>
-        ))}
+        {itemAvailabilityValues
+          .filter(
+            (value) => canWrite || value !== "Discontinued" || listingLocked,
+          )
+          .map((value) => (
+            <MenuItem key={value} value={value}>
+              {tMenus(`availability.options.${value}`)}
+            </MenuItem>
+          ))}
       </TextField>
       <CheckboxesGroup
         disabled={!canWrite}
