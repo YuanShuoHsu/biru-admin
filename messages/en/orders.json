@@ -238,6 +238,13 @@
     "voided": "Voided"
   },
   "invoiceType": "Invoice type",
+  "kitchen": {
+    "disconnected": "Live connection lost. Refreshing every {seconds} seconds…",
+    "empty": "No orders in preparation",
+    "refunded": "Refunded",
+    "serve": "Serve",
+    "title": "Kitchen"
+  },
   "label": "Orders",
   "list": {
     "label": "Order List"

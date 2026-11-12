@@ -238,6 +238,13 @@
     "voided": "無効"
   },
   "invoiceType": "インボイス種別",
+  "kitchen": {
+    "disconnected": "リアルタイム接続が切れました。{seconds} 秒ごとに更新しています…",
+    "empty": "調理中の注文はありません",
+    "refunded": "返金済み",
+    "serve": "提供",
+    "title": "キッチン"
+  },
   "label": "注文",
   "list": {
     "label": "注文一覧"

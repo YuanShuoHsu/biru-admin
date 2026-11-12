@@ -2775,6 +2775,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/orders/kitchen": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢廚房顯示的製作中訂單（依預約取餐或付款時間排序） */
+    get: operations["OrdersController_findKitchenOrders"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/orders/prep-estimate": {
     parameters: {
       query?: never;
@@ -2841,6 +2858,23 @@ export interface paths {
     head?: never;
     /** 修改顧客資訊 */
     patch: operations["OrdersController_updateCustomer"];
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/orders/{orderId}/items/{orderItemId}/prepared": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 標記品項做好或取消標記（訂單製作中才可，整張出餐仍走狀態轉換） */
+    patch: operations["OrdersController_setItemPrepared"];
     trace?: never;
   };
   "/api/organizations/{organizationSlug}/orders/transitions/{toStatus}": {
@@ -9975,6 +10009,11 @@ export interface components {
       participantAvatar?: components["schemas"]["SharedCartAvatar"] | null;
       /** @description 從共享點餐單送單時，點這個品項的參與者送單當下顯示的暱稱 */
       participantNickname?: string | null;
+      /**
+       * Format: date-time
+       * @description 廚房標記這個品項做好的時間；未完成為 null
+       */
+      preparedAt?: string | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -10189,6 +10228,102 @@ export interface components {
       orderStatus: components["schemas"]["OrderFlowStatus"];
       orders: components["schemas"]["AdminOrderResponseDto"][];
     };
+    KitchenOrderItemDto: {
+      id: string;
+      orderId: string;
+      menuItemId: string;
+      menuItemName: string;
+      unitPrice: string;
+      priceCurrency?: string | null;
+      orderQuantity: number;
+      /** @description 選擇的溫度細項；品項不分冷熱時為 null */
+      servingTemperatureLevel?:
+        | components["schemas"]["ServingTemperatureLevel"]
+        | null;
+      /** @description 甜度；可調為客人所選、固定為品項設定，不適用時為 null */
+      sweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
+      modifiers?:
+        | components["schemas"]["OrderItemModifierSnapshotDto"][]
+        | null;
+      addOns?: components["schemas"]["OrderItemAddOnSnapshotDto"][] | null;
+      /** @description 從共享點餐單送單時，點這個品項的參與者送單當下顯示的頭像 */
+      participantAvatar?: components["schemas"]["SharedCartAvatar"] | null;
+      /** @description 從共享點餐單送單時，點這個品項的參與者送單當下顯示的暱稱 */
+      participantNickname?: string | null;
+      /**
+       * Format: date-time
+       * @description 廚房標記這個品項做好的時間；未完成為 null
+       */
+      preparedAt?: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      /** @description 已退款的數量，等於點餐數量時不必製作 */
+      refundedQuantity: number;
+    };
+    KitchenOrderResponseDto: {
+      id: string;
+      sellerId: string;
+      userId?: string | null;
+      /** @enum {string} */
+      mode: "counter" | "dineIn" | "driveThru" | "pickup";
+      orderNumber: string;
+      customer: components["schemas"]["OrderCustomerDto"];
+      /** @enum {string} */
+      paymentMethod:
+        | "ApplePay"
+        | "Cash"
+        | "Credit"
+        | "iPASS"
+        | "Jkopay"
+        | "TWQR"
+        | "WeiXin";
+      paymentMethodId?: string | null;
+      /** @enum {string} */
+      orderStatus:
+        | "OrderPaymentDue"
+        | "OrderProcessing"
+        | "OrderPickupAvailable"
+        | "OrderDelivered"
+        | "OrderCancelled"
+        | "OrderProblem"
+        | "OrderReturned";
+      confirmationNumber?: string | null;
+      /** Format: date-time */
+      orderDate: string;
+      /** Format: date-time */
+      paymentDate?: string | null;
+      /** Format: date-time */
+      paymentDueDate?: string | null;
+      tradeNo?: string | null;
+      partySize?: number | null;
+      /** Format: date-time */
+      pickupTime?: string | null;
+      tableNumber?: number | null;
+      discount?: string | null;
+      discountCode?: string | null;
+      discountCurrency?: string | null;
+      subtotal: string;
+      total: string;
+      invoice?: components["schemas"]["OrderInvoiceDto"] | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      availableTransitions: components["schemas"]["OrderTransitionDto"][];
+      /** @description 是否可退款；退款不走 transitions，須呼叫 orders/{orderId}/refunds */
+      refundable: boolean;
+      /** @description ecpay：可直接透過綠界退刷；manual：綠界不支援此付款方式的退款 API，系統僅登錄，需店家自行退款 */
+      refundChannel: components["schemas"]["RefundChannel"];
+      /** @description 在途（排隊、列印中、結果不明）的工作單與退品單 */
+      orderTicketJobs: components["schemas"]["OrderTicketJobDto"][];
+      /** @description 這張訂單有分到品項的工作單印表機，重印只能選這些 */
+      orderTicketPrinterIds: string[];
+      /** @description 訂單狀態是否允許重印工作單；店家有沒有工作單印表機要另外看印表機清單 */
+      orderTicketReprintable: boolean;
+      items: components["schemas"]["KitchenOrderItemDto"][];
+    };
     PrepEstimateResponseDto: {
       /** @enum {string} */
       basis: "observed" | "leadTime";
@@ -10307,6 +10442,10 @@ export interface components {
       createdAt: string;
       /** Format: date-time */
       updatedAt: string;
+    };
+    SetOrderItemPreparedDto: {
+      /** @description true 標記做好，false 取消標記 */
+      prepared: boolean;
     };
     ApplyTransitionsDto: {
       orderIds: string[];
@@ -20200,6 +20339,37 @@ export interface operations {
       };
     };
   };
+  OrdersController_findKitchenOrders: {
+    parameters: {
+      query?: {
+        /** @description 只列這台工作單印表機負責的品項，沒有品項的訂單不列 */
+        printerId?: string;
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["KitchenOrderResponseDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   OrdersController_findPrepEstimate: {
     parameters: {
       query?: {
@@ -20312,6 +20482,40 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["OrderResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrdersController_setItemPrepared: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        orderId: string;
+        orderItemId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SetOrderItemPreparedDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderItemResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -28314,6 +28518,23 @@ export const orderFlowStatusValues: ReadonlyArray<
   "OrderProcessing",
   "OrderPickupAvailable",
   "OrderDelivered",
+];
+export const kitchenOrderResponseDtoModeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["KitchenOrderResponseDto"]["mode"]
+> = ["counter", "dineIn", "driveThru", "pickup"];
+export const kitchenOrderResponseDtoPaymentMethodValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["KitchenOrderResponseDto"]["paymentMethod"]
+> = ["ApplePay", "Cash", "Credit", "iPASS", "Jkopay", "TWQR", "WeiXin"];
+export const kitchenOrderResponseDtoOrderStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["KitchenOrderResponseDto"]["orderStatus"]
+> = [
+  "OrderPaymentDue",
+  "OrderProcessing",
+  "OrderPickupAvailable",
+  "OrderDelivered",
+  "OrderCancelled",
+  "OrderProblem",
+  "OrderReturned",
 ];
 export const prepEstimateResponseDtoBasisValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PrepEstimateResponseDto"]["basis"]

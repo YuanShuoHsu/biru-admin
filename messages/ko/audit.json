@@ -127,6 +127,7 @@
     "pointsValidityYears": "포인트 유효기간(년)",
     "postalCode": "우편번호",
     "prefix": "코드",
+    "preparedAt": "조리 완료 일시",
     "price": "가격",
     "priceAdjustment": "추가 금액",
     "priceSpecification": "기간 한정 가격",

@@ -238,6 +238,13 @@
     "voided": "취소됨"
   },
   "invoiceType": "영수증 유형",
+  "kitchen": {
+    "disconnected": "실시간 연결이 끊겨 {seconds}초마다 새로고침합니다…",
+    "empty": "조리 중인 주문이 없습니다",
+    "refunded": "환불됨",
+    "serve": "제공",
+    "title": "주방"
+  },
   "label": "주문",
   "list": {
     "label": "주문 목록"

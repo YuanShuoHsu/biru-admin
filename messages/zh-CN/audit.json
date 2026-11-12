@@ -127,6 +127,7 @@
     "pointsValidityYears": "点数效期（年）",
     "postalCode": "邮政编码",
     "prefix": "代号",
+    "preparedAt": "制作完成时间",
     "price": "价格",
     "priceAdjustment": "加价金额",
     "priceSpecification": "限时定价",

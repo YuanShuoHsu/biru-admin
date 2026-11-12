@@ -36,6 +36,7 @@ const OrdersTabsLayout = ({ children }: { children: React.ReactNode }) => {
       mutate(
         (key) =>
           key === `${ordersUrl}/board/admin` ||
+          key === `${ordersUrl}/kitchen` ||
           key === `/api/organizations/${organization.slug}/ecpay/attention` ||
           (Array.isArray(key) && key[0] === ordersUrl),
       );
@@ -54,7 +55,11 @@ const OrdersTabsLayout = ({ children }: { children: React.ReactNode }) => {
     <>
       <RouteTabs
         ariaLabel="orders tabs"
-        tabs={[{ path: "/orders/board" }, { path: "/orders/list" }]}
+        tabs={[
+          { path: "/orders/board" },
+          { path: "/orders/kitchen" },
+          { path: "/orders/list" },
+        ]}
       />
       {children}
     </>

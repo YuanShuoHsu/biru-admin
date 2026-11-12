@@ -7,6 +7,7 @@ import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
 import type {
   AdminOrderBoardColumn,
   AdminOrderListResponse,
+  KitchenOrderResponse,
   PrepTimeResponse,
 } from "@/types/orders";
 
@@ -81,6 +82,20 @@ export const getAdminOrderBoard = cache(
     );
 
     return Array.isArray(columns) ? columns : [];
+  },
+);
+
+export const getAdminKitchenOrders = cache(
+  async (
+    organizationSlug: string,
+    init?: RequestInit,
+  ): Promise<KitchenOrderResponse[]> => {
+    const orders = await fetcher<KitchenOrderResponse[]>(
+      `/api/organizations/${organizationSlug}/orders/kitchen`,
+      init,
+    );
+
+    return Array.isArray(orders) ? orders : [];
   },
 );
 

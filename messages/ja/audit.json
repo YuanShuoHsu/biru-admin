@@ -127,6 +127,7 @@
     "pointsValidityYears": "ポイント有効期限（年）",
     "postalCode": "郵便番号",
     "prefix": "記号",
+    "preparedAt": "調理完了日時",
     "price": "価格",
     "priceAdjustment": "追加料金",
     "priceSpecification": "期間限定価格",

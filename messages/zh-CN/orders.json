@@ -238,6 +238,13 @@
     "voided": "已作废"
   },
   "invoiceType": "发票类型",
+  "kitchen": {
+    "disconnected": "实时连接中断，改为每 {seconds} 秒刷新…",
+    "empty": "目前没有制作中的订单",
+    "refunded": "已退款",
+    "serve": "出餐",
+    "title": "厨房出单"
+  },
   "label": "订单",
   "list": {
     "label": "订单列表"

@@ -238,6 +238,13 @@
     "voided": "已作廢"
   },
   "invoiceType": "發票類型",
+  "kitchen": {
+    "disconnected": "即時連線中斷，改為每 {seconds} 秒重新整理…",
+    "empty": "目前沒有製作中的訂單",
+    "refunded": "已退款",
+    "serve": "出餐",
+    "title": "廚房出單"
+  },
   "label": "訂單",
   "list": {
     "label": "訂單列表"
