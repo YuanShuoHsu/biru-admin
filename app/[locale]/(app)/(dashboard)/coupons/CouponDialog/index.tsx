@@ -567,11 +567,14 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
             }}
             timezone={PLATFORM_TIMEZONE}
             value={validFrom ? dayjs(validFrom) : null}
-            {...register("validFrom")}
             onChange={(date) =>
               setValue(
                 "validFrom",
-                date?.isValid() ? date.startOf("minute").toISOString() : "",
+                !date
+                  ? ""
+                  : date.isValid()
+                    ? date.startOf("minute").toISOString()
+                    : "Invalid Date",
                 {
                   shouldValidate: isSubmitted,
                 },
@@ -593,11 +596,14 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
             }}
             timezone={PLATFORM_TIMEZONE}
             value={validThrough ? dayjs(validThrough) : null}
-            {...register("validThrough")}
             onChange={(date) =>
               setValue(
                 "validThrough",
-                date?.isValid() ? date.startOf("minute").toISOString() : "",
+                !date
+                  ? ""
+                  : date.isValid()
+                    ? date.startOf("minute").toISOString()
+                    : "Invalid Date",
                 {
                   shouldValidate: isSubmitted,
                 },

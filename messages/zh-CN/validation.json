@@ -91,6 +91,9 @@
   "cutoffMinutes": {
     "required": "打烊前停止取号时间为必填。"
   },
+  "dateTime": {
+    "invalid": "日期时间格式无效。"
+  },
   "description": {
     "maxLength": "描述不能超过 160 个字符。"
   },
