@@ -261,6 +261,7 @@ const FIELD_LABEL_KEYS = {
   revokedSessions: "field.revokedSessions",
   member: "field.member",
   closedAt: "field.closedAt",
+  operatingType: "field.operatingType",
   startTime: "field.startTime",
   endTime: "field.endTime",
   breaks: "field.breaks",

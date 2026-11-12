@@ -336,6 +336,14 @@
     "label": "조직명",
     "placeholder": "귀하의 조직명을 입력해 주세요"
   },
+  "operatingType": {
+    "label": "운영 형태",
+    "options": {
+      "direct": "직영",
+      "franchise": "가맹",
+      "unclassified": "미분류"
+    }
+  },
   "pickup": {
     "actions": {
       "updatePickup": {

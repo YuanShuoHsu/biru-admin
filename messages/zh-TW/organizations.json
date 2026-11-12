@@ -336,6 +336,14 @@
     "label": "組織名稱",
     "placeholder": "請輸入您的組織名稱"
   },
+  "operatingType": {
+    "label": "經營型態",
+    "options": {
+      "direct": "直營",
+      "franchise": "加盟",
+      "unclassified": "未分類"
+    }
+  },
   "pickup": {
     "actions": {
       "updatePickup": {

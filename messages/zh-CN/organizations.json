@@ -336,6 +336,14 @@
     "label": "组织名称",
     "placeholder": "请输入您的组织名称"
   },
+  "operatingType": {
+    "label": "经营类型",
+    "options": {
+      "direct": "直营",
+      "franchise": "加盟",
+      "unclassified": "未分类"
+    }
+  },
   "pickup": {
     "actions": {
       "updatePickup": {

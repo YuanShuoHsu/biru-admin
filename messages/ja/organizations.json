@@ -336,6 +336,14 @@
     "label": "組織名",
     "placeholder": "あなたの組織名を入力してください"
   },
+  "operatingType": {
+    "label": "経営形態",
+    "options": {
+      "direct": "直営",
+      "franchise": "フランチャイズ",
+      "unclassified": "未分類"
+    }
+  },
   "pickup": {
     "actions": {
       "updatePickup": {

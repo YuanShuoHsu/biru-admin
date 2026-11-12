@@ -18,6 +18,7 @@ import {
   orderRefundDtoScopeValues,
   orderResponseDtoPaymentMethodValues,
   orderStatusValues,
+  organizationOperatingTypeValues,
   organizationTeamMemberResponseDtoRoleValues,
   payrollEarningCategoryValues,
   payrollStatementStatusValues,
@@ -181,6 +182,12 @@ export const useAuditLogValueLabels = () => {
       ),
       mode: Object.fromEntries(
         orderModeValues.map((value) => [value, tOrder(`mode.${value}.label`)]),
+      ),
+      "organization.operatingType": Object.fromEntries(
+        organizationOperatingTypeValues.map((value) => [
+          value,
+          tOrganizations(`operatingType.options.${value}`),
+        ]),
       ),
       orderStatus: Object.fromEntries(
         orderStatusValues.map((value) => [value, tOrders(`status.${value}`)]),
