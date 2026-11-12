@@ -91,6 +91,9 @@
   "cutoffMinutes": {
     "required": "閉店前の受付終了時間は必須です。"
   },
+  "dateTime": {
+    "invalid": "日時が無効です。"
+  },
   "description": {
     "maxLength": "説明は160文字以内で入力してください。"
   },

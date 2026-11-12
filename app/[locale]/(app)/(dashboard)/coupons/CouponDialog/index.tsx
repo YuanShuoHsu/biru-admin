@@ -1,9 +1,11 @@
 "use client";
 
 import dayjs from "dayjs";
+import timezonePlugin from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { type BaseSyntheticEvent } from "react";
+import { type BaseSyntheticEvent, useMemo } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import useSWR from "swr";
@@ -12,6 +14,8 @@ import { type CouponFormValues, useCouponFormSchema } from "../definitions";
 
 import FormBox from "@/components/FormBox";
 import NumberSpinner from "@/components/NumberSpinner";
+
+import { PLATFORM_TIMEZONE } from "@/constants/timezone";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -45,6 +49,9 @@ import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { getOrganizationLabel } from "@/utils/organizations";
 
+dayjs.extend(utc);
+dayjs.extend(timezonePlugin);
+
 const PER_USER_LIMIT_MAX = 9999;
 const POINTS_COST_MAX = 100000;
 const TOTAL_LIMIT_MAX = 1000000;
@@ -61,9 +68,6 @@ const issueTriggerOptions: CouponFormValues["issueTrigger"][] = [
   "none",
   ...couponIssueTriggerValues,
 ];
-
-const toDateTimeLocal = (value: string | null | undefined): string =>
-  value ? dayjs(value).format("YYYY-MM-DDTHH:mm") : "";
 
 interface CouponDialogProps {
   coupon: Coupon | null;
@@ -109,8 +113,8 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
       pointsCost: coupon?.pointsCost != null ? String(coupon.pointsCost) : "",
       scope: coupon?.scope || "order",
       totalLimit: coupon?.totalLimit != null ? String(coupon.totalLimit) : "",
-      validFrom: toDateTimeLocal(coupon?.validFrom),
-      validThrough: toDateTimeLocal(coupon?.validThrough),
+      validFrom: coupon?.validFrom ?? "",
+      validThrough: coupon?.validThrough ?? "",
     },
     resolver: zodResolver(couponFormSchema),
   });
@@ -155,6 +159,15 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
       "validThrough",
     ],
   });
+
+  const validFromDate = useMemo(
+    () => (validFrom ? dayjs(validFrom) : null),
+    [validFrom],
+  );
+  const validThroughDate = useMemo(
+    () => (validThrough ? dayjs(validThrough) : null),
+    [validThrough],
+  );
 
   // 品項券限定單一店家：菜單依所選店家載入（品項 ID 各店不同）
   const itemOrganizationId =
@@ -219,12 +232,8 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
         pointsCost: values.pointsCost ? Number(values.pointsCost) : null,
         scope: values.scope,
         totalLimit: values.totalLimit ? Number(values.totalLimit) : null,
-        validFrom: values.validFrom
-          ? new Date(values.validFrom).toISOString()
-          : null,
-        validThrough: values.validThrough
-          ? new Date(values.validThrough).toISOString()
-          : null,
+        validFrom: values.validFrom || null,
+        validThrough: values.validThrough || null,
       };
 
       await fetcher(coupon ? `/api/coupons/${coupon.id}` : "/api/coupons", {
@@ -556,7 +565,9 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
         <Grid size={{ xs: 12, sm: 6 }}>
           <DateTimePicker
             label={`${tCoupons("validFrom.label")} ${tCommon("optional")}`}
-            maxDateTime={validThrough ? dayjs(validThrough) : undefined}
+            maxDateTime={
+              validThroughDate?.isValid() ? validThroughDate : undefined
+            }
             slotProps={{
               field: { clearable: true },
               textField: {
@@ -565,12 +576,16 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
                 helperText: errors.validFrom?.message,
               },
             }}
-            value={validFrom ? dayjs(validFrom) : null}
-            {...register("validFrom")}
+            timezone={PLATFORM_TIMEZONE}
+            value={validFromDate}
             onChange={(date) =>
               setValue(
                 "validFrom",
-                date ? date.format("YYYY-MM-DDTHH:mm") : "",
+                !date
+                  ? ""
+                  : date.isValid()
+                    ? date.startOf("minute").toISOString()
+                    : "Invalid Date",
                 {
                   shouldValidate: isSubmitted,
                 },
@@ -581,7 +596,7 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
         <Grid size={{ xs: 12, sm: 6 }}>
           <DateTimePicker
             label={`${tCoupons("validUntil.label")} ${tCommon("optional")}`}
-            minDateTime={validFrom ? dayjs(validFrom) : undefined}
+            minDateTime={validFromDate?.isValid() ? validFromDate : undefined}
             slotProps={{
               field: { clearable: true },
               textField: {
@@ -590,12 +605,16 @@ const CouponDialog = ({ coupon, mutate, organizations }: CouponDialogProps) => {
                 helperText: errors.validThrough?.message,
               },
             }}
-            value={validThrough ? dayjs(validThrough) : null}
-            {...register("validThrough")}
+            timezone={PLATFORM_TIMEZONE}
+            value={validThroughDate}
             onChange={(date) =>
               setValue(
                 "validThrough",
-                date ? date.format("YYYY-MM-DDTHH:mm") : "",
+                !date
+                  ? ""
+                  : date.isValid()
+                    ? date.startOf("minute").toISOString()
+                    : "Invalid Date",
                 {
                   shouldValidate: isSubmitted,
                 },

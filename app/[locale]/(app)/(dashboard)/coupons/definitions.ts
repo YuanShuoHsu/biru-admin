@@ -55,8 +55,16 @@ export const useCouponFormSchema = () => {
         .refine((value) => !value || Number.isInteger(Number(value)), {
           error: tValidation("number.integer"),
         }),
-      validFrom: z.string(),
-      validThrough: z.string(),
+      validFrom: z
+        .string()
+        .refine((value) => !value || !Number.isNaN(Date.parse(value)), {
+          error: tValidation("dateTime.invalid"),
+        }),
+      validThrough: z
+        .string()
+        .refine((value) => !value || !Number.isNaN(Date.parse(value)), {
+          error: tValidation("dateTime.invalid"),
+        }),
     })
     .superRefine((data, ctx) => {
       if (
