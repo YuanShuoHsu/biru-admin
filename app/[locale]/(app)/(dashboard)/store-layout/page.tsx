@@ -90,7 +90,7 @@ const StoreLayoutPage = async ({
   const columns = settle(getAdminOrderBoard(organization.slug, init));
 
   return (
-    <Suspense fallback={<StoreLayout loading />}>
+    <Suspense fallback={<StoreLayout loading />} key={organization.id}>
       <StoreLayoutContent
         columns={columns}
         layout={layout}
