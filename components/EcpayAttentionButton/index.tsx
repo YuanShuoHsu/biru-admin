@@ -18,6 +18,8 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { EcpayAttentionItem } from "@/types/ecpay";
 
+const REFRESH_INTERVAL_MS = 60_000;
+
 const ListStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(1),
 }));
@@ -48,6 +50,7 @@ const EcpayAttentionButton = ({
     organizationSlug
       ? `/api/organizations/${organizationSlug}/ecpay/attention`
       : null,
+    { refreshInterval: REFRESH_INTERVAL_MS },
   );
 
   if (error && !items.length)
