@@ -20,7 +20,10 @@ import DataGrid from "@/components/DataGrid";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
-import { useOrganizations } from "@/hooks/organizations";
+import {
+  useDefaultOrganizationSlug,
+  useOrganizations,
+} from "@/hooks/organizations";
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useSession } from "@/hooks/useSession";
 
@@ -104,6 +107,8 @@ const Organizations = ({
   const isPlatformAdmin = useSession()?.user.role === "admin";
 
   const { mutate: mutateOrganizations } = useOrganizations();
+  const { mutate: mutateDefaultOrganizationSlug } =
+    useDefaultOrganizationSlug();
 
   const {
     data: rows = initialRows,
@@ -125,7 +130,12 @@ const Organizations = ({
   const mutate = useCallback(() => {
     mutateMyOrganizations();
     mutateOrganizations();
-  }, [mutateMyOrganizations, mutateOrganizations]);
+    mutateDefaultOrganizationSlug();
+  }, [
+    mutateMyOrganizations,
+    mutateOrganizations,
+    mutateDefaultOrganizationSlug,
+  ]);
 
   const isOrganizationSelectable = useCallback(
     ({ deletable }: MyOrganization) => deletable,
