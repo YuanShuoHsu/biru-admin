@@ -161,7 +161,7 @@ const InviteMemberDialog = ({
         value={teamId}
         {...register("teamId")}
       >
-        <MenuItem disabled value="">
+        <MenuItem value="">
           <em>{tTeams("teamId.placeholder")}</em>
         </MenuItem>
         {teams.map(({ id, name }) => (
