@@ -20,7 +20,7 @@ import { Chip, Grid, Typography } from "@mui/material";
 
 import { sumOf } from "@/utils/dashboard";
 
-export interface Trend {
+interface Trend {
   data: number[];
   percent: number;
 }
