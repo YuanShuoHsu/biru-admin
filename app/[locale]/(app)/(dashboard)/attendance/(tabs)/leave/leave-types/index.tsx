@@ -61,7 +61,10 @@ import type { Organization } from "@/types/organizations";
 
 import { attendancePath, getStatutoryLeaveName } from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
-import { getAttendanceLeaveTypeEnumOptions } from "@/utils/enumOptions";
+import {
+  getAttendanceLeaveTypeEnumOptions,
+  getAttendanceLeaveTypeNameEnumOptions,
+} from "@/utils/enumOptions";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
@@ -163,7 +166,13 @@ const LeaveTypes = ({
   const updateQuery = useUpdateQuery();
 
   const enumOptions = useMemo(
-    () => getAttendanceLeaveTypeEnumOptions(tAttendance),
+    () => ({
+      statutoryKind: [
+        ...getAttendanceLeaveTypeEnumOptions(tAttendance).statutoryKind,
+        ...getAttendanceLeaveTypeNameEnumOptions(tAttendance)
+          .leaveTypeStatutoryKind,
+      ],
+    }),
     [tAttendance],
   );
 
