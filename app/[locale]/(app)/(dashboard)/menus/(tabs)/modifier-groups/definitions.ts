@@ -5,7 +5,7 @@ import { MODIFIER_GROUP_MAX_SELECTION_COUNT } from "@/constants/menus";
 
 import { refineRequiredLocalizedText } from "@/utils/locale";
 
-export const useCreateModifierGroupFormSchema = () => {
+export const useModifierGroupFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
@@ -49,6 +49,6 @@ export const useCreateModifierGroupFormSchema = () => {
   });
 };
 
-export type CreateModifierGroupForm = z.infer<
-  ReturnType<typeof useCreateModifierGroupFormSchema>
+export type ModifierGroupForm = z.infer<
+  ReturnType<typeof useModifierGroupFormSchema>
 >;

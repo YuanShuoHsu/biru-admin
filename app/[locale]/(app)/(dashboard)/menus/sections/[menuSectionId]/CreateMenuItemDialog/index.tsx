@@ -7,10 +7,7 @@ import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 
-import {
-  type CreateMenuItemForm,
-  useCreateMenuItemFormSchema,
-} from "./definitions";
+import { type MenuItemForm, useMenuItemFormSchema } from "../definitions";
 
 import CheckboxesGroup from "@/components/CheckboxesGroup";
 import OrderTicketPrinterField from "@/app/[locale]/(app)/(dashboard)/menus/OrderTicketPrinterField";
@@ -85,14 +82,14 @@ const CreateMenuItemDialog = ({
 
   const imageSrc = useUploadAvatarSrc(CREATE_MENU_ITEM_IMAGE_KEY);
 
-  const createMenuItemFormSchema = useCreateMenuItemFormSchema();
+  const createMenuItemFormSchema = useMenuItemFormSchema();
   const {
     control,
     formState: { errors },
     handleSubmit,
     register,
     setValue,
-  } = useForm<CreateMenuItemForm>({
+  } = useForm<MenuItemForm>({
     defaultValues: {
       name: {},
       description: {},
@@ -174,7 +171,7 @@ const CreateMenuItemDialog = ({
     recommendedSweetnessLevel,
     orderTicketPrinterId,
     offer,
-  }: CreateMenuItemForm) => {
+  }: MenuItemForm) => {
     try {
       setDialog({ confirmLoading: true });
 

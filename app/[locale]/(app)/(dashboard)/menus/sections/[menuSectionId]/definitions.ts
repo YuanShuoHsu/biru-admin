@@ -24,7 +24,7 @@ import {
   hasOpeningHoursConflict,
 } from "@/utils/openingHours";
 
-export const useUpdateMenuItemFormSchema = () => {
+export const useMenuItemFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z
@@ -130,6 +130,4 @@ export const useUpdateMenuItemFormSchema = () => {
     );
 };
 
-export type UpdateMenuItemForm = z.infer<
-  ReturnType<typeof useUpdateMenuItemFormSchema>
->;
+export type MenuItemForm = z.infer<ReturnType<typeof useMenuItemFormSchema>>;

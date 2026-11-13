@@ -6,9 +6,9 @@ import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 import {
-  type CreateModifierGroupForm,
-  useCreateModifierGroupFormSchema,
-} from "./definitions";
+  type ModifierGroupForm,
+  useModifierGroupFormSchema,
+} from "../definitions";
 
 import FormBox from "@/components/FormBox";
 import LocalizedTextFields from "@/components/LocalizedTextFields";
@@ -39,13 +39,13 @@ const CreateModifierGroupDialog = ({
   const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
 
-  const createModifierGroupFormSchema = useCreateModifierGroupFormSchema();
+  const createModifierGroupFormSchema = useModifierGroupFormSchema();
   const {
     formState: { errors },
     control,
     handleSubmit,
     setValue,
-  } = useForm<CreateModifierGroupForm>({
+  } = useForm<ModifierGroupForm>({
     defaultValues: {
       displayName: {},
       minSelectionCount: "",
@@ -62,7 +62,7 @@ const CreateModifierGroupDialog = ({
     displayName,
     minSelectionCount,
     maxSelectionCount,
-  }: CreateModifierGroupForm) => {
+  }: ModifierGroupForm) => {
     try {
       setDialog({ confirmLoading: true });
 

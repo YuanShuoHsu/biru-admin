@@ -7,10 +7,7 @@ import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 
-import {
-  type UpdateMenuItemForm,
-  useUpdateMenuItemFormSchema,
-} from "./definitions";
+import { type MenuItemForm, useMenuItemFormSchema } from "../definitions";
 
 import CheckboxesGroup from "@/components/CheckboxesGroup";
 import OrderTicketPrinterField from "@/app/[locale]/(app)/(dashboard)/menus/OrderTicketPrinterField";
@@ -89,14 +86,14 @@ const UpdateMenuItemDialog = ({
   const uploadKey = `update-menu-item-image-${item.id}`;
   const imageSrc = useUploadAvatarSrc(uploadKey, item.imageUrl);
 
-  const updateMenuItemFormSchema = useUpdateMenuItemFormSchema();
+  const updateMenuItemFormSchema = useMenuItemFormSchema();
   const {
     control,
     formState: { errors },
     handleSubmit,
     register,
     setValue,
-  } = useForm<UpdateMenuItemForm>({
+  } = useForm<MenuItemForm>({
     defaultValues: {
       name: item.name,
       description: item.description || {},
@@ -196,7 +193,7 @@ const UpdateMenuItemDialog = ({
     recommendedSweetnessLevel,
     orderTicketPrinterId,
     offer,
-  }: UpdateMenuItemForm) => {
+  }: MenuItemForm) => {
     if (listingLocked) {
       closeDialog();
 
