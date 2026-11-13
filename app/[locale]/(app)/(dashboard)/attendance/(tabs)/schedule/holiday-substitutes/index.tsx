@@ -15,7 +15,11 @@ import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
 import { HOLIDAY_SUBSTITUTE_STATUS_COLORS } from "@/constants/attendance";
-import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+import {
+  autosizeOptions,
+  DATA_GRID_PROPS,
+  NO_VALUE_FILTER_OPERATORS,
+} from "@/constants/dataGrid";
 import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
@@ -133,12 +137,18 @@ const HolidaySubstitutes = ({
 
   const [filterModel, setFilterModel] = useState<GridFilterModel>({
     items:
-      initialFilterField && initialFilterOperator && initialFilterValue
+      initialFilterField &&
+      initialFilterOperator &&
+      (initialFilterValue ||
+        NO_VALUE_FILTER_OPERATORS.includes(initialFilterOperator))
         ? [
             {
               field: initialFilterField,
               operator: initialFilterOperator,
-              value: initialFilterValue,
+              value:
+                initialFilterOperator === "isAnyOf"
+                  ? initialFilterValue?.split(",")
+                  : initialFilterValue,
             },
           ]
         : [],
