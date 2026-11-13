@@ -490,6 +490,12 @@ const routes: Route[] = [
         segment: "board",
       },
       {
+        icon: SoupKitchen,
+        label: "orders.kitchen.title",
+        query: ["organization"],
+        segment: "kitchen",
+      },
+      {
         children: [
           {
             children: [auditLogsRoute],

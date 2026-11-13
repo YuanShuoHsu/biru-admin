@@ -24,20 +24,23 @@ const OrdersTabsLayout = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (!isConnected || !organization) return;
 
-    emitMenuWithAck("joinOrdersBoard", {
-      organizationId: organization.id,
-    }).catch((error) =>
-      enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
-    );
-
     const ordersUrl = `/api/organizations/${organization.slug}/orders`;
 
     const handleUpdate = () =>
       mutate(
         (key) =>
           key === `${ordersUrl}/board/admin` ||
+          key === `${ordersUrl}/kitchen` ||
           key === `/api/organizations/${organization.slug}/ecpay/attention` ||
           (Array.isArray(key) && key[0] === ordersUrl),
+      );
+
+    emitMenuWithAck("joinOrdersBoard", {
+      organizationId: organization.id,
+    })
+      .then(handleUpdate)
+      .catch((error) =>
+        enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
       );
 
     menuSocket.on("orderUpdated", handleUpdate);
@@ -54,7 +57,11 @@ const OrdersTabsLayout = ({ children }: { children: React.ReactNode }) => {
     <>
       <RouteTabs
         ariaLabel="orders tabs"
-        tabs={[{ path: "/orders/board" }, { path: "/orders/list" }]}
+        tabs={[
+          { path: "/orders/board" },
+          { path: "/orders/kitchen" },
+          { path: "/orders/list" },
+        ]}
       />
       {children}
     </>
