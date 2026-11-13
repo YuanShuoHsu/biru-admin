@@ -5,8 +5,11 @@ import { notFound } from "next/navigation";
 
 import PointSettings from ".";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import type { Locale } from "@/i18n/routing";
 
+import { settle } from "@/utils/fetcher";
 import { getPointSetting } from "@/utils/points";
 import { getSession } from "@/utils/session";
 
@@ -31,11 +34,14 @@ const PointSettingsPage = async () => {
 
   if (session?.user?.role !== "admin") notFound();
 
-  const pointSetting = await getPointSetting({
-    headers: { cookie: cookieStore.toString() },
-  });
+  const { data, error } = await settle(
+    getPointSetting({ headers: { cookie: cookieStore.toString() } }),
+  );
 
-  return <PointSettings pointSetting={pointSetting} />;
+  if (error) return <ErrorAlert />;
+  if (!data) notFound();
+
+  return <PointSettings pointSetting={data} />;
 };
 
 export default PointSettingsPage;
