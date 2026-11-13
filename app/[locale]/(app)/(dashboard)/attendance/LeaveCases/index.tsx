@@ -69,6 +69,7 @@ import {
   getStatutoryLeaveName,
 } from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
+import { getAttendanceLeaveTypeNameEnumOptions } from "@/utils/enumOptions";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
@@ -191,6 +192,11 @@ const LeaveCases = ({
 
   const updateQuery = useUpdateQuery();
 
+  const enumOptions = useMemo(
+    () => getAttendanceLeaveTypeNameEnumOptions(tAttendance),
+    [tAttendance],
+  );
+
   const date = useCallback(
     (value: string) => format.dateTime(new Date(value), "dateTime"),
     [format],
@@ -213,7 +219,7 @@ const LeaveCases = ({
     !loading && [base, paginationModel, filterModel, sortModel],
     () =>
       fetcher<AttendanceLeaveCasePage>(
-        `${base}?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
+        `${base}?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
       ),
     {
       fallbackData: { data: initialRows, total: initialRowCount },

@@ -60,7 +60,10 @@ import {
   getFilterItemParams,
   getSelectedRows,
 } from "@/utils/dataGrid";
-import { getAttendanceRequestEnumOptions } from "@/utils/enumOptions";
+import {
+  getAttendanceLeaveTypeNameEnumOptions,
+  getAttendanceRequestEnumOptions,
+} from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 
 const StyledStack = styled(Stack)(({ theme }) => ({
@@ -167,7 +170,10 @@ const Reviews = ({
   const updateQuery = useUpdateQuery();
 
   const enumOptions = useMemo(
-    () => getAttendanceRequestEnumOptions(tAttendance),
+    () => ({
+      ...getAttendanceRequestEnumOptions(tAttendance),
+      ...getAttendanceLeaveTypeNameEnumOptions(tAttendance),
+    }),
     [tAttendance],
   );
 

@@ -62,7 +62,10 @@ import type { Organization } from "@/types/organizations";
 
 import { attendancePath, getStatutoryLeaveName } from "@/utils/attendance";
 import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
-import { getAttendanceRequestEnumOptions } from "@/utils/enumOptions";
+import {
+  getAttendanceLeaveTypeNameEnumOptions,
+  getAttendanceRequestEnumOptions,
+} from "@/utils/enumOptions";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
@@ -163,7 +166,10 @@ const Requests = ({
   const updateQuery = useUpdateQuery();
 
   const enumOptions = useMemo(
-    () => getAttendanceRequestEnumOptions(tAttendance),
+    () => ({
+      ...getAttendanceRequestEnumOptions(tAttendance),
+      ...getAttendanceLeaveTypeNameEnumOptions(tAttendance),
+    }),
     [tAttendance],
   );
 
