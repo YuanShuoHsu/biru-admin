@@ -40,7 +40,7 @@ The middleware at `proxy.ts` handles:
 - Global maintenance mode (`NEXT_PUBLIC_MAINTENANCE` env flag)
 - Public pages: `/auth/*` (except the member account pages) and `/company/*`
 
-Next.js rewrites (`next.config.ts`) proxy `/api/:path*` → `NEXT_PUBLIC_NEST_URL/api/:path*` for client-side calls.
+Next.js rewrites (`next.config.ts`) proxy `/api/:path*` → `NEXT_PUBLIC_NEST_URL/api/:path*` for client-side calls. Browser calls rely on that rewrite keeping them same-origin, so before removing or bypassing it check three things: the cookies biru-api sets must reach both the API host and this app's server-side requests (biru-api AGENTS.md, Global Setup), the relative `/api/images/...` URLs the API returns must still resolve, and cross-origin `fetch` must send `credentials: "include"`.
 
 ### State Management
 
