@@ -7380,6 +7380,7 @@ export interface components {
     };
     /** @enum {string} */
     BannerFilterField:
+      | "alt"
       | "isActive"
       | "startsAt"
       | "endsAt"
@@ -7387,6 +7388,7 @@ export interface components {
       | "updatedAt";
     /** @enum {string} */
     BannerSortField:
+      | "alt"
       | "isActive"
       | "startsAt"
       | "endsAt"
@@ -27492,10 +27494,10 @@ export const userSessionSortFieldValues: ReadonlyArray<
 > = ["userAgent", "ipAddress", "createdAt", "expiresAt"];
 export const bannerFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["BannerFilterField"]
-> = ["isActive", "startsAt", "endsAt", "createdAt", "updatedAt"];
+> = ["alt", "isActive", "startsAt", "endsAt", "createdAt", "updatedAt"];
 export const bannerSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["BannerSortField"]
-> = ["isActive", "startsAt", "endsAt", "createdAt", "updatedAt"];
+> = ["alt", "isActive", "startsAt", "endsAt", "createdAt", "updatedAt"];
 export const couponDiscountTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CouponDiscountType"]
 > = ["fixed", "percentage"];

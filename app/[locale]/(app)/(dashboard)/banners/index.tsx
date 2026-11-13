@@ -26,6 +26,7 @@ import { isSortableOperation } from "@dnd-kit/react/sortable";
 import {
   useBooleanFilterOperators,
   useDateFilterOperators,
+  useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 import { useRowSelection } from "@/hooks/useRowSelection";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
@@ -165,6 +166,7 @@ const Banners = ({
 
   const booleanFilterOperators = useBooleanFilterOperators();
   const dateFilterOperators = useDateFilterOperators();
+  const stringFilterOperators = useStringFilterOperators();
 
   const format = useFormatter();
 
@@ -561,6 +563,14 @@ const Banners = ({
         sortable: false,
       },
       {
+        field: "alt",
+        filterOperators: stringFilterOperators,
+        headerName: tBanners("alt.label"),
+        renderCell: renderEmptyableCell,
+        valueGetter: (_value: unknown, { alt }: Banner) =>
+          localize(alt, locale),
+      },
+      {
         field: "isActive",
         filterOperators: booleanFilterOperators,
         headerName: tBanners("isActive.label"),
@@ -641,6 +651,7 @@ const Banners = ({
       handleUpdateBanner,
       isReorderMode,
       locale,
+      stringFilterOperators,
       tBanners,
       toolbarMode,
     ],
