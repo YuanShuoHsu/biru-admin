@@ -166,14 +166,19 @@ const LeaveTypes = ({
   const updateQuery = useUpdateQuery();
 
   const enumOptions = useMemo(
+    () => getAttendanceLeaveTypeEnumOptions(tAttendance),
+    [tAttendance],
+  );
+
+  const quickFilterEnumOptions = useMemo(
     () => ({
       statutoryKind: [
-        ...getAttendanceLeaveTypeEnumOptions(tAttendance).statutoryKind,
+        ...enumOptions.statutoryKind,
         ...getAttendanceLeaveTypeNameEnumOptions(tAttendance)
           .leaveTypeStatutoryKind,
       ],
     }),
-    [tAttendance],
+    [enumOptions, tAttendance],
   );
 
   const base = attendancePath(organizationSlug, "org", "leave-types");
@@ -189,7 +194,7 @@ const LeaveTypes = ({
     !loading && [base, paginationModel, filterModel, sortModel],
     () =>
       fetcher<AttendanceLeaveTypePage>(
-        `${base}?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
+        `${base}?${getDataGridSearchParams(paginationModel, filterModel, sortModel, quickFilterEnumOptions)}`,
       ),
     {
       fallbackData: { data: initialRows, total: initialRowCount },
