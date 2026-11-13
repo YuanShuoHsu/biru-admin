@@ -33,6 +33,14 @@
         "success": "Made a batch of {name}",
         "title": "Make a batch"
       },
+      "recordWaste": {
+        "quantity": {
+          "label": "Amount wasted",
+          "placeholder": "Please enter the amount wasted"
+        },
+        "success": "Recorded waste of {name}",
+        "title": "Record waste"
+      },
       "reorderIngredient": {
         "cancel": {
           "confirm": "Are you sure you want to cancel <bold>ingredients</bold> reorder? Unsaved changes will be lost.",
@@ -317,11 +325,23 @@
         "count": "Stock count",
         "consume": "Order usage",
         "restore": "Order refund",
-        "batch": "Batch made"
+        "batch": "Batch made",
+        "waste": "Waste"
       }
     },
     "unitCost": {
       "label": "Unit cost"
+    },
+    "wasteReason": {
+      "label": "Waste reason",
+      "options": {
+        "expired": "Expired",
+        "spilled": "Spilled",
+        "madeWrong": "Made wrong",
+        "damaged": "Damaged",
+        "other": "Other"
+      },
+      "placeholder": "Please select a waste reason"
     }
   },
   "units": {

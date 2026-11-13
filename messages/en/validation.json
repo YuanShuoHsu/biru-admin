@@ -447,6 +447,9 @@
   "voidReason": {
     "required": "Void reason is required."
   },
+  "wasteReason": {
+    "notSelected": "Please select a waste reason."
+  },
   "confirmation": {
     "mismatch": "The input does not match “{expected}”."
   },

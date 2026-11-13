@@ -9,6 +9,7 @@ import useSWR from "swr";
 
 import IngredientBatchDialog from "./IngredientBatchDialog";
 import IngredientDialog from "./IngredientDialog";
+import IngredientWasteDialog from "./IngredientWasteDialog";
 import StockCell from "../../StockCell";
 
 import AuditLogButton from "@/components/AuditLogButton";
@@ -46,6 +47,7 @@ import {
   Add,
   Cancel,
   Delete,
+  DeleteSweep,
   Edit,
   Error as ErrorIcon,
   Save,
@@ -556,6 +558,20 @@ const Ingredients = ({
     [mutate, organizationSlug, setDialog, tInventory],
   );
 
+  const handleRecordWaste = useCallback(
+    (ingredient: Ingredient) => {
+      setDialog({
+        content: (
+          <IngredientWasteDialog ingredient={ingredient} mutate={mutate} />
+        ),
+        formId: "ingredient-waste-form",
+        open: true,
+        title: tInventory("ingredients.actions.recordWaste.title"),
+      });
+    },
+    [mutate, setDialog, tInventory],
+  );
+
   const handleViewTransactions = useCallback(
     ({ id }: Ingredient) => {
       const params = new URLSearchParams({
@@ -733,6 +749,20 @@ const Ingredients = ({
                         size="small"
                       >
                         <SoupKitchen fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {canRecordTransaction && !row.unlimitedStock && (
+                    <Tooltip
+                      title={tInventory(
+                        "ingredients.actions.recordWaste.title",
+                      )}
+                    >
+                      <IconButton
+                        onClick={() => handleRecordWaste(row)}
+                        size="small"
+                      >
+                        <DeleteSweep fontSize="small" />
                       </IconButton>
                     </Tooltip>
                   )}
@@ -990,6 +1020,7 @@ const Ingredients = ({
       formatMoney,
       handleDeleteIngredient,
       handleMakeBatch,
+      handleRecordWaste,
       handleUpdateIngredient,
       handleViewTransactions,
       isReorderMode,

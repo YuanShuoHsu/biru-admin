@@ -2306,6 +2306,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/ingredients/{ingredientId}/waste": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 登記食材報廢 */
+    post: operations["IngredientsController_createWaste"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/menu-items/{menuItemId}/recipe": {
     parameters: {
       query?: never;
@@ -9430,7 +9447,14 @@ export interface components {
       note?: string | null;
     };
     /** @enum {string} */
-    InventoryTransactionReason: "count" | "consume" | "restore" | "batch";
+    InventoryTransactionReason:
+      | "count"
+      | "consume"
+      | "restore"
+      | "batch"
+      | "waste";
+    /** @enum {string} */
+    WasteReason: "expired" | "spilled" | "madeWrong" | "damaged" | "other";
     InventoryTransactionResponseDto: {
       id: string;
       ingredientId: string;
@@ -9444,6 +9468,10 @@ export interface components {
       unitCost?: string | null;
       /** @description 同一次製作批次的異動共用 */
       productionBatchId?: string | null;
+      wasteReason?: components["schemas"]["WasteReason"] | null;
+      wasteBatchId?: string | null;
+      wasteMenuItemId?: string | null;
+      wasteServings?: number | null;
       orderId?: string | null;
       orderNumber?: string | null;
       note?: string | null;
@@ -9664,6 +9692,16 @@ export interface components {
        * @example 500.000
        */
       inventoryLevel: string;
+      /** @description 異動原因，自由填寫 */
+      note?: string | null;
+    };
+    CreateIngredientWasteDto: {
+      /**
+       * @description 報廢的數量，單位為食材的 unitCode
+       * @example 250.000
+       */
+      quantity: string;
+      wasteReason: components["schemas"]["WasteReason"];
       /** @description 異動原因，自由填寫 */
       note?: string | null;
     };
@@ -19244,6 +19282,38 @@ export interface operations {
       };
     };
   };
+  IngredientsController_createWaste: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        ingredientId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateIngredientWasteDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["InventoryTransactionResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   MenuItemInventoryController_findRecipe: {
     parameters: {
       query?: never;
@@ -28440,7 +28510,10 @@ export const baseUnitCodeValues: ReadonlyArray<
 > = ["GRM", "MLT", "H87"];
 export const inventoryTransactionReasonValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["InventoryTransactionReason"]
-> = ["count", "consume", "restore", "batch"];
+> = ["count", "consume", "restore", "batch", "waste"];
+export const wasteReasonValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["WasteReason"]
+> = ["expired", "spilled", "madeWrong", "damaged", "other"];
 export const supplierFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["SupplierFilterField"]
 > = ["name", "telephone", "url", "note", "createdAt", "updatedAt"];

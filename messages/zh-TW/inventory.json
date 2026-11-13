@@ -33,6 +33,14 @@
         "success": "已製作一批 {name}",
         "title": "製作一批"
       },
+      "recordWaste": {
+        "quantity": {
+          "label": "報廢量",
+          "placeholder": "請輸入您的報廢量"
+        },
+        "success": "已登記 {name} 的報廢",
+        "title": "登記報廢"
+      },
       "reorderIngredient": {
         "cancel": {
           "confirm": "確定要取消<bold>食材</bold>排序嗎？未儲存的變更將會遺失。",
@@ -317,11 +325,23 @@
         "count": "人工盤點",
         "consume": "訂單耗用",
         "restore": "退單回補",
-        "batch": "製作批次"
+        "batch": "製作批次",
+        "waste": "報廢"
       }
     },
     "unitCost": {
       "label": "單位成本"
+    },
+    "wasteReason": {
+      "label": "報廢原因",
+      "options": {
+        "expired": "過期",
+        "spilled": "打翻",
+        "madeWrong": "做錯",
+        "damaged": "損壞",
+        "other": "其他"
+      },
+      "placeholder": "請選擇報廢原因"
     }
   },
   "units": {
