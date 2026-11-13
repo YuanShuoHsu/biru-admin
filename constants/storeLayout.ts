@@ -77,24 +77,11 @@ type LayoutFloor = (typeof STORE_LAYOUT_FLOORS)[number];
 
 const WINDOW_COUNTER_Z = STORE_LAYOUT_ROOM.depth - 0.5;
 const WINDOW_COUNTER_DEPTH = 0.45;
-const WINDOW_COUNTER_HEIGHT = 1.05;
 
-const windowCounter = (
-  floor: LayoutFloor,
-  from: number,
-  to: number,
-  tableNumber: number,
-) => ({
-  depth: WINDOW_COUNTER_DEPTH,
-  elevation: 0,
+const windowCounter = (floor: LayoutFloor, from: number, to: number) => ({
   floor,
-  height: WINDOW_COUNTER_HEIGHT,
-  kind: "seat" as const,
-  label: "windowCounter" as const,
-  tableNumber,
   width: to - from,
   x: from,
-  z: WINDOW_COUNTER_Z,
 });
 
 const RESTROOM_WALL = 0.1;
@@ -328,11 +315,11 @@ export const STORE_LAYOUT_RESTROOMS = [
 ];
 
 const GROUND_WINDOW_COUNTERS = [
-  windowCounter("ground", 0.3, 6.1, 117),
-  windowCounter("ground", 9.65, 15.45, 118),
+  windowCounter("ground", 0.3, 6.1),
+  windowCounter("ground", 9.65, 15.45),
 ];
 
-const UPPER_WINDOW_COUNTERS = [windowCounter("upper", 0.3, 15.45, 234)];
+const UPPER_WINDOW_COUNTERS = [windowCounter("upper", 0.3, 15.45)];
 
 const ENTRANCE = { height: 2.1, width: 2, x: 6.9 } as const;
 

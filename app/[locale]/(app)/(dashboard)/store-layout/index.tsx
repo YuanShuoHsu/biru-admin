@@ -566,7 +566,7 @@ const StoreLayout = ({
   const { items: itemLabels } = useMessages().storeLayout;
 
   const itemLabel = (label: string) =>
-    label in itemLabels
+    Object.hasOwn(itemLabels, label)
       ? tStoreLayout(`items.${label as keyof typeof itemLabels}`)
       : label;
 
