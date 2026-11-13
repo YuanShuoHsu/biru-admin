@@ -280,6 +280,7 @@ const PointTransactions = ({
         filterOperators: numberFilterOperators,
         headerName: tOrganizations("points.transactions.remainingPoints"),
         type: "number",
+        valueFormatter: (value: number) => format.number(value),
       },
       {
         field: "orderNumber",
