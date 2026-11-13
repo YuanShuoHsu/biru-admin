@@ -3901,6 +3901,24 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationId}/operating-type": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 門市經營型態（直營、加盟、未分類） */
+    get: operations["OrganizationOperatingTypeController_get"];
+    /** 設定門市經營型態 */
+    put: operations["OrganizationOperatingTypeController_update"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationId}/platform-admin-membership": {
     parameters: {
       query?: never;
@@ -11687,6 +11705,18 @@ export interface components {
        * @description 停業時間；營業中為 null
        */
       closedAt?: string | null;
+    };
+    /**
+     * @description 尚未分類的門市為 unclassified
+     * @enum {string}
+     */
+    OrganizationOperatingType: "direct" | "franchise" | "unclassified";
+    OperatingTypeResponseDto: {
+      /** @description 尚未分類的門市為 unclassified */
+      operatingType: components["schemas"]["OrganizationOperatingType"];
+    };
+    UpdateOperatingTypeDto: {
+      operatingType: components["schemas"]["OrganizationOperatingType"];
     };
     MemberResponseDto: {
       /** Format: date-time */
@@ -23090,6 +23120,66 @@ export interface operations {
       };
     };
   };
+  OrganizationOperatingTypeController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OperatingTypeResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrganizationOperatingTypeController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateOperatingTypeDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OperatingTypeResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   OrganizationPlatformAdminController_join: {
     parameters: {
       query?: never;
@@ -28607,6 +28697,9 @@ export const waitlistTicketSortFieldValues: ReadonlyArray<
   "calledAt",
   "endedAt",
 ];
+export const organizationOperatingTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OrganizationOperatingType"]
+> = ["direct", "franchise", "unclassified"];
 export const memberResponseDtoRoleValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["MemberResponseDto"]["role"]
 > = ["admin", "member", "owner"];

@@ -107,6 +107,7 @@
     "number": "番号",
     "nutrition": "栄養成分",
     "openingHours": "営業時間",
+    "operatingType": "経営形態",
     "order": "注文",
     "orderStatus": "注文ステータス",
     "originalEndsAt": "元の終了日",

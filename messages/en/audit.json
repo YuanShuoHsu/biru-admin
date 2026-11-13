@@ -107,6 +107,7 @@
     "number": "Number",
     "nutrition": "Nutrition",
     "openingHours": "Opening Hours",
+    "operatingType": "Operating type",
     "order": "Order",
     "orderStatus": "Order status",
     "originalEndsAt": "Original end date",

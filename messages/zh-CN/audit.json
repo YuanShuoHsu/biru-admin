@@ -107,6 +107,7 @@
     "number": "号码",
     "nutrition": "营养标示",
     "openingHours": "营业时间",
+    "operatingType": "经营类型",
     "order": "订单",
     "orderStatus": "订单状态",
     "originalEndsAt": "原结束日",

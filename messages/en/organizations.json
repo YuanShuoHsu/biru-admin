@@ -336,6 +336,13 @@
     "label": "Organization name",
     "placeholder": "Please enter your organization name"
   },
+  "operatingType": {
+    "options": {
+      "direct": "Company-owned",
+      "franchise": "Franchise",
+      "unclassified": "Unclassified"
+    }
+  },
   "pickup": {
     "actions": {
       "updatePickup": {
