@@ -57,6 +57,8 @@ const playChime = (audioContext: AudioContext) => {
   const oscillator = new OscillatorNode(audioContext, { frequency: 880 });
   const gain = new GainNode(audioContext);
   const { currentTime } = audioContext;
+
+  if (audioContext.state === "suspended") void audioContext.resume();
   const endTime = currentTime + CHIME_SECONDS;
 
   gain.gain.setValueAtTime(0.3, currentTime);
@@ -118,7 +120,14 @@ const OrdersKitchen = ({
 
   const ordersUrl = `/api/organizations/${organizationSlug}/orders`;
 
-  const kitchenUrl = getHref(`${ordersUrl}/kitchen`, { printerId });
+  const printers = useOrderTicketPrinterStatuses(organizationSlug);
+
+  const stationId =
+    printers && !printers.some(({ id }) => id === printerId)
+      ? undefined
+      : printerId;
+
+  const kitchenUrl = getHref(`${ordersUrl}/kitchen`, { printerId: stationId });
 
   const { data: orders = initialOrders, mutate } = useSWR<
     KitchenOrderResponse[]
@@ -127,11 +136,23 @@ const OrdersKitchen = ({
     refreshInterval: isConnected ? 0 : POLL_INTERVAL_MS,
   });
 
-  const printers = useOrderTicketPrinterStatuses(organizationSlug);
-
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
+  const [audioRunning, setAudioRunning] = useState(false);
+  const [audioStarting, setAudioStarting] = useState(false);
 
-  useEffect(() => () => void audioContext?.close(), [audioContext]);
+  useEffect(() => {
+    if (!audioContext) return;
+
+    const handleStateChange = () =>
+      setAudioRunning(audioContext.state === "running");
+
+    audioContext.addEventListener("statechange", handleStateChange);
+
+    return () => {
+      audioContext.removeEventListener("statechange", handleStateChange);
+      void audioContext.close();
+    };
+  }, [audioContext]);
 
   const seenOrdersRef = useRef({
     kitchenUrl,
@@ -156,9 +177,18 @@ const OrdersKitchen = ({
 
   // https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Best_practices#autoplay_policy
   const handleStart = async () => {
-    const context = new AudioContext();
-    await context.resume();
+    const context = audioContext ?? new AudioContext();
     setAudioContext(context);
+    setAudioStarting(true);
+
+    try {
+      await context.resume();
+      setAudioRunning(context.state === "running");
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+    } finally {
+      setAudioStarting(false);
+    }
   };
 
   const handleStationChange = (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -247,7 +277,7 @@ const OrdersKitchen = ({
   return (
     <Stack spacing={2}>
       <HeaderStack direction="row">
-        {printers && printers.length > 1 && (
+        {printers && (printers.length > 1 || stationId) && (
           <StyledTextField
             label={tOrders("kitchen.station.label")}
             onChange={handleStationChange}
@@ -257,7 +287,7 @@ const OrdersKitchen = ({
               inputLabel: { shrink: true },
               select: { displayEmpty: true },
             }}
-            value={printerId ?? ""}
+            value={stationId ?? ""}
           >
             <MenuItem value="">{tOrders("kitchen.station.all")}</MenuItem>
             {printers.map(({ id, name }) => (
@@ -267,10 +297,15 @@ const OrdersKitchen = ({
             ))}
           </StyledTextField>
         )}
-        {!audioContext && (
+        {!audioRunning && (
           <Alert
             action={
-              <Button color="inherit" onClick={handleStart} size="small">
+              <Button
+                color="inherit"
+                loading={audioStarting}
+                onClick={handleStart}
+                size="small"
+              >
                 {tOrders("kitchen.sound.start")}
               </Button>
             }
