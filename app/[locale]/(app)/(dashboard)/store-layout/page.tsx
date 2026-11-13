@@ -13,7 +13,6 @@ import ErrorAlert from "@/components/ErrorAlert";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
-import type { AdminOrderBoardColumn } from "@/types/orders";
 import type { Organization } from "@/types/organizations";
 import type { StoreLayoutData } from "@/types/storeLayout";
 
@@ -40,20 +39,23 @@ export const generateMetadata = async ({
 };
 
 interface StoreLayoutContentProps {
-  columns: Promise<FetchResult<AdminOrderBoardColumn[]>>;
+  init: RequestInit;
   layout: Promise<FetchResult<StoreLayoutData | null>>;
   organization: Organization;
 }
 
 const StoreLayoutContent = async ({
-  columns: columnsResult,
+  init,
   layout: layoutResult,
   organization,
 }: StoreLayoutContentProps) => {
-  const [{ data: layout, error: layoutError }, { data: columns, error }] =
-    await Promise.all([layoutResult, columnsResult]);
+  const { data: layout, error: layoutError } = await layoutResult;
   if (layoutError) return <ErrorAlert />;
   if (!layout) return <StoreLayout layout={null} organization={organization} />;
+
+  const { data: columns, error } = await settle(
+    getAdminOrderBoard(organization.slug, init),
+  );
   if (error) return <ErrorAlert />;
 
   return (
@@ -87,12 +89,11 @@ const StoreLayoutPage = async ({
   const init = { headers: { cookie: cookieStore.toString() } };
 
   const layout = settle(getStoreLayout(organization.slug, init));
-  const columns = settle(getAdminOrderBoard(organization.slug, init));
 
   return (
     <Suspense fallback={<StoreLayout loading />} key={organization.id}>
       <StoreLayoutContent
-        columns={columns}
+        init={init}
         layout={layout}
         organization={organization}
       />
