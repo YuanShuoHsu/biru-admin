@@ -81,6 +81,9 @@ const TRANSFER_TRANSITIONS: Partial<
   waiting: ["called"],
 };
 
+const isEditable = ({ status }: AdminWaitlistTicket) =>
+  status === "waiting" || status === "called";
+
 const TitleStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",
   columnGap: theme.spacing(1),
@@ -207,7 +210,7 @@ const AdminWaitlist = ({
     const latest = (await mutate()) || waitlist;
     const current = latest.tickets.find(({ id }) => id === ticket.id);
 
-    if (current?.status !== "waiting" && current?.status !== "called") return;
+    if (!current || !isEditable(current)) return;
 
     setDialog({
       content: (
@@ -457,7 +460,7 @@ const AdminWaitlist = ({
     const statuses = ticket.availableTransitions.filter(
       (status) => !TRANSFER_TRANSITIONS[ticket.status]?.includes(status),
     );
-    const editable = ticket.status === "waiting" || ticket.status === "called";
+    const editable = isEditable(ticket);
 
     if (!editable && !statuses.length) return null;
 
