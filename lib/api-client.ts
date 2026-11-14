@@ -42,8 +42,8 @@ const throwOnErrorMiddleware: Middleware = {
 };
 
 export const apiClient = createClient<paths>({
-  baseUrl:
-    typeof window === "undefined" ? process.env.NEXT_PUBLIC_NEST_URL : "",
+  baseUrl: process.env.NEXT_PUBLIC_NEST_URL,
+  credentials: "include",
 });
 
 apiClient.use(acceptLanguageMiddleware, throwOnErrorMiddleware);

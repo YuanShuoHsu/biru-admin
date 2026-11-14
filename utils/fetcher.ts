@@ -24,10 +24,7 @@ const resolveUrl = (input: RequestInfo) => {
   const isAbsolute = /^https?:\/\//i.test(url);
   if (isAbsolute) return url;
 
-  const isServer = typeof window === "undefined";
-  if (isServer) return `${BASE_URL}${url}`;
-
-  return url;
+  return `${BASE_URL}${url}`;
 };
 
 export const fetcher = async <T = unknown>(
@@ -40,7 +37,12 @@ export const fetcher = async <T = unknown>(
   if (typeof document !== "undefined" && !headers.has("Accept-Language"))
     headers.set("Accept-Language", document.documentElement.lang);
 
-  const res = await fetch(url, { ...init, headers });
+  const isBrowser = typeof window !== "undefined";
+  const res = await fetch(url, {
+    ...(isBrowser && { credentials: "include" }),
+    ...init,
+    headers,
+  });
 
   const contentType = res.headers.get("content-type") || "";
 
