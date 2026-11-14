@@ -447,6 +447,9 @@
   "voidReason": {
     "required": "作廢原因為必填。"
   },
+  "wasteReason": {
+    "notSelected": "請選擇報廢原因。"
+  },
   "confirmation": {
     "mismatch": "輸入的內容與要確認的「{expected}」不符。"
   },

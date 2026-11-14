@@ -447,6 +447,9 @@
   "voidReason": {
     "required": "取消理由は必須です。"
   },
+  "wasteReason": {
+    "notSelected": "廃棄理由を選択してください。"
+  },
   "confirmation": {
     "mismatch": "入力内容が「{expected}」と一致しません。"
   },

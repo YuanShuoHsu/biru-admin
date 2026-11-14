@@ -447,6 +447,9 @@
   "voidReason": {
     "required": "작폐 사유는 필수입니다."
   },
+  "wasteReason": {
+    "notSelected": "폐기 사유를 선택해 주세요."
+  },
   "confirmation": {
     "mismatch": "입력한 내용이 “{expected}”와 일치하지 않습니다."
   },

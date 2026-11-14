@@ -33,6 +33,14 @@
         "success": "{name} 1배치를 만들었습니다",
         "title": "1배치 만들기"
       },
+      "recordWaste": {
+        "quantity": {
+          "label": "폐기량",
+          "placeholder": "폐기량을 입력해 주세요"
+        },
+        "success": "{name} 폐기를 기록했습니다",
+        "title": "폐기 기록"
+      },
       "reorderIngredient": {
         "cancel": {
           "confirm": "<bold>식자재</bold> 정렬을 취소하시겠습니까? 저장하지 않은 변경 사항은 사라집니다.",
@@ -317,11 +325,23 @@
         "count": "재고 실사",
         "consume": "주문 소비",
         "restore": "주문 환불",
-        "batch": "배치 생산"
+        "batch": "배치 생산",
+        "waste": "폐기"
       }
     },
     "unitCost": {
       "label": "단위 원가"
+    },
+    "wasteReason": {
+      "label": "폐기 사유",
+      "options": {
+        "expired": "유통기한 경과",
+        "spilled": "쏟음",
+        "madeWrong": "잘못 만듦",
+        "damaged": "파손",
+        "other": "기타"
+      },
+      "placeholder": "폐기 사유를 선택해 주세요"
     }
   },
   "units": {

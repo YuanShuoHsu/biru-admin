@@ -33,6 +33,14 @@
         "success": "{name} を1バッチ仕込みました",
         "title": "1バッチ仕込む"
       },
+      "recordWaste": {
+        "quantity": {
+          "label": "廃棄量",
+          "placeholder": "廃棄量を入力してください"
+        },
+        "success": "{name} の廃棄を記録しました",
+        "title": "廃棄を記録"
+      },
       "reorderIngredient": {
         "cancel": {
           "confirm": "<bold>食材</bold>の並び替えをキャンセルしますか？保存していない変更は失われます。",
@@ -317,11 +325,23 @@
         "count": "棚卸",
         "consume": "注文消費",
         "restore": "返品戻し",
-        "batch": "仕込み"
+        "batch": "仕込み",
+        "waste": "廃棄"
       }
     },
     "unitCost": {
       "label": "単位原価"
+    },
+    "wasteReason": {
+      "label": "廃棄理由",
+      "options": {
+        "expired": "期限切れ",
+        "spilled": "こぼした",
+        "madeWrong": "作り間違い",
+        "damaged": "破損",
+        "other": "その他"
+      },
+      "placeholder": "廃棄理由を選択してください"
     }
   },
   "units": {

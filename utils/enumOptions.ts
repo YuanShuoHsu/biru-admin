@@ -39,6 +39,7 @@ import {
   userCouponSourceValues,
   userRoleValues,
   waitlistTicketStatusValues,
+  wasteReasonValues,
 } from "@/types/api";
 import type { OrganizationResponse } from "@/types/organizations";
 
@@ -222,6 +223,10 @@ export const getInventoryTransactionEnumOptions = (
 ) => ({
   reason: inventoryTransactionReasonValues.map((value) => ({
     label: tInventory(`transactions.reason.options.${value}`),
+    value,
+  })),
+  wasteReason: wasteReasonValues.map((value) => ({
+    label: tInventory(`transactions.wasteReason.options.${value}`),
     value,
   })),
 });
