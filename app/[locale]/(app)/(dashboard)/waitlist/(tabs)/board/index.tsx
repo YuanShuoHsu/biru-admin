@@ -205,6 +205,9 @@ const AdminWaitlist = ({
 
   const handleEditDialog = async (ticket: AdminWaitlistTicket) => {
     const latest = (await mutate()) || waitlist;
+    const current = latest.tickets.find(({ id }) => id === ticket.id);
+
+    if (current?.status !== "waiting" && current?.status !== "called") return;
 
     setDialog({
       content: (
@@ -212,7 +215,7 @@ const AdminWaitlist = ({
           maxPartySize={getMaxPartySize(latest)}
           mutate={() => mutate()}
           organizationSlug={organizationSlug}
-          ticket={ticket}
+          ticket={current}
         />
       ),
       formId: WAITLIST_TICKET_FORM_ID,
