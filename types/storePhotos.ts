@@ -3,16 +3,9 @@ import {
   storePhotoFilterFieldValues,
   storePhotoSortFieldValues,
 } from "@/types/api";
-import type { LocalizedText } from "@/types/locale";
 
-export type StorePhoto = Omit<
-  components["schemas"]["StorePhotoResponseDto"],
-  "alt"
-> & { alt: LocalizedText };
-export type CreateStorePhotoDto = Omit<
-  components["schemas"]["CreateStorePhotoDto"],
-  "alt"
-> & { alt: LocalizedText };
+export type StorePhoto = components["schemas"]["StorePhotoResponseDto"];
+export type CreateStorePhotoDto = components["schemas"]["CreateStorePhotoDto"];
 
 export type StorePhotoFilterField =
   (typeof storePhotoFilterFieldValues)[number];
