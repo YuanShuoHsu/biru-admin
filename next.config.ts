@@ -21,6 +21,10 @@ const nextConfig: NextConfig = {
         source: "/api/images/:path*",
         destination: `${process.env.NEXT_PUBLIC_NEST_URL}/api/images/:path*`,
       },
+      {
+        source: "/api/users/:userId/image/:file",
+        destination: `${process.env.NEXT_PUBLIC_NEST_URL}/api/users/:userId/image/:file`,
+      },
     ];
   },
   // https://nextjs.org/docs/app/api-reference/components/image#remotepatterns
