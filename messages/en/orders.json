@@ -243,6 +243,14 @@
     "empty": "No orders in preparation",
     "refunded": "Refunded",
     "serve": "Serve",
+    "sound": {
+      "hint": "Press Start to play a sound when a new order arrives",
+      "start": "Start"
+    },
+    "station": {
+      "all": "All stations",
+      "label": "Station"
+    },
     "title": "Kitchen"
   },
   "label": "Orders",

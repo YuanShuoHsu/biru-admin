@@ -17,7 +17,7 @@ import { getResolvedAdminOrganization } from "@/utils/session";
 
 interface OrdersKitchenPageProps {
   params: Promise<{ locale: Locale }>;
-  searchParams: Promise<{ organization?: string }>;
+  searchParams: Promise<{ organization?: string; printerId?: string }>;
 }
 
 export const generateMetadata = async ({
@@ -33,11 +33,8 @@ const OrdersKitchenPage = async ({
   params,
   searchParams,
 }: OrdersKitchenPageProps) => {
-  const [cookieStore, { locale }, { organization }] = await Promise.all([
-    cookies(),
-    params,
-    searchParams,
-  ]);
+  const [cookieStore, { locale }, { organization, printerId }] =
+    await Promise.all([cookies(), params, searchParams]);
 
   const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
@@ -53,14 +50,18 @@ const OrdersKitchenPage = async ({
   }
 
   const { data: orders, error } = await settle(
-    getAdminKitchenOrders(selectedOrganization.slug, fetchOptions),
+    getAdminKitchenOrders(selectedOrganization.slug, printerId, fetchOptions),
   );
   if (error) return <ErrorAlert />;
 
   return (
     // https://next-intl.dev/docs/usage/configuration#now
     <NextIntlClientProvider now={new Date()}>
-      <OrdersKitchen orders={orders} organization={selectedOrganization} />
+      <OrdersKitchen
+        orders={orders}
+        organization={selectedOrganization}
+        printerId={printerId}
+      />
     </NextIntlClientProvider>
   );
 };

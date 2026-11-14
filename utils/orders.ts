@@ -1,6 +1,7 @@
 import { cache } from "react";
 
 import { fetcher } from "./fetcher";
+import { getHref } from "./href";
 
 import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
 
@@ -88,10 +89,13 @@ export const getAdminOrderBoard = cache(
 export const getAdminKitchenOrders = cache(
   async (
     organizationSlug: string,
+    printerId: string | undefined,
     init?: RequestInit,
   ): Promise<KitchenOrderResponse[]> => {
     const orders = await fetcher<KitchenOrderResponse[]>(
-      `/api/organizations/${organizationSlug}/orders/kitchen`,
+      getHref(`/api/organizations/${organizationSlug}/orders/kitchen`, {
+        printerId,
+      }),
       init,
     );
 

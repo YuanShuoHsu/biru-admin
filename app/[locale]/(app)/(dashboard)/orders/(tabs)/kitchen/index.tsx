@@ -2,17 +2,24 @@
 
 import { useFormatter, useNow, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 
 import { MODE_COLORS } from "@/constants/orderMode";
 
 import { useOrderItemChoiceNames } from "@/hooks/useOrderItemName";
-import { useOrderActions } from "@/hooks/useOrderActions";
+import {
+  useOrderActions,
+  useOrderTicketPrinterStatuses,
+} from "@/hooks/useOrderActions";
 import { useOrderModeLabel } from "@/hooks/useOrderModeLabel";
 import { useSocketConnection } from "@/hooks/useSocketConnection";
 
+import { usePathname, useRouter } from "@/i18n/navigation";
+
 import { menuSocket } from "@/app/socket";
+
+import { StyledTextField } from "@/components/OrganizationSelect";
 
 import { CheckCircle, RadioButtonUnchecked } from "@mui/icons-material";
 import {
@@ -27,6 +34,7 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  MenuItem,
   Stack,
   Typography,
 } from "@mui/material";
@@ -37,10 +45,28 @@ import type { Organization } from "@/types/organizations";
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
+import { getHref } from "@/utils/href";
 
 const POLL_INTERVAL_MS = 15_000;
 const WARNING_MINUTES = 5;
 const ERROR_MINUTES = 10;
+
+const CHIME_SECONDS = 0.4;
+
+const playChime = (audioContext: AudioContext) => {
+  const oscillator = new OscillatorNode(audioContext, { frequency: 880 });
+  const gain = new GainNode(audioContext);
+  const { currentTime } = audioContext;
+
+  if (audioContext.state === "suspended") void audioContext.resume();
+  const endTime = currentTime + CHIME_SECONDS;
+
+  gain.gain.setValueAtTime(0.3, currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, endTime);
+  oscillator.connect(gain).connect(audioContext.destination);
+  oscillator.start();
+  oscillator.stop(endTime);
+};
 
 type WaitColor = "error" | "warning";
 
@@ -70,12 +96,17 @@ const ItemText = styled(ListItemText, {
 interface OrdersKitchenProps {
   orders: KitchenOrderResponse[];
   organization: Organization;
+  printerId?: string;
 }
 
 const OrdersKitchen = ({
   orders: initialOrders,
   organization: { slug: organizationSlug },
+  printerId,
 }: OrdersKitchenProps) => {
+  const pathname = usePathname();
+  const router = useRouter();
+
   const format = useFormatter();
   const now = useNow({ updateInterval: 30_000 });
 
@@ -89,12 +120,84 @@ const OrdersKitchen = ({
 
   const ordersUrl = `/api/organizations/${organizationSlug}/orders`;
 
+  const printers = useOrderTicketPrinterStatuses(organizationSlug);
+
+  const stationId =
+    printers && !printers.some(({ id }) => id === printerId)
+      ? undefined
+      : printerId;
+
+  const kitchenUrl = getHref(`${ordersUrl}/kitchen`, { printerId: stationId });
+
   const { data: orders = initialOrders, mutate } = useSWR<
     KitchenOrderResponse[]
-  >(`${ordersUrl}/kitchen`, {
+  >(kitchenUrl, {
     fallbackData: initialOrders,
     refreshInterval: isConnected ? 0 : POLL_INTERVAL_MS,
   });
+
+  const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
+  const [audioRunning, setAudioRunning] = useState(false);
+  const [audioStarting, setAudioStarting] = useState(false);
+
+  useEffect(() => {
+    if (!audioContext) return;
+
+    const handleStateChange = () =>
+      setAudioRunning(audioContext.state === "running");
+
+    audioContext.addEventListener("statechange", handleStateChange);
+
+    return () => {
+      audioContext.removeEventListener("statechange", handleStateChange);
+      void audioContext.close();
+    };
+  }, [audioContext]);
+
+  const seenOrdersRef = useRef({
+    kitchenUrl,
+    orderIds: new Set(initialOrders.map(({ id }) => id)),
+  });
+
+  useEffect(() => {
+    const seen = seenOrdersRef.current;
+
+    if (
+      audioContext &&
+      seen.kitchenUrl === kitchenUrl &&
+      orders.some(({ id }) => !seen.orderIds.has(id))
+    )
+      playChime(audioContext);
+
+    seenOrdersRef.current = {
+      kitchenUrl,
+      orderIds: new Set(orders.map(({ id }) => id)),
+    };
+  }, [audioContext, kitchenUrl, orders]);
+
+  // https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Best_practices#autoplay_policy
+  const handleStart = async () => {
+    const context = audioContext ?? new AudioContext();
+    setAudioContext(context);
+    setAudioStarting(true);
+
+    try {
+      await context.resume();
+      setAudioRunning(context.state === "running");
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+    } finally {
+      setAudioStarting(false);
+    }
+  };
+
+  const handleStationChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+    router.push(
+      getHref(pathname, {
+        organization: organizationSlug,
+        printerId: event.target.value,
+      }),
+    );
 
   const { handleConfirmStatusAction } = useOrderActions(
     organizationSlug,
@@ -173,6 +276,45 @@ const OrdersKitchen = ({
 
   return (
     <Stack spacing={2}>
+      <HeaderStack direction="row">
+        {printers && (printers.length > 1 || stationId) && (
+          <StyledTextField
+            label={tOrders("kitchen.station.label")}
+            onChange={handleStationChange}
+            select
+            size="small"
+            slotProps={{
+              inputLabel: { shrink: true },
+              select: { displayEmpty: true },
+            }}
+            value={stationId ?? ""}
+          >
+            <MenuItem value="">{tOrders("kitchen.station.all")}</MenuItem>
+            {printers.map(({ id, name }) => (
+              <MenuItem key={id} value={id}>
+                {name}
+              </MenuItem>
+            ))}
+          </StyledTextField>
+        )}
+        {!audioRunning && (
+          <Alert
+            action={
+              <Button
+                color="inherit"
+                loading={audioStarting}
+                onClick={handleStart}
+                size="small"
+              >
+                {tOrders("kitchen.sound.start")}
+              </Button>
+            }
+            severity="info"
+          >
+            {tOrders("kitchen.sound.hint")}
+          </Alert>
+        )}
+      </HeaderStack>
       {!isConnected && (
         <Alert severity="warning">
           {tOrders("kitchen.disconnected", {
