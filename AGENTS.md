@@ -40,7 +40,7 @@ The middleware at `proxy.ts` handles:
 - Global maintenance mode (`NEXT_PUBLIC_MAINTENANCE` env flag)
 - Public pages: `/auth/*` (except the member account pages) and `/company/*`
 
-Next.js rewrites (`next.config.ts`) proxy `/api/:path*` → `NEXT_PUBLIC_NEST_URL/api/:path*` for client-side calls. Browser calls rely on that rewrite keeping them same-origin, so before removing or bypassing it check three things: the cookies biru-api sets must reach both the API host and this app's server-side requests (biru-api AGENTS.md, Global Setup), the relative `/api/images/...` URLs the API returns must still resolve, and cross-origin `fetch` must send `credentials: "include"`.
+Browser calls go straight to `NEXT_PUBLIC_NEST_URL`: `utils/fetcher.ts` and `lib/api-client.ts` prefix relative `/api/...` paths and send `credentials: "include"`, and it is the better-auth client's `baseURL` (which includes credentials by default); a browser request that bypasses them must do the same. The session cookie reaches the API host and this app's server-side requests only because biru-api scopes it to the shared parent domain (biru-api AGENTS.md, Global Setup). `next.config.ts` rewrites only `/api/images/*`, for the relative image URLs the API returns. A relative better-auth `callbackURL` / `redirectTo` resolves against the API, not this app; pass a relative one only where biru-api's mails turn it into a `redirectTo` query (sign-up, verification and password-reset mails).
 
 ### State Management
 
@@ -50,7 +50,7 @@ Zustand stores in `stores/` use a factory pattern (e.g., `createAuthStore`). Eac
 
 - **Server-side**: Use React `cache()` for deduplication (see `utils/orders.ts`)
 - **Client-side**: SWR via `SWRProvider` — errors auto-show via notistack (403/404 excluded)
-- **Fetcher** (`utils/fetcher.ts`): Relative URLs resolve against `NEXT_PUBLIC_NEST_URL` server-side; client-side uses Next.js rewrites
+- **Fetcher** (`utils/fetcher.ts`): Relative URLs resolve against `NEXT_PUBLIC_NEST_URL` on both sides; browser requests are cross-origin with `credentials: "include"`
 
 ### Forms
 

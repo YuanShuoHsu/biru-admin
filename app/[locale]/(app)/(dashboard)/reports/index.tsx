@@ -237,9 +237,10 @@ const Reports = ({
     try {
       setExporting(true);
 
-      const response = await fetch(`${reportPath}/export.csv?${query}`, {
-        headers: { "Accept-Language": locale },
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_NEST_URL}${reportPath}/export.csv?${query}`,
+        { credentials: "include", headers: { "Accept-Language": locale } },
+      );
 
       if (!response.ok) {
         const { message } = response.headers

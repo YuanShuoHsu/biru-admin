@@ -18,8 +18,8 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: "/api/:path*",
-        destination: `${process.env.NEXT_PUBLIC_NEST_URL}/api/:path*`,
+        source: "/api/images/:path*",
+        destination: `${process.env.NEXT_PUBLIC_NEST_URL}/api/images/:path*`,
       },
     ];
   },
