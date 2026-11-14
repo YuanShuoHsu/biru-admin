@@ -111,7 +111,9 @@ const MenuItemModifierGroupsPage = async ({
   const [cookieStore, { locale, menuSectionId, menuItemId }, rawSearchParams] =
     await Promise.all([cookies(), params, searchParams]);
 
-  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
+  const fetchOptions = {
+    headers: { "Accept-Language": locale, cookie: cookieStore.toString() },
+  };
   const { data: section, error: sectionError } = await settle(
     getAdminMenuSection(menuSectionId, fetchOptions),
   );
