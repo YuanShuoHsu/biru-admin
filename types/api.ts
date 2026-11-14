@@ -1132,6 +1132,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/images/orphans/sweep": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 清理儲存空間中沒有資料參照的圖片 */
+    post: operations["AdminImagesController_sweep"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/coupons": {
     parameters: {
       query?: never;
@@ -3531,6 +3548,196 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/shared-carts": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 發起共享點餐單（內用、櫃檯、得來速須先掃店內 QR code） */
+    post: operations["SharedCartsController_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/shared-carts/join": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 以 4 碼單號送出加入請求，由單內已加入的人允許後才看得到內容 */
+    post: operations["SharedCartsController_join"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/shared-carts/current": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 目前瀏覽器所在的共享點餐單 */
+    get: operations["SharedCartsController_findCurrent"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/shared-carts/current/me": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 離開已加入的共享點餐單（沒有已加入的單時取消加入請求）；最後一位已加入的人離開時刪除整張單 */
+    delete: operations["SharedCartsController_leaveMe"];
+    options?: never;
+    head?: never;
+    /** 修改自己在共享點餐單的頭像或暱稱 */
+    patch: operations["SharedCartsController_updateMe"];
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/shared-carts/current/requests/{participantId}/approve": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 允許一筆加入請求（已加入的參與者皆可，先處理者為準） */
+    post: operations["SharedCartsController_approveRequest"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/shared-carts/current/requests/{participantId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 拒絕一筆加入請求；對方可重新送出 */
+    delete: operations["SharedCartsController_rejectRequest"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/shared-carts/current/items": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 加入品項到共享點餐單（已加入的參與者皆可；可一次帶入自己的購物車） */
+    post: operations["SharedCartsController_addItems"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/shared-carts/current/items/{itemId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** 修改共享點餐單的品項（任何已加入的參與者皆可，加入者不變） */
+    put: operations["SharedCartsController_updateItem"];
+    post?: never;
+    /** 刪除共享點餐單的品項（任何已加入的參與者皆可） */
+    delete: operations["SharedCartsController_removeItem"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/shared-carts/current/participants/{participantId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 把另一位已加入的參與者移出共享點餐單並刪除他加入的品項，單號隨之換發；移除自己請改用離開 */
+    delete: operations["SharedCartsController_removeParticipant"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/shared-carts/current/checkout": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 開始結帳並鎖定共享點餐單，鎖定中再呼叫即延長；鎖定期間只有自己能修改，任何人都不能離開。一張單從開始結帳起最多鎖 10 分鐘（中途換人接手也算在內），到期後 2 分鐘內任何人都不能再鎖 */
+    post: operations["SharedCartsController_acquireCheckout"];
+    /** 結束自己的結帳鎖定 */
+    delete: operations["SharedCartsController_releaseCheckout"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/shared-carts/current/request": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 取消送往另一張共享點餐單的加入請求 */
+    delete: operations["SharedCartsController_cancelRequest"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/waitlist": {
     parameters: {
       query?: never;
@@ -3790,6 +3997,23 @@ export interface paths {
     };
     /** 依統一編號查詢公司或商業登記的名稱、地址與負責人 */
     get: operations["GcisController_findOne"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/health": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 檢查服務與資料庫是否正常 */
+    get: operations["HealthController_check"];
     put?: never;
     post?: never;
     delete?: never;
@@ -4106,6 +4330,24 @@ export interface paths {
     head?: never;
     /** 更新特殊營業日 */
     patch: operations["SpecialHoursController_update"];
+    trace?: never;
+  };
+  "/api/push/subscriptions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 儲存瀏覽器的推播訂閱（同一 endpoint 覆蓋舊的）；登入會員綁定本人，訪客須綁定可讀的訂單或候位號碼牌 */
+    post: operations["PushController_subscribe"];
+    /** 刪除瀏覽器的推播訂閱（不存在也回 204） */
+    delete: operations["PushController_unsubscribe"];
+    options?: never;
+    head?: never;
+    patch?: never;
     trace?: never;
   };
   "/api/quant/credentials": {
@@ -5441,196 +5683,6 @@ export interface paths {
     put?: never;
     post?: never;
     delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/organizations/{organizationSlug}/shared-carts": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** 發起共享點餐單（內用、櫃檯、得來速須先掃店內 QR code） */
-    post: operations["SharedCartsController_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/organizations/{organizationSlug}/shared-carts/join": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** 以 4 碼單號送出加入請求，由單內已加入的人允許後才看得到內容 */
-    post: operations["SharedCartsController_join"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/organizations/{organizationSlug}/shared-carts/current": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** 目前瀏覽器所在的共享點餐單 */
-    get: operations["SharedCartsController_findCurrent"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/organizations/{organizationSlug}/shared-carts/current/me": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** 離開已加入的共享點餐單（沒有已加入的單時取消加入請求）；最後一位已加入的人離開時刪除整張單 */
-    delete: operations["SharedCartsController_leaveMe"];
-    options?: never;
-    head?: never;
-    /** 修改自己在共享點餐單的頭像或暱稱 */
-    patch: operations["SharedCartsController_updateMe"];
-    trace?: never;
-  };
-  "/api/organizations/{organizationSlug}/shared-carts/current/requests/{participantId}/approve": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** 允許一筆加入請求（已加入的參與者皆可，先處理者為準） */
-    post: operations["SharedCartsController_approveRequest"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/organizations/{organizationSlug}/shared-carts/current/requests/{participantId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** 拒絕一筆加入請求；對方可重新送出 */
-    delete: operations["SharedCartsController_rejectRequest"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/organizations/{organizationSlug}/shared-carts/current/items": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** 加入品項到共享點餐單（已加入的參與者皆可；可一次帶入自己的購物車） */
-    post: operations["SharedCartsController_addItems"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/organizations/{organizationSlug}/shared-carts/current/items/{itemId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /** 修改共享點餐單的品項（任何已加入的參與者皆可，加入者不變） */
-    put: operations["SharedCartsController_updateItem"];
-    post?: never;
-    /** 刪除共享點餐單的品項（任何已加入的參與者皆可） */
-    delete: operations["SharedCartsController_removeItem"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/organizations/{organizationSlug}/shared-carts/current/participants/{participantId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** 把另一位已加入的參與者移出共享點餐單並刪除他加入的品項，單號隨之換發；移除自己請改用離開 */
-    delete: operations["SharedCartsController_removeParticipant"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/organizations/{organizationSlug}/shared-carts/current/checkout": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** 開始結帳並鎖定共享點餐單，鎖定中再呼叫即延長；鎖定期間只有自己能修改，任何人都不能離開。一張單從開始結帳起最多鎖 10 分鐘（中途換人接手也算在內），到期後 2 分鐘內任何人都不能再鎖 */
-    post: operations["SharedCartsController_acquireCheckout"];
-    /** 結束自己的結帳鎖定 */
-    delete: operations["SharedCartsController_releaseCheckout"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/organizations/{organizationSlug}/shared-carts/current/request": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** 取消送往另一張共享點餐單的加入請求 */
-    delete: operations["SharedCartsController_cancelRequest"];
     options?: never;
     head?: never;
     patch?: never;
@@ -7152,6 +7204,12 @@ export interface components {
       | "pointTransaction"
       | "pointSetting"
       | "storePhoto"
+      | "catalogSection"
+      | "catalogItem"
+      | "catalogModifierGroup"
+      | "catalogModifier"
+      | "catalogItemModifierGroup"
+      | "catalogItemAddOn"
       | "employee"
       | "attendanceSetting"
       | "leaveCase"
@@ -7492,6 +7550,30 @@ export interface components {
       endsAt?: string | null;
       /** @description 未帶時排在最後 */
       sortOrder?: number;
+    };
+    ImageOrphanSweepDto: {
+      /** @description 為 true 才刪除；未帶時只回報會刪除的物件 */
+      apply?: boolean;
+    };
+    ImageOrphanKindDto: {
+      /** @enum {string} */
+      kind:
+        | "menu"
+        | "menuSection"
+        | "menuItem"
+        | "modifier"
+        | "banner"
+        | "storePhoto"
+        | "catalogSection"
+        | "catalogItem"
+        | "catalogModifier";
+      scanned: number;
+      count: number;
+      keys: string[];
+    };
+    ImageOrphanSweepResponseDto: {
+      applied: boolean;
+      kinds: components["schemas"]["ImageOrphanKindDto"][];
     };
     /** @enum {string} */
     CouponDiscountType: "fixed" | "percentage";
@@ -7875,6 +7957,12 @@ export interface components {
       | "modifier_group"
       | "modifier"
       | "menu_item_modifier_group"
+      | "catalog_section"
+      | "catalog_item"
+      | "catalog_item_add_on"
+      | "catalog_modifier_group"
+      | "catalog_modifier"
+      | "catalog_item_modifier_group"
       | "coupon"
       | "banner"
       | "store_photo"
@@ -9674,14 +9762,16 @@ export interface components {
       | "quantity"
       | "unitCost"
       | "createdAt"
-      | "reason";
+      | "reason"
+      | "wasteReason";
     /** @enum {string} */
     InventoryTransactionSortField:
       | "note"
       | "quantity"
       | "unitCost"
       | "createdAt"
-      | "reason";
+      | "reason"
+      | "wasteReason";
     InventoryTransactionListResponseDto: {
       data: components["schemas"]["InventoryTransactionResponseDto"][];
       total: number;
@@ -11475,6 +11565,120 @@ export interface components {
       /** Format: date-time */
       updatedAt: string;
     };
+    CreateSharedCartDto: {
+      /** @description 未帶時：登入會員為 member，其他人隨機動物；member 只限登入會員 */
+      avatar?: components["schemas"]["SharedCartAvatar"];
+      /** @description 未帶時：登入會員為會員名字，其他人為「匿名＋動物」 */
+      nickname?: string;
+      /** @enum {string} */
+      mode: "counter" | "dineIn" | "driveThru" | "pickup";
+    };
+    SharedCartCheckoutDto: {
+      participantId: string;
+      /** Format: date-time */
+      lockedUntil: string;
+    };
+    SharedCartOutgoingRequestDto: {
+      /** Format: date-time */
+      requestedAt: string;
+      /** Format: date-time */
+      expiresAt: string;
+    };
+    SharedCartParticipantResponseDto: {
+      avatar: components["schemas"]["SharedCartAvatar"];
+      /** @description 頭像為 member 時的會員頭像 */
+      image: string | null;
+      isMe: boolean;
+      id: string;
+      nickname: string;
+    };
+    SharedCartRequestResponseDto: {
+      avatar: components["schemas"]["SharedCartAvatar"];
+      /** @description 頭像為 member 時的會員頭像 */
+      image: string | null;
+      /** Format: date-time */
+      requestedAt: string;
+      id: string;
+      nickname: string;
+    };
+    SharedCartItemResponseDto: {
+      menuItemId: string;
+      quantity: number;
+      /** @description modifierGroupId → modifierIds[] */
+      modifiers: {
+        [key: string]: string[];
+      };
+      addOns: components["schemas"]["CreateOrderItemAddOnDto"][];
+      /** @description 選擇的溫度細項；品項有冷熱供應時必填，否則省略 */
+      servingTemperatureLevel?:
+        | components["schemas"]["ServingTemperatureLevel"]
+        | null;
+      /** @description 選擇的甜度；品項甜度可調時必填，其他情況忽略 */
+      sweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
+      id: string;
+      participantId: string;
+    };
+    /**
+     * @description pending 時看不到單內的參與者、品項與加入請求，也不能修改或送單
+     * @enum {string}
+     */
+    SharedCartParticipantStatus: "pending" | "active";
+    SharedCartMeResponseDto: {
+      avatar: components["schemas"]["SharedCartAvatar"];
+      /** @description 頭像為 member 時的會員頭像 */
+      image: string | null;
+      /** @description pending 時看不到單內的參與者、品項與加入請求，也不能修改或送單 */
+      status: components["schemas"]["SharedCartParticipantStatus"];
+      id: string;
+      nickname: string;
+    };
+    SharedCartResponseDto: {
+      /** @description 待允許時為 null：單號會因拒絕而換發，允許後才看得到新的單號 */
+      code: string | null;
+      /** @enum {string} */
+      mode: "counter" | "dineIn" | "driveThru" | "pickup";
+      tableNumber: number | null;
+      /**
+       * Format: date-time
+       * @description 已加入時為整張單的失效時間；待允許時為這筆加入請求的失效時間
+       */
+      expiresAt: string;
+      /** @description 正在結帳的人與鎖定的失效時間：最後一次延長後 2 分鐘，且不超過開始結帳後 10 分鐘。鎖定期間只有他能修改品項、移除參與者或允許加入，單內任何人都不能離開。沒有人在結帳或待允許時為 null */
+      checkout: components["schemas"]["SharedCartCheckoutDto"] | null;
+      /** @description 已加入這張單、同時在等另一張單允許時的那筆請求；允許的那一刻才離開這張單 */
+      outgoingRequest:
+        | components["schemas"]["SharedCartOutgoingRequestDto"]
+        | null;
+      /** @description 已加入的參與者；待允許時為空 */
+      participants: components["schemas"]["SharedCartParticipantResponseDto"][];
+      /** @description 等待允許加入的請求；待允許時為空 */
+      requests: components["schemas"]["SharedCartRequestResponseDto"][];
+      /** @description 待允許時為空 */
+      items: components["schemas"]["SharedCartItemResponseDto"][];
+      /** @description 以 joinSharedCart 的 accessToken 送出，訂閱這個裝置已加入與待允許的單的 sharedCartUpdated；2 小時後失效，之後的回應會換發新的 */
+      socketToken: string;
+      me: components["schemas"]["SharedCartMeResponseDto"];
+    };
+    JoinSharedCartDto: {
+      /** @description 未帶時：登入會員為 member，其他人隨機動物；member 只限登入會員 */
+      avatar?: components["schemas"]["SharedCartAvatar"];
+      /** @description 未帶時：登入會員為會員名字，其他人為「匿名＋動物」 */
+      nickname?: string;
+      /** @enum {string} */
+      mode: "counter" | "dineIn" | "driveThru" | "pickup";
+      /** @example 0123 */
+      code: string;
+    };
+    SharedCartProfileDto: {
+      /** @description 未帶時：登入會員為 member，其他人隨機動物；member 只限登入會員 */
+      avatar?: components["schemas"]["SharedCartAvatar"];
+      /** @description 未帶時：登入會員為會員名字，其他人為「匿名＋動物」 */
+      nickname?: string;
+    };
+    AddSharedCartItemsDto: {
+      /** @description 可一次加入多筆（例如帶入自己的購物車）；整張單最多 50 筆 */
+      items: components["schemas"]["CreateOrderItemDto"][];
+    };
     /** @enum {string} */
     WaitlistErrorCode:
       | "waitlistClosed"
@@ -12013,6 +12217,34 @@ export interface components {
       openingHours?: string | null;
       /** @example 颱風停業 */
       note?: string | null;
+    };
+    /** @enum {string} */
+    PushSubscriptionApp: "storefront" | "admin";
+    PushSubscriptionKeysDto: {
+      p256dh: string;
+      auth: string;
+    };
+    CreatePushSubscriptionDto: {
+      app: components["schemas"]["PushSubscriptionApp"];
+      /**
+       * @description 未帶時取請求語系
+       * @enum {string}
+       */
+      lang?: "en" | "ja" | "ko" | "zh-CN" | "zh-TW";
+      /** @description 訪客須綁定訂單或候位號碼牌其中之一 */
+      orderId?: string;
+      /** @description 建立訂單時取得；訪客訂單必帶 */
+      accessToken?: string;
+      /** @description 須與 organizationSlug 一起帶，且不可與 orderId 同時帶 */
+      waitlistTicketId?: string;
+      keys: components["schemas"]["PushSubscriptionKeysDto"];
+      organizationSlug?: string;
+      /** Format: uri */
+      endpoint: string;
+    };
+    DeletePushSubscriptionDto: {
+      /** Format: uri */
+      endpoint: string;
     };
     QuantCredentialDto: {
       id: string;
@@ -13475,118 +13707,6 @@ export interface components {
       totals: components["schemas"]["PersonnelCostReportTotalsDto"];
       /** @description 當月在職但沒有已發布薪資單、未計入的員工數 */
       unpublishedEmployees: number;
-    };
-    CreateSharedCartDto: {
-      /** @description 未帶時：登入會員為 member，其他人隨機動物；member 只限登入會員 */
-      avatar?: components["schemas"]["SharedCartAvatar"];
-      /** @description 未帶時：登入會員為會員名字，其他人為「匿名＋動物」 */
-      nickname?: string;
-      /** @enum {string} */
-      mode: "counter" | "dineIn" | "driveThru" | "pickup";
-    };
-    SharedCartCheckoutDto: {
-      participantId: string;
-      /** Format: date-time */
-      lockedUntil: string;
-    };
-    SharedCartOutgoingRequestDto: {
-      /** Format: date-time */
-      requestedAt: string;
-      /** Format: date-time */
-      expiresAt: string;
-    };
-    SharedCartParticipantResponseDto: {
-      avatar: components["schemas"]["SharedCartAvatar"];
-      /** @description 頭像為 member 時的會員頭像 */
-      image: string | null;
-      isMe: boolean;
-      id: string;
-      nickname: string;
-    };
-    SharedCartRequestResponseDto: {
-      avatar: components["schemas"]["SharedCartAvatar"];
-      /** @description 頭像為 member 時的會員頭像 */
-      image: string | null;
-      /** Format: date-time */
-      requestedAt: string;
-      id: string;
-      nickname: string;
-    };
-    SharedCartItemResponseDto: {
-      menuItemId: string;
-      quantity: number;
-      /** @description modifierGroupId → modifierIds[] */
-      modifiers: {
-        [key: string]: string[];
-      };
-      addOns: components["schemas"]["CreateOrderItemAddOnDto"][];
-      /** @description 選擇的溫度細項；品項有冷熱供應時必填，否則省略 */
-      servingTemperatureLevel?:
-        | components["schemas"]["ServingTemperatureLevel"]
-        | null;
-      /** @description 選擇的甜度；品項甜度可調時必填，其他情況忽略 */
-      sweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
-      id: string;
-      participantId: string;
-    };
-    /**
-     * @description pending 時看不到單內的參與者、品項與加入請求，也不能修改或送單
-     * @enum {string}
-     */
-    SharedCartParticipantStatus: "pending" | "active";
-    SharedCartMeResponseDto: {
-      avatar: components["schemas"]["SharedCartAvatar"];
-      /** @description 頭像為 member 時的會員頭像 */
-      image: string | null;
-      /** @description pending 時看不到單內的參與者、品項與加入請求，也不能修改或送單 */
-      status: components["schemas"]["SharedCartParticipantStatus"];
-      id: string;
-      nickname: string;
-    };
-    SharedCartResponseDto: {
-      /** @description 待允許時為 null：單號會因拒絕而換發，允許後才看得到新的單號 */
-      code: string | null;
-      /** @enum {string} */
-      mode: "counter" | "dineIn" | "driveThru" | "pickup";
-      tableNumber: number | null;
-      /**
-       * Format: date-time
-       * @description 已加入時為整張單的失效時間；待允許時為這筆加入請求的失效時間
-       */
-      expiresAt: string;
-      /** @description 正在結帳的人與鎖定的失效時間：最後一次延長後 2 分鐘，且不超過開始結帳後 10 分鐘。鎖定期間只有他能修改品項、移除參與者或允許加入，單內任何人都不能離開。沒有人在結帳或待允許時為 null */
-      checkout: components["schemas"]["SharedCartCheckoutDto"] | null;
-      /** @description 已加入這張單、同時在等另一張單允許時的那筆請求；允許的那一刻才離開這張單 */
-      outgoingRequest:
-        | components["schemas"]["SharedCartOutgoingRequestDto"]
-        | null;
-      /** @description 已加入的參與者；待允許時為空 */
-      participants: components["schemas"]["SharedCartParticipantResponseDto"][];
-      /** @description 等待允許加入的請求；待允許時為空 */
-      requests: components["schemas"]["SharedCartRequestResponseDto"][];
-      /** @description 待允許時為空 */
-      items: components["schemas"]["SharedCartItemResponseDto"][];
-      me: components["schemas"]["SharedCartMeResponseDto"];
-    };
-    JoinSharedCartDto: {
-      /** @description 未帶時：登入會員為 member，其他人隨機動物；member 只限登入會員 */
-      avatar?: components["schemas"]["SharedCartAvatar"];
-      /** @description 未帶時：登入會員為會員名字，其他人為「匿名＋動物」 */
-      nickname?: string;
-      /** @enum {string} */
-      mode: "counter" | "dineIn" | "driveThru" | "pickup";
-      /** @example 0123 */
-      code: string;
-    };
-    SharedCartProfileDto: {
-      /** @description 未帶時：登入會員為 member，其他人隨機動物；member 只限登入會員 */
-      avatar?: components["schemas"]["SharedCartAvatar"];
-      /** @description 未帶時：登入會員為會員名字，其他人為「匿名＋動物」 */
-      nickname?: string;
-    };
-    AddSharedCartItemsDto: {
-      /** @description 可一次加入多筆（例如帶入自己的購物車）；整張單最多 50 筆 */
-      items: components["schemas"]["CreateOrderItemDto"][];
     };
     /** @enum {string} */
     StoreLayoutFloor: "ground" | "upper" | "roof";
@@ -16534,7 +16654,10 @@ export interface operations {
           | "menuItem"
           | "modifier"
           | "banner"
-          | "storePhoto";
+          | "storePhoto"
+          | "catalogSection"
+          | "catalogItem"
+          | "catalogModifier";
         id: string;
         /** @description 圖片內容的雜湊；舊網址的 updatedAt 毫秒數也接受 */
         version: string;
@@ -16550,6 +16673,36 @@ export interface operations {
         };
         content: {
           "image/*": string;
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminImagesController_sweep: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ImageOrphanSweepDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ImageOrphanSweepResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -18074,6 +18227,13 @@ export interface operations {
       };
       /** @description Internal server error */
       500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 捐贈碼清單尚未從電子發票平台取得 */
+      503: {
         headers: {
           [name: string]: unknown;
         };
@@ -22527,6 +22687,419 @@ export interface operations {
       };
     };
   };
+  SharedCartsController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateSharedCartDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SharedCartResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SharedCartsController_join: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["JoinSharedCartDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SharedCartResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SharedCartsController_findCurrent: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SharedCartResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SharedCartsController_leaveMe: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SharedCartsController_updateMe: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SharedCartProfileDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SharedCartResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SharedCartsController_approveRequest: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        participantId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SharedCartResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SharedCartsController_rejectRequest: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        participantId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SharedCartResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SharedCartsController_addItems: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AddSharedCartItemsDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SharedCartResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SharedCartsController_updateItem: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        itemId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateOrderItemDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SharedCartResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SharedCartsController_removeItem: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        itemId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SharedCartResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SharedCartsController_removeParticipant: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        participantId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SharedCartResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SharedCartsController_acquireCheckout: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SharedCartResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SharedCartsController_releaseCheckout: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SharedCartResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SharedCartsController_cancelRequest: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   WaitlistController_status: {
     parameters: {
       query?: never;
@@ -23095,6 +23668,32 @@ export interface operations {
       };
       /** @description 商工登記查詢服務暫時無法使用 */
       503: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  HealthController_check: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": Record<string, never>;
+        };
+      };
+      /** @description Internal server error */
+      500: {
         headers: {
           [name: string]: unknown;
         };
@@ -23749,6 +24348,62 @@ export interface operations {
       };
       /** @description 與既有區間重疊；回應的 conflict 為衝突的那筆 */
       409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  PushController_subscribe: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreatePushSubscriptionDto"];
+      };
+    };
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  PushController_unsubscribe: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DeletePushSubscriptionDto"];
+      };
+    };
+    responses: {
+      204: {
         headers: {
           [name: string]: unknown;
         };
@@ -26464,419 +27119,6 @@ export interface operations {
       };
     };
   };
-  SharedCartsController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        organizationSlug: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateSharedCartDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SharedCartResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SharedCartsController_join: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        organizationSlug: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["JoinSharedCartDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SharedCartResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SharedCartsController_findCurrent: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        organizationSlug: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SharedCartResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SharedCartsController_leaveMe: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        organizationSlug: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SharedCartsController_updateMe: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        organizationSlug: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SharedCartProfileDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SharedCartResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SharedCartsController_approveRequest: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        organizationSlug: string;
-        participantId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SharedCartResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SharedCartsController_rejectRequest: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        organizationSlug: string;
-        participantId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SharedCartResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SharedCartsController_addItems: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        organizationSlug: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["AddSharedCartItemsDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SharedCartResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SharedCartsController_updateItem: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        organizationSlug: string;
-        itemId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateOrderItemDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SharedCartResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SharedCartsController_removeItem: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        organizationSlug: string;
-        itemId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SharedCartResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SharedCartsController_removeParticipant: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        organizationSlug: string;
-        participantId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SharedCartResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SharedCartsController_acquireCheckout: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        organizationSlug: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SharedCartResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SharedCartsController_releaseCheckout: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        organizationSlug: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SharedCartResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SharedCartsController_cancelRequest: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        organizationSlug: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
   StoreLayoutController_get: {
     parameters: {
       query?: never;
@@ -27175,7 +27417,17 @@ export const pathsApiUsersIdImageVersionExtensionGetParametersPathExtensionValue
 > = ["avif", "gif", "jpg", "png", "svg", "webp"];
 export const pathsApiImagesKindIdVersionExtensionGetParametersPathKindValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/images/{kind}/{id}/{version}.{extension}"]["get"]["parameters"]["path"]["kind"]
-> = ["menu", "menuSection", "menuItem", "modifier", "banner", "storePhoto"];
+> = [
+  "menu",
+  "menuSection",
+  "menuItem",
+  "modifier",
+  "banner",
+  "storePhoto",
+  "catalogSection",
+  "catalogItem",
+  "catalogModifier",
+];
 export const pathsApiImagesKindIdVersionExtensionGetParametersPathExtensionValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/images/{kind}/{id}/{version}.{extension}"]["get"]["parameters"]["path"]["extension"]
 > = ["avif", "gif", "jpg", "png", "svg", "webp"];
@@ -27758,6 +28010,12 @@ export const auditResourceValues: ReadonlyArray<
   "pointTransaction",
   "pointSetting",
   "storePhoto",
+  "catalogSection",
+  "catalogItem",
+  "catalogModifierGroup",
+  "catalogModifier",
+  "catalogItemModifierGroup",
+  "catalogItemAddOn",
   "employee",
   "attendanceSetting",
   "leaveCase",
@@ -27862,6 +28120,19 @@ export const bannerFilterFieldValues: ReadonlyArray<
 export const bannerSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["BannerSortField"]
 > = ["alt", "isActive", "startsAt", "endsAt", "createdAt", "updatedAt"];
+export const imageOrphanKindDtoKindValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["ImageOrphanKindDto"]["kind"]
+> = [
+  "menu",
+  "menuSection",
+  "menuItem",
+  "modifier",
+  "banner",
+  "storePhoto",
+  "catalogSection",
+  "catalogItem",
+  "catalogModifier",
+];
 export const couponDiscountTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CouponDiscountType"]
 > = ["fixed", "percentage"];
@@ -27952,6 +28223,12 @@ export const deletedRecordTableValues: ReadonlyArray<
   "modifier_group",
   "modifier",
   "menu_item_modifier_group",
+  "catalog_section",
+  "catalog_item",
+  "catalog_item_add_on",
+  "catalog_modifier_group",
+  "catalog_modifier",
+  "catalog_item_modifier_group",
   "coupon",
   "banner",
   "store_photo",
@@ -28528,10 +28805,10 @@ export const recipeSortFieldValues: ReadonlyArray<
 > = ["name", "recipeYield", "createdAt", "updatedAt"];
 export const inventoryTransactionFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["InventoryTransactionFilterField"]
-> = ["note", "quantity", "unitCost", "createdAt", "reason"];
+> = ["note", "quantity", "unitCost", "createdAt", "reason", "wasteReason"];
 export const inventoryTransactionSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["InventoryTransactionSortField"]
-> = ["note", "quantity", "unitCost", "createdAt", "reason"];
+> = ["note", "quantity", "unitCost", "createdAt", "reason", "wasteReason"];
 export const recipeIngredientFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["RecipeIngredientFilterField"]
 > = ["ingredientName", "requiredQuantity", "createdAt", "updatedAt"];
@@ -28943,6 +29220,18 @@ export const orderMenuItemResponseDtoSuitableForDietValues: ReadonlyArray<
   "VeganDiet",
   "VegetarianDiet",
 ];
+export const createSharedCartDtoModeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CreateSharedCartDto"]["mode"]
+> = ["counter", "dineIn", "driveThru", "pickup"];
+export const sharedCartParticipantStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["SharedCartParticipantStatus"]
+> = ["pending", "active"];
+export const sharedCartResponseDtoModeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["SharedCartResponseDto"]["mode"]
+> = ["counter", "dineIn", "driveThru", "pickup"];
+export const joinSharedCartDtoModeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["JoinSharedCartDto"]["mode"]
+> = ["counter", "dineIn", "driveThru", "pickup"];
 export const waitlistErrorCodeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["WaitlistErrorCode"]
 > = [
@@ -29002,6 +29291,12 @@ export const memberResponseDtoRoleValues: ReadonlyArray<
 export const organizationTeamMemberResponseDtoRoleValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrganizationTeamMemberResponseDto"]["role"]
 > = ["admin", "member", "owner"];
+export const pushSubscriptionAppValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PushSubscriptionApp"]
+> = ["storefront", "admin"];
+export const createPushSubscriptionDtoLangValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CreatePushSubscriptionDto"]["lang"]
+> = ["en", "ja", "ko", "zh-CN", "zh-TW"];
 export const quantOrderSideValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["QuantOrderSide"]
 > = ["BUY", "SELL"];
@@ -29189,18 +29484,6 @@ export const quantWebhookActionValues: ReadonlyArray<
 export const salesReportGroupByValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["SalesReportGroupBy"]
 > = ["day", "hour", "paymentMethod", "mode", "menuItem", "category"];
-export const createSharedCartDtoModeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["CreateSharedCartDto"]["mode"]
-> = ["counter", "dineIn", "driveThru", "pickup"];
-export const sharedCartParticipantStatusValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["SharedCartParticipantStatus"]
-> = ["pending", "active"];
-export const sharedCartResponseDtoModeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["SharedCartResponseDto"]["mode"]
-> = ["counter", "dineIn", "driveThru", "pickup"];
-export const joinSharedCartDtoModeValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["JoinSharedCartDto"]["mode"]
-> = ["counter", "dineIn", "driveThru", "pickup"];
 export const storeLayoutFloorValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["StoreLayoutFloor"]
 > = ["ground", "upper", "roof"];
