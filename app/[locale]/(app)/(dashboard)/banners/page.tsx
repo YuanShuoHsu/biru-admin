@@ -123,7 +123,9 @@ const BannersPage = async ({ params, searchParams }: BannersPageProps) => {
         sortBy,
         sortDirection,
       },
-      { headers: { cookie: cookieStore.toString() } },
+      {
+        headers: { "Accept-Language": locale, cookie: cookieStore.toString() },
+      },
     ),
   );
 
