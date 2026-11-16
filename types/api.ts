@@ -13677,7 +13677,7 @@ export interface components {
        *       "en": "Storefront"
        *     }
        */
-      alt: Record<string, never>;
+      alt: components["schemas"]["LocalizedTextDto"];
       isActive?: boolean;
       /** @description 未帶時排在最後 */
       sortOrder?: number;
@@ -13685,7 +13685,7 @@ export interface components {
     StorePhotoResponseDto: {
       id: string;
       imageUrl: string | null;
-      alt: Record<string, never>;
+      alt: components["schemas"]["LocalizedTextDto"];
       isActive: boolean;
       sortOrder: number;
       /** Format: date-time */
@@ -13714,7 +13714,7 @@ export interface components {
        *       "en": "Storefront"
        *     }
        */
-      alt?: Record<string, never>;
+      alt?: components["schemas"]["LocalizedTextDto"];
       isActive?: boolean;
       /** @description 未帶時排在最後 */
       sortOrder?: number;
