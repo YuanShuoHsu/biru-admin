@@ -105,7 +105,9 @@ const ModifiersPage = async ({ params, searchParams }: ModifiersPageProps) => {
     [cookies(), params, searchParams],
   );
 
-  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
+  const fetchOptions = {
+    headers: { "Accept-Language": locale, cookie: cookieStore.toString() },
+  };
   const { data: group, error: groupError } = await settle(
     getAdminModifierGroup(groupId, fetchOptions),
   );

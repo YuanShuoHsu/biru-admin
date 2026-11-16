@@ -105,7 +105,9 @@ const MenusSectionsPage = async ({
     searchParams,
   ]);
 
-  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
+  const fetchOptions = {
+    headers: { "Accept-Language": locale, cookie: cookieStore.toString() },
+  };
 
   const { data: resolved, error: resolvedError } = await settle(
     getResolvedAdminOrganizationMenu(rawSearchParams.organization),
