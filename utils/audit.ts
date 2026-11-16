@@ -81,6 +81,12 @@ export const getAuditLogHref = (
       return `/banners/${resourceId}/audit-logs`;
     case "waitlistTicket":
       return `/waitlist/list/${resourceId}/audit-logs`;
+    case "catalogSection":
+    case "catalogItem":
+    case "catalogModifierGroup":
+    case "catalogModifier":
+    case "catalogItemModifierGroup":
+    case "catalogItemAddOn":
     case "coupon":
     case "organization":
     case "member":
