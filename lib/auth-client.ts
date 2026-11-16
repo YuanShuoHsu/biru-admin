@@ -11,7 +11,7 @@ import { ac, admin, member, owner } from "./permissions";
 import { routing } from "@/i18n/routing";
 
 export const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_ADMIN_URL,
+  baseURL: process.env.NEXT_PUBLIC_NEST_URL,
   fetchOptions: {
     onRequest: ({ headers }) => {
       if (typeof document !== "undefined" && !headers.has("Accept-Language"))
