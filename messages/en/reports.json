@@ -15,11 +15,14 @@
     "closing": "Closing",
     "consumed": "Consumed",
     "ingredient": "Ingredient",
+    "occurrences": "{count, plural, one {# time} other {# times}}",
     "opening": "Opening",
     "received": "Received",
     "theoreticalConsumption": "Theoretical consumption",
     "unit": "Unit",
-    "variance": "Variance"
+    "variance": "Variance",
+    "wasted": "Waste",
+    "wastedCost": "Waste cost"
   },
   "label": "Reports",
   "personnel": {

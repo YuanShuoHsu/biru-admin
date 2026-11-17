@@ -93,6 +93,7 @@ const INVENTORY_FIELDS = [
   "opening",
   "received",
   "consumed",
+  "wasted",
   "adjusted",
   "closing",
   "theoreticalConsumption",
@@ -342,6 +343,9 @@ const Reports = ({
     tReports,
   ]);
 
+  const showsWastedCost =
+    inventory?.rows.some((row) => row.wastedCost !== undefined) ?? false;
+
   const inventoryColumns = useMemo<GridColDef[]>(
     () => [
       {
@@ -356,16 +360,40 @@ const Reports = ({
         valueFormatter: (value: InventoryReportRow["unitCode"]) =>
           tInventory(`units.${value}`),
       },
-      ...INVENTORY_FIELDS.map((field) => ({
-        field,
-        headerName: tReports(`inventory.${field}`),
-        type: "number" as const,
-        valueGetter: (value: string) => Number(value),
-        valueFormatter: (value: number) =>
-          format.number(value, { maximumFractionDigits: 3 }),
-      })),
+      ...INVENTORY_FIELDS.flatMap((field) => [
+        {
+          field,
+          headerName: tReports(`inventory.${field}`),
+          type: "number" as const,
+          valueGetter: (value: string) => Number(value),
+          valueFormatter: (value: number) =>
+            format.number(value, { maximumFractionDigits: 3 }),
+        },
+        ...(field === "wasted" && showsWastedCost
+          ? [
+              {
+                field: "wastedCost",
+                headerName: tReports("inventory.wastedCost"),
+                type: "number" as const,
+                renderCell: renderEmptyableCell,
+                valueGetter: (value: InventoryReportRow["wastedCost"]) =>
+                  value == null ? null : Number(value),
+                valueFormatter: (value: number | null) =>
+                  value === null ? "" : formatMoney(value, currency),
+              },
+            ]
+          : []),
+      ]),
     ],
-    [format, locale, tInventory, tReports],
+    [
+      currency,
+      format,
+      formatMoney,
+      locale,
+      showsWastedCost,
+      tInventory,
+      tReports,
+    ],
   );
 
   const personnelColumns = useMemo<GridColDef[]>(
@@ -573,13 +601,39 @@ const Reports = ({
           />
         </>
       ) : (
-        <DataGrid
-          {...REPORT_DATA_GRID_PROPS}
-          columns={inventoryColumns}
-          getRowId={({ ingredientId }) => ingredientId}
-          loading={loading || isValidating}
-          rows={inventory?.rows ?? []}
-        />
+        <>
+          {!!inventory?.wasteByReason.length && (
+            <TotalsStack direction="row">
+              <Typography variant="subtitle2">
+                {tReports("inventory.wasted")}
+              </Typography>
+              {inventory.wasteByReason.map(({ cost, occurrences, reason }) => (
+                <Typography key={reason} variant="body2">
+                  {tInventory(`transactions.wasteReason.options.${reason}`)}{" "}
+                  {tReports("inventory.occurrences", { count: occurrences })}
+                  {cost !== undefined && (
+                    <>
+                      {" "}
+                      {tReports("inventory.wastedCost")}{" "}
+                      {cost === null ? (
+                        <EmptyCell />
+                      ) : (
+                        formatMoney(Number(cost), currency)
+                      )}
+                    </>
+                  )}
+                </Typography>
+              ))}
+            </TotalsStack>
+          )}
+          <DataGrid
+            {...REPORT_DATA_GRID_PROPS}
+            columns={inventoryColumns}
+            getRowId={({ ingredientId }) => ingredientId}
+            loading={loading || isValidating}
+            rows={inventory?.rows ?? []}
+          />
+        </>
       )}
     </>
   );

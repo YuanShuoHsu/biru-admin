@@ -15,11 +15,14 @@
     "closing": "기말 재고",
     "consumed": "소모",
     "ingredient": "식자재",
+    "occurrences": "{count}회",
     "opening": "기초 재고",
     "received": "입고",
     "theoreticalConsumption": "이론 소모량",
     "unit": "단위",
-    "variance": "차이"
+    "variance": "차이",
+    "wasted": "폐기",
+    "wastedCost": "폐기 비용"
   },
   "label": "보고서",
   "personnel": {
