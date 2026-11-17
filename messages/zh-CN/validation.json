@@ -461,5 +461,16 @@
   },
   "printerName": {
     "required": "请输入名称。"
+  },
+  "checklistItemLabel": {
+    "maxLength": "项目名称不能超过 100 个字符。",
+    "required": "项目名称为必填。"
+  },
+  "checklistItemRange": {
+    "order": "上限不能小于下限。"
+  },
+  "checklistTemplateName": {
+    "maxLength": "名称不能超过 50 个字符。",
+    "required": "名称为必填。"
   }
 }

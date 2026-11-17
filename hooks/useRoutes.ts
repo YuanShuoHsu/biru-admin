@@ -43,6 +43,7 @@ import {
   Category,
   Checklist,
   ConfirmationNumber,
+  ContentPaste,
   Dashboard,
   DeleteForever,
   Description,
@@ -82,6 +83,7 @@ import {
   Person,
   PersonAdd,
   PhotoLibrary,
+  PlaylistAddCheck,
   Policy,
   PunchClock,
   ReceiptLong,
@@ -657,6 +659,20 @@ const routes: Route[] = [
     icon: Inventory,
     label: "inventory.label",
     segment: "inventory",
+    to: null,
+  },
+  {
+    children: [
+      {
+        icon: ContentPaste,
+        label: "checklists.templates.label",
+        query: ["organization"],
+        segment: "templates",
+      },
+    ],
+    icon: PlaylistAddCheck,
+    label: "checklists.label",
+    segment: "checklists",
     to: null,
   },
   {

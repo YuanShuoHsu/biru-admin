@@ -1,0 +1,44 @@
+{
+  "label": "例行檢查",
+  "templates": {
+    "actions": {
+      "create": {
+        "success": "已新增檢查表",
+        "title": "新增檢查表"
+      },
+      "label": "操作",
+      "remove": {
+        "confirm": "確定要刪除 <bold>{name}</bold> 嗎？已完成的檢查紀錄會保留。",
+        "success": "已刪除檢查表",
+        "title": "刪除檢查表"
+      },
+      "update": {
+        "success": "已更新檢查表",
+        "title": "編輯檢查表"
+      }
+    },
+    "enabled": "啟用",
+    "items": {
+      "add": "新增項目",
+      "itemLabel": "項目",
+      "label": "檢查項目",
+      "maxValue": "上限",
+      "minValue": "下限",
+      "remove": "移除項目",
+      "type": {
+        "check": "勾選",
+        "label": "類型",
+        "number": "數值"
+      },
+      "unit": "單位"
+    },
+    "label": "檢查表範本",
+    "name": "名稱",
+    "timing": {
+      "anytime": "不限",
+      "closing": "打烊",
+      "label": "時機",
+      "opening": "開店"
+    }
+  }
+}

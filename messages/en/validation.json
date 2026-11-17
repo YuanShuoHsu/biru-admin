@@ -461,5 +461,16 @@
   },
   "printerName": {
     "required": "Enter a name."
+  },
+  "checklistItemLabel": {
+    "maxLength": "Item name cannot exceed 100 characters.",
+    "required": "Item name is required."
+  },
+  "checklistItemRange": {
+    "order": "Max cannot be less than min."
+  },
+  "checklistTemplateName": {
+    "maxLength": "Name cannot exceed 50 characters.",
+    "required": "Name is required."
   }
 }

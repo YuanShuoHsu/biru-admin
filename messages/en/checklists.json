@@ -1,0 +1,44 @@
+{
+  "label": "Checklists",
+  "templates": {
+    "actions": {
+      "create": {
+        "success": "Checklist added",
+        "title": "Add checklist"
+      },
+      "label": "Actions",
+      "remove": {
+        "confirm": "Delete <bold>{name}</bold>? Completed checklist records are kept.",
+        "success": "Checklist deleted",
+        "title": "Delete checklist"
+      },
+      "update": {
+        "success": "Checklist updated",
+        "title": "Edit checklist"
+      }
+    },
+    "enabled": "Enabled",
+    "items": {
+      "add": "Add item",
+      "itemLabel": "Item",
+      "label": "Items",
+      "maxValue": "Max",
+      "minValue": "Min",
+      "remove": "Remove item",
+      "type": {
+        "check": "Checkbox",
+        "label": "Type",
+        "number": "Number"
+      },
+      "unit": "Unit"
+    },
+    "label": "Templates",
+    "name": "Name",
+    "timing": {
+      "anytime": "Anytime",
+      "closing": "Closing",
+      "label": "Timing",
+      "opening": "Opening"
+    }
+  }
+}
