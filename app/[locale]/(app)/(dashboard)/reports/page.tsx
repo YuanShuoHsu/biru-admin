@@ -10,9 +10,11 @@ import Reports from ".";
 import {
   getReportPath,
   getReportQuery,
+  REPORT_GRID_FIELDS,
   REPORT_TABS,
   type ReportView,
   resolveReportView,
+  toReportGridQuery,
 } from "./definitions";
 
 import ErrorAlert from "@/components/ErrorAlert";
@@ -20,6 +22,8 @@ import ErrorAlert from "@/components/ErrorAlert";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
+import { filterOperatorValues } from "@/types/api";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 import type {
   InventoryReportResponse,
@@ -27,6 +31,12 @@ import type {
   SalesReportResponse,
 } from "@/types/reports";
 
+import {
+  getGridSearchParams,
+  getQuickFilterEnums,
+  resolveGridSearchParams,
+} from "@/utils/dataGrid";
+import { getIngredientEnumOptions } from "@/utils/enumOptions";
 import { type FetchResult, fetcher, settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import {
@@ -38,10 +48,19 @@ import {
 interface ReportsPageProps {
   params: Promise<{ locale: Locale }>;
   searchParams: Promise<{
+    filterField?: string;
+    filterOperator?: string;
+    filterValue?: string;
     groupBy?: string;
     month?: string;
     organization?: string;
+    page?: string;
+    pageSize?: string;
+    quickFilterEnums?: string | string[];
+    quickFilterValue?: string;
     since?: string;
+    sortBy?: string;
+    sortDirection?: string;
     tab?: string;
     until?: string;
   }>;
@@ -60,7 +79,14 @@ interface ReportsContentProps {
   canViewInventory: boolean;
   canViewPersonnel: boolean;
   canViewSales: boolean;
+  canViewWastedCost: boolean;
+  filterField?: string;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
   organization: Organization;
+  page: number;
+  pageSize: number;
+  quickFilterValue?: string;
   reports: Promise<
     [
       FetchResult<SalesReportResponse | undefined>,
@@ -68,6 +94,8 @@ interface ReportsContentProps {
       FetchResult<PersonnelCostReportResponse | undefined>,
     ]
   >;
+  sortBy?: string;
+  sortDirection?: SortDirection;
   view: ReportView;
 }
 
@@ -114,6 +142,9 @@ const ReportsPage = async ({ params, searchParams }: ReportsPageProps) => {
   const canViewPersonnel =
     isAdmin || hasRolePermission(memberRole, { payslip: ["read"] });
 
+  const canViewWastedCost =
+    isAdmin || hasRolePermission(memberRole, { purchasing: ["read"] });
+
   const tabPermissions = {
     inventory: canViewInventory,
     personnel: canViewPersonnel,
@@ -125,6 +156,23 @@ const ReportsPage = async ({ params, searchParams }: ReportsPageProps) => {
   if (!tabs.length) notFound();
 
   const view = resolveReportView(rawSearchParams, tabs);
+
+  const {
+    filterField,
+    filterOperator,
+    filterValue,
+    page,
+    pageSize,
+    quickFilterValue,
+    redirectParams,
+    sortBy,
+    sortDirection,
+  } = resolveGridSearchParams({
+    searchParams: rawSearchParams,
+    ...REPORT_GRID_FIELDS[view.tab],
+    filterOperators: filterOperatorValues,
+    organizationSlug: organization.slug,
+  });
 
   const canonicalParams = new URLSearchParams({
     organization: organization.slug,
@@ -140,13 +188,42 @@ const ReportsPage = async ({ params, searchParams }: ReportsPageProps) => {
       ([key, value]) =>
         rawSearchParams[key as keyof typeof rawSearchParams] !== value,
     )
-  )
+  ) {
+    canonicalParams.set("page", "1");
+    canonicalParams.set("pageSize", String(pageSize));
     redirect({ href: `/reports?${canonicalParams.toString()}`, locale });
+  }
+
+  if (redirectParams)
+    redirect({ href: `/reports?${redirectParams.toString()}`, locale });
+
+  const quickFilterEnums =
+    view.tab === "inventory" && quickFilterValue
+      ? getQuickFilterEnums(
+          quickFilterValue,
+          getIngredientEnumOptions(
+            await getTranslations({ locale, namespace: "inventory" }),
+          ),
+        )
+      : [];
 
   const fetchOptions = {
     headers: { "Accept-Language": locale, cookie: cookieStore.toString() },
   };
-  const reportUrl = `${getReportPath(organization.slug, view.tab)}?${getReportQuery(view)}`;
+  const reportUrl = `${getReportPath(organization.slug, view.tab)}?${getReportQuery(view)}&${toReportGridQuery(
+    view.tab,
+    getGridSearchParams({
+      filterField,
+      filterOperator,
+      filterValue,
+      page,
+      pageSize,
+      quickFilterEnums,
+      quickFilterValue,
+      sortBy,
+      sortDirection,
+    }),
+  )}`;
 
   const reports = Promise.all([
     settle(
@@ -170,7 +247,16 @@ const ReportsPage = async ({ params, searchParams }: ReportsPageProps) => {
     canViewInventory,
     canViewPersonnel,
     canViewSales,
+    canViewWastedCost,
+    filterField,
+    filterOperator,
+    filterValue,
     organization,
+    page,
+    pageSize,
+    quickFilterValue,
+    sortBy,
+    sortDirection,
     view,
   };
 

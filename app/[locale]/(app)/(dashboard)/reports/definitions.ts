@@ -4,7 +4,15 @@ import utc from "dayjs/plugin/utc";
 
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
-import { salesReportGroupByValues } from "@/types/api";
+import {
+  inventoryReportFilterFieldValues,
+  inventoryReportSortFieldValues,
+  personnelCostReportFilterFieldValues,
+  personnelCostReportSortFieldValues,
+  salesReportFilterFieldValues,
+  salesReportGroupByValues,
+  salesReportSortFieldValues,
+} from "@/types/api";
 import type { SalesReportGroupBy } from "@/types/reports";
 
 dayjs.extend(utc);
@@ -19,6 +27,41 @@ export const MONTH_FORMAT = "YYYY-MM";
 export const REPORT_TABS = ["sales", "inventory", "personnel"] as const;
 
 export type ReportTab = (typeof REPORT_TABS)[number];
+
+export const REPORT_GRID_FIELDS: Record<
+  ReportTab,
+  { filterFields: readonly string[]; sortFields: readonly string[] }
+> = {
+  inventory: {
+    filterFields: inventoryReportFilterFieldValues,
+    sortFields: inventoryReportSortFieldValues,
+  },
+  personnel: {
+    filterFields: personnelCostReportFilterFieldValues,
+    sortFields: personnelCostReportSortFieldValues,
+  },
+  sales: {
+    filterFields: salesReportFilterFieldValues,
+    sortFields: salesReportSortFieldValues,
+  },
+};
+
+export const RESET_GRID_QUERY = {
+  filterField: "",
+  filterOperator: "",
+  filterValue: "",
+  page: "1",
+  quickFilterValue: "",
+  sortBy: "",
+  sortDirection: "",
+};
+
+export const PERSONNEL_MONEY_FIELDS = [
+  "grossCents",
+  "employerInsuranceCents",
+  "employerPensionCents",
+  "totalCents",
+] as const;
 
 export interface ReportView {
   groupBy: SalesReportGroupBy;
@@ -104,3 +147,26 @@ export const getReportQuery = ({
 
 export const getReportPath = (organizationSlug: string, tab: ReportTab) =>
   `/api/organizations/${organizationSlug}/reports/${tab}`;
+
+export const toReportGridQuery = (tab: ReportTab, params: URLSearchParams) => {
+  const filterValue = params.get("filterValue");
+
+  if (
+    tab === "personnel" &&
+    filterValue &&
+    PERSONNEL_MONEY_FIELDS.some((field) => field === params.get("filterField"))
+  )
+    params.set(
+      "filterValue",
+      filterValue
+        .split(",")
+        .map((value) =>
+          value && Number.isFinite(Number(value))
+            ? String(Math.round(Number(value) * 100))
+            : value,
+        )
+        .join(","),
+    );
+
+  return params.toString();
+};

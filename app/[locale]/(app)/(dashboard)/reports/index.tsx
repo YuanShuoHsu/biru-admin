@@ -4,6 +4,7 @@ import dayjs, { type Dayjs } from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useMemo, useState } from "react";
 import useSWR from "swr";
@@ -15,8 +16,11 @@ import {
   isValidRange,
   MAX_RANGE_DAYS,
   MONTH_FORMAT,
+  PERSONNEL_MONEY_FIELDS,
+  RESET_GRID_QUERY,
   type ReportTab,
   type ReportView,
+  toReportGridQuery,
   toStoreDate,
 } from "./definitions";
 
@@ -24,9 +28,16 @@ import DataGrid from "@/components/DataGrid";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 import ErrorAlert from "@/components/ErrorAlert";
 
-import { DATA_GRID_PROPS } from "@/constants/dataGrid";
+import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
+import { useDataGridQueryState } from "@/hooks/useDataGridQueryState";
+import {
+  useEnumFilterOperators,
+  useNumberFilterOperators,
+  useStringFilterOperators,
+} from "@/hooks/useFilterOperators";
 import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useMonthFormat } from "@/hooks/useMonthFormat";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
@@ -42,11 +53,12 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import type { GridColDef } from "@mui/x-data-grid";
+import { type GridColDef, useGridApiRef } from "@mui/x-data-grid";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import type { PickerChangeHandlerContext } from "@mui/x-date-pickers/models";
 
 import { salesReportGroupByValues } from "@/types/api";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { ApiOrderMode } from "@/types/orderMode";
 import type { OrderPaymentMethod } from "@/types/orders";
 import type { Organization } from "@/types/organizations";
@@ -61,7 +73,12 @@ import type {
 } from "@/types/reports";
 
 import { fromCents } from "@/utils/attendance";
-import { getExportDateRange, getExportFileName } from "@/utils/dataGrid";
+import {
+  getDataGridSearchParams,
+  getExportDateRange,
+  getExportFileName,
+} from "@/utils/dataGrid";
+import { getIngredientEnumOptions } from "@/utils/enumOptions";
 import { getErrorMessage, toFetchError } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
@@ -101,13 +118,6 @@ const INVENTORY_FIELDS = [
   "variance",
 ] as const;
 
-const PERSONNEL_MONEY_FIELDS = [
-  "grossCents",
-  "employerInsuranceCents",
-  "employerPensionCents",
-  "totalCents",
-] as const;
-
 const PERSONNEL_MONEY_LABELS = {
   employerInsuranceCents: "employerInsurance",
   employerPensionCents: "employerPension",
@@ -123,35 +133,71 @@ const REPORT_DATA_GRID_PROPS = {
   },
 };
 
-interface ReportsProps {
-  canViewInventory: boolean;
-  canViewPersonnel: boolean;
-  canViewSales: boolean;
+interface ReportGridState {
+  filterField?: string;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
   inventory?: InventoryReportResponse;
-  loading?: boolean;
-  organization: Organization;
+  page: number;
+  pageSize: number;
   personnel?: PersonnelCostReportResponse;
+  quickFilterValue?: string;
   sales?: SalesReportResponse;
+  sortBy?: string;
+  sortDirection?: SortDirection;
+}
+
+interface ReportTableProps extends ReportGridState {
+  canViewWastedCost: boolean;
+  loading: boolean;
+  organization: Organization;
   view: ReportView;
 }
 
-const Reports = ({
-  canViewInventory,
-  canViewPersonnel,
-  canViewSales,
+const ReportTable = ({
+  canViewWastedCost,
+  filterField,
+  filterOperator,
+  filterValue,
   inventory: initialInventory,
-  loading = false,
+  loading,
   organization,
+  page,
+  pageSize,
   personnel: initialPersonnel,
+  quickFilterValue,
   sales: initialSales,
-  view: initialView,
-}: ReportsProps) => {
+  sortBy,
+  sortDirection,
+  view,
+}: ReportTableProps) => {
   const currency = organization.currency ?? "";
 
-  const [view, setView] = useState<ReportView>(initialView);
-  const [exporting, setExporting] = useState(false);
+  const { groupBy, tab } = view;
 
-  const { groupBy, month, since, tab, until } = view;
+  const {
+    filterModel,
+    handleFilterModelChange,
+    handlePaginationModelChange,
+    handleSortModelChange,
+    paginationModel,
+    sortModel,
+  } = useDataGridQueryState({
+    filterField,
+    filterOperator,
+    filterValue,
+    page,
+    pageSize,
+    quickFilterValue,
+    sortBy,
+    sortDirection,
+  });
+
+  const apiRef = useGridApiRef();
+
+  const enumFilterOperators = useEnumFilterOperators();
+  const numberFilterOperators = useNumberFilterOperators();
+  const stringFilterOperators = useStringFilterOperators();
 
   const format = useFormatter();
 
@@ -159,19 +205,35 @@ const Reports = ({
 
   const locale = useLocale();
 
-  const monthFormat = useMonthFormat();
-
   const tAttendance = useTranslations("attendance");
-  const tCommon = useTranslations("common");
   const tInventory = useTranslations("inventory");
   const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
   const tReports = useTranslations("reports");
 
-  const updateQuery = useUpdateQuery();
+  const enumOptions = useMemo(
+    () => getIngredientEnumOptions(tInventory),
+    [tInventory],
+  );
 
-  const reportPath = getReportPath(organization.slug, tab);
-  const query = getReportQuery(view);
+  const reportUrl = `${getReportPath(organization.slug, tab)}?${getReportQuery(view)}&${toReportGridQuery(
+    tab,
+    getDataGridSearchParams(
+      paginationModel,
+      filterModel,
+      sortModel,
+      tab === "inventory" ? enumOptions : undefined,
+    ),
+  )}`;
+
+  const swrOptions = {
+    keepPreviousData: true,
+    onSuccess: () => {
+      setTimeout(() => {
+        apiRef.current?.autosizeColumns(autosizeOptions);
+      }, 0);
+    },
+  };
 
   const {
     data: sales,
@@ -179,9 +241,9 @@ const Reports = ({
     isValidating: isValidatingSales,
     mutate: mutateSales,
   } = useSWR(
-    !loading && tab === "sales" ? `${reportPath}?${query}` : null,
+    !loading && tab === "sales" ? reportUrl : null,
     (url: string) => fetcher<SalesReportResponse>(url),
-    { fallbackData: initialSales, keepPreviousData: true },
+    { ...swrOptions, fallbackData: initialSales },
   );
 
   const {
@@ -190,9 +252,9 @@ const Reports = ({
     isValidating: isValidatingInventory,
     mutate: mutateInventory,
   } = useSWR(
-    !loading && tab === "inventory" ? `${reportPath}?${query}` : null,
+    !loading && tab === "inventory" ? reportUrl : null,
     (url: string) => fetcher<InventoryReportResponse>(url),
-    { fallbackData: initialInventory, keepPreviousData: true },
+    { ...swrOptions, fallbackData: initialInventory },
   );
 
   const {
@@ -201,14 +263,373 @@ const Reports = ({
     isValidating: isValidatingPersonnel,
     mutate: mutatePersonnel,
   } = useSWR(
-    !loading && tab === "personnel" ? `${reportPath}?${query}` : null,
+    !loading && tab === "personnel" ? reportUrl : null,
     (url: string) => fetcher<PersonnelCostReportResponse>(url),
-    { fallbackData: initialPersonnel, keepPreviousData: true },
+    { ...swrOptions, fallbackData: initialPersonnel },
   );
+
+  const salesColumns = useMemo<GridColDef[]>(() => {
+    const isItemGroupBy = groupBy === "menuItem" || groupBy === "category";
+
+    const groupLabel = ({ key, name }: SalesReportRow) => {
+      switch (groupBy) {
+        case "day":
+          return format.dateTime(
+            dayjs.tz(key, STORE_TIMEZONE).toDate(),
+            "date",
+          );
+        case "hour":
+          return `${key.padStart(2, "0")}:00`;
+        case "paymentMethod":
+          return tOrder(`checkout.payment.${key as OrderPaymentMethod}`);
+        case "mode":
+          return tOrder(`mode.${key as ApiOrderMode}.label`);
+        default:
+          return key === UNCATEGORIZED_KEY
+            ? tMenus("sections.unassigned")
+            : localize(name, locale) || key;
+      }
+    };
+
+    return [
+      {
+        field: isItemGroupBy ? "name" : "key",
+        filterable: groupBy !== "paymentMethod" && groupBy !== "mode",
+        filterOperators: stringFilterOperators,
+        headerName: tReports(`groupBy.${groupBy}`),
+        type: groupBy === "hour" ? "number" : "string",
+        valueGetter: (_value: unknown, row: SalesReportRow) =>
+          groupBy === "hour"
+            ? Number(row.key)
+            : groupBy === "day"
+              ? row.key
+              : groupLabel(row),
+        valueFormatter: (_value, row: SalesReportRow) => groupLabel(row),
+      },
+      {
+        field: "orders",
+        filterOperators: numberFilterOperators,
+        headerName: tReports("sales.orders"),
+        type: "number",
+      },
+      ...(isItemGroupBy
+        ? (["quantity", "refundedQuantity"] as const).map((field) => ({
+            field,
+            filterOperators: numberFilterOperators,
+            headerName: tReports(`sales.${field}`),
+            type: "number" as const,
+          }))
+        : []),
+      ...MONEY_FIELDS.map((field) => ({
+        field,
+        filterOperators: numberFilterOperators,
+        headerName: tReports(`sales.${field}`),
+        type: "number" as const,
+        valueFormatter: (value: number) => formatMoney(value, currency),
+      })),
+    ];
+  }, [
+    currency,
+    format,
+    formatMoney,
+    groupBy,
+    locale,
+    numberFilterOperators,
+    stringFilterOperators,
+    tMenus,
+    tOrder,
+    tReports,
+  ]);
+
+  const inventoryColumns = useMemo<GridColDef[]>(
+    () => [
+      {
+        field: "name",
+        filterOperators: stringFilterOperators,
+        headerName: tReports("inventory.ingredient"),
+        valueGetter: (value: InventoryReportRow["name"]) =>
+          localize(value, locale),
+      },
+      {
+        field: "unitCode",
+        filterOperators: enumFilterOperators,
+        headerName: tReports("inventory.unit"),
+        type: "singleSelect",
+        valueOptions: enumOptions.unitCode,
+      },
+      ...INVENTORY_FIELDS.flatMap((field) => [
+        {
+          field,
+          filterOperators: numberFilterOperators,
+          headerName: tReports(`inventory.${field}`),
+          type: "number" as const,
+          valueGetter: (value: string) => Number(value),
+          valueFormatter: (value: number) =>
+            format.number(value, { maximumFractionDigits: 3 }),
+        },
+        ...(field === "wasted" && canViewWastedCost
+          ? [
+              {
+                field: "wastedCost",
+                filterOperators: numberFilterOperators,
+                headerName: tReports("inventory.wastedCost"),
+                type: "number" as const,
+                renderCell: renderEmptyableCell,
+                valueGetter: (value: InventoryReportRow["wastedCost"]) =>
+                  value == null ? null : Number(value),
+                valueFormatter: (value: number | null) =>
+                  value === null ? "" : formatMoney(value, currency),
+              },
+            ]
+          : []),
+      ]),
+    ],
+    [
+      canViewWastedCost,
+      currency,
+      enumFilterOperators,
+      enumOptions.unitCode,
+      format,
+      formatMoney,
+      locale,
+      numberFilterOperators,
+      stringFilterOperators,
+      tReports,
+    ],
+  );
+
+  const personnelColumns = useMemo<GridColDef[]>(
+    () => [
+      {
+        field: "jobTitle",
+        filterOperators: stringFilterOperators,
+        headerName: tAttendance("jobTitle"),
+        valueGetter: (value: PersonnelCostReportRow["jobTitle"]) =>
+          value ?? tReports("personnel.noJobTitle"),
+      },
+      {
+        field: "headcount",
+        filterOperators: numberFilterOperators,
+        headerName: tReports("personnel.headcount"),
+        type: "number",
+      },
+      ...PERSONNEL_MONEY_FIELDS.map((field) => ({
+        field,
+        filterOperators: numberFilterOperators,
+        headerName: tReports(`personnel.${PERSONNEL_MONEY_LABELS[field]}`),
+        type: "number" as const,
+        renderCell: renderEmptyableCell,
+        valueGetter: (value: string | null) =>
+          value === null ? null : fromCents(value),
+        valueFormatter: (value: number | null) =>
+          value === null ? "" : formatMoney(value, currency),
+      })),
+    ],
+    [
+      currency,
+      formatMoney,
+      numberFilterOperators,
+      stringFilterOperators,
+      tAttendance,
+      tReports,
+    ],
+  );
+
+  const error = {
+    inventory: inventoryError,
+    personnel: personnelError,
+    sales: salesError,
+  }[tab];
+  const isValidating = {
+    inventory: isValidatingInventory,
+    personnel: isValidatingPersonnel,
+    sales: isValidatingSales,
+  }[tab];
+  const retry = {
+    inventory: mutateInventory,
+    personnel: mutatePersonnel,
+    sales: mutateSales,
+  }[tab];
+
+  if (error) return <ErrorAlert onRetry={() => retry()} />;
+
+  const gridProps = {
+    ...REPORT_DATA_GRID_PROPS,
+    apiRef,
+    filterMode: "server" as const,
+    filterModel,
+    loading: loading || isValidating,
+    onFilterModelChange: handleFilterModelChange,
+    onPaginationModelChange: handlePaginationModelChange,
+    onSortModelChange: handleSortModelChange,
+    pageSizeOptions: getPageSizeOptions(paginationModel.pageSize),
+    paginationMode: "server" as const,
+    paginationModel,
+    sortingMode: "server" as const,
+    sortModel,
+  };
+
+  return tab === "sales" ? (
+    <>
+      {sales && (
+        <TotalsStack direction="row">
+          <Typography variant="subtitle2">{tReports("sales.total")}</Typography>
+          <Typography variant="body2">
+            {tReports("sales.orders")} {format.number(sales.totals.orders)}
+          </Typography>
+          {MONEY_FIELDS.map((field) => (
+            <Typography key={field} variant="body2">
+              {tReports(`sales.${field}`)}{" "}
+              {formatMoney(sales.totals[field], currency)}
+            </Typography>
+          ))}
+        </TotalsStack>
+      )}
+      <DataGrid
+        {...gridProps}
+        columns={salesColumns}
+        getRowId={({ key }) => key}
+        rowCount={sales?.total ?? 0}
+        rows={sales?.rows ?? []}
+      />
+    </>
+  ) : tab === "personnel" ? (
+    <>
+      {personnel && (
+        <>
+          <TotalsStack direction="row">
+            <Typography variant="subtitle2">
+              {tReports("sales.total")}
+            </Typography>
+            <Typography variant="body2">
+              {tReports("personnel.headcount")}{" "}
+              {format.number(personnel.totals.headcount)}
+            </Typography>
+            {PERSONNEL_MONEY_FIELDS.map((field) => (
+              <Typography key={field} variant="body2">
+                {tReports(`personnel.${PERSONNEL_MONEY_LABELS[field]}`)}{" "}
+                {personnel.totals[field] === null ? (
+                  <EmptyCell />
+                ) : (
+                  formatMoney(fromCents(personnel.totals[field]), currency)
+                )}
+              </Typography>
+            ))}
+          </TotalsStack>
+          {personnel.totals.missingEmployerInsurance > 0 && (
+            <Typography color="textSecondary" variant="body2">
+              {tReports("personnel.missingEmployerInsurance", {
+                count: personnel.totals.missingEmployerInsurance,
+              })}
+            </Typography>
+          )}
+          {personnel.unpublishedEmployees > 0 && (
+            <Typography color="textSecondary" variant="body2">
+              {tReports("personnel.unpublished", {
+                count: personnel.unpublishedEmployees,
+              })}
+            </Typography>
+          )}
+        </>
+      )}
+      <DataGrid
+        {...gridProps}
+        columns={personnelColumns}
+        getRowId={({ jobTitle }) => jobTitle ?? ""}
+        rowCount={personnel?.total ?? 0}
+        rows={personnel?.rows ?? []}
+      />
+    </>
+  ) : (
+    <>
+      {!!inventory?.wasteByReason.length && (
+        <TotalsStack direction="row">
+          <Typography variant="subtitle2">
+            {tReports("inventory.wasted")}
+          </Typography>
+          {inventory.wasteByReason.map(({ cost, occurrences, reason }) => (
+            <Typography key={reason} variant="body2">
+              {tInventory(`transactions.wasteReason.options.${reason}`)}{" "}
+              {tReports("inventory.occurrences", { count: occurrences })}
+              {cost !== undefined && (
+                <>
+                  {" "}
+                  {tReports("inventory.wastedCost")}{" "}
+                  {cost === null ? (
+                    <EmptyCell />
+                  ) : (
+                    formatMoney(Number(cost), currency)
+                  )}
+                </>
+              )}
+            </Typography>
+          ))}
+        </TotalsStack>
+      )}
+      <DataGrid
+        {...gridProps}
+        columns={inventoryColumns}
+        getRowId={({ ingredientId }) => ingredientId}
+        rowCount={inventory?.total ?? 0}
+        rows={inventory?.rows ?? []}
+      />
+    </>
+  );
+};
+
+interface ReportsProps extends Partial<ReportGridState> {
+  canViewInventory: boolean;
+  canViewPersonnel: boolean;
+  canViewSales: boolean;
+  canViewWastedCost: boolean;
+  loading?: boolean;
+  organization: Organization;
+  view: ReportView;
+}
+
+const Reports = ({
+  canViewInventory,
+  canViewPersonnel,
+  canViewSales,
+  canViewWastedCost,
+  loading = false,
+  organization,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
+  view: initialView,
+  ...initialGrid
+}: ReportsProps) => {
+  const [view, setView] = useState<ReportView>(initialView);
+  const [grid, setGrid] = useState<ReportGridState>({
+    ...initialGrid,
+    page,
+    pageSize,
+  });
+  const [exporting, setExporting] = useState(false);
+
+  const { groupBy, month, since, tab, until } = view;
+
+  const locale = useLocale();
+
+  const monthFormat = useMonthFormat();
+
+  const searchParams = useSearchParams();
+
+  const tCommon = useTranslations("common");
+  const tReports = useTranslations("reports");
+
+  const updateQuery = useUpdateQuery();
+
+  const reportPath = getReportPath(organization.slug, tab);
+  const query = getReportQuery(view);
 
   const updateView = (changes: Partial<ReportView>) => {
     setView((previous) => ({ ...previous, ...changes }));
-    updateQuery(changes);
+    setGrid({
+      page: 1,
+      pageSize: Number(searchParams.get("pageSize")) || pageSize,
+    });
+    updateQuery({ ...changes, ...RESET_GRID_QUERY });
   };
 
   const handleSinceChange = (
@@ -274,172 +695,8 @@ const Reports = ({
     }
   };
 
-  const shownGroupBy = sales?.groupBy ?? groupBy;
-
-  const salesColumns = useMemo<GridColDef[]>(() => {
-    const isItemGroupBy =
-      shownGroupBy === "menuItem" || shownGroupBy === "category";
-
-    const groupLabel = ({ key, name }: SalesReportRow) => {
-      switch (shownGroupBy) {
-        case "day":
-          return format.dateTime(
-            dayjs.tz(key, STORE_TIMEZONE).toDate(),
-            "date",
-          );
-        case "hour":
-          return `${key.padStart(2, "0")}:00`;
-        case "paymentMethod":
-          return tOrder(`checkout.payment.${key as OrderPaymentMethod}`);
-        case "mode":
-          return tOrder(`mode.${key as ApiOrderMode}.label`);
-        default:
-          return key === UNCATEGORIZED_KEY
-            ? tMenus("sections.unassigned")
-            : localize(name, locale) || key;
-      }
-    };
-
-    return [
-      {
-        field: "key",
-        headerName: tReports(`groupBy.${shownGroupBy}`),
-        type: shownGroupBy === "hour" ? "number" : "string",
-        valueGetter: (value: string, row: SalesReportRow) =>
-          shownGroupBy === "hour"
-            ? Number(value)
-            : shownGroupBy === "day"
-              ? value
-              : groupLabel(row),
-        valueFormatter: (_value, row: SalesReportRow) => groupLabel(row),
-      },
-      {
-        field: "orders",
-        headerName: tReports("sales.orders"),
-        type: "number",
-      },
-      ...(isItemGroupBy
-        ? (["quantity", "refundedQuantity"] as const).map((field) => ({
-            field,
-            headerName: tReports(`sales.${field}`),
-            type: "number" as const,
-          }))
-        : []),
-      ...MONEY_FIELDS.map((field) => ({
-        field,
-        headerName: tReports(`sales.${field}`),
-        type: "number" as const,
-        valueFormatter: (value: number) => formatMoney(value, currency),
-      })),
-    ];
-  }, [
-    currency,
-    format,
-    formatMoney,
-    locale,
-    shownGroupBy,
-    tMenus,
-    tOrder,
-    tReports,
-  ]);
-
-  const showsWastedCost =
-    inventory?.rows.some((row) => row.wastedCost !== undefined) ?? false;
-
-  const inventoryColumns = useMemo<GridColDef[]>(
-    () => [
-      {
-        field: "name",
-        headerName: tReports("inventory.ingredient"),
-        valueGetter: (value: InventoryReportRow["name"]) =>
-          localize(value, locale),
-      },
-      {
-        field: "unitCode",
-        headerName: tReports("inventory.unit"),
-        valueFormatter: (value: InventoryReportRow["unitCode"]) =>
-          tInventory(`units.${value}`),
-      },
-      ...INVENTORY_FIELDS.flatMap((field) => [
-        {
-          field,
-          headerName: tReports(`inventory.${field}`),
-          type: "number" as const,
-          valueGetter: (value: string) => Number(value),
-          valueFormatter: (value: number) =>
-            format.number(value, { maximumFractionDigits: 3 }),
-        },
-        ...(field === "wasted" && showsWastedCost
-          ? [
-              {
-                field: "wastedCost",
-                headerName: tReports("inventory.wastedCost"),
-                type: "number" as const,
-                renderCell: renderEmptyableCell,
-                valueGetter: (value: InventoryReportRow["wastedCost"]) =>
-                  value == null ? null : Number(value),
-                valueFormatter: (value: number | null) =>
-                  value === null ? "" : formatMoney(value, currency),
-              },
-            ]
-          : []),
-      ]),
-    ],
-    [
-      currency,
-      format,
-      formatMoney,
-      locale,
-      showsWastedCost,
-      tInventory,
-      tReports,
-    ],
-  );
-
-  const personnelColumns = useMemo<GridColDef[]>(
-    () => [
-      {
-        field: "jobTitle",
-        headerName: tAttendance("jobTitle"),
-        valueGetter: (value: PersonnelCostReportRow["jobTitle"]) =>
-          value ?? tReports("personnel.noJobTitle"),
-      },
-      {
-        field: "headcount",
-        headerName: tReports("personnel.headcount"),
-        type: "number",
-      },
-      ...PERSONNEL_MONEY_FIELDS.map((field) => ({
-        field,
-        headerName: tReports(`personnel.${PERSONNEL_MONEY_LABELS[field]}`),
-        type: "number" as const,
-        renderCell: renderEmptyableCell,
-        valueGetter: (value: string | null) =>
-          value === null ? null : fromCents(value),
-        valueFormatter: (value: number | null) =>
-          value === null ? "" : formatMoney(value, currency),
-      })),
-    ],
-    [currency, formatMoney, tAttendance, tReports],
-  );
-
   const isSales = tab === "sales";
   const isPersonnel = tab === "personnel";
-  const error = {
-    inventory: inventoryError,
-    personnel: personnelError,
-    sales: salesError,
-  }[tab];
-  const isValidating = {
-    inventory: isValidatingInventory,
-    personnel: isValidatingPersonnel,
-    sales: isValidatingSales,
-  }[tab];
-  const retry = {
-    inventory: mutateInventory,
-    personnel: mutatePersonnel,
-    sales: mutateSales,
-  }[tab];
   const startDate = toStoreDate(since);
 
   return (
@@ -524,117 +781,14 @@ const Reports = ({
           {tReports("export")}
         </Button>
       </ToolbarStack>
-      {error ? (
-        <ErrorAlert onRetry={() => retry()} />
-      ) : isSales ? (
-        <>
-          {sales && (
-            <TotalsStack direction="row">
-              <Typography variant="subtitle2">
-                {tReports("sales.total")}
-              </Typography>
-              <Typography variant="body2">
-                {tReports("sales.orders")} {format.number(sales.totals.orders)}
-              </Typography>
-              {MONEY_FIELDS.map((field) => (
-                <Typography key={field} variant="body2">
-                  {tReports(`sales.${field}`)}{" "}
-                  {formatMoney(sales.totals[field], currency)}
-                </Typography>
-              ))}
-            </TotalsStack>
-          )}
-          <DataGrid
-            {...REPORT_DATA_GRID_PROPS}
-            columns={salesColumns}
-            getRowId={({ key }) => key}
-            key={shownGroupBy}
-            loading={loading || isValidating}
-            rows={sales?.rows ?? []}
-          />
-        </>
-      ) : isPersonnel ? (
-        <>
-          {personnel && (
-            <>
-              <TotalsStack direction="row">
-                <Typography variant="subtitle2">
-                  {tReports("sales.total")}
-                </Typography>
-                <Typography variant="body2">
-                  {tReports("personnel.headcount")}{" "}
-                  {format.number(personnel.totals.headcount)}
-                </Typography>
-                {PERSONNEL_MONEY_FIELDS.map((field) => (
-                  <Typography key={field} variant="body2">
-                    {tReports(`personnel.${PERSONNEL_MONEY_LABELS[field]}`)}{" "}
-                    {personnel.totals[field] === null ? (
-                      <EmptyCell />
-                    ) : (
-                      formatMoney(fromCents(personnel.totals[field]), currency)
-                    )}
-                  </Typography>
-                ))}
-              </TotalsStack>
-              {personnel.totals.missingEmployerInsurance > 0 && (
-                <Typography color="textSecondary" variant="body2">
-                  {tReports("personnel.missingEmployerInsurance", {
-                    count: personnel.totals.missingEmployerInsurance,
-                  })}
-                </Typography>
-              )}
-              {personnel.unpublishedEmployees > 0 && (
-                <Typography color="textSecondary" variant="body2">
-                  {tReports("personnel.unpublished", {
-                    count: personnel.unpublishedEmployees,
-                  })}
-                </Typography>
-              )}
-            </>
-          )}
-          <DataGrid
-            {...REPORT_DATA_GRID_PROPS}
-            columns={personnelColumns}
-            getRowId={({ jobTitle }) => jobTitle ?? ""}
-            loading={loading || isValidating}
-            rows={personnel?.rows ?? []}
-          />
-        </>
-      ) : (
-        <>
-          {!!inventory?.wasteByReason.length && (
-            <TotalsStack direction="row">
-              <Typography variant="subtitle2">
-                {tReports("inventory.wasted")}
-              </Typography>
-              {inventory.wasteByReason.map(({ cost, occurrences, reason }) => (
-                <Typography key={reason} variant="body2">
-                  {tInventory(`transactions.wasteReason.options.${reason}`)}{" "}
-                  {tReports("inventory.occurrences", { count: occurrences })}
-                  {cost !== undefined && (
-                    <>
-                      {" "}
-                      {tReports("inventory.wastedCost")}{" "}
-                      {cost === null ? (
-                        <EmptyCell />
-                      ) : (
-                        formatMoney(Number(cost), currency)
-                      )}
-                    </>
-                  )}
-                </Typography>
-              ))}
-            </TotalsStack>
-          )}
-          <DataGrid
-            {...REPORT_DATA_GRID_PROPS}
-            columns={inventoryColumns}
-            getRowId={({ ingredientId }) => ingredientId}
-            loading={loading || isValidating}
-            rows={inventory?.rows ?? []}
-          />
-        </>
-      )}
+      <ReportTable
+        {...grid}
+        canViewWastedCost={canViewWastedCost}
+        key={[tab, since, until, groupBy, month].join()}
+        loading={loading}
+        organization={organization}
+        view={view}
+      />
     </>
   );
 };
