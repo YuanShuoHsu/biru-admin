@@ -14,11 +14,7 @@ import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
-import {
-  autosizeOptions,
-  DATA_GRID_PROPS,
-  NO_VALUE_FILTER_OPERATORS,
-} from "@/constants/dataGrid";
+import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import {
   DEFAULT_PAGE_SIZE,
   DEFAULT_PAGINATION_QUERY,
@@ -29,12 +25,12 @@ import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
 import { isSortableOperation } from "@dnd-kit/react/sortable";
 
+import { useDataGridQueryState } from "@/hooks/useDataGridQueryState";
 import {
   useDateFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 import { useRowSelection } from "@/hooks/useRowSelection";
-import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -58,13 +54,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import type {
-  GridColDef,
-  GridFilterModel,
-  GridPaginationModel,
-  GridRenderCellParams,
-  GridSortModel,
-} from "@mui/x-data-grid";
+import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -82,11 +72,7 @@ import type {
   MenuSectionSortField,
 } from "@/types/menus";
 
-import {
-  getDataGridSearchParams,
-  getFilterItemParams,
-  isFilteredOrSorted,
-} from "@/utils/dataGrid";
+import { getDataGridSearchParams, isFilteredOrSorted } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
@@ -126,14 +112,14 @@ interface MenuDetailProps {
 const MenusMenuId = ({
   canViewAuditLog = false,
   canWrite = false,
-  filterField: initialFilterField,
-  filterOperator: initialFilterOperator,
-  filterValue: initialFilterValue,
+  filterField,
+  filterOperator,
+  filterValue,
   loading = false,
   menu,
   page = 1,
   pageSize = DEFAULT_PAGE_SIZE,
-  quickFilterValue: initialQuickFilterValue,
+  quickFilterValue,
   rowCount: initialRowCount = 0,
   rows: initialRows = [],
   sortBy,
@@ -145,31 +131,22 @@ const MenusMenuId = ({
   const isReorderMode = toolbarMode === "reorder";
   const isSelectMode = toolbarMode === "select";
   const [draftRows, setDraftRows] = useState<MenuSection[] | null>(null);
-  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    page: page - 1,
+  const {
+    filterModel,
+    handleFilterModelChange,
+    handlePaginationModelChange,
+    handleSortModelChange,
+    paginationModel,
+    sortModel,
+  } = useDataGridQueryState({
+    filterField,
+    filterOperator,
+    filterValue,
+    page,
     pageSize,
-  });
-  const [sortModel, setSortModel] = useState<GridSortModel>(
-    sortBy && sortDirection ? [{ field: sortBy, sort: sortDirection }] : [],
-  );
-  const [filterModel, setFilterModel] = useState<GridFilterModel>({
-    items:
-      initialFilterField &&
-      initialFilterOperator &&
-      (initialFilterValue ||
-        NO_VALUE_FILTER_OPERATORS.includes(initialFilterOperator))
-        ? [
-            {
-              field: initialFilterField,
-              operator: initialFilterOperator,
-              value:
-                initialFilterOperator === "isAnyOf"
-                  ? initialFilterValue?.split(",")
-                  : initialFilterValue,
-            },
-          ]
-        : [],
-    quickFilterValues: initialQuickFilterValue ? [initialQuickFilterValue] : [],
+    quickFilterValue,
+    sortBy,
+    sortDirection,
   });
 
   const { setDialog } = useDialogStore((state) => state);
@@ -189,8 +166,6 @@ const MenusMenuId = ({
 
   const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
-
-  const updateQuery = useUpdateQuery();
 
   const {
     data: { data: fetchedRows, total: rowCount } = {
@@ -237,54 +212,6 @@ const MenusMenuId = ({
 
   const isReorderDisabled =
     rowCount < 2 || isValidating || isFilteredOrSorted(filterModel, sortModel);
-
-  const handlePaginationModelChange = useCallback(
-    (newModel: GridPaginationModel) => {
-      setPaginationModel(newModel);
-
-      updateQuery({
-        page: String(newModel.page + 1),
-        pageSize: String(newModel.pageSize),
-      });
-    },
-    [updateQuery],
-  );
-
-  const handleSortModelChange = useCallback(
-    (newModel: GridSortModel) => {
-      setSortModel(newModel);
-      setPaginationModel((previous) => ({ ...previous, page: 0 }));
-
-      updateQuery({
-        page: "1",
-        sortBy: newModel[0]?.field ?? "",
-        sortDirection: newModel[0]?.sort ?? "",
-      });
-    },
-    [updateQuery],
-  );
-
-  const handleFilterModelChange = useCallback(
-    (newModel: GridFilterModel) => {
-      setFilterModel(newModel);
-      setPaginationModel((previous) => ({ ...previous, page: 0 }));
-
-      const {
-        filterField = "",
-        filterOperator = "",
-        filterValue = "",
-      } = getFilterItemParams(newModel.items[0]);
-
-      updateQuery({
-        filterField,
-        filterOperator,
-        filterValue,
-        page: "1",
-        quickFilterValue: (newModel.quickFilterValues ?? []).join(" ").trim(),
-      });
-    },
-    [updateQuery],
-  );
 
   const handleEnterReorderMode = useCallback(() => {
     setDialog({

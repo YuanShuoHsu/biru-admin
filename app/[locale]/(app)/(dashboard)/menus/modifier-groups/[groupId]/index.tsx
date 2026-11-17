@@ -14,11 +14,7 @@ import DataGrid from "@/components/DataGrid";
 import EmptyCell from "@/components/EmptyCell";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
-import {
-  autosizeOptions,
-  DATA_GRID_PROPS,
-  NO_VALUE_FILTER_OPERATORS,
-} from "@/constants/dataGrid";
+import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { ITEM_AVAILABILITY_COLOR_MAP } from "@/constants/itemAvailability";
 import { MODE_COLORS } from "@/constants/orderMode";
 import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
@@ -27,6 +23,7 @@ import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
 import { isSortableOperation } from "@dnd-kit/react/sortable";
 
+import { useDataGridQueryState } from "@/hooks/useDataGridQueryState";
 import {
   useDateFilterOperators,
   useEnumFilterOperators,
@@ -35,7 +32,6 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useRowSelection } from "@/hooks/useRowSelection";
-import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import {
   Add,
@@ -58,13 +54,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import type {
-  GridColDef,
-  GridFilterModel,
-  GridPaginationModel,
-  GridRenderCellParams,
-  GridSortModel,
-} from "@mui/x-data-grid";
+import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -83,11 +73,7 @@ import type {
   ModifierSortField,
 } from "@/types/menus";
 
-import {
-  getDataGridSearchParams,
-  getFilterItemParams,
-  isFilteredOrSorted,
-} from "@/utils/dataGrid";
+import { getDataGridSearchParams, isFilteredOrSorted } from "@/utils/dataGrid";
 import { getMenuEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 import { getHref } from "@/utils/href";
@@ -139,14 +125,14 @@ const Modifiers = ({
   canViewRecipe = false,
   canUpdateAvailability = false,
   canWrite = false,
-  filterField: initialFilterField,
-  filterOperator: initialFilterOperator,
-  filterValue: initialFilterValue,
+  filterField,
+  filterOperator,
+  filterValue,
   group,
   loading = false,
   page = 1,
   pageSize = DEFAULT_PAGE_SIZE,
-  quickFilterValue: initialQuickFilterValue,
+  quickFilterValue,
   rowCount: initialRowCount = 0,
   rows: initialRows = [],
   sortBy,
@@ -158,31 +144,22 @@ const Modifiers = ({
   const isReorderMode = toolbarMode === "reorder";
   const isSelectMode = toolbarMode === "select";
   const [draftRows, setDraftRows] = useState<Modifier[] | null>(null);
-  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    page: page - 1,
+  const {
+    filterModel,
+    handleFilterModelChange,
+    handlePaginationModelChange,
+    handleSortModelChange,
+    paginationModel,
+    sortModel,
+  } = useDataGridQueryState({
+    filterField,
+    filterOperator,
+    filterValue,
+    page,
     pageSize,
-  });
-  const [sortModel, setSortModel] = useState<GridSortModel>(
-    sortBy && sortDirection ? [{ field: sortBy, sort: sortDirection }] : [],
-  );
-  const [filterModel, setFilterModel] = useState<GridFilterModel>({
-    items:
-      initialFilterField &&
-      initialFilterOperator &&
-      (initialFilterValue ||
-        NO_VALUE_FILTER_OPERATORS.includes(initialFilterOperator))
-        ? [
-            {
-              field: initialFilterField,
-              operator: initialFilterOperator,
-              value:
-                initialFilterOperator === "isAnyOf"
-                  ? initialFilterValue?.split(",")
-                  : initialFilterValue,
-            },
-          ]
-        : [],
-    quickFilterValues: initialQuickFilterValue ? [initialQuickFilterValue] : [],
+    quickFilterValue,
+    sortBy,
+    sortDirection,
   });
 
   const { setDialog } = useDialogStore((state) => state);
@@ -206,8 +183,6 @@ const Modifiers = ({
 
   const formatMoney = useFormatMoney();
   const tOrder = useTranslations("order");
-
-  const updateQuery = useUpdateQuery();
 
   const enumOptions = useMemo(
     () => getMenuEnumOptions(tMenus, tOrder),
@@ -259,54 +234,6 @@ const Modifiers = ({
 
   const isReorderDisabled =
     rowCount < 2 || isValidating || isFilteredOrSorted(filterModel, sortModel);
-
-  const handlePaginationModelChange = useCallback(
-    (newModel: GridPaginationModel) => {
-      setPaginationModel(newModel);
-
-      updateQuery({
-        page: String(newModel.page + 1),
-        pageSize: String(newModel.pageSize),
-      });
-    },
-    [updateQuery],
-  );
-
-  const handleSortModelChange = useCallback(
-    (newModel: GridSortModel) => {
-      setSortModel(newModel);
-      setPaginationModel((previous) => ({ ...previous, page: 0 }));
-
-      updateQuery({
-        page: "1",
-        sortBy: newModel[0]?.field ?? "",
-        sortDirection: newModel[0]?.sort ?? "",
-      });
-    },
-    [updateQuery],
-  );
-
-  const handleFilterModelChange = useCallback(
-    (newModel: GridFilterModel) => {
-      setFilterModel(newModel);
-      setPaginationModel((previous) => ({ ...previous, page: 0 }));
-
-      const {
-        filterField = "",
-        filterOperator = "",
-        filterValue = "",
-      } = getFilterItemParams(newModel.items[0]);
-
-      updateQuery({
-        filterField,
-        filterOperator,
-        filterValue,
-        page: "1",
-        quickFilterValue: (newModel.quickFilterValues ?? []).join(" ").trim(),
-      });
-    },
-    [updateQuery],
-  );
 
   const handleEnterReorderMode = useCallback(() => {
     setDialog({
