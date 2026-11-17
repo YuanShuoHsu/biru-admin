@@ -104,6 +104,16 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
+const getStatus = ({ endsAt, startsAt }: Banner) => {
+  const now = Date.now();
+
+  return startsAt && new Date(startsAt).getTime() > now
+    ? "scheduled"
+    : endsAt && new Date(endsAt).getTime() <= now
+      ? "ended"
+      : "live";
+};
+
 interface BannersProps {
   filterField?: BannerFilterField;
   filterOperator?: FilterOperator;
@@ -588,18 +598,10 @@ const Banners = ({
         field: "status",
         filterable: false,
         headerName: tBanners("status.label"),
-        renderCell: ({
-          row: { endsAt, isActive, startsAt },
-        }: GridRenderCellParams<Banner>) => {
-          if (!isActive) return <EmptyCell />;
+        renderCell: ({ row }: GridRenderCellParams<Banner>) => {
+          if (!row.isActive) return <EmptyCell />;
 
-          const now = Date.now();
-          const status =
-            startsAt && new Date(startsAt).getTime() > now
-              ? "scheduled"
-              : endsAt && new Date(endsAt).getTime() <= now
-                ? "ended"
-                : "live";
+          const status = getStatus(row);
 
           return (
             <Chip
@@ -611,6 +613,8 @@ const Banners = ({
           );
         },
         sortable: false,
+        valueGetter: (_value, row: Banner) =>
+          row.isActive ? tBanners(`status.${getStatus(row)}`) : "",
       },
       {
         field: "startsAt",
