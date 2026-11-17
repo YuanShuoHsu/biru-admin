@@ -119,6 +119,7 @@ export const useDataGridQueryState = ({
     handlePaginationModelChange,
     handleSortModelChange,
     paginationModel,
+    setPaginationModel,
     sortModel,
   };
 };
