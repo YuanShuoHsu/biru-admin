@@ -170,7 +170,7 @@ const Store = ({ points }: StoreProps) => {
                   color="primary"
                   label={
                     coupon.discountType === "percentage"
-                      ? `-${Number(coupon.discountValue)}%`
+                      ? `-${format.number(Number(coupon.discountValue))}%`
                       : `-${formatMoney(Number(coupon.discountValue), coupon.discountCurrency)}`
                   }
                   size="small"
@@ -191,6 +191,13 @@ const Store = ({ points }: StoreProps) => {
                     stores: format.list(coupon.applicableOrganizationNames, {
                       type: "unit",
                     }),
+                  }),
+                Number(coupon.minSubtotal) > 0 &&
+                  tAuth("coupons.minSubtotal", {
+                    amount: formatMoney(
+                      Number(coupon.minSubtotal),
+                      coupon.discountCurrency,
+                    ),
                   }),
                 coupon.validThrough &&
                   tAuth("points.validUntil", {
