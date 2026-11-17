@@ -213,6 +213,7 @@ const FIELD_LABEL_KEYS = {
   accountingValuePerPoint: "field.accountingValuePerPoint",
   deliveryLeadTimeMinutes: "field.deliveryLeadTimeMinutes",
   url: "field.url",
+  "banner.url": "field.bannerUrl",
   telephone: "field.telephone",
   note: "field.note",
   sortOrder: "field.sortOrder",
@@ -766,11 +767,13 @@ const AuditLogs = ({
 
       return isAttendanceField(scopedField)
         ? tAttendance(ATTENDANCE_FIELD_LABEL_KEYS[scopedField])
-        : isTranslatableField(field)
-          ? tAudit(FIELD_LABEL_KEYS[field])
-          : isAttendanceField(field)
-            ? tAttendance(ATTENDANCE_FIELD_LABEL_KEYS[field])
-            : field;
+        : isTranslatableField(scopedField)
+          ? tAudit(FIELD_LABEL_KEYS[scopedField])
+          : isTranslatableField(field)
+            ? tAudit(FIELD_LABEL_KEYS[field])
+            : isAttendanceField(field)
+              ? tAttendance(ATTENDANCE_FIELD_LABEL_KEYS[field])
+              : field;
     },
     [tAttendance, tAudit],
   );
