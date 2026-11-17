@@ -15,14 +15,17 @@ import { isMissingResource, settle } from "@/utils/fetcher";
 import { getRecipe } from "@/utils/inventory";
 import { getAdminOrganization } from "@/utils/session";
 
-interface RecipePageProps {
+interface InventoryRecipeIngredientsPageProps {
   params: Promise<{ locale: Locale; recipeId: string }>;
   searchParams: Promise<RecipeIngredientsSearchParams>;
 }
 
 export const generateMetadata = generateRecipeIngredientsMetadata;
 
-const RecipePage = async ({ params, searchParams }: RecipePageProps) => {
+const InventoryRecipeIngredientsPage = async ({
+  params,
+  searchParams,
+}: InventoryRecipeIngredientsPageProps) => {
   const [cookieStore, { locale, recipeId }, rawSearchParams] =
     await Promise.all([cookies(), params, searchParams]);
 
@@ -56,4 +59,4 @@ const RecipePage = async ({ params, searchParams }: RecipePageProps) => {
   );
 };
 
-export default RecipePage;
+export default InventoryRecipeIngredientsPage;
