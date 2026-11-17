@@ -54,8 +54,8 @@ export const useChecklistTemplateFormSchema = () => {
     name: z
       .string()
       .trim()
-      .min(1, { error: tValidation("name.required") })
-      .max(50, { error: tValidation("name.maxLength") }),
+      .min(1, { error: tValidation("checklistTemplateName.required") })
+      .max(50, { error: tValidation("checklistTemplateName.maxLength") }),
     timing: z.enum(checklistTimingValues),
   });
 };
