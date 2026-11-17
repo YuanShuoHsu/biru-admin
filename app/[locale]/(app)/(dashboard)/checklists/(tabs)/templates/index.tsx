@@ -131,6 +131,7 @@ const ChecklistTemplates = ({
             <Tooltip title={tChecklists("actions.update.title")}>
               <span>
                 <IconButton
+                  aria-label={tChecklists("actions.update.title")}
                   disabled={closed}
                   onClick={() => handleTemplateDialog(row)}
                   size="small"
@@ -142,6 +143,7 @@ const ChecklistTemplates = ({
             <Tooltip title={tChecklists("actions.remove.title")}>
               <span>
                 <IconButton
+                  aria-label={tChecklists("actions.remove.title")}
                   color="error"
                   disabled={closed}
                   onClick={() => handleRemove(row)}
