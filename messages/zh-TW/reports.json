@@ -15,11 +15,14 @@
     "closing": "期末",
     "consumed": "耗用",
     "ingredient": "食材",
+    "occurrences": "{count} 次",
     "opening": "期初",
     "received": "入庫",
     "theoreticalConsumption": "理論耗用",
     "unit": "單位",
-    "variance": "差異"
+    "variance": "差異",
+    "wasted": "報廢",
+    "wastedCost": "報廢成本"
   },
   "label": "報表",
   "personnel": {
