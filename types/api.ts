@@ -5943,6 +5943,7 @@ export interface components {
       | "menstrualDayLimit"
       | "monthlyOvertimeExceeded"
       | "noShifts"
+      | "nonResidentPaymentNotFound"
       | "notFound"
       | "outsideShiftWindow"
       | "occupationalIndustryInvalid"
@@ -27960,6 +27961,7 @@ export const attendanceErrorCodeValues: ReadonlyArray<
   "menstrualDayLimit",
   "monthlyOvertimeExceeded",
   "noShifts",
+  "nonResidentPaymentNotFound",
   "notFound",
   "outsideShiftWindow",
   "occupationalIndustryInvalid",
