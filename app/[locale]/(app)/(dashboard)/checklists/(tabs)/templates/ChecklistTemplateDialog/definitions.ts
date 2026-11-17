@@ -9,12 +9,6 @@ export const MEASUREMENT_LIMIT = 99999;
 export const useChecklistTemplateFormSchema = () => {
   const tValidation = useTranslations("validation");
 
-  const measurement = z
-    .string()
-    .refine((value) => !value || /^-?\d+(\.\d{1,2})?$/.test(value), {
-      error: tValidation("number.maxFractionDigits", { digits: 2 }),
-    });
-
   return z.object({
     enabled: z.boolean(),
     items: z
@@ -27,22 +21,34 @@ export const useChecklistTemplateFormSchema = () => {
               .trim()
               .min(1, { error: tValidation("checklistItemLabel.required") })
               .max(100, { error: tValidation("checklistItemLabel.maxLength") }),
-            maxValue: measurement,
-            minValue: measurement,
+            maxValue: z.string(),
+            minValue: z.string(),
             type: z.enum(checklistItemTypeValues),
             unit: z.string().trim(),
           })
-          .refine(
-            ({ maxValue, minValue, type }) =>
-              type !== "number" ||
-              !minValue ||
-              !maxValue ||
-              Number(minValue) <= Number(maxValue),
-            {
-              error: tValidation("checklistItemRange.order"),
-              path: ["maxValue"],
-            },
-          ),
+          .superRefine(({ maxValue, minValue, type }, ctx) => {
+            if (type !== "number") return;
+
+            for (const [path, value] of [
+              ["minValue", minValue],
+              ["maxValue", maxValue],
+            ])
+              if (value && !/^-?\d+(\.\d{1,2})?$/.test(value))
+                ctx.addIssue({
+                  code: "custom",
+                  message: tValidation("number.maxFractionDigits", {
+                    digits: 2,
+                  }),
+                  path: [path],
+                });
+
+            if (minValue && maxValue && Number(minValue) > Number(maxValue))
+              ctx.addIssue({
+                code: "custom",
+                message: tValidation("checklistItemRange.order"),
+                path: ["maxValue"],
+              });
+          }),
       )
       .max(ITEMS_MAX),
     name: z

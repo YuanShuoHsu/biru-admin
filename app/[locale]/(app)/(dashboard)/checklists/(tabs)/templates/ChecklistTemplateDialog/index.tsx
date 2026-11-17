@@ -217,9 +217,15 @@ const ChecklistTemplateDialog = ({
             label={tChecklists("items.type.label")}
             onChange={(event) =>
               setValue(
-                `items.${index}.type`,
-                event.target
-                  .value as ChecklistTemplateForm["items"][number]["type"],
+                `items.${index}`,
+                {
+                  ...items[index],
+                  maxValue: "",
+                  minValue: "",
+                  type: event.target
+                    .value as ChecklistTemplateForm["items"][number]["type"],
+                  unit: "",
+                },
                 { shouldValidate: isSubmitted },
               )
             }
