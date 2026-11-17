@@ -4,31 +4,22 @@ import dayjs from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useFormatter, useTranslations } from "next-intl";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import useSWR from "swr";
 
 import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
-import {
-  autosizeOptions,
-  DATA_GRID_PROPS,
-  NO_VALUE_FILTER_OPERATORS,
-} from "@/constants/dataGrid";
+import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
+import { useDataGridQueryState } from "@/hooks/useDataGridQueryState";
 import { useMonthFilterOperators } from "@/hooks/useFilterOperators";
 import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useMonthFormat } from "@/hooks/useMonthFormat";
-import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import type {
-  GridColDef,
-  GridFilterModel,
-  GridPaginationModel,
-  GridSortModel,
-} from "@mui/x-data-grid";
+import type { GridColDef } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
 import type {
@@ -45,7 +36,7 @@ import {
   getPayrollAmountColumns,
   payrollPath,
 } from "@/utils/attendance";
-import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
+import { getDataGridSearchParams } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
 
 dayjs.extend(utc);
@@ -67,14 +58,14 @@ interface PayslipsProps {
 }
 
 const Payslips = ({
-  filterField: initialFilterField,
-  filterOperator: initialFilterOperator,
-  filterValue: initialFilterValue,
+  filterField,
+  filterOperator,
+  filterValue,
   loading = false,
   organization,
   page = 1,
   pageSize = DEFAULT_PAGE_SIZE,
-  quickFilterValue: initialQuickFilterValue,
+  quickFilterValue,
   rowCount: initialRowCount = 0,
   rows: initialRows = [],
   sortBy,
@@ -83,33 +74,22 @@ const Payslips = ({
   const currency = organization?.currency ?? "";
   const organizationSlug = organization?.slug ?? "";
 
-  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    page: page - 1,
+  const {
+    filterModel,
+    handleFilterModelChange,
+    handlePaginationModelChange,
+    handleSortModelChange,
+    paginationModel,
+    sortModel,
+  } = useDataGridQueryState({
+    filterField,
+    filterOperator,
+    filterValue,
+    page,
     pageSize,
-  });
-
-  const [sortModel, setSortModel] = useState<GridSortModel>(
-    sortBy && sortDirection ? [{ field: sortBy, sort: sortDirection }] : [],
-  );
-
-  const [filterModel, setFilterModel] = useState<GridFilterModel>({
-    items:
-      initialFilterField &&
-      initialFilterOperator &&
-      (initialFilterValue ||
-        NO_VALUE_FILTER_OPERATORS.includes(initialFilterOperator))
-        ? [
-            {
-              field: initialFilterField,
-              operator: initialFilterOperator,
-              value:
-                initialFilterOperator === "isAnyOf"
-                  ? initialFilterValue?.split(",")
-                  : initialFilterValue,
-            },
-          ]
-        : [],
-    quickFilterValues: initialQuickFilterValue ? [initialQuickFilterValue] : [],
+    quickFilterValue,
+    sortBy,
+    sortDirection,
   });
 
   const monthFilterOperators = useMonthFilterOperators();
@@ -123,8 +103,6 @@ const Payslips = ({
   const formatMoney = useFormatMoney();
 
   const tAttendance = useTranslations("attendance");
-
-  const updateQuery = useUpdateQuery();
 
   const money = useCallback(
     (value: string) =>
@@ -157,54 +135,6 @@ const Payslips = ({
         }, 0);
       },
     },
-  );
-
-  const handlePaginationModelChange = useCallback(
-    (newModel: GridPaginationModel) => {
-      setPaginationModel(newModel);
-
-      updateQuery({
-        page: String(newModel.page + 1),
-        pageSize: String(newModel.pageSize),
-      });
-    },
-    [updateQuery],
-  );
-
-  const handleSortModelChange = useCallback(
-    (newModel: GridSortModel) => {
-      setSortModel(newModel);
-      setPaginationModel((previous) => ({ ...previous, page: 0 }));
-
-      updateQuery({
-        page: "1",
-        sortBy: newModel[0]?.field ?? "",
-        sortDirection: newModel[0]?.sort ?? "",
-      });
-    },
-    [updateQuery],
-  );
-
-  const handleFilterModelChange = useCallback(
-    (newModel: GridFilterModel) => {
-      setFilterModel(newModel);
-      setPaginationModel((previous) => ({ ...previous, page: 0 }));
-
-      const {
-        filterField = "",
-        filterOperator = "",
-        filterValue = "",
-      } = getFilterItemParams(newModel.items[0]);
-
-      updateQuery({
-        filterField,
-        filterOperator,
-        filterValue,
-        page: "1",
-        quickFilterValue: (newModel.quickFilterValues ?? []).join(" ").trim(),
-      });
-    },
-    [updateQuery],
   );
 
   const columns = useMemo<GridColDef[]>(
