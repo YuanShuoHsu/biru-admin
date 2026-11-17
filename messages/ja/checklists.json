@@ -1,5 +1,13 @@
 {
   "label": "定期チェック",
+  "runs": {
+    "actionNote": "対応内容",
+    "actionNoteHint": "数値が基準範囲外の場合は必須です",
+    "completed": "{time} 完了",
+    "outOfRange": "範囲外",
+    "progress": "{filled}/{total} 入力済み",
+    "range": "基準範囲 {bounds, select, min {{min} {unit} 以上} max {{max} {unit} 以下} other {{min}～{max} {unit}}}"
+  },
   "templates": {
     "actions": {
       "create": {
@@ -40,5 +48,9 @@
       "label": "タイミング",
       "opening": "開店"
     }
+  },
+  "today": {
+    "empty": "今日入力するチェックリストはありません",
+    "label": "今日"
   }
 }

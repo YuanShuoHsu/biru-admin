@@ -1,5 +1,13 @@
 {
   "label": "정기 점검",
+  "runs": {
+    "actionNote": "조치 내용",
+    "actionNoteHint": "값이 허용 범위를 벗어나면 필수입니다",
+    "completed": "{time} 완료",
+    "outOfRange": "범위 이탈",
+    "progress": "{filled}/{total} 입력됨",
+    "range": "허용 범위 {bounds, select, min {{min} {unit} 이상} max {{max} {unit} 이하} other {{min}~{max} {unit}}}"
+  },
   "templates": {
     "actions": {
       "create": {
@@ -40,5 +48,9 @@
       "label": "시점",
       "opening": "오픈"
     }
+  },
+  "today": {
+    "empty": "오늘 작성할 체크리스트가 없습니다",
+    "label": "오늘"
   }
 }

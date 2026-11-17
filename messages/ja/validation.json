@@ -469,6 +469,9 @@
   "checklistItemRange": {
     "order": "上限は下限以上にしてください。"
   },
+  "checklistItemValue": {
+    "required": "数値を入力してください。"
+  },
   "checklistTemplateName": {
     "maxLength": "名前は50文字以内で入力してください。",
     "required": "名前は必須です。"

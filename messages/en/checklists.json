@@ -1,5 +1,13 @@
 {
   "label": "Checklists",
+  "runs": {
+    "actionNote": "Corrective action",
+    "actionNoteHint": "Required when the value is out of range",
+    "completed": "Completed {time}",
+    "outOfRange": "Out of range",
+    "progress": "{filled}/{total} filled",
+    "range": "Acceptable range {bounds, select, min {at least {min} {unit}} max {at most {max} {unit}} other {{min}–{max} {unit}}}"
+  },
   "templates": {
     "actions": {
       "create": {
@@ -40,5 +48,9 @@
       "label": "Timing",
       "opening": "Opening"
     }
+  },
+  "today": {
+    "empty": "No checklists to fill in today",
+    "label": "Today"
   }
 }
