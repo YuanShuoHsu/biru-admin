@@ -1374,6 +1374,59 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/checklists/templates": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 列出例行檢查表範本與項目 */
+    get: operations["ChecklistTemplatesController_findAll"];
+    put?: never;
+    /** 新增例行檢查表範本 */
+    post: operations["ChecklistTemplatesController_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/checklists/templates/reorder": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 重新排序例行檢查表範本 */
+    patch: operations["ChecklistTemplatesController_reorder"];
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/checklists/templates/{templateId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 刪除例行檢查表範本（既有的執行紀錄保留快照） */
+    delete: operations["ChecklistTemplatesController_remove"];
+    options?: never;
+    head?: never;
+    /** 更新例行檢查表範本；帶 items 時項目以這份為準 */
+    patch: operations["ChecklistTemplatesController_update"];
+    trace?: never;
+  };
   "/api/deleted-records": {
     parameters: {
       query?: never;
@@ -7939,6 +7992,73 @@ export interface components {
       applicableOrganizationSlugs?: string[] | null;
     };
     /** @enum {string} */
+    ChecklistTiming: "opening" | "closing" | "anytime";
+    /** @enum {string} */
+    ChecklistItemType: "check" | "number";
+    ChecklistTemplateItemDto: {
+      id: string;
+      label: string;
+      type: components["schemas"]["ChecklistItemType"];
+      unit: string | null;
+      minValue: number | null;
+      maxValue: number | null;
+      sortOrder: number;
+    };
+    ChecklistTemplateDto: {
+      id: string;
+      organizationId: string;
+      name: string;
+      timing: components["schemas"]["ChecklistTiming"];
+      enabled: boolean;
+      sortOrder: number;
+      items: components["schemas"]["ChecklistTemplateItemDto"][];
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    ChecklistTemplateItemInputDto: {
+      /**
+       * Format: uuid
+       * @description 既有項目的 id，帶上就更新該項目；不帶就新增
+       */
+      id?: string;
+      type: components["schemas"]["ChecklistItemType"];
+      /**
+       * @description 數值類型的單位；勾選類型會存成 null
+       * @example °C
+       */
+      unit?: string | null;
+      /**
+       * @description 允許範圍下限（含）；勾選類型會存成 null
+       * @example -18
+       */
+      minValue?: number | null;
+      /**
+       * @description 允許範圍上限（含）；勾選類型會存成 null
+       * @example 7
+       */
+      maxValue?: number | null;
+      label: string;
+    };
+    CreateChecklistTemplateDto: {
+      timing: components["schemas"]["ChecklistTiming"];
+      /** @description 依陣列順序排列；更新時帶上就以這份為準：有 id 的更新、沒有 id 的新增、沒列出的刪除 */
+      items: components["schemas"]["ChecklistTemplateItemInputDto"][];
+      name: string;
+      enabled?: boolean;
+    };
+    ReorderDto: {
+      ids: string[];
+    };
+    UpdateChecklistTemplateDto: {
+      timing?: components["schemas"]["ChecklistTiming"];
+      /** @description 依陣列順序排列；更新時帶上就以這份為準：有 id 的更新、沒有 id 的新增、沒列出的刪除 */
+      items?: components["schemas"]["ChecklistTemplateItemInputDto"][];
+      name?: string;
+      enabled?: boolean;
+    };
+    /** @enum {string} */
     DeletedRecordFilterField: "organizationName" | "tableName" | "deletedAt";
     /** @enum {string} */
     DeletedRecordSortField: "organizationName" | "tableName" | "deletedAt";
@@ -9567,9 +9687,6 @@ export interface components {
       createdAt: string;
       /** Format: date-time */
       updatedAt: string;
-    };
-    ReorderDto: {
-      ids: string[];
     };
     /** @enum {string} */
     SupplierFilterField:
@@ -17225,6 +17342,148 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["UserCouponResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ChecklistTemplatesController_findAll: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ChecklistTemplateDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ChecklistTemplatesController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateChecklistTemplateDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ChecklistTemplateDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ChecklistTemplatesController_reorder: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReorderDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ChecklistTemplatesController_remove: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        templateId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ChecklistTemplatesController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        templateId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateChecklistTemplateDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ChecklistTemplateDto"];
         };
       };
       /** @description Internal server error */
@@ -28201,6 +28460,12 @@ export const sweetnessLevelValues: ReadonlyArray<
 export const validateCouponDtoModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["ValidateCouponDto"]["mode"]
 > = ["counter", "dineIn", "driveThru", "pickup"];
+export const checklistTimingValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["ChecklistTiming"]
+> = ["opening", "closing", "anytime"];
+export const checklistItemTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["ChecklistItemType"]
+> = ["check", "number"];
 export const deletedRecordFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["DeletedRecordFilterField"]
 > = ["organizationName", "tableName", "deletedAt"];

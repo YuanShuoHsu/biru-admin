@@ -1,0 +1,44 @@
+{
+  "label": "定期チェック",
+  "templates": {
+    "actions": {
+      "create": {
+        "success": "チェックリストを追加しました",
+        "title": "チェックリストを追加"
+      },
+      "label": "操作",
+      "remove": {
+        "confirm": "<bold>{name}</bold> を削除しますか？完了したチェック記録は保持されます。",
+        "success": "チェックリストを削除しました",
+        "title": "チェックリストを削除"
+      },
+      "update": {
+        "success": "チェックリストを更新しました",
+        "title": "チェックリストを編集"
+      }
+    },
+    "enabled": "有効",
+    "items": {
+      "add": "項目を追加",
+      "itemLabel": "項目",
+      "label": "チェック項目",
+      "maxValue": "上限",
+      "minValue": "下限",
+      "remove": "項目を削除",
+      "type": {
+        "check": "チェック",
+        "label": "種類",
+        "number": "数値"
+      },
+      "unit": "単位"
+    },
+    "label": "チェックリストテンプレート",
+    "name": "名前",
+    "timing": {
+      "anytime": "指定なし",
+      "closing": "閉店",
+      "label": "タイミング",
+      "opening": "開店"
+    }
+  }
+}

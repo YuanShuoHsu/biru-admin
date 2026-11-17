@@ -39,6 +39,7 @@ const useNavItems = (): NavItem[][] => {
 
   const inventoryChildren = navChildren["/inventory"];
   const attendanceChildren = navChildren["/attendance"];
+  const checklistsChildren = navChildren["/checklists"];
 
   return [
     ...(canAccessAdmin ? [[navItem("/dashboard")]] : []),
@@ -57,6 +58,9 @@ const useNavItems = (): NavItem[][] => {
             { ...navItem("/menus"), children: navChildren["/menus"] },
             ...(inventoryChildren.length
               ? [{ ...navItem("/inventory"), children: inventoryChildren }]
+              : []),
+            ...(checklistsChildren.length
+              ? [{ ...navItem("/checklists"), children: checklistsChildren }]
               : []),
             ...(isAdmin ||
             hasRolePermission(memberRole, { revenue: ["read"] }) ||

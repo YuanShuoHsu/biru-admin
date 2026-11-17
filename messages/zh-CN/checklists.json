@@ -1,0 +1,44 @@
+{
+  "label": "例行检查",
+  "templates": {
+    "actions": {
+      "create": {
+        "success": "已新增检查表",
+        "title": "新增检查表"
+      },
+      "label": "操作",
+      "remove": {
+        "confirm": "确定要删除 <bold>{name}</bold> 吗？已完成的检查记录会保留。",
+        "success": "已删除检查表",
+        "title": "删除检查表"
+      },
+      "update": {
+        "success": "已更新检查表",
+        "title": "编辑检查表"
+      }
+    },
+    "enabled": "启用",
+    "items": {
+      "add": "新增项目",
+      "itemLabel": "项目",
+      "label": "检查项目",
+      "maxValue": "上限",
+      "minValue": "下限",
+      "remove": "移除项目",
+      "type": {
+        "check": "勾选",
+        "label": "类型",
+        "number": "数值"
+      },
+      "unit": "单位"
+    },
+    "label": "检查表模板",
+    "name": "名称",
+    "timing": {
+      "anytime": "不限",
+      "closing": "打烊",
+      "label": "时机",
+      "opening": "开店"
+    }
+  }
+}

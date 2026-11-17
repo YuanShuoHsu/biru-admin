@@ -53,6 +53,11 @@ export const useNavChildren = (): Record<string, NavItem[]> => {
                 },
           ),
     "/auth": session ? accountChildren : authChildren,
+    "/checklists": hasRolePermission(memberRole, {
+      organization: ["update"],
+    })
+      ? [navItem("/checklists/templates")]
+      : [],
     "/company": [navItem("/company/terms"), navItem("/company/privacy")],
     "/inventory": [
       ...(hasRolePermission(memberRole, { inventory: ["read"] })
