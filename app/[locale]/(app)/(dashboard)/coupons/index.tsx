@@ -507,8 +507,13 @@ const Coupons = ({
                         onClick={() => handleGrantCoupon(row)}
                         size="small"
                         visible={
-                          canManageCoupon ||
-                          isExclusiveTo(row, organization?.id)
+                          (canManageCoupon ||
+                            isExclusiveTo(row, organization?.id)) &&
+                          row.isActive &&
+                          !(
+                            row.validThrough &&
+                            new Date(row.validThrough) < new Date()
+                          )
                         }
                       >
                         <CardGiftcard fontSize="small" />
