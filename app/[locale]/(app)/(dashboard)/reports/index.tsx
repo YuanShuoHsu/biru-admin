@@ -614,6 +614,7 @@ const Reports = ({
                   {cost !== undefined && (
                     <>
                       {" "}
+                      {tReports("inventory.wastedCost")}{" "}
                       {cost === null ? (
                         <EmptyCell />
                       ) : (
