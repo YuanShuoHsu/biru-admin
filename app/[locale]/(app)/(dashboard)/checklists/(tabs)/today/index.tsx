@@ -189,9 +189,7 @@ const ChecklistToday = ({
                 ) : (
                   <Chip
                     label={tChecklists("runs.progress", {
-                      filled: run.items.filter(
-                        ({ checked, value }) => checked || value !== null,
-                      ).length,
+                      filled: run.filledCount,
                       total: run.items.length,
                     })}
                     size="small"

@@ -8120,6 +8120,8 @@ export interface components {
       startedAt: string | null;
       /** Format: date-time */
       completedAt: string | null;
+      /** @description 已填項目數：勾選為是或已填數值，與完成判斷同一規則 */
+      filledCount: number;
       items: components["schemas"]["ChecklistRunItemDto"][];
     };
     FillChecklistItemDto: {
