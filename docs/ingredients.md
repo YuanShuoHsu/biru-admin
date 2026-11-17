@@ -39,9 +39,12 @@
 | 蛤蠣         | [黑金文蛤 600g](https://www.hucc-coop.tw/product/content/03030110004)                                                                           | [主婦聯盟](https://www.hucc-coop.tw)                                | 199元   | 600g   | 0.332元/g     |
 | 白酒         | [CANTINE RONCO 料理白酒 250ml](https://www.theeupantry.com/products/cantine-ronco-cooking-wine-250ml)                                           | [The EU Pantry](https://www.theeupantry.com)                        | 120元   | 250ml  | 0.48元/ml     |
 | 乾辣椒片     | [乾燥辣椒片 Red chilli flakes 30g](https://www.theeupantry.com/products/red-chilli-flakes-20g)                                                  | [The EU Pantry](https://www.theeupantry.com)                        | 50元    | 30g    | 1.667元/g     |
+| 雞腿肉       | [卜蜂 台灣冷凍去骨雞腿肉 2.5公斤 X 6入](https://www.costco.com.tw/p/146146)                                                                     | [Costco](https://www.costco.com.tw)                                 | 3429元  | 15kg   | 0.229元/g     |
+| 培根         | [富統 冷藏切片培根 2公斤](https://www.costco.com.tw/p/34179)                                                                                    | [Costco](https://www.costco.com.tw)                                 | 475元   | 2kg    | 0.238元/g     |
+| 蝦仁         | [科克蘭 冷凍養殖去殼去尾大生蝦仁 907公克](https://www.costco.com.tw/p/7777001)                                                                  | [Costco](https://www.costco.com.tw)                                 | 515元   | 907g   | 0.568元/g     |
 | 濃縮鮮雞汁   | [康寶濃縮鮮雞汁 1kg](https://hocom.tw/h/ProductDetail?key=8599765828&productId=12135)                                                           | [明光行](https://hocom.tw)                                          | 405元   | 1kg    | 0.405元/g     |
 | 紅醬         | 自製，見 [食譜](recipes.md#紅醬)                                                                                                                | 自製                                                                | 284元   | 2300g  | 0.123元/g     |
-| 白醬         | 自製，見 [食譜](recipes.md#白醬)                                                                                                                | 自製                                                                | 149元   | 850g   | 0.175元/g     |
+| 白醬         | 自製，見 [食譜](recipes.md#白醬)                                                                                                                | 自製                                                                | 298元   | 1700g  | 0.175元/g     |
 | 雞高湯       | 自製，見 [食譜](recipes.md#雞高湯)                                                                                                              | 自製                                                                | 16元    | 1040g  | 0.015元/g     |
 | 優格         | 自製，見 [食譜](recipes.md#優格)                                                                                                                | 自製                                                                | 165元   | 1000g  | 0.165元/g     |
 | 希臘優格     | 自製，見 [食譜](recipes.md#希臘優格)                                                                                                            | 自製                                                                | 82.5元  | 200g   | 0.413元/g     |
@@ -55,6 +58,9 @@
 - 白醬、雞高湯、優格、希臘優格：同紅醬，價格與內容量是一鍋的總成本與估算成品量。
 - 蛤蠣：海鮮價格隨季節浮動，199 元是主婦聯盟的牌價，進貨時以實際價格更新。
 - 白酒：依菸酒管理法不能網路下單，要打電話（07-554-6820）或到高雄門市購買；查價時網站顯示缺貨。
+- 雞腿肉：3429 元是原價，網站常有特價（查價時 3019 元）；約 13–15 片一袋，每片約 180g。冷凍保存，前一天移到冷藏解凍。
+- 培根：賣場獨家商品，網站不標價，475 元是代購賣場的售價，實際以賣場標價為準；開封後冷藏要盡快用完。
+- 蝦仁：每磅 50–70 隻，每隻約 7.5g。不要用熱水或微波解凍，解凍後不能再冷凍。
 - 乾辣椒片：由辣度選項的食譜扣庫存，不列進品項食譜（見 [辣度](recipes.md#辣度)）。網站只標示最低價 50 元，推定為 30g 夾鏈袋，下單前向店家確認；90g 大包裝較划算。
 - 甘蔗液糖：用於飲品甜度（見[甜度](recipes.md#甜度)）。開店初期用 5kg 瓶裝；每日用量穩定後可改 25kg 桶裝（網路約 890–970 元，每 kg 約 37 元）。
 - 奶油、低筋麵粉：目前是網路零售價，開店前改找烘焙材料行報價。
