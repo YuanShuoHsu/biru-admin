@@ -78,9 +78,11 @@ const WaitlistControls = () => {
   useEffect(() => {
     if (!isConnected || !organization) return;
 
-    emitMenuWithAck("joinWaitlist", { organizationId: organization.id }).catch(
-      (error) => enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
-    );
+    emitMenuWithAck("joinWaitlist", { organizationId: organization.id })
+      .then(refreshWaitlist)
+      .catch((error) =>
+        enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
+      );
 
     menuSocket.on("waitlistUpdated", refreshWaitlist);
 
