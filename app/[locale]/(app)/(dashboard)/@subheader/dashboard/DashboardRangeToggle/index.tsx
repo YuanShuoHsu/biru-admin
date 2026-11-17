@@ -1,5 +1,6 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { startTransition, useOptimistic } from "react";
 
 import { useTranslations } from "next-intl";
@@ -7,6 +8,7 @@ import { useTranslations } from "next-intl";
 import {
   DASHBOARD_RANGES,
   type DashboardRange,
+  resolveDashboardRange,
 } from "@/app/[locale]/(app)/(dashboard)/dashboard/definitions";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
@@ -39,17 +41,13 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
   },
 }));
 
-interface DashboardRangeToggleProps {
-  organizationSlug: string;
-  range: DashboardRange;
-}
-
-const DashboardRangeToggle = ({
-  organizationSlug,
-  range,
-}: DashboardRangeToggleProps) => {
+const DashboardRangeToggle = () => {
   const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const organizationSlug = searchParams.get("organization") ?? "";
+  const range = resolveDashboardRange(searchParams.get("range") ?? undefined);
 
   // https://nextjs.org/docs/app/guides/interactive-apps#step-3-filter-with-pending-feedback
   const [optimisticRange, setOptimisticRange] = useOptimistic(range);
