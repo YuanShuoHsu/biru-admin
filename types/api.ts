@@ -11794,6 +11794,7 @@ export interface components {
       | "waitlistQrRequired"
       | "waitlistQrSessionNotFound"
       | "waitlistTicketNotFound"
+      | "waitlistTicketOffBoard"
       | "waitlistTransitionInvalid";
     WaitlistErrorResponseDto: {
       message: components["schemas"]["WaitlistErrorCode"];
@@ -29468,6 +29469,7 @@ export const waitlistErrorCodeValues: ReadonlyArray<
   "waitlistQrRequired",
   "waitlistQrSessionNotFound",
   "waitlistTicketNotFound",
+  "waitlistTicketOffBoard",
   "waitlistTransitionInvalid",
 ];
 export const waitlistTicketStatusValues: ReadonlyArray<
