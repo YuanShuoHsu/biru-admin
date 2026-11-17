@@ -287,11 +287,11 @@ const DeletedRecords = ({
             enqueueSnackbar(tDeletedRecords("restore.success", { name }), {
               variant: "success",
             });
-
-            mutate();
           } catch (error) {
             enqueueSnackbar(getErrorMessage(error), { variant: "error" });
           }
+
+          mutate();
         },
         open: true,
         title: tDeletedRecords("restore.title"),
