@@ -42,10 +42,14 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 interface ChecklistTemplatesProps {
+  closed: boolean;
   organizationSlug: string;
 }
 
-const ChecklistTemplates = ({ organizationSlug }: ChecklistTemplatesProps) => {
+const ChecklistTemplates = ({
+  closed,
+  organizationSlug,
+}: ChecklistTemplatesProps) => {
   const apiRef = useGridApiRef();
 
   const { setDialog } = useDialogStore((state) => state);
@@ -125,21 +129,27 @@ const ChecklistTemplates = ({ organizationSlug }: ChecklistTemplatesProps) => {
         renderCell: ({ row }: GridRenderCellParams<ChecklistTemplate>) => (
           <ActionsStack direction="row">
             <Tooltip title={tChecklists("actions.update.title")}>
-              <IconButton
-                onClick={() => handleTemplateDialog(row)}
-                size="small"
-              >
-                <Edit fontSize="small" />
-              </IconButton>
+              <span>
+                <IconButton
+                  disabled={closed}
+                  onClick={() => handleTemplateDialog(row)}
+                  size="small"
+                >
+                  <Edit fontSize="small" />
+                </IconButton>
+              </span>
             </Tooltip>
             <Tooltip title={tChecklists("actions.remove.title")}>
-              <IconButton
-                color="error"
-                onClick={() => handleRemove(row)}
-                size="small"
-              >
-                <Delete fontSize="small" />
-              </IconButton>
+              <span>
+                <IconButton
+                  color="error"
+                  disabled={closed}
+                  onClick={() => handleRemove(row)}
+                  size="small"
+                >
+                  <Delete fontSize="small" />
+                </IconButton>
+              </span>
             </Tooltip>
           </ActionsStack>
         ),
@@ -161,13 +171,14 @@ const ChecklistTemplates = ({ organizationSlug }: ChecklistTemplatesProps) => {
           value.map(({ label }) => label).join(tCommon("delimiter")),
       },
     ],
-    [handleRemove, handleTemplateDialog, tChecklists, tCommon],
+    [closed, handleRemove, handleTemplateDialog, tChecklists, tCommon],
   );
 
   return (
     <>
       <ToolbarStack direction="row">
         <Button
+          disabled={closed}
           onClick={() => handleTemplateDialog()}
           size="small"
           startIcon={<Add />}
