@@ -1,11 +1,18 @@
-import RouteTabs from "@/components/RouteTabs";
+import { SWRConfig } from "swr";
 
-const ChecklistsTabsLayout = ({ children }: { children: React.ReactNode }) => (
+import ChecklistsTabs from "./ChecklistsTabs";
+
+import { getDefaultMemberRoleFallback } from "@/utils/session";
+
+const ChecklistsTabsLayout = async ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => (
   <>
-    <RouteTabs
-      ariaLabel="checklists tabs"
-      tabs={[{ path: "/checklists/templates" }]}
-    />
+    <SWRConfig value={{ fallback: await getDefaultMemberRoleFallback() }}>
+      <ChecklistsTabs />
+    </SWRConfig>
     {children}
   </>
 );

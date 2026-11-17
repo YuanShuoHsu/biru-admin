@@ -100,6 +100,7 @@ import {
   Stroller,
   SwapVert,
   TableBar,
+  Today,
   Tune,
   ViewCarousel,
   ViewInAr,
@@ -663,6 +664,12 @@ const routes: Route[] = [
   },
   {
     children: [
+      {
+        icon: Today,
+        label: "checklists.today.label",
+        query: ["organization"],
+        segment: "today",
+      },
       {
         icon: ContentPaste,
         label: "checklists.templates.label",

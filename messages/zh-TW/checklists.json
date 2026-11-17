@@ -1,5 +1,13 @@
 {
   "label": "例行檢查",
+  "runs": {
+    "actionNote": "處置說明",
+    "actionNoteHint": "數值超出合格範圍時必填",
+    "completed": "{time} 完成",
+    "outOfRange": "超出範圍",
+    "progress": "已填 {filled}/{total}",
+    "range": "合格範圍 {bounds, select, min {{min} {unit} 以上} max {{max} {unit} 以下} other {{min}～{max} {unit}}}"
+  },
   "templates": {
     "actions": {
       "create": {
@@ -40,5 +48,9 @@
       "label": "時機",
       "opening": "開店"
     }
+  },
+  "today": {
+    "empty": "今天沒有需要填寫的檢查表",
+    "label": "今天"
   }
 }

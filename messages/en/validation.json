@@ -469,6 +469,9 @@
   "checklistItemRange": {
     "order": "Max cannot be less than min."
   },
+  "checklistItemValue": {
+    "required": "Enter a value."
+  },
   "checklistTemplateName": {
     "maxLength": "Name cannot exceed 50 characters.",
     "required": "Name is required."

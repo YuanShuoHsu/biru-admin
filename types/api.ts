@@ -1410,6 +1410,57 @@ export interface paths {
     patch: operations["ChecklistTemplatesController_update"];
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/checklists/today": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 今天各啟用範本的檢查表與完成狀況；門市第一次讀取時建立預設範本 */
+    get: operations["ChecklistRunsController_today"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/checklists/today/{templateId}/items/{itemId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** 填寫今天檢查表的一個項目；第一次填寫時以範本現況建立當日紀錄 */
+    put: operations["ChecklistRunsController_fill"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/checklists/runs": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 檢查表歷史紀錄，依營業日新到舊 */
+    get: operations["ChecklistRunsController_findRuns"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/deleted-records": {
     parameters: {
       query?: never;
@@ -8037,6 +8088,51 @@ export interface components {
       items?: components["schemas"]["ChecklistTemplateItemInputDto"][];
       name?: string;
       enabled?: boolean;
+    };
+    ChecklistRunItemDto: {
+      id: string;
+      label: string;
+      type: components["schemas"]["ChecklistItemType"];
+      unit: string | null;
+      minValue: number | null;
+      maxValue: number | null;
+      checked: boolean | null;
+      value: number | null;
+      outOfRange: boolean;
+      actionNote: string | null;
+      filledByName: string | null;
+      /** Format: date-time */
+      filledAt: string | null;
+    };
+    ChecklistRunDto: {
+      /** @description 今天尚未開始填寫時為 null，項目取自範本現況 */
+      id: string | null;
+      /** @description 範本已刪除時為 null */
+      templateId: string | null;
+      /**
+       * @description 營業日（平台時區）
+       * @example 2026-11-16
+       */
+      businessDate: string;
+      name: string;
+      timing: components["schemas"]["ChecklistTiming"];
+      /** Format: date-time */
+      startedAt: string | null;
+      /** Format: date-time */
+      completedAt: string | null;
+      items: components["schemas"]["ChecklistRunItemDto"][];
+    };
+    FillChecklistItemDto: {
+      /** @description 勾選項目必填，數值項目不能帶 */
+      checked?: boolean;
+      /** @description 數值項目必填，勾選項目不能帶 */
+      value?: number;
+      /** @description 處置說明；數值超出允許範圍時必填 */
+      actionNote?: string | null;
+    };
+    ChecklistRunListResponseDto: {
+      data: components["schemas"]["ChecklistRunDto"][];
+      total: number;
     };
     /** @enum {string} */
     DeletedRecordFilterField: "organizationName" | "tableName" | "deletedAt";
@@ -17439,6 +17535,99 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ChecklistTemplateDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ChecklistRunsController_today: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ChecklistRunDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ChecklistRunsController_fill: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        templateId: string;
+        itemId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["FillChecklistItemDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ChecklistRunDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ChecklistRunsController_findRuns: {
+    parameters: {
+      query?: {
+        limit?: number;
+        offset?: number;
+        /** @description 營業日起（含） */
+        from?: string;
+        /** @description 營業日迄（含） */
+        to?: string;
+        templateId?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ChecklistRunListResponseDto"];
         };
       };
       /** @description Internal server error */
