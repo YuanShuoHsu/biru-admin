@@ -468,9 +468,5 @@
   },
   "checklistItemRange": {
     "order": "上限は下限以上にしてください。"
-  },
-  "checklistTemplateName": {
-    "maxLength": "チェックリスト名は50文字以内で入力してください。",
-    "required": "チェックリスト名は必須です。"
   }
 }

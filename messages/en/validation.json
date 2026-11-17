@@ -468,9 +468,5 @@
   },
   "checklistItemRange": {
     "order": "Max cannot be less than min."
-  },
-  "checklistTemplateName": {
-    "maxLength": "Checklist name cannot exceed 50 characters.",
-    "required": "Checklist name is required."
   }
 }

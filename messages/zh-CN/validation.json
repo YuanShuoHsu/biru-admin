@@ -468,9 +468,5 @@
   },
   "checklistItemRange": {
     "order": "上限不能小于下限。"
-  },
-  "checklistTemplateName": {
-    "maxLength": "检查表名称不能超过 50 个字符。",
-    "required": "检查表名称为必填。"
   }
 }

@@ -468,9 +468,5 @@
   },
   "checklistItemRange": {
     "order": "최대값은 최소값보다 작을 수 없습니다."
-  },
-  "checklistTemplateName": {
-    "maxLength": "점검표 이름은 50자를 초과할 수 없습니다.",
-    "required": "점검표 이름은 필수입니다."
   }
 }

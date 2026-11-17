@@ -21,12 +21,12 @@ import { Add, DeleteOutlined } from "@mui/icons-material";
 import {
   Button,
   FormControlLabel,
-  FormLabel,
   IconButton,
   MenuItem,
   Stack,
   Switch,
   TextField,
+  Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -203,7 +203,7 @@ const ChecklistTemplateDialog = ({
         }
         label={tChecklists("enabled")}
       />
-      <FormLabel component="legend">{tChecklists("items.label")}</FormLabel>
+      <Typography variant="subtitle2">{tChecklists("items.label")}</Typography>
       {fields.map(({ id }, index) => (
         <ItemRowStack direction="row" key={id}>
           <TextField

@@ -24,7 +24,7 @@ export const useChecklistTemplateFormSchema = () => {
             maxValue: z.string(),
             minValue: z.string(),
             type: z.enum(checklistItemTypeValues),
-            unit: z.string().trim(),
+            unit: z.string().trim().max(10),
           })
           .superRefine(({ maxValue, minValue, type }, ctx) => {
             if (type !== "number") return;
@@ -54,8 +54,8 @@ export const useChecklistTemplateFormSchema = () => {
     name: z
       .string()
       .trim()
-      .min(1, { error: tValidation("checklistTemplateName.required") })
-      .max(50, { error: tValidation("checklistTemplateName.maxLength") }),
+      .min(1, { error: tValidation("name.required") })
+      .max(50, { error: tValidation("name.maxLength") }),
     timing: z.enum(checklistTimingValues),
   });
 };

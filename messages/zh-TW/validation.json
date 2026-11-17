@@ -468,9 +468,5 @@
   },
   "checklistItemRange": {
     "order": "上限不能小於下限。"
-  },
-  "checklistTemplateName": {
-    "maxLength": "檢查表名稱不能超過 50 個字元。",
-    "required": "檢查表名稱為必填。"
   }
 }

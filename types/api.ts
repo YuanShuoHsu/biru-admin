@@ -1392,23 +1392,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/organizations/{organizationSlug}/checklists/templates/reorder": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** 重新排序例行檢查表範本 */
-    patch: operations["ChecklistTemplatesController_reorder"];
-    trace?: never;
-  };
   "/api/organizations/{organizationSlug}/checklists/templates/{templateId}": {
     parameters: {
       query?: never;
@@ -8048,9 +8031,6 @@ export interface components {
       name: string;
       enabled?: boolean;
     };
-    ReorderDto: {
-      ids: string[];
-    };
     UpdateChecklistTemplateDto: {
       timing?: components["schemas"]["ChecklistTiming"];
       /** @description 依陣列順序排列；更新時帶上就以這份為準：有 id 的更新、沒有 id 的新增、沒列出的刪除 */
@@ -9687,6 +9667,9 @@ export interface components {
       createdAt: string;
       /** Format: date-time */
       updatedAt: string;
+    };
+    ReorderDto: {
+      ids: string[];
     };
     /** @enum {string} */
     SupplierFilterField:
@@ -17399,34 +17382,6 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["ChecklistTemplateDto"];
         };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ChecklistTemplatesController_reorder: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ReorderDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
       };
       /** @description Internal server error */
       500: {
