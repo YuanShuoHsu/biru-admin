@@ -2,17 +2,10 @@
 
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 
-import { DeleteAccountForm, useDeleteAccountFormSchema } from "./definitions";
-
-import FormCard, {
-  StyledCardActions,
-  StyledCardContent,
-  StyledCardHeader,
-} from "@/components/FormCard";
-
-import { zodResolver } from "@hookform/resolvers/zod";
+import StatusFormCard, {
+  type StatusFormCardConfig,
+} from "@/components/StatusFormCard";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -23,35 +16,10 @@ import {
   DeleteForever,
   ReportGmailerrorred,
 } from "@mui/icons-material";
-import {
-  Avatar,
-  Button,
-  type SvgIconProps,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { alpha, styled } from "@mui/material/styles";
+import { Button } from "@mui/material";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useCountdownStore } from "@/providers/countdown-store-provider";
-
-const StyledTypography = styled(Typography)({
-  fontWeight: "bold",
-});
-
-const StyledAvatar = styled(Avatar, {
-  shouldForwardProp: (prop) => prop !== "color",
-})<{ color: "error" | "primary" }>(({ color, theme }) => {
-  const mainColor = theme.palette[color].main;
-
-  return {
-    alignSelf: "center",
-    width: theme.spacing(7),
-    height: theme.spacing(7),
-    backgroundColor: alpha(mainColor, 0.2),
-    color: mainColor,
-  };
-});
 
 const DELETE_STATUS = {
   DELETED: "deleted",
@@ -92,15 +60,6 @@ const AuthDeleteAccount = ({
 
   const signInPath = redirectTo || "/auth/sign-in";
 
-  const schema = useDeleteAccountFormSchema();
-  const {
-    formState: { errors },
-    register,
-  } = useForm<DeleteAccountForm>({
-    defaultValues: { email },
-    resolver: zodResolver(schema),
-  });
-
   useEffect(() => {
     const deleteAccount = async () => {
       await authClient.deleteUser(
@@ -128,16 +87,7 @@ const AuthDeleteAccount = ({
     deleteAccount();
   }, [router, setSession, signInPath, startCountdown, token]);
 
-  const configs: Record<
-    DeleteStatus,
-    {
-      actions: React.ReactNode;
-      color: "error" | "primary";
-      icon: React.ComponentType<SvgIconProps>;
-      subtitle: string;
-      title: string;
-    }
-  > = {
+  const configs: Record<DeleteStatus, StatusFormCardConfig> = {
     [DELETE_STATUS.DELETED]: {
       actions: (
         <Button
@@ -196,40 +146,8 @@ const AuthDeleteAccount = ({
   };
 
   const config = configs[state.status];
-  const Icon = config.icon;
 
-  return (
-    <FormCard>
-      <StyledCardHeader
-        title={
-          <StyledTypography align="center" color={config.color} variant="h6">
-            {config.title}
-          </StyledTypography>
-        }
-      />
-      <StyledCardContent>
-        <StyledAvatar color={config.color}>
-          <Icon fontSize="large" />
-        </StyledAvatar>
-        <Typography align="center" color="textSecondary" variant="caption">
-          {config.subtitle}
-        </Typography>
-        <TextField
-          autoComplete="email"
-          error={!!errors.email}
-          fullWidth
-          helperText={errors.email?.message}
-          label={tAuth("email.label")}
-          placeholder={tAuth("email.placeholder")}
-          required
-          slotProps={{ input: { readOnly: true } }}
-          type="email"
-          {...register("email")}
-        />
-      </StyledCardContent>
-      <StyledCardActions disableSpacing>{config.actions}</StyledCardActions>
-    </FormCard>
-  );
+  return <StatusFormCard config={config} email={email} />;
 };
 
 export default AuthDeleteAccount;
