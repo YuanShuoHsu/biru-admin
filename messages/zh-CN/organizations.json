@@ -115,6 +115,8 @@
       "label": "发票打印机",
       "lastSeenAt": "最后连接",
       "neverSeen": "尚未连接",
+      "offline": "离线",
+      "online": "在线",
       "password": "密码",
       "pollInterval": "轮询间隔：约 {seconds} 秒",
       "queued": "已将 {count} 张尚未打印的发票发送到打印机",

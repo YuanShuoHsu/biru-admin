@@ -115,6 +115,8 @@
       "label": "發票印表機",
       "lastSeenAt": "最後連線",
       "neverSeen": "尚未連線",
+      "offline": "離線",
+      "online": "在線",
       "password": "密碼",
       "pollInterval": "輪詢間隔：約 {seconds} 秒",
       "queued": "已將 {count} 張尚未列印的發票送到印表機",
