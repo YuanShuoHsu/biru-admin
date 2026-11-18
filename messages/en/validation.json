@@ -317,6 +317,9 @@
   "role": {
     "required": "Please select a role."
   },
+  "servings": {
+    "required": "Servings wasted is required."
+  },
   "slug": {
     "letter": "Slug must contain at least one letter.",
     "required": "Slug is required."

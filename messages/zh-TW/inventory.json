@@ -160,6 +160,7 @@
           "label": "報廢份數",
           "placeholder": "請輸入您的報廢份數"
         },
+        "shortfall": "食材庫存不足：{names}。請先進貨或盤點",
         "success": "已登記 {name} 的報廢",
         "title": "登記成品報廢"
       },

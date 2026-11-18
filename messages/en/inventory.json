@@ -160,6 +160,7 @@
           "label": "Servings wasted",
           "placeholder": "Please enter the servings wasted"
         },
+        "shortfall": "Not enough stock of: {names}. Please restock or count first",
         "success": "Recorded waste of {name}",
         "title": "Record product waste"
       },

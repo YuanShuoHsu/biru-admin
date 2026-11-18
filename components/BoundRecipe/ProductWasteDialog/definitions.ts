@@ -12,7 +12,7 @@ export const useProductWasteFormSchema = () => {
       .string()
       .trim()
       .refine((value) => Number(value) > 0, {
-        error: tValidation("quantity.required"),
+        error: tValidation("servings.required"),
       })
       .refine((value) => Number.isInteger(Number(value)), {
         error: tValidation("number.integer"),

@@ -23,10 +23,16 @@ import { MenuItem as MuiMenuItem, TextField } from "@mui/material";
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import { wasteReasonValues } from "@/types/api";
+import type { Ingredient } from "@/types/inventory";
 import type { MenuItem } from "@/types/menus";
 
 import { getErrorMessage } from "@/utils/errors";
+import type { FetchError } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
+
+type ShortfallError = FetchError & {
+  info?: { ingredients?: Pick<Ingredient, "id" | "name">[] };
+};
 
 interface ProductWasteDialogProps {
   menuItem: MenuItem;
@@ -50,6 +56,7 @@ const ProductWasteDialog = ({
     formState: { errors, isSubmitted },
     handleSubmit,
     register,
+    setError,
     setValue,
   } = useForm<ProductWasteFormInput, unknown, ProductWasteFormOutput>({
     defaultValues: { note: "", servings: "1", wasteReason: "" },
@@ -85,7 +92,17 @@ const ProductWasteDialog = ({
 
       closeDialog();
     } catch (error) {
-      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+      const shortfalls = (error as ShortfallError).info?.ingredients;
+
+      if (shortfalls?.length)
+        setError("servings", {
+          message: tInventory("recipes.actions.recordWaste.shortfall", {
+            names: shortfalls
+              .map(({ name }) => localize(name, locale))
+              .join(tCommon("delimiter")),
+          }),
+        });
+      else enqueueSnackbar(getErrorMessage(error), { variant: "error" });
 
       setDialog({ confirmLoading: false });
     }
