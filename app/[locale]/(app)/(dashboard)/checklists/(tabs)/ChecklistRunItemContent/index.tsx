@@ -1,0 +1,92 @@
+import { useFormatter, useTranslations } from "next-intl";
+
+import {
+  Checkbox,
+  Chip,
+  ListItemIcon,
+  ListItemText,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
+
+import type { ChecklistRunItem } from "@/types/checklists";
+
+const SecondaryStack = styled(Stack)(({ theme }) => ({
+  alignItems: "flex-start",
+  gap: theme.spacing(0.5),
+}));
+
+interface ChecklistRunItemContentProps {
+  item: ChecklistRunItem;
+  rangeText?: string | null;
+}
+
+const ChecklistRunItemContent = ({
+  item,
+  rangeText,
+}: ChecklistRunItemContentProps) => {
+  const format = useFormatter();
+
+  const tChecklists = useTranslations("checklists");
+  const tCommon = useTranslations("common");
+
+  return (
+    <>
+      {item.type === "check" && (
+        <ListItemIcon>
+          <Checkbox
+            checked={!!item.checked}
+            disableRipple
+            edge="start"
+            readOnly
+            size="large"
+            slotProps={{
+              input: { "aria-labelledby": item.id },
+            }}
+            tabIndex={-1}
+          />
+        </ListItemIcon>
+      )}
+      <ListItemText
+        id={item.id}
+        primary={item.label}
+        secondary={
+          <SecondaryStack>
+            {rangeText && <span>{rangeText}</span>}
+            {item.filledAt && (
+              <span>
+                {[
+                  item.filledByName ?? tCommon("deletedAccount"),
+                  format.dateTime(new Date(item.filledAt), "time"),
+                ].join(tCommon("middleDot"))}
+              </span>
+            )}
+            {item.outOfRange && (
+              <Chip
+                color="error"
+                label={tChecklists("runs.outOfRange")}
+                size="small"
+              />
+            )}
+            {item.actionNote && (
+              <span>
+                {tChecklists("runs.actionNote")}
+                {tCommon("colon")}
+                {item.actionNote}
+              </span>
+            )}
+          </SecondaryStack>
+        }
+        slotProps={{ secondary: { component: "div" } }}
+      />
+      {item.value !== null && (
+        <Typography color={item.outOfRange ? "error" : undefined} variant="h6">
+          {format.number(item.value)} {item.unit}
+        </Typography>
+      )}
+    </>
+  );
+};
+
+export default ChecklistRunItemContent;

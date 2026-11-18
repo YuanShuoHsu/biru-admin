@@ -1,4 +1,14 @@
 {
+  "history": {
+    "allTemplates": "All",
+    "businessDate": "Business date",
+    "from": "Start date",
+    "label": "History",
+    "status": "Completion",
+    "template": "Checklist",
+    "to": "End date",
+    "viewItems": "View items"
+  },
   "label": "Checklists",
   "runs": {
     "actionNote": "Corrective action",

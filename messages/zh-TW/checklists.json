@@ -1,4 +1,14 @@
 {
+  "history": {
+    "allTemplates": "全部",
+    "businessDate": "營業日",
+    "from": "開始日期",
+    "label": "歷史",
+    "status": "完成狀況",
+    "template": "檢查表",
+    "to": "結束日期",
+    "viewItems": "查看項目"
+  },
   "label": "例行檢查",
   "runs": {
     "actionNote": "處置說明",

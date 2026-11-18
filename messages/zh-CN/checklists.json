@@ -1,4 +1,14 @@
 {
+  "history": {
+    "allTemplates": "全部",
+    "businessDate": "营业日",
+    "from": "开始日期",
+    "label": "历史",
+    "status": "完成状况",
+    "template": "检查表",
+    "to": "结束日期",
+    "viewItems": "查看项目"
+  },
   "label": "例行检查",
   "runs": {
     "actionNote": "处理说明",

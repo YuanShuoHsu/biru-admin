@@ -671,6 +671,12 @@ const routes: Route[] = [
         segment: "today",
       },
       {
+        icon: History,
+        label: "checklists.history.label",
+        query: ["organization", "page", "pageSize"],
+        segment: "history",
+      },
+      {
         icon: ContentPaste,
         label: "checklists.templates.label",
         query: ["organization"],
