@@ -469,6 +469,9 @@
   "checklistItemRange": {
     "order": "최대값은 최소값보다 작을 수 없습니다."
   },
+  "checklistItems": {
+    "required": "항목을 하나 이상 추가해 주세요."
+  },
   "checklistItemValue": {
     "required": "값을 입력하세요."
   },

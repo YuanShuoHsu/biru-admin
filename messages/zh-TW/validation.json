@@ -469,6 +469,9 @@
   "checklistItemRange": {
     "order": "上限不能小於下限。"
   },
+  "checklistItems": {
+    "required": "請至少新增一個項目。"
+  },
   "checklistItemValue": {
     "required": "請輸入數值。"
   },

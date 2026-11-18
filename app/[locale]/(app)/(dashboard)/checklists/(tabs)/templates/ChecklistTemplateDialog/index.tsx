@@ -21,6 +21,7 @@ import { Add, DeleteOutlined } from "@mui/icons-material";
 import {
   Button,
   FormControlLabel,
+  FormHelperText,
   IconButton,
   MenuItem,
   Stack,
@@ -204,6 +205,9 @@ const ChecklistTemplateDialog = ({
         label={tChecklists("enabled")}
       />
       <Typography variant="subtitle2">{tChecklists("items.label")}</Typography>
+      {errors.items?.message && (
+        <FormHelperText error>{errors.items.message}</FormHelperText>
+      )}
       {fields.map(({ id }, index) => (
         <ItemRowStack direction="row" key={id}>
           <TextField
