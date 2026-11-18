@@ -1,16 +1,17 @@
 {
-  "accountingValueUnset": "Not set; amounts are hidden",
-  "adjustedPoints": "Deducted",
+  "accountingValuePerPoint": "Accounting value per point: {value, number}",
+  "accountingValueUnset": "Accounting value per point: not set, amounts are hidden",
+  "adjustedPoints": "Manually deducted",
   "cancelledPoints": "Revoked on cancellation",
   "crossStoreNetAmount": "Cross-store net amount",
   "crossStoreNetPoints": "Cross-store net",
   "detail": {
-    "label": "Store breakdown",
     "counterpart": "Counterpart store",
-    "usedThereFromHerePoints": "Our points used there",
-    "usedHereFromTherePoints": "Their points used here",
+    "label": "Store breakdown",
+    "netAmount": "Net amount",
     "netPoints": "Net points",
-    "netAmount": "Net amount"
+    "usedHereFromTherePoints": "Their points used here",
+    "usedThereFromHerePoints": "Our points used there"
   },
   "discountAmount": "Coupon discount amount",
   "earnedAmount": "Earned amount",

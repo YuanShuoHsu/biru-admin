@@ -1,16 +1,17 @@
 {
-  "accountingValueUnset": "未設定のため金額は表示されません",
+  "accountingValuePerPoint": "1ポイントの会計上の価値：{value, number}",
+  "accountingValueUnset": "1ポイントの会計上の価値：未設定のため金額は表示されません",
   "adjustedPoints": "手動減算",
   "cancelledPoints": "キャンセルによる回収",
   "crossStoreNetAmount": "店舗間差引額",
   "crossStoreNetPoints": "店舗間差引",
   "detail": {
-    "label": "店舗別内訳",
     "counterpart": "相手店舗",
-    "usedThereFromHerePoints": "自店ポイントの相手店利用",
-    "usedHereFromTherePoints": "相手店ポイントの自店利用",
+    "label": "店舗別内訳",
+    "netAmount": "差引金額",
     "netPoints": "差引ポイント",
-    "netAmount": "差引金額"
+    "usedHereFromTherePoints": "相手店ポイントの自店利用",
+    "usedThereFromHerePoints": "自店ポイントの相手店利用"
   },
   "discountAmount": "クーポン割引額",
   "earnedAmount": "購入付与額",

@@ -39,6 +39,8 @@ const PointReportDetail = ({ detail }: PointReportDetailProps) => {
 
   const tPointReports = useTranslations("pointReports");
 
+  const hasAmounts = detail.accountingValuePerPoint != null;
+
   const columns = useMemo<GridColDef[]>(
     () => [
       {
@@ -57,16 +59,20 @@ const PointReportDetail = ({ detail }: PointReportDetailProps) => {
           valueFormatter: (value: number) => format.number(value),
         }),
       ),
-      {
-        field: "netAmount",
-        headerName: tPointReports("detail.netAmount"),
-        renderCell: renderEmptyableCell,
-        type: "number",
-        valueFormatter: (value: number | null) =>
-          value === null ? "" : formatMoney(value, null),
-      },
+      ...(hasAmounts
+        ? [
+            {
+              field: "netAmount",
+              headerName: tPointReports("detail.netAmount"),
+              renderCell: renderEmptyableCell,
+              type: "number" as const,
+              valueFormatter: (value: number | null) =>
+                value === null ? "" : formatMoney(value, null),
+            },
+          ]
+        : []),
     ],
-    [format, formatMoney, tPointReports],
+    [format, formatMoney, hasAmounts, tPointReports],
   );
 
   return (

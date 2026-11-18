@@ -1,16 +1,17 @@
 {
-  "accountingValueUnset": "未设置，不显示金额",
+  "accountingValuePerPoint": "每点会计价值：{value, number}",
+  "accountingValueUnset": "每点会计价值：未设置，不显示金额",
   "adjustedPoints": "人工扣点",
   "cancelledPoints": "取消收回",
   "crossStoreNetAmount": "跨店净额金额",
   "crossStoreNetPoints": "跨店净额点数",
   "detail": {
-    "label": "门店明细",
     "counterpart": "对方门店",
-    "usedThereFromHerePoints": "本店点数在对方使用",
-    "usedHereFromTherePoints": "对方点数在本店使用",
+    "label": "门店明细",
+    "netAmount": "净额金额",
     "netPoints": "净额点数",
-    "netAmount": "净额金额"
+    "usedHereFromTherePoints": "对方点数在本店使用",
+    "usedThereFromHerePoints": "本店点数在对方使用"
   },
   "discountAmount": "兑换券抵扣金额",
   "earnedAmount": "消费累点金额",

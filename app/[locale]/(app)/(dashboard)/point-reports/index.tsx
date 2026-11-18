@@ -13,7 +13,8 @@ import { useFormatMoney } from "@/hooks/useFormatMoney";
 
 import { useRouter } from "@/i18n/navigation";
 
-import type { GridColDef } from "@mui/x-data-grid";
+import { styled } from "@mui/material/styles";
+import type { GridColDef, GridRowClassNameParams } from "@mui/x-data-grid";
 
 import type { PointReport, PointReportRow } from "@/types/points";
 
@@ -44,6 +45,15 @@ const AMOUNT_FIELDS = [
   "crossStoreNetAmount",
 ] as const;
 
+const StyledDataGrid = styled(DataGrid)({
+  "& .store-row": {
+    cursor: "pointer",
+  },
+});
+
+const getRowClassName = (params: GridRowClassNameParams) =>
+  `${DATA_GRID_PROPS.getRowClassName(params)}${params.row.organizationId ? " store-row" : ""}`;
+
 interface PointReportsProps {
   report: PointReport;
 }
@@ -59,7 +69,7 @@ const PointReports = ({ report }: PointReportsProps) => {
 
   const tPointReports = useTranslations("pointReports");
 
-  const hasAmounts = report.rows.some(({ amounts }) => amounts);
+  const hasAmounts = report.accountingValuePerPoint != null;
 
   const columns = useMemo<GridColDef[]>(
     () => [
@@ -108,9 +118,10 @@ const PointReports = ({ report }: PointReportsProps) => {
         month={month}
         onMonthChange={changeMonth}
       />
-      <DataGrid
+      <StyledDataGrid
         {...DATA_GRID_PROPS}
         columns={columns}
+        getRowClassName={getRowClassName}
         getRowId={({ organizationId }) => organizationId ?? ""}
         loading={isPending}
         onRowClick={({ row: { organizationId } }) => {

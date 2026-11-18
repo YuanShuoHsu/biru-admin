@@ -54,7 +54,6 @@ const PointReportToolbar = ({
   const monthFormat = useMonthFormat();
 
   const tPointReports = useTranslations("pointReports");
-  const tPointSettings = useTranslations("pointSettings");
 
   return (
     <ToolbarStack direction="row">
@@ -72,9 +71,8 @@ const PointReportToolbar = ({
         views={["year", "month"]}
       />
       <Typography color="textSecondary" variant="body2">
-        {tPointSettings("accountingValuePerPoint.label")}{" "}
         {accountingValuePerPoint != null
-          ? tPointSettings("accountingValuePerPoint.value", {
+          ? tPointReports("accountingValuePerPoint", {
               value: Number(accountingValuePerPoint),
             })
           : tPointReports("accountingValueUnset")}

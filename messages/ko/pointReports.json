@@ -1,16 +1,17 @@
 {
-  "accountingValueUnset": "미설정 - 금액이 표시되지 않습니다",
+  "accountingValuePerPoint": "포인트당 회계 가치: {value, number}",
+  "accountingValueUnset": "포인트당 회계 가치: 미설정 - 금액이 표시되지 않습니다",
   "adjustedPoints": "수동 차감",
   "cancelledPoints": "취소 회수",
-  "crossStoreNetAmount": "매장 간 순액 금액",
-  "crossStoreNetPoints": "매장 간 순액",
+  "crossStoreNetAmount": "매장 간 순 금액",
+  "crossStoreNetPoints": "매장 간 순 포인트",
   "detail": {
-    "label": "매장별 내역",
     "counterpart": "상대 매장",
-    "usedThereFromHerePoints": "자사 포인트의 상대 매장 사용",
-    "usedHereFromTherePoints": "상대 포인트의 자사 사용",
+    "label": "매장별 내역",
+    "netAmount": "순 금액",
     "netPoints": "순 포인트",
-    "netAmount": "순 금액"
+    "usedHereFromTherePoints": "상대 매장 포인트의 본 매장 사용",
+    "usedThereFromHerePoints": "본 매장 포인트의 상대 매장 사용"
   },
   "discountAmount": "쿠폰 할인 금액",
   "earnedAmount": "구매 적립 금액",
@@ -23,7 +24,7 @@
   "legacy": "기존 포인트(매장 없음)",
   "month": "정산 월",
   "organizationName": "발행 매장",
-  "otherStoresUsedHerePoints": "타 매장 포인트 자사 사용",
+  "otherStoresUsedHerePoints": "타 매장 포인트 본 매장 사용",
   "outstandingAmount": "월말 잔여 금액",
   "outstandingPoints": "월말 잔여 포인트",
   "redeemedAmount": "교환 금액",
@@ -33,5 +34,5 @@
   "unallocatedLegacyPoints": "도입 전 미배분",
   "unusedRedeemedPoints": "교환 후 미사용",
   "usedAtOtherStoresPoints": "타 매장 사용",
-  "usedAtOwnStorePoints": "자사 매장 사용"
+  "usedAtOwnStorePoints": "본 매장 사용"
 }
