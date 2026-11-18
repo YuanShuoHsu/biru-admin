@@ -20,6 +20,7 @@ import order from "./en/order.json";
 import orders from "./en/orders.json";
 import organizations from "./en/organizations.json";
 import payrollRuleSets from "./en/payrollRuleSets.json";
+import pointReports from "./en/pointReports.json";
 import pointSettings from "./en/pointSettings.json";
 import quant from "./en/quant.json";
 import reports from "./en/reports.json";
@@ -51,6 +52,7 @@ const messages = {
   orders,
   organizations,
   payrollRuleSets,
+  pointReports,
   pointSettings,
   quant,
   reports,

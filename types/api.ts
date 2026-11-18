@@ -1381,7 +1381,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 列出例行檢查表範本與項目 */
+    /** 列出例行檢查表範本與項目；門市第一次讀取時建立預設範本 */
     get: operations["ChecklistTemplatesController_findAll"];
     put?: never;
     /** 新增例行檢查表範本 */
@@ -1390,6 +1390,23 @@ export interface paths {
     options?: never;
     head?: never;
     patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/checklists/templates/reorder": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 重新排序例行檢查表範本 */
+    patch: operations["ChecklistTemplatesController_reorder"];
     trace?: never;
   };
   "/api/organizations/{organizationSlug}/checklists/templates/{templateId}": {
@@ -3058,6 +3075,40 @@ export interface paths {
     };
     /** 查詢我的訂單列表 */
     get: operations["UserOrdersController_findAll"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/point-reports": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 各發點門市當月的點數對帳 */
+    get: operations["AdminPointReportsController_getReport"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/point-reports/{organizationId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 一間門市當月與各門市之間的跨店點數使用明細 */
+    get: operations["AdminPointReportsController_getDetail"];
     put?: never;
     post?: never;
     delete?: never;
@@ -8103,6 +8154,9 @@ export interface components {
       name: string;
       enabled?: boolean;
     };
+    ReorderDto: {
+      ids: string[];
+    };
     UpdateChecklistTemplateDto: {
       timing?: components["schemas"]["ChecklistTiming"];
       /** @description 依陣列順序排列；更新時帶上就以這份為準：有 id 的更新、沒有 id 的新增、沒列出的刪除 */
@@ -9782,6 +9836,8 @@ export interface components {
       orderId?: string | null;
       orderNumber?: string | null;
       note?: string | null;
+      /** @description 登記這筆異動的使用者；訂單扣料與還原沒有操作者 */
+      createdBy?: string | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -9803,9 +9859,6 @@ export interface components {
       wasteReason: components["schemas"]["WasteReason"];
       /** @description 異動原因，自由填寫 */
       note?: string | null;
-    };
-    ReorderDto: {
-      ids: string[];
     };
     /** @enum {string} */
     SupplierFilterField:
@@ -10911,6 +10964,78 @@ export interface components {
     UserOrderListResponseDto: {
       data: components["schemas"]["UserOrderResponseDto"][];
       total: number;
+    };
+    PointReportAmountsDto: {
+      earnedAmount: number;
+      grantedAmount: number;
+      redeemedAmount: number;
+      expiredAmount: number;
+      outstandingAmount: number;
+      crossStoreNetAmount: number;
+    };
+    PointReportRowDto: {
+      /** @description 發點門市；null 為沒有門市的舊點數 */
+      organizationId: string | null;
+      organizationName: string | null;
+      /** @description 本月付款訂單的消費點數，依訂單付款時間 */
+      earnedPoints: number;
+      /** @description 本月人工加點 */
+      grantedPoints: number;
+      /** @description 本店的點數本月被兌換成兌換券的點數 */
+      redeemedPoints: number;
+      /** @description 本店的點數兌換出的券，本月用在本店未取消訂單的點數 */
+      usedAtOwnStorePoints: number;
+      /** @description 本店的點數兌換出的券，本月用在其他門市未取消訂單的點數 */
+      usedAtOtherStoresPoints: number;
+      /** @description 其他門市（含舊點數）的點數兌換出的券，本月用在本店的點數 */
+      otherStoresUsedHerePoints: number;
+      /** @description usedAtOtherStoresPoints − otherStoresUsedHerePoints */
+      crossStoreNetPoints: number;
+      /** @description 本店的點數兌換出、到月底仍未使用的券的點數 */
+      unusedRedeemedPoints: number;
+      /** @description 本月退款收回的點數 */
+      revokedPoints: number;
+      /** @description 本月訂單取消收回的點數 */
+      cancelledPoints: number;
+      /** @description 本月人工扣點 */
+      adjustedPoints: number;
+      /** @description 本月用來抵銷欠點的點數 */
+      settledPoints: number;
+      /** @description 本月到期失效、未使用的點數 */
+      expiredPoints: number;
+      /** @description 月底（當月為現在）仍可使用的點數 */
+      outstandingPoints: number;
+      /** @description 扣點明細上線前已用掉、無法分配到用途的點數（上線前未分配） */
+      unallocatedLegacyPoints: number;
+      /** @description 點數兌換券本月在本店未取消訂單折抵的金額 */
+      discountAmount: number;
+      /** @description 以每點會計價值換算的金額；未設定會計價值時為 null */
+      amounts: components["schemas"]["PointReportAmountsDto"] | null;
+    };
+    PointReportResponseDto: {
+      month: string;
+      accountingValuePerPoint: string | null;
+      rows: components["schemas"]["PointReportRowDto"][];
+    };
+    PointReportCounterpartDto: {
+      /** @description 對方門市；null 為沒有門市的舊點數 */
+      organizationId: string | null;
+      organizationName: string | null;
+      /** @description 本店的點數本月用在對方門市的點數 */
+      usedThereFromHerePoints: number;
+      /** @description 對方的點數本月用在本店的點數 */
+      usedHereFromTherePoints: number;
+      /** @description usedThereFromHerePoints − usedHereFromTherePoints */
+      netPoints: number;
+      /** @description 以每點會計價值換算的 netPoints；未設定會計價值時為 null */
+      netAmount: number | null;
+    };
+    PointReportDetailResponseDto: {
+      month: string;
+      organizationId: string;
+      organizationName: string;
+      accountingValuePerPoint: string | null;
+      rows: components["schemas"]["PointReportCounterpartDto"][];
     };
     PointSettingResponseDto: {
       id: string;
@@ -17629,6 +17754,34 @@ export interface operations {
       };
     };
   };
+  ChecklistTemplatesController_reorder: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReorderDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   ChecklistTemplatesController_remove: {
     parameters: {
       query?: never;
@@ -21464,6 +21617,66 @@ export interface operations {
       };
     };
   };
+  AdminPointReportsController_getReport: {
+    parameters: {
+      query: {
+        /** @description 對帳月份（Asia/Taipei） */
+        month: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PointReportResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminPointReportsController_getDetail: {
+    parameters: {
+      query: {
+        /** @description 對帳月份（Asia/Taipei） */
+        month: string;
+      };
+      header?: never;
+      path: {
+        organizationId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PointReportDetailResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   AdminPointSettingsController_get: {
     parameters: {
       query?: never;
@@ -21795,14 +22008,14 @@ export interface operations {
   MenusController_findAllMenuSections: {
     parameters: {
       query?: {
-        filterField?: components["schemas"]["MenuSectionFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
-        sortBy?: components["schemas"]["MenuSectionSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
         limit?: number;
         offset?: number;
         filterValue?: string;
         quickFilterValue?: string;
+        filterField?: components["schemas"]["MenuSectionFilterField"];
+        sortBy?: components["schemas"]["MenuSectionSortField"];
         searchField?: "name" | "description";
         searchOperator?: "contains" | "startsWith" | "endsWith";
         searchValue?: string;
@@ -22043,19 +22256,19 @@ export interface operations {
   MenusController_findAllMenuSectionItems: {
     parameters: {
       query?: {
-        filterField?: components["schemas"]["MenuItemFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
         /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
         quickFilterEnums?: string[];
-        sortBy?: components["schemas"]["MenuItemSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["MenuItemFilterField"];
+        sortBy?: components["schemas"]["MenuItemSortField"];
+        searchField?: "name" | "description";
+        searchOperator?: "contains" | "startsWith" | "endsWith";
+        searchValue?: string;
         limit?: number;
         offset?: number;
         filterValue?: string;
         quickFilterValue?: string;
-        searchField?: "name" | "description";
-        searchOperator?: "contains" | "startsWith" | "endsWith";
-        searchValue?: string;
       };
       header?: never;
       path: {
@@ -22417,14 +22630,14 @@ export interface operations {
   MenusController_findAllMenuItemAddOns: {
     parameters: {
       query?: {
-        filterField?: components["schemas"]["AddOnFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
-        sortBy?: components["schemas"]["AddOnSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
         limit?: number;
         offset?: number;
         filterValue?: string;
         quickFilterValue?: string;
+        filterField?: components["schemas"]["AddOnFilterField"];
+        sortBy?: components["schemas"]["AddOnSortField"];
       };
       header?: never;
       path: {
@@ -22608,14 +22821,14 @@ export interface operations {
   MenusController_findAllModifierGroups: {
     parameters: {
       query?: {
-        filterField?: components["schemas"]["ModifierGroupFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
-        sortBy?: components["schemas"]["ModifierGroupSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
         limit?: number;
         offset?: number;
         filterValue?: string;
         quickFilterValue?: string;
+        filterField?: components["schemas"]["ModifierGroupFilterField"];
+        sortBy?: components["schemas"]["ModifierGroupSortField"];
       };
       header?: never;
       path: {
@@ -22825,12 +23038,12 @@ export interface operations {
   MenusController_findAllModifiers: {
     parameters: {
       query?: {
-        filterField?: components["schemas"]["ModifierFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
         /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
         quickFilterEnums?: string[];
-        sortBy?: components["schemas"]["ModifierSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["ModifierFilterField"];
+        sortBy?: components["schemas"]["ModifierSortField"];
         limit?: number;
         offset?: number;
         filterValue?: string;
@@ -23076,14 +23289,14 @@ export interface operations {
   MenusController_findAllMenuItemModifierGroups: {
     parameters: {
       query?: {
-        filterField?: components["schemas"]["ModifierGroupFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
-        sortBy?: components["schemas"]["ModifierGroupSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
         limit?: number;
         offset?: number;
         filterValue?: string;
         quickFilterValue?: string;
+        filterField?: components["schemas"]["ModifierGroupFilterField"];
+        sortBy?: components["schemas"]["ModifierGroupSortField"];
       };
       header?: never;
       path: {
@@ -27158,6 +27371,11 @@ export interface operations {
       query?: {
         /** @description 不帶則回傳全部交易對 */
         symbol?: string;
+        limit?: number;
+        /** @description 起始時間（毫秒） */
+        startTime?: number;
+        /** @description 只回傳此時間（含）以前的紀錄（毫秒）；換頁時帶上一頁的 nextEndTime */
+        endTime?: number;
       };
       header?: never;
       path: {
@@ -27189,11 +27407,6 @@ export interface operations {
       query?: {
         /** @description 不帶則回傳全部交易對 */
         symbol?: string;
-        limit?: number;
-        /** @description 起始時間（毫秒） */
-        startTime?: number;
-        /** @description 只回傳此時間（含）以前的紀錄（毫秒）；換頁時帶上一頁的 nextEndTime */
-        endTime?: number;
       };
       header?: never;
       path: {
@@ -27517,6 +27730,19 @@ export interface operations {
         /** @description 統計結束時間（不含），須帶時區；須晚於 since，區間最多 366 天 */
         until: string;
         groupBy: components["schemas"]["SalesReportGroupBy"];
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+        /** @description 每頁列數；省略時回傳所有列 */
+        limit?: number;
+        /** @description name 依請求語系的名稱篩選 */
+        filterField?: components["schemas"]["SalesReportFilterField"];
+        /** @description name 依請求語系的名稱排序，hour 的 key 依數值排序；省略時依 rows 說明的預設順序 */
+        sortBy?: components["schemas"]["SalesReportSortField"];
       };
       header?: never;
       path: {
@@ -27551,19 +27777,6 @@ export interface operations {
         /** @description 統計結束時間（不含），須帶時區；須晚於 since，區間最多 366 天 */
         until: string;
         groupBy: components["schemas"]["SalesReportGroupBy"];
-        filterOperator?: components["schemas"]["FilterOperator"];
-        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
-        quickFilterEnums?: string[];
-        sortDirection?: components["schemas"]["SortDirection"];
-        offset?: number;
-        filterValue?: string;
-        quickFilterValue?: string;
-        /** @description 每頁列數；省略時回傳所有列 */
-        limit?: number;
-        /** @description name 依請求語系的名稱篩選 */
-        filterField?: components["schemas"]["SalesReportFilterField"];
-        /** @description name 依請求語系的名稱排序，hour 的 key 依數值排序；省略時依 rows 說明的預設順序 */
-        sortBy?: components["schemas"]["SalesReportSortField"];
       };
       header?: never;
       path: {
@@ -27597,6 +27810,19 @@ export interface operations {
         since: string;
         /** @description 統計結束時間（不含），須帶時區；須晚於 since，區間最多 366 天 */
         until: string;
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+        /** @description 每頁列數；省略時回傳所有列 */
+        limit?: number;
+        /** @description name 依請求語系的名稱篩選，數量依數值比較；無 purchasing 權限時忽略 wastedCost */
+        filterField?: components["schemas"]["InventoryReportFilterField"];
+        /** @description name 依請求語系的名稱排序，數量依數值排序；無 purchasing 權限時忽略 wastedCost；省略時依 rows 說明的預設順序 */
+        sortBy?: components["schemas"]["InventoryReportSortField"];
       };
       header?: never;
       path: {
@@ -27630,19 +27856,6 @@ export interface operations {
         since: string;
         /** @description 統計結束時間（不含），須帶時區；須晚於 since，區間最多 366 天 */
         until: string;
-        filterOperator?: components["schemas"]["FilterOperator"];
-        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
-        quickFilterEnums?: string[];
-        sortDirection?: components["schemas"]["SortDirection"];
-        offset?: number;
-        filterValue?: string;
-        quickFilterValue?: string;
-        /** @description 每頁列數；省略時回傳所有列 */
-        limit?: number;
-        /** @description name 依請求語系的名稱篩選，數量依數值比較；無 purchasing 權限時忽略 wastedCost */
-        filterField?: components["schemas"]["InventoryReportFilterField"];
-        /** @description name 依請求語系的名稱排序，數量依數值排序；無 purchasing 權限時忽略 wastedCost；省略時依 rows 說明的預設順序 */
-        sortBy?: components["schemas"]["InventoryReportSortField"];
       };
       header?: never;
       path: {
@@ -27674,6 +27887,19 @@ export interface operations {
       query: {
         /** @description 薪資計算月份 */
         month: string;
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+        /** @description 每頁列數；省略時回傳所有列 */
+        limit?: number;
+        /** @description 金額依數值比較 */
+        filterField?: components["schemas"]["PersonnelCostReportFilterField"];
+        /** @description 金額依數值排序；省略時依職位排序，未設定職位的列在最後 */
+        sortBy?: components["schemas"]["PersonnelCostReportSortField"];
       };
       header?: never;
       path: {
@@ -27705,19 +27931,6 @@ export interface operations {
       query: {
         /** @description 薪資計算月份 */
         month: string;
-        filterOperator?: components["schemas"]["FilterOperator"];
-        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
-        quickFilterEnums?: string[];
-        sortDirection?: components["schemas"]["SortDirection"];
-        offset?: number;
-        filterValue?: string;
-        quickFilterValue?: string;
-        /** @description 每頁列數；省略時回傳所有列 */
-        limit?: number;
-        /** @description 金額依數值比較 */
-        filterField?: components["schemas"]["PersonnelCostReportFilterField"];
-        /** @description 金額依數值排序；省略時依職位排序，未設定職位的列在最後 */
-        sortBy?: components["schemas"]["PersonnelCostReportSortField"];
       };
       header?: never;
       path: {
