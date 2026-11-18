@@ -2,15 +2,10 @@
 
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-
-import { DeleteAccountForm, useDeleteAccountFormSchema } from "./definitions";
 
 import StatusFormCard, {
   type StatusFormCardConfig,
 } from "@/components/StatusFormCard";
-
-import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -64,15 +59,6 @@ const AuthDeleteAccount = ({
   const verifyingTitle = tAuth("deleteAccount.verifying.title");
 
   const signInPath = redirectTo || "/auth/sign-in";
-
-  const schema = useDeleteAccountFormSchema();
-  const {
-    formState: { errors },
-    register,
-  } = useForm<DeleteAccountForm>({
-    defaultValues: { email },
-    resolver: zodResolver(schema),
-  });
 
   useEffect(() => {
     const deleteAccount = async () => {
@@ -161,13 +147,7 @@ const AuthDeleteAccount = ({
 
   const config = configs[state.status];
 
-  return (
-    <StatusFormCard
-      config={config}
-      emailError={errors.email}
-      emailField={register("email")}
-    />
-  );
+  return <StatusFormCard config={config} email={email} />;
 };
 
 export default AuthDeleteAccount;

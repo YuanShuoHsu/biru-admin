@@ -1,7 +1,6 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import type { FieldError, UseFormRegisterReturn } from "react-hook-form";
 
 import FormCard, {
   StyledCardActions,
@@ -46,14 +45,14 @@ export interface StatusFormCardConfig {
 
 interface StatusFormCardProps extends CardProps<"form"> {
   config: StatusFormCardConfig;
-  emailError?: FieldError;
-  emailField: UseFormRegisterReturn<"email">;
+  email: string;
+  emailError?: string;
 }
 
 const StatusFormCard = ({
   config,
+  email,
   emailError,
-  emailField,
   ...props
 }: StatusFormCardProps) => {
   const tAuth = useTranslations("auth");
@@ -80,13 +79,13 @@ const StatusFormCard = ({
           autoComplete="email"
           error={!!emailError}
           fullWidth
-          helperText={emailError?.message}
+          helperText={emailError}
           label={tAuth("email.label")}
           placeholder={tAuth("email.placeholder")}
           required
           slotProps={{ input: { readOnly: true } }}
           type="email"
-          {...emailField}
+          value={email}
         />
       </StyledCardContent>
       <StyledCardActions disableSpacing>{config.actions}</StyledCardActions>

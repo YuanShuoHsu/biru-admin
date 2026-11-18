@@ -117,7 +117,6 @@ const AuthVerifyEmail = ({
   const {
     formState: { errors, isSubmitting },
     handleSubmit,
-    register,
   } = useForm<VerifyEmailForm>({
     defaultValues: { email },
     resolver: zodResolver(verifyEmailFormSchema),
@@ -238,11 +237,10 @@ const AuthVerifyEmail = ({
 
   return (
     <StatusFormCard
-      component="form"
-      onSubmit={onSubmit}
       config={config}
-      emailError={errors.email}
-      emailField={register("email")}
+      email={email}
+      emailError={errors.email?.message}
+      onSubmit={onSubmit}
     />
   );
 };
