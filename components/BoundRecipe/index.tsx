@@ -4,6 +4,8 @@ import { useFormatter, useTranslations } from "next-intl";
 import { useCallback, useMemo } from "react";
 import useSWR from "swr";
 
+import ProductWasteDialog from "./ProductWasteDialog";
+
 import AuditLogButton from "@/components/AuditLogButton";
 import DataGrid from "@/components/DataGrid";
 import RecipeDialog from "@/components/RecipeDialog";
@@ -16,7 +18,7 @@ import { useFormatMoney } from "@/hooks/useFormatMoney";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
-import { Add, Edit, Scale } from "@mui/icons-material";
+import { Add, DeleteSweep, Edit, Scale } from "@mui/icons-material";
 import { Button, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
@@ -49,6 +51,7 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 
 interface BoundRecipeProps {
   canCreate?: boolean;
+  canRecordTransaction?: boolean;
   canViewAuditLog?: boolean;
   canViewPurchasing?: boolean;
   canWrite?: boolean;
@@ -61,6 +64,7 @@ interface BoundRecipeProps {
 
 const BoundRecipe = ({
   canCreate = false,
+  canRecordTransaction = false,
   canViewAuditLog = false,
   canViewPurchasing = false,
   canWrite = false,
@@ -116,6 +120,23 @@ const BoundRecipe = ({
       });
     },
     [mutateRecipe, setDialog, tInventory],
+  );
+
+  const handleRecordWaste = useCallback(
+    (target: MenuItem) => {
+      setDialog({
+        content: (
+          <ProductWasteDialog
+            menuItem={target}
+            organizationSlug={organizationSlug}
+          />
+        ),
+        formId: "product-waste-form",
+        open: true,
+        title: tInventory("recipes.actions.recordWaste.title"),
+      });
+    },
+    [organizationSlug, setDialog, tInventory],
   );
 
   const handleCreateRecipeIngredient = useCallback(() => {
@@ -232,6 +253,16 @@ const BoundRecipe = ({
                 </IconButton>
               </Tooltip>
             )}
+            {canRecordTransaction && menuItem && (
+              <Tooltip title={tInventory("recipes.actions.recordWaste.title")}>
+                <IconButton
+                  onClick={() => handleRecordWaste(menuItem)}
+                  size="small"
+                >
+                  <DeleteSweep fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
             {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
           </ActionsStack>
         ),
@@ -246,13 +277,16 @@ const BoundRecipe = ({
       ...(canViewPurchasing ? costColumns : []),
     ];
   }, [
+    canRecordTransaction,
     canViewAuditLog,
     canViewPurchasing,
     canWrite,
     format,
     formatMoney,
+    handleRecordWaste,
     handleUpdateRecipe,
     handleViewRecipeIngredients,
+    menuItem,
     priceCurrency,
     tInventory,
   ]);

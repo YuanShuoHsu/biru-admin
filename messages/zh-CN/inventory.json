@@ -155,6 +155,14 @@
         "title": "编辑食谱"
       },
       "label": "操作",
+      "recordWaste": {
+        "servings": {
+          "label": "报废份数",
+          "placeholder": "请输入您的报废份数"
+        },
+        "success": "已登记 {name} 的报废",
+        "title": "登记成品报废"
+      },
       "updateRecipe": {
         "success": "已更新份量",
         "title": "编辑份量"

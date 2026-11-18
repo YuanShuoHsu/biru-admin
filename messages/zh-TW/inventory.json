@@ -155,6 +155,14 @@
         "title": "編輯食譜"
       },
       "label": "操作",
+      "recordWaste": {
+        "servings": {
+          "label": "報廢份數",
+          "placeholder": "請輸入您的報廢份數"
+        },
+        "success": "已登記 {name} 的報廢",
+        "title": "登記成品報廢"
+      },
       "updateRecipe": {
         "success": "已更新份量",
         "title": "編輯份量"
