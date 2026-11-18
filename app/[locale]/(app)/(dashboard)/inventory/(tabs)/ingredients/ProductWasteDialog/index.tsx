@@ -61,6 +61,7 @@ const ProductWasteDialog = ({
     register,
     setError,
     setValue,
+    trigger,
   } = useForm<ProductWasteFormInput, unknown, ProductWasteFormOutput>({
     defaultValues: {
       menuItemId: "",
@@ -157,6 +158,7 @@ const ProductWasteDialog = ({
             shouldValidate: isSubmitted,
           });
           setValue("modifierIds", []);
+          if (isSubmitted) void trigger("servings");
         }}
         options={itemOptions}
         renderInput={(params) => (
@@ -183,12 +185,13 @@ const ProductWasteDialog = ({
           groupBy={({ group }) => group}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           multiple
-          onChange={(_, value) =>
+          onChange={(_, value) => {
             setValue(
               "modifierIds",
               value.map(({ id }) => id),
-            )
-          }
+            );
+            if (isSubmitted) void trigger("servings");
+          }}
           options={modifierOptions}
           renderInput={(params) => (
             <TextField
