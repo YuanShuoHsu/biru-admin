@@ -598,14 +598,18 @@ const StoreLayout = ({
   useEffect(() => {
     if (!hasBoard || !isConnected) return;
 
-    emitMenuWithAck("joinOrdersBoard", { organizationId }).catch((error) =>
-      enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
-    );
+    const handleUpdate = () => mutate();
 
-    menuSocket.on("orderUpdated", mutate);
+    emitMenuWithAck("joinOrdersBoard", { organizationId })
+      .then(handleUpdate)
+      .catch((error) =>
+        enqueueSnackbar(getErrorMessage(error), { variant: "error" }),
+      );
+
+    menuSocket.on("orderUpdated", handleUpdate);
 
     return () => {
-      menuSocket.off("orderUpdated", mutate);
+      menuSocket.off("orderUpdated", handleUpdate);
       menuSocket.emit("leaveOrdersBoard", { organizationId });
     };
   }, [hasBoard, isConnected, mutate, organizationId]);
