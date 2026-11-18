@@ -115,6 +115,8 @@
       "label": "インボイスプリンター",
       "lastSeenAt": "最終接続",
       "neverSeen": "未接続",
+      "offline": "オフライン",
+      "online": "オンライン",
       "password": "パスワード",
       "pollInterval": "ポーリング間隔：約 {seconds} 秒",
       "queued": "未印刷のインボイス {count} 件をプリンターに送信しました",

@@ -504,9 +504,23 @@ const InvoicePrinterCard = ({ organizationSlug }: InvoicePrinterCardProps) => {
   return (
     <Card variant="outlined">
       <StyledCardContent>
-        <BoldTypography color="textSecondary" variant="subtitle2">
-          {tOrganizations("inStore.invoicePrinter.label")}
-        </BoldTypography>
+        <ActionsStack direction="row">
+          <BoldTypography color="textSecondary" variant="subtitle2">
+            {tOrganizations("inStore.invoicePrinter.label")}
+          </BoldTypography>
+          {status && (
+            <Chip
+              color={status.online ? "success" : "error"}
+              label={tOrganizations(
+                status.online
+                  ? "inStore.invoicePrinter.online"
+                  : "inStore.invoicePrinter.offline",
+              )}
+              size="small"
+              variant="outlined"
+            />
+          )}
+        </ActionsStack>
         <Typography variant="body2">
           {tOrganizations("inStore.invoicePrinter.description")}
         </Typography>

@@ -115,6 +115,8 @@
       "label": "Invoice printer",
       "lastSeenAt": "Last connected",
       "neverSeen": "Not connected yet",
+      "offline": "Offline",
+      "online": "Online",
       "password": "Password",
       "pollInterval": "Polling interval: about {seconds} s",
       "queued": "Sent {count, plural, one {# unprinted invoice} other {# unprinted invoices}} to the printer",
