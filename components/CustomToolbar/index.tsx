@@ -101,6 +101,7 @@ declare module "@mui/x-data-grid" {
   interface ToolbarPropsOverrides {
     action?: ReactNode;
     disableExport?: boolean;
+    disableQuickFilter?: boolean;
     exportDateField?: string;
   }
 }
@@ -108,12 +109,14 @@ declare module "@mui/x-data-grid" {
 interface CustomToolbarProps {
   action?: ReactNode;
   disableExport?: boolean;
+  disableQuickFilter?: boolean;
   exportDateField?: string;
 }
 
 const CustomToolbar = ({
   action,
   disableExport = false,
+  disableQuickFilter = false,
   exportDateField,
 }: CustomToolbarProps) => {
   const apiRef = useGridApiContext();
@@ -215,56 +218,58 @@ const CustomToolbar = ({
           </Menu>
         </>
       )}
-      <StyledQuickFilter>
-        <QuickFilterTrigger
-          render={(triggerProps, state) => (
-            <Tooltip enterDelay={0} title={tToolbar("search.label")}>
-              <StyledToolbarButton
-                {...triggerProps}
-                aria-disabled={state.expanded}
-                color="default"
+      {!disableQuickFilter && (
+        <StyledQuickFilter>
+          <QuickFilterTrigger
+            render={(triggerProps, state) => (
+              <Tooltip enterDelay={0} title={tToolbar("search.label")}>
+                <StyledToolbarButton
+                  {...triggerProps}
+                  aria-disabled={state.expanded}
+                  color="default"
+                  ownerState={{ expanded: state.expanded }}
+                >
+                  <Search fontSize="small" />
+                </StyledToolbarButton>
+              </Tooltip>
+            )}
+          />
+          <QuickFilterControl
+            render={({ ref, ...controlProps }, state) => (
+              <StyledTextField
+                {...controlProps}
+                aria-label={tToolbar("search.label")}
+                inputRef={ref}
                 ownerState={{ expanded: state.expanded }}
-              >
-                <Search fontSize="small" />
-              </StyledToolbarButton>
-            </Tooltip>
-          )}
-        />
-        <QuickFilterControl
-          render={({ ref, ...controlProps }, state) => (
-            <StyledTextField
-              {...controlProps}
-              aria-label={tToolbar("search.label")}
-              inputRef={ref}
-              ownerState={{ expanded: state.expanded }}
-              placeholder={tToolbar("search.placeholder")}
-              size="small"
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Search fontSize="small" />
-                    </InputAdornment>
-                  ),
-                  endAdornment: state.value ? (
-                    <StyledInputAdornment position="end">
-                      <QuickFilterClear
-                        aria-label={tToolbar("search.clear")}
-                        edge="end"
-                        size="small"
-                      >
-                        <Cancel fontSize="small" />
-                      </QuickFilterClear>
-                    </StyledInputAdornment>
-                  ) : null,
-                  ...controlProps.slotProps?.input,
-                },
-                ...controlProps.slotProps,
-              }}
-            />
-          )}
-        />
-      </StyledQuickFilter>
+                placeholder={tToolbar("search.placeholder")}
+                size="small"
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Search fontSize="small" />
+                      </InputAdornment>
+                    ),
+                    endAdornment: state.value ? (
+                      <StyledInputAdornment position="end">
+                        <QuickFilterClear
+                          aria-label={tToolbar("search.clear")}
+                          edge="end"
+                          size="small"
+                        >
+                          <Cancel fontSize="small" />
+                        </QuickFilterClear>
+                      </StyledInputAdornment>
+                    ) : null,
+                    ...controlProps.slotProps?.input,
+                  },
+                  ...controlProps.slotProps,
+                }}
+              />
+            )}
+          />
+        </StyledQuickFilter>
+      )}
     </Toolbar>
   );
 };

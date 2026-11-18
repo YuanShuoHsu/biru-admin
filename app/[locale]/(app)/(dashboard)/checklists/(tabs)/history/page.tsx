@@ -1,6 +1,3 @@
-import dayjs from "dayjs";
-import timezonePlugin from "dayjs/plugin/timezone";
-import utc from "dayjs/plugin/utc";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -9,9 +6,9 @@ import { notFound } from "next/navigation";
 import ChecklistHistory from ".";
 import { getChecklistRunsUrl } from "./definitions";
 
-import ErrorAlert from "@/components/ErrorAlert";
+import { isStoreDate } from "@/app/[locale]/(app)/(dashboard)/reports/definitions";
 
-import { STORE_TIMEZONE } from "@/constants/timezone";
+import ErrorAlert from "@/components/ErrorAlert";
 
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -25,9 +22,6 @@ import { resolveGridSearchParams } from "@/utils/dataGrid";
 import { fetcher, settle } from "@/utils/fetcher";
 import { getResolvedAdminOrganization } from "@/utils/session";
 
-dayjs.extend(utc);
-dayjs.extend(timezonePlugin);
-
 interface ChecklistHistoryPageProps {
   params: Promise<{ locale: Locale }>;
   searchParams: Promise<{
@@ -40,10 +34,7 @@ interface ChecklistHistoryPageProps {
   }>;
 }
 
-const toBusinessDate = (value?: string) =>
-  value && dayjs.tz(value, STORE_TIMEZONE).format("YYYY-MM-DD") === value
-    ? value
-    : "";
+const toBusinessDate = (value?: string) => (isStoreDate(value) ? value : "");
 
 export const generateMetadata = async ({
   params,
@@ -86,7 +77,9 @@ const ChecklistHistoryPage = async ({
       locale,
     });
 
-  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
+  const fetchOptions = {
+    headers: { "Accept-Language": locale, cookie: cookieStore.toString() },
+  };
 
   const { data: templates, error: templatesError } = await settle(
     fetcher<ChecklistTemplate[]>(

@@ -5,7 +5,9 @@ import { enqueueSnackbar } from "notistack";
 import { useRef, useState } from "react";
 import useSWR from "swr";
 
-import ChecklistRunItemContent from "../ChecklistRunItemContent";
+import ChecklistRunItemContent, {
+  useChecklistItemRangeText,
+} from "../ChecklistRunItemContent";
 import ChecklistRunStatusChip from "../ChecklistRunStatusChip";
 import ChecklistItemDialog, {
   CHECKLIST_ITEM_FORM_ID,
@@ -51,6 +53,8 @@ const ChecklistToday = ({
   const stale = useRef(false);
 
   const { setDialog } = useDialogStore((state) => state);
+
+  const getRangeText = useChecklistItemRangeText();
 
   const tChecklists = useTranslations("checklists");
 
@@ -111,17 +115,6 @@ const ChecklistToday = ({
     }
   };
 
-  const getRangeText = ({ maxValue, minValue, unit }: ChecklistRunItem) =>
-    minValue === null && maxValue === null
-      ? null
-      : tChecklists("runs.range", {
-          bounds:
-            maxValue === null ? "min" : minValue === null ? "max" : "both",
-          max: maxValue ?? "",
-          min: minValue ?? "",
-          unit: unit ?? "",
-        });
-
   const handleSelect = async (
     { templateId }: ChecklistRun,
     item: ChecklistRunItem,
@@ -174,12 +167,7 @@ const ChecklistToday = ({
                     disabled={closed || pendingItemIds.has(item.id)}
                     onClick={() => void handleSelect(run, item)}
                   >
-                    <ChecklistRunItemContent
-                      item={item}
-                      rangeText={
-                        item.type === "number" ? getRangeText(item) : null
-                      }
-                    />
+                    <ChecklistRunItemContent item={item} />
                   </ListItemButton>
                 </ListItem>
               ))}

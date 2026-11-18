@@ -1,8 +1,6 @@
 "use client";
 
-import dayjs, { type Dayjs } from "dayjs";
-import timezonePlugin from "dayjs/plugin/timezone";
-import utc from "dayjs/plugin/utc";
+import type { Dayjs } from "dayjs";
 import { useFormatter, useTranslations } from "next-intl";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
@@ -12,6 +10,8 @@ import ChecklistRunStatusChip, {
   useChecklistRunStatusLabel,
 } from "../ChecklistRunStatusChip";
 import { type ChecklistRunFilters, getChecklistRunsUrl } from "./definitions";
+
+import { toStoreDate } from "@/app/[locale]/(app)/(dashboard)/reports/definitions";
 
 import DataGrid from "@/components/DataGrid";
 
@@ -48,9 +48,6 @@ import type {
 
 import { fetcher } from "@/utils/fetcher";
 
-dayjs.extend(utc);
-dayjs.extend(timezonePlugin);
-
 const ToolbarStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",
   flexWrap: "wrap",
@@ -61,8 +58,7 @@ const TemplateTextField = styled(TextField)({
   minWidth: 160,
 });
 
-const toStoreDate = (date: string) =>
-  date ? dayjs.tz(date, STORE_TIMEZONE) : null;
+const toFilterDate = (date: string) => (date ? toStoreDate(date) : null);
 
 interface ChecklistHistoryProps {
   filters: ChecklistRunFilters;
@@ -140,8 +136,7 @@ const ChecklistHistory = ({
     };
 
   const formatBusinessDate = useCallback(
-    (value: string) =>
-      format.dateTime(dayjs.tz(value, STORE_TIMEZONE).toDate(), "date"),
+    (value: string) => format.dateTime(toStoreDate(value).toDate(), "date"),
     [format],
   );
 
@@ -211,20 +206,20 @@ const ChecklistHistory = ({
         <DatePicker
           disableFuture
           label={tChecklists("history.from")}
-          maxDate={toStoreDate(filters.to) ?? undefined}
+          maxDate={toFilterDate(filters.to) ?? undefined}
           onChange={handleDateChange("from")}
           slotProps={{ field: { clearable: true } }}
           timezone={STORE_TIMEZONE}
-          value={toStoreDate(filters.from)}
+          value={toFilterDate(filters.from)}
         />
         <DatePicker
           disableFuture
           label={tChecklists("history.to")}
-          minDate={toStoreDate(filters.from) ?? undefined}
+          minDate={toFilterDate(filters.from) ?? undefined}
           onChange={handleDateChange("to")}
           slotProps={{ field: { clearable: true } }}
           timezone={STORE_TIMEZONE}
-          value={toStoreDate(filters.to)}
+          value={toFilterDate(filters.to)}
         />
         <TemplateTextField
           label={tChecklists("history.template")}
@@ -258,7 +253,10 @@ const ChecklistHistory = ({
         rows={rows}
         slotProps={{
           ...DATA_GRID_PROPS.slotProps,
-          toolbar: { exportDateField: "businessDate" },
+          toolbar: {
+            disableQuickFilter: true,
+            exportDateField: "businessDate",
+          },
         }}
       />
     </>

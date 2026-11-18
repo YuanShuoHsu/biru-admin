@@ -1,4 +1,5 @@
 import { useFormatter, useTranslations } from "next-intl";
+import { useCallback } from "react";
 
 import {
   Checkbox,
@@ -17,16 +18,32 @@ const SecondaryStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(0.5),
 }));
 
+export const useChecklistItemRangeText = () => {
+  const tChecklists = useTranslations("checklists");
+
+  return useCallback(
+    ({ maxValue, minValue, type, unit }: ChecklistRunItem) =>
+      type !== "number" || (minValue === null && maxValue === null)
+        ? null
+        : tChecklists("runs.range", {
+            bounds:
+              maxValue === null ? "min" : minValue === null ? "max" : "both",
+            max: maxValue ?? "",
+            min: minValue ?? "",
+            unit: unit ?? "",
+          }),
+    [tChecklists],
+  );
+};
+
 interface ChecklistRunItemContentProps {
   item: ChecklistRunItem;
-  rangeText?: string | null;
 }
 
-const ChecklistRunItemContent = ({
-  item,
-  rangeText,
-}: ChecklistRunItemContentProps) => {
+const ChecklistRunItemContent = ({ item }: ChecklistRunItemContentProps) => {
   const format = useFormatter();
+
+  const rangeText = useChecklistItemRangeText()(item);
 
   const tChecklists = useTranslations("checklists");
   const tCommon = useTranslations("common");
