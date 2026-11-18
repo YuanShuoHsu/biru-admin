@@ -50,6 +50,7 @@ interface ModifierRecipeContentProps {
   canCreate: boolean;
   canViewAuditLog: boolean;
   canViewPurchasing: boolean;
+  canWrite: boolean;
   modifier: Modifier;
   organization: Organization;
   recipe: Promise<FetchResult<Recipe | null>>;
@@ -121,6 +122,9 @@ const ModifierRecipePage = async ({
   const canViewPurchasing = hasRolePermission(memberRole, {
     purchasing: ["read"],
   });
+  const canWrite = hasRolePermission(memberRole, {
+    inventory: ["update"],
+  });
 
   return (
     <Suspense fallback={<BoundRecipe loading />}>
@@ -128,6 +132,7 @@ const ModifierRecipePage = async ({
         canCreate={canCreate}
         canViewAuditLog={canViewAuditLog}
         canViewPurchasing={canViewPurchasing}
+        canWrite={canWrite}
         modifier={modifier}
         organization={selectedOrganization}
         recipe={recipe}
