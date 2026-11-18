@@ -7,6 +7,10 @@ export const useProductWasteFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
+    menuItemId: z.string().min(1, {
+      error: tValidation("menuItemId.notSelected"),
+    }),
+    modifierIds: z.array(z.string()),
     note: z.string().trim(),
     servings: z
       .string()

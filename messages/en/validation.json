@@ -199,6 +199,9 @@
   "member": {
     "required": "Please select a member."
   },
+  "menuItemId": {
+    "notSelected": "Please select your item."
+  },
   "modifierGroupId": {
     "required": "Please select a modifier group."
   },

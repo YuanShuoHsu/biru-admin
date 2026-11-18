@@ -10,6 +10,7 @@ import useSWR from "swr";
 import IngredientBatchDialog from "./IngredientBatchDialog";
 import IngredientDialog from "./IngredientDialog";
 import IngredientWasteDialog from "./IngredientWasteDialog";
+import ProductWasteDialog from "./ProductWasteDialog";
 import StockCell from "../../StockCell";
 
 import AuditLogButton from "@/components/AuditLogButton";
@@ -196,6 +197,7 @@ const Ingredients = ({
   sortDirection,
 }: IngredientsProps) => {
   const currency = currentOrganization?.currency ?? "";
+  const organizationId = currentOrganization?.id ?? "";
   const organizationSlug = currentOrganization?.slug ?? "";
 
   const [lowStock, setLowStock] = useState(initialLowStock);
@@ -502,6 +504,21 @@ const Ingredients = ({
     },
     [mutate, setDialog, tInventory],
   );
+
+  const handleRecordProductWaste = useCallback(() => {
+    setDialog({
+      content: (
+        <ProductWasteDialog
+          mutate={mutate}
+          organizationId={organizationId}
+          organizationSlug={organizationSlug}
+        />
+      ),
+      formId: "product-waste-form",
+      open: true,
+      title: tInventory("ingredients.actions.recordProductWaste.title"),
+    });
+  }, [mutate, organizationId, organizationSlug, setDialog, tInventory]);
 
   const handleViewTransactions = useCallback(
     ({ id }: Ingredient) => {
@@ -1007,6 +1024,16 @@ const Ingredients = ({
                   )}
                 </Button>
               </>
+            )}
+            {canRecordTransaction && (
+              <Button
+                onClick={handleRecordProductWaste}
+                size="small"
+                startIcon={<DeleteSweep />}
+                variant="outlined"
+              >
+                {tInventory("ingredients.actions.recordProductWaste.title")}
+              </Button>
             )}
           </>
         )}

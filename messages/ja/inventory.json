@@ -33,6 +33,23 @@
         "success": "{name} を1バッチ仕込みました",
         "title": "1バッチ仕込む"
       },
+      "recordProductWaste": {
+        "menuItemId": {
+          "label": "商品",
+          "placeholder": "商品を選択してください"
+        },
+        "modifierIds": {
+          "label": "カスタマイズ",
+          "placeholder": "カスタマイズを選択してください"
+        },
+        "servings": {
+          "label": "廃棄数",
+          "placeholder": "廃棄数を入力してください"
+        },
+        "shortfall": "廃棄量が帳簿上の在庫を超えています：{names}。先に棚卸ししてください",
+        "success": "{name} の廃棄を記録しました",
+        "title": "商品の廃棄を記録"
+      },
       "recordWaste": {
         "quantity": {
           "label": "廃棄量",
@@ -155,15 +172,6 @@
         "title": "レシピを編集"
       },
       "label": "操作",
-      "recordWaste": {
-        "servings": {
-          "label": "廃棄数",
-          "placeholder": "廃棄数を入力してください"
-        },
-        "shortfall": "材料の在庫が不足しています：{names}。先に仕入れまたは棚卸を行ってください",
-        "success": "{name} の廃棄を記録しました",
-        "title": "商品の廃棄を記録"
-      },
       "updateRecipe": {
         "success": "出来上がり分量を更新しました",
         "title": "出来上がり分量を編集"

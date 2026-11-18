@@ -199,6 +199,9 @@
   "member": {
     "required": "請選擇成員。"
   },
+  "menuItemId": {
+    "notSelected": "請選擇您的品項。"
+  },
   "modifierGroupId": {
     "required": "請選擇修飾組。"
   },

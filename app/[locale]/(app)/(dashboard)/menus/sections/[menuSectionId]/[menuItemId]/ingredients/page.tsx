@@ -94,9 +94,6 @@ const MenuItemRecipePage = async ({
   const canCreate = hasRolePermission(memberRole, {
     inventory: ["create"],
   });
-  const canRecordTransaction = hasRolePermission(memberRole, {
-    inventoryTransaction: ["create"],
-  });
   const canViewAuditLog = hasRolePermission(memberRole, {
     auditLog: ["read"],
   });
@@ -110,7 +107,6 @@ const MenuItemRecipePage = async ({
   return (
     <BoundRecipe
       canCreate={canCreate}
-      canRecordTransaction={canRecordTransaction}
       canViewAuditLog={canViewAuditLog}
       canViewPurchasing={canViewPurchasing}
       canWrite={canWrite}
