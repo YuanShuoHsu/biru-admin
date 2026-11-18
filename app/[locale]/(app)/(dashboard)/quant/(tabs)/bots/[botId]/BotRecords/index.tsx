@@ -1,7 +1,6 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import { useCallback, useState } from "react";
 import useSWR from "swr";
 
 import { QUANT_BOTS_URL, useBotLabels } from "../../useQuantBots";
@@ -12,15 +11,10 @@ import DataGrid from "@/components/DataGrid";
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
-import { useUpdateQuery } from "@/hooks/useUpdateQuery";
+import { useDataGridQueryState } from "@/hooks/useDataGridQueryState";
 
 import { Box } from "@mui/material";
-import type {
-  GridColDef,
-  GridPaginationModel,
-  GridRenderCellParams,
-  GridSortModel,
-} from "@mui/x-data-grid";
+import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
 import type { SortDirection } from "@/types/dataGrid";
 import type {
@@ -74,13 +68,17 @@ const BotRecords = ({
   sortDirection,
   tab,
 }: BotRecordsProps) => {
-  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    page: page - 1,
+  const {
+    handlePaginationModelChange,
+    handleSortModelChange,
+    paginationModel,
+    sortModel,
+  } = useDataGridQueryState({
+    page,
     pageSize,
+    sortBy,
+    sortDirection,
   });
-  const [sortModel, setSortModel] = useState<GridSortModel>(
-    sortBy && sortDirection ? [{ field: sortBy, sort: sortDirection }] : [],
-  );
 
   const tBots = useTranslations("quant.bots");
   const tQuant = useTranslations("quant");
@@ -90,8 +88,6 @@ const BotRecords = ({
   const { base, formatPrice, formatQuote, formatSize } = useBotMarket(
     bot?.symbol,
   );
-
-  const updateQuery = useUpdateQuery();
 
   const {
     data: { data: rows, total: rowCount } = {
@@ -115,32 +111,6 @@ const BotRecords = ({
       fallbackData: { data: initialRows, total: initialRowCount },
       keepPreviousData: true,
     },
-  );
-
-  const handlePaginationModelChange = useCallback(
-    (newModel: GridPaginationModel) => {
-      setPaginationModel(newModel);
-
-      updateQuery({
-        page: String(newModel.page + 1),
-        pageSize: String(newModel.pageSize),
-      });
-    },
-    [updateQuery],
-  );
-
-  const handleSortModelChange = useCallback(
-    (newModel: GridSortModel) => {
-      setSortModel(newModel);
-      setPaginationModel((previous) => ({ ...previous, page: 0 }));
-
-      updateQuery({
-        page: "1",
-        sortBy: newModel[0]?.field ?? "",
-        sortDirection: newModel[0]?.sort ?? "",
-      });
-    },
-    [updateQuery],
   );
 
   const formatTime = (value: string) =>

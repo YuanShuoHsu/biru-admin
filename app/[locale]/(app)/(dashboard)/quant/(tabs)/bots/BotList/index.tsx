@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
@@ -20,21 +20,17 @@ import {
 import DataGrid from "@/components/DataGrid";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 
-import {
-  autosizeOptions,
-  DATA_GRID_PROPS,
-  NO_VALUE_FILTER_OPERATORS,
-} from "@/constants/dataGrid";
+import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 import { quantPairOf } from "@/constants/quant";
 
+import { useDataGridQueryState } from "@/hooks/useDataGridQueryState";
 import {
   useDateFilterOperators,
   useEnumFilterOperators,
   useNumberFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
-import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
 import { useRouter } from "@/i18n/navigation";
 
@@ -56,13 +52,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import type {
-  GridColDef,
-  GridFilterModel,
-  GridPaginationModel,
-  GridRenderCellParams,
-  GridSortModel,
-} from "@mui/x-data-grid";
+import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -76,7 +66,7 @@ import type {
   StopQuantBotDto,
 } from "@/types/quant";
 
-import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
+import { getDataGridSearchParams } from "@/utils/dataGrid";
 import { getQuantBotEnumOptions } from "@/utils/enumOptions";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
@@ -120,43 +110,34 @@ interface BotListProps {
 }
 
 const BotList = ({
-  filterField: initialFilterField,
-  filterOperator: initialFilterOperator,
-  filterValue: initialFilterValue,
+  filterField,
+  filterOperator,
+  filterValue,
   loading = false,
   page = 1,
   pageSize = DEFAULT_PAGE_SIZE,
-  quickFilterValue: initialQuickFilterValue,
+  quickFilterValue,
   rowCount: initialRowCount = 0,
   rows: initialRows = [],
   sortBy,
   sortDirection,
 }: BotListProps) => {
-  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    page: page - 1,
+  const {
+    filterModel,
+    handleFilterModelChange,
+    handlePaginationModelChange,
+    handleSortModelChange,
+    paginationModel,
+    sortModel,
+  } = useDataGridQueryState({
+    filterField,
+    filterOperator,
+    filterValue,
+    page,
     pageSize,
-  });
-  const [sortModel, setSortModel] = useState<GridSortModel>(
-    sortBy && sortDirection ? [{ field: sortBy, sort: sortDirection }] : [],
-  );
-  const [filterModel, setFilterModel] = useState<GridFilterModel>({
-    items:
-      initialFilterField &&
-      initialFilterOperator &&
-      (initialFilterValue ||
-        NO_VALUE_FILTER_OPERATORS.includes(initialFilterOperator))
-        ? [
-            {
-              field: initialFilterField,
-              operator: initialFilterOperator,
-              value:
-                initialFilterOperator === "isAnyOf"
-                  ? initialFilterValue?.split(",")
-                  : initialFilterValue,
-            },
-          ]
-        : [],
-    quickFilterValues: initialQuickFilterValue ? [initialQuickFilterValue] : [],
+    quickFilterValue,
+    sortBy,
+    sortDirection,
   });
 
   const tBots = useTranslations("quant.bots");
@@ -172,8 +153,6 @@ const BotList = ({
   const enumFilterOperators = useEnumFilterOperators();
   const dateFilterOperators = useDateFilterOperators();
   const numberFilterOperators = useNumberFilterOperators();
-
-  const updateQuery = useUpdateQuery();
 
   const enumOptions = useMemo(() => getQuantBotEnumOptions(tBots), [tBots]);
 
@@ -213,54 +192,6 @@ const BotList = ({
         }, 0);
       },
     },
-  );
-
-  const handlePaginationModelChange = useCallback(
-    (newModel: GridPaginationModel) => {
-      setPaginationModel(newModel);
-
-      updateQuery({
-        page: String(newModel.page + 1),
-        pageSize: String(newModel.pageSize),
-      });
-    },
-    [updateQuery],
-  );
-
-  const handleSortModelChange = useCallback(
-    (newModel: GridSortModel) => {
-      setSortModel(newModel);
-      setPaginationModel((previous) => ({ ...previous, page: 0 }));
-
-      updateQuery({
-        page: "1",
-        sortBy: newModel[0]?.field ?? "",
-        sortDirection: newModel[0]?.sort ?? "",
-      });
-    },
-    [updateQuery],
-  );
-
-  const handleFilterModelChange = useCallback(
-    (newModel: GridFilterModel) => {
-      setFilterModel(newModel);
-      setPaginationModel((previous) => ({ ...previous, page: 0 }));
-
-      const {
-        filterField = "",
-        filterOperator = "",
-        filterValue = "",
-      } = getFilterItemParams(newModel.items[0]);
-
-      updateQuery({
-        filterField,
-        filterOperator,
-        filterValue,
-        page: "1",
-        quickFilterValue: (newModel.quickFilterValues ?? []).join(" ").trim(),
-      });
-    },
-    [updateQuery],
   );
 
   const formatQuote = useCallback(
