@@ -130,18 +130,24 @@ const FuturesAccount = ({
     tab === "transfers" ? quantAccountUrl(credential.id, "transfers") : null,
     autosizeOnData.onSuccess,
   );
-  const history =
-    tab === "orders" ? ordersHistory : tab === "fills" ? fillsHistory : null;
-  const { data: positionHistory, isLoading: positionHistoryLoading } = useSWR<
-    QuantPositionHistory[]
-  >(
+  const positionHistory = useAccountHistory<QuantPositionHistory>(
     tab === "positionHistory" ? url("/position-history") : null,
-    fetcher,
-    autosizeOnData,
+    autosizeOnData.onSuccess,
   );
-  const { data: fundingFees, isLoading: fundingLoading } = useSWR<
-    QuantFundingFee[]
-  >(tab === "funding" ? url("/funding-fees") : null, fetcher, autosizeOnData);
+  const fundingHistory = useAccountHistory<QuantFundingFee>(
+    tab === "funding" ? url("/funding-fees") : null,
+    autosizeOnData.onSuccess,
+  );
+  const history =
+    tab === "orders"
+      ? ordersHistory
+      : tab === "fills"
+        ? fillsHistory
+        : tab === "positionHistory"
+          ? positionHistory
+          : tab === "funding"
+            ? fundingHistory
+            : null;
 
   const revalidate = () => mutate(isQuantAccountKey(credential.id));
 
@@ -742,11 +748,11 @@ const FuturesAccount = ({
   const grids = {
     fills: { ...fillsHistory.gridProps, columns: fillColumns },
     funding: {
+      ...fundingHistory.gridProps,
       columns: fundingColumns,
-      loading: fundingLoading,
-      rows: fundingFees?.map((fee) => ({
+      rows: fundingHistory.gridProps.rows.map((fee, index) => ({
         ...fee,
-        id: `${fee.symbol}:${fee.time}`,
+        id: `${fee.symbol}:${fee.time}:${index}`,
       })),
     },
     openOrders: {
@@ -763,9 +769,9 @@ const FuturesAccount = ({
       })),
     },
     positionHistory: {
+      ...positionHistory.gridProps,
       columns: positionHistoryColumns,
-      loading: positionHistoryLoading,
-      rows: positionHistory?.map((position) => ({
+      rows: positionHistory.gridProps.rows.map((position) => ({
         ...position,
         id: position.positionId,
       })),

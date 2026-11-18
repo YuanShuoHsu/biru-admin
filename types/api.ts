@@ -5542,7 +5542,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 取得已平倉的歷史持倉 */
+    /** 取得已平倉的歷史持倉（依平倉時間由新到舊分頁） */
     get: operations["QuantFuturesController_findPositionHistory"];
     put?: never;
     post?: never;
@@ -5663,7 +5663,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 取得資金費收付紀錄 */
+    /** 取得資金費收付紀錄（依時間由新到舊分頁） */
     get: operations["QuantFuturesController_findFundingFees"];
     put?: never;
     post?: never;
@@ -13721,6 +13721,11 @@ export interface components {
       /** @description 平倉時間（毫秒） */
       closeTime: number;
     };
+    QuantPositionHistoryPageDto: {
+      data: components["schemas"]["QuantPositionHistoryDto"][];
+      /** @description 下一頁要帶的 endTime；null 表示沒有更早的紀錄 */
+      nextEndTime: number | null;
+    };
     /** @enum {string} */
     QuantFuturesOrderType: "LIMIT" | "MARKET_QTY" | "IOC" | "FOK" | "POSTONLY";
     /** @enum {string} */
@@ -13825,6 +13830,11 @@ export interface components {
       rate: number;
       /** @description 結算時間（毫秒） */
       time: number;
+    };
+    QuantFundingFeePageDto: {
+      data: components["schemas"]["QuantFundingFeeDto"][];
+      /** @description 下一頁要帶的 endTime；null 表示沒有更早的紀錄 */
+      nextEndTime: number | null;
     };
     /** @enum {string} */
     QuantWebhookAction: "buy" | "sell" | "close";
@@ -27162,7 +27172,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["QuantPositionHistoryDto"][];
+          "application/json": components["schemas"]["QuantPositionHistoryPageDto"];
         };
       };
       /** @description Internal server error */
@@ -27179,6 +27189,11 @@ export interface operations {
       query?: {
         /** @description 不帶則回傳全部交易對 */
         symbol?: string;
+        limit?: number;
+        /** @description 起始時間（毫秒） */
+        startTime?: number;
+        /** @description 只回傳此時間（含）以前的紀錄（毫秒）；換頁時帶上一頁的 nextEndTime */
+        endTime?: number;
       };
       header?: never;
       path: {
@@ -27433,6 +27448,11 @@ export interface operations {
       query?: {
         /** @description 不帶則回傳全部交易對 */
         symbol?: string;
+        limit?: number;
+        /** @description 起始時間（毫秒） */
+        startTime?: number;
+        /** @description 只回傳此時間（含）以前的紀錄（毫秒）；換頁時帶上一頁的 nextEndTime */
+        endTime?: number;
       };
       header?: never;
       path: {
@@ -27447,7 +27467,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["QuantFundingFeeDto"][];
+          "application/json": components["schemas"]["QuantFundingFeePageDto"];
         };
       };
       /** @description Internal server error */
