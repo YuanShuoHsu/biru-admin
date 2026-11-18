@@ -11,6 +11,7 @@ import DataGrid from "@/components/DataGrid";
 import { DragHandle, Sortable } from "@/components/Sortable";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+import { DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
@@ -28,6 +29,7 @@ import { styled } from "@mui/material/styles";
 import type {
   GridColDef,
   GridFilterModel,
+  GridPaginationModel,
   GridRenderCellParams,
   GridSortModel,
 } from "@mui/x-data-grid";
@@ -70,6 +72,10 @@ const ChecklistTemplates = ({
     items: [],
   });
   const [sortModel, setSortModel] = useState<GridSortModel>([]);
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    page: 0,
+    pageSize: DEFAULT_PAGE_SIZE,
+  });
 
   const apiRef = useGridApiRef();
 
@@ -360,13 +366,24 @@ const ChecklistTemplates = ({
           disableColumnFilter={isReorderMode}
           disableColumnSorting={isReorderMode}
           filterModel={filterModel}
+          hideFooterPagination={isReorderMode}
           loading={isValidating}
           onFilterModelChange={setFilterModel}
-          onPaginationModelChange={() =>
-            apiRef.current?.autosizeColumns(autosizeOptions)
-          }
+          onPaginationModelChange={(model) => {
+            if (!isReorderMode) setPaginationModel(model);
+            apiRef.current?.autosizeColumns(autosizeOptions);
+          }}
           onSortModelChange={setSortModel}
+          paginationModel={
+            isReorderMode
+              ? { page: 0, pageSize: MAX_PAGE_SIZE }
+              : paginationModel
+          }
           rows={rows}
+          slotProps={{
+            ...DATA_GRID_PROPS.slotProps,
+            toolbar: { disableQuickFilter: isReorderMode },
+          }}
           slots={{
             ...DATA_GRID_PROPS.slots,
             row: isReorderMode ? Sortable : undefined,
