@@ -7,11 +7,9 @@ import { useForm } from "react-hook-form";
 
 import { type VerifyEmailForm, useVerifyEmailFormSchema } from "./definitions";
 
-import FormCard, {
-  StyledCardActions,
-  StyledCardContent,
-  StyledCardHeader,
-} from "@/components/FormCard";
+import StatusFormCard, {
+  type StatusFormCardConfig,
+} from "@/components/StatusFormCard";
 
 import { query } from "@/constants/query";
 
@@ -27,17 +25,8 @@ import {
   MarkEmailUnread,
   ReportGmailerrorred,
 } from "@mui/icons-material";
-import {
-  Avatar,
-  Button,
-  Divider,
-  Link,
-  Stack,
-  type SvgIconProps,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { alpha, styled } from "@mui/material/styles";
+import { Button, Divider, Link, Stack, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import { useAuthStore } from "@/providers/auth-store-provider";
 import { useCountdownStore } from "@/providers/countdown-store-provider";
@@ -49,24 +38,6 @@ const StyledStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",
   gap: theme.spacing(0.5),
 }));
-
-const StyledTypography = styled(Typography)({
-  fontWeight: "bold",
-});
-
-const StyledAvatar = styled(Avatar, {
-  shouldForwardProp: (prop) => prop !== "color",
-})<{ color: "error" | "primary" }>(({ color, theme }) => {
-  const mainColor = theme.palette[color].main;
-
-  return {
-    alignSelf: "center",
-    width: theme.spacing(7),
-    height: theme.spacing(7),
-    backgroundColor: alpha(mainColor, 0.2),
-    color: mainColor,
-  };
-});
 
 const VERIFY_STATUS = {
   DEFAULT: "default",
@@ -201,16 +172,7 @@ const AuthVerifyEmail = ({
     );
   });
 
-  const configs: Record<
-    VerifyStatus,
-    {
-      actions: React.ReactNode;
-      color: "error" | "primary";
-      icon: React.ComponentType<SvgIconProps>;
-      subtitle: string;
-      title: string;
-    }
-  > = {
+  const configs: Record<VerifyStatus, StatusFormCardConfig> = {
     [VERIFY_STATUS.DEFAULT]: {
       actions: (
         <>
@@ -273,39 +235,15 @@ const AuthVerifyEmail = ({
   };
 
   const config = configs[verifyState.status];
-  const Icon = config.icon;
 
   return (
-    <FormCard component="form" onSubmit={onSubmit}>
-      <StyledCardHeader
-        title={
-          <StyledTypography align="center" color={config.color} variant="h6">
-            {config.title}
-          </StyledTypography>
-        }
-      />
-      <StyledCardContent>
-        <StyledAvatar color={config.color}>
-          <Icon fontSize="large" />
-        </StyledAvatar>
-        <Typography align="center" color="textSecondary" variant="caption">
-          {config.subtitle}
-        </Typography>
-        <TextField
-          autoComplete="email"
-          error={!!errors.email}
-          fullWidth
-          helperText={errors.email?.message}
-          label={tAuth("email.label")}
-          placeholder={tAuth("email.placeholder")}
-          required
-          slotProps={{ input: { readOnly: true } }}
-          type="email"
-          {...register("email")}
-        />
-      </StyledCardContent>
-      <StyledCardActions disableSpacing>{config.actions}</StyledCardActions>
-    </FormCard>
+    <StatusFormCard
+      component="form"
+      onSubmit={onSubmit}
+      config={config}
+      emailError={errors.email}
+      emailField={register("email")}
+    />
   );
 };
 
