@@ -61,6 +61,7 @@ const MenuItemRecipeIngredientsPage = async ({
   if (isMissingResource(menuError) || isMissingResource(menuItemError))
     notFound();
   if (menuError || menuItemError) return <ErrorAlert />;
+  if (menuItem.menuSectionId !== menuSectionId) notFound();
 
   const selectedOrganization = await getAdminOrganization(
     menu.organizationId,

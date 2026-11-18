@@ -120,14 +120,17 @@ const MenuItemModifierGroupsPage = async ({
   if (isMissingResource(sectionError)) notFound();
   if (sectionError) return <ErrorAlert />;
 
-  const [{ data: menu, error: menuError }, { error: menuItemError }] =
-    await Promise.all([
-      settle(getAdminMenu(section.menuId, fetchOptions)),
-      settle(getAdminMenuItem(menuItemId, fetchOptions)),
-    ]);
+  const [
+    { data: menu, error: menuError },
+    { data: menuItem, error: menuItemError },
+  ] = await Promise.all([
+    settle(getAdminMenu(section.menuId, fetchOptions)),
+    settle(getAdminMenuItem(menuItemId, fetchOptions)),
+  ]);
   if (isMissingResource(menuError) || isMissingResource(menuItemError))
     notFound();
   if (menuError || menuItemError) return <ErrorAlert />;
+  if (menuItem.menuSectionId !== menuSectionId) notFound();
 
   const selectedOrganization = await getAdminOrganization(
     menu.organizationId,
