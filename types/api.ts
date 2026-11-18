@@ -7298,6 +7298,7 @@ export interface components {
       | "catalogModifier"
       | "catalogItemModifierGroup"
       | "catalogItemAddOn"
+      | "checklistTemplate"
       | "employee"
       | "attendanceSetting"
       | "leaveCase"
@@ -28553,6 +28554,7 @@ export const auditResourceValues: ReadonlyArray<
   "catalogModifier",
   "catalogItemModifierGroup",
   "catalogItemAddOn",
+  "checklistTemplate",
   "employee",
   "attendanceSetting",
   "leaveCase",

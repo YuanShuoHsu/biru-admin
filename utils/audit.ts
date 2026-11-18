@@ -87,6 +87,7 @@ export const getAuditLogHref = (
     case "catalogModifier":
     case "catalogItemModifierGroup":
     case "catalogItemAddOn":
+    case "checklistTemplate":
     case "coupon":
     case "organization":
     case "member":
