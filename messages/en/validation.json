@@ -199,6 +199,9 @@
   "member": {
     "required": "Please select a member."
   },
+  "menuItemId": {
+    "notSelected": "Please select your item."
+  },
   "modifierGroupId": {
     "required": "Please select a modifier group."
   },
@@ -316,6 +319,9 @@
   },
   "role": {
     "required": "Please select a role."
+  },
+  "servings": {
+    "required": "Servings wasted is required."
   },
   "slug": {
     "letter": "Slug must contain at least one letter.",

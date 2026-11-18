@@ -2319,6 +2319,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/inventory/waste": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 依食譜登記成品報廢 */
+    post: operations["OrganizationInventoryController_createProductWaste"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/ingredients/reorder": {
     parameters: {
       query?: never;
@@ -9769,6 +9786,23 @@ export interface components {
       createdAt: string;
       /** Format: date-time */
       updatedAt: string;
+    };
+    CreateProductWasteDto: {
+      /**
+       * Format: uuid
+       * @description 報廢的菜單品項，依它的食譜展開食材用量
+       */
+      menuItemId: string;
+      /**
+       * @description 報廢的份數
+       * @example 1
+       */
+      servings: number;
+      /** @description 這幾份加上的客製選項，有食譜的選項每份各展開一次 */
+      modifierIds?: string[];
+      wasteReason: components["schemas"]["WasteReason"];
+      /** @description 異動原因，自由填寫 */
+      note?: string | null;
     };
     ReorderDto: {
       ids: string[];
@@ -19570,6 +19604,38 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["InventoryTransactionResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrganizationInventoryController_createProductWaste: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateProductWasteDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["InventoryTransactionResponseDto"][];
         };
       };
       /** @description Internal server error */

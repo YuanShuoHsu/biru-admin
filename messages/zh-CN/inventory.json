@@ -33,6 +33,23 @@
         "success": "已制作一批 {name}",
         "title": "制作一批"
       },
+      "recordProductWaste": {
+        "menuItemId": {
+          "label": "商品",
+          "placeholder": "请选择您的商品"
+        },
+        "modifierIds": {
+          "label": "定制选项",
+          "placeholder": "请选择您的定制选项"
+        },
+        "servings": {
+          "label": "报废份数",
+          "placeholder": "请输入您的报废份数"
+        },
+        "shortfall": "报废量超过账上数量：{names}。请先盘点",
+        "success": "已登记 {name} 的报废",
+        "title": "报废成品"
+      },
       "recordWaste": {
         "quantity": {
           "label": "报废量",

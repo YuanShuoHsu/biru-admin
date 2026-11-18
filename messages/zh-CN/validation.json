@@ -199,6 +199,9 @@
   "member": {
     "required": "请选择成员。"
   },
+  "menuItemId": {
+    "notSelected": "请选择您的商品。"
+  },
   "modifierGroupId": {
     "required": "请选择修饰组。"
   },
@@ -316,6 +319,9 @@
   },
   "role": {
     "required": "请选择角色。"
+  },
+  "servings": {
+    "required": "报废份数为必填。"
   },
   "slug": {
     "letter": "网址识别码必须包含至少一个英文字母。",

@@ -33,6 +33,23 @@
         "success": "Made a batch of {name}",
         "title": "Make a batch"
       },
+      "recordProductWaste": {
+        "menuItemId": {
+          "label": "Item",
+          "placeholder": "Please select your item"
+        },
+        "modifierIds": {
+          "label": "Modifiers",
+          "placeholder": "Please select your modifiers"
+        },
+        "servings": {
+          "label": "Servings wasted",
+          "placeholder": "Please enter the servings wasted"
+        },
+        "shortfall": "The amount wasted is more than the stock on record for: {names}. Count the stock first",
+        "success": "Recorded waste of {name}",
+        "title": "Record product waste"
+      },
       "recordWaste": {
         "quantity": {
           "label": "Amount wasted",
