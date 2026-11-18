@@ -52,6 +52,7 @@ const ChecklistTemplatesPage = async ({
 
   return (
     <ChecklistTemplates
+      closed={!!selectedOrganization.closedAt}
       key={selectedOrganization.slug}
       organizationSlug={selectedOrganization.slug}
     />
