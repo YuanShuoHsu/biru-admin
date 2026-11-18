@@ -13,6 +13,10 @@ import { styled } from "@mui/material/styles";
 
 import { useCountStore } from "@/providers/count-store-provider";
 
+import type { Member } from "@/types/organizations";
+
+import { hasRolePermission } from "@/utils/organizations";
+
 const ContentStack = styled(Stack)(({ theme }) => ({
   flex: 1,
   gap: theme.spacing(2),
@@ -38,16 +42,22 @@ const PendingInvitationChip = ({
 
 interface OrganizationsSlugTabsProps {
   children: React.ReactNode;
+  currentUserRole: Member["role"] | undefined;
   pendingInvitationCount: Promise<number>;
 }
 
 const OrganizationsSlugTabs = ({
   children,
+  currentUserRole,
   pendingInvitationCount,
 }: OrganizationsSlugTabsProps) => {
   const { slug } = useParams<{ slug: string }>();
 
   const tInvitations = useTranslations("organizations.invitations");
+
+  const canUpdateOrganization = hasRolePermission(currentUserRole, {
+    organization: ["update"],
+  });
 
   return (
     <ContentStack>
@@ -71,10 +81,18 @@ const OrganizationsSlugTabs = ({
           },
           { path: `/organizations/${slug}/location` },
           { path: `/organizations/${slug}/pickup` },
-          { path: `/organizations/${slug}/special-hours` },
-          { path: `/organizations/${slug}/in-store` },
-          { path: `/organizations/${slug}/waitlist` },
-          { path: `/organizations/${slug}/points` },
+          ...(canUpdateOrganization
+            ? [
+                { path: `/organizations/${slug}/special-hours` },
+                { path: `/organizations/${slug}/in-store` },
+              ]
+            : []),
+          ...(hasRolePermission(currentUserRole, { waitlistSetting: ["read"] })
+            ? [{ path: `/organizations/${slug}/waitlist` }]
+            : []),
+          ...(canUpdateOrganization
+            ? [{ path: `/organizations/${slug}/points` }]
+            : []),
         ]}
       />
       {children}

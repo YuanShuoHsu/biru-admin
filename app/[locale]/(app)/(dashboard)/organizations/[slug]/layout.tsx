@@ -4,7 +4,7 @@ import { CountStoreProvider } from "@/providers/count-store-provider";
 
 import { isActiveSession } from "@/utils/auth";
 import { settle } from "@/utils/fetcher";
-import { getFullOrganization } from "@/utils/session";
+import { getFullOrganization, getSession } from "@/utils/session";
 
 interface OrganizationsSlugLayoutProps {
   children: React.ReactNode;
@@ -26,17 +26,31 @@ const getPendingInvitationCount = async (
   );
 };
 
-const OrganizationsSlugLayout = ({
+const OrganizationsSlugLayout = async ({
   children,
   params,
-}: OrganizationsSlugLayoutProps) => (
-  <CountStoreProvider>
-    <OrganizationsSlugTabs
-      pendingInvitationCount={getPendingInvitationCount(params)}
-    >
-      {children}
-    </OrganizationsSlugTabs>
-  </CountStoreProvider>
-);
+}: OrganizationsSlugLayoutProps) => {
+  const { slug } = await params;
+
+  const [{ data }, session] = await Promise.all([
+    settle(getFullOrganization(decodeURIComponent(slug))),
+    getSession(),
+  ]);
+
+  const currentUserRole = data?.members.find(
+    ({ userId }) => userId === session?.user?.id,
+  )?.role;
+
+  return (
+    <CountStoreProvider>
+      <OrganizationsSlugTabs
+        currentUserRole={currentUserRole}
+        pendingInvitationCount={getPendingInvitationCount(params)}
+      >
+        {children}
+      </OrganizationsSlugTabs>
+    </CountStoreProvider>
+  );
+};
 
 export default OrganizationsSlugLayout;
