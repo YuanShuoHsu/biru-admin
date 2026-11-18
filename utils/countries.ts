@@ -20,6 +20,11 @@ const getLocaleCountryCode = (locale: Locale) => {
   return region && isSupportedCountry(region) ? region : undefined;
 };
 
+// https://knip.dev/reference/jsdoc-tsdoc-tags
+/**
+ * 註冊頁暫停中的電話註冊恢復時會用到，不要當沒用到的程式碼刪除
+ * @public
+ */
 export const getDefaultCountry = (locale: Locale) => {
   const countryCode = getLocaleCountryCode(locale);
 
