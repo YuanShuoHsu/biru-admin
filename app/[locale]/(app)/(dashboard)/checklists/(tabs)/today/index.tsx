@@ -1,30 +1,27 @@
 "use client";
 
-import { useFormatter, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useRef, useState } from "react";
 import useSWR from "swr";
 
+import ChecklistRunItemContent, {
+  useChecklistItemRangeText,
+} from "../ChecklistRunItemContent";
+import ChecklistRunStatusChip from "../ChecklistRunStatusChip";
 import ChecklistItemDialog, {
   CHECKLIST_ITEM_FORM_ID,
 } from "./ChecklistItemDialog";
 
-import { CheckCircle } from "@mui/icons-material";
 import {
   Card,
   CardHeader,
-  Checkbox,
-  Chip,
   Grid,
   List,
   ListItem,
   ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Stack,
   Typography,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -36,11 +33,6 @@ import type {
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
-
-const SecondaryStack = styled(Stack)(({ theme }) => ({
-  alignItems: "flex-start",
-  gap: theme.spacing(0.5),
-}));
 
 interface ChecklistTodayProps {
   closed: boolean;
@@ -62,10 +54,9 @@ const ChecklistToday = ({
 
   const { setDialog } = useDialogStore((state) => state);
 
-  const format = useFormatter();
+  const getRangeText = useChecklistItemRangeText();
 
   const tChecklists = useTranslations("checklists");
-  const tCommon = useTranslations("common");
 
   const todayUrl = `/api/organizations/${organizationSlug}/checklists/today`;
 
@@ -124,17 +115,6 @@ const ChecklistToday = ({
     }
   };
 
-  const getRangeText = ({ maxValue, minValue, unit }: ChecklistRunItem) =>
-    minValue === null && maxValue === null
-      ? null
-      : tChecklists("runs.range", {
-          bounds:
-            maxValue === null ? "min" : minValue === null ? "max" : "both",
-          max: maxValue ?? "",
-          min: minValue ?? "",
-          unit: unit ?? "",
-        });
-
   const handleSelect = async (
     { templateId }: ChecklistRun,
     item: ChecklistRunItem,
@@ -176,27 +156,7 @@ const ChecklistToday = ({
         <Grid key={run.templateId} size={{ xs: 12, md: 6, xl: 4 }}>
           <Card variant="outlined">
             <CardHeader
-              action={
-                run.completedAt ? (
-                  <Chip
-                    color="success"
-                    icon={<CheckCircle />}
-                    label={tChecklists("runs.completed", {
-                      time: format.dateTime(new Date(run.completedAt), "time"),
-                    })}
-                    size="small"
-                  />
-                ) : (
-                  <Chip
-                    label={tChecklists("runs.progress", {
-                      filled: run.filledCount,
-                      total: run.items.length,
-                    })}
-                    size="small"
-                    variant="outlined"
-                  />
-                )
-              }
+              action={<ChecklistRunStatusChip run={run} />}
               subheader={tChecklists(`templates.timing.${run.timing}`)}
               title={run.name}
             />
@@ -207,66 +167,7 @@ const ChecklistToday = ({
                     disabled={closed || pendingItemIds.has(item.id)}
                     onClick={() => void handleSelect(run, item)}
                   >
-                    {item.type === "check" && (
-                      <ListItemIcon>
-                        <Checkbox
-                          checked={!!item.checked}
-                          disableRipple
-                          edge="start"
-                          readOnly
-                          size="large"
-                          slotProps={{
-                            input: { "aria-labelledby": item.id },
-                          }}
-                          tabIndex={-1}
-                        />
-                      </ListItemIcon>
-                    )}
-                    <ListItemText
-                      id={item.id}
-                      primary={item.label}
-                      secondary={
-                        <SecondaryStack>
-                          {item.type === "number" && getRangeText(item) && (
-                            <span>{getRangeText(item)}</span>
-                          )}
-                          {item.filledAt && (
-                            <span>
-                              {[
-                                item.filledByName ?? tCommon("deletedAccount"),
-                                format.dateTime(
-                                  new Date(item.filledAt),
-                                  "time",
-                                ),
-                              ].join(tCommon("middleDot"))}
-                            </span>
-                          )}
-                          {item.outOfRange && (
-                            <Chip
-                              color="error"
-                              label={tChecklists("runs.outOfRange")}
-                              size="small"
-                            />
-                          )}
-                          {item.actionNote && (
-                            <span>
-                              {tChecklists("runs.actionNote")}
-                              {tCommon("colon")}
-                              {item.actionNote}
-                            </span>
-                          )}
-                        </SecondaryStack>
-                      }
-                      slotProps={{ secondary: { component: "div" } }}
-                    />
-                    {item.value !== null && (
-                      <Typography
-                        color={item.outOfRange ? "error" : undefined}
-                        variant="h6"
-                      >
-                        {format.number(item.value)} {item.unit}
-                      </Typography>
-                    )}
+                    <ChecklistRunItemContent item={item} />
                   </ListItemButton>
                 </ListItem>
               ))}

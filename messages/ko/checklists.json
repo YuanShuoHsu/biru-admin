@@ -1,4 +1,14 @@
 {
+  "history": {
+    "allTemplates": "전체",
+    "businessDate": "영업일",
+    "from": "시작일",
+    "label": "기록",
+    "status": "완료 상태",
+    "template": "점검표",
+    "to": "종료일",
+    "viewItems": "항목 보기"
+  },
   "label": "정기 점검",
   "runs": {
     "actionNote": "조치 내용",

@@ -14,6 +14,7 @@ const ChecklistsTabs = () => {
       ariaLabel="checklists tabs"
       tabs={[
         { path: "/checklists/today" },
+        { path: "/checklists/history" },
         ...(hasRolePermission(memberRole, { organization: ["update"] })
           ? [{ path: "/checklists/templates" }]
           : []),

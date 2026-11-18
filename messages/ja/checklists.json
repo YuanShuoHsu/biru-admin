@@ -1,4 +1,14 @@
 {
+  "history": {
+    "allTemplates": "すべて",
+    "businessDate": "営業日",
+    "from": "開始日",
+    "label": "履歴",
+    "status": "完了状況",
+    "template": "チェックリスト",
+    "to": "終了日",
+    "viewItems": "項目を表示"
+  },
   "label": "定期チェック",
   "runs": {
     "actionNote": "対応内容",

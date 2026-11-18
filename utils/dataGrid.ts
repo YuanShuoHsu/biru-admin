@@ -287,7 +287,7 @@ export const getSelectedRows = <Row extends { id: string }>(
 ) => rows.filter(({ id }) => ids.has(id) === (type === "include"));
 
 export const toExportDate = (value?: dayjs.ConfigType) =>
-  typeof value === "string" && /^\d{4}-\d{2}$/.test(value)
+  typeof value === "string" && /^\d{4}-\d{2}(-\d{2})?$/.test(value)
     ? value
     : dayjs(value).tz(STORE_TIMEZONE).format("YYYY-MM-DD");
 
