@@ -5,10 +5,10 @@ import { cache } from "react";
 
 import { fetcher } from "./fetcher";
 
-import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
 import { LOW_STOCK_THRESHOLD } from "@/constants/menus";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
+import type { FilterOperator } from "@/types/dataGrid";
 import type {
   Menu,
   MenuItem,
@@ -23,6 +23,8 @@ import type {
   ModifierListResponse,
   OrderMenuOffer,
 } from "@/types/menus";
+
+import { getGridSearchParams } from "@/utils/dataGrid";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -57,29 +59,22 @@ export const getAdminMenuSections = cache(
     page: number,
     pageSize: number,
     filterField?: string,
-    filterOperator?: string,
+    filterOperator?: FilterOperator,
     filterValue?: string,
     quickFilterValue?: string,
     sortBy?: string,
     sortDirection?: "asc" | "desc",
     init?: RequestInit,
   ) => {
-    const offset = (page - 1) * pageSize;
-    const isNoValueOperator =
-      filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
-    const params = new URLSearchParams({
-      limit: String(pageSize),
-      offset: String(offset),
-      ...(sortBy && { sortBy }),
-      ...(sortDirection && { sortDirection }),
-      ...(filterField &&
-        filterOperator &&
-        (filterValue || isNoValueOperator) && {
-          filterField,
-          filterOperator,
-          ...(filterValue && { filterValue }),
-        }),
-      ...(quickFilterValue && { quickFilterValue }),
+    const params = getGridSearchParams({
+      page,
+      pageSize,
+      filterField,
+      filterOperator,
+      filterValue,
+      quickFilterValue,
+      sortBy,
+      sortDirection,
     });
     const result = await fetcher<MenuSectionListResponse>(
       `/api/menus/${menuId}/menu-sections?${params.toString()}`,
@@ -110,7 +105,7 @@ export const getAdminMenuSectionItems = cache(
     page: number,
     pageSize: number,
     filterField?: string,
-    filterOperator?: string,
+    filterOperator?: FilterOperator,
     filterValue?: string,
     quickFilterValue?: string,
     quickFilterEnums?: string[],
@@ -118,26 +113,17 @@ export const getAdminMenuSectionItems = cache(
     sortDirection?: "asc" | "desc",
     init?: RequestInit,
   ) => {
-    const offset = (page - 1) * pageSize;
-    const isNoValueOperator =
-      filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
-    const params = new URLSearchParams({
-      limit: String(pageSize),
-      offset: String(offset),
-      ...(sortBy && { sortBy }),
-      ...(sortDirection && { sortDirection }),
-      ...(filterField &&
-        filterOperator &&
-        (filterValue || isNoValueOperator) && {
-          filterField,
-          filterOperator,
-          ...(filterValue && { filterValue }),
-        }),
-      ...(quickFilterValue && { quickFilterValue }),
+    const params = getGridSearchParams({
+      page,
+      pageSize,
+      filterField,
+      filterOperator,
+      filterValue,
+      quickFilterEnums,
+      quickFilterValue,
+      sortBy,
+      sortDirection,
     });
-    for (const entry of quickFilterEnums || [])
-      params.append("quickFilterEnums", entry);
-
     const result = await fetcher<MenuItemListResponse>(
       `/api/menu-sections/${sectionId}/menu-items?${params.toString()}`,
       init,
@@ -155,29 +141,22 @@ export const getAdminMenuItemAddOns = cache(
     page: number,
     pageSize: number,
     filterField?: string,
-    filterOperator?: string,
+    filterOperator?: FilterOperator,
     filterValue?: string,
     quickFilterValue?: string,
     sortBy?: string,
     sortDirection?: "asc" | "desc",
     init?: RequestInit,
   ) => {
-    const offset = (page - 1) * pageSize;
-    const isNoValueOperator =
-      filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
-    const params = new URLSearchParams({
-      limit: String(pageSize),
-      offset: String(offset),
-      ...(sortBy && { sortBy }),
-      ...(sortDirection && { sortDirection }),
-      ...(filterField &&
-        filterOperator &&
-        (filterValue || isNoValueOperator) && {
-          filterField,
-          filterOperator,
-          ...(filterValue && { filterValue }),
-        }),
-      ...(quickFilterValue && { quickFilterValue }),
+    const params = getGridSearchParams({
+      page,
+      pageSize,
+      filterField,
+      filterOperator,
+      filterValue,
+      quickFilterValue,
+      sortBy,
+      sortDirection,
     });
     const result = await fetcher<MenuItemAddOnListResponse>(
       `/api/menu-items/${menuItemId}/add-ons?${params.toString()}`,
@@ -196,29 +175,22 @@ export const getAdminModifierGroups = cache(
     page: number,
     pageSize: number,
     filterField?: string,
-    filterOperator?: string,
+    filterOperator?: FilterOperator,
     filterValue?: string,
     quickFilterValue?: string,
     sortBy?: string,
     sortDirection?: "asc" | "desc",
     init?: RequestInit,
   ) => {
-    const offset = (page - 1) * pageSize;
-    const isNoValueOperator =
-      filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
-    const params = new URLSearchParams({
-      limit: String(pageSize),
-      offset: String(offset),
-      ...(sortBy && { sortBy }),
-      ...(sortDirection && { sortDirection }),
-      ...(filterField &&
-        filterOperator &&
-        (filterValue || isNoValueOperator) && {
-          filterField,
-          filterOperator,
-          ...(filterValue && { filterValue }),
-        }),
-      ...(quickFilterValue && { quickFilterValue }),
+    const params = getGridSearchParams({
+      page,
+      pageSize,
+      filterField,
+      filterOperator,
+      filterValue,
+      quickFilterValue,
+      sortBy,
+      sortDirection,
     });
     const result = await fetcher<ModifierGroupListResponse>(
       `/api/menus/${menuId}/modifier-groups?${params.toString()}`,
@@ -249,7 +221,7 @@ export const getAdminModifiers = cache(
     page: number,
     pageSize: number,
     filterField?: string,
-    filterOperator?: string,
+    filterOperator?: FilterOperator,
     filterValue?: string,
     quickFilterValue?: string,
     quickFilterEnums?: string[],
@@ -257,26 +229,17 @@ export const getAdminModifiers = cache(
     sortDirection?: "asc" | "desc",
     init?: RequestInit,
   ) => {
-    const offset = (page - 1) * pageSize;
-    const isNoValueOperator =
-      filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
-    const params = new URLSearchParams({
-      limit: String(pageSize),
-      offset: String(offset),
-      ...(sortBy && { sortBy }),
-      ...(sortDirection && { sortDirection }),
-      ...(filterField &&
-        filterOperator &&
-        (filterValue || isNoValueOperator) && {
-          filterField,
-          filterOperator,
-          ...(filterValue && { filterValue }),
-        }),
-      ...(quickFilterValue && { quickFilterValue }),
+    const params = getGridSearchParams({
+      page,
+      pageSize,
+      filterField,
+      filterOperator,
+      filterValue,
+      quickFilterEnums,
+      quickFilterValue,
+      sortBy,
+      sortDirection,
     });
-    for (const entry of quickFilterEnums || [])
-      params.append("quickFilterEnums", entry);
-
     const result = await fetcher<ModifierListResponse>(
       `/api/modifier-groups/${groupId}/modifiers?${params.toString()}`,
       init,
@@ -294,29 +257,22 @@ export const getAdminMenuItemModifierGroups = cache(
     page: number,
     pageSize: number,
     filterField?: string,
-    filterOperator?: string,
+    filterOperator?: FilterOperator,
     filterValue?: string,
     quickFilterValue?: string,
     sortBy?: string,
     sortDirection?: "asc" | "desc",
     init?: RequestInit,
   ) => {
-    const offset = (page - 1) * pageSize;
-    const isNoValueOperator =
-      filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
-    const params = new URLSearchParams({
-      limit: String(pageSize),
-      offset: String(offset),
-      ...(sortBy && { sortBy }),
-      ...(sortDirection && { sortDirection }),
-      ...(filterField &&
-        filterOperator &&
-        (filterValue || isNoValueOperator) && {
-          filterField,
-          filterOperator,
-          ...(filterValue && { filterValue }),
-        }),
-      ...(quickFilterValue && { quickFilterValue }),
+    const params = getGridSearchParams({
+      page,
+      pageSize,
+      filterField,
+      filterOperator,
+      filterValue,
+      quickFilterValue,
+      sortBy,
+      sortDirection,
     });
     const result = await fetcher<MenuItemModifierGroupListResponse>(
       `/api/menu-items/${menuItemId}/modifier-groups?${params.toString()}`,
