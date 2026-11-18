@@ -506,10 +506,7 @@ const Coupons = ({
                       <StyledIconButton
                         onClick={() => handleGrantCoupon(row)}
                         size="small"
-                        visible={
-                          canManageCoupon ||
-                          isExclusiveTo(row, organization?.id)
-                        }
+                        visible={row.grantable}
                       >
                         <CardGiftcard fontSize="small" />
                       </StyledIconButton>

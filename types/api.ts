@@ -7799,6 +7799,8 @@ export interface components {
       updatedAt: string;
       /** @description 已有顧客持有，不可刪除（只能停用） */
       claimed: boolean;
+      /** @description 這個列表端點對應的發放端點目前會接受（啟用、未過期、未發完） */
+      grantable: boolean;
     };
     CouponListResponseDto: {
       data: components["schemas"]["CouponListItemDto"][];
