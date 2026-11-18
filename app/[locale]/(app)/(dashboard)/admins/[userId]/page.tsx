@@ -52,7 +52,7 @@ export const generateMetadata = async ({
   const { locale } = await params;
   const tAdmins = await getTranslations({ locale, namespace: "admins" });
 
-  return { title: tAdmins("label") };
+  return { title: tAdmins("userSessions.label") };
 };
 
 interface UserSessionsContentProps {
