@@ -8,11 +8,7 @@ import useSWR from "swr";
 import DataGrid from "@/components/DataGrid";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 
-import {
-  autosizeOptions,
-  DATA_GRID_PROPS,
-  NO_VALUE_FILTER_OPERATORS,
-} from "@/constants/dataGrid";
+import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { PLATFORM_ORGANIZATION_ID } from "@/constants/organizations";
 import {
   DEFAULT_PAGE_SIZE,
@@ -22,6 +18,7 @@ import {
 
 import { useAuditLogObjectLabels } from "@/hooks/useAuditLogObjectLabels";
 import { useAuditLogValueLabels } from "@/hooks/useAuditLogValueLabels";
+import { useDataGridQueryState } from "@/hooks/useDataGridQueryState";
 import {
   useDateFilterOperators,
   useEnumFilterOperators,
@@ -42,13 +39,7 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import type {
-  GridColDef,
-  GridFilterModel,
-  GridPaginationModel,
-  GridRenderCellParams,
-  GridSortModel,
-} from "@mui/x-data-grid";
+import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
 import type {
@@ -66,7 +57,7 @@ import type { Organization, OrganizationResponse } from "@/types/organizations";
 
 import { formatLeaveDuration, weekdayDate } from "@/utils/attendance";
 import { getAuditLogHref, getAuditLogsPath } from "@/utils/audit";
-import { getDataGridSearchParams, getFilterItemParams } from "@/utils/dataGrid";
+import { getDataGridSearchParams } from "@/utils/dataGrid";
 import { getAuditLogEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 import { getHref } from "@/utils/href";
@@ -494,9 +485,9 @@ interface AuditLogsProps {
 
 const AuditLogs = ({
   ancestorId,
-  filterField: initialFilterField,
-  filterOperator: initialFilterOperator,
-  filterValue: initialFilterValue,
+  filterField,
+  filterOperator,
+  filterValue,
   ingredient,
   loading = false,
   logs: initialLogs = [],
@@ -504,38 +495,30 @@ const AuditLogs = ({
   organizations = [],
   page = 1,
   pageSize = DEFAULT_PAGE_SIZE,
-  quickFilterValue: initialQuickFilterValue,
+  quickFilterValue,
   resource,
   resourceId,
   rowCount: initialRowCount = 0,
   sortBy,
   sortDirection,
 }: AuditLogsProps) => {
-  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    page: page - 1,
+  const {
+    filterModel,
+    handleFilterModelChange,
+    handlePaginationModelChange,
+    handleSortModelChange,
+    paginationModel,
+    setPaginationModel,
+    sortModel,
+  } = useDataGridQueryState({
+    filterField,
+    filterOperator,
+    filterValue,
+    page,
     pageSize,
-  });
-  const [sortModel, setSortModel] = useState<GridSortModel>(
-    sortBy && sortDirection ? [{ field: sortBy, sort: sortDirection }] : [],
-  );
-  const [filterModel, setFilterModel] = useState<GridFilterModel>({
-    items:
-      initialFilterField &&
-      initialFilterOperator &&
-      (initialFilterValue ||
-        NO_VALUE_FILTER_OPERATORS.includes(initialFilterOperator))
-        ? [
-            {
-              field: initialFilterField,
-              operator: initialFilterOperator,
-              value:
-                initialFilterOperator === "isAnyOf"
-                  ? initialFilterValue?.split(",")
-                  : initialFilterValue,
-            },
-          ]
-        : [],
-    quickFilterValues: initialQuickFilterValue ? [initialQuickFilterValue] : [],
+    quickFilterValue,
+    sortBy,
+    sortDirection,
   });
 
   const apiRef = useGridApiRef();
@@ -611,54 +594,6 @@ const AuditLogs = ({
     },
   );
 
-  const handlePaginationModelChange = useCallback(
-    (newModel: GridPaginationModel) => {
-      setPaginationModel(newModel);
-
-      updateQuery({
-        page: String(newModel.page + 1),
-        pageSize: String(newModel.pageSize),
-      });
-    },
-    [updateQuery],
-  );
-
-  const handleSortModelChange = useCallback(
-    (newModel: GridSortModel) => {
-      setSortModel(newModel);
-      setPaginationModel((previous) => ({ ...previous, page: 0 }));
-
-      updateQuery({
-        page: "1",
-        sortBy: newModel[0]?.field ?? "",
-        sortDirection: newModel[0]?.sort ?? "",
-      });
-    },
-    [updateQuery],
-  );
-
-  const handleFilterModelChange = useCallback(
-    (newModel: GridFilterModel) => {
-      setFilterModel(newModel);
-      setPaginationModel((previous) => ({ ...previous, page: 0 }));
-
-      const {
-        filterField = "",
-        filterOperator = "",
-        filterValue = "",
-      } = getFilterItemParams(newModel.items[0]);
-
-      updateQuery({
-        filterField,
-        filterOperator,
-        filterValue,
-        page: "1",
-        quickFilterValue: (newModel.quickFilterValues ?? []).join(" ").trim(),
-      });
-    },
-    [updateQuery],
-  );
-
   const handleActorIdChange = useCallback(
     (newActorId: string) => {
       setActorId(newActorId);
@@ -666,7 +601,7 @@ const AuditLogs = ({
 
       updateQuery({ actorId: newActorId, page: "1" });
     },
-    [updateQuery],
+    [setPaginationModel, updateQuery],
   );
 
   const getValueText = useMemo(() => {
