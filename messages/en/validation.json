@@ -469,6 +469,9 @@
   "checklistItemRange": {
     "order": "Max cannot be less than min."
   },
+  "checklistItems": {
+    "required": "Add at least one item."
+  },
   "checklistItemValue": {
     "required": "Enter a value."
   },

@@ -50,6 +50,7 @@ export const useChecklistTemplateFormSchema = () => {
               });
           }),
       )
+      .min(1, { error: tValidation("checklistItems.required") })
       .max(ITEMS_MAX),
     name: z
       .string()

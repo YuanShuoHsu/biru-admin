@@ -469,6 +469,9 @@
   "checklistItemRange": {
     "order": "上限は下限以上にしてください。"
   },
+  "checklistItems": {
+    "required": "項目を 1 つ以上追加してください。"
+  },
   "checklistItemValue": {
     "required": "数値を入力してください。"
   },
