@@ -97,6 +97,7 @@ interface AuthSignUpProps {
 }
 
 const AuthSignUp = ({ locale, redirectTo }: AuthSignUpProps) => {
+  // 電話註冊暫停中（目前不負擔簡訊驗證費用），註解掉的國家與電話欄位連同表單 schema 的對應驗證要保留，作為恢復時的起點
   // const defaultCountry = getDefaultCountry(locale);
 
   const [showPassword, setShowPassword] = useState({
