@@ -13807,6 +13807,28 @@ export interface components {
       | "mode"
       | "menuItem"
       | "category";
+    /** @enum {string} */
+    SalesReportFilterField:
+      | "key"
+      | "name"
+      | "orders"
+      | "revenue"
+      | "discount"
+      | "refunded"
+      | "net"
+      | "quantity"
+      | "refundedQuantity";
+    /** @enum {string} */
+    SalesReportSortField:
+      | "key"
+      | "name"
+      | "orders"
+      | "revenue"
+      | "discount"
+      | "refunded"
+      | "net"
+      | "quantity"
+      | "refundedQuantity";
     SalesReportRowDto: {
       /** @description 計入時間落在區間內的計入訂單數；menuItem／category 為含該品項或分類的訂單數，同一訂單會計入多列 */
       orders: number;
@@ -13841,10 +13863,41 @@ export interface components {
     };
     SalesReportResponseDto: {
       groupBy: components["schemas"]["SalesReportGroupBy"];
-      /** @description 只列有訂單或退款的組；day／hour 依 key 由小到大，其餘依 revenue 由大到小。menuItem／category 的金額依品項小計分攤整單折扣、依退款明細分攤退款，加購計入加購品項，四捨五入到分，加總可能與 totals 差幾分；沒有退款明細（refund.items 為空）的退款無法歸到品項，只計入 totals，此時 rows 加總會少整筆退款 */
+      /** @description 本頁的列，套用篩選、排序與分頁後；只列有訂單或退款的組；未指定排序時 day／hour 依 key 由小到大，其餘依 revenue 由大到小。menuItem／category 的金額依品項小計分攤整單折扣、依退款明細分攤退款，加購計入加購品項，四捨五入到分，加總可能與 totals 差幾分；沒有退款明細（refund.items 為空）的退款無法歸到品項，只計入 totals，此時 rows 加總會少整筆退款 */
       rows: components["schemas"]["SalesReportRowDto"][];
+      /** @description 篩選後、分頁前的列數 */
+      total: number;
+      /** @description 整份報表的合計，不受篩選與分頁影響 */
       totals: components["schemas"]["SalesReportTotalsDto"];
     };
+    /** @enum {string} */
+    InventoryReportFilterField:
+      | "name"
+      | "unitCode"
+      | "opening"
+      | "received"
+      | "consumed"
+      | "wasted"
+      | "wastedCost"
+      | "adjusted"
+      | "closing"
+      | "theoreticalConsumption"
+      | "actualConsumption"
+      | "variance";
+    /** @enum {string} */
+    InventoryReportSortField:
+      | "name"
+      | "unitCode"
+      | "opening"
+      | "received"
+      | "consumed"
+      | "wasted"
+      | "wastedCost"
+      | "adjusted"
+      | "closing"
+      | "theoreticalConsumption"
+      | "actualConsumption"
+      | "variance";
     InventoryReportRowDto: {
       ingredientId: string;
       name: components["schemas"]["LocalizedTextDto"];
@@ -13879,11 +13932,31 @@ export interface components {
       cost?: string | null;
     };
     InventoryReportResponseDto: {
-      /** @description 店家目前所有食材，依食材排序；數量為小數點後三位的字串，與食材庫存相同 */
+      /** @description 本頁的列，套用篩選、排序與分頁後；涵蓋店家目前所有食材，未指定排序時依食材排序；數量為小數點後三位的字串，與食材庫存相同 */
       rows: components["schemas"]["InventoryReportRowDto"][];
-      /** @description 區間內有報廢的原因，依原因的固定順序；各食材單位不同，只彙總次數與成本 */
+      /** @description 篩選後、分頁前的列數 */
+      total: number;
+      /** @description 區間內有報廢的原因，依原因的固定順序；各食材單位不同，只彙總次數與成本；涵蓋整份報表，不受篩選與分頁影響 */
       wasteByReason: components["schemas"]["InventoryWasteReasonDto"][];
     };
+    /** @enum {string} */
+    PersonnelCostReportFilterField:
+      | "jobTitle"
+      | "headcount"
+      | "grossCents"
+      | "employerInsuranceCents"
+      | "missingEmployerInsurance"
+      | "employerPensionCents"
+      | "totalCents";
+    /** @enum {string} */
+    PersonnelCostReportSortField:
+      | "jobTitle"
+      | "headcount"
+      | "grossCents"
+      | "employerInsuranceCents"
+      | "missingEmployerInsurance"
+      | "employerPensionCents"
+      | "totalCents";
     PersonnelCostReportRowDto: {
       /** @description 已發布薪資單的人數 */
       headcount: number;
@@ -13916,9 +13989,13 @@ export interface components {
     };
     PersonnelCostReportResponseDto: {
       month: string;
+      /** @description 本頁的列，套用篩選、排序與分頁後 */
       rows: components["schemas"]["PersonnelCostReportRowDto"][];
+      /** @description 篩選後、分頁前的列數 */
+      total: number;
+      /** @description 整份報表的合計，不受篩選與分頁影響 */
       totals: components["schemas"]["PersonnelCostReportTotalsDto"];
-      /** @description 當月在職但沒有已發布薪資單、未計入的員工數 */
+      /** @description 當月在職但沒有已發布薪資單、未計入的員工數；涵蓋整份報表，不受篩選與分頁影響 */
       unpublishedEmployees: number;
     };
     /** @enum {string} */
@@ -27385,6 +27462,19 @@ export interface operations {
         /** @description 統計結束時間（不含），須帶時區；須晚於 since，區間最多 366 天 */
         until: string;
         groupBy: components["schemas"]["SalesReportGroupBy"];
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+        /** @description 每頁列數；省略時回傳所有列 */
+        limit?: number;
+        /** @description name 依請求語系的名稱篩選 */
+        filterField?: components["schemas"]["SalesReportFilterField"];
+        /** @description name 依請求語系的名稱排序，hour 的 key 依數值排序；省略時依 rows 說明的預設順序 */
+        sortBy?: components["schemas"]["SalesReportSortField"];
       };
       header?: never;
       path: {
@@ -27451,6 +27541,19 @@ export interface operations {
         since: string;
         /** @description 統計結束時間（不含），須帶時區；須晚於 since，區間最多 366 天 */
         until: string;
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+        /** @description 每頁列數；省略時回傳所有列 */
+        limit?: number;
+        /** @description name 依請求語系的名稱篩選，數量依數值比較；無 purchasing 權限時忽略 wastedCost */
+        filterField?: components["schemas"]["InventoryReportFilterField"];
+        /** @description name 依請求語系的名稱排序，數量依數值排序；無 purchasing 權限時忽略 wastedCost；省略時依 rows 說明的預設順序 */
+        sortBy?: components["schemas"]["InventoryReportSortField"];
       };
       header?: never;
       path: {
@@ -27513,6 +27616,19 @@ export interface operations {
       query: {
         /** @description 薪資計算月份 */
         month: string;
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+        /** @description 每頁列數；省略時回傳所有列 */
+        limit?: number;
+        /** @description 金額依數值比較 */
+        filterField?: components["schemas"]["PersonnelCostReportFilterField"];
+        /** @description 金額依數值排序；省略時依職位排序，未設定職位的列在最後 */
+        sortBy?: components["schemas"]["PersonnelCostReportSortField"];
       };
       header?: never;
       path: {
@@ -29912,6 +30028,86 @@ export const quantWebhookActionValues: ReadonlyArray<
 export const salesReportGroupByValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["SalesReportGroupBy"]
 > = ["day", "hour", "paymentMethod", "mode", "menuItem", "category"];
+export const salesReportFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["SalesReportFilterField"]
+> = [
+  "key",
+  "name",
+  "orders",
+  "revenue",
+  "discount",
+  "refunded",
+  "net",
+  "quantity",
+  "refundedQuantity",
+];
+export const salesReportSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["SalesReportSortField"]
+> = [
+  "key",
+  "name",
+  "orders",
+  "revenue",
+  "discount",
+  "refunded",
+  "net",
+  "quantity",
+  "refundedQuantity",
+];
+export const inventoryReportFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["InventoryReportFilterField"]
+> = [
+  "name",
+  "unitCode",
+  "opening",
+  "received",
+  "consumed",
+  "wasted",
+  "wastedCost",
+  "adjusted",
+  "closing",
+  "theoreticalConsumption",
+  "actualConsumption",
+  "variance",
+];
+export const inventoryReportSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["InventoryReportSortField"]
+> = [
+  "name",
+  "unitCode",
+  "opening",
+  "received",
+  "consumed",
+  "wasted",
+  "wastedCost",
+  "adjusted",
+  "closing",
+  "theoreticalConsumption",
+  "actualConsumption",
+  "variance",
+];
+export const personnelCostReportFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PersonnelCostReportFilterField"]
+> = [
+  "jobTitle",
+  "headcount",
+  "grossCents",
+  "employerInsuranceCents",
+  "missingEmployerInsurance",
+  "employerPensionCents",
+  "totalCents",
+];
+export const personnelCostReportSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PersonnelCostReportSortField"]
+> = [
+  "jobTitle",
+  "headcount",
+  "grossCents",
+  "employerInsuranceCents",
+  "missingEmployerInsurance",
+  "employerPensionCents",
+  "totalCents",
+];
 export const storeLayoutFloorValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["StoreLayoutFloor"]
 > = ["ground", "upper", "roof"];
