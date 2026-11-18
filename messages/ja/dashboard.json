@@ -38,5 +38,9 @@
     "medianWaitValue": "{minutes, number}分",
     "outcomes": "順番待ちの結果",
     "hourlyTickets": "時間帯別の順番待ち数"
+  },
+  "checklists": {
+    "incomplete": "未完了のチェックリスト",
+    "incompleteValue": "{incomplete, number} / {total, number} 件未完了"
   }
 }

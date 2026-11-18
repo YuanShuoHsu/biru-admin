@@ -38,5 +38,9 @@
     "medianWaitValue": "{minutes, number} min",
     "outcomes": "Waitlist Outcomes",
     "hourlyTickets": "Tickets by Hour"
+  },
+  "checklists": {
+    "incomplete": "Incomplete Checklists",
+    "incompleteValue": "{incomplete, number} / {total, number} incomplete"
   }
 }

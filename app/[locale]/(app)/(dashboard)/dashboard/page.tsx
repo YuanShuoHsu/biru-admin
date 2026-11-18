@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+import Checklists from "./Checklists";
 import Coupons from "./Coupons";
 import Menus, { type MenuItemSales } from "./Menus";
 import Orders from "./Orders";
@@ -24,6 +25,7 @@ import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import type { UserStatsResponse } from "@/types/admins";
+import type { ChecklistRun } from "@/types/checklists";
 import type { OrderMenu } from "@/types/menus";
 import type { MenuItemSalesResponse, OrderStatsResponse } from "@/types/orders";
 import type { OrganizationStats } from "@/types/organizations";
@@ -261,6 +263,22 @@ const WaitlistContent = async ({
   return <Waitlist range={range} waitlist={waitlistStats} />;
 };
 
+interface ChecklistsContentProps {
+  checklistRuns: Promise<FetchResult<ChecklistRun[]>>;
+}
+
+const ChecklistsContent = async ({
+  checklistRuns: checklistRunsPromise,
+}: ChecklistsContentProps) => {
+  const checklistRunsResult = await checklistRunsPromise;
+
+  if (checklistRunsResult.error) return <ErrorAlert />;
+
+  if (!checklistRunsResult.data.length) return null;
+
+  return <Checklists runs={checklistRunsResult.data} />;
+};
+
 const DashboardContent = async ({
   params,
   searchParams,
@@ -337,6 +355,14 @@ const DashboardContent = async ({
         )
       : Promise.resolve([]),
   );
+  const checklistRuns = settle(
+    organizationSlug && !selectedOrganization?.closedAt
+      ? fetcher<ChecklistRun[]>(
+          `/api/organizations/${organizationSlug}/checklists/today`,
+          fetchOptions,
+        )
+      : Promise.resolve([]),
+  );
   const waitlist = (
     resolvedOrganizationId
       ? getMemberRole(resolvedOrganizationId)
@@ -398,6 +424,9 @@ const DashboardContent = async ({
       </Suspense>
       <Suspense>
         <WaitlistContent range={range} waitlist={waitlist} />
+      </Suspense>
+      <Suspense>
+        <ChecklistsContent checklistRuns={checklistRuns} />
       </Suspense>
     </SectionsStack>
   );
