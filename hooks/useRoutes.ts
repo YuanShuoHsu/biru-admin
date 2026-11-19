@@ -84,6 +84,7 @@ import {
   PersonAdd,
   PhotoLibrary,
   PlaylistAddCheck,
+  PointOfSale,
   Policy,
   PunchClock,
   ReceiptLong,
@@ -688,6 +689,12 @@ const routes: Route[] = [
     label: "checklists.label",
     segment: "checklists",
     to: null,
+  },
+  {
+    icon: PointOfSale,
+    label: "cashDevices.label",
+    query: ["organization", "page", "pageSize"],
+    segment: "cash-devices",
   },
   {
     icon: Assessment,

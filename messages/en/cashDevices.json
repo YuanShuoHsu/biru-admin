@@ -1,0 +1,39 @@
+{
+  "actions": {
+    "create": {
+      "success": "Device added",
+      "title": "Add Device"
+    },
+    "delete": {
+      "confirm": "Are you sure you want to delete <bold>{name}</bold>? This cannot be undone.",
+      "success": "Device deleted",
+      "title": "Delete Device"
+    },
+    "label": "Actions",
+    "update": {
+      "success": "Device updated",
+      "title": "Edit Device"
+    }
+  },
+  "createdAt": "Created At",
+  "label": "Cash Devices",
+  "lastSeenAt": "Last Seen At",
+  "model": {
+    "label": "Model",
+    "placeholder": "Enter the device model"
+  },
+  "name": {
+    "label": "Device Name",
+    "placeholder": "Enter the device name"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "label": "Status"
+  },
+  "updatedAt": "Updated At",
+  "vendor": {
+    "label": "Vendor",
+    "placeholder": "Enter the device vendor"
+  }
+}

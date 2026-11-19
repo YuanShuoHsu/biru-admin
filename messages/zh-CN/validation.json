@@ -484,5 +484,15 @@
   "checklistTemplateName": {
     "maxLength": "名称不能超过 50 个字符。",
     "required": "名称为必填。"
+  },
+  "cashDeviceModel": {
+    "maxLength": "型号不能超过 100 个字符。"
+  },
+  "cashDeviceName": {
+    "maxLength": "机台名称不能超过 50 个字符。",
+    "required": "机台名称为必填。"
+  },
+  "cashDeviceVendor": {
+    "maxLength": "厂商不能超过 100 个字符。"
   }
 }
