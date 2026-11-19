@@ -49,31 +49,26 @@ type OrganizationTab = React.ComponentProps<
   permission?: keyof TabAccess;
 };
 
-const filterPermittedTabs = (
-  tabs: OrganizationTab[],
-  pathname: string,
-  tabAccess?: TabAccess,
-) =>
-  tabs.filter(
-    ({ path, permission }) =>
-      !permission ||
-      (tabAccess ? tabAccess[permission] : pathname.startsWith(path)),
-  );
-
 // https://nextjs.org/docs/app/getting-started/fetching-data#streaming-data-with-the-use-api
 const PermittedRouteTabs = ({
   tabAccess,
   tabs,
 }: {
-  tabAccess: Promise<TabAccess>;
+  tabAccess?: Promise<TabAccess>;
   tabs: OrganizationTab[];
 }) => {
   const pathname = usePathname();
 
+  const access = tabAccess && use(tabAccess);
+
   return (
     <RouteTabs
       ariaLabel="organization tabs"
-      tabs={filterPermittedTabs(tabs, pathname, use(tabAccess))}
+      tabs={tabs.filter(
+        ({ path, permission }) =>
+          !permission ||
+          (access ? access[permission] : pathname.startsWith(path)),
+      )}
     />
   );
 };
@@ -90,7 +85,6 @@ const OrganizationsSlugTabs = ({
   tabAccess,
 }: OrganizationsSlugTabsProps) => {
   const { slug } = useParams<{ slug: string }>();
-  const pathname = usePathname();
 
   const tInvitations = useTranslations("organizations.invitations");
 
@@ -130,14 +124,7 @@ const OrganizationsSlugTabs = ({
 
   return (
     <ContentStack>
-      <Suspense
-        fallback={
-          <RouteTabs
-            ariaLabel="organization tabs"
-            tabs={filterPermittedTabs(tabs, pathname)}
-          />
-        }
-      >
+      <Suspense fallback={<PermittedRouteTabs tabs={tabs} />}>
         <PermittedRouteTabs tabAccess={tabAccess} tabs={tabs} />
       </Suspense>
       {children}
