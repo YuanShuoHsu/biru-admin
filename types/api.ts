@@ -3066,6 +3066,40 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/point-reports": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 各發點門市當月的點數對帳 */
+    get: operations["AdminPointReportsController_getReport"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/point-reports/{organizationId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 一間門市當月與各門市之間的跨店點數使用明細 */
+    get: operations["AdminPointReportsController_getDetail"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/point-settings": {
     parameters: {
       query?: never;
@@ -10911,6 +10945,78 @@ export interface components {
     UserOrderListResponseDto: {
       data: components["schemas"]["UserOrderResponseDto"][];
       total: number;
+    };
+    PointReportAmountsDto: {
+      earnedAmount: number;
+      grantedAmount: number;
+      redeemedAmount: number;
+      expiredAmount: number;
+      outstandingAmount: number;
+      crossStoreNetAmount: number;
+    };
+    PointReportRowDto: {
+      /** @description 發點門市；null 為沒有門市的舊點數 */
+      organizationId: string | null;
+      organizationName: string | null;
+      /** @description 本月付款訂單的消費點數，依訂單付款時間 */
+      earnedPoints: number;
+      /** @description 本月人工加點 */
+      grantedPoints: number;
+      /** @description 本店的點數本月被兌換成兌換券的點數 */
+      redeemedPoints: number;
+      /** @description 本店的點數兌換出的券，本月用在本店未取消訂單的點數 */
+      usedAtOwnStorePoints: number;
+      /** @description 本店的點數兌換出的券，本月用在其他門市未取消訂單的點數 */
+      usedAtOtherStoresPoints: number;
+      /** @description 其他門市（含舊點數）的點數兌換出的券，本月用在本店的點數 */
+      otherStoresUsedHerePoints: number;
+      /** @description usedAtOtherStoresPoints − otherStoresUsedHerePoints */
+      crossStoreNetPoints: number;
+      /** @description 本店的點數兌換出、到月底仍未使用的券的點數 */
+      unusedRedeemedPoints: number;
+      /** @description 本月退款收回的點數 */
+      revokedPoints: number;
+      /** @description 本月訂單取消收回的點數 */
+      cancelledPoints: number;
+      /** @description 本月人工扣點 */
+      adjustedPoints: number;
+      /** @description 本月用來抵銷欠點的點數 */
+      settledPoints: number;
+      /** @description 本月到期失效、未使用的點數 */
+      expiredPoints: number;
+      /** @description 月底（當月為現在）仍可使用的點數 */
+      outstandingPoints: number;
+      /** @description 扣點明細上線前已用掉、無法分配到用途的點數（上線前未分配） */
+      unallocatedLegacyPoints: number;
+      /** @description 點數兌換券本月在本店未取消訂單折抵的金額 */
+      discountAmount: number;
+      /** @description 以每點會計價值換算的金額；未設定會計價值時為 null */
+      amounts: components["schemas"]["PointReportAmountsDto"] | null;
+    };
+    PointReportResponseDto: {
+      month: string;
+      accountingValuePerPoint: string | null;
+      rows: components["schemas"]["PointReportRowDto"][];
+    };
+    PointReportCounterpartDto: {
+      /** @description 對方門市；null 為沒有門市的舊點數 */
+      organizationId: string | null;
+      organizationName: string | null;
+      /** @description 本店的點數本月用在對方門市的點數 */
+      usedThereFromHerePoints: number;
+      /** @description 對方的點數本月用在本店的點數 */
+      usedHereFromTherePoints: number;
+      /** @description usedThereFromHerePoints − usedHereFromTherePoints */
+      netPoints: number;
+      /** @description 以每點會計價值換算的 netPoints；未設定會計價值時為 null */
+      netAmount: number | null;
+    };
+    PointReportDetailResponseDto: {
+      month: string;
+      organizationId: string;
+      organizationName: string;
+      accountingValuePerPoint: string | null;
+      rows: components["schemas"]["PointReportCounterpartDto"][];
     };
     PointSettingResponseDto: {
       id: string;
@@ -21453,6 +21559,66 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["UserOrderListResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminPointReportsController_getReport: {
+    parameters: {
+      query: {
+        /** @description 對帳月份（Asia/Taipei） */
+        month: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PointReportResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminPointReportsController_getDetail: {
+    parameters: {
+      query: {
+        /** @description 對帳月份（Asia/Taipei） */
+        month: string;
+      };
+      header?: never;
+      path: {
+        organizationId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PointReportDetailResponseDto"];
         };
       };
       /** @description Internal server error */

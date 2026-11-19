@@ -11,6 +11,12 @@ export type OrganizationPointTransactionListResponse =
   components["schemas"]["OrganizationPointTransactionListResponseDto"];
 export type PointAdjustmentLimit =
   components["schemas"]["PointAdjustmentLimitDto"];
+export type PointReport = components["schemas"]["PointReportResponseDto"];
+export type PointReportCounterpart =
+  components["schemas"]["PointReportCounterpartDto"];
+export type PointReportDetail =
+  components["schemas"]["PointReportDetailResponseDto"];
+export type PointReportRow = components["schemas"]["PointReportRowDto"];
 export type PointSetting = components["schemas"]["PointSettingResponseDto"];
 export type PointTransaction = components["schemas"]["PointTransactionDto"];
 export type PointTransactionFilterField =

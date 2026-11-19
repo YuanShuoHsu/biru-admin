@@ -73,14 +73,14 @@ export interface ReportView {
 
 export const toStoreDate = (date: string) => dayjs.tz(date, STORE_TIMEZONE);
 
-const storeToday = () => dayjs().tz(STORE_TIMEZONE).startOf("day");
+export const storeToday = () => dayjs().tz(STORE_TIMEZONE).startOf("day");
 
 export const isStoreDate = (value: string | undefined): value is string =>
   !!value &&
   /^\d{4}-\d{2}-\d{2}$/.test(value) &&
   toStoreDate(value).format(DATE_FORMAT) === value;
 
-const isReportMonth = (value: string | undefined): value is string =>
+export const isReportMonth = (value: string | undefined): value is string =>
   !!value &&
   /^20\d{2}-(0[1-9]|1[0-2])$/.test(value) &&
   !toStoreDate(`${value}-01`).isAfter(storeToday(), "month");

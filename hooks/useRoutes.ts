@@ -137,6 +137,7 @@ type RouteQuery =
   | "back"
   | "date"
   | "interval"
+  | "month"
   | "organization"
   | "page"
   | "pageSize"
@@ -824,6 +825,19 @@ const routes: Route[] = [
     segment: "point-settings",
   },
   {
+    children: [
+      {
+        icon: Storefront,
+        label: "pointReports.detail.label",
+        segment: "[organizationId]",
+      },
+    ],
+    icon: AccountBalance,
+    label: "pointReports.label",
+    query: ["month"],
+    segment: "point-reports",
+  },
+  {
     icon: Rule,
     label: "payrollRuleSets.label",
     segment: "payroll-rule-sets",
@@ -1261,6 +1275,7 @@ export const useRoutes = () => {
     back: pathname,
     date: attendanceCalendarDate(),
     interval: resolveQuantInterval(searchParams.get("interval")),
+    month: searchParams.get("month"),
     organization: organizationSlug,
     page: DEFAULT_PAGINATION_QUERY.page,
     pageSize: DEFAULT_PAGINATION_QUERY.pageSize,
