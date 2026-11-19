@@ -29,6 +29,7 @@
 | 蒜頭         | [履歷蒜頭 300g/袋](https://online.uni-prosperity.com.tw/zh/2203014600101.html)                                                                  | [萬家福](https://online.uni-prosperity.com.tw)                      | 89元    | 300g   | 0.297元/g     |
 | 洋蔥         | [進口洋蔥 10公斤](https://www.costco.com.tw/Business-Delivery/Food-Beverages-Pet-Supplies/Chilled-Food/Import-Onion-10-kg/p/85744)              | [Costco](https://www.costco.com.tw)                                 | 559元   | 10kg   | 0.056元/g     |
 | 紅蘿蔔       | [產銷履歷 VDS 活力胡蘿蔔 5公斤](https://www.costco.com.tw/Food-Dining/Frozen-Fresh-Food/Chilled-Fresh-Food/TAP-VDS-Fresh-Carrots-5-kg/p/997672) | [Costco](https://www.costco.com.tw)                                 | 385元   | 5kg    | 0.077元/g     |
+| 綠花椰菜     | [GREENS 青花菜 1000g](https://www.momoshop.com.tw/product/8037892)                                                                              | [momo購物網](https://www.momoshop.com.tw)                           | 172元   | 1kg    | 0.172元/g     |
 | 番茄糊       | [漢斯蕃茄配司 340g](https://pxbox.es.pxmart.com.tw/product/270022)                                                                              | [全聯全電商](https://pxbox.es.pxmart.com.tw)                        | 131元   | 340g   | 0.385元/g     |
 | 水           | 飲用水                                                                                                                                          | [台水](https://www.water.gov.tw/ch/Subject/Detail/1288?nodeId=813)  | 12.08元 | 1000L  | 0.000012元/ml |
 | 義大利麵     | [Garofalo 義大利麵 500公克 X 8入](https://www.costco.com.tw/p/880456)                                                                           | [Costco](https://www.costco.com.tw)                                 | 429元   | 4kg    | 0.107元/g     |
@@ -73,6 +74,7 @@
 - 蝦仁：每磅 50–70 隻，每隻約 7.5g。不要用熱水或微波解凍，解凍後不能再冷凍。
 - 乾辣椒片：由辣度選項的食譜扣庫存，不列進品項食譜（見 [辣度](recipes.md#辣度)）。網站只標示最低價 50 元，推定為 30g 夾鏈袋，下單前向店家確認；90g 大包裝較划算。
 - 甘蔗液糖：用於飲品甜度（見[甜度](recipes.md#甜度)）。開店初期用 5kg 瓶裝；每日用量穩定後可改 25kg 桶裝（網路約 890–970 元，每 kg 約 37 元）。
+- 綠花椰菜：IQF 冷凍青花菜，172 元是 3 包組（516 元）的每包均價，單包促銷價較高；冷凍保存，用前取需要的量。目前只用於[寵物餐](recipes.md#寵物餐)。
 - 奶油、低筋麵粉：目前是網路零售價，開店前改找烘焙材料行報價。
 - 奶油乳酪、雞蛋：目前是網路零售價，開店前改找烘焙材料行或蛋商報價。雞蛋以去殼後的全蛋重量計，包裝重量含殼，實際成本略高。
 
