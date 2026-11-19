@@ -70,7 +70,7 @@ Equipment models for the store layout 3D page are built in Blender: `blender/<la
 
 - Metres, at the real size in `docs/equipment.md`; origin at the bottom centre, front facing -Y.
 - Model the machine itself and the accessories that ship with it, not cups, food or props around it.
-- Work from the official product images on the product page linked in `docs/equipment.md` (open it in a browser and look at the photos from every angle available), plus real-world photos when needed, and build the visible parts, buttons, printed text and transparent parts to match them. Don't commit the reference images: the repos are public and the photos belong to the manufacturer. When no photo can be viewed, ask the user for them instead of filling in details from memory.
+- Work from the official product images: open the product page linked in `docs/equipment.md` in a browser, and when its photos are missing or unclear, find the same model's page on the manufacturer's own site; look at the photos from every angle available, plus real-world photos when needed, and build the visible parts, buttons, printed text and transparent parts to match them. Don't commit the reference images: the repos are public and the photos belong to the manufacturer. When no photo can be viewed, ask the user for them instead of filling in details from memory.
 - Materials are Principled BSDF; transparent parts use Alpha Blend.
 - Render previews for the user to confirm before opening the PR. A new item's placement goes into `store_layout` through a biru-api migration.
 
