@@ -12,7 +12,7 @@ import type { Locale } from "@/i18n/routing";
 import type { WaitlistSettingsResponse } from "@/types/waitlist";
 
 import { fetcher, settle } from "@/utils/fetcher";
-import { hasRolePermission } from "@/utils/organizations";
+import { getApiMemberRole, hasRolePermission } from "@/utils/organizations";
 import { getFullOrganization, getSession } from "@/utils/session";
 
 interface OrganizationsSlugWaitlistPageProps {
@@ -49,9 +49,10 @@ const OrganizationsSlugWaitlistPage = async ({
   if (organizationError) return <ErrorAlert />;
   if (!data) notFound();
 
-  const currentUserRole = data.members.find(
-    ({ userId }) => userId === session?.user?.id,
-  )?.role;
+  const currentUserRole = getApiMemberRole(
+    data.members.find(({ userId }) => userId === session?.user?.id)?.role,
+    session?.user?.role,
+  );
 
   if (!hasRolePermission(currentUserRole, { waitlistSetting: ["read"] }))
     notFound();

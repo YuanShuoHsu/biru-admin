@@ -68,6 +68,12 @@ export const hasRolePermission = (
 ): boolean =>
   !!role && authClient.organization.checkRolePermission({ role, permissions });
 
+// 只適用 biru-api RolesGuard 守的端點；better-auth 的組織端點仍只看成員角色
+export const getApiMemberRole = <Role extends string>(
+  role: Role | undefined,
+  platformRole: string | null | undefined,
+) => (platformRole === "admin" ? "owner" : role);
+
 export const needsPlatformAdminMemberIds = (
   role: CheckRolePermissionInput["role"] | null | undefined,
   platformRole: string | null | undefined,

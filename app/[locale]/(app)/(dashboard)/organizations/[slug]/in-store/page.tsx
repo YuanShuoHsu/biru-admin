@@ -9,7 +9,11 @@ import ErrorAlert from "@/components/ErrorAlert";
 import type { Locale } from "@/i18n/routing";
 
 import { settle } from "@/utils/fetcher";
-import { getOrganization, hasRolePermission } from "@/utils/organizations";
+import {
+  getApiMemberRole,
+  getOrganization,
+  hasRolePermission,
+} from "@/utils/organizations";
 import { getFullOrganization, getSession } from "@/utils/session";
 
 interface OrganizationsSlugInStorePageProps {
@@ -54,9 +58,10 @@ const OrganizationsSlugInStorePage = async ({
   if (fullOrganizationError || error) return <ErrorAlert />;
   if (!data) notFound();
 
-  const currentUserRole = data.members.find(
-    ({ userId }) => userId === session?.user?.id,
-  )?.role;
+  const currentUserRole = getApiMemberRole(
+    data.members.find(({ userId }) => userId === session?.user?.id)?.role,
+    session?.user?.role,
+  );
 
   if (!hasRolePermission(currentUserRole, { organization: ["update"] }))
     notFound();

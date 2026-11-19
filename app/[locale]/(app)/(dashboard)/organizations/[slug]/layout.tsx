@@ -4,6 +4,7 @@ import { CountStoreProvider } from "@/providers/count-store-provider";
 
 import { isActiveSession } from "@/utils/auth";
 import { settle } from "@/utils/fetcher";
+import { getApiMemberRole } from "@/utils/organizations";
 import { getFullOrganization, getSession } from "@/utils/session";
 
 interface OrganizationsSlugLayoutProps {
@@ -37,9 +38,10 @@ const OrganizationsSlugLayout = async ({
     getSession(),
   ]);
 
-  const currentUserRole = data?.members.find(
-    ({ userId }) => userId === session?.user?.id,
-  )?.role;
+  const currentUserRole = getApiMemberRole(
+    data?.members.find(({ userId }) => userId === session?.user?.id)?.role,
+    session?.user?.role,
+  );
 
   return (
     <CountStoreProvider>
