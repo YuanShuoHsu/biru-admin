@@ -6,8 +6,7 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
-import CreateModifierGroupDialog from "./CreateModifierGroupDialog";
-import UpdateModifierGroupDialog from "./UpdateModifierGroupDialog";
+import ModifierGroupDialog from "./ModifierGroupDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
 import DataGrid from "@/components/DataGrid";
@@ -308,8 +307,8 @@ const ModifierGroups = ({
 
   const handleCreateModifierGroup = useCallback(() => {
     setDialog({
-      content: <CreateModifierGroupDialog menuId={menuId} mutate={mutate} />,
-      formId: "create-modifier-group-form",
+      content: <ModifierGroupDialog menuId={menuId} mutate={mutate} />,
+      formId: "modifier-group-form",
       open: true,
       title: tMenus("modifierGroups.actions.createGroup.title"),
     });
@@ -329,13 +328,15 @@ const ModifierGroups = ({
   const handleUpdateModifierGroup = useCallback(
     (group: ModifierGroup) => {
       setDialog({
-        content: <UpdateModifierGroupDialog group={group} mutate={mutate} />,
-        formId: "update-modifier-group-form",
+        content: (
+          <ModifierGroupDialog group={group} menuId={menuId} mutate={mutate} />
+        ),
+        formId: "modifier-group-form",
         open: true,
         title: tMenus("modifierGroups.actions.updateGroup.title"),
       });
     },
-    [mutate, setDialog, tMenus],
+    [menuId, mutate, setDialog, tMenus],
   );
 
   const handleDeleteModifierGroup = useCallback(
