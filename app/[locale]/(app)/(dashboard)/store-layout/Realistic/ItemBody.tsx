@@ -16,8 +16,10 @@ const CORNER_SEGMENTS = 2;
 const MODELS: Partial<Record<StoreLayoutItem["label"], string>> = {
   grinder: "/models/grinder.glb",
   iceMachine: "/models/iceMachine.glb",
+  juicer: "/models/juicer.glb",
   kettle: "/models/kettle.glb",
   microwave: "/models/microwave.glb",
+  stickBlender: "/models/stickBlender.glb",
   tamper: "/models/tamper.glb",
 };
 

@@ -22,6 +22,10 @@ import {
   usePrintInvoiceBlocker,
 } from "@/hooks/useOrderActions";
 import { useOrderModeLabel } from "@/hooks/useOrderModeLabel";
+import { useSocketConnection } from "@/hooks/useSocketConnection";
+
+import { menuSocket } from "@/app/socket";
+
 import { Person, Schedule } from "@mui/icons-material";
 import {
   Button,
@@ -46,6 +50,8 @@ import type { AdminOrderBoardColumn, OrderStatus } from "@/types/orders";
 import type { Organization } from "@/types/organizations";
 
 import { fetcher } from "@/utils/fetcher";
+
+const POLL_INTERVAL_MS = 15_000;
 
 const StyledStack = styled(Stack)(({ theme }) => ({
   flexWrap: "wrap",
@@ -104,10 +110,13 @@ const OrdersBoard = ({
 
   const tOrders = useTranslations("orders");
 
+  const { isConnected } = useSocketConnection(menuSocket);
+
   const { data: boardColumns = initialColumns, mutate } = useSWR<
     AdminOrderBoardColumn[]
   >(`/api/organizations/${organizationSlug}/orders/board/admin`, {
     fallbackData: initialColumns,
+    refreshInterval: isConnected ? 0 : POLL_INTERVAL_MS,
   });
 
   const {

@@ -19,6 +19,7 @@ import IsolatedMarginDialog, {
 } from "./IsolatedMarginDialog";
 
 import DataGrid from "@/components/DataGrid";
+import DataGridErrorOverlay from "@/components/DataGridErrorOverlay";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -112,12 +113,22 @@ const FuturesAccount = ({
   const symbolQuery = `?symbol=${market.symbol}`;
 
   const { data: account } = useSWR<QuantFuturesAccount>(url(""), fetcher);
-  const { data: positions, isLoading: positionsLoading } = useSWR<
-    QuantPosition[]
-  >(url("/positions"), fetcher, autosizeOnData);
-  const { data: openOrders, isLoading: openOrdersLoading } = useSWR<
-    QuantFuturesOrder[]
-  >(url(`/open-orders${symbolQuery}`), fetcher, autosizeOnData);
+  const {
+    data: positions,
+    error: positionsError,
+    isLoading: positionsLoading,
+    mutate: mutatePositions,
+  } = useSWR<QuantPosition[]>(url("/positions"), fetcher, autosizeOnData);
+  const {
+    data: openOrders,
+    error: openOrdersError,
+    isLoading: openOrdersLoading,
+    mutate: mutateOpenOrders,
+  } = useSWR<QuantFuturesOrder[]>(
+    url(`/open-orders${symbolQuery}`),
+    fetcher,
+    autosizeOnData,
+  );
   const ordersHistory = useAccountHistory<QuantFuturesOrder>(
     tab === "orders" ? url(`/orders${symbolQuery}`) : null,
     autosizeOnData.onSuccess,
@@ -759,6 +770,17 @@ const FuturesAccount = ({
       columns: openOrderColumns,
       loading: openOrdersLoading,
       rows: openOrders?.map((order) => ({ ...order, id: order.orderId })),
+      slots: {
+        ...DATA_GRID_PROPS.slots,
+        noRowsOverlay: DataGridErrorOverlay,
+      },
+      slotProps: {
+        ...DATA_GRID_PROPS.slotProps,
+        noRowsOverlay: {
+          error: openOrdersError,
+          onRetry: () => mutateOpenOrders(),
+        },
+      },
     },
     orders: {
       ...ordersHistory.gridProps,
@@ -783,6 +805,17 @@ const FuturesAccount = ({
         ...position,
         id: position.positionId,
       })),
+      slots: {
+        ...DATA_GRID_PROPS.slots,
+        noRowsOverlay: DataGridErrorOverlay,
+      },
+      slotProps: {
+        ...DATA_GRID_PROPS.slotProps,
+        noRowsOverlay: {
+          error: positionsError,
+          onRetry: () => mutatePositions(),
+        },
+      },
     },
     transfers: {
       ...transfersHistory.gridProps,
@@ -812,11 +845,11 @@ const FuturesAccount = ({
           variant="scrollable"
         >
           <Tab
-            label={`${tQuant("futures.positions")} (${positions?.length ?? 0})`}
+            label={`${tQuant("futures.positions")}${positions ? ` (${positions.length})` : ""}`}
             value="positions"
           />
           <Tab
-            label={`${tQuant("account.openOrders")} (${openOrders?.length ?? 0})`}
+            label={`${tQuant("account.openOrders")}${openOrders ? ` (${openOrders.length})` : ""}`}
             value="openOrders"
           />
           <Tab label={tQuant("account.orders")} value="orders" />

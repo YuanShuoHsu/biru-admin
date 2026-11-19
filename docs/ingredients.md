@@ -15,7 +15,7 @@
 | 焙茶粉       | [森半宇治莖烘焙茶粉（無糖）](https://shopee.tw/product/6517228/42545721)                                                                        | [蝦皮（碩田）](https://shopee.tw/shop/6517228)                      | 3000元  | 500g   | 6元/g         |
 | 麥茶         | [伊藤園 黑豆麥茶茶包 8公克 X 30包 X 4袋](https://www.costco.com.tw/p/214743)                                                                    | [Costco](https://www.costco.com.tw)                                 | 420元   | 960g   | 0.438元/g     |
 | 咖啡豆       | 待定                                                                                                                                            | 待定                                                                | 待定    | 待定   | 待定          |
-| 氣泡水       | 氣泡水機現打（機型待定，見[設備購買清單](equipment.md#吧台區)）                                                                                 | 自製                                                                | 待定    | 待定   | 待定          |
+| 氣泡水       | Marco FRIIA LITE HCS PLUS 現打（見[氣泡水機選型](equipment.md#氣泡水機選型)）                                                                   | 自製                                                                | 待定    | 待定   | 待定          |
 | 柚子茶       | [韓味不二柚子茶飲組](https://www.costco.com.tw/p/94941)                                                                                         | [Costco](https://www.costco.com.tw)                                 | 489元   | 2kg    | 0.245元/g     |
 | 蘋果果醬     | [Aohata 蘋果果醬（無蔗糖）](https://www.ambrosia.tw/product/【aohata】蘋果果醬無蔗糖-125g)                                                      | [駿伸企業](https://www.ambrosia.tw)                                 | 145元   | 125g   | 1.16元/g      |
 | 草莓果醬     | [Bonne Maman 草莓果醬](https://www.costco.com.tw/p/109857)                                                                                      | [Costco](https://www.costco.com.tw)                                 | 299元   | 750g   | 0.399元/g     |
@@ -40,6 +40,8 @@
 | 鴻喜菇       | [菇菇好 有機鴻喜菇雪白菇組合 150公克 X 20入](https://www.costco.com.tw/p/156840)                                                                | [Costco](https://www.costco.com.tw)                                 | 685元   | 3kg    | 0.228元/g     |
 | 奶油         | [安佳無鹽奶油 454g](https://tw.bid.yahoo.com/item/100065441419)                                                                                 | [Yahoo拍賣（烘焙百貨）](https://tw.bid.yahoo.com/item/100065441419) | 200元   | 454g   | 0.441元/g     |
 | 低筋麵粉     | [嘉禾牌 低筋粉心麵粉 1KG](https://tw.buy.yahoo.com/brands/41237002)                                                                             | [Yahoo購物中心](https://tw.buy.yahoo.com)                           | 72元    | 1kg    | 0.072元/g     |
+| 奶油乳酪     | [菲力鮮奶油乳酪 250G](https://online.uni-prosperity.com.tw/zh/%E8%8F%B2%E5%8A%9B/1504205400101.html)                                            | [萬家福](https://online.uni-prosperity.com.tw)                      | 139元   | 250g   | 0.556元/g     |
+| 雞蛋         | [御品園土雞蛋（放牧冷藏）400g](https://online.uni-prosperity.com.tw/zh/%E5%BE%A1%E5%93%81%E5%9C%92/1507007400101.html)                          | [萬家福](https://online.uni-prosperity.com.tw)                      | 130元   | 400g   | 0.325元/g     |
 | 蛤蠣         | [黑金文蛤 600g](https://www.hucc-coop.tw/product/content/03030110004)                                                                           | [主婦聯盟](https://www.hucc-coop.tw)                                | 199元   | 600g   | 0.332元/g     |
 | 白酒         | [CANTINE RONCO 料理白酒 250ml](https://www.theeupantry.com/products/cantine-ronco-cooking-wine-250ml)                                           | [The EU Pantry](https://www.theeupantry.com)                        | 120元   | 250ml  | 0.48元/ml     |
 | 乾辣椒片     | [乾燥辣椒片 Red chilli flakes 30g](https://www.theeupantry.com/products/red-chilli-flakes-20g)                                                  | [The EU Pantry](https://www.theeupantry.com)                        | 50元    | 30g    | 1.667元/g     |
@@ -48,7 +50,7 @@
 | 蝦仁         | [科克蘭 冷凍養殖去殼去尾大生蝦仁 907公克](https://www.costco.com.tw/p/7777001)                                                                  | [Costco](https://www.costco.com.tw)                                 | 515元   | 907g   | 0.568元/g     |
 | 濃縮鮮雞汁   | [康寶濃縮鮮雞汁 1kg](https://hocom.tw/h/ProductDetail?key=8599765828&productId=12135)                                                           | [明光行](https://hocom.tw)                                          | 405元   | 1kg    | 0.405元/g     |
 | 紅醬         | 自製，見 [食譜](recipes.md#紅醬)                                                                                                                | 自製                                                                | 284元   | 2300g  | 0.123元/g     |
-| 白醬         | 自製，見 [食譜](recipes.md#白醬)                                                                                                                | 自製                                                                | 298元   | 1700g  | 0.175元/g     |
+| 白醬         | 自製，見 [食譜](recipes.md#白醬)                                                                                                                | 自製                                                                | 175元   | 900g   | 0.194元/g     |
 | 雞高湯       | 自製，見 [食譜](recipes.md#雞高湯)                                                                                                              | 自製                                                                | 16元    | 1040g  | 0.015元/g     |
 | 優格         | 自製，見 [食譜](recipes.md#優格)                                                                                                                | 自製                                                                | 165元   | 1000g  | 0.165元/g     |
 | 希臘優格     | 自製，見 [食譜](recipes.md#希臘優格)                                                                                                            | 自製                                                                | 82.5元  | 200g   | 0.413元/g     |
@@ -63,7 +65,7 @@
 - 白醬、雞高湯、優格、希臘優格、咖啡奶蓋：同紅醬，價格與內容量是一鍋的總成本與估算成品量。
 - 咖啡奶蓋：價格未含咖啡豆，咖啡豆定價後更新。
 - 麥茶：420 元是 Costco 每包 3.5 元 × 120 包；成分為大麥與黑豆，冷熱泡皆可。
-- 氣泡水：用水與 CO₂ 現打，不是預先做好的半成品；單價待氣泡水機選型後依水費與 CO₂ 用量計算。
+- 氣泡水：用水與 CO₂ 現打，不是預先做好的半成品；6L 鋼瓶（約 3.5kg CO₂）約可打 410–490 公升，單價待取得 CO₂ 充填費後依水費與 CO₂ 用量計算。
 - 咖啡豆：供應商尚未決定（見 [進貨商清單](suppliers.md#咖啡豆)）。
 - 蛤蠣：海鮮價格隨季節浮動，199 元是主婦聯盟的牌價，進貨時以實際價格更新。
 - 白酒：依菸酒管理法不能網路下單，要打電話（07-554-6820）或到高雄門市購買；查價時網站顯示缺貨。
@@ -74,6 +76,7 @@
 - 甘蔗液糖：用於飲品甜度（見[甜度](recipes.md#甜度)）。開店初期用 5kg 瓶裝；每日用量穩定後可改 25kg 桶裝（網路約 890–970 元，每 kg 約 37 元）。
 - 綠花椰菜：IQF 冷凍青花菜，172 元是 3 包組（516 元）的每包均價，單包促銷價較高；冷凍保存，用前取需要的量。目前只用於[寵物餐](recipes.md#寵物餐)。
 - 奶油、低筋麵粉：目前是網路零售價，開店前改找烘焙材料行報價。
+- 奶油乳酪、雞蛋：目前是網路零售價，開店前改找烘焙材料行或蛋商報價。雞蛋以去殼後的全蛋重量計，包裝重量含殼，實際成本略高。
 
 ## 對應資料庫
 

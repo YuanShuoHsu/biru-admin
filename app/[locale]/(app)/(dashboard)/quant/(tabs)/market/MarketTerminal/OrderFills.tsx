@@ -4,6 +4,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import useSWR from "swr";
 
 import DataGrid from "@/components/DataGrid";
+import DataGridErrorOverlay from "@/components/DataGridErrorOverlay";
 
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -32,7 +33,12 @@ const OrderFills = ({
   const tQuant = useTranslations("quant");
   const format = useFormatter();
 
-  const { data: fills, isLoading } = useSWR<Fill[]>(url, fetcher);
+  const {
+    data: fills,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR<Fill[]>(url, fetcher);
 
   const columns: GridColDef[] = [
     {
@@ -82,6 +88,14 @@ const OrderFills = ({
         loading={isLoading}
         rows={fills ?? []}
         showToolbar={false}
+        slots={{
+          ...DATA_GRID_PROPS.slots,
+          noRowsOverlay: DataGridErrorOverlay,
+        }}
+        slotProps={{
+          ...DATA_GRID_PROPS.slotProps,
+          noRowsOverlay: { error, onRetry: () => mutate() },
+        }}
       />
     </Box>
   );

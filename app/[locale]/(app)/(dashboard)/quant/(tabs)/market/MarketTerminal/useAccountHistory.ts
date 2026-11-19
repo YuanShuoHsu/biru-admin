@@ -4,6 +4,9 @@ import { useState } from "react";
 
 import useSWR from "swr";
 
+import DataGridErrorOverlay from "@/components/DataGridErrorOverlay";
+
+import { DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import type { GridPaginationModel } from "@mui/x-data-grid";
@@ -63,7 +66,7 @@ export const useAccountHistory = <Row>(
     }),
     ...(endTime !== undefined && { endTime: String(endTime) }),
   });
-  const { data, isLoading } = useSWR<HistoryPage<Row>>(
+  const { data, error, isLoading, mutate } = useSWR<HistoryPage<Row>>(
     url && `${url}${url.includes("?") ? "&" : "?"}${params.toString()}`,
     fetcher,
     { onSuccess },
@@ -115,6 +118,14 @@ export const useAccountHistory = <Row>(
         : model.page * model.pageSize + Math.min(rows.length, model.pageSize),
       rows,
       showToolbar: false,
+      slots: {
+        ...DATA_GRID_PROPS.slots,
+        noRowsOverlay: DataGridErrorOverlay,
+      },
+      slotProps: {
+        ...DATA_GRID_PROPS.slotProps,
+        noRowsOverlay: { error, onRetry: () => mutate() },
+      },
     },
     onRangeChange: handleRangeChange,
     range: range.key,
