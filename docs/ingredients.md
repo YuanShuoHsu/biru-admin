@@ -36,6 +36,8 @@
 | 鴻喜菇       | [菇菇好 有機鴻喜菇雪白菇組合 150公克 X 20入](https://www.costco.com.tw/p/156840)                                                                | [Costco](https://www.costco.com.tw)                                 | 685元   | 3kg    | 0.228元/g     |
 | 奶油         | [安佳無鹽奶油 454g](https://tw.bid.yahoo.com/item/100065441419)                                                                                 | [Yahoo拍賣（烘焙百貨）](https://tw.bid.yahoo.com/item/100065441419) | 200元   | 454g   | 0.441元/g     |
 | 低筋麵粉     | [嘉禾牌 低筋粉心麵粉 1KG](https://tw.buy.yahoo.com/brands/41237002)                                                                             | [Yahoo購物中心](https://tw.buy.yahoo.com)                           | 72元    | 1kg    | 0.072元/g     |
+| 奶油乳酪     | [菲力鮮奶油乳酪 250G](https://online.uni-prosperity.com.tw/zh/%E8%8F%B2%E5%8A%9B/1504205400101.html)                                            | [萬家福](https://online.uni-prosperity.com.tw)                      | 139元   | 250g   | 0.556元/g     |
+| 雞蛋         | [御品園土雞蛋（放牧冷藏）400g](https://online.uni-prosperity.com.tw/zh/%E5%BE%A1%E5%93%81%E5%9C%92/1507007400101.html)                          | [萬家福](https://online.uni-prosperity.com.tw)                      | 130元   | 400g   | 0.325元/g     |
 | 蛤蠣         | [黑金文蛤 600g](https://www.hucc-coop.tw/product/content/03030110004)                                                                           | [主婦聯盟](https://www.hucc-coop.tw)                                | 199元   | 600g   | 0.332元/g     |
 | 白酒         | [CANTINE RONCO 料理白酒 250ml](https://www.theeupantry.com/products/cantine-ronco-cooking-wine-250ml)                                           | [The EU Pantry](https://www.theeupantry.com)                        | 120元   | 250ml  | 0.48元/ml     |
 | 乾辣椒片     | [乾燥辣椒片 Red chilli flakes 30g](https://www.theeupantry.com/products/red-chilli-flakes-20g)                                                  | [The EU Pantry](https://www.theeupantry.com)                        | 50元    | 30g    | 1.667元/g     |
@@ -64,6 +66,7 @@
 - 乾辣椒片：由辣度選項的食譜扣庫存，不列進品項食譜（見 [辣度](recipes.md#辣度)）。網站只標示最低價 50 元，推定為 30g 夾鏈袋，下單前向店家確認；90g 大包裝較划算。
 - 甘蔗液糖：用於飲品甜度（見[甜度](recipes.md#甜度)）。開店初期用 5kg 瓶裝；每日用量穩定後可改 25kg 桶裝（網路約 890–970 元，每 kg 約 37 元）。
 - 奶油、低筋麵粉：目前是網路零售價，開店前改找烘焙材料行報價。
+- 奶油乳酪、雞蛋：目前是網路零售價，開店前改找烘焙材料行或蛋商報價。雞蛋以去殼後的全蛋重量計，包裝重量含殼，實際成本略高。
 
 ## 對應資料庫
 
