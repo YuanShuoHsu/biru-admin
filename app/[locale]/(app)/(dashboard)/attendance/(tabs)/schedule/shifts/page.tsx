@@ -21,6 +21,7 @@ import {
   filterOperatorValues,
 } from "@/types/api";
 import type {
+  AttendanceContext,
   AttendanceEmployeeSummary,
   AttendanceShift,
   AttendanceShiftFilterField,
@@ -33,6 +34,7 @@ import type { Organization } from "@/types/organizations";
 
 import {
   type AttendanceShiftFilter,
+  getAttendanceContext,
   getAttendanceEmployees,
   getAttendanceShifts,
   getAttendanceShiftTypes,
@@ -92,6 +94,7 @@ interface ShiftsContentProps {
       FetchResult<{ employees: AttendanceEmployeeSummary[]; total: number }>,
       FetchResult<{ shiftTypes: AttendanceShiftType[]; total: number }>,
       FetchResult<AttendanceTeam[]>,
+      FetchResult<AttendanceContext>,
     ]
   >;
   shiftFilter?: AttendanceShiftFilter;
@@ -105,17 +108,21 @@ const ShiftsContent = async ({ results, ...props }: ShiftsContentProps) => {
     { data: employeePage, error: employeesError },
     { data: shiftTypePage, error: shiftTypesError },
     { data: teams, error: teamsError },
+    { data: context, error: contextError },
   ] = await results;
-  if (error || employeesError || shiftTypesError || teamsError)
+  if (error || employeesError || shiftTypesError || teamsError || contextError)
     return <ErrorAlert />;
 
   const { shifts: rows, total: rowCount } = shifts;
   const { employees } = employeePage;
   const { shiftTypes } = shiftTypePage;
+  const { employee, selfReviewAllowed } = context;
 
   return (
     <Shifts
       {...props}
+      canReviewOwn={selfReviewAllowed.attendanceRequest}
+      employeeId={employee?.id}
       employees={employees}
       key={props.organization.slug}
       rowCount={rowCount}
@@ -225,6 +232,7 @@ const ShiftsPage = async ({ params, searchParams }: ShiftsPageProps) => {
       ),
     ),
     settle(getAttendanceTeams(organization.slug, fetchOptions)),
+    settle(getAttendanceContext(organization.slug, fetchOptions)),
   ]);
 
   return (

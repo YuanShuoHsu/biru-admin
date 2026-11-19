@@ -89,7 +89,9 @@ interface ShiftsProps {
   canCancel?: boolean;
   canCreate?: boolean;
   canReviewExtraWork?: boolean;
+  canReviewOwn?: boolean;
   canViewAuditLog?: boolean;
+  employeeId?: string;
   employees?: AttendanceEmployeeSummary[];
   filterField?: AttendanceShiftFilterField;
   filterOperator?: FilterOperator;
@@ -112,7 +114,9 @@ const Shifts = ({
   canCancel = false,
   canCreate = false,
   canReviewExtraWork = false,
+  canReviewOwn = false,
   canViewAuditLog = false,
+  employeeId,
   employees = [],
   filterField,
   filterOperator,
@@ -298,12 +302,19 @@ const Shifts = ({
     [rows],
   );
 
+  const isReviewable = useCallback(
+    ({
+      employeeId: shiftEmployeeId,
+      unreviewedOvertime,
+    }: Pick<AttendanceShift, "employeeId" | "unreviewedOvertime">) =>
+      unreviewedOvertime.length > 0 &&
+      (canReviewOwn || shiftEmployeeId !== employeeId),
+    [canReviewOwn, employeeId],
+  );
+
   const selectedRows = useMemo(
-    () =>
-      getSelectedRows(rows, rowSelectionModel).filter(
-        ({ unreviewedOvertime }) => unreviewedOvertime.length,
-      ),
-    [rowSelectionModel, rows],
+    () => getSelectedRows(rows, rowSelectionModel).filter(isReviewable),
+    [isReviewable, rowSelectionModel, rows],
   );
 
   const handleBatchReviewExtraWork = useCallback(
@@ -371,24 +382,33 @@ const Shifts = ({
               (["approved", "rejected"] as const).map((status) => (
                 <Tooltip
                   key={status}
-                  title={tAttendance(
-                    status === "approved"
-                      ? "shifts.actions.approveExtraWork"
-                      : "shifts.actions.rejectExtraWork",
-                  )}
+                  title={
+                    row.unreviewedOvertime.length === 0
+                      ? ""
+                      : !canReviewOwn && row.employeeId === employeeId
+                        ? tAttendance("errors.cannotReviewSelf")
+                        : tAttendance(
+                            status === "approved"
+                              ? "shifts.actions.approveExtraWork"
+                              : "shifts.actions.rejectExtraWork",
+                          )
+                  }
                 >
-                  <StyledIconButton
-                    color={status === "approved" ? "success" : "error"}
-                    onClick={() => handleReviewExtraWork(row, status)}
-                    size="small"
-                    visible={row.unreviewedOvertime.length > 0}
-                  >
-                    {status === "approved" ? (
-                      <Check fontSize="small" />
-                    ) : (
-                      <Close fontSize="small" />
-                    )}
-                  </StyledIconButton>
+                  <span>
+                    <StyledIconButton
+                      color={status === "approved" ? "success" : "error"}
+                      disabled={!canReviewOwn && row.employeeId === employeeId}
+                      onClick={() => handleReviewExtraWork(row, status)}
+                      size="small"
+                      visible={row.unreviewedOvertime.length > 0}
+                    >
+                      {status === "approved" ? (
+                        <Check fontSize="small" />
+                      ) : (
+                        <Close fontSize="small" />
+                      )}
+                    </StyledIconButton>
+                  </span>
                 </Tooltip>
               ))}
             {canViewAuditLog && <AuditLogButton resourceId={row.id} />}
@@ -498,8 +518,10 @@ const Shifts = ({
     ],
     [
       canCancel,
+      canReviewOwn,
       canViewAuditLog,
       dateFilterOperators,
+      employeeId,
       enumFilterOperators,
       enumOptions.dayKind,
       format,
@@ -577,7 +599,9 @@ const Shifts = ({
         columns={columns}
         filterMode="server"
         filterModel={filterModel}
-        isRowSelectable={({ row }) => row.unreviewedOvertime.length > 0}
+        isRowSelectable={({ row: { employeeId, unreviewedOvertime } }) =>
+          isReviewable({ employeeId, unreviewedOvertime })
+        }
         loading={loading || isValidating}
         onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
