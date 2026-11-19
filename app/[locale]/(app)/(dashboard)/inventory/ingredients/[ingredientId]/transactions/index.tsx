@@ -171,10 +171,9 @@ const IngredientTransactions = ({
       },
       {
         field: "wasteReason",
-        filterable: false,
+        filterOperators: enumFilterOperators,
         headerName: tInventory("transactions.wasteReason.label"),
         renderCell: renderEmptyableCell,
-        sortable: false,
         type: "singleSelect",
         valueOptions: enumOptions.wasteReason,
       },
