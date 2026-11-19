@@ -101,7 +101,7 @@ export const useAccountHistory = <Row>(
   };
 
   return {
-    error: data ? undefined : error,
+    error,
     gridProps: {
       disableColumnFilter: true,
       disableColumnSorting: true,

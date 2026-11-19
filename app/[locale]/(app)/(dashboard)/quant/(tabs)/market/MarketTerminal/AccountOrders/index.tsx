@@ -390,6 +390,7 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
       <Typography color="text.secondary" variant="caption">
         {tQuant("account.botOrdersHint")}
       </Typography>
+      {history?.error && <ErrorAlert onRetry={() => history.mutate()} />}
       <Box sx={{ height: GRID_HEIGHT }}>
         {tab === "openOrders" ? (
           <DataGrid
@@ -401,8 +402,6 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
             loading={openOrdersLoading}
             rows={openOrders ?? []}
           />
-        ) : history?.error ? (
-          <ErrorAlert onRetry={() => history.mutate()} />
         ) : tab === "orders" ? (
           <DataGrid
             {...DATA_GRID_PROPS}

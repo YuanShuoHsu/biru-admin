@@ -842,18 +842,15 @@ const FuturesAccount = ({
           />
         )}
       </Stack>
+      {tabHistory?.error && <ErrorAlert onRetry={() => tabHistory.mutate()} />}
       <Box sx={{ height: GRID_HEIGHT }}>
-        {tabHistory?.error ? (
-          <ErrorAlert onRetry={() => tabHistory.mutate()} />
-        ) : (
-          <DataGrid
-            {...DATA_GRID_PROPS}
-            {...grid}
-            apiRef={apiRef}
-            key={tab}
-            rows={grid.rows ?? []}
-          />
-        )}
+        <DataGrid
+          {...DATA_GRID_PROPS}
+          {...grid}
+          apiRef={apiRef}
+          key={tab}
+          rows={grid.rows ?? []}
+        />
       </Box>
     </Stack>
   );
