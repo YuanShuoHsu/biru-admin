@@ -19,7 +19,6 @@ import IsolatedMarginDialog, {
 } from "./IsolatedMarginDialog";
 
 import DataGrid from "@/components/DataGrid";
-import ErrorAlert from "@/components/ErrorAlert";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -113,12 +112,22 @@ const FuturesAccount = ({
   const symbolQuery = `?symbol=${market.symbol}`;
 
   const { data: account } = useSWR<QuantFuturesAccount>(url(""), fetcher);
-  const { data: positions, isLoading: positionsLoading } = useSWR<
-    QuantPosition[]
-  >(url("/positions"), fetcher, autosizeOnData);
-  const { data: openOrders, isLoading: openOrdersLoading } = useSWR<
-    QuantFuturesOrder[]
-  >(url(`/open-orders${symbolQuery}`), fetcher, autosizeOnData);
+  const {
+    data: positions,
+    error: positionsError,
+    isLoading: positionsLoading,
+    mutate: mutatePositions,
+  } = useSWR<QuantPosition[]>(url("/positions"), fetcher, autosizeOnData);
+  const {
+    data: openOrders,
+    error: openOrdersError,
+    isLoading: openOrdersLoading,
+    mutate: mutateOpenOrders,
+  } = useSWR<QuantFuturesOrder[]>(
+    url(`/open-orders${symbolQuery}`),
+    fetcher,
+    autosizeOnData,
+  );
   const ordersHistory = useAccountHistory<QuantFuturesOrder>(
     tab === "orders" ? url(`/orders${symbolQuery}`) : null,
     autosizeOnData.onSuccess,
@@ -149,7 +158,6 @@ const FuturesAccount = ({
           : tab === "funding"
             ? fundingHistory
             : null;
-  const tabHistory = tab === "transfers" ? transfersHistory : history;
 
   const revalidate = () => mutate(isQuantAccountKey(credential.id));
 
@@ -761,6 +769,13 @@ const FuturesAccount = ({
       columns: openOrderColumns,
       loading: openOrdersLoading,
       rows: openOrders?.map((order) => ({ ...order, id: order.orderId })),
+      slotProps: {
+        ...DATA_GRID_PROPS.slotProps,
+        noRowsOverlay: {
+          error: openOrdersError,
+          onRetry: () => mutateOpenOrders(),
+        },
+      },
     },
     orders: {
       ...ordersHistory.gridProps,
@@ -785,6 +800,13 @@ const FuturesAccount = ({
         ...position,
         id: position.positionId,
       })),
+      slotProps: {
+        ...DATA_GRID_PROPS.slotProps,
+        noRowsOverlay: {
+          error: positionsError,
+          onRetry: () => mutatePositions(),
+        },
+      },
     },
     transfers: {
       ...transfersHistory.gridProps,
@@ -842,7 +864,6 @@ const FuturesAccount = ({
           />
         )}
       </Stack>
-      {tabHistory?.error && <ErrorAlert onRetry={() => tabHistory.mutate()} />}
       <Box sx={{ height: GRID_HEIGHT }}>
         <DataGrid
           {...DATA_GRID_PROPS}

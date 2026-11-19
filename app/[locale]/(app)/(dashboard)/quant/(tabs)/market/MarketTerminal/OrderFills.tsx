@@ -4,7 +4,6 @@ import { useFormatter, useTranslations } from "next-intl";
 import useSWR from "swr";
 
 import DataGrid from "@/components/DataGrid";
-import ErrorAlert from "@/components/ErrorAlert";
 
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -81,18 +80,18 @@ const OrderFills = ({
 
   return (
     <Box sx={{ height: GRID_HEIGHT }}>
-      {error && !fills ? (
-        <ErrorAlert onRetry={() => mutate()} />
-      ) : (
-        <DataGrid
-          {...DATA_GRID_PROPS}
-          columns={columns}
-          hideFooter
-          loading={isLoading}
-          rows={fills ?? []}
-          showToolbar={false}
-        />
-      )}
+      <DataGrid
+        {...DATA_GRID_PROPS}
+        columns={columns}
+        hideFooter
+        loading={isLoading}
+        rows={fills ?? []}
+        showToolbar={false}
+        slotProps={{
+          ...DATA_GRID_PROPS.slotProps,
+          noRowsOverlay: { error, onRetry: () => mutate() },
+        }}
+      />
     </Box>
   );
 };

@@ -1,11 +1,15 @@
 // https://mui.com/x/react-data-grid/overlays/#NoRowsOverlayCustom.tsx
+// https://mui.com/x/react-data-grid/components/#custom-slot-props-with-typescript
 
 "use client";
 
 import { useTranslations } from "next-intl";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import type { GridSlotProps } from "@mui/x-data-grid";
 
 const StyledOverlay = styled("div")(({ theme }) => ({
   height: "100%",
@@ -28,8 +32,25 @@ const StyledSvg = styled("svg")(({ theme }) => ({
   },
 }));
 
-const CustomNoRowsOverlay = () => {
+declare module "@mui/x-data-grid" {
+  interface NoRowsOverlayPropsOverrides {
+    error?: unknown;
+    onRetry?: () => void;
+  }
+}
+
+const CustomNoRowsOverlay = ({
+  error,
+  onRetry,
+}: GridSlotProps["noRowsOverlay"]) => {
   const tOverlays = useTranslations("dataGrid.overlays");
+
+  if (error)
+    return (
+      <StyledOverlay>
+        <ErrorAlert onRetry={onRetry} />
+      </StyledOverlay>
+    );
 
   return (
     <StyledOverlay>

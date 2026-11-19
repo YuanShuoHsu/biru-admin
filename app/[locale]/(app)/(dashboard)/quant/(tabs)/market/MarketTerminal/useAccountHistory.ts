@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import useSWR from "swr";
 
+import { DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import type { GridPaginationModel } from "@mui/x-data-grid";
@@ -101,7 +102,6 @@ export const useAccountHistory = <Row>(
   };
 
   return {
-    error,
     gridProps: {
       disableColumnFilter: true,
       disableColumnSorting: true,
@@ -116,8 +116,11 @@ export const useAccountHistory = <Row>(
         : model.page * model.pageSize + Math.min(rows.length, model.pageSize),
       rows,
       showToolbar: false,
+      slotProps: {
+        ...DATA_GRID_PROPS.slotProps,
+        noRowsOverlay: { error, onRetry: () => mutate() },
+      },
     },
-    mutate,
     onRangeChange: handleRangeChange,
     range: range.key,
   };
