@@ -52,13 +52,14 @@ const CredentialSettings = () => {
 
   const apiRef = useGridApiRef();
 
-  const { credentials, mutate, selectCredential } = useQuantCredentials({
-    onSuccess: () => {
-      setTimeout(() => {
-        apiRef.current?.autosizeColumns(autosizeOptions);
-      }, 0);
-    },
-  });
+  const { credentials, error, isLoading, mutate, selectCredential } =
+    useQuantCredentials({
+      onSuccess: () => {
+        setTimeout(() => {
+          apiRef.current?.autosizeColumns(autosizeOptions);
+        }, 0);
+      },
+    });
 
   const handleAdd = () =>
     setDialog({
@@ -177,8 +178,12 @@ const CredentialSettings = () => {
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
         columns={columns}
-        loading={!credentials}
+        loading={isLoading}
         rows={credentials ?? []}
+        slotProps={{
+          ...DATA_GRID_PROPS.slotProps,
+          noRowsOverlay: { error, onRetry: () => mutate() },
+        }}
       />
     </>
   );

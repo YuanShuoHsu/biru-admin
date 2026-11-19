@@ -371,7 +371,7 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
           variant="scrollable"
         >
           <Tab
-            label={`${tQuant("account.openOrders")} (${openOrders?.length ?? 0})`}
+            label={`${tQuant("account.openOrders")}${openOrders ? ` (${openOrders.length})` : ""}`}
             value="openOrders"
           />
           <Tab label={tQuant("account.orders")} value="orders" />

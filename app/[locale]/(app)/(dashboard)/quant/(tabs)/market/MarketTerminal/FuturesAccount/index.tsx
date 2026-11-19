@@ -836,11 +836,11 @@ const FuturesAccount = ({
           variant="scrollable"
         >
           <Tab
-            label={`${tQuant("futures.positions")} (${positions?.length ?? 0})`}
+            label={`${tQuant("futures.positions")}${positions ? ` (${positions.length})` : ""}`}
             value="positions"
           />
           <Tab
-            label={`${tQuant("account.openOrders")} (${openOrders?.length ?? 0})`}
+            label={`${tQuant("account.openOrders")}${openOrders ? ` (${openOrders.length})` : ""}`}
             value="openOrders"
           />
           <Tab label={tQuant("account.orders")} value="orders" />

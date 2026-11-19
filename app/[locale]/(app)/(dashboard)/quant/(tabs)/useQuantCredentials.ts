@@ -41,11 +41,12 @@ const readSelected = () => {
 export const useQuantCredentials = (
   config?: SWRConfiguration<QuantCredential[]>,
 ) => {
-  const { data: credentials, mutate } = useSWR<QuantCredential[]>(
-    QUANT_CREDENTIALS_URL,
-    fetcher,
-    config,
-  );
+  const {
+    data: credentials,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR<QuantCredential[]>(QUANT_CREDENTIALS_URL, fetcher, config);
 
   const selectedId = useSyncExternalStore(subscribe, readSelected, () => null);
 
@@ -59,5 +60,12 @@ export const useQuantCredentials = (
   const credential =
     credentials?.find(({ id }) => id === selectedId) ?? credentials?.[0];
 
-  return { credential, credentials, mutate, selectCredential };
+  return {
+    credential,
+    credentials,
+    error,
+    isLoading,
+    mutate,
+    selectCredential,
+  };
 };
