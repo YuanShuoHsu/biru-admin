@@ -27,7 +27,8 @@ import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 
 import { getCashDevices } from "@/utils/cashDevices";
-import { resolveGridSearchParams } from "@/utils/dataGrid";
+import { getQuickFilterEnums, resolveGridSearchParams } from "@/utils/dataGrid";
+import { getCashDeviceEnumOptions } from "@/utils/enumOptions";
 import { type FetchResult, settle } from "@/utils/fetcher";
 import { hasRolePermission } from "@/utils/organizations";
 import { getMemberRole, getResolvedAdminOrganization } from "@/utils/session";
@@ -41,6 +42,7 @@ interface CashDevicesPageProps {
     organization?: string;
     page?: string;
     pageSize?: string;
+    quickFilterEnums?: string | string[];
     quickFilterValue?: string;
     sortBy?: string;
     sortDirection?: string;
@@ -145,6 +147,18 @@ const CashDevicesPage = async ({
 
   if (!hasRolePermission(memberRole, { cashDevice: ["read"] })) notFound();
 
+  const tCashDevices = await getTranslations({
+    locale,
+    namespace: "cashDevices",
+  });
+
+  const quickFilterEnums = quickFilterValue
+    ? getQuickFilterEnums(
+        quickFilterValue,
+        getCashDeviceEnumOptions(tCashDevices),
+      )
+    : [];
+
   const cashDevices = settle(
     getCashDevices(
       organization.slug,
@@ -154,6 +168,7 @@ const CashDevicesPage = async ({
         filterField,
         filterOperator,
         filterValue,
+        quickFilterEnums,
         quickFilterValue,
         sortBy,
         sortDirection,

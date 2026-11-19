@@ -154,7 +154,7 @@ const CashDevices = ({
     ],
     async () =>
       fetcher<CashDeviceListResponse>(
-        `/api/organizations/${organizationSlug}/cash-devices?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
+        `/api/organizations/${organizationSlug}/cash-devices?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
       ),
     {
       fallbackData: { data: initialRows, total: initialRowCount },
