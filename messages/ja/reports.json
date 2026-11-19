@@ -1,5 +1,9 @@
 {
   "breakEven": {
+    "costRateSource": {
+      "menu": "変動費率はメニューのレシピから推定",
+      "sales": "変動費率と手数料率は {since}–{until} の実績売上から算出"
+    },
     "fixedCostTotal": "固定費合計",
     "item": {
       "cost": "標準原価",
@@ -9,15 +13,18 @@
       "quantity": "純販売数",
       "revenue": "税抜売上"
     },
+    "menuEstimate": "原価が分かる売上がまだないため、変動費率はレシピと価格のあるメニュー品目の平均で推定しています。営業開始後は実績売上に切り替わります。",
     "month": "月",
-    "noCostRate": "今月は原価が分かる売上がまだないため、変動費率と損益分岐点を計算できません。",
-    "note": "売上は税込金額で、営業税 5% を内税として分けています。売上原価はレシピと現在の仕入価格で計算し、追加注文とカスタマイズを含みます。1 日あたりの金額は営業時間と特別営業時間から求めた営業日数で割っています。",
+    "noCostRate": "原価が分かる売上もメニューのレシピもまだないため、変動費率と損益分岐点を計算できません。",
+    "noPaymentFeeRate": "手数料データがまだないため、損益分岐点には決済手数料を含めていません。",
+    "note": "売上は税込金額で、営業税 5% を内税として分けています。売上原価はレシピと現在の仕入価格で計算し、追加注文とカスタマイズを含みます。決済手数料は ECPay が報告した実額で、現金は 0 です。法人税は所得税法第 5 条に基づき、当月利益を 12 倍して年額を見積もり 12 で割った推定値で、実際は年度決算によります。1 日あたりの金額は営業時間と特別営業時間から求めた営業日数で割っています。",
     "personnel": {
       "estimate": "人件費（見込み）",
       "none": "人件費（データなし）",
       "payroll": "人件費（公開済み給与明細）"
     },
     "summary": {
+      "afterTaxProfit": "税引後利益",
       "breakEvenRevenue": "損益分岐売上高",
       "businessTax": "売上営業税",
       "costOfGoodsSold": "売上原価",
@@ -25,14 +32,19 @@
       "dailyBreakEvenRevenue": "1 日あたり必要売上",
       "dailyTargetRevenue": "1 日あたり目標売上",
       "grossMarginRate": "粗利率",
-      "netProfit": "税引前利益",
+      "incomeTax": "法人税見込み",
       "openDays": "営業日 {open, number} 日（残り {remaining, number} 日）",
+      "paymentFeeRate": "決済手数料率",
+      "paymentFees": "決済手数料",
+      "preTaxProfit": "税引前利益",
       "remainingDailyBreakEvenRevenue": "残り期間の 1 日あたり必要売上",
       "revenue": "税込売上",
       "salesExcludingTax": "税抜売上",
       "targetRevenue": "目標利益達成売上高"
     },
-    "targetProfit": "目標利益（月額）",
+    "targetPreTaxProfit": "この税引後利益を残すには、税引前で {amount} が必要です。",
+    "targetProfit": "目標税引後利益（月額）",
+    "unknownFeeOrders": "ECPay の注文 {count, number} 件に手数料データがなく、決済手数料に含めていません。",
     "unpricedItems": "{count, number} 品目はレシピがないか未設定価格の食材があるため、売上原価と変動費率に含めていません。"
   },
   "export": "CSV をエクスポート",

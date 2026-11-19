@@ -1,5 +1,9 @@
 {
   "breakEven": {
+    "costRateSource": {
+      "menu": "變動成本率依菜單食譜估算",
+      "sales": "變動成本率與手續費率依 {since}–{until} 的實際銷售"
+    },
     "fixedCostTotal": "固定成本合計",
     "item": {
       "cost": "標準成本",
@@ -9,15 +13,18 @@
       "quantity": "淨份數",
       "revenue": "未稅營收"
     },
+    "menuEstimate": "還沒有可算出成本的銷售，變動成本率先用菜單上有食譜與售價的品項平均估算；開始營業後會改用實際銷售。",
     "month": "月份",
-    "noCostRate": "這個月還沒有算得出成本的銷售，暫時無法計算變動成本率與損益平衡點。",
-    "note": "營業額為含稅金額，營業稅以 5% 內含拆算；銷貨成本依食譜與目前進價計算，含加購與客製選項；每日需求營業額依營業時間與特殊營業時間算出的營業日數平均。",
+    "noCostRate": "還沒有可算出成本的銷售或菜單食譜，暫時無法計算變動成本率與損益平衡點。",
+    "noPaymentFeeRate": "還沒有手續費資料，損益平衡暫未計入金流手續費。",
+    "note": "營業額為含稅金額，營業稅以 5% 內含拆算；銷貨成本依食譜與目前進價計算，含加購與客製選項；金流手續費為綠界回報的實際金額，現金為 0。營所稅依所得稅法第 5 條，把當月淨利乘 12 估算全年稅額再除以 12，實際以年度結算為準。每日需求營業額依營業時間與特殊營業時間算出的營業日數平均。",
     "personnel": {
       "estimate": "人事（預估）",
       "none": "人事（尚無資料）",
       "payroll": "人事（已發布薪資單）"
     },
     "summary": {
+      "afterTaxProfit": "稅後淨利",
       "breakEvenRevenue": "損益平衡營業額",
       "businessTax": "銷項營業稅",
       "costOfGoodsSold": "銷貨成本",
@@ -25,14 +32,19 @@
       "dailyBreakEvenRevenue": "每日需求營業額",
       "dailyTargetRevenue": "每日目標營業額",
       "grossMarginRate": "毛利率",
-      "netProfit": "稅前淨利",
+      "incomeTax": "預估營所稅",
       "openDays": "營業日 {open, number} 天（剩 {remaining, number} 天）",
+      "paymentFeeRate": "手續費率",
+      "paymentFees": "金流手續費",
+      "preTaxProfit": "稅前淨利",
       "remainingDailyBreakEvenRevenue": "剩餘每日需求營業額",
       "revenue": "含稅營業額",
       "salesExcludingTax": "未稅營業額",
       "targetRevenue": "目標淨利營業額"
     },
-    "targetProfit": "目標淨利（每月）",
+    "targetPreTaxProfit": "要留下這個稅後淨利，稅前需賺 {amount}。",
+    "targetProfit": "目標稅後淨利（每月）",
+    "unknownFeeOrders": "有 {count, number} 筆綠界訂單沒有手續費資料，未計入金流手續費。",
     "unpricedItems": "有 {count, number} 個品項沒有食譜或食譜有未定價的食材，未計入銷貨成本與變動成本率。"
   },
   "export": "匯出 CSV",

@@ -14334,6 +14334,11 @@ export interface components {
       /** @description 當月在職但沒有已發布薪資單、未計入的員工數 */
       unpublishedEmployees: number;
     };
+    /**
+     * @description sales：期間內可算出成本的實際銷售；menu：期間內沒有這樣的銷售，改用菜單上有食譜成本與售價的品項平均；兩者皆無為 null
+     * @enum {string}
+     */
+    CostRateSource: "sales" | "menu";
     BreakEvenItemRowDto: {
       menuItemId: string;
       /** @description 品項名稱（依請求語系） */
@@ -14365,26 +14370,51 @@ export interface components {
       businessTax: number;
       /** @description 未稅淨營業額 */
       salesExcludingTax: number;
-      /** @description 可算出成本的品項的標準成本合計 */
+      /** @description 當月可算出成本的品項的標準成本合計 */
       costOfGoodsSold: number;
-      /** @description 有銷售但算不出成本、未計入銷貨成本的品項數 */
+      /** @description 當月有銷售但算不出成本、未計入銷貨成本的品項數 */
       unpricedItems: number;
-      /** @description 變動成本率：銷貨成本 ÷ 可算出成本的品項的未稅營收；當月沒有這樣的銷售時為 null */
+      /** @description 當月金流手續費：綠界回報的交易服務金額（手續費＋處理費）合計，現金為 0 */
+      paymentFees: number;
+      /** @description 當月經綠界付款、但沒有手續費資料而未計入手續費的訂單數 */
+      unknownFeeOrders: number;
+      /**
+       * @description 計算變動成本率與手續費率的期間起日（台灣時間，含）
+       * @example 2026-09-02
+       */
+      rateSince: string;
+      /**
+       * @description 計算變動成本率與手續費率的期間迄日（台灣時間，含）；當月取到今天，過去月份取到月底
+       * @example 2026-11-30
+       */
+      rateUntil: string;
+      /** @description sales：期間內可算出成本的實際銷售；menu：期間內沒有這樣的銷售，改用菜單上有食譜成本與售價的品項平均；兩者皆無為 null */
+      costRateSource: components["schemas"]["CostRateSource"] | null;
+      /** @description 變動成本率：銷貨成本 ÷ 未稅營收，來源見 costRateSource */
       costOfGoodsSoldRate: number | null;
       /** @description 毛利率：1 − 變動成本率 */
       grossMarginRate: number | null;
-      /** @description 損益平衡點（含稅營業額）：固定成本 ÷ 每元含稅營業額的邊際貢獻；變動成本率未知或沒有邊際貢獻時為 null */
+      /** @description 手續費率：期間內有手續費資料的訂單的手續費 ÷ 含稅營業額（現金訂單計 0）；沒有資料時為 null，損益平衡不計手續費 */
+      paymentFeeRate: number | null;
+      /** @description 損益平衡點（含稅營業額）：固定成本 ÷ 每元含稅營業額的邊際貢獻（(1 − 變動成本率) ÷ 1.05 − 手續費率）；變動成本率未知或沒有邊際貢獻時為 null */
       breakEvenRevenue: number | null;
       /** @description 每日需求營業額：損益平衡點 ÷ 營業日數 */
       dailyBreakEvenRevenue: number | null;
       /** @description 剩餘每日需求營業額：（損益平衡點 − 已達成營業額）÷ 剩餘營業日數；沒有剩餘營業日（過去的月份）時為 null */
       remainingDailyBreakEvenRevenue: number | null;
+      /** @description 目標稅後淨利（每月） */
       targetProfit: number | null;
-      /** @description 目標淨利營業額（含稅）：（固定成本 + 目標淨利）÷ 邊際貢獻 */
+      /** @description 要留下目標稅後淨利所需的稅前淨利 */
+      targetPreTaxProfit: number | null;
+      /** @description 目標淨利營業額（含稅）：（固定成本 + 目標稅前淨利）÷ 邊際貢獻 */
       targetRevenue: number | null;
       dailyTargetRevenue: number | null;
-      /** @description 稅前淨利：未稅淨營業額 − 銷貨成本 − 固定成本 */
-      netProfit: number;
+      /** @description 稅前淨利：未稅淨營業額 − 銷貨成本 − 手續費 − 固定成本 */
+      preTaxProfit: number;
+      /** @description 預估營所稅：把當月稅前淨利乘 12 依所得稅法第 5 條算出全年稅額再除以 12；虧損為 0 */
+      incomeTax: number;
+      /** @description 稅後淨利：稅前淨利 − 預估營所稅 */
+      afterTaxProfit: number;
       /** @description 品項毛利，本頁的列，套用篩選、排序與分頁後 */
       rows: components["schemas"]["BreakEvenItemRowDto"][];
       /** @description 篩選後、分頁前的品項數 */
@@ -28339,7 +28369,7 @@ export interface operations {
       query: {
         /** @description 月份（台灣時間） */
         month: string;
-        /** @description 目標稅前淨利（每月）；帶了才算目標營業額 */
+        /** @description 目標稅後淨利（每月）；帶了才算目標營業額，換算稅前時營所稅依全年化估算 */
         targetProfit?: string;
         filterOperator?: components["schemas"]["FilterOperator"];
         /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
@@ -30875,6 +30905,9 @@ export const breakEvenItemSortFieldValues: ReadonlyArray<
 export const personnelCostSourceValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PersonnelCostSource"]
 > = ["payroll", "estimate", "none"];
+export const costRateSourceValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CostRateSource"]
+> = ["sales", "menu"];
 export const storeLayoutFloorValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["StoreLayoutFloor"]
 > = ["ground", "upper", "roof"];

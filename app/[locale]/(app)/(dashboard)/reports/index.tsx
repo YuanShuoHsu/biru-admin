@@ -125,7 +125,19 @@ const BREAK_EVEN_SALES_SUMMARY = [
   "businessTax",
   "salesExcludingTax",
   "costOfGoodsSold",
-  "netProfit",
+  "paymentFees",
+] as const;
+
+const BREAK_EVEN_PROFIT_SUMMARY = [
+  "preTaxProfit",
+  "incomeTax",
+  "afterTaxProfit",
+] as const;
+
+const BREAK_EVEN_RATE_SUMMARY = [
+  "costOfGoodsSoldRate",
+  "grossMarginRate",
+  "paymentFeeRate",
 ] as const;
 
 const BREAK_EVEN_TARGET_SUMMARY = [
@@ -313,8 +325,7 @@ const ReportTable = ({
     { ...swrOptions, fallbackData: initialBreakEven },
   );
 
-  const formatRate = (value: number | null) =>
-    value === null ? "" : format.number(value, PERCENT_FORMAT);
+  const formatRate = (value: number) => format.number(value, PERCENT_FORMAT);
 
   const salesColumns = useMemo<GridColDef[]>(() => {
     const isItemGroupBy = groupBy === "menuItem" || groupBy === "category";
@@ -593,21 +604,42 @@ const ReportTable = ({
                   {formatMoney(breakEven[field], currency)}
                 </Typography>
               ))}
-              <Typography variant="body2">
-                {tReports("breakEven.summary.costOfGoodsSoldRate")}{" "}
-                {breakEven.costOfGoodsSoldRate === null ? (
-                  <EmptyCell />
-                ) : (
-                  formatRate(breakEven.costOfGoodsSoldRate)
-                )}
-              </Typography>
-              <Typography variant="body2">
-                {tReports("breakEven.summary.grossMarginRate")}{" "}
-                {breakEven.grossMarginRate === null ? (
-                  <EmptyCell />
-                ) : (
-                  formatRate(breakEven.grossMarginRate)
-                )}
+            </TotalsStack>
+            <TotalsStack direction="row">
+              {BREAK_EVEN_PROFIT_SUMMARY.map((field) => (
+                <Typography key={field} variant="body2">
+                  {tReports(`breakEven.summary.${field}`)}{" "}
+                  {formatMoney(breakEven[field], currency)}
+                </Typography>
+              ))}
+            </TotalsStack>
+            <TotalsStack direction="row">
+              {BREAK_EVEN_RATE_SUMMARY.map((field) => (
+                <Typography key={field} variant="body2">
+                  {tReports(`breakEven.summary.${field}`)}{" "}
+                  {breakEven[field] === null ? (
+                    <EmptyCell />
+                  ) : (
+                    formatRate(breakEven[field])
+                  )}
+                </Typography>
+              ))}
+              <Typography color="textSecondary" variant="body2">
+                {breakEven.costRateSource
+                  ? tReports(
+                      `breakEven.costRateSource.${breakEven.costRateSource}`,
+                      {
+                        since: format.dateTime(
+                          toStoreDate(breakEven.rateSince).toDate(),
+                          "date",
+                        ),
+                        until: format.dateTime(
+                          toStoreDate(breakEven.rateUntil).toDate(),
+                          "date",
+                        ),
+                      },
+                    )
+                  : tReports("breakEven.noCostRate")}
               </Typography>
             </TotalsStack>
             <TotalsStack direction="row">
@@ -628,8 +660,29 @@ const ReportTable = ({
                 </Typography>
               ))}
             </TotalsStack>
-            {breakEven.costOfGoodsSoldRate === null && (
-              <Alert severity="info">{tReports("breakEven.noCostRate")}</Alert>
+            {breakEven.targetPreTaxProfit !== null && (
+              <Typography color="textSecondary" variant="body2">
+                {tReports("breakEven.targetPreTaxProfit", {
+                  amount: formatMoney(breakEven.targetPreTaxProfit, currency),
+                })}
+              </Typography>
+            )}
+            {breakEven.costRateSource === "menu" && (
+              <Alert severity="info">
+                {tReports("breakEven.menuEstimate")}
+              </Alert>
+            )}
+            {breakEven.paymentFeeRate === null && (
+              <Typography color="textSecondary" variant="body2">
+                {tReports("breakEven.noPaymentFeeRate")}
+              </Typography>
+            )}
+            {breakEven.unknownFeeOrders > 0 && (
+              <Typography color="textSecondary" variant="body2">
+                {tReports("breakEven.unknownFeeOrders", {
+                  count: breakEven.unknownFeeOrders,
+                })}
+              </Typography>
             )}
             {breakEven.unpricedItems > 0 && (
               <Typography color="textSecondary" variant="body2">

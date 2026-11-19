@@ -1,5 +1,9 @@
 {
   "breakEven": {
+    "costRateSource": {
+      "menu": "变动成本率按菜单配方估算",
+      "sales": "变动成本率与手续费率按 {since}–{until} 的实际销售"
+    },
     "fixedCostTotal": "固定成本合计",
     "item": {
       "cost": "标准成本",
@@ -9,15 +13,18 @@
       "quantity": "净份数",
       "revenue": "未税营收"
     },
+    "menuEstimate": "还没有能算出成本的销售，变动成本率先用菜单上有配方与售价的品项平均估算；开始营业后会改用实际销售。",
     "month": "月份",
-    "noCostRate": "本月还没有能算出成本的销售，暂时无法计算变动成本率与盈亏平衡点。",
-    "note": "营业额为含税金额，营业税按 5% 内含拆算；销货成本依配方与当前进价计算，含加购与定制选项；每日需求营业额按营业时间与特殊营业时间算出的营业日数平均。",
+    "noCostRate": "还没有能算出成本的销售或菜单配方，暂时无法计算变动成本率与盈亏平衡点。",
+    "noPaymentFeeRate": "还没有手续费数据，盈亏平衡暂未计入支付手续费。",
+    "note": "营业额为含税金额，营业税按 5% 内含拆算；销货成本依配方与当前进价计算，含加购与定制选项；支付手续费为绿界回报的实际金额，现金为 0。营所税依所得税法第 5 条，把当月净利乘 12 估算全年税额再除以 12，实际以年度结算为准。每日需求营业额按营业时间与特殊营业时间算出的营业日数平均。",
     "personnel": {
       "estimate": "人事（预估）",
       "none": "人事（暂无数据）",
       "payroll": "人事（已发布工资单）"
     },
     "summary": {
+      "afterTaxProfit": "税后净利",
       "breakEvenRevenue": "盈亏平衡营业额",
       "businessTax": "销项营业税",
       "costOfGoodsSold": "销货成本",
@@ -25,14 +32,19 @@
       "dailyBreakEvenRevenue": "每日需求营业额",
       "dailyTargetRevenue": "每日目标营业额",
       "grossMarginRate": "毛利率",
-      "netProfit": "税前净利",
+      "incomeTax": "预估营所税",
       "openDays": "营业日 {open, number} 天（剩 {remaining, number} 天）",
+      "paymentFeeRate": "手续费率",
+      "paymentFees": "支付手续费",
+      "preTaxProfit": "税前净利",
       "remainingDailyBreakEvenRevenue": "剩余每日需求营业额",
       "revenue": "含税营业额",
       "salesExcludingTax": "未税营业额",
       "targetRevenue": "目标净利营业额"
     },
-    "targetProfit": "目标净利（每月）",
+    "targetPreTaxProfit": "要留下这个税后净利，税前需赚 {amount}。",
+    "targetProfit": "目标税后净利（每月）",
+    "unknownFeeOrders": "有 {count, number} 笔绿界订单没有手续费数据，未计入支付手续费。",
     "unpricedItems": "有 {count, number} 个品项没有配方或配方有未定价的食材，未计入销货成本与变动成本率。"
   },
   "export": "导出 CSV",
