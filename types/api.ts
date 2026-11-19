@@ -1374,6 +1374,94 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/cash-devices": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢現金機台列表 */
+    get: operations["CashDevicesController_findAll"];
+    put?: never;
+    /** 新增現金機台 */
+    post: operations["CashDevicesController_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/cash-devices/{cashDeviceId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢現金機台 */
+    get: operations["CashDevicesController_findOne"];
+    put?: never;
+    post?: never;
+    /** 刪除現金機台；已有交易紀錄的機台不能刪除 */
+    delete: operations["CashDevicesController_remove"];
+    options?: never;
+    head?: never;
+    /** 更新現金機台 */
+    patch: operations["CashDevicesController_update"];
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/cash-devices/{cashDeviceId}/events": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢現金機台的補幣、收鈔等紀錄，新的在前 */
+    get: operations["CashDevicesController_findEvents"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/cash-devices/{cashDeviceId}/refills": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 記錄現金機台補幣；同一把 idempotencyKey 重送回傳原紀錄 */
+    post: operations["CashDevicesController_refill"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/cash-devices/{cashDeviceId}/collections": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 記錄現金機台收鈔；同一把 idempotencyKey 重送回傳原紀錄 */
+    post: operations["CashDevicesController_collect"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/checklists/templates": {
     parameters: {
       query?: never;
@@ -1381,7 +1469,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 列出例行檢查表範本與項目 */
+    /** 列出例行檢查表範本與項目；門市第一次讀取時建立預設範本 */
     get: operations["ChecklistTemplatesController_findAll"];
     put?: never;
     /** 新增例行檢查表範本 */
@@ -7367,6 +7455,7 @@ export interface components {
       | "catalogItemModifierGroup"
       | "catalogItemAddOn"
       | "checklistTemplate"
+      | "cashDevice"
       | "employee"
       | "attendanceSetting"
       | "leaveCase"
@@ -8098,6 +8187,126 @@ export interface components {
       applicableOrganizationSlugs?: string[] | null;
     };
     /** @enum {string} */
+    CashDeviceFilterField:
+      | "name"
+      | "vendor"
+      | "model"
+      | "status"
+      | "lastSeenAt"
+      | "createdAt"
+      | "updatedAt";
+    /** @enum {string} */
+    CashDeviceSortField:
+      | "name"
+      | "vendor"
+      | "model"
+      | "status"
+      | "lastSeenAt"
+      | "createdAt"
+      | "updatedAt";
+    /** @enum {string} */
+    CashDeviceStatus: "active" | "inactive";
+    CashDeviceResponseDto: {
+      id: string;
+      organizationId: string;
+      name: string;
+      vendor?: string | null;
+      model?: string | null;
+      status: components["schemas"]["CashDeviceStatus"];
+      /** Format: date-time */
+      lastSeenAt?: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    CashDeviceListResponseDto: {
+      data: components["schemas"]["CashDeviceResponseDto"][];
+      total: number;
+    };
+    CreateCashDeviceDto: {
+      /** @example 櫃台自助繳費機 */
+      name: string;
+      vendor?: string | null;
+      model?: string | null;
+      status?: components["schemas"]["CashDeviceStatus"];
+    };
+    UpdateCashDeviceDto: {
+      /** @example 櫃台自助繳費機 */
+      name?: string;
+      vendor?: string | null;
+      model?: string | null;
+      status?: components["schemas"]["CashDeviceStatus"];
+    };
+    /** @enum {string} */
+    CashDeviceEventType:
+      | "payment"
+      | "change"
+      | "refundDispense"
+      | "refill"
+      | "collection"
+      | "inventorySnapshot"
+      | "error";
+    CashDenominationsDto: {
+      1?: number;
+      5?: number;
+      10?: number;
+      20?: number;
+      50?: number;
+      100?: number;
+      200?: number;
+      500?: number;
+      1000?: number;
+      2000?: number;
+    };
+    CashDeviceEventResponseDto: {
+      id: string;
+      organizationId: string;
+      deviceId: string;
+      type: components["schemas"]["CashDeviceEventType"];
+      idempotencyKey: string;
+      denominations: components["schemas"]["CashDenominationsDto"];
+      amount?: string | null;
+      reportedAmount?: string | null;
+      depositedAmount?: string | null;
+      /** @description 實際存入減機台回報；只有收鈔有 */
+      difference?: string | null;
+      note?: string | null;
+      createdBy?: string | null;
+      /** Format: date-time */
+      occurredAt: string;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    CashDeviceEventListResponseDto: {
+      data: components["schemas"]["CashDeviceEventResponseDto"][];
+      total: number;
+    };
+    CreateCashDeviceRefillDto: {
+      /**
+       * Format: uuid
+       * @description 開啟表單時產生，重試時沿用
+       */
+      idempotencyKey: string;
+      note?: string | null;
+      /** @description 面額 → 張（枚）數；金額由此算出 */
+      denominations: components["schemas"]["CashDenominationsDto"];
+    };
+    CreateCashDeviceCollectionDto: {
+      /**
+       * Format: uuid
+       * @description 開啟表單時產生，重試時沿用
+       */
+      idempotencyKey: string;
+      note?: string | null;
+      /** @description 機台回報的金額 */
+      reportedAmount: number;
+      /** @description 實際存入的金額 */
+      depositedAmount: number;
+    };
+    /** @enum {string} */
     ChecklistTiming: "opening" | "closing" | "anytime";
     /** @enum {string} */
     ChecklistItemType: "check" | "number";
@@ -8235,6 +8444,7 @@ export interface components {
       | "catalog_item_modifier_group"
       | "coupon"
       | "banner"
+      | "cash_device"
       | "store_photo"
       | "supplier"
       | "ingredient"
@@ -9833,6 +10043,8 @@ export interface components {
       orderId?: string | null;
       orderNumber?: string | null;
       note?: string | null;
+      /** @description 登記這筆異動的使用者；訂單扣料與還原沒有操作者 */
+      createdBy?: string | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -17685,6 +17897,254 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["UserCouponResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CashDevicesController_findAll: {
+    parameters: {
+      query?: {
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["CashDeviceFilterField"];
+        sortBy?: components["schemas"]["CashDeviceSortField"];
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CashDeviceListResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CashDevicesController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateCashDeviceDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CashDeviceResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CashDevicesController_findOne: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        cashDeviceId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CashDeviceResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CashDevicesController_remove: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        cashDeviceId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CashDevicesController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        cashDeviceId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateCashDeviceDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CashDeviceResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CashDevicesController_findEvents: {
+    parameters: {
+      query?: {
+        limit?: number;
+        offset?: number;
+      };
+      header?: never;
+      path: {
+        cashDeviceId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CashDeviceEventListResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CashDevicesController_refill: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        cashDeviceId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateCashDeviceRefillDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CashDeviceEventResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CashDevicesController_collect: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        cashDeviceId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateCashDeviceCollectionDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CashDeviceEventResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -28854,6 +29314,7 @@ export const auditResourceValues: ReadonlyArray<
   "catalogItemModifierGroup",
   "catalogItemAddOn",
   "checklistTemplate",
+  "cashDevice",
   "employee",
   "attendanceSetting",
   "leaveCase",
@@ -29039,6 +29500,42 @@ export const sweetnessLevelValues: ReadonlyArray<
 export const validateCouponDtoModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["ValidateCouponDto"]["mode"]
 > = ["counter", "dineIn", "driveThru", "pickup"];
+export const cashDeviceFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CashDeviceFilterField"]
+> = [
+  "name",
+  "vendor",
+  "model",
+  "status",
+  "lastSeenAt",
+  "createdAt",
+  "updatedAt",
+];
+export const cashDeviceSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CashDeviceSortField"]
+> = [
+  "name",
+  "vendor",
+  "model",
+  "status",
+  "lastSeenAt",
+  "createdAt",
+  "updatedAt",
+];
+export const cashDeviceStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CashDeviceStatus"]
+> = ["active", "inactive"];
+export const cashDeviceEventTypeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CashDeviceEventType"]
+> = [
+  "payment",
+  "change",
+  "refundDispense",
+  "refill",
+  "collection",
+  "inventorySnapshot",
+  "error",
+];
 export const checklistTimingValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["ChecklistTiming"]
 > = ["opening", "closing", "anytime"];
@@ -29075,6 +29572,7 @@ export const deletedRecordTableValues: ReadonlyArray<
   "catalog_item_modifier_group",
   "coupon",
   "banner",
+  "cash_device",
   "store_photo",
   "supplier",
   "ingredient",
