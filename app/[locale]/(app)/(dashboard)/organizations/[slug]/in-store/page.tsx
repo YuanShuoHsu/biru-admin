@@ -58,18 +58,15 @@ const OrganizationsSlugInStorePage = async ({
     ({ userId }) => userId === session?.user?.id,
   )?.role;
   const isPlatformAdmin = session?.user?.role === "admin";
+  const canUpdateOrganization = hasRolePermission(currentUserRole, {
+    organization: ["update"],
+  });
 
-  if (
-    !isPlatformAdmin &&
-    !hasRolePermission(currentUserRole, { organization: ["update"] })
-  )
-    notFound();
+  if (!isPlatformAdmin && !canUpdateOrganization) notFound();
 
   return (
     <OrganizationsSlugInStore
-      canUpdateTableCount={hasRolePermission(currentUserRole, {
-        organization: ["update"],
-      })}
+      canUpdateTableCount={canUpdateOrganization}
       organization={organization}
       organizationSlug={organizationSlug}
     />
