@@ -15,6 +15,7 @@ import OrderFills from "../OrderFills";
 import { useAccountHistory } from "../useAccountHistory";
 
 import DataGrid from "@/components/DataGrid";
+import DataGridErrorOverlay from "@/components/DataGridErrorOverlay";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -87,9 +88,12 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
   const symbolQuery = `?symbol=${market.symbol}`;
   const openOrdersUrl = `${quantAccountUrl(credential.id, "open-orders")}${symbolQuery}`;
 
-  const { data: openOrders, isLoading: openOrdersLoading } = useSWR<
-    QuantOrder[]
-  >(openOrdersUrl, fetcher, autosizeOnData);
+  const {
+    data: openOrders,
+    error: openOrdersError,
+    isLoading: openOrdersLoading,
+    mutate: mutateOpenOrders,
+  } = useSWR<QuantOrder[]>(openOrdersUrl, fetcher, autosizeOnData);
   const ordersHistory = useAccountHistory<QuantOrder>(
     tab === "orders"
       ? `${quantAccountUrl(credential.id, "orders")}${symbolQuery}`
@@ -368,7 +372,7 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
           variant="scrollable"
         >
           <Tab
-            label={`${tQuant("account.openOrders")} (${openOrders?.length ?? 0})`}
+            label={`${tQuant("account.openOrders")}${openOrders ? ` (${openOrders.length})` : ""}`}
             value="openOrders"
           />
           <Tab label={tQuant("account.orders")} value="orders" />
@@ -399,6 +403,17 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
             key={tab}
             loading={openOrdersLoading}
             rows={openOrders ?? []}
+            slots={{
+              ...DATA_GRID_PROPS.slots,
+              noRowsOverlay: DataGridErrorOverlay,
+            }}
+            slotProps={{
+              ...DATA_GRID_PROPS.slotProps,
+              noRowsOverlay: {
+                error: openOrdersError,
+                onRetry: () => mutateOpenOrders(),
+              },
+            }}
           />
         ) : tab === "orders" ? (
           <DataGrid

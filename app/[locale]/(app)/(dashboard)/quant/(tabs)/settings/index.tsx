@@ -15,6 +15,7 @@ import CredentialAssets from "./CredentialAssets";
 import CredentialDialog, { CREDENTIAL_FORM_ID } from "./CredentialDialog";
 
 import DataGrid from "@/components/DataGrid";
+import DataGridErrorOverlay from "@/components/DataGridErrorOverlay";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -52,13 +53,14 @@ const CredentialSettings = () => {
 
   const apiRef = useGridApiRef();
 
-  const { credentials, mutate, selectCredential } = useQuantCredentials({
-    onSuccess: () => {
-      setTimeout(() => {
-        apiRef.current?.autosizeColumns(autosizeOptions);
-      }, 0);
-    },
-  });
+  const { credentials, error, isLoading, mutate, selectCredential } =
+    useQuantCredentials({
+      onSuccess: () => {
+        setTimeout(() => {
+          apiRef.current?.autosizeColumns(autosizeOptions);
+        }, 0);
+      },
+    });
 
   const handleAdd = () =>
     setDialog({
@@ -177,8 +179,16 @@ const CredentialSettings = () => {
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
         columns={columns}
-        loading={!credentials}
+        loading={isLoading}
         rows={credentials ?? []}
+        slots={{
+          ...DATA_GRID_PROPS.slots,
+          noRowsOverlay: DataGridErrorOverlay,
+        }}
+        slotProps={{
+          ...DATA_GRID_PROPS.slotProps,
+          noRowsOverlay: { error, onRetry: () => mutate() },
+        }}
       />
     </>
   );
