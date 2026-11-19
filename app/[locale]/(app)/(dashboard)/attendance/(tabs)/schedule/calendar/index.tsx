@@ -6,7 +6,7 @@ import utc from "dayjs/plugin/utc";
 import { useFormatter, useTranslations } from "next-intl";
 import { closeSnackbar, enqueueSnackbar } from "notistack";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import useSWR from "swr";
+import useSWR, { mutate as mutateCache } from "swr";
 
 import CopyWeekDialog from "./CopyWeekDialog";
 import DayKindDialog from "./DayKindDialog";
@@ -18,6 +18,7 @@ import ErrorAlert from "@/components/ErrorAlert";
 
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
+import { attendanceReviewCountsKey } from "@/hooks/useAttendanceReviewCounts";
 import { useCancelShift } from "@/hooks/useCancelShift";
 
 import { Add, ContentCopy } from "@mui/icons-material";
@@ -179,7 +180,10 @@ const Calendar = ({
   } = useSWR(
     attendanceCalendarPath(organizationSlug, "shifts", from, to),
     (url: string) => fetcher<AttendanceShift[]>(url),
-    { keepPreviousData: true },
+    {
+      keepPreviousData: true,
+      onSuccess: () => mutateCache(attendanceReviewCountsKey(organizationSlug)),
+    },
   );
 
   const {
