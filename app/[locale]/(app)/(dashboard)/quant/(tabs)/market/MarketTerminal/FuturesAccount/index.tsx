@@ -19,6 +19,7 @@ import IsolatedMarginDialog, {
 } from "./IsolatedMarginDialog";
 
 import DataGrid from "@/components/DataGrid";
+import ErrorAlert from "@/components/ErrorAlert";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -148,6 +149,7 @@ const FuturesAccount = ({
           : tab === "funding"
             ? fundingHistory
             : null;
+  const tabHistory = tab === "transfers" ? transfersHistory : history;
 
   const revalidate = () => mutate(isQuantAccountKey(credential.id));
 
@@ -841,13 +843,17 @@ const FuturesAccount = ({
         )}
       </Stack>
       <Box sx={{ height: GRID_HEIGHT }}>
-        <DataGrid
-          {...DATA_GRID_PROPS}
-          {...grid}
-          apiRef={apiRef}
-          key={tab}
-          rows={grid.rows ?? []}
-        />
+        {tabHistory?.error ? (
+          <ErrorAlert onRetry={() => tabHistory.mutate()} />
+        ) : (
+          <DataGrid
+            {...DATA_GRID_PROPS}
+            {...grid}
+            apiRef={apiRef}
+            key={tab}
+            rows={grid.rows ?? []}
+          />
+        )}
       </Box>
     </Stack>
   );

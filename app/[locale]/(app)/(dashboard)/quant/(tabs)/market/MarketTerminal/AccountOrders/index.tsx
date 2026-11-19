@@ -15,6 +15,7 @@ import OrderFills from "../OrderFills";
 import { useAccountHistory } from "../useAccountHistory";
 
 import DataGrid from "@/components/DataGrid";
+import ErrorAlert from "@/components/ErrorAlert";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -400,6 +401,8 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
             loading={openOrdersLoading}
             rows={openOrders ?? []}
           />
+        ) : history?.error ? (
+          <ErrorAlert onRetry={() => history.mutate()} />
         ) : tab === "orders" ? (
           <DataGrid
             {...DATA_GRID_PROPS}
