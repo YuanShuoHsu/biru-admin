@@ -2,16 +2,22 @@
 
 import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import ChecklistTemplateDialog from "./ChecklistTemplateDialog";
 
 import DataGrid from "@/components/DataGrid";
+import { DragHandle, Sortable } from "@/components/Sortable";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
+import { DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE } from "@/constants/pagination";
 
-import { Add, Delete, Edit } from "@mui/icons-material";
+import { arrayMove } from "@dnd-kit/helpers";
+import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
+import { isSortableOperation } from "@dnd-kit/react/sortable";
+
+import { Add, Cancel, Delete, Edit, Save, Sort } from "@mui/icons-material";
 import {
   Button,
   DialogContentText,
@@ -20,13 +26,22 @@ import {
   Tooltip,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import type {
+  GridColDef,
+  GridFilterModel,
+  GridPaginationModel,
+  GridRenderCellParams,
+  GridSortModel,
+} from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { ChecklistTemplate } from "@/types/checklists";
+import type { ToolbarMode } from "@/types/dataGrid";
 
+import { isFilteredOrSorted } from "@/utils/dataGrid";
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
@@ -50,6 +65,18 @@ const ChecklistTemplates = ({
   closed,
   organizationSlug,
 }: ChecklistTemplatesProps) => {
+  const [toolbarMode, setToolbarMode] = useState<ToolbarMode>(null);
+  const isReorderMode = toolbarMode === "reorder";
+  const [draftRows, setDraftRows] = useState<ChecklistTemplate[] | null>(null);
+  const [filterModel, setFilterModel] = useState<GridFilterModel>({
+    items: [],
+  });
+  const [sortModel, setSortModel] = useState<GridSortModel>([]);
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    page: 0,
+    pageSize: DEFAULT_PAGE_SIZE,
+  });
+
   const apiRef = useGridApiRef();
 
   const { setDialog } = useDialogStore((state) => state);
@@ -60,7 +87,7 @@ const ChecklistTemplates = ({
   const templatesUrl = `/api/organizations/${organizationSlug}/checklists/templates`;
 
   const {
-    data: rows = [],
+    data: fetchedRows = [],
     isValidating,
     mutate,
   } = useSWR<ChecklistTemplate[]>(templatesUrl, {
@@ -70,6 +97,99 @@ const ChecklistTemplates = ({
       }, 0);
     },
   });
+
+  const rows = draftRows ?? fetchedRows;
+
+  const isReorderDisabled =
+    closed ||
+    rows.length < 2 ||
+    isValidating ||
+    isFilteredOrSorted(filterModel, sortModel);
+
+  const handleEnterReorderMode = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tChecklists.rich("actions.reorder.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setDraftRows(rows);
+        setToolbarMode("reorder");
+        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+      },
+      open: true,
+      title: tChecklists("actions.reorder.title"),
+    });
+  }, [apiRef, rows, setDialog, tChecklists]);
+
+  const handleSaveReorder = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tChecklists.rich("actions.reorder.save.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        try {
+          await fetcher(`${templatesUrl}/reorder`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids: rows.map(({ id }) => id) }),
+          });
+
+          mutate(rows);
+          setDraftRows(null);
+          setToolbarMode(null);
+
+          setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+
+          enqueueSnackbar(tChecklists("actions.reorder.save.success"), {
+            variant: "success",
+          });
+        } catch (error) {
+          enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+        }
+      },
+      open: true,
+      title: tChecklists("actions.reorder.save.label"),
+    });
+  }, [apiRef, mutate, rows, setDialog, tChecklists, templatesUrl]);
+
+  const handleCancelReorder = useCallback(() => {
+    setDialog({
+      content: (
+        <DialogContentText>
+          {tChecklists.rich("actions.reorder.cancel.confirm", {
+            bold: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </DialogContentText>
+      ),
+      onConfirm: async () => {
+        setDraftRows(null);
+        setToolbarMode(null);
+      },
+      open: true,
+      title: tChecklists("actions.reorder.cancel.label"),
+    });
+  }, [setDialog, tChecklists]);
+
+  const handleDragEnd = ({ operation }: DragEndEvent) => {
+    if (!isSortableOperation(operation)) return;
+
+    const { canceled, source } = operation;
+    if (canceled || !source) return;
+
+    const fromIndex = source.initialIndex;
+    const toIndex = source.index;
+    if (fromIndex === toIndex) return;
+
+    setDraftRows(arrayMove(rows, fromIndex, toIndex));
+  };
 
   const handleTemplateDialog = useCallback(
     (template?: ChecklistTemplate) =>
@@ -120,44 +240,54 @@ const ChecklistTemplates = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      {
-        disableColumnMenu: true,
-        disableExport: true,
-        field: "actions",
-        filterable: false,
-        headerName: tChecklists("actions.label"),
-        renderCell: ({ row }: GridRenderCellParams<ChecklistTemplate>) => (
-          <ActionsStack direction="row">
-            <Tooltip title={tChecklists("actions.update.title")}>
-              <span>
-                <IconButton
-                  aria-label={tChecklists("actions.update.title")}
-                  disabled={closed}
-                  onClick={() => handleTemplateDialog(row)}
-                  size="small"
-                >
-                  <Edit fontSize="small" />
-                </IconButton>
-              </span>
-            </Tooltip>
-            <Tooltip title={tChecklists("actions.remove.title")}>
-              <span>
-                <IconButton
-                  aria-label={tChecklists("actions.remove.title")}
-                  color="error"
-                  disabled={closed}
-                  onClick={() => handleRemove(row)}
-                  size="small"
-                >
-                  <Delete fontSize="small" />
-                </IconButton>
-              </span>
-            </Tooltip>
-          </ActionsStack>
-        ),
-        resizable: false,
-        sortable: false,
-      },
+      isReorderMode
+        ? {
+            disableColumnMenu: true,
+            field: "reorder",
+            filterable: false,
+            headerName: tChecklists("reorder"),
+            renderCell: () => <DragHandle />,
+            resizable: false,
+            sortable: false,
+          }
+        : {
+            disableColumnMenu: true,
+            disableExport: true,
+            field: "actions",
+            filterable: false,
+            headerName: tChecklists("actions.label"),
+            renderCell: ({ row }: GridRenderCellParams<ChecklistTemplate>) => (
+              <ActionsStack direction="row">
+                <Tooltip title={tChecklists("actions.update.title")}>
+                  <span>
+                    <IconButton
+                      aria-label={tChecklists("actions.update.title")}
+                      disabled={closed}
+                      onClick={() => handleTemplateDialog(row)}
+                      size="small"
+                    >
+                      <Edit fontSize="small" />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+                <Tooltip title={tChecklists("actions.remove.title")}>
+                  <span>
+                    <IconButton
+                      aria-label={tChecklists("actions.remove.title")}
+                      color="error"
+                      disabled={closed}
+                      onClick={() => handleRemove(row)}
+                      size="small"
+                    >
+                      <Delete fontSize="small" />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+              </ActionsStack>
+            ),
+            resizable: false,
+            sortable: false,
+          },
       { field: "name", headerName: tChecklists("name") },
       {
         field: "timing",
@@ -173,32 +303,94 @@ const ChecklistTemplates = ({
           value.map(({ label }) => label).join(tCommon("delimiter")),
       },
     ],
-    [closed, handleRemove, handleTemplateDialog, tChecklists, tCommon],
+    [
+      closed,
+      handleRemove,
+      handleTemplateDialog,
+      isReorderMode,
+      tChecklists,
+      tCommon,
+    ],
   );
 
   return (
     <>
       <ToolbarStack direction="row">
-        <Button
-          disabled={closed}
-          onClick={() => handleTemplateDialog()}
-          size="small"
-          startIcon={<Add />}
-          variant="contained"
-        >
-          {tChecklists("actions.create.title")}
-        </Button>
+        {isReorderMode ? (
+          <>
+            <Button
+              onClick={handleCancelReorder}
+              size="small"
+              startIcon={<Cancel />}
+              variant="outlined"
+            >
+              {tChecklists("actions.reorder.cancel.label")}
+            </Button>
+            <Button
+              onClick={handleSaveReorder}
+              size="small"
+              startIcon={<Save />}
+              variant="contained"
+            >
+              {tChecklists("actions.reorder.save.label")}
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button
+              disabled={closed}
+              onClick={() => handleTemplateDialog()}
+              size="small"
+              startIcon={<Add />}
+              variant="contained"
+            >
+              {tChecklists("actions.create.title")}
+            </Button>
+            <Button
+              disabled={isReorderDisabled}
+              onClick={handleEnterReorderMode}
+              size="small"
+              startIcon={<Sort />}
+              variant="outlined"
+            >
+              {tChecklists("actions.reorder.title")}
+            </Button>
+          </>
+        )}
       </ToolbarStack>
-      <DataGrid
-        {...DATA_GRID_PROPS}
-        apiRef={apiRef}
-        columns={columns}
-        loading={isValidating}
-        onPaginationModelChange={() =>
-          apiRef.current?.autosizeColumns(autosizeOptions)
-        }
-        rows={rows}
-      />
+      <DragDropProvider onDragEnd={handleDragEnd}>
+        <DataGrid
+          {...DATA_GRID_PROPS}
+          apiRef={apiRef}
+          columns={columns}
+          disableColumnFilter={isReorderMode}
+          disableColumnSorting={isReorderMode}
+          filterModel={filterModel}
+          hideFooterPagination={isReorderMode}
+          loading={isValidating}
+          onFilterModelChange={setFilterModel}
+          onPaginationModelChange={(model) => {
+            if (!isReorderMode) setPaginationModel(model);
+            apiRef.current?.autosizeColumns(autosizeOptions);
+          }}
+          onSortModelChange={setSortModel}
+          paginationModel={
+            isReorderMode
+              ? { page: 0, pageSize: MAX_PAGE_SIZE }
+              : paginationModel
+          }
+          rows={rows}
+          slotProps={{
+            ...DATA_GRID_PROPS.slotProps,
+            toolbar: { disableQuickFilter: isReorderMode },
+          }}
+          slots={{
+            ...DATA_GRID_PROPS.slots,
+            row: isReorderMode ? Sortable : undefined,
+          }}
+          sortModel={sortModel}
+        />
+      </DragDropProvider>
     </>
   );
 };

@@ -1392,6 +1392,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/checklists/templates/reorder": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 重新排序例行檢查表範本 */
+    patch: operations["ChecklistTemplatesController_reorder"];
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/checklists/templates/{templateId}": {
     parameters: {
       query?: never;
@@ -17725,6 +17742,34 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["ChecklistTemplateDto"];
         };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ChecklistTemplatesController_reorder: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReorderDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       /** @description Internal server error */
       500: {

@@ -30,6 +30,19 @@
         "success": "已删除检查表",
         "title": "删除检查表"
       },
+      "reorder": {
+        "cancel": {
+          "confirm": "确定要取消<bold>检查表</bold>排序吗？未保存的更改将会丢失。",
+          "label": "取消检查表排序"
+        },
+        "confirm": "确定要进行<bold>检查表</bold>排序吗？",
+        "save": {
+          "confirm": "确定要保存<bold>检查表</bold>排序吗？",
+          "label": "保存检查表排序",
+          "success": "排序已保存"
+        },
+        "title": "检查表排序"
+      },
       "update": {
         "success": "已更新检查表",
         "title": "编辑检查表"
@@ -52,6 +65,7 @@
     },
     "label": "检查表模板",
     "name": "名称",
+    "reorder": "排序",
     "timing": {
       "anytime": "不限",
       "closing": "打烊",

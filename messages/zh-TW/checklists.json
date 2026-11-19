@@ -30,6 +30,19 @@
         "success": "已刪除檢查表",
         "title": "刪除檢查表"
       },
+      "reorder": {
+        "cancel": {
+          "confirm": "確定要取消<bold>檢查表</bold>排序嗎？未儲存的變更將會遺失。",
+          "label": "取消檢查表排序"
+        },
+        "confirm": "確定要進行<bold>檢查表</bold>排序嗎？",
+        "save": {
+          "confirm": "確定要儲存<bold>檢查表</bold>排序嗎？",
+          "label": "儲存檢查表排序",
+          "success": "排序已儲存"
+        },
+        "title": "檢查表排序"
+      },
       "update": {
         "success": "已更新檢查表",
         "title": "編輯檢查表"
@@ -52,6 +65,7 @@
     },
     "label": "檢查表範本",
     "name": "名稱",
+    "reorder": "排序",
     "timing": {
       "anytime": "不限",
       "closing": "打烊",
