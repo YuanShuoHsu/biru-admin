@@ -23,6 +23,8 @@
 | 果糖定量機 | 元揚             | [EZ-850H 加熱型果糖定量機](https://www.nianhoang.com.tw/product-detail-856393.html)                         | 待詢價                                                                | 1    |             | [寬250×深380×高410](https://www.nianhoang.com.tw/product-detail-856393.html)                                                         | 8kg           | 單相 110V/220V       | 150W                    |
 | 封口機     | 封王             | [PH-588S 高階型飲料杯封口機](https://www.phoenixes.com.tw/bubble-tea-cup-sealer-ph-588s)                    | 待詢價                                                                | 1    |             | [寬340×深300×高610](https://www.phoenixes.com.tw/bubble-tea-cup-sealer-ph-588s)                                                      | 21kg          | 110V／220V           |                         |
 
+- 慢磨機：Kuvings 另有較新的商用機型 [AUTO Chef CS800X 免手持商用慢磨機](https://www.kuvingsusa.com/products/commercial-hands-free-slow-juicer-cs800x)（美國售價 US$1,499.99），台灣同樣待確認商用授權經銷，詢價時與 CS600 一併詢問。
+
 ## 廚房區
 
 | 品項       | 品牌                                    | 型號                                                                                           | 單價（TWD）                                                                                                                                                                   | 數量 | 小計（TWD） | 尺寸（mm）                                                                              | 淨重   | 電源 | 功率  |
