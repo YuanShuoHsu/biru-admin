@@ -15,6 +15,7 @@ import CredentialAssets from "./CredentialAssets";
 import CredentialDialog, { CREDENTIAL_FORM_ID } from "./CredentialDialog";
 
 import DataGrid from "@/components/DataGrid";
+import DataGridErrorOverlay from "@/components/DataGridErrorOverlay";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -180,6 +181,10 @@ const CredentialSettings = () => {
         columns={columns}
         loading={isLoading}
         rows={credentials ?? []}
+        slots={{
+          ...DATA_GRID_PROPS.slots,
+          noRowsOverlay: DataGridErrorOverlay,
+        }}
         slotProps={{
           ...DATA_GRID_PROPS.slotProps,
           noRowsOverlay: { error, onRetry: () => mutate() },

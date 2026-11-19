@@ -19,6 +19,7 @@ import IsolatedMarginDialog, {
 } from "./IsolatedMarginDialog";
 
 import DataGrid from "@/components/DataGrid";
+import DataGridErrorOverlay from "@/components/DataGridErrorOverlay";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -769,6 +770,10 @@ const FuturesAccount = ({
       columns: openOrderColumns,
       loading: openOrdersLoading,
       rows: openOrders?.map((order) => ({ ...order, id: order.orderId })),
+      slots: {
+        ...DATA_GRID_PROPS.slots,
+        noRowsOverlay: DataGridErrorOverlay,
+      },
       slotProps: {
         ...DATA_GRID_PROPS.slotProps,
         noRowsOverlay: {
@@ -800,6 +805,10 @@ const FuturesAccount = ({
         ...position,
         id: position.positionId,
       })),
+      slots: {
+        ...DATA_GRID_PROPS.slots,
+        noRowsOverlay: DataGridErrorOverlay,
+      },
       slotProps: {
         ...DATA_GRID_PROPS.slotProps,
         noRowsOverlay: {

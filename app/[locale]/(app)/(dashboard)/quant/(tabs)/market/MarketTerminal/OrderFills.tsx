@@ -4,6 +4,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import useSWR from "swr";
 
 import DataGrid from "@/components/DataGrid";
+import DataGridErrorOverlay from "@/components/DataGridErrorOverlay";
 
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -87,6 +88,10 @@ const OrderFills = ({
         loading={isLoading}
         rows={fills ?? []}
         showToolbar={false}
+        slots={{
+          ...DATA_GRID_PROPS.slots,
+          noRowsOverlay: DataGridErrorOverlay,
+        }}
         slotProps={{
           ...DATA_GRID_PROPS.slotProps,
           noRowsOverlay: { error, onRetry: () => mutate() },

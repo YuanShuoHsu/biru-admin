@@ -15,6 +15,7 @@ import OrderFills from "../OrderFills";
 import { useAccountHistory } from "../useAccountHistory";
 
 import DataGrid from "@/components/DataGrid";
+import DataGridErrorOverlay from "@/components/DataGridErrorOverlay";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 
@@ -402,6 +403,10 @@ const AccountOrders = ({ credential, market }: AccountOrdersProps) => {
             key={tab}
             loading={openOrdersLoading}
             rows={openOrders ?? []}
+            slots={{
+              ...DATA_GRID_PROPS.slots,
+              noRowsOverlay: DataGridErrorOverlay,
+            }}
             slotProps={{
               ...DATA_GRID_PROPS.slotProps,
               noRowsOverlay: {

@@ -4,6 +4,8 @@ import { useState } from "react";
 
 import useSWR from "swr";
 
+import DataGridErrorOverlay from "@/components/DataGridErrorOverlay";
+
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
@@ -116,6 +118,10 @@ export const useAccountHistory = <Row>(
         : model.page * model.pageSize + Math.min(rows.length, model.pageSize),
       rows,
       showToolbar: false,
+      slots: {
+        ...DATA_GRID_PROPS.slots,
+        noRowsOverlay: DataGridErrorOverlay,
+      },
       slotProps: {
         ...DATA_GRID_PROPS.slotProps,
         noRowsOverlay: { error, onRetry: () => mutate() },
