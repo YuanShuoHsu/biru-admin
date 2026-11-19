@@ -13,10 +13,6 @@ import { styled } from "@mui/material/styles";
 
 import { useCountStore } from "@/providers/count-store-provider";
 
-import type { Member } from "@/types/organizations";
-
-import { hasRolePermission } from "@/utils/organizations";
-
 const ContentStack = styled(Stack)(({ theme }) => ({
   flex: 1,
   gap: theme.spacing(2),
@@ -40,61 +36,81 @@ const PendingInvitationChip = ({
   return count > 0 && <Chip color="secondary" label={count} size="small" />;
 };
 
+interface TabAccess {
+  canReadWaitlistSetting: boolean;
+  canUpdateOrganization: boolean;
+}
+
+type RouteTabItems = React.ComponentProps<typeof RouteTabs>["tabs"];
+
+const PermittedRouteTabs = ({
+  tabAccess,
+  tabs,
+}: {
+  tabAccess: Promise<TabAccess>;
+  tabs: RouteTabItems;
+}) => {
+  const { slug } = useParams<{ slug: string }>();
+
+  const { canReadWaitlistSetting, canUpdateOrganization } = use(tabAccess);
+
+  const hiddenPaths = [
+    ...(canUpdateOrganization ? [] : ["special-hours", "in-store", "points"]),
+    ...(canReadWaitlistSetting ? [] : ["waitlist"]),
+  ].map((segment) => `/organizations/${slug}/${segment}`);
+
+  return (
+    <RouteTabs
+      ariaLabel="organization tabs"
+      tabs={tabs.filter(({ path }) => !hiddenPaths.includes(path))}
+    />
+  );
+};
+
 interface OrganizationsSlugTabsProps {
   children: React.ReactNode;
-  currentUserRole: Member["role"] | undefined;
   pendingInvitationCount: Promise<number>;
+  tabAccess: Promise<TabAccess>;
 }
 
 const OrganizationsSlugTabs = ({
   children,
-  currentUserRole,
   pendingInvitationCount,
+  tabAccess,
 }: OrganizationsSlugTabsProps) => {
   const { slug } = useParams<{ slug: string }>();
 
   const tInvitations = useTranslations("organizations.invitations");
 
-  const canUpdateOrganization = hasRolePermission(currentUserRole, {
-    organization: ["update"],
-  });
+  const tabs: RouteTabItems = [
+    { path: `/organizations/${slug}/members` },
+    { path: `/organizations/${slug}/teams` },
+    {
+      label: (
+        <TabLabelStack direction="row">
+          {tInvitations("label")}
+          <Suspense>
+            <PendingInvitationChip initialCount={pendingInvitationCount} />
+          </Suspense>
+        </TabLabelStack>
+      ),
+      path: `/organizations/${slug}/invitations`,
+    },
+    { path: `/organizations/${slug}/location` },
+    { path: `/organizations/${slug}/pickup` },
+    { path: `/organizations/${slug}/special-hours` },
+    { path: `/organizations/${slug}/in-store` },
+    { path: `/organizations/${slug}/waitlist` },
+    { path: `/organizations/${slug}/points` },
+  ];
 
   return (
     <ContentStack>
-      <RouteTabs
-        ariaLabel="organization tabs"
-        tabs={[
-          { path: `/organizations/${slug}/members` },
-          { path: `/organizations/${slug}/teams` },
-          {
-            label: (
-              <TabLabelStack direction="row">
-                {tInvitations("label")}
-                <Suspense>
-                  <PendingInvitationChip
-                    initialCount={pendingInvitationCount}
-                  />
-                </Suspense>
-              </TabLabelStack>
-            ),
-            path: `/organizations/${slug}/invitations`,
-          },
-          { path: `/organizations/${slug}/location` },
-          { path: `/organizations/${slug}/pickup` },
-          ...(canUpdateOrganization
-            ? [
-                { path: `/organizations/${slug}/special-hours` },
-                { path: `/organizations/${slug}/in-store` },
-              ]
-            : []),
-          ...(hasRolePermission(currentUserRole, { waitlistSetting: ["read"] })
-            ? [{ path: `/organizations/${slug}/waitlist` }]
-            : []),
-          ...(canUpdateOrganization
-            ? [{ path: `/organizations/${slug}/points` }]
-            : []),
-        ]}
-      />
+      <Suspense
+        fallback={<RouteTabs ariaLabel="organization tabs" tabs={tabs} />}
+      >
+        <PermittedRouteTabs tabAccess={tabAccess} tabs={tabs} />
+      </Suspense>
       {children}
     </ContentStack>
   );

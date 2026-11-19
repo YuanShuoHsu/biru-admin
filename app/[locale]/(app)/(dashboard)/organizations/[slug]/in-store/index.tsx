@@ -125,10 +125,12 @@ const OrderQrCode = ({ fileName, orderUrl }: OrderQrCodeProps) => {
 };
 
 interface DineInQrCodeCardProps {
+  canUpdateTableCount: boolean;
   organization: OrganizationResponse;
 }
 
 const DineInQrCodeCard = ({
+  canUpdateTableCount,
   organization: initialOrganization,
 }: DineInQrCodeCardProps) => {
   const [organization, setOrganization] = useState(initialOrganization);
@@ -196,11 +198,13 @@ const DineInQrCodeCard = ({
             {tOrganizations("inStore.dineIn.tableCount.notSet")}
           </Alert>
         )}
-        <ActionsStack direction="row">
-          <Button onClick={handleUpdateTableCount} variant="outlined">
-            {tOrganizations("inStore.dineIn.actions.updateTableCount.title")}
-          </Button>
-        </ActionsStack>
+        {canUpdateTableCount && (
+          <ActionsStack direction="row">
+            <Button onClick={handleUpdateTableCount} variant="outlined">
+              {tOrganizations("inStore.dineIn.actions.updateTableCount.title")}
+            </Button>
+          </ActionsStack>
+        )}
         {!!dineInTableCount && (
           <TextField
             error={isInvalidTableNumber}
@@ -908,11 +912,13 @@ const OrderTicketPrintersCard = ({
 };
 
 interface OrganizationsSlugInStoreProps {
+  canUpdateTableCount: boolean;
   organization: OrganizationResponse;
   organizationSlug: string;
 }
 
 const OrganizationsSlugInStore = ({
+  canUpdateTableCount,
   organization,
   organizationSlug,
 }: OrganizationsSlugInStoreProps) => {
@@ -920,7 +926,10 @@ const OrganizationsSlugInStore = ({
 
   return (
     <CardsStack>
-      <DineInQrCodeCard organization={organization} />
+      <DineInQrCodeCard
+        canUpdateTableCount={canUpdateTableCount}
+        organization={organization}
+      />
       <OrderModeQrCodeCard
         label={tOrganizations("inStore.counter.label")}
         mode={ORDER_MODE.Counter}

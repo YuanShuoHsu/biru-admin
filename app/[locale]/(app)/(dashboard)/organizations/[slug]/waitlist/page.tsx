@@ -12,7 +12,7 @@ import type { Locale } from "@/i18n/routing";
 import type { WaitlistSettingsResponse } from "@/types/waitlist";
 
 import { fetcher, settle } from "@/utils/fetcher";
-import { getApiMemberRole, hasRolePermission } from "@/utils/organizations";
+import { hasRolePermission } from "@/utils/organizations";
 import { getFullOrganization, getSession } from "@/utils/session";
 
 interface OrganizationsSlugWaitlistPageProps {
@@ -49,12 +49,15 @@ const OrganizationsSlugWaitlistPage = async ({
   if (organizationError) return <ErrorAlert />;
   if (!data) notFound();
 
-  const currentUserRole = getApiMemberRole(
-    data.members.find(({ userId }) => userId === session?.user?.id)?.role,
-    session?.user?.role,
-  );
+  const currentUserRole = data.members.find(
+    ({ userId }) => userId === session?.user?.id,
+  )?.role;
+  const isPlatformAdmin = session?.user?.role === "admin";
 
-  if (!hasRolePermission(currentUserRole, { waitlistSetting: ["read"] }))
+  if (
+    !isPlatformAdmin &&
+    !hasRolePermission(currentUserRole, { waitlistSetting: ["read"] })
+  )
     notFound();
 
   const { data: settings, error } = await settle(
@@ -68,12 +71,14 @@ const OrganizationsSlugWaitlistPage = async ({
 
   return (
     <OrganizationsSlugWaitlist
-      canUpdateOrganization={hasRolePermission(currentUserRole, {
-        organization: ["update"],
-      })}
-      canUpdateWaitlist={hasRolePermission(currentUserRole, {
-        waitlistSetting: ["update"],
-      })}
+      canUpdateOrganization={
+        isPlatformAdmin ||
+        hasRolePermission(currentUserRole, { organization: ["update"] })
+      }
+      canUpdateWaitlist={
+        isPlatformAdmin ||
+        hasRolePermission(currentUserRole, { waitlistSetting: ["update"] })
+      }
       organizationName={data.name}
       organizationSlug={organizationSlug}
       settings={settings}

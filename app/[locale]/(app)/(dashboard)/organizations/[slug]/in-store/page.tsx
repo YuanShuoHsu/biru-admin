@@ -9,11 +9,7 @@ import ErrorAlert from "@/components/ErrorAlert";
 import type { Locale } from "@/i18n/routing";
 
 import { settle } from "@/utils/fetcher";
-import {
-  getApiMemberRole,
-  getOrganization,
-  hasRolePermission,
-} from "@/utils/organizations";
+import { getOrganization, hasRolePermission } from "@/utils/organizations";
 import { getFullOrganization, getSession } from "@/utils/session";
 
 interface OrganizationsSlugInStorePageProps {
@@ -58,16 +54,22 @@ const OrganizationsSlugInStorePage = async ({
   if (fullOrganizationError || error) return <ErrorAlert />;
   if (!data) notFound();
 
-  const currentUserRole = getApiMemberRole(
-    data.members.find(({ userId }) => userId === session?.user?.id)?.role,
-    session?.user?.role,
-  );
+  const currentUserRole = data.members.find(
+    ({ userId }) => userId === session?.user?.id,
+  )?.role;
+  const isPlatformAdmin = session?.user?.role === "admin";
 
-  if (!hasRolePermission(currentUserRole, { organization: ["update"] }))
+  if (
+    !isPlatformAdmin &&
+    !hasRolePermission(currentUserRole, { organization: ["update"] })
+  )
     notFound();
 
   return (
     <OrganizationsSlugInStore
+      canUpdateTableCount={hasRolePermission(currentUserRole, {
+        organization: ["update"],
+      })}
       organization={organization}
       organizationSlug={organizationSlug}
     />

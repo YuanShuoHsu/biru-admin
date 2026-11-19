@@ -9,7 +9,7 @@ import ErrorAlert from "@/components/ErrorAlert";
 import type { Locale } from "@/i18n/routing";
 
 import { settle } from "@/utils/fetcher";
-import { getApiMemberRole, hasRolePermission } from "@/utils/organizations";
+import { hasRolePermission } from "@/utils/organizations";
 import { getFullOrganization, getSession } from "@/utils/session";
 
 interface OrganizationsSlugSpecialHoursPageProps {
@@ -44,12 +44,15 @@ const OrganizationsSlugSpecialHoursPage = async ({
   if (error) return <ErrorAlert />;
   if (!data) notFound();
 
-  const currentUserRole = getApiMemberRole(
-    data.members.find(({ userId }) => userId === session?.user?.id)?.role,
-    session?.user?.role,
-  );
+  const currentUserRole = data.members.find(
+    ({ userId }) => userId === session?.user?.id,
+  )?.role;
+  const isPlatformAdmin = session?.user?.role === "admin";
 
-  if (!hasRolePermission(currentUserRole, { organization: ["update"] }))
+  if (
+    !isPlatformAdmin &&
+    !hasRolePermission(currentUserRole, { organization: ["update"] })
+  )
     notFound();
 
   return <OrganizationsSlugSpecialHours organizationSlug={organizationSlug} />;

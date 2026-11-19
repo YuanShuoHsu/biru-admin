@@ -4,7 +4,7 @@ import { CountStoreProvider } from "@/providers/count-store-provider";
 
 import { isActiveSession } from "@/utils/auth";
 import { settle } from "@/utils/fetcher";
-import { getApiMemberRole } from "@/utils/organizations";
+import { hasRolePermission } from "@/utils/organizations";
 import { getFullOrganization, getSession } from "@/utils/session";
 
 interface OrganizationsSlugLayoutProps {
@@ -27,10 +27,7 @@ const getPendingInvitationCount = async (
   );
 };
 
-const OrganizationsSlugLayout = async ({
-  children,
-  params,
-}: OrganizationsSlugLayoutProps) => {
+const getTabAccess = async (params: OrganizationsSlugLayoutProps["params"]) => {
   const { slug } = await params;
 
   const [{ data }, session] = await Promise.all([
@@ -38,21 +35,33 @@ const OrganizationsSlugLayout = async ({
     getSession(),
   ]);
 
-  const currentUserRole = getApiMemberRole(
-    data?.members.find(({ userId }) => userId === session?.user?.id)?.role,
-    session?.user?.role,
-  );
+  const currentUserRole = data?.members.find(
+    ({ userId }) => userId === session?.user?.id,
+  )?.role;
+  const isPlatformAdmin = session?.user?.role === "admin";
 
-  return (
-    <CountStoreProvider>
-      <OrganizationsSlugTabs
-        currentUserRole={currentUserRole}
-        pendingInvitationCount={getPendingInvitationCount(params)}
-      >
-        {children}
-      </OrganizationsSlugTabs>
-    </CountStoreProvider>
-  );
+  return {
+    canReadWaitlistSetting:
+      isPlatformAdmin ||
+      hasRolePermission(currentUserRole, { waitlistSetting: ["read"] }),
+    canUpdateOrganization:
+      isPlatformAdmin ||
+      hasRolePermission(currentUserRole, { organization: ["update"] }),
+  };
 };
+
+const OrganizationsSlugLayout = ({
+  children,
+  params,
+}: OrganizationsSlugLayoutProps) => (
+  <CountStoreProvider>
+    <OrganizationsSlugTabs
+      pendingInvitationCount={getPendingInvitationCount(params)}
+      tabAccess={getTabAccess(params)}
+    >
+      {children}
+    </OrganizationsSlugTabs>
+  </CountStoreProvider>
+);
 
 export default OrganizationsSlugLayout;
