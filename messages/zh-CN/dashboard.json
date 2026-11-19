@@ -38,5 +38,9 @@
     "medianWaitValue": "{minutes, number} 分钟",
     "outcomes": "候位结果",
     "hourlyTickets": "各时段取号量"
+  },
+  "checklists": {
+    "incomplete": "未完成检查表",
+    "incompleteValue": "{incomplete, number} / {total, number} 未完成"
   }
 }
