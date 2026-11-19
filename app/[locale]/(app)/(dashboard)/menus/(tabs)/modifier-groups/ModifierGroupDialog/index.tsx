@@ -22,41 +22,48 @@ import { apiClient } from "@/lib/api-client";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
+import type { ModifierGroup } from "@/types/menus";
+
 import { localize } from "@/utils/locale";
 
-interface CreateModifierGroupDialogProps {
+interface ModifierGroupDialogProps {
+  group?: ModifierGroup;
   menuId: string;
   mutate: () => void;
 }
 
-const CreateModifierGroupDialog = ({
+const ModifierGroupDialog = ({
+  group,
   menuId,
   mutate,
-}: CreateModifierGroupDialogProps) => {
+}: ModifierGroupDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
   const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
 
-  const createModifierGroupFormSchema = useModifierGroupFormSchema();
+  const modifierGroupFormSchema = useModifierGroupFormSchema();
   const {
-    formState: { errors },
     control,
+    formState: { errors },
     handleSubmit,
     setValue,
   } = useForm<ModifierGroupForm>({
     defaultValues: {
-      displayName: {},
-      minSelectionCount: "",
-      maxSelectionCount: "",
+      displayName: group?.displayName ?? {},
+      minSelectionCount: group ? String(group.minSelectionCount) : "",
+      maxSelectionCount:
+        group?.maxSelectionCount == null ? "" : String(group.maxSelectionCount),
     },
-    resolver: zodResolver(createModifierGroupFormSchema),
+    resolver: zodResolver(modifierGroupFormSchema),
   });
 
   const displayNameValue = useWatch({ control, name: "displayName" });
   const minSelectionCount = useWatch({ control, name: "minSelectionCount" });
   const maxSelectionCount = useWatch({ control, name: "maxSelectionCount" });
+
+  const action = group ? "updateGroup" : "createGroup";
 
   const onSubmitHandler = async ({
     displayName,
@@ -66,19 +73,35 @@ const CreateModifierGroupDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      await apiClient.POST("/api/menus/{menuId}/modifier-groups", {
-        params: { path: { menuId } },
-        body: {
-          displayName,
-          minSelectionCount: minSelectionCount ? Number(minSelectionCount) : 0,
-          ...(maxSelectionCount && {
-            maxSelectionCount: Number(maxSelectionCount),
-          }),
-        },
-      });
+      const body = {
+        displayName,
+        minSelectionCount: minSelectionCount ? Number(minSelectionCount) : 0,
+      };
+
+      if (group) {
+        await apiClient.PATCH("/api/modifier-groups/{groupId}", {
+          params: { path: { groupId: group.id } },
+          body: {
+            ...body,
+            maxSelectionCount: maxSelectionCount
+              ? Number(maxSelectionCount)
+              : null,
+          },
+        });
+      } else {
+        await apiClient.POST("/api/menus/{menuId}/modifier-groups", {
+          params: { path: { menuId } },
+          body: {
+            ...body,
+            ...(maxSelectionCount && {
+              maxSelectionCount: Number(maxSelectionCount),
+            }),
+          },
+        });
+      }
 
       enqueueSnackbar(
-        tMenus("modifierGroups.actions.createGroup.success", {
+        tMenus(`modifierGroups.actions.${action}.success`, {
           name: localize(displayName, locale),
         }),
         { variant: "success" },
@@ -88,7 +111,7 @@ const CreateModifierGroupDialog = ({
 
       mutate();
     } catch {
-      enqueueSnackbar(tMenus("modifierGroups.actions.createGroup.error"), {
+      enqueueSnackbar(tMenus(`modifierGroups.actions.${action}.error`), {
         variant: "error",
       });
 
@@ -100,7 +123,7 @@ const CreateModifierGroupDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="create-modifier-group-form" onSubmit={onSubmit}>
+    <FormBox id="modifier-group-form" onSubmit={onSubmit}>
       <LocalizedTextFields
         fields={(lang) => [
           {
@@ -151,4 +174,4 @@ const CreateModifierGroupDialog = ({
   );
 };
 
-export default CreateModifierGroupDialog;
+export default ModifierGroupDialog;
