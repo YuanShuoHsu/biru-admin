@@ -6,7 +6,7 @@ import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import useSWR from "swr";
 
-import { type UpdateAddOnForm, useUpdateAddOnFormSchema } from "./definitions";
+import { type AddOnForm, useAddOnFormSchema } from "./definitions";
 
 import FormBox from "@/components/FormBox";
 
@@ -26,7 +26,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type {
   MenuItemAddOn,
   MenuItemAddOnListResponse,
-  MenuItem as MenuItemType,
+  MenuItem as MenuItemDto,
   MenuSection,
 } from "@/types/menus";
 
@@ -37,51 +37,53 @@ const StyledInputAdornment = styled(InputAdornment)(({ theme }) => ({
   marginRight: theme.spacing(2),
 }));
 
-interface UpdateAddOnDialogProps {
-  addOn: MenuItemAddOn;
+interface AddOnDialogProps {
+  addOn?: MenuItemAddOn;
   menuId: string;
+  menuItemId: string;
   mutate: () => void;
 }
 
-const UpdateAddOnDialog = ({
+const AddOnDialog = ({
   addOn,
   menuId,
+  menuItemId,
   mutate,
-}: UpdateAddOnDialogProps) => {
+}: AddOnDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
 
   const locale = useLocale();
   const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
 
-  const updateAddOnFormSchema = useUpdateAddOnFormSchema();
+  const addOnFormSchema = useAddOnFormSchema();
   const {
+    control,
     formState: { errors },
     handleSubmit,
     register,
     setValue,
-    control,
-  } = useForm<UpdateAddOnForm>({
+  } = useForm<AddOnForm>({
     defaultValues: {
       addOnMenuSectionId:
-        addOn.addOnMenuSectionId || addOn.addOnMenuItemSectionId || "",
-      addOnMenuItemId: addOn.addOnMenuItemId || "",
+        addOn?.addOnMenuSectionId || addOn?.addOnMenuItemSectionId || "",
+      addOnMenuItemId: addOn?.addOnMenuItemId || "",
     },
-    resolver: zodResolver(updateAddOnFormSchema),
+    resolver: zodResolver(addOnFormSchema),
   });
 
   const addOnMenuSectionId = useWatch({ control, name: "addOnMenuSectionId" });
   const addOnMenuItemId = useWatch({ control, name: "addOnMenuItemId" });
 
   const { data: addOns = [] } = useSWR(
-    `/api/menu-items/${addOn.menuItemId}/add-ons?limit=100&offset=0`,
+    `/api/menu-items/${menuItemId}/add-ons?limit=100&offset=0`,
     () =>
       fetcher<MenuItemAddOnListResponse>(
-        `/api/menu-items/${addOn.menuItemId}/add-ons?limit=100&offset=0`,
+        `/api/menu-items/${menuItemId}/add-ons?limit=100&offset=0`,
       ).then(({ data }) => data),
   );
 
-  const otherAddOns = addOns.filter(({ id }) => id !== addOn.id);
+  const otherAddOns = addOns.filter(({ id }) => id !== addOn?.id);
   const usedSectionIds = new Set(
     otherAddOns.flatMap(({ addOnMenuSectionId }) => addOnMenuSectionId || []),
   );
@@ -102,19 +104,22 @@ const UpdateAddOnDialog = ({
       ? `/api/menu-sections/${addOnMenuSectionId}/menu-items?limit=100&offset=0`
       : null,
     () =>
-      fetcher<{ data: MenuItemType[] }>(
+      fetcher<{ data: MenuItemDto[] }>(
         `/api/menu-sections/${addOnMenuSectionId}/menu-items?limit=100&offset=0`,
       ).then(({ data }) => data || []),
   );
 
+  const action = addOn ? "updateAddOn" : "createAddOn";
+
   const onSubmitHandler = async ({
     addOnMenuSectionId,
     addOnMenuItemId,
-  }: UpdateAddOnForm) => {
+  }: AddOnForm) => {
     const menuSection = localize(
       sections.find(({ id }) => id === addOnMenuSectionId)?.name,
       locale,
     );
+
     const displayName = addOnMenuItemId
       ? tMenus("items.addOns.displayName.menuItem", {
           menuSection,
@@ -129,20 +134,22 @@ const UpdateAddOnDialog = ({
       setDialog({ confirmLoading: true });
 
       await fetcher<MenuItemAddOn>(
-        `/api/menu-items/${addOn.menuItemId}/add-ons/${addOn.id}`,
+        addOn
+          ? `/api/menu-items/${menuItemId}/add-ons/${addOn.id}`
+          : `/api/menu-items/${menuItemId}/add-ons`,
         {
-          method: "PATCH",
+          method: addOn ? "PATCH" : "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(
             addOnMenuItemId
-              ? { addOnMenuSectionId: null, addOnMenuItemId }
-              : { addOnMenuSectionId, addOnMenuItemId: null },
+              ? { addOnMenuItemId, ...(addOn && { addOnMenuSectionId: null }) }
+              : { addOnMenuSectionId, ...(addOn && { addOnMenuItemId: null }) },
           ),
         },
       );
 
       enqueueSnackbar(
-        tMenus("items.addOns.actions.updateAddOn.success", {
+        tMenus(`items.addOns.actions.${action}.success`, {
           name: displayName,
         }),
         { variant: "success" },
@@ -152,7 +159,7 @@ const UpdateAddOnDialog = ({
       mutate();
     } catch {
       enqueueSnackbar(
-        tMenus("items.addOns.actions.updateAddOn.error", { name: displayName }),
+        tMenus(`items.addOns.actions.${action}.error`, { name: displayName }),
         { variant: "error" },
       );
       setDialog({ confirmLoading: false });
@@ -163,7 +170,7 @@ const UpdateAddOnDialog = ({
     handleSubmit(onSubmitHandler)(event);
 
   return (
-    <FormBox id="update-add-on-form" onSubmit={onSubmit}>
+    <FormBox id="add-on-form" onSubmit={onSubmit}>
       <TextField
         error={!!errors.addOnMenuSectionId}
         fullWidth
@@ -262,7 +269,7 @@ const UpdateAddOnDialog = ({
           {sectionItems.map(({ id, name }) => (
             <MenuItem
               disabled={
-                id === addOn.menuItemId ||
+                id === menuItemId ||
                 (id !== addOnMenuItemId && usedItemIds.has(id))
               }
               key={id}
@@ -277,4 +284,4 @@ const UpdateAddOnDialog = ({
   );
 };
 
-export default UpdateAddOnDialog;
+export default AddOnDialog;

@@ -5,8 +5,7 @@ import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
-import CreateAddOnDialog from "./CreateAddOnDialog";
-import UpdateAddOnDialog from "./UpdateAddOnDialog";
+import AddOnDialog from "./AddOnDialog";
 
 import AuditLogButton from "@/components/AuditLogButton";
 import DataGrid from "@/components/DataGrid";
@@ -196,13 +195,9 @@ const MenuItemAddOns = ({
   const handleCreateAddOn = useCallback(() => {
     setDialog({
       content: (
-        <CreateAddOnDialog
-          menuId={menuId}
-          menuItemId={menuItemId}
-          mutate={mutate}
-        />
+        <AddOnDialog menuId={menuId} menuItemId={menuItemId} mutate={mutate} />
       ),
-      formId: "create-add-on-form",
+      formId: "add-on-form",
       open: true,
       title: tMenus("items.addOns.actions.createAddOn.title"),
     });
@@ -212,14 +207,19 @@ const MenuItemAddOns = ({
     (addOn: MenuItemAddOn) => {
       setDialog({
         content: (
-          <UpdateAddOnDialog addOn={addOn} menuId={menuId} mutate={mutate} />
+          <AddOnDialog
+            addOn={addOn}
+            menuId={menuId}
+            menuItemId={menuItemId}
+            mutate={mutate}
+          />
         ),
-        formId: "update-add-on-form",
+        formId: "add-on-form",
         open: true,
         title: tMenus("items.addOns.actions.updateAddOn.title"),
       });
     },
-    [menuId, mutate, setDialog, tMenus],
+    [menuId, menuItemId, mutate, setDialog, tMenus],
   );
 
   const getAddOnDisplayName = useCallback(

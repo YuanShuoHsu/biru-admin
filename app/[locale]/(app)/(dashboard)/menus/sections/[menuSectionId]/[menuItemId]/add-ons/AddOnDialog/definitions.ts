@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-export const useUpdateAddOnFormSchema = () => {
+export const useAddOnFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
@@ -12,6 +12,4 @@ export const useUpdateAddOnFormSchema = () => {
   });
 };
 
-export type UpdateAddOnForm = z.infer<
-  ReturnType<typeof useUpdateAddOnFormSchema>
->;
+export type AddOnForm = z.infer<ReturnType<typeof useAddOnFormSchema>>;
