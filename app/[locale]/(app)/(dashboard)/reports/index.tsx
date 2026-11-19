@@ -7,6 +7,7 @@ import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useMemo, useState } from "react";
+import { NumericFormat } from "react-number-format";
 import useSWR from "swr";
 
 import {
@@ -40,10 +41,12 @@ import {
 } from "@/hooks/useFilterOperators";
 import { useFormatMoney } from "@/hooks/useFormatMoney";
 import { useMonthFormat } from "@/hooks/useMonthFormat";
+import { useRoutes } from "@/hooks/useRoutes";
 import { useUpdateQuery } from "@/hooks/useUpdateQuery";
 
-import { Download } from "@mui/icons-material";
+import { Download, Settings } from "@mui/icons-material";
 import {
+  Alert,
   Button,
   MenuItem,
   Stack,
@@ -63,6 +66,8 @@ import type { ApiOrderMode } from "@/types/orderMode";
 import type { OrderPaymentMethod } from "@/types/orders";
 import type { Organization } from "@/types/organizations";
 import type {
+  BreakEvenItemRow,
+  BreakEvenReportResponse,
   InventoryReportResponse,
   InventoryReportRow,
   PersonnelCostReportResponse,
@@ -104,6 +109,33 @@ const GroupByTextField = styled(TextField)({
   minWidth: 160,
 });
 
+const SummaryStack = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(1),
+}));
+
+const PERCENT_FORMAT = {
+  maximumFractionDigits: 1,
+  style: "percent",
+} as const;
+
+const BREAK_EVEN_MONEY_FIELDS = ["revenue", "grossProfit", "cost"] as const;
+
+const BREAK_EVEN_SALES_SUMMARY = [
+  "revenue",
+  "businessTax",
+  "salesExcludingTax",
+  "costOfGoodsSold",
+  "netProfit",
+] as const;
+
+const BREAK_EVEN_TARGET_SUMMARY = [
+  "breakEvenRevenue",
+  "dailyBreakEvenRevenue",
+  "remainingDailyBreakEvenRevenue",
+  "targetRevenue",
+  "dailyTargetRevenue",
+] as const;
+
 const MONEY_FIELDS = ["revenue", "discount", "refunded", "net"] as const;
 
 const INVENTORY_FIELDS = [
@@ -134,6 +166,7 @@ const REPORT_DATA_GRID_PROPS = {
 };
 
 interface ReportGridState {
+  breakEven?: BreakEvenReportResponse;
   filterField?: string;
   filterOperator?: FilterOperator;
   filterValue?: string;
@@ -155,6 +188,7 @@ interface ReportTableProps extends ReportGridState {
 }
 
 const ReportTable = ({
+  breakEven: initialBreakEven,
   canViewWastedCost,
   filterField,
   filterOperator,
@@ -267,6 +301,20 @@ const ReportTable = ({
     (url: string) => fetcher<PersonnelCostReportResponse>(url),
     { ...swrOptions, fallbackData: initialPersonnel },
   );
+
+  const {
+    data: breakEven,
+    error: breakEvenError,
+    isValidating: isValidatingBreakEven,
+    mutate: mutateBreakEven,
+  } = useSWR(
+    !loading && tab === "breakEven" ? reportUrl : null,
+    (url: string) => fetcher<BreakEvenReportResponse>(url),
+    { ...swrOptions, fallbackData: initialBreakEven },
+  );
+
+  const formatRate = (value: number | null) =>
+    value === null ? "" : format.number(value, PERCENT_FORMAT);
 
   const salesColumns = useMemo<GridColDef[]>(() => {
     const isItemGroupBy = groupBy === "menuItem" || groupBy === "category";
@@ -435,17 +483,62 @@ const ReportTable = ({
     ],
   );
 
+  const breakEvenColumns = useMemo<GridColDef[]>(
+    () => [
+      {
+        field: "name",
+        filterOperators: stringFilterOperators,
+        headerName: tReports("breakEven.item.name"),
+      },
+      {
+        field: "quantity",
+        filterOperators: numberFilterOperators,
+        headerName: tReports("breakEven.item.quantity"),
+        type: "number",
+      },
+      ...BREAK_EVEN_MONEY_FIELDS.map((field) => ({
+        field,
+        filterOperators: numberFilterOperators,
+        headerName: tReports(`breakEven.item.${field}`),
+        type: "number" as const,
+        renderCell: renderEmptyableCell,
+        valueFormatter: (value: number | null) =>
+          value === null ? "" : formatMoney(value, currency),
+      })),
+      {
+        field: "grossMarginRate",
+        filterOperators: numberFilterOperators,
+        headerName: tReports("breakEven.item.grossMarginRate"),
+        type: "number",
+        renderCell: renderEmptyableCell,
+        valueFormatter: (value: BreakEvenItemRow["grossMarginRate"]) =>
+          value === null ? "" : format.number(value, PERCENT_FORMAT),
+      },
+    ],
+    [
+      currency,
+      format,
+      formatMoney,
+      numberFilterOperators,
+      stringFilterOperators,
+      tReports,
+    ],
+  );
+
   const error = {
+    breakEven: breakEvenError,
     inventory: inventoryError,
     personnel: personnelError,
     sales: salesError,
   }[tab];
   const isValidating = {
+    breakEven: isValidatingBreakEven,
     inventory: isValidatingInventory,
     personnel: isValidatingPersonnel,
     sales: isValidatingSales,
   }[tab];
   const retry = {
+    breakEven: mutateBreakEven,
     inventory: mutateInventory,
     personnel: mutatePersonnel,
     sales: mutateSales,
@@ -468,6 +561,104 @@ const ReportTable = ({
     sortingMode: "server" as const,
     sortModel,
   };
+
+  const formatOptionalMoney = (value: number | null) =>
+    value === null ? <EmptyCell /> : formatMoney(value, currency);
+
+  if (tab === "breakEven")
+    return (
+      <>
+        {breakEven && (
+          <SummaryStack>
+            <TotalsStack direction="row">
+              <Typography variant="subtitle2">
+                {tReports("breakEven.fixedCostTotal")}{" "}
+                {formatMoney(breakEven.fixedCostTotal, currency)}
+              </Typography>
+              {breakEven.fixedCosts.map(({ amount, category }) => (
+                <Typography key={category} variant="body2">
+                  {tReports(`operatingCosts.category.options.${category}`)}{" "}
+                  {formatMoney(amount, currency)}
+                </Typography>
+              ))}
+              <Typography variant="body2">
+                {tReports(`breakEven.personnel.${breakEven.personnel.source}`)}{" "}
+                {formatMoney(breakEven.personnel.amount, currency)}
+              </Typography>
+            </TotalsStack>
+            <TotalsStack direction="row">
+              {BREAK_EVEN_SALES_SUMMARY.map((field) => (
+                <Typography key={field} variant="body2">
+                  {tReports(`breakEven.summary.${field}`)}{" "}
+                  {formatMoney(breakEven[field], currency)}
+                </Typography>
+              ))}
+              <Typography variant="body2">
+                {tReports("breakEven.summary.costOfGoodsSoldRate")}{" "}
+                {breakEven.costOfGoodsSoldRate === null ? (
+                  <EmptyCell />
+                ) : (
+                  formatRate(breakEven.costOfGoodsSoldRate)
+                )}
+              </Typography>
+              <Typography variant="body2">
+                {tReports("breakEven.summary.grossMarginRate")}{" "}
+                {breakEven.grossMarginRate === null ? (
+                  <EmptyCell />
+                ) : (
+                  formatRate(breakEven.grossMarginRate)
+                )}
+              </Typography>
+            </TotalsStack>
+            <TotalsStack direction="row">
+              <Typography variant="body2">
+                {tReports("breakEven.summary.openDays", {
+                  open: breakEven.openDays,
+                  remaining: breakEven.remainingOpenDays,
+                })}
+              </Typography>
+              {BREAK_EVEN_TARGET_SUMMARY.filter(
+                (field) =>
+                  breakEven.targetProfit !== null ||
+                  (field !== "targetRevenue" && field !== "dailyTargetRevenue"),
+              ).map((field) => (
+                <Typography key={field} variant="subtitle2">
+                  {tReports(`breakEven.summary.${field}`)}{" "}
+                  {formatOptionalMoney(breakEven[field])}
+                </Typography>
+              ))}
+            </TotalsStack>
+            {breakEven.costOfGoodsSoldRate === null && (
+              <Alert severity="info">{tReports("breakEven.noCostRate")}</Alert>
+            )}
+            {breakEven.unpricedItems > 0 && (
+              <Typography color="textSecondary" variant="body2">
+                {tReports("breakEven.unpricedItems", {
+                  count: breakEven.unpricedItems,
+                })}
+              </Typography>
+            )}
+            {breakEven.personnel.unpublishedEmployees > 0 && (
+              <Typography color="textSecondary" variant="body2">
+                {tReports("personnel.unpublished", {
+                  count: breakEven.personnel.unpublishedEmployees,
+                })}
+              </Typography>
+            )}
+            <Typography color="textSecondary" variant="body2">
+              {tReports("breakEven.note")}
+            </Typography>
+          </SummaryStack>
+        )}
+        <DataGrid
+          {...gridProps}
+          columns={breakEvenColumns}
+          getRowId={({ menuItemId }) => menuItemId}
+          rowCount={breakEven?.total ?? 0}
+          rows={breakEven?.rows ?? []}
+        />
+      </>
+    );
 
   return tab === "sales" ? (
     <>
@@ -578,6 +769,8 @@ const ReportTable = ({
 };
 
 interface ReportsProps extends Partial<ReportGridState> {
+  canManageOperatingCosts: boolean;
+  canViewBreakEven: boolean;
   canViewInventory: boolean;
   canViewPersonnel: boolean;
   canViewSales: boolean;
@@ -588,6 +781,8 @@ interface ReportsProps extends Partial<ReportGridState> {
 }
 
 const Reports = ({
+  canManageOperatingCosts,
+  canViewBreakEven,
   canViewInventory,
   canViewPersonnel,
   canViewSales,
@@ -607,7 +802,9 @@ const Reports = ({
   });
   const [exporting, setExporting] = useState(false);
 
-  const { groupBy, month, since, tab, until } = view;
+  const { groupBy, month, since, tab, targetProfit, until } = view;
+
+  const navItem = useRoutes();
 
   const locale = useLocale();
 
@@ -696,7 +893,8 @@ const Reports = ({
   };
 
   const isSales = tab === "sales";
-  const isPersonnel = tab === "personnel";
+  const isBreakEven = tab === "breakEven";
+  const isMonthly = tab === "personnel" || isBreakEven;
   const startDate = toStoreDate(since);
 
   return (
@@ -715,14 +913,19 @@ const Reports = ({
         {canViewPersonnel && (
           <Tab label={tReports("tabs.personnel")} value="personnel" />
         )}
+        {canViewBreakEven && (
+          <Tab label={tReports("tabs.breakEven")} value="breakEven" />
+        )}
       </Tabs>
       <ToolbarStack direction="row">
-        {isPersonnel ? (
+        {isMonthly ? (
           <DatePicker
             disabled={loading}
             disableFuture
             format={monthFormat}
-            label={tReports("personnel.month")}
+            label={tReports(
+              isBreakEven ? "breakEven.month" : "personnel.month",
+            )}
             minDate={toStoreDate("2000-01-01")}
             onChange={(value, { validationError }) => {
               if (!validationError && value?.isValid())
@@ -771,20 +974,58 @@ const Reports = ({
             ))}
           </GroupByTextField>
         )}
-        <Button
-          disabled={loading}
-          loading={exporting}
-          onClick={handleExport}
-          startIcon={<Download />}
-          variant="contained"
-        >
-          {tReports("export")}
-        </Button>
+        {isBreakEven ? (
+          <>
+            <NumericFormat
+              allowNegative={false}
+              customInput={TextField}
+              decimalScale={2}
+              defaultValue={targetProfit}
+              disabled={loading}
+              isAllowed={({ floatValue }) =>
+                floatValue === undefined || floatValue <= 9999999999.99
+              }
+              key={targetProfit}
+              label={tReports("breakEven.targetProfit")}
+              onBlur={({ target }) => {
+                const value = target.value.replaceAll(",", "");
+
+                if (value !== targetProfit) updateView({ targetProfit: value });
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter")
+                  (event.target as HTMLInputElement).blur();
+              }}
+              thousandSeparator=","
+              valueIsNumericString
+            />
+            {canManageOperatingCosts && (
+              <Button
+                disabled={loading}
+                href={navItem("/reports/operating-costs").to}
+                startIcon={<Settings />}
+                variant="outlined"
+              >
+                {tReports("operatingCosts.manage")}
+              </Button>
+            )}
+          </>
+        ) : (
+          <Button
+            disabled={loading}
+            loading={exporting}
+            onClick={handleExport}
+            startIcon={<Download />}
+            variant="contained"
+          >
+            {tReports("export")}
+          </Button>
+        )}
       </ToolbarStack>
       <ReportTable
         {...grid}
         canViewWastedCost={canViewWastedCost}
-        key={[tab, since, until, groupBy, month].join()}
+        key={[tab, since, until, groupBy, month, targetProfit].join()}
         loading={loading}
         organization={organization}
         view={view}

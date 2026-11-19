@@ -42,5 +42,11 @@
   "checklists": {
     "incomplete": "未完成检查表",
     "incompleteValue": "{incomplete, number} / {total, number} 未完成"
+  },
+  "breakEven": {
+    "period": "本月",
+    "reached": "本月已达成 {revenue}",
+    "remainingDaily": "剩余 {days, number} 个营业日，每日需 {amount}",
+    "unavailable": "暂时无法计算"
   }
 }

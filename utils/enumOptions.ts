@@ -22,6 +22,7 @@ import {
   invoiceStatusValues,
   invoiceTypeValues,
   itemAvailabilityValues,
+  operatingCostCategoryValues,
   orderModeValues,
   orderResponseDtoModeValues,
   orderResponseDtoOrderStatusValues,
@@ -366,6 +367,15 @@ export const getWaitlistEnumOptions = (
 ) => ({
   status: waitlistTicketStatusValues.map((value) => ({
     label: tWaitlist(`status.${value}`),
+    value,
+  })),
+});
+
+export const getOperatingCostEnumOptions = (
+  tReports: ReturnType<typeof useTranslations<"reports">>,
+) => ({
+  category: operatingCostCategoryValues.map((value) => ({
+    label: tReports(`operatingCosts.category.options.${value}`),
     value,
   })),
 });

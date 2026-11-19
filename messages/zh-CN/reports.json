@@ -1,4 +1,40 @@
 {
+  "breakEven": {
+    "fixedCostTotal": "固定成本合计",
+    "item": {
+      "cost": "标准成本",
+      "grossMarginRate": "毛利率",
+      "grossProfit": "毛利",
+      "name": "品项",
+      "quantity": "净份数",
+      "revenue": "未税营收"
+    },
+    "month": "月份",
+    "noCostRate": "本月还没有能算出成本的销售，暂时无法计算变动成本率与盈亏平衡点。",
+    "note": "营业额为含税金额，营业税按 5% 内含拆算；销货成本依配方与当前进价计算，含加购与定制选项；每日需求营业额按营业时间与特殊营业时间算出的营业日数平均。",
+    "personnel": {
+      "estimate": "人事（预估）",
+      "none": "人事（暂无数据）",
+      "payroll": "人事（已发布工资单）"
+    },
+    "summary": {
+      "breakEvenRevenue": "盈亏平衡营业额",
+      "businessTax": "销项营业税",
+      "costOfGoodsSold": "销货成本",
+      "costOfGoodsSoldRate": "变动成本率",
+      "dailyBreakEvenRevenue": "每日需求营业额",
+      "dailyTargetRevenue": "每日目标营业额",
+      "grossMarginRate": "毛利率",
+      "netProfit": "税前净利",
+      "openDays": "营业日 {open, number} 天（剩 {remaining, number} 天）",
+      "remainingDailyBreakEvenRevenue": "剩余每日需求营业额",
+      "revenue": "含税营业额",
+      "salesExcludingTax": "未税营业额",
+      "targetRevenue": "目标净利营业额"
+    },
+    "targetProfit": "目标净利（每月）",
+    "unpricedItems": "有 {count, number} 个品项没有配方或配方有未定价的食材，未计入销货成本与变动成本率。"
+  },
   "export": "导出 CSV",
   "groupBy": {
     "category": "分类",
@@ -25,6 +61,56 @@
     "wastedCost": "报废成本"
   },
   "label": "报表",
+  "operatingCosts": {
+    "actions": {
+      "create": {
+        "success": "已新增固定成本",
+        "title": "新增固定成本"
+      },
+      "delete": {
+        "confirm": "确定要删除<bold>{category}（{effectiveFrom} 起）</bold>吗？删除后改沿用更早的设置。",
+        "success": "已删除固定成本",
+        "title": "删除固定成本"
+      },
+      "label": "操作",
+      "update": {
+        "success": "已更新固定成本",
+        "title": "编辑固定成本"
+      }
+    },
+    "category": {
+      "label": "类别",
+      "options": {
+        "electricity": "电费",
+        "equipment": "设备租赁与摊提",
+        "gas": "燃气",
+        "insurance": "保险",
+        "marketing": "营销",
+        "other": "其他",
+        "personnel": "人事（预估）",
+        "rent": "房租",
+        "telecom": "电信网络",
+        "water": "水费"
+      },
+      "personnelHint": "仅在当月没有任何已发布工资单时使用；有工资单就以工资单的人事成本计算。"
+    },
+    "createdAt": "创建时间",
+    "description": "每个类别填一次金额与生效月份，之后每月自动沿用；金额变动时再新增一笔新的生效月份。",
+    "effectiveFrom": {
+      "hint": "自这个月起每月沿用，直到同类别有更晚的生效月份",
+      "label": "生效月份"
+    },
+    "label": "固定成本",
+    "manage": "管理固定成本",
+    "monthlyAmount": {
+      "hint": "含税金额；填 0 表示自生效月份起不再有这项成本",
+      "label": "每月金额"
+    },
+    "note": {
+      "label": "备注"
+    },
+    "updatedAt": "更新时间"
+  },
   "personnel": {
     "employerInsurance": "雇主劳健保",
     "employerPension": "雇主劳退提缴",
@@ -48,6 +134,7 @@
   },
   "since": "开始日期",
   "tabs": {
+    "breakEven": "盈亏平衡",
     "inventory": "库存",
     "personnel": "人事成本",
     "sales": "销售"

@@ -11,3 +11,15 @@ export type PersonnelCostReportResponse =
   components["schemas"]["PersonnelCostReportResponseDto"];
 export type PersonnelCostReportRow =
   components["schemas"]["PersonnelCostReportRowDto"];
+export type BreakEvenReportResponse =
+  components["schemas"]["BreakEvenReportResponseDto"];
+export type BreakEvenItemRow = components["schemas"]["BreakEvenItemRowDto"];
+export type OperatingCost = components["schemas"]["OperatingCostResponseDto"];
+export type OperatingCostCategory =
+  components["schemas"]["OperatingCostCategory"];
+export type OperatingCostFilterField =
+  components["schemas"]["OperatingCostFilterField"];
+export type OperatingCostListResponse =
+  components["schemas"]["OperatingCostListResponseDto"];
+export type OperatingCostSortField =
+  components["schemas"]["OperatingCostSortField"];

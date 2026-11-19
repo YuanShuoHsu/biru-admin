@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+import BreakEven from "./BreakEven";
 import Checklists from "./Checklists";
 import Coupons from "./Coupons";
 import Menus, { type MenuItemSales } from "./Menus";
@@ -24,11 +25,17 @@ import ErrorAlert from "@/components/ErrorAlert";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
+import {
+  MONTH_FORMAT,
+  storeToday,
+} from "@/app/[locale]/(app)/(dashboard)/reports/definitions";
+
 import type { UserStatsResponse } from "@/types/admins";
 import type { ChecklistRun } from "@/types/checklists";
 import type { OrderMenu } from "@/types/menus";
 import type { MenuItemSalesResponse, OrderStatsResponse } from "@/types/orders";
 import type { OrganizationStats } from "@/types/organizations";
+import type { BreakEvenReportResponse } from "@/types/reports";
 import type { WaitlistStats, WaitlistStatusResponse } from "@/types/waitlist";
 
 import {
@@ -279,6 +286,32 @@ const ChecklistsContent = async ({
   return <Checklists runs={checklistRunsResult.data} />;
 };
 
+interface BreakEvenContentProps {
+  breakEven: Promise<FetchResult<BreakEvenReportResponse | null>>;
+  currency: string;
+  organizationSlug: string;
+}
+
+const BreakEvenContent = async ({
+  breakEven: breakEvenPromise,
+  currency,
+  organizationSlug,
+}: BreakEvenContentProps) => {
+  const breakEvenResult = await breakEvenPromise;
+
+  if (breakEvenResult.error) return <ErrorAlert />;
+
+  if (!breakEvenResult.data) return null;
+
+  return (
+    <BreakEven
+      breakEven={breakEvenResult.data}
+      currency={currency}
+      organizationSlug={organizationSlug}
+    />
+  );
+};
+
 const DashboardContent = async ({
   params,
   searchParams,
@@ -363,11 +396,21 @@ const DashboardContent = async ({
         )
       : Promise.resolve([]),
   );
-  const waitlist = (
-    resolvedOrganizationId
-      ? getMemberRole(resolvedOrganizationId)
-      : Promise.resolve(null)
-  ).then((memberRole) => {
+  const memberRole = resolvedOrganizationId
+    ? getMemberRole(resolvedOrganizationId)
+    : Promise.resolve(null);
+  const breakEven = memberRole.then((role) =>
+    settle(
+      organizationSlug &&
+        (isAdmin || hasRolePermission(role, { operatingCost: ["read"] }))
+        ? fetcher<BreakEvenReportResponse>(
+            `/api/organizations/${organizationSlug}/reports/break-even?month=${storeToday().format(MONTH_FORMAT)}&limit=1`,
+            { headers: { ...fetchOptions.headers, "Accept-Language": locale } },
+          )
+        : Promise.resolve(null),
+    ),
+  );
+  const waitlist = memberRole.then((memberRole) => {
     const canViewWaitlist =
       !!organizationSlug &&
       (isAdmin || hasRolePermission(memberRole, { waitlist: ["read"] }));
@@ -424,6 +467,13 @@ const DashboardContent = async ({
       </Suspense>
       <Suspense>
         <WaitlistContent range={range} waitlist={waitlist} />
+      </Suspense>
+      <Suspense>
+        <BreakEvenContent
+          breakEven={breakEven}
+          currency={currency}
+          organizationSlug={organizationSlug}
+        />
       </Suspense>
       <Suspense>
         <ChecklistsContent checklistRuns={checklistRuns} />

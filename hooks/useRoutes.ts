@@ -690,6 +690,22 @@ const routes: Route[] = [
     to: null,
   },
   {
+    children: [
+      {
+        children: [
+          {
+            children: [auditLogsRoute],
+            icon: RequestQuote,
+            segment: "[operatingCostId]",
+            to: null,
+          },
+        ],
+        icon: RequestQuote,
+        label: "reports.operatingCosts.label",
+        query: ["organization", "page", "pageSize"],
+        segment: "operating-costs",
+      },
+    ],
     icon: Assessment,
     label: "reports.label",
     query: ["organization"],

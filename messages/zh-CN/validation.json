@@ -235,6 +235,17 @@
   "openingHours": {
     "required": "请设置营业时间，或开启全天休息。"
   },
+  "operatingCost": {
+    "effectiveFrom": {
+      "required": "请选择生效月份。"
+    },
+    "monthlyAmount": {
+      "invalid": "请输入 0 以上、最多两位小数的金额。"
+    },
+    "note": {
+      "maxLength": "备注最多 200 个字。"
+    }
+  },
   "overtimeExtensionPeriod": {
     "invalid": "请选择起始月份。"
   },

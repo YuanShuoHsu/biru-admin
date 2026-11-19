@@ -1,4 +1,40 @@
 {
+  "breakEven": {
+    "fixedCostTotal": "固定成本合計",
+    "item": {
+      "cost": "標準成本",
+      "grossMarginRate": "毛利率",
+      "grossProfit": "毛利",
+      "name": "品項",
+      "quantity": "淨份數",
+      "revenue": "未稅營收"
+    },
+    "month": "月份",
+    "noCostRate": "這個月還沒有算得出成本的銷售，暫時無法計算變動成本率與損益平衡點。",
+    "note": "營業額為含稅金額，營業稅以 5% 內含拆算；銷貨成本依食譜與目前進價計算，含加購與客製選項；每日需求營業額依營業時間與特殊營業時間算出的營業日數平均。",
+    "personnel": {
+      "estimate": "人事（預估）",
+      "none": "人事（尚無資料）",
+      "payroll": "人事（已發布薪資單）"
+    },
+    "summary": {
+      "breakEvenRevenue": "損益平衡營業額",
+      "businessTax": "銷項營業稅",
+      "costOfGoodsSold": "銷貨成本",
+      "costOfGoodsSoldRate": "變動成本率",
+      "dailyBreakEvenRevenue": "每日需求營業額",
+      "dailyTargetRevenue": "每日目標營業額",
+      "grossMarginRate": "毛利率",
+      "netProfit": "稅前淨利",
+      "openDays": "營業日 {open, number} 天（剩 {remaining, number} 天）",
+      "remainingDailyBreakEvenRevenue": "剩餘每日需求營業額",
+      "revenue": "含稅營業額",
+      "salesExcludingTax": "未稅營業額",
+      "targetRevenue": "目標淨利營業額"
+    },
+    "targetProfit": "目標淨利（每月）",
+    "unpricedItems": "有 {count, number} 個品項沒有食譜或食譜有未定價的食材，未計入銷貨成本與變動成本率。"
+  },
   "export": "匯出 CSV",
   "groupBy": {
     "category": "分類",
@@ -25,6 +61,56 @@
     "wastedCost": "報廢成本"
   },
   "label": "報表",
+  "operatingCosts": {
+    "actions": {
+      "create": {
+        "success": "已新增固定成本",
+        "title": "新增固定成本"
+      },
+      "delete": {
+        "confirm": "確定要刪除<bold>{category}（{effectiveFrom} 起）</bold>嗎？刪除後改沿用更早的設定。",
+        "success": "已刪除固定成本",
+        "title": "刪除固定成本"
+      },
+      "label": "操作",
+      "update": {
+        "success": "已更新固定成本",
+        "title": "編輯固定成本"
+      }
+    },
+    "category": {
+      "label": "類別",
+      "options": {
+        "electricity": "電費",
+        "equipment": "設備租賃與攤提",
+        "gas": "瓦斯",
+        "insurance": "保險",
+        "marketing": "行銷",
+        "other": "其他",
+        "personnel": "人事（預估）",
+        "rent": "房租",
+        "telecom": "電信網路",
+        "water": "水費"
+      },
+      "personnelHint": "只在當月沒有任何已發布薪資單時使用；有薪資單就以薪資單的人事成本計算。"
+    },
+    "createdAt": "建立時間",
+    "description": "每個類別填一次金額與生效月份，之後每月自動沿用；金額變動時再新增一筆新的生效月份。",
+    "effectiveFrom": {
+      "hint": "自這個月起每月沿用，直到同類別有更晚的生效月份",
+      "label": "生效月份"
+    },
+    "label": "固定成本",
+    "manage": "管理固定成本",
+    "monthlyAmount": {
+      "hint": "含稅金額；填 0 表示自生效月份起不再有這項成本",
+      "label": "每月金額"
+    },
+    "note": {
+      "label": "備註"
+    },
+    "updatedAt": "更新時間"
+  },
   "personnel": {
     "employerInsurance": "雇主勞健保",
     "employerPension": "雇主勞退提繳",
@@ -48,6 +134,7 @@
   },
   "since": "開始日期",
   "tabs": {
+    "breakEven": "損益平衡",
     "inventory": "庫存",
     "personnel": "人事成本",
     "sales": "銷售"

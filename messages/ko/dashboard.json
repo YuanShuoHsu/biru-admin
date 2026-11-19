@@ -42,5 +42,11 @@
   "checklists": {
     "incomplete": "미완료 체크리스트",
     "incompleteValue": "{incomplete, number} / {total, number} 미완료"
+  },
+  "breakEven": {
+    "period": "이번 달",
+    "reached": "이번 달 달성액 {revenue}",
+    "remainingDaily": "남은 영업일 {days, number}일, 하루 {amount}",
+    "unavailable": "아직 계산할 수 없습니다"
   }
 }

@@ -1,4 +1,40 @@
 {
+  "breakEven": {
+    "fixedCostTotal": "固定費合計",
+    "item": {
+      "cost": "標準原価",
+      "grossMarginRate": "粗利率",
+      "grossProfit": "粗利",
+      "name": "品目",
+      "quantity": "純販売数",
+      "revenue": "税抜売上"
+    },
+    "month": "月",
+    "noCostRate": "今月は原価が分かる売上がまだないため、変動費率と損益分岐点を計算できません。",
+    "note": "売上は税込金額で、営業税 5% を内税として分けています。売上原価はレシピと現在の仕入価格で計算し、追加注文とカスタマイズを含みます。1 日あたりの金額は営業時間と特別営業時間から求めた営業日数で割っています。",
+    "personnel": {
+      "estimate": "人件費（見込み）",
+      "none": "人件費（データなし）",
+      "payroll": "人件費（公開済み給与明細）"
+    },
+    "summary": {
+      "breakEvenRevenue": "損益分岐売上高",
+      "businessTax": "売上営業税",
+      "costOfGoodsSold": "売上原価",
+      "costOfGoodsSoldRate": "変動費率",
+      "dailyBreakEvenRevenue": "1 日あたり必要売上",
+      "dailyTargetRevenue": "1 日あたり目標売上",
+      "grossMarginRate": "粗利率",
+      "netProfit": "税引前利益",
+      "openDays": "営業日 {open, number} 日（残り {remaining, number} 日）",
+      "remainingDailyBreakEvenRevenue": "残り期間の 1 日あたり必要売上",
+      "revenue": "税込売上",
+      "salesExcludingTax": "税抜売上",
+      "targetRevenue": "目標利益達成売上高"
+    },
+    "targetProfit": "目標利益（月額）",
+    "unpricedItems": "{count, number} 品目はレシピがないか未設定価格の食材があるため、売上原価と変動費率に含めていません。"
+  },
   "export": "CSV をエクスポート",
   "groupBy": {
     "category": "カテゴリ",
@@ -25,6 +61,56 @@
     "wastedCost": "廃棄コスト"
   },
   "label": "レポート",
+  "operatingCosts": {
+    "actions": {
+      "create": {
+        "success": "固定費を追加しました",
+        "title": "固定費を追加"
+      },
+      "delete": {
+        "confirm": "<bold>{category}（{effectiveFrom} から）</bold>を削除しますか？削除後はそれ以前の設定が適用されます。",
+        "success": "固定費を削除しました",
+        "title": "固定費を削除"
+      },
+      "label": "操作",
+      "update": {
+        "success": "固定費を更新しました",
+        "title": "固定費を編集"
+      }
+    },
+    "category": {
+      "label": "カテゴリ",
+      "options": {
+        "electricity": "電気代",
+        "equipment": "設備リース・償却",
+        "gas": "ガス代",
+        "insurance": "保険",
+        "marketing": "マーケティング",
+        "other": "その他",
+        "personnel": "人件費（見込み）",
+        "rent": "家賃",
+        "telecom": "通信費",
+        "water": "水道代"
+      },
+      "personnelHint": "その月に公開済みの給与明細が 1 件もない場合のみ使います。給与明細があればその人件費で計算します。"
+    },
+    "createdAt": "作成日時",
+    "description": "カテゴリごとに金額と適用開始月を一度入力すれば、毎月そのまま適用されます。金額が変わったら、より新しい適用開始月で追加してください。",
+    "effectiveFrom": {
+      "hint": "この月から、同じカテゴリでより新しい適用開始月があるまで毎月適用されます",
+      "label": "適用開始月"
+    },
+    "label": "固定費",
+    "manage": "固定費を管理",
+    "monthlyAmount": {
+      "hint": "税込金額。0 は適用開始月以降このコストがないことを表します",
+      "label": "月額"
+    },
+    "note": {
+      "label": "メモ"
+    },
+    "updatedAt": "更新日時"
+  },
   "personnel": {
     "employerInsurance": "雇用主負担保険料",
     "employerPension": "雇用主年金拠出",
@@ -48,6 +134,7 @@
   },
   "since": "開始日",
   "tabs": {
+    "breakEven": "損益分岐",
     "inventory": "在庫",
     "personnel": "人件費",
     "sales": "売上"

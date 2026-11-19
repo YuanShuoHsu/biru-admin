@@ -4177,6 +4177,43 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/operating-costs": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢門市固定成本列表 */
+    get: operations["OperatingCostsController_findAll"];
+    put?: never;
+    /** 新增門市固定成本；同類別同一生效月份只能有一筆 */
+    post: operations["OperatingCostsController_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/operating-costs/{operatingCostId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢門市固定成本 */
+    get: operations["OperatingCostsController_findOne"];
+    put?: never;
+    post?: never;
+    /** 刪除門市固定成本 */
+    delete: operations["OperatingCostsController_remove"];
+    options?: never;
+    head?: never;
+    /** 更新門市固定成本 */
+    patch: operations["OperatingCostsController_update"];
+    trace?: never;
+  };
   "/api/users/me/organization-stats": {
     parameters: {
       query?: never;
@@ -5843,6 +5880,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/reports/break-even": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢損益平衡報表：固定成本、銷貨成本、營業稅與每日需求營業額 */
+    get: operations["ReportsController_findBreakEven"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/store-layout": {
     parameters: {
       query?: never;
@@ -7367,6 +7421,7 @@ export interface components {
       | "catalogItemModifierGroup"
       | "catalogItemAddOn"
       | "checklistTemplate"
+      | "operatingCost"
       | "employee"
       | "attendanceSetting"
       | "leaveCase"
@@ -8235,6 +8290,7 @@ export interface components {
       | "catalog_item_modifier_group"
       | "coupon"
       | "banner"
+      | "operating_cost"
       | "store_photo"
       | "supplier"
       | "ingredient"
@@ -12367,6 +12423,80 @@ export interface components {
       address: string;
       representativeName: string;
     };
+    /** @enum {string} */
+    OperatingCostFilterField:
+      | "category"
+      | "effectiveFrom"
+      | "monthlyAmount"
+      | "note"
+      | "createdAt"
+      | "updatedAt";
+    /** @enum {string} */
+    OperatingCostSortField:
+      | "category"
+      | "effectiveFrom"
+      | "monthlyAmount"
+      | "note"
+      | "createdAt"
+      | "updatedAt";
+    /** @enum {string} */
+    OperatingCostCategory:
+      | "rent"
+      | "electricity"
+      | "water"
+      | "gas"
+      | "telecom"
+      | "insurance"
+      | "equipment"
+      | "marketing"
+      | "personnel"
+      | "other";
+    OperatingCostResponseDto: {
+      id: string;
+      organizationId: string;
+      category: components["schemas"]["OperatingCostCategory"];
+      effectiveFrom: string;
+      monthlyAmount: string;
+      note?: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    OperatingCostListResponseDto: {
+      data: components["schemas"]["OperatingCostResponseDto"][];
+      total: number;
+    };
+    CreateOperatingCostDto: {
+      /** @description personnel 是人事成本的預估，只用在該月沒有任何已發布薪資單時 */
+      category: components["schemas"]["OperatingCostCategory"];
+      /**
+       * @description 自這個月起每月沿用，直到同類別有更晚的生效月份
+       * @example 2026-12
+       */
+      effectiveFrom: string;
+      /**
+       * @description 每月金額（含稅）；0 表示自生效月份起不再有這項成本
+       * @example 60000.00
+       */
+      monthlyAmount: string;
+      note?: string | null;
+    };
+    UpdateOperatingCostDto: {
+      /** @description personnel 是人事成本的預估，只用在該月沒有任何已發布薪資單時 */
+      category?: components["schemas"]["OperatingCostCategory"];
+      /**
+       * @description 自這個月起每月沿用，直到同類別有更晚的生效月份
+       * @example 2026-12
+       */
+      effectiveFrom?: string;
+      /**
+       * @description 每月金額（含稅）；0 表示自生效月份起不再有這項成本
+       * @example 60000.00
+       */
+      monthlyAmount?: string;
+      note?: string | null;
+    };
     OrganizationStatsBucketDto: {
       /** Format: date-time */
       start: string;
@@ -14167,6 +14297,98 @@ export interface components {
       totals: components["schemas"]["PersonnelCostReportTotalsDto"];
       /** @description 當月在職但沒有已發布薪資單、未計入的員工數；涵蓋整份報表，不受篩選與分頁影響 */
       unpublishedEmployees: number;
+    };
+    /** @enum {string} */
+    BreakEvenItemFilterField:
+      | "name"
+      | "quantity"
+      | "revenue"
+      | "cost"
+      | "grossProfit"
+      | "grossMarginRate";
+    /** @enum {string} */
+    BreakEvenItemSortField:
+      | "name"
+      | "quantity"
+      | "revenue"
+      | "cost"
+      | "grossProfit"
+      | "grossMarginRate";
+    BreakEvenFixedCostDto: {
+      category: components["schemas"]["OperatingCostCategory"];
+      /** @description 這個月採用的設定的生效月份；人事來自薪資單時為 null */
+      effectiveFrom: string | null;
+      /** @description 當月金額 */
+      amount: number;
+    };
+    /**
+     * @description payroll：當月已發布薪資單的人事成本；estimate：沒有已發布薪資單，改用固定成本裡的人事預估；none：兩者皆無
+     * @enum {string}
+     */
+    PersonnelCostSource: "payroll" | "estimate" | "none";
+    BreakEvenPersonnelDto: {
+      /** @description payroll：當月已發布薪資單的人事成本；estimate：沒有已發布薪資單，改用固定成本裡的人事預估；none：兩者皆無 */
+      source: components["schemas"]["PersonnelCostSource"];
+      /** @description 應發薪資＋雇主勞健保＋雇主勞退提繳 */
+      amount: number;
+      /** @description 當月在職但沒有已發布薪資單、未計入的員工數 */
+      unpublishedEmployees: number;
+    };
+    BreakEvenItemRowDto: {
+      menuItemId: string;
+      /** @description 品項名稱（依請求語系） */
+      name: string;
+      /** @description 淨售出份數（扣除退款份數） */
+      quantity: number;
+      /** @description 未稅淨營收（扣除折扣與退款） */
+      revenue: number;
+      /** @description 依食譜與目前進價算出的標準成本，含品項、加購與客製選項的食譜；品項沒有食譜或食譜有未定價的食材時為 null */
+      cost: number | null;
+      grossProfit: number | null;
+      /** @description 毛利率（0–1）；成本未知或未稅營收為 0 時為 null */
+      grossMarginRate: number | null;
+    };
+    BreakEvenReportResponseDto: {
+      month: string;
+      /** @description 當月營業日數，依營業時間與特殊營業時間 */
+      openDays: number;
+      /** @description 當月剩餘營業日數，含今天；過去的月份為 0 */
+      remainingOpenDays: number;
+      /** @description 每個類別當月採用的固定成本，不含人事 */
+      fixedCosts: components["schemas"]["BreakEvenFixedCostDto"][];
+      personnel: components["schemas"]["BreakEvenPersonnelDto"];
+      /** @description 固定成本合計，含人事 */
+      fixedCostTotal: number;
+      /** @description 含稅淨營業額（營收扣除退款） */
+      revenue: number;
+      /** @description 銷項營業稅：含稅淨營業額 ÷ 1.05 × 5% */
+      businessTax: number;
+      /** @description 未稅淨營業額 */
+      salesExcludingTax: number;
+      /** @description 可算出成本的品項的標準成本合計 */
+      costOfGoodsSold: number;
+      /** @description 有銷售但算不出成本、未計入銷貨成本的品項數 */
+      unpricedItems: number;
+      /** @description 變動成本率：銷貨成本 ÷ 可算出成本的品項的未稅營收；當月沒有這樣的銷售時為 null */
+      costOfGoodsSoldRate: number | null;
+      /** @description 毛利率：1 − 變動成本率 */
+      grossMarginRate: number | null;
+      /** @description 損益平衡點（含稅營業額）：固定成本 ÷ 每元含稅營業額的邊際貢獻；變動成本率未知或沒有邊際貢獻時為 null */
+      breakEvenRevenue: number | null;
+      /** @description 每日需求營業額：損益平衡點 ÷ 營業日數 */
+      dailyBreakEvenRevenue: number | null;
+      /** @description 剩餘每日需求營業額：（損益平衡點 − 已達成營業額）÷ 剩餘營業日數；沒有剩餘營業日（過去的月份）時為 null */
+      remainingDailyBreakEvenRevenue: number | null;
+      targetProfit: number | null;
+      /** @description 目標淨利營業額（含稅）：（固定成本 + 目標淨利）÷ 邊際貢獻 */
+      targetRevenue: number | null;
+      dailyTargetRevenue: number | null;
+      /** @description 稅前淨利：未稅淨營業額 − 銷貨成本 − 固定成本 */
+      netProfit: number;
+      /** @description 品項毛利，本頁的列，套用篩選、排序與分頁後 */
+      rows: components["schemas"]["BreakEvenItemRowDto"][];
+      /** @description 篩選後、分頁前的品項數 */
+      total: number;
     };
     /** @enum {string} */
     StoreLayoutFloor: "ground" | "upper" | "roof";
@@ -24488,6 +24710,163 @@ export interface operations {
       };
     };
   };
+  OperatingCostsController_findAll: {
+    parameters: {
+      query?: {
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["OperatingCostFilterField"];
+        /** @description 省略時依生效月份新到舊、再依類別排序 */
+        sortBy?: components["schemas"]["OperatingCostSortField"];
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OperatingCostListResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OperatingCostsController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateOperatingCostDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OperatingCostResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OperatingCostsController_findOne: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        operatingCostId: string;
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OperatingCostResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OperatingCostsController_remove: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        operatingCostId: string;
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OperatingCostsController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        operatingCostId: string;
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateOperatingCostDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OperatingCostResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   MyOrganizationStatsController_getStats: {
     parameters: {
       query: {
@@ -27955,6 +28334,48 @@ export interface operations {
       };
     };
   };
+  ReportsController_findBreakEven: {
+    parameters: {
+      query: {
+        /** @description 月份（台灣時間） */
+        month: string;
+        /** @description 目標稅前淨利（每月）；帶了才算目標營業額 */
+        targetProfit?: string;
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        /** @description 每頁列數；省略時回傳所有列 */
+        limit?: number;
+        filterField?: components["schemas"]["BreakEvenItemFilterField"];
+        /** @description 省略時依未稅營收高到低 */
+        sortBy?: components["schemas"]["BreakEvenItemSortField"];
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["BreakEvenReportResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   StoreLayoutController_get: {
     parameters: {
       query?: never;
@@ -28854,6 +29275,7 @@ export const auditResourceValues: ReadonlyArray<
   "catalogItemModifierGroup",
   "catalogItemAddOn",
   "checklistTemplate",
+  "operatingCost",
   "employee",
   "attendanceSetting",
   "leaveCase",
@@ -29075,6 +29497,7 @@ export const deletedRecordTableValues: ReadonlyArray<
   "catalog_item_modifier_group",
   "coupon",
   "banner",
+  "operating_cost",
   "store_photo",
   "supplier",
   "ingredient",
@@ -30098,6 +30521,40 @@ export const waitlistErrorCodeValues: ReadonlyArray<
 export const waitlistTicketStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["WaitlistTicketStatus"]
 > = ["waiting", "called", "seated", "noShow", "cancelled", "expired"];
+export const operatingCostFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OperatingCostFilterField"]
+> = [
+  "category",
+  "effectiveFrom",
+  "monthlyAmount",
+  "note",
+  "createdAt",
+  "updatedAt",
+];
+export const operatingCostSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OperatingCostSortField"]
+> = [
+  "category",
+  "effectiveFrom",
+  "monthlyAmount",
+  "note",
+  "createdAt",
+  "updatedAt",
+];
+export const operatingCostCategoryValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OperatingCostCategory"]
+> = [
+  "rent",
+  "electricity",
+  "water",
+  "gas",
+  "telecom",
+  "insurance",
+  "equipment",
+  "marketing",
+  "personnel",
+  "other",
+];
 export const waitlistTransitionStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["WaitlistTransitionStatus"]
 > = ["waiting", "called", "seated", "noShow", "cancelled"];
@@ -30409,6 +30866,15 @@ export const personnelCostReportSortFieldValues: ReadonlyArray<
   "employerPensionCents",
   "totalCents",
 ];
+export const breakEvenItemFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["BreakEvenItemFilterField"]
+> = ["name", "quantity", "revenue", "cost", "grossProfit", "grossMarginRate"];
+export const breakEvenItemSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["BreakEvenItemSortField"]
+> = ["name", "quantity", "revenue", "cost", "grossProfit", "grossMarginRate"];
+export const personnelCostSourceValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PersonnelCostSource"]
+> = ["payroll", "estimate", "none"];
 export const storeLayoutFloorValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["StoreLayoutFloor"]
 > = ["ground", "upper", "roof"];

@@ -1,4 +1,40 @@
 {
+  "breakEven": {
+    "fixedCostTotal": "Total fixed costs",
+    "item": {
+      "cost": "Standard cost",
+      "grossMarginRate": "Gross margin",
+      "grossProfit": "Gross profit",
+      "name": "Item",
+      "quantity": "Net servings",
+      "revenue": "Revenue excl. tax"
+    },
+    "month": "Month",
+    "noCostRate": "This month has no sales with a known cost yet, so the variable cost rate and break-even point can't be calculated.",
+    "note": "Revenue includes tax; the 5% business tax is backed out of it. Cost of goods uses recipes at current ingredient prices, including add-ons and modifiers. Daily figures are spread over the open days from the opening hours and special hours.",
+    "personnel": {
+      "estimate": "Personnel (estimate)",
+      "none": "Personnel (no data)",
+      "payroll": "Personnel (published payslips)"
+    },
+    "summary": {
+      "breakEvenRevenue": "Break-even revenue",
+      "businessTax": "Output business tax",
+      "costOfGoodsSold": "Cost of goods sold",
+      "costOfGoodsSoldRate": "Variable cost rate",
+      "dailyBreakEvenRevenue": "Daily revenue needed",
+      "dailyTargetRevenue": "Daily target revenue",
+      "grossMarginRate": "Gross margin",
+      "netProfit": "Pre-tax profit",
+      "openDays": "{open, number} open days ({remaining, number} left)",
+      "remainingDailyBreakEvenRevenue": "Daily revenue needed for the rest of the month",
+      "revenue": "Revenue incl. tax",
+      "salesExcludingTax": "Revenue excl. tax",
+      "targetRevenue": "Revenue for target profit"
+    },
+    "targetProfit": "Target profit (monthly)",
+    "unpricedItems": "{count, plural, one {# item has} other {# items have}} no recipe or an unpriced ingredient and {count, plural, one {is} other {are}} left out of the cost of goods and the variable cost rate."
+  },
   "export": "Export CSV",
   "groupBy": {
     "category": "Category",
@@ -25,6 +61,56 @@
     "wastedCost": "Waste cost"
   },
   "label": "Reports",
+  "operatingCosts": {
+    "actions": {
+      "create": {
+        "success": "Fixed cost added",
+        "title": "Add fixed cost"
+      },
+      "delete": {
+        "confirm": "Delete <bold>{category} (from {effectiveFrom})</bold>? The earlier setting applies again afterwards.",
+        "success": "Fixed cost deleted",
+        "title": "Delete fixed cost"
+      },
+      "label": "Actions",
+      "update": {
+        "success": "Fixed cost updated",
+        "title": "Edit fixed cost"
+      }
+    },
+    "category": {
+      "label": "Category",
+      "options": {
+        "electricity": "Electricity",
+        "equipment": "Equipment lease and depreciation",
+        "gas": "Gas",
+        "insurance": "Insurance",
+        "marketing": "Marketing",
+        "other": "Other",
+        "personnel": "Personnel (estimate)",
+        "rent": "Rent",
+        "telecom": "Phone and internet",
+        "water": "Water"
+      },
+      "personnelHint": "Used only for months without any published payslip; otherwise the payslips' personnel cost is used."
+    },
+    "createdAt": "Created at",
+    "description": "Enter each category once with the month it takes effect; it then carries forward every month. When the amount changes, add a new entry with a later effective month.",
+    "effectiveFrom": {
+      "hint": "Applies every month from this one until the category has a later effective month",
+      "label": "Effective from"
+    },
+    "label": "Fixed costs",
+    "manage": "Manage fixed costs",
+    "monthlyAmount": {
+      "hint": "Including tax; 0 means the cost ends from the effective month",
+      "label": "Monthly amount"
+    },
+    "note": {
+      "label": "Note"
+    },
+    "updatedAt": "Updated at"
+  },
   "personnel": {
     "employerInsurance": "Employer insurance",
     "employerPension": "Employer pension",
@@ -48,6 +134,7 @@
   },
   "since": "Start date",
   "tabs": {
+    "breakEven": "Break-even",
     "inventory": "Inventory",
     "personnel": "Personnel cost",
     "sales": "Sales"
