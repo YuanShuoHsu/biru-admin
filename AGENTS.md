@@ -64,6 +64,16 @@ React Hook Form + Zod schemas (`definitions.ts` files). Form schemas and error h
 
 MUI v9 with a custom theme (`theme.ts`) supporting light/dark via CSS variables (`colorSchemeSelector: "class"`). Tailwind CSS v4 is also available for utilities. MUI DataGrid (`@mui/x-data-grid`) is used for all tabular data with server-side pagination/sorting/filtering.
 
+### 3D Models
+
+Equipment models for the store layout 3D page are built in Blender: `blender/<label>.blend`, exported to `public/models/<label>.glb` and added to `MODELS` in `app/[locale]/(app)/(dashboard)/store-layout/Realistic/ItemBody.tsx`.
+
+- Metres, at the real size in `docs/equipment.md`; origin at the bottom centre, front facing -Y.
+- Model the machine itself and the accessories that ship with it, not cups, food or props around it.
+- Work from the official product images: open the product page linked in `docs/equipment.md` in a browser, and when its photos are missing or unclear, find the same model's page on the manufacturer's own site; look at the photos from every angle available, plus real-world photos when needed, and build the visible parts, buttons, printed text and transparent parts to match them. Don't commit the reference images: the repos are public and the photos belong to the manufacturer. When no photo can be viewed, ask the user for them instead of filling in details from memory.
+- Materials are Principled BSDF; transparent parts use Alpha Blend.
+- Render previews for the user to confirm before opening the PR. A new item's placement goes into `store_layout` through a biru-api migration.
+
 ### Auth
 
 `better-auth` client in `lib/auth-client.ts` with `adminClient` and `organizationClient` plugins. Auth flow: sign in → verify platform admin or org membership (else `/auth/no-access`) → redirect to `DEFAULT_AUTHENTICATED_ROUTE` (`/dashboard`).
