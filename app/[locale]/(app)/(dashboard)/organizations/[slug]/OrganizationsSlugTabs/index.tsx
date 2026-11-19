@@ -8,6 +8,8 @@ import RouteTabs from "@/components/RouteTabs";
 
 import { countKeys } from "@/constants/organizations";
 
+import { usePathname } from "@/i18n/navigation";
+
 import { Chip, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -41,28 +43,37 @@ interface TabAccess {
   canUpdateOrganization: boolean;
 }
 
-type RouteTabItems = React.ComponentProps<typeof RouteTabs>["tabs"];
+type OrganizationTab = React.ComponentProps<
+  typeof RouteTabs
+>["tabs"][number] & {
+  permission?: keyof TabAccess;
+};
 
+const filterPermittedTabs = (
+  tabs: OrganizationTab[],
+  pathname: string,
+  tabAccess?: TabAccess,
+) =>
+  tabs.filter(
+    ({ path, permission }) =>
+      !permission ||
+      (tabAccess ? tabAccess[permission] : pathname.startsWith(path)),
+  );
+
+// https://nextjs.org/docs/app/getting-started/fetching-data#streaming-data-with-the-use-api
 const PermittedRouteTabs = ({
   tabAccess,
   tabs,
 }: {
   tabAccess: Promise<TabAccess>;
-  tabs: RouteTabItems;
+  tabs: OrganizationTab[];
 }) => {
-  const { slug } = useParams<{ slug: string }>();
-
-  const { canReadWaitlistSetting, canUpdateOrganization } = use(tabAccess);
-
-  const hiddenPaths = [
-    ...(canUpdateOrganization ? [] : ["special-hours", "in-store", "points"]),
-    ...(canReadWaitlistSetting ? [] : ["waitlist"]),
-  ].map((segment) => `/organizations/${slug}/${segment}`);
+  const pathname = usePathname();
 
   return (
     <RouteTabs
       ariaLabel="organization tabs"
-      tabs={tabs.filter(({ path }) => !hiddenPaths.includes(path))}
+      tabs={filterPermittedTabs(tabs, pathname, use(tabAccess))}
     />
   );
 };
@@ -79,10 +90,11 @@ const OrganizationsSlugTabs = ({
   tabAccess,
 }: OrganizationsSlugTabsProps) => {
   const { slug } = useParams<{ slug: string }>();
+  const pathname = usePathname();
 
   const tInvitations = useTranslations("organizations.invitations");
 
-  const tabs: RouteTabItems = [
+  const tabs: OrganizationTab[] = [
     { path: `/organizations/${slug}/members` },
     { path: `/organizations/${slug}/teams` },
     {
@@ -98,16 +110,33 @@ const OrganizationsSlugTabs = ({
     },
     { path: `/organizations/${slug}/location` },
     { path: `/organizations/${slug}/pickup` },
-    { path: `/organizations/${slug}/special-hours` },
-    { path: `/organizations/${slug}/in-store` },
-    { path: `/organizations/${slug}/waitlist` },
-    { path: `/organizations/${slug}/points` },
+    {
+      path: `/organizations/${slug}/special-hours`,
+      permission: "canUpdateOrganization",
+    },
+    {
+      path: `/organizations/${slug}/in-store`,
+      permission: "canUpdateOrganization",
+    },
+    {
+      path: `/organizations/${slug}/waitlist`,
+      permission: "canReadWaitlistSetting",
+    },
+    {
+      path: `/organizations/${slug}/points`,
+      permission: "canUpdateOrganization",
+    },
   ];
 
   return (
     <ContentStack>
       <Suspense
-        fallback={<RouteTabs ariaLabel="organization tabs" tabs={tabs} />}
+        fallback={
+          <RouteTabs
+            ariaLabel="organization tabs"
+            tabs={filterPermittedTabs(tabs, pathname)}
+          />
+        }
       >
         <PermittedRouteTabs tabAccess={tabAccess} tabs={tabs} />
       </Suspense>
