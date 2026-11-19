@@ -47,8 +47,12 @@ const OrganizationsSlugSpecialHoursPage = async ({
   const currentUserRole = data.members.find(
     ({ userId }) => userId === session?.user?.id,
   )?.role;
+  const isPlatformAdmin = session?.user?.role === "admin";
 
-  if (!hasRolePermission(currentUserRole, { organization: ["update"] }))
+  if (
+    !isPlatformAdmin &&
+    !hasRolePermission(currentUserRole, { organization: ["update"] })
+  )
     notFound();
 
   return <OrganizationsSlugSpecialHours organizationSlug={organizationSlug} />;

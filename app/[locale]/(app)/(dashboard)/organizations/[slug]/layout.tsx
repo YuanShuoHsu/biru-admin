@@ -4,7 +4,8 @@ import { CountStoreProvider } from "@/providers/count-store-provider";
 
 import { isActiveSession } from "@/utils/auth";
 import { settle } from "@/utils/fetcher";
-import { getFullOrganization } from "@/utils/session";
+import { hasRolePermission } from "@/utils/organizations";
+import { getFullOrganization, getSession } from "@/utils/session";
 
 interface OrganizationsSlugLayoutProps {
   children: React.ReactNode;
@@ -26,6 +27,29 @@ const getPendingInvitationCount = async (
   );
 };
 
+const getTabAccess = async (params: OrganizationsSlugLayoutProps["params"]) => {
+  const { slug } = await params;
+
+  const [{ data }, session] = await Promise.all([
+    settle(getFullOrganization(decodeURIComponent(slug))),
+    getSession(),
+  ]);
+
+  const currentUserRole = data?.members.find(
+    ({ userId }) => userId === session?.user?.id,
+  )?.role;
+  const isPlatformAdmin = session?.user?.role === "admin";
+
+  return {
+    canReadWaitlistSetting:
+      isPlatformAdmin ||
+      hasRolePermission(currentUserRole, { waitlistSetting: ["read"] }),
+    canUpdateOrganization:
+      isPlatformAdmin ||
+      hasRolePermission(currentUserRole, { organization: ["update"] }),
+  };
+};
+
 const OrganizationsSlugLayout = ({
   children,
   params,
@@ -33,6 +57,7 @@ const OrganizationsSlugLayout = ({
   <CountStoreProvider>
     <OrganizationsSlugTabs
       pendingInvitationCount={getPendingInvitationCount(params)}
+      tabAccess={getTabAccess(params)}
     >
       {children}
     </OrganizationsSlugTabs>

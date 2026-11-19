@@ -52,8 +52,12 @@ const OrganizationsSlugWaitlistPage = async ({
   const currentUserRole = data.members.find(
     ({ userId }) => userId === session?.user?.id,
   )?.role;
+  const isPlatformAdmin = session?.user?.role === "admin";
 
-  if (!hasRolePermission(currentUserRole, { waitlistSetting: ["read"] }))
+  if (
+    !isPlatformAdmin &&
+    !hasRolePermission(currentUserRole, { waitlistSetting: ["read"] })
+  )
     notFound();
 
   const { data: settings, error } = await settle(
@@ -67,12 +71,14 @@ const OrganizationsSlugWaitlistPage = async ({
 
   return (
     <OrganizationsSlugWaitlist
-      canUpdateOrganization={hasRolePermission(currentUserRole, {
-        organization: ["update"],
-      })}
-      canUpdateWaitlist={hasRolePermission(currentUserRole, {
-        waitlistSetting: ["update"],
-      })}
+      canUpdateOrganization={
+        isPlatformAdmin ||
+        hasRolePermission(currentUserRole, { organization: ["update"] })
+      }
+      canUpdateWaitlist={
+        isPlatformAdmin ||
+        hasRolePermission(currentUserRole, { waitlistSetting: ["update"] })
+      }
       organizationName={data.name}
       organizationSlug={organizationSlug}
       settings={settings}

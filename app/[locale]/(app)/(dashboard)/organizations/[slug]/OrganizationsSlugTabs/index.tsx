@@ -36,47 +36,81 @@ const PendingInvitationChip = ({
   return count > 0 && <Chip color="secondary" label={count} size="small" />;
 };
 
+interface TabAccess {
+  canReadWaitlistSetting: boolean;
+  canUpdateOrganization: boolean;
+}
+
+type RouteTabItems = React.ComponentProps<typeof RouteTabs>["tabs"];
+
+const PermittedRouteTabs = ({
+  tabAccess,
+  tabs,
+}: {
+  tabAccess: Promise<TabAccess>;
+  tabs: RouteTabItems;
+}) => {
+  const { slug } = useParams<{ slug: string }>();
+
+  const { canReadWaitlistSetting, canUpdateOrganization } = use(tabAccess);
+
+  const hiddenPaths = [
+    ...(canUpdateOrganization ? [] : ["special-hours", "in-store", "points"]),
+    ...(canReadWaitlistSetting ? [] : ["waitlist"]),
+  ].map((segment) => `/organizations/${slug}/${segment}`);
+
+  return (
+    <RouteTabs
+      ariaLabel="organization tabs"
+      tabs={tabs.filter(({ path }) => !hiddenPaths.includes(path))}
+    />
+  );
+};
+
 interface OrganizationsSlugTabsProps {
   children: React.ReactNode;
   pendingInvitationCount: Promise<number>;
+  tabAccess: Promise<TabAccess>;
 }
 
 const OrganizationsSlugTabs = ({
   children,
   pendingInvitationCount,
+  tabAccess,
 }: OrganizationsSlugTabsProps) => {
   const { slug } = useParams<{ slug: string }>();
 
   const tInvitations = useTranslations("organizations.invitations");
 
+  const tabs: RouteTabItems = [
+    { path: `/organizations/${slug}/members` },
+    { path: `/organizations/${slug}/teams` },
+    {
+      label: (
+        <TabLabelStack direction="row">
+          {tInvitations("label")}
+          <Suspense>
+            <PendingInvitationChip initialCount={pendingInvitationCount} />
+          </Suspense>
+        </TabLabelStack>
+      ),
+      path: `/organizations/${slug}/invitations`,
+    },
+    { path: `/organizations/${slug}/location` },
+    { path: `/organizations/${slug}/pickup` },
+    { path: `/organizations/${slug}/special-hours` },
+    { path: `/organizations/${slug}/in-store` },
+    { path: `/organizations/${slug}/waitlist` },
+    { path: `/organizations/${slug}/points` },
+  ];
+
   return (
     <ContentStack>
-      <RouteTabs
-        ariaLabel="organization tabs"
-        tabs={[
-          { path: `/organizations/${slug}/members` },
-          { path: `/organizations/${slug}/teams` },
-          {
-            label: (
-              <TabLabelStack direction="row">
-                {tInvitations("label")}
-                <Suspense>
-                  <PendingInvitationChip
-                    initialCount={pendingInvitationCount}
-                  />
-                </Suspense>
-              </TabLabelStack>
-            ),
-            path: `/organizations/${slug}/invitations`,
-          },
-          { path: `/organizations/${slug}/location` },
-          { path: `/organizations/${slug}/pickup` },
-          { path: `/organizations/${slug}/special-hours` },
-          { path: `/organizations/${slug}/in-store` },
-          { path: `/organizations/${slug}/waitlist` },
-          { path: `/organizations/${slug}/points` },
-        ]}
-      />
+      <Suspense
+        fallback={<RouteTabs ariaLabel="organization tabs" tabs={tabs} />}
+      >
+        <PermittedRouteTabs tabAccess={tabAccess} tabs={tabs} />
+      </Suspense>
       {children}
     </ContentStack>
   );
