@@ -10,6 +10,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 
 import {
+  INPUT_TAX_DEDUCTIBLE_BY_CATEGORY,
   type OperatingCostForm,
   useOperatingCostFormSchema,
 } from "./definitions";
@@ -24,7 +25,14 @@ import { useMonthFormat } from "@/hooks/useMonthFormat";
 
 import { apiClient } from "@/lib/api-client";
 
-import { MenuItem, TextField } from "@mui/material";
+import {
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  FormHelperText,
+  MenuItem,
+  TextField,
+} from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -70,6 +78,9 @@ const OperatingCostDialog = ({
       effectiveFrom:
         operatingCost?.effectiveFrom ??
         dayjs().tz(STORE_TIMEZONE).format(MONTH_FORMAT),
+      inputTaxDeductible:
+        operatingCost?.inputTaxDeductible ??
+        INPUT_TAX_DEDUCTIBLE_BY_CATEGORY.rent,
       monthlyAmount: operatingCost
         ? String(Number(operatingCost.monthlyAmount))
         : "",
@@ -78,10 +89,17 @@ const OperatingCostDialog = ({
     resolver: zodResolver(operatingCostFormSchema),
   });
 
-  const [category, effectiveFrom, monthlyAmount] = useWatch({
-    control,
-    name: ["category", "effectiveFrom", "monthlyAmount"],
-  });
+  const [category, effectiveFrom, inputTaxDeductible, monthlyAmount] = useWatch(
+    {
+      control,
+      name: [
+        "category",
+        "effectiveFrom",
+        "inputTaxDeductible",
+        "monthlyAmount",
+      ],
+    },
+  );
 
   const action = operatingCost ? "update" : "create";
 
@@ -89,7 +107,12 @@ const OperatingCostDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      const body = { ...values, note: values.note || null };
+      const body = {
+        ...values,
+        inputTaxDeductible:
+          values.category !== "personnel" && values.inputTaxDeductible,
+        note: values.note || null,
+      };
 
       await (operatingCost
         ? apiClient.PATCH(
@@ -133,12 +156,16 @@ const OperatingCostDialog = ({
             : undefined
         }
         label={tReports("operatingCosts.category.label")}
-        onChange={(event) =>
+        onChange={(event) => {
+          const nextCategory = event.target
+            .value as OperatingCostForm["category"];
+
+          setValue("category", nextCategory);
           setValue(
-            "category",
-            event.target.value as OperatingCostForm["category"],
-          )
-        }
+            "inputTaxDeductible",
+            INPUT_TAX_DEDUCTIBLE_BY_CATEGORY[nextCategory],
+          );
+        }}
         required
         select
         value={category}
@@ -196,6 +223,24 @@ const OperatingCostDialog = ({
         value={monthlyAmount}
         valueIsNumericString
       />
+      {category !== "personnel" && (
+        <FormControl>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={inputTaxDeductible}
+                onChange={(_, checked) =>
+                  setValue("inputTaxDeductible", checked)
+                }
+              />
+            }
+            label={tReports("operatingCosts.inputTaxDeductible.label")}
+          />
+          <FormHelperText>
+            {tReports("operatingCosts.inputTaxDeductible.hint")}
+          </FormHelperText>
+        </FormControl>
+      )}
       <TextField
         error={!!errors.note}
         fullWidth

@@ -17,23 +17,27 @@
     "month": "Month",
     "noCostRate": "There are no sales with a known cost and no menu recipes yet, so the variable cost rate and break-even point can't be calculated.",
     "noPaymentFeeRate": "No payment fee data yet, so the break-even point leaves payment fees out for now.",
-    "note": "Revenue includes tax; the 5% business tax is backed out of it. Cost of goods uses recipes at current ingredient prices, including add-ons and modifiers. Payment fees are the amounts ECPay reports; cash costs nothing. Income tax follows Article 5 of the Income Tax Act by annualising the month's profit, so it is an estimate until the yearly filing. Daily figures are spread over the open days from the opening hours and special hours.",
+    "note": "Revenue includes tax; the 5% output tax is backed out of it. Fixed costs with a tax invoice, ingredients from suppliers that issue tax invoices and payment fees are costed without their deductible input tax, and the estimated business tax payable is output less input tax; the filing goes by the actual purchase invoices. Cost of goods uses recipes at current ingredient prices, including add-ons and modifiers. Personnel uses published payslips and estimates the rest from the schedule. Income tax follows Article 5 of the Income Tax Act by annualising the month's profit, so it is an estimate until the yearly filing. Daily figures are spread over the open days from the opening hours and special hours.",
     "personnel": {
       "estimate": "Personnel (estimate)",
       "none": "Personnel (no data)",
-      "payroll": "Personnel (published payslips)"
+      "payroll": "Personnel (published payslips)",
+      "schedule": "Personnel (incl. schedule estimates)"
     },
+    "scheduledEmployees": "{count, plural, one {# employee has} other {# employees have}} no published payslip yet and {count, plural, one {is} other {are}} estimated from the schedule and pay terms.",
     "summary": {
       "afterTaxProfit": "After-tax profit",
       "breakEvenRevenue": "Break-even revenue",
-      "businessTax": "Output business tax",
+      "businessTaxPayable": "Estimated business tax payable",
       "costOfGoodsSold": "Cost of goods sold",
       "costOfGoodsSoldRate": "Variable cost rate",
       "dailyBreakEvenRevenue": "Daily revenue needed",
       "dailyTargetRevenue": "Daily target revenue",
       "grossMarginRate": "Gross margin",
       "incomeTax": "Estimated income tax",
+      "inputTax": "Input tax",
       "openDays": "{open, number} open days ({remaining, number} left)",
+      "outputTax": "Output tax",
       "paymentFeeRate": "Payment fee rate",
       "paymentFees": "Payment fees",
       "preTaxProfit": "Pre-tax profit",
@@ -44,6 +48,7 @@
     },
     "targetPreTaxProfit": "Keeping this after-tax profit needs {amount} before tax.",
     "targetProfit": "Target after-tax profit (monthly)",
+    "unestimatedEmployees": "{count, plural, one {# employee has} other {# employees have}} no published payslip and can't be estimated (for example, no pay terms), so {count, plural, one {is} other {are}} left out.",
     "unknownFeeOrders": "{count, plural, one {# ECPay order has} other {# ECPay orders have}} no fee data and {count, plural, one {is} other {are}} left out of payment fees.",
     "unpricedItems": "{count, plural, one {# item has} other {# items have}} no recipe or an unpriced ingredient and {count, plural, one {is} other {are}} left out of the cost of goods and the variable cost rate."
   },
@@ -111,6 +116,13 @@
     "effectiveFrom": {
       "hint": "Applies every month from this one until the category has a later effective month",
       "label": "Effective from"
+    },
+    "inputTaxDeductible": {
+      "column": "Tax invoice",
+      "hint": "Tick when this cost comes with a uniform invoice issued to the store; break-even then uses the amount before tax. Individual landlords and insurance usually don't issue one.",
+      "label": "Has a tax invoice (input tax deductible)",
+      "no": "No",
+      "yes": "Yes"
     },
     "label": "Fixed costs",
     "manage": "Manage fixed costs",

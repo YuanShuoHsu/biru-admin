@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import { useSupplierFormSchema, type SupplierForm } from "./definitions";
 
@@ -13,7 +13,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useServerSearchOptions } from "@/hooks/useServerSearchOptions";
 
-import { Autocomplete, CircularProgress, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Checkbox,
+  CircularProgress,
+  FormControl,
+  FormControlLabel,
+  FormHelperText,
+  TextField,
+} from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -48,6 +56,7 @@ const SupplierDialog = ({
 
   const supplierFormSchema = useSupplierFormSchema();
   const {
+    control,
     formState: { errors, isSubmitted },
     handleSubmit,
     register,
@@ -58,10 +67,13 @@ const SupplierDialog = ({
       name: supplier?.name || "",
       note: supplier?.note || "",
       telephone: supplier?.telephone || "",
+      uniformInvoice: supplier?.uniformInvoice ?? false,
       url: supplier?.url || "",
     },
     resolver: zodResolver(supplierFormSchema),
   });
+
+  const uniformInvoice = useWatch({ control, name: "uniformInvoice" });
 
   const [selectedIngredients, setSelectedIngredients] = useState<
     IngredientOption[]
@@ -95,6 +107,7 @@ const SupplierDialog = ({
             name: values.name,
             note: values.note || null,
             telephone: values.telephone || null,
+            uniformInvoice: values.uniformInvoice,
             url: values.url || null,
           }),
         },
@@ -144,6 +157,20 @@ const SupplierDialog = ({
         placeholder={tInventory("suppliers.telephone.placeholder")}
         {...register("telephone")}
       />
+      <FormControl>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={uniformInvoice}
+              onChange={(_, checked) => setValue("uniformInvoice", checked)}
+            />
+          }
+          label={tInventory("suppliers.uniformInvoice.label")}
+        />
+        <FormHelperText>
+          {tInventory("suppliers.uniformInvoice.hint")}
+        </FormHelperText>
+      </FormControl>
       <Autocomplete
         {...ingredientSearch}
         disableCloseOnSelect

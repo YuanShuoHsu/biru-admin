@@ -14,6 +14,7 @@ export const useSupplierFormSchema = () => {
       }),
     note: z.string().trim().optional(),
     telephone: z.string().trim().optional(),
+    uniformInvoice: z.boolean(),
     url: z
       .string()
       .trim()

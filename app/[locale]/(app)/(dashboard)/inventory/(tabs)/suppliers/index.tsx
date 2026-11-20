@@ -401,6 +401,25 @@ const Suppliers = ({
           ),
       },
       {
+        field: "uniformInvoice",
+        filterable: false,
+        headerName: tInventory("suppliers.uniformInvoice.column"),
+        renderCell: ({ value }: GridRenderCellParams<Supplier>) => (
+          <Chip
+            color={value ? "success" : "default"}
+            label={tInventory(
+              value
+                ? "suppliers.uniformInvoice.yes"
+                : "suppliers.uniformInvoice.no",
+            )}
+            size="small"
+            variant="outlined"
+          />
+        ),
+        sortable: false,
+        type: "boolean",
+      },
+      {
         field: "ingredients",
         filterable: false,
         headerName: `${tInventory("suppliers.ingredients.label")} ${tCommon("optional")}`,

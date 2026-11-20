@@ -9956,6 +9956,8 @@ export interface components {
       organizationId: string;
       name: string;
       telephone?: string | null;
+      /** @description 這家開立統一發票給本店 */
+      uniformInvoice: boolean;
       url?: string | null;
       note?: string | null;
       /** @description 由這家供應的食材 */
@@ -9973,6 +9975,11 @@ export interface components {
       /** @example 全國食材廣場 */
       name: string;
       telephone?: string | null;
+      /**
+       * @description 這家開立統一發票給本店：進價的 5% 營業稅可扣抵，損益平衡以未稅成本計算
+       * @default false
+       */
+      uniformInvoice: boolean;
       /** Format: uri */
       url?: string | null;
       note?: string | null;
@@ -10233,6 +10240,11 @@ export interface components {
       /** @example 全國食材廣場 */
       name?: string;
       telephone?: string | null;
+      /**
+       * @description 這家開立統一發票給本店：進價的 5% 營業稅可扣抵，損益平衡以未稅成本計算
+       * @default false
+       */
+      uniformInvoice: boolean;
       /** Format: uri */
       url?: string | null;
       note?: string | null;
@@ -12445,6 +12457,7 @@ export interface components {
       | "category"
       | "effectiveFrom"
       | "monthlyAmount"
+      | "inputTaxDeductible"
       | "note"
       | "createdAt"
       | "updatedAt";
@@ -12453,6 +12466,7 @@ export interface components {
       | "category"
       | "effectiveFrom"
       | "monthlyAmount"
+      | "inputTaxDeductible"
       | "note"
       | "createdAt"
       | "updatedAt";
@@ -12474,6 +12488,7 @@ export interface components {
       category: components["schemas"]["OperatingCostCategory"];
       effectiveFrom: string;
       monthlyAmount: string;
+      inputTaxDeductible: boolean;
       note?: string | null;
       /** Format: date-time */
       createdAt: string;
@@ -12497,6 +12512,8 @@ export interface components {
        * @example 60000.00
        */
       monthlyAmount: string;
+      /** @description 這筆成本有開給本店的統一發票，5% 進項稅可扣抵，損益平衡以未稅金額計算；人事不能為 true */
+      inputTaxDeductible: boolean;
       note?: string | null;
     };
     UpdateOperatingCostDto: {
@@ -12512,6 +12529,8 @@ export interface components {
        * @example 60000.00
        */
       monthlyAmount?: string;
+      /** @description 這筆成本有開給本店的統一發票，5% 進項稅可扣抵，損益平衡以未稅金額計算；人事不能為 true */
+      inputTaxDeductible?: boolean;
       note?: string | null;
     };
     OrganizationStatsBucketDto: {
@@ -14335,21 +14354,27 @@ export interface components {
       category: components["schemas"]["OperatingCostCategory"];
       /** @description 這個月採用的設定的生效月份；人事來自薪資單時為 null */
       effectiveFrom: string | null;
-      /** @description 當月金額 */
+      /** @description 當月金額（實付，含稅） */
       amount: number;
+      /** @description 其中可扣抵的進項稅：設為有統一發票時為金額 ÷ 1.05 × 5%，否則 0 */
+      inputTax: number;
     };
     /**
-     * @description payroll：當月已發布薪資單的人事成本；estimate：沒有已發布薪資單，改用固定成本裡的人事預估；none：兩者皆無
+     * @description payroll：當月在職員工都有已發布薪資單；schedule：沒有已發布薪資單的員工依班表與薪資設定試算；estimate：沒有任何員工算得出，改用固定成本裡的人事預估；none：三者皆無
      * @enum {string}
      */
-    PersonnelCostSource: "payroll" | "estimate" | "none";
+    PersonnelCostSource: "payroll" | "schedule" | "estimate" | "none";
     BreakEvenPersonnelDto: {
-      /** @description payroll：當月已發布薪資單的人事成本；estimate：沒有已發布薪資單，改用固定成本裡的人事預估；none：兩者皆無 */
+      /** @description payroll：當月在職員工都有已發布薪資單；schedule：沒有已發布薪資單的員工依班表與薪資設定試算；estimate：沒有任何員工算得出，改用固定成本裡的人事預估；none：三者皆無 */
       source: components["schemas"]["PersonnelCostSource"];
-      /** @description 應發薪資＋雇主勞健保＋雇主勞退提繳 */
+      /** @description 應發薪資＋雇主勞健保＋雇主勞退提繳；已發布薪資單用實際金額，其餘用試算 */
       amount: number;
-      /** @description 當月在職但沒有已發布薪資單、未計入的員工數 */
-      unpublishedEmployees: number;
+      /** @description 有已發布薪資單的員工數 */
+      publishedEmployees: number;
+      /** @description 沒有已發布薪資單、依班表試算的員工數 */
+      scheduledEmployees: number;
+      /** @description 沒有已發布薪資單、也試算不出（例如缺薪資設定或當月費率表）而未計入的員工數 */
+      unestimatedEmployees: number;
     };
     /**
      * @description sales：期間內可算出成本的實際銷售；menu：期間內沒有這樣的銷售，改用菜單上有食譜成本與售價的品項平均；兩者皆無為 null
@@ -14379,15 +14404,19 @@ export interface components {
       /** @description 每個類別當月採用的固定成本，不含人事 */
       fixedCosts: components["schemas"]["BreakEvenFixedCostDto"][];
       personnel: components["schemas"]["BreakEvenPersonnelDto"];
-      /** @description 固定成本合計，含人事 */
+      /** @description 固定成本合計（扣除可扣抵進項稅後），含人事 */
       fixedCostTotal: number;
       /** @description 含稅淨營業額（營收扣除退款） */
       revenue: number;
-      /** @description 銷項營業稅：含稅淨營業額 ÷ 1.05 × 5% */
-      businessTax: number;
+      /** @description 銷項稅額：含稅淨營業額 ÷ 1.05 × 5% */
+      outputTax: number;
+      /** @description 可扣抵的進項稅額：有統一發票的固定成本、開立統一發票的供應商食材（依當月銷貨成本）與金流手續費所含的 5% */
+      inputTax: number;
+      /** @description 估計應納營業稅：銷項稅額 − 進項稅額；負數為留抵稅額。實際依進貨發票申報 */
+      businessTaxPayable: number;
       /** @description 未稅淨營業額 */
       salesExcludingTax: number;
-      /** @description 當月可算出成本的品項的標準成本合計 */
+      /** @description 當月可算出成本的品項的標準成本合計；開立統一發票的供應商以未稅進價計算 */
       costOfGoodsSold: number;
       /** @description 當月有銷售但算不出成本、未計入銷貨成本的品項數 */
       unpricedItems: number;
@@ -14413,7 +14442,7 @@ export interface components {
       grossMarginRate: number | null;
       /** @description 手續費率：期間內有手續費資料的訂單的手續費 ÷ 含稅營業額（現金訂單計 0）；沒有資料時為 null，損益平衡不計手續費 */
       paymentFeeRate: number | null;
-      /** @description 損益平衡點（含稅營業額）：固定成本 ÷ 每元含稅營業額的邊際貢獻（(1 − 變動成本率) ÷ 1.05 − 手續費率）；變動成本率未知或沒有邊際貢獻時為 null */
+      /** @description 損益平衡點（含稅營業額）：固定成本 ÷ 每元含稅營業額的邊際貢獻（(1 − 變動成本率 − 手續費率) ÷ 1.05）；變動成本率未知或沒有邊際貢獻時為 null */
       breakEvenRevenue: number | null;
       /** @description 每日需求營業額：損益平衡點 ÷ 營業日數 */
       dailyBreakEvenRevenue: number | null;
@@ -14426,7 +14455,7 @@ export interface components {
       /** @description 目標淨利營業額（含稅）：（固定成本 + 目標稅前淨利）÷ 邊際貢獻 */
       targetRevenue: number | null;
       dailyTargetRevenue: number | null;
-      /** @description 稅前淨利：未稅淨營業額 − 銷貨成本 − 手續費 − 固定成本 */
+      /** @description 稅前淨利：未稅淨營業額 − 銷貨成本 − 未稅手續費 − 固定成本（皆扣除可扣抵進項稅） */
       preTaxProfit: number;
       /** @description 預估營所稅：把當月稅前淨利乘 12 依所得稅法第 5 條算出全年稅額再除以 12；虧損為 0 */
       incomeTax: number;
@@ -24767,6 +24796,10 @@ export interface operations {
         filterField?: components["schemas"]["OperatingCostFilterField"];
         /** @description 省略時依生效月份新到舊、再依類別排序 */
         sortBy?: components["schemas"]["OperatingCostSortField"];
+        limit?: number;
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
       };
       header?: never;
       path: {
@@ -25257,39 +25290,6 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["OperatingTypeResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ReportsController_exportBreakEven: {
-    parameters: {
-      query: {
-        /** @description 月份（台灣時間） */
-        month: string;
-        /** @description 目標稅後淨利（每月）；帶了才算目標營業額，換算稅前時營所稅依全年化估算 */
-        targetProfit?: string;
-      };
-      header?: never;
-      path: {
-        organizationSlug: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "text/csv": string;
         };
       };
       /** @description Internal server error */
@@ -28425,6 +28425,9 @@ export interface operations {
         /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
         quickFilterEnums?: string[];
         sortDirection?: components["schemas"]["SortDirection"];
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
         /** @description 每頁列數；省略時回傳所有列 */
         limit?: number;
         filterField?: components["schemas"]["BreakEvenItemFilterField"];
@@ -28445,6 +28448,39 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["BreakEvenReportResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ReportsController_exportBreakEven: {
+    parameters: {
+      query: {
+        /** @description 月份（台灣時間） */
+        month: string;
+        /** @description 目標稅後淨利（每月）；帶了才算目標營業額，換算稅前時營所稅依全年化估算 */
+        targetProfit?: string;
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "text/csv": string;
         };
       };
       /** @description Internal server error */
@@ -30601,40 +30637,6 @@ export const waitlistErrorCodeValues: ReadonlyArray<
 export const waitlistTicketStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["WaitlistTicketStatus"]
 > = ["waiting", "called", "seated", "noShow", "cancelled", "expired"];
-export const operatingCostFilterFieldValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["OperatingCostFilterField"]
-> = [
-  "category",
-  "effectiveFrom",
-  "monthlyAmount",
-  "note",
-  "createdAt",
-  "updatedAt",
-];
-export const operatingCostSortFieldValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["OperatingCostSortField"]
-> = [
-  "category",
-  "effectiveFrom",
-  "monthlyAmount",
-  "note",
-  "createdAt",
-  "updatedAt",
-];
-export const operatingCostCategoryValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["OperatingCostCategory"]
-> = [
-  "rent",
-  "electricity",
-  "water",
-  "gas",
-  "telecom",
-  "insurance",
-  "equipment",
-  "marketing",
-  "personnel",
-  "other",
-];
 export const waitlistTransitionStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["WaitlistTransitionStatus"]
 > = ["waiting", "called", "seated", "noShow", "cancelled"];
@@ -30663,6 +30665,42 @@ export const waitlistTicketSortFieldValues: ReadonlyArray<
   "createdAt",
   "calledAt",
   "endedAt",
+];
+export const operatingCostFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OperatingCostFilterField"]
+> = [
+  "category",
+  "effectiveFrom",
+  "monthlyAmount",
+  "inputTaxDeductible",
+  "note",
+  "createdAt",
+  "updatedAt",
+];
+export const operatingCostSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OperatingCostSortField"]
+> = [
+  "category",
+  "effectiveFrom",
+  "monthlyAmount",
+  "inputTaxDeductible",
+  "note",
+  "createdAt",
+  "updatedAt",
+];
+export const operatingCostCategoryValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["OperatingCostCategory"]
+> = [
+  "rent",
+  "electricity",
+  "water",
+  "gas",
+  "telecom",
+  "insurance",
+  "equipment",
+  "marketing",
+  "personnel",
+  "other",
 ];
 export const organizationOperatingTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrganizationOperatingType"]
@@ -30954,7 +30992,7 @@ export const breakEvenItemSortFieldValues: ReadonlyArray<
 > = ["name", "quantity", "revenue", "cost", "grossProfit", "grossMarginRate"];
 export const personnelCostSourceValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PersonnelCostSource"]
-> = ["payroll", "estimate", "none"];
+> = ["payroll", "schedule", "estimate", "none"];
 export const costRateSourceValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CostRateSource"]
 > = ["sales", "menu"];

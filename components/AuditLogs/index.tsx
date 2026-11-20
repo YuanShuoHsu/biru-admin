@@ -208,6 +208,8 @@ const FIELD_LABEL_KEYS = {
   telephone: "field.telephone",
   note: "field.note",
   monthlyAmount: "field.monthlyAmount",
+  inputTaxDeductible: "field.inputTaxDeductible",
+  uniformInvoice: "field.uniformInvoice",
   "operatingCost.category": "field.operatingCostCategory",
   sortOrder: "field.sortOrder",
   slug: "field.slug",

@@ -122,7 +122,9 @@ const BREAK_EVEN_MONEY_FIELDS = ["revenue", "grossProfit", "cost"] as const;
 
 const BREAK_EVEN_SALES_SUMMARY = [
   "revenue",
-  "businessTax",
+  "outputTax",
+  "inputTax",
+  "businessTaxPayable",
   "salesExcludingTax",
   "costOfGoodsSold",
   "paymentFees",
@@ -691,10 +693,17 @@ const ReportTable = ({
                 })}
               </Typography>
             )}
-            {breakEven.personnel.unpublishedEmployees > 0 && (
+            {breakEven.personnel.scheduledEmployees > 0 && (
               <Typography color="textSecondary" variant="body2">
-                {tReports("personnel.unpublished", {
-                  count: breakEven.personnel.unpublishedEmployees,
+                {tReports("breakEven.scheduledEmployees", {
+                  count: breakEven.personnel.scheduledEmployees,
+                })}
+              </Typography>
+            )}
+            {breakEven.personnel.unestimatedEmployees > 0 && (
+              <Typography color="textSecondary" variant="body2">
+                {tReports("breakEven.unestimatedEmployees", {
+                  count: breakEven.personnel.unestimatedEmployees,
                 })}
               </Typography>
             )}

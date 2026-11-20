@@ -17,6 +17,7 @@ import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import { useDataGridQueryState } from "@/hooks/useDataGridQueryState";
 import {
+  useBooleanFilterOperators,
   useDateFilterOperators,
   useEnumFilterOperators,
   useMonthFilterOperators,
@@ -29,6 +30,7 @@ import { useMonthFormat } from "@/hooks/useMonthFormat";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import {
   Button,
+  Chip,
   DialogContentText,
   IconButton,
   Stack,
@@ -123,6 +125,7 @@ const OperatingCosts = ({
 
   const { setDialog } = useDialogStore((state) => state);
 
+  const booleanFilterOperators = useBooleanFilterOperators();
   const dateFilterOperators = useDateFilterOperators();
   const enumFilterOperators = useEnumFilterOperators();
   const monthFilterOperators = useMonthFilterOperators();
@@ -296,6 +299,24 @@ const OperatingCosts = ({
         valueFormatter: (value: number) => formatMoney(value, currency),
       },
       {
+        field: "inputTaxDeductible",
+        filterOperators: booleanFilterOperators,
+        headerName: tReports("operatingCosts.inputTaxDeductible.column"),
+        renderCell: ({ value }: GridRenderCellParams<OperatingCost>) => (
+          <Chip
+            color={value ? "success" : "default"}
+            label={tReports(
+              value
+                ? "operatingCosts.inputTaxDeductible.yes"
+                : "operatingCosts.inputTaxDeductible.no",
+            )}
+            size="small"
+            variant="outlined"
+          />
+        ),
+        type: "boolean",
+      },
+      {
         field: "note",
         filterOperators: stringFilterOperators,
         headerName: `${tReports("operatingCosts.note.label")} ${tCommon("optional")}`,
@@ -318,6 +339,7 @@ const OperatingCosts = ({
       },
     ],
     [
+      booleanFilterOperators,
       canViewAuditLog,
       canWrite,
       enumOptions.category,
