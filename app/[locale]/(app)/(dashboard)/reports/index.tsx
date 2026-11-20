@@ -934,7 +934,7 @@ const Reports = ({
         organization.name,
         tReports("label"),
         tReports(`tabs.${tab}`),
-        tab === "personnel" ? month : getExportDateRange([since, until]),
+        isMonthly ? month : getExportDateRange([since, until]),
       )}.csv`;
       anchor.click();
       URL.revokeObjectURL(url);
@@ -1027,7 +1027,7 @@ const Reports = ({
             ))}
           </GroupByTextField>
         )}
-        {isBreakEven ? (
+        {isBreakEven && (
           <>
             <NumericFormat
               allowNegative={false}
@@ -1063,17 +1063,16 @@ const Reports = ({
               </Button>
             )}
           </>
-        ) : (
-          <Button
-            disabled={loading}
-            loading={exporting}
-            onClick={handleExport}
-            startIcon={<Download />}
-            variant="contained"
-          >
-            {tReports("export")}
-          </Button>
         )}
+        <Button
+          disabled={loading}
+          loading={exporting}
+          onClick={handleExport}
+          startIcon={<Download />}
+          variant="contained"
+        >
+          {tReports("export")}
+        </Button>
       </ToolbarStack>
       <ReportTable
         {...grid}

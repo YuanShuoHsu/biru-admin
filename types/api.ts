@@ -5897,6 +5897,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/reports/break-even/export.csv": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 匯出損益平衡報表的品項毛利 CSV */
+    get: operations["ReportsController_exportBreakEven"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/store-layout": {
     parameters: {
       query?: never;
@@ -25240,6 +25257,39 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["OperatingTypeResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ReportsController_exportBreakEven: {
+    parameters: {
+      query: {
+        /** @description 月份（台灣時間） */
+        month: string;
+        /** @description 目標稅後淨利（每月）；帶了才算目標營業額，換算稅前時營所稅依全年化估算 */
+        targetProfit?: string;
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "text/csv": string;
         };
       };
       /** @description Internal server error */
