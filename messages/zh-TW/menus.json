@@ -9,6 +9,9 @@
       "success": "成功刪除菜單 {name}",
       "title": "刪除菜單"
     },
+    "exportMenu": {
+      "title": "匯出菜單 CSV"
+    },
     "label": "操作",
     "updateMenu": {
       "success": "成功更新菜單 {name}",

@@ -9,6 +9,9 @@
       "success": "메뉴 {name}이(가) 삭제되었습니다",
       "title": "메뉴 삭제"
     },
+    "exportMenu": {
+      "title": "메뉴 CSV 내보내기"
+    },
     "label": "작업",
     "updateMenu": {
       "success": "메뉴 {name}이(가) 업데이트되었습니다",
