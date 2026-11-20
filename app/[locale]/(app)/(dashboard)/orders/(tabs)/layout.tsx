@@ -32,6 +32,8 @@ const OrdersTabsLayout = ({ children }: { children: React.ReactNode }) => {
           key === `${ordersUrl}/board/admin` ||
           (typeof key === "string" && key.startsWith(`${ordersUrl}/kitchen`)) ||
           key === `/api/organizations/${organization.slug}/ecpay/attention` ||
+          key ===
+            `/api/organizations/${organization.slug}/special-hours/affected` ||
           (Array.isArray(key) && key[0] === ordersUrl),
       );
 

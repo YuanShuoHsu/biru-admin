@@ -1,11 +1,8 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import useSWR from "swr";
-
-import { useMemberRole } from "@/hooks/organizations";
-import { useSession } from "@/hooks/useSession";
 
 import {
   Alert,
@@ -22,20 +19,200 @@ import type {
   SpecialHoursAffected,
   SpecialHoursAffectedOrder,
   SpecialHoursProcessResponse,
-  SpecialHoursProcessStatus,
 } from "@/types/organizations";
 
 import { fetcher } from "@/utils/fetcher";
-import { hasRolePermission } from "@/utils/organizations";
 
 const REFRESH_INTERVAL_MS = 60_000;
+const PROCESS_LIMIT = 100;
 
-interface ProcessResult {
-  id: string;
-  label: string;
-  message?: string;
-  status: SpecialHoursProcessStatus;
-}
+const getSections = ({
+  manualRefundOrders = [],
+  refundOrders = [],
+  unpaidOrders = [],
+  waitlistTickets = [],
+}: SpecialHoursAffected) =>
+  (
+    [
+      ["refundOrders", refundOrders],
+      ["manualRefundOrders", manualRefundOrders],
+      ["unpaidOrders", unpaidOrders],
+      ["waitlistTickets", waitlistTickets],
+    ] as const
+  ).filter(([, items]) => items.length);
+
+export const useSpecialHoursAffectedPreview = (organizationSlug: string) => {
+  const { setDialog } = useDialogStore((state) => state);
+
+  const format = useFormatter();
+
+  const tCommon = useTranslations("common");
+  const tAffected = useTranslations("organizations.specialHours.affected");
+
+  const affectedUrl = `/api/organizations/${organizationSlug}/special-hours/affected`;
+
+  const formatOrder = ({
+    customer,
+    orderNumber,
+    pickupTime,
+  }: SpecialHoursAffectedOrder) =>
+    [
+      orderNumber,
+      customer.name,
+      pickupTime && format.dateTime(new Date(pickupTime), "compact"),
+    ]
+      .filter(Boolean)
+      .join(tCommon("delimiter"));
+
+  const openPreview = (
+    affected: SpecialHoursAffected,
+    onProcessed?: () => void,
+  ) => {
+    const sections = getSections(affected);
+    if (!sections.length) return false;
+
+    const {
+      manualRefundOrders = [],
+      refundOrders = [],
+      unpaidOrders = [],
+      waitlistTickets = [],
+    } = affected;
+    const orderIds = [...refundOrders, ...unpaidOrders].map(({ id }) => id);
+    const ticketIds = waitlistTickets.map(({ id }) => id);
+    const processable = !!orderIds.length || !!ticketIds.length;
+    const labels = new Map([
+      ...[...refundOrders, ...unpaidOrders].map(
+        ({ id, orderNumber }) => [id, orderNumber] as const,
+      ),
+      ...waitlistTickets.map(
+        ({ id, ticketNumber }) => [id, ticketNumber] as const,
+      ),
+    ]);
+    const counts = {
+      refund: refundOrders.length,
+      unpaid: unpaidOrders.length,
+      tickets: waitlistTickets.length,
+      manualRefund: manualRefundOrders.length,
+    };
+    const idempotencyKey = crypto.randomUUID();
+
+    const process = async () => {
+      const results: SpecialHoursProcessResponse = {
+        orders: [],
+        waitlistTickets: [],
+      };
+
+      for (
+        let start = 0;
+        start < Math.max(orderIds.length, ticketIds.length);
+        start += PROCESS_LIMIT
+      ) {
+        const response = await fetcher<SpecialHoursProcessResponse>(
+          `${affectedUrl}/process`,
+          {
+            body: JSON.stringify({
+              orderIds: orderIds.slice(start, start + PROCESS_LIMIT),
+              ticketIds: ticketIds.slice(start, start + PROCESS_LIMIT),
+            } satisfies ProcessSpecialHoursAffectedDto),
+            headers: {
+              "Content-Type": "application/json",
+              "Idempotency-Key": idempotencyKey,
+            },
+            method: "POST",
+          },
+        );
+
+        results.orders.push(...response.orders);
+        results.waitlistTickets.push(...response.waitlistTickets);
+      }
+
+      const items = [...results.orders, ...results.waitlistTickets];
+
+      setDialog({
+        onExited: () =>
+          setDialog({
+            content: (
+              <>
+                {items.map(({ id, message, status }) => (
+                  <DialogContentText key={id}>
+                    {labels.get(id) ?? id}
+                    {tCommon("colon")}
+                    {tAffected(`results.status.${status}`)}
+                    {message && `${tCommon("delimiter")}${message}`}
+                  </DialogContentText>
+                ))}
+                {items.some(({ status }) => status === "failed") && (
+                  <Typography color="error" variant="body2">
+                    {tAffected("results.retry")}
+                  </Typography>
+                )}
+              </>
+            ),
+            open: true,
+            showConfirm: false,
+            title: tAffected("results.title"),
+          }),
+      });
+
+      onProcessed?.();
+    };
+
+    setDialog({
+      confirmLoading: false,
+      confirmText: processable ? tAffected("process.title") : undefined,
+      content: (
+        <>
+          {sections.map(([key, items]) => (
+            <Fragment key={key}>
+              <Typography variant="subtitle2">
+                {tAffected(`${key}.label`, { count: items.length })}
+              </Typography>
+              {key === "manualRefundOrders" && (
+                <Typography color="warning" variant="body2">
+                  {tAffected("manualRefundOrders.hint")}
+                </Typography>
+              )}
+              {items.map((item) => (
+                <Typography key={item.id} variant="body2">
+                  {"orderNumber" in item
+                    ? formatOrder(item)
+                    : [item.ticketNumber, item.name]
+                        .filter(Boolean)
+                        .join(tCommon("delimiter"))}
+                </Typography>
+              ))}
+            </Fragment>
+          ))}
+          {processable && (
+            <>
+              <DialogContentText>
+                {tAffected("process.confirm")}
+              </DialogContentText>
+              {Object.entries(counts)
+                .filter(([, count]) => count)
+                .map(([key, count]) => (
+                  <DialogContentText key={key}>
+                    {tAffected(`process.${key as keyof typeof counts}`, {
+                      count,
+                    })}
+                  </DialogContentText>
+                ))}
+            </>
+          )}
+        </>
+      ),
+      formId: undefined,
+      onConfirm: processable ? process : undefined,
+      open: true,
+      showConfirm: processable,
+      title: tAffected("title"),
+    });
+
+    return true;
+  };
+
+  return { affectedUrl, openPreview };
+};
 
 interface SpecialHoursAffectedAlertProps {
   onProcessed?: () => void;
@@ -46,193 +223,48 @@ const SpecialHoursAffectedAlert = ({
   onProcessed,
   organizationSlug,
 }: SpecialHoursAffectedAlertProps) => {
-  const { setDialog } = useDialogStore((state) => state);
-
-  const [results, setResults] = useState<ProcessResult[] | null>(null);
-
-  const format = useFormatter();
-
-  const tCommon = useTranslations("common");
   const tAffected = useTranslations("organizations.specialHours.affected");
 
-  const memberRole = useMemberRole(organizationSlug);
-  const canRefund =
-    useSession()?.user.role === "admin" ||
-    hasRolePermission(memberRole, { refund: ["create"] });
-
-  const affectedUrl = `/api/organizations/${organizationSlug}/special-hours/affected`;
+  const { affectedUrl, openPreview } =
+    useSpecialHoursAffectedPreview(organizationSlug);
 
   const { data, mutate } = useSWR<SpecialHoursAffected>(affectedUrl, {
     refreshInterval: REFRESH_INTERVAL_MS,
   });
 
-  const {
-    manualRefundOrders = [],
-    refundOrders = [],
-    unpaidOrders = [],
-    waitlistTickets = [],
-  } = data ?? {};
+  const sections = data ? getSections(data) : [];
 
-  const toOrderItem = ({
-    customer,
-    id,
-    orderNumber,
-    pickupTime,
-  }: SpecialHoursAffectedOrder) => ({
-    id,
-    label: orderNumber,
-    text: [
-      orderNumber,
-      customer.name,
-      pickupTime && format.dateTime(new Date(pickupTime), "compact"),
-    ]
-      .filter(Boolean)
-      .join(tCommon("delimiter")),
-  });
-
-  const sections = (
-    [
-      ["refundOrders", refundOrders.map(toOrderItem)],
-      ["manualRefundOrders", manualRefundOrders.map(toOrderItem)],
-      ["unpaidOrders", unpaidOrders.map(toOrderItem)],
-      [
-        "waitlistTickets",
-        waitlistTickets.map(({ id, name, ticketNumber }) => ({
-          id,
-          label: ticketNumber,
-          text: [ticketNumber, name].filter(Boolean).join(tCommon("delimiter")),
-        })),
-      ],
-    ] as const
-  ).filter(([, items]) => items.length);
-
-  const processedOrders = canRefund ? [...refundOrders, ...unpaidOrders] : [];
-
-  const handleProcess = () => {
-    const idempotencyKey = crypto.randomUUID();
-    const labels = new Map(
-      sections.flatMap(([, items]) =>
-        items.map(({ id, label }) => [id, label] as const),
-      ),
-    );
-    const counts = {
-      manualRefund: manualRefundOrders.length,
-      refund: canRefund ? refundOrders.length : 0,
-      tickets: waitlistTickets.length,
-      unpaid: canRefund ? unpaidOrders.length : 0,
-    };
-
-    setDialog({
-      content: (
-        <>
-          <DialogContentText>{tAffected("process.confirm")}</DialogContentText>
-          {Object.entries(counts)
-            .filter(([, count]) => count)
-            .map(([key, count]) => (
-              <DialogContentText key={key}>
-                {tAffected(`process.${key as keyof typeof counts}`, { count })}
-              </DialogContentText>
-            ))}
-        </>
-      ),
-      onConfirm: async () => {
-        const response = await fetcher<SpecialHoursProcessResponse>(
-          `${affectedUrl}/process`,
-          {
-            body: JSON.stringify({
-              orderIds: processedOrders.map(({ id }) => id),
-              ticketIds: waitlistTickets.map(({ id }) => id),
-            } satisfies ProcessSpecialHoursAffectedDto),
-            headers: {
-              "Content-Type": "application/json",
-              "Idempotency-Key": idempotencyKey,
-            },
-            method: "POST",
-          },
-        );
-
-        setResults(
-          [...response.orders, ...response.waitlistTickets].map(
-            ({ id, message, status }) => ({
-              id,
-              label: labels.get(id) ?? id,
-              message,
-              status,
-            }),
-          ),
-        );
-
-        await mutate();
-        onProcessed?.();
-      },
-      open: true,
-      title: tAffected("process.title"),
-    });
-  };
-
-  const hasFailure = results?.some(({ status }) => status === "failed");
+  if (!data || !sections.length) return null;
 
   return (
-    <>
-      {results && (
-        <Alert
-          onClose={() => setResults(null)}
-          severity={
-            hasFailure
-              ? "error"
-              : results.some(({ status }) => status === "manualRefundRequired")
-                ? "warning"
-                : "success"
+    <Alert
+      action={
+        <Button
+          color="inherit"
+          onClick={() =>
+            openPreview(data, () => {
+              void mutate();
+              onProcessed?.();
+            })
           }
+          size="small"
         >
-          <AlertTitle>{tAffected("results.title")}</AlertTitle>
-          {results.map(({ id, label, message, status }) => (
-            <Typography key={id} variant="body2">
-              {label}
-              {tCommon("colon")}
-              {tAffected(`results.status.${status}`)}
-              {message && `${tCommon("delimiter")}${message}`}
-            </Typography>
-          ))}
-          {hasFailure && (
-            <Typography variant="body2">
-              {tAffected("results.retry")}
-            </Typography>
+          {tAffected(
+            sections.some(([key]) => key !== "manualRefundOrders")
+              ? "process.title"
+              : "details",
           )}
-        </Alert>
-      )}
-      {!!sections.length && (
-        <Alert
-          action={
-            (!!processedOrders.length || !!waitlistTickets.length) && (
-              <Button color="inherit" onClick={handleProcess} size="small">
-                {tAffected("process.title")}
-              </Button>
-            )
-          }
-          severity="warning"
-        >
-          <AlertTitle>{tAffected("title")}</AlertTitle>
-          {sections.map(([key, items]) => (
-            <Fragment key={key}>
-              <Typography variant="subtitle2">
-                {tAffected(`${key}.label`, { count: items.length })}
-              </Typography>
-              {key === "manualRefundOrders" && (
-                <Typography variant="body2">
-                  {tAffected("manualRefundOrders.hint")}
-                </Typography>
-              )}
-              {items.map(({ id, text }) => (
-                <Typography key={id} variant="body2">
-                  {text}
-                </Typography>
-              ))}
-            </Fragment>
-          ))}
-        </Alert>
-      )}
-    </>
+        </Button>
+      }
+      severity="warning"
+    >
+      <AlertTitle>{tAffected("title")}</AlertTitle>
+      {sections.map(([key, items]) => (
+        <Typography key={key} variant="body2">
+          {tAffected(`${key}.label`, { count: items.length })}
+        </Typography>
+      ))}
+    </Alert>
   );
 };
 

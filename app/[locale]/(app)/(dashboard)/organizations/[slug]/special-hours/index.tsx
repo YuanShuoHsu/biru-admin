@@ -105,7 +105,7 @@ const OrganizationsSlugSpecialHours = ({
       setDialog({
         content: (
           <SpecialHoursDialog
-            mutate={mutate}
+            mutate={mutateRows}
             organizationSlug={organizationSlug}
             specialHours={specialHours}
           />
@@ -116,7 +116,7 @@ const OrganizationsSlugSpecialHours = ({
           specialHours ? "actions.update.title" : "actions.create.title",
         ),
       }),
-    [mutate, organizationSlug, setDialog, tSpecialHours],
+    [mutateRows, organizationSlug, setDialog, tSpecialHours],
   );
 
   const handleRemove = useCallback(

@@ -429,6 +429,7 @@
       }
     },
     "affected": {
+      "details": "查看明细",
       "manualRefundOrders": {
         "hint": "这些订单不是信用卡或 Apple Pay 付款，不会自动处理，请另外退款给顾客。",
         "label": "需另外退款的订单（{count} 笔）"

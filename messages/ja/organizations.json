@@ -429,6 +429,7 @@
       }
     },
     "affected": {
+      "details": "詳細を見る",
       "manualRefundOrders": {
         "hint": "クレジットカード・Apple Pay 以外で支払われた注文は自動処理されません。別途お客様に返金してください。",
         "label": "別途返金が必要な注文（{count} 件）"

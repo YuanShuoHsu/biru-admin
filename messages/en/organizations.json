@@ -429,6 +429,7 @@
       }
     },
     "affected": {
+      "details": "View details",
       "manualRefundOrders": {
         "hint": "These orders weren't paid by credit card or Apple Pay, so they won't be processed. Refund the customers separately.",
         "label": "Orders to refund separately ({count})"

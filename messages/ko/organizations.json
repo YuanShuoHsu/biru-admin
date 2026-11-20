@@ -429,6 +429,7 @@
       }
     },
     "affected": {
+      "details": "자세히 보기",
       "manualRefundOrders": {
         "hint": "신용카드 또는 Apple Pay 이외의 방법으로 결제된 주문은 자동 처리되지 않습니다. 고객에게 별도로 환불해 주세요.",
         "label": "별도 환불이 필요한 주문 ({count}건)"
