@@ -10,7 +10,7 @@
       "7d": "Last 7 days",
       "30d": "Last 30 days",
       "90d": "Last 3 months",
-      "365d": "Last year"
+      "365d": "Last 12 months"
     },
     "revenue": "Revenue",
     "discount": "Discounts"
