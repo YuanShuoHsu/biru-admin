@@ -20,6 +20,8 @@
     "label": "Points enabled at"
   },
   "update": {
+    "disableWarning": "Orders paid at any store after saving won't earn points, and they won't earn them later when you enable points again.",
+    "disabled": "Points disabled",
     "success": "Point settings updated",
     "title": "Edit point settings"
   }
