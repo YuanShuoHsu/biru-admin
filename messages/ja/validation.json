@@ -505,5 +505,16 @@
   },
   "cashDeviceVendor": {
     "maxLength": "メーカーは100文字以内で入力してください。"
+  },
+  "cashDeviceCollection": {
+    "depositedAmount": {
+      "required": "実際の入金額は必須です。"
+    },
+    "reportedAmount": {
+      "required": "機器報告額は必須です。"
+    }
+  },
+  "cashDeviceRefill": {
+    "required": "少なくとも1つの金種の枚数を入力してください。"
   }
 }

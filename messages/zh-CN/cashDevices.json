@@ -1,5 +1,9 @@
 {
   "actions": {
+    "collection": {
+      "success": "已记录收钞，存入与回报差额 {difference}",
+      "title": "收钞"
+    },
     "create": {
       "success": "已新增机台",
       "title": "新增机台"
@@ -10,12 +14,37 @@
       "title": "删除机台"
     },
     "label": "操作",
+    "refill": {
+      "success": "已记录补币",
+      "title": "补币",
+      "total": "补币金额：{total}"
+    },
     "update": {
       "success": "已更新机台",
       "title": "编辑机台"
     }
   },
   "createdAt": "创建时间",
+  "events": {
+    "amount": "金额",
+    "denominations": "面额明细",
+    "depositedAmount": "实际存入金额",
+    "difference": "差额（存入 − 回报）",
+    "label": "机台记录",
+    "note": "备注",
+    "occurredAt": "发生时间",
+    "reportedAmount": "机台回报金额",
+    "type": {
+      "change": "找零",
+      "collection": "收钞",
+      "error": "错误",
+      "inventorySnapshot": "库存盘点",
+      "label": "类型",
+      "payment": "收款",
+      "refill": "补币",
+      "refundDispense": "退款出钞"
+    }
+  },
   "label": "现金机台",
   "lastSeenAt": "最后连接时间",
   "model": {

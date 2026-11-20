@@ -1,5 +1,9 @@
 {
   "actions": {
+    "collection": {
+      "success": "紙幣回収を記録しました。入金額と報告額の差額：{difference}",
+      "title": "紙幣回収"
+    },
     "create": {
       "success": "端末を追加しました",
       "title": "端末を追加"
@@ -10,12 +14,37 @@
       "title": "端末を削除"
     },
     "label": "操作",
+    "refill": {
+      "success": "釣銭補充を記録しました",
+      "title": "釣銭補充",
+      "total": "補充金額：{total}"
+    },
     "update": {
       "success": "端末を更新しました",
       "title": "端末を編集"
     }
   },
   "createdAt": "作成日時",
+  "events": {
+    "amount": "金額",
+    "denominations": "金種内訳",
+    "depositedAmount": "実際の入金額",
+    "difference": "差額（入金 − 報告）",
+    "label": "機器履歴",
+    "note": "備考",
+    "occurredAt": "発生日時",
+    "reportedAmount": "機器報告額",
+    "type": {
+      "change": "釣銭",
+      "collection": "紙幣回収",
+      "error": "エラー",
+      "inventorySnapshot": "在高確認",
+      "label": "種類",
+      "payment": "入金",
+      "refill": "釣銭補充",
+      "refundDispense": "返金払出"
+    }
+  },
   "label": "現金端末",
   "lastSeenAt": "最終接続日時",
   "model": {

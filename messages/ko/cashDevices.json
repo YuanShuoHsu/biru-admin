@@ -1,5 +1,9 @@
 {
   "actions": {
+    "collection": {
+      "success": "지폐 회수를 기록했습니다. 입금액과 보고액의 차액: {difference}",
+      "title": "지폐 회수"
+    },
     "create": {
       "success": "기기를 추가했습니다",
       "title": "기기 추가"
@@ -10,12 +14,37 @@
       "title": "기기 삭제"
     },
     "label": "작업",
+    "refill": {
+      "success": "잔돈 보충을 기록했습니다",
+      "title": "잔돈 보충",
+      "total": "보충 금액: {total}"
+    },
     "update": {
       "success": "기기를 수정했습니다",
       "title": "기기 편집"
     }
   },
   "createdAt": "생성 시간",
+  "events": {
+    "amount": "금액",
+    "denominations": "권종 내역",
+    "depositedAmount": "실제 입금 금액",
+    "difference": "차액(입금 − 보고)",
+    "label": "기기 기록",
+    "note": "메모",
+    "occurredAt": "발생 시간",
+    "reportedAmount": "기기 보고 금액",
+    "type": {
+      "change": "거스름돈",
+      "collection": "지폐 회수",
+      "error": "오류",
+      "inventorySnapshot": "재고 점검",
+      "label": "유형",
+      "payment": "결제",
+      "refill": "잔돈 보충",
+      "refundDispense": "환불 출금"
+    }
+  },
   "label": "현금 기기",
   "lastSeenAt": "마지막 연결 시간",
   "model": {

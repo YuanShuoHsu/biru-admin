@@ -1,5 +1,9 @@
 {
   "actions": {
+    "collection": {
+      "success": "Collection recorded. Deposited minus reported: {difference}",
+      "title": "Collect Cash"
+    },
     "create": {
       "success": "Device added",
       "title": "Add Device"
@@ -10,12 +14,37 @@
       "title": "Delete Device"
     },
     "label": "Actions",
+    "refill": {
+      "success": "Refill recorded",
+      "title": "Refill",
+      "total": "Refill amount: {total}"
+    },
     "update": {
       "success": "Device updated",
       "title": "Edit Device"
     }
   },
   "createdAt": "Created At",
+  "events": {
+    "amount": "Amount",
+    "denominations": "Denominations",
+    "depositedAmount": "Deposited Amount",
+    "difference": "Difference (Deposited − Reported)",
+    "label": "Device Events",
+    "note": "Note",
+    "occurredAt": "Occurred At",
+    "reportedAmount": "Reported Amount",
+    "type": {
+      "change": "Change",
+      "collection": "Collection",
+      "error": "Error",
+      "inventorySnapshot": "Inventory Snapshot",
+      "label": "Type",
+      "payment": "Payment",
+      "refill": "Refill",
+      "refundDispense": "Refund Dispense"
+    }
+  },
   "label": "Cash Devices",
   "lastSeenAt": "Last Seen At",
   "model": {

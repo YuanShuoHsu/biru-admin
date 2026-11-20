@@ -505,5 +505,16 @@
   },
   "cashDeviceVendor": {
     "maxLength": "Vendor cannot exceed 100 characters."
+  },
+  "cashDeviceCollection": {
+    "depositedAmount": {
+      "required": "Deposited amount is required."
+    },
+    "reportedAmount": {
+      "required": "Reported amount is required."
+    }
+  },
+  "cashDeviceRefill": {
+    "required": "Enter a count for at least one denomination."
   }
 }

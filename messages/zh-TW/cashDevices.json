@@ -1,5 +1,9 @@
 {
   "actions": {
+    "collection": {
+      "success": "已記錄收鈔，存入與回報差額 {difference}",
+      "title": "收鈔"
+    },
     "create": {
       "success": "已新增機台",
       "title": "新增機台"
@@ -10,12 +14,37 @@
       "title": "刪除機台"
     },
     "label": "操作",
+    "refill": {
+      "success": "已記錄補幣",
+      "title": "補幣",
+      "total": "補幣金額：{total}"
+    },
     "update": {
       "success": "已更新機台",
       "title": "編輯機台"
     }
   },
   "createdAt": "建立時間",
+  "events": {
+    "amount": "金額",
+    "denominations": "面額明細",
+    "depositedAmount": "實際存入金額",
+    "difference": "差額（存入 − 回報）",
+    "label": "機台紀錄",
+    "note": "備註",
+    "occurredAt": "發生時間",
+    "reportedAmount": "機台回報金額",
+    "type": {
+      "change": "找零",
+      "collection": "收鈔",
+      "error": "錯誤",
+      "inventorySnapshot": "庫存盤點",
+      "label": "類型",
+      "payment": "收款",
+      "refill": "補幣",
+      "refundDispense": "退款出鈔"
+    }
+  },
   "label": "現金機台",
   "lastSeenAt": "最後連線時間",
   "model": {

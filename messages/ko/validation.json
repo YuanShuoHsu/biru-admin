@@ -505,5 +505,16 @@
   },
   "cashDeviceVendor": {
     "maxLength": "제조사는 100자를 초과할 수 없습니다."
+  },
+  "cashDeviceCollection": {
+    "depositedAmount": {
+      "required": "실제 입금 금액은 필수입니다."
+    },
+    "reportedAmount": {
+      "required": "기기 보고 금액은 필수입니다."
+    }
+  },
+  "cashDeviceRefill": {
+    "required": "최소 한 가지 권종의 수량을 입력하세요."
   }
 }

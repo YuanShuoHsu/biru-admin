@@ -505,5 +505,16 @@
   },
   "cashDeviceVendor": {
     "maxLength": "厂商不能超过 100 个字符。"
+  },
+  "cashDeviceCollection": {
+    "depositedAmount": {
+      "required": "实际存入金额为必填。"
+    },
+    "reportedAmount": {
+      "required": "机台回报金额为必填。"
+    }
+  },
+  "cashDeviceRefill": {
+    "required": "请输入至少一种面额的数量。"
   }
 }
