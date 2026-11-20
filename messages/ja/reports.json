@@ -1,4 +1,57 @@
 {
+  "breakEven": {
+    "costRateSource": {
+      "menu": "変動費率はメニューのレシピから推定",
+      "sales": "変動費率と手数料率は {since}–{until} の実績売上から算出"
+    },
+    "fixedCostTotal": "固定費合計",
+    "item": {
+      "cost": "標準原価",
+      "grossMarginRate": "粗利率",
+      "grossProfit": "粗利",
+      "name": "品目",
+      "quantity": "純販売数",
+      "revenue": "税抜売上"
+    },
+    "menuEstimate": "原価が分かる売上がまだないため、変動費率はレシピと価格のあるメニュー品目の平均で推定しています。営業開始後は実績売上に切り替わります。",
+    "month": "月",
+    "noCostRate": "原価が分かる売上もメニューのレシピもまだないため、変動費率と損益分岐点を計算できません。",
+    "noPaymentFeeRate": "手数料データがまだないため、損益分岐点には決済手数料を含めていません。",
+    "note": "売上は税込金額で、売上税 5% を内税として分けています。統一発票のある固定費、統一発票を発行する仕入先の食材、決済手数料は控除できる仕入税額を除いた税抜金額で計算し、営業税納付見込みは売上税額から仕入税額を引いたものです。実際の申告は仕入発票によります。売上原価はレシピと現在の仕入価格で計算し、追加注文とカスタマイズを含みます。人件費は公開済み給与明細の実額を使い、それ以外の従業員はシフトから試算します。法人税は所得税法第 5 条に基づき、当月利益を 12 倍して年額を見積もり 12 で割った推定値で、実際は年度決算によります。1 日あたりの金額は営業時間と特別営業時間から求めた営業日数で割っています。",
+    "personnel": {
+      "estimate": "人件費（見込み）",
+      "none": "人件費（データなし）",
+      "payroll": "人件費（公開済み給与明細）",
+      "schedule": "人件費（シフトからの試算を含む）"
+    },
+    "scheduledEmployees": "公開済みの給与明細がまだない従業員 {count, number} 人は、シフトと給与設定から試算しています。",
+    "summary": {
+      "afterTaxProfit": "税引後利益",
+      "breakEvenRevenue": "損益分岐売上高",
+      "businessTaxPayable": "営業税納付見込み",
+      "costOfGoodsSold": "売上原価",
+      "costOfGoodsSoldRate": "変動費率",
+      "dailyBreakEvenRevenue": "1 日あたり必要売上",
+      "dailyTargetRevenue": "1 日あたり目標売上",
+      "grossMarginRate": "粗利率",
+      "incomeTax": "法人税見込み",
+      "inputTax": "仕入税額",
+      "openDays": "営業日 {open, number} 日（残り {remaining, number} 日）",
+      "outputTax": "売上税額",
+      "paymentFeeRate": "決済手数料率",
+      "paymentFees": "決済手数料",
+      "preTaxProfit": "税引前利益",
+      "remainingDailyBreakEvenRevenue": "残り期間の 1 日あたり必要売上",
+      "revenue": "税込売上",
+      "salesExcludingTax": "税抜売上",
+      "targetRevenue": "目標利益達成売上高"
+    },
+    "targetPreTaxProfit": "この税引後利益を残すには、税引前で {amount} が必要です。",
+    "targetProfit": "目標税引後利益（月額）",
+    "unestimatedEmployees": "公開済みの給与明細がなく試算もできない従業員 {count, number} 人（給与設定がないなど）は含めていません。",
+    "unknownFeeOrders": "ECPay の注文 {count, number} 件に手数料データがなく、決済手数料に含めていません。",
+    "unpricedItems": "{count, number} 品目はレシピがないか未設定価格の食材があるため、売上原価と変動費率に含めていません。"
+  },
   "export": "CSV をエクスポート",
   "groupBy": {
     "category": "カテゴリ",
@@ -25,6 +78,63 @@
     "wastedCost": "廃棄コスト"
   },
   "label": "レポート",
+  "operatingCosts": {
+    "actions": {
+      "create": {
+        "success": "固定費を追加しました",
+        "title": "固定費を追加"
+      },
+      "delete": {
+        "confirm": "<bold>{category}（{effectiveFrom} から）</bold>を削除しますか？削除後はそれ以前の設定が適用されます。",
+        "success": "固定費を削除しました",
+        "title": "固定費を削除"
+      },
+      "label": "操作",
+      "update": {
+        "success": "固定費を更新しました",
+        "title": "固定費を編集"
+      }
+    },
+    "category": {
+      "label": "カテゴリ",
+      "options": {
+        "electricity": "電気代",
+        "equipment": "設備リース・償却",
+        "gas": "ガス代",
+        "insurance": "保険",
+        "marketing": "マーケティング",
+        "other": "その他",
+        "personnel": "人件費（見込み）",
+        "rent": "家賃",
+        "telecom": "通信費",
+        "water": "水道代"
+      },
+      "personnelHint": "その月に公開済みの給与明細が 1 件もない場合のみ使います。給与明細があればその人件費で計算します。"
+    },
+    "createdAt": "作成日時",
+    "description": "カテゴリごとに金額と適用開始月を一度入力すれば、毎月そのまま適用されます。金額が変わったら、より新しい適用開始月で追加してください。",
+    "effectiveFrom": {
+      "hint": "この月から、同じカテゴリでより新しい適用開始月があるまで毎月適用されます",
+      "label": "適用開始月"
+    },
+    "inputTaxDeductible": {
+      "column": "統一発票",
+      "hint": "この費用に店宛ての統一発票がある場合にチェックすると、損益分岐点は税抜金額で計算します。個人の家主や保険には通常ありません。",
+      "label": "統一発票あり（仕入税額控除可）",
+      "no": "なし",
+      "yes": "あり"
+    },
+    "label": "固定費",
+    "manage": "固定費を管理",
+    "monthlyAmount": {
+      "hint": "税込金額。0 は適用開始月以降このコストがないことを表します",
+      "label": "月額"
+    },
+    "note": {
+      "label": "メモ"
+    },
+    "updatedAt": "更新日時"
+  },
   "personnel": {
     "employerInsurance": "雇用主負担保険料",
     "employerPension": "雇用主年金拠出",
@@ -48,6 +158,7 @@
   },
   "since": "開始日",
   "tabs": {
+    "breakEven": "損益分岐",
     "inventory": "在庫",
     "personnel": "人件費",
     "sales": "売上"

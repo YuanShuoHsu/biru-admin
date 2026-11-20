@@ -235,6 +235,17 @@
   "openingHours": {
     "required": "営業時間を設定するか、終日休業をオンにしてください。"
   },
+  "operatingCost": {
+    "effectiveFrom": {
+      "required": "適用開始月を選択してください。"
+    },
+    "monthlyAmount": {
+      "invalid": "0 以上、小数点以下 2 桁までの金額を入力してください。"
+    },
+    "note": {
+      "maxLength": "メモは 200 文字以内で入力してください。"
+    }
+  },
   "overtimeExtensionPeriod": {
     "invalid": "開始月を選択してください。"
   },

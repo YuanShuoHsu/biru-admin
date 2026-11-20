@@ -5,6 +5,8 @@ import utc from "dayjs/plugin/utc";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import {
+  breakEvenItemFilterFieldValues,
+  breakEvenItemSortFieldValues,
   inventoryReportFilterFieldValues,
   inventoryReportSortFieldValues,
   personnelCostReportFilterFieldValues,
@@ -24,7 +26,12 @@ export const DATE_FORMAT = "YYYY-MM-DD";
 
 export const MONTH_FORMAT = "YYYY-MM";
 
-export const REPORT_TABS = ["sales", "inventory", "personnel"] as const;
+export const REPORT_TABS = [
+  "sales",
+  "inventory",
+  "personnel",
+  "breakEven",
+] as const;
 
 export type ReportTab = (typeof REPORT_TABS)[number];
 
@@ -32,6 +39,10 @@ export const REPORT_GRID_FIELDS: Record<
   ReportTab,
   { filterFields: readonly string[]; sortFields: readonly string[] }
 > = {
+  breakEven: {
+    filterFields: breakEvenItemFilterFieldValues,
+    sortFields: breakEvenItemSortFieldValues,
+  },
   inventory: {
     filterFields: inventoryReportFilterFieldValues,
     sortFields: inventoryReportSortFieldValues,
@@ -68,6 +79,7 @@ export interface ReportView {
   month: string;
   since: string;
   tab: ReportTab;
+  targetProfit: string;
   until: string;
 }
 
@@ -84,6 +96,9 @@ export const isReportMonth = (value: string | undefined): value is string =>
   !!value &&
   /^20\d{2}-(0[1-9]|1[0-2])$/.test(value) &&
   !toStoreDate(`${value}-01`).isAfter(storeToday(), "month");
+
+export const isTargetProfit = (value: string | undefined): value is string =>
+  !!value && /^\d{1,10}(\.\d{1,2})?$/.test(value);
 
 export const isValidRange = (since: string, until: string) => {
   const start = toStoreDate(since);
@@ -102,12 +117,14 @@ export const resolveReportView = (
     month,
     since,
     tab,
+    targetProfit,
     until,
   }: {
     groupBy?: string;
     month?: string;
     since?: string;
     tab?: string;
+    targetProfit?: string;
     until?: string;
   },
   tabs: readonly ReportTab[],
@@ -115,15 +132,20 @@ export const resolveReportView = (
   const today = storeToday();
   const hasRange =
     isStoreDate(since) && isStoreDate(until) && isValidRange(since, until);
+  const resolvedTab = tabs.find((value) => value === tab) ?? tabs[0];
 
   return {
     groupBy:
       salesReportGroupByValues.find((value) => value === groupBy) ?? "day",
     month: isReportMonth(month)
       ? month
-      : today.subtract(1, "month").format(MONTH_FORMAT),
+      : (resolvedTab === "breakEven"
+          ? today
+          : today.subtract(1, "month")
+        ).format(MONTH_FORMAT),
     since: hasRange ? since : today.startOf("month").format(DATE_FORMAT),
-    tab: tabs.find((value) => value === tab) ?? tabs[0],
+    tab: resolvedTab,
+    targetProfit: isTargetProfit(targetProfit) ? targetProfit : "",
     until: hasRange ? until : today.format(DATE_FORMAT),
   };
 };
@@ -133,39 +155,62 @@ export const getReportQuery = ({
   month,
   since,
   tab,
+  targetProfit,
   until,
 }: ReportView) =>
   new URLSearchParams(
     tab === "personnel"
       ? { month }
-      : {
-          since: toStoreDate(since).format(),
-          until: toStoreDate(until).add(1, "day").format(),
-          ...(tab === "sales" && { groupBy }),
-        },
+      : tab === "breakEven"
+        ? { month, ...(targetProfit && { targetProfit }) }
+        : {
+            since: toStoreDate(since).format(),
+            until: toStoreDate(until).add(1, "day").format(),
+            ...(tab === "sales" && { groupBy }),
+          },
   ).toString();
 
+const REPORT_PATHS: Record<ReportTab, string> = {
+  breakEven: "break-even",
+  inventory: "inventory",
+  personnel: "personnel",
+  sales: "sales",
+};
+
 export const getReportPath = (organizationSlug: string, tab: ReportTab) =>
-  `/api/organizations/${organizationSlug}/reports/${tab}`;
+  `/api/organizations/${organizationSlug}/reports/${REPORT_PATHS[tab]}`;
+
+const scaleFilterValue = (
+  filterValue: string,
+  scale: (value: number) => number,
+) =>
+  filterValue
+    .split(",")
+    .map((value) =>
+      value && Number.isFinite(Number(value))
+        ? String(scale(Number(value)))
+        : value,
+    )
+    .join(",");
 
 export const toReportGridQuery = (tab: ReportTab, params: URLSearchParams) => {
+  const filterField = params.get("filterField");
   const filterValue = params.get("filterValue");
 
   if (
     tab === "personnel" &&
     filterValue &&
-    PERSONNEL_MONEY_FIELDS.some((field) => field === params.get("filterField"))
+    PERSONNEL_MONEY_FIELDS.some((field) => field === filterField)
   )
     params.set(
       "filterValue",
-      filterValue
-        .split(",")
-        .map((value) =>
-          value && Number.isFinite(Number(value))
-            ? String(Math.round(Number(value) * 100))
-            : value,
-        )
-        .join(","),
+      scaleFilterValue(filterValue, (value) => Math.round(value * 100)),
+    );
+
+  if (tab === "breakEven" && filterValue && filterField === "grossMarginRate")
+    params.set(
+      "filterValue",
+      scaleFilterValue(filterValue, (value) => value / 100),
     );
 
   return params.toString();

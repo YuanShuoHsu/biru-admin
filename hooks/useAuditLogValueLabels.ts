@@ -14,6 +14,7 @@ import {
   invoiceStatusValues,
   invoiceTypeValues,
   itemAvailabilityValues,
+  operatingCostCategoryValues,
   orderModeValues,
   orderRefundDtoScopeValues,
   orderResponseDtoPaymentMethodValues,
@@ -59,6 +60,7 @@ export const useAuditLogValueLabels = () => {
   const tOrder = useTranslations("order");
   const tOrders = useTranslations("orders");
   const tOrganizations = useTranslations("organizations");
+  const tReports = useTranslations("reports");
   const tWaitlist = useTranslations("waitlist");
 
   return useMemo<Record<string, Record<string, string>>>(
@@ -186,6 +188,12 @@ export const useAuditLogValueLabels = () => {
       orderStatus: Object.fromEntries(
         orderStatusValues.map((value) => [value, tOrders(`status.${value}`)]),
       ),
+      "operatingCost.category": Object.fromEntries(
+        operatingCostCategoryValues.map((value) => [
+          value,
+          tReports(`operatingCosts.category.options.${value}`),
+        ]),
+      ),
       "organization.operatingType": Object.fromEntries(
         organizationOperatingTypeValues.map((value) => [
           value,
@@ -292,6 +300,7 @@ export const useAuditLogValueLabels = () => {
       tOrder,
       tOrders,
       tOrganizations,
+      tReports,
       tWaitlist,
     ],
   );

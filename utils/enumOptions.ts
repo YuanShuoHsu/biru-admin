@@ -23,6 +23,7 @@ import {
   invoiceStatusValues,
   invoiceTypeValues,
   itemAvailabilityValues,
+  operatingCostCategoryValues,
   orderModeValues,
   orderResponseDtoModeValues,
   orderResponseDtoOrderStatusValues,
@@ -376,6 +377,15 @@ export const getCashDeviceEnumOptions = (
 ) => ({
   status: cashDeviceStatusValues.map((value) => ({
     label: tCashDevices(`status.${value}`),
+    value,
+  })),
+});
+
+export const getOperatingCostEnumOptions = (
+  tReports: ReturnType<typeof useTranslations<"reports">>,
+) => ({
+  category: operatingCostCategoryValues.map((value) => ({
+    label: tReports(`operatingCosts.category.options.${value}`),
     value,
   })),
 });

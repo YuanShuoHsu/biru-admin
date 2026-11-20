@@ -1,4 +1,57 @@
 {
+  "breakEven": {
+    "costRateSource": {
+      "menu": "變動成本率依菜單食譜估算",
+      "sales": "變動成本率與手續費率依 {since}–{until} 的實際銷售"
+    },
+    "fixedCostTotal": "固定成本合計",
+    "item": {
+      "cost": "標準成本",
+      "grossMarginRate": "毛利率",
+      "grossProfit": "毛利",
+      "name": "品項",
+      "quantity": "淨份數",
+      "revenue": "未稅營收"
+    },
+    "menuEstimate": "還沒有可算出成本的銷售，變動成本率先用菜單上有食譜與售價的品項平均估算；開始營業後會改用實際銷售。",
+    "month": "月份",
+    "noCostRate": "還沒有可算出成本的銷售或菜單食譜，暫時無法計算變動成本率與損益平衡點。",
+    "noPaymentFeeRate": "還沒有手續費資料，損益平衡暫未計入金流手續費。",
+    "note": "營業額為含稅金額，銷項稅以 5% 內含拆算；有統一發票的固定成本、開立統一發票的供應商食材與金流手續費，以扣除可扣抵進項稅後的未稅金額計算，估計應納營業稅為銷項減進項，實際以進貨發票申報為準。銷貨成本依食譜與目前進價計算，含加購與客製選項。人事有已發布薪資單用實際金額，沒有的員工依班表試算。營所稅依所得稅法第 5 條，把當月淨利乘 12 估算全年稅額再除以 12，實際以年度結算為準。每日需求營業額依營業時間與特殊營業時間算出的營業日數平均。",
+    "personnel": {
+      "estimate": "人事（預估）",
+      "none": "人事（尚無資料）",
+      "payroll": "人事（已發布薪資單）",
+      "schedule": "人事（含依班表試算）"
+    },
+    "scheduledEmployees": "有 {count, number} 位員工還沒有已發布的薪資單，依班表與薪資設定試算。",
+    "summary": {
+      "afterTaxProfit": "稅後淨利",
+      "breakEvenRevenue": "損益平衡營業額",
+      "businessTaxPayable": "估計應納營業稅",
+      "costOfGoodsSold": "銷貨成本",
+      "costOfGoodsSoldRate": "變動成本率",
+      "dailyBreakEvenRevenue": "每日需求營業額",
+      "dailyTargetRevenue": "每日目標營業額",
+      "grossMarginRate": "毛利率",
+      "incomeTax": "預估營所稅",
+      "inputTax": "進項稅額",
+      "openDays": "營業日 {open, number} 天（剩 {remaining, number} 天）",
+      "outputTax": "銷項稅額",
+      "paymentFeeRate": "手續費率",
+      "paymentFees": "金流手續費",
+      "preTaxProfit": "稅前淨利",
+      "remainingDailyBreakEvenRevenue": "剩餘每日需求營業額",
+      "revenue": "含稅營業額",
+      "salesExcludingTax": "未稅營業額",
+      "targetRevenue": "目標淨利營業額"
+    },
+    "targetPreTaxProfit": "要留下這個稅後淨利，稅前需賺 {amount}。",
+    "targetProfit": "目標稅後淨利（每月）",
+    "unestimatedEmployees": "有 {count, number} 位員工沒有已發布的薪資單，也試算不出來（例如缺薪資設定），未計入。",
+    "unknownFeeOrders": "有 {count, number} 筆綠界訂單沒有手續費資料，未計入金流手續費。",
+    "unpricedItems": "有 {count, number} 個品項沒有食譜或食譜有未定價的食材，未計入銷貨成本與變動成本率。"
+  },
   "export": "匯出 CSV",
   "groupBy": {
     "category": "分類",
@@ -25,6 +78,63 @@
     "wastedCost": "報廢成本"
   },
   "label": "報表",
+  "operatingCosts": {
+    "actions": {
+      "create": {
+        "success": "已新增固定成本",
+        "title": "新增固定成本"
+      },
+      "delete": {
+        "confirm": "確定要刪除<bold>{category}（{effectiveFrom} 起）</bold>嗎？刪除後改沿用更早的設定。",
+        "success": "已刪除固定成本",
+        "title": "刪除固定成本"
+      },
+      "label": "操作",
+      "update": {
+        "success": "已更新固定成本",
+        "title": "編輯固定成本"
+      }
+    },
+    "category": {
+      "label": "類別",
+      "options": {
+        "electricity": "電費",
+        "equipment": "設備租賃與攤提",
+        "gas": "瓦斯",
+        "insurance": "保險",
+        "marketing": "行銷",
+        "other": "其他",
+        "personnel": "人事（預估）",
+        "rent": "房租",
+        "telecom": "電信網路",
+        "water": "水費"
+      },
+      "personnelHint": "只在當月沒有任何已發布薪資單時使用；有薪資單就以薪資單的人事成本計算。"
+    },
+    "createdAt": "建立時間",
+    "description": "每個類別填一次金額與生效月份，之後每月自動沿用；金額變動時再新增一筆新的生效月份。",
+    "effectiveFrom": {
+      "hint": "自這個月起每月沿用，直到同類別有更晚的生效月份",
+      "label": "生效月份"
+    },
+    "inputTaxDeductible": {
+      "column": "統一發票",
+      "hint": "這筆成本有開給本店的統一發票時勾選，損益平衡會以未稅金額計算；個人房東、保險通常沒有。",
+      "label": "有統一發票（進項稅可扣抵）",
+      "no": "無",
+      "yes": "有"
+    },
+    "label": "固定成本",
+    "manage": "管理固定成本",
+    "monthlyAmount": {
+      "hint": "含稅金額；填 0 表示自生效月份起不再有這項成本",
+      "label": "每月金額"
+    },
+    "note": {
+      "label": "備註"
+    },
+    "updatedAt": "更新時間"
+  },
   "personnel": {
     "employerInsurance": "雇主勞健保",
     "employerPension": "雇主勞退提繳",
@@ -48,6 +158,7 @@
   },
   "since": "開始日期",
   "tabs": {
+    "breakEven": "損益平衡",
     "inventory": "庫存",
     "personnel": "人事成本",
     "sales": "銷售"

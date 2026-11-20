@@ -235,6 +235,17 @@
   "openingHours": {
     "required": "Set the opening hours, or turn on closed all day."
   },
+  "operatingCost": {
+    "effectiveFrom": {
+      "required": "Select the effective month."
+    },
+    "monthlyAmount": {
+      "invalid": "Enter an amount of 0 or more with at most two decimals."
+    },
+    "note": {
+      "maxLength": "The note can be at most 200 characters."
+    }
+  },
   "overtimeExtensionPeriod": {
     "invalid": "Select a start month."
   },

@@ -75,6 +75,8 @@ export const getAuditLogHref = (
         : null;
     case "storePhoto":
       return `/store-photos/${resourceId}/audit-logs`;
+    case "operatingCost":
+      return `/reports/operating-costs/${resourceId}/audit-logs`;
     case "userCoupon":
       return rootId ? `/coupons/${rootId}/audit-logs` : null;
     case "banner":

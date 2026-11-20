@@ -42,5 +42,11 @@
   "checklists": {
     "incomplete": "未完了のチェックリスト",
     "incompleteValue": "{incomplete, number} / {total, number} 件未完了"
+  },
+  "breakEven": {
+    "period": "今月",
+    "reached": "今月の達成額 {revenue}",
+    "remainingDaily": "残り {days, number} 営業日、1 日あたり {amount}",
+    "unavailable": "まだ計算できません"
   }
 }

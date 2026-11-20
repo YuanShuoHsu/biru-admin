@@ -316,6 +316,13 @@
       "label": "电话",
       "placeholder": "请输入您的电话"
     },
+    "uniformInvoice": {
+      "column": "统一发票",
+      "hint": "勾选后，向这家进的食材按未税进价计算成本，5% 进项税可抵扣。",
+      "label": "开立统一发票给本店",
+      "no": "无",
+      "yes": "有"
+    },
     "url": {
       "label": "网站",
       "placeholder": "请输入您的网站"

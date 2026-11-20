@@ -316,6 +316,13 @@
       "label": "電話",
       "placeholder": "請輸入您的電話"
     },
+    "uniformInvoice": {
+      "column": "統一發票",
+      "hint": "勾選後，向這家進的食材以未稅進價計算成本，5% 進項稅可扣抵。",
+      "label": "開立統一發票給本店",
+      "no": "無",
+      "yes": "有"
+    },
     "url": {
       "label": "網站",
       "placeholder": "請輸入您的網站"

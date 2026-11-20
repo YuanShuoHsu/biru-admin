@@ -68,7 +68,8 @@ const useNavItems = (): NavItem[][] => {
             ...(isAdmin ||
             hasRolePermission(memberRole, { revenue: ["read"] }) ||
             hasRolePermission(memberRole, { inventoryTransaction: ["read"] }) ||
-            hasRolePermission(memberRole, { payslip: ["read"] })
+            hasRolePermission(memberRole, { payslip: ["read"] }) ||
+            hasRolePermission(memberRole, { operatingCost: ["read"] })
               ? [navItem("/reports")]
               : []),
             ...(isAdmin ? [navItem("/store-layout")] : []),

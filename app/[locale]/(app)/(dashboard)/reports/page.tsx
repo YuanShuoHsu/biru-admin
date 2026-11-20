@@ -26,6 +26,7 @@ import { filterOperatorValues } from "@/types/api";
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 import type {
+  BreakEvenReportResponse,
   InventoryReportResponse,
   PersonnelCostReportResponse,
   SalesReportResponse,
@@ -62,6 +63,7 @@ interface ReportsPageProps {
     sortBy?: string;
     sortDirection?: string;
     tab?: string;
+    targetProfit?: string;
     until?: string;
   }>;
 }
@@ -76,6 +78,8 @@ export const generateMetadata = async ({
 };
 
 interface ReportsContentProps {
+  canManageOperatingCosts: boolean;
+  canViewBreakEven: boolean;
   canViewInventory: boolean;
   canViewPersonnel: boolean;
   canViewSales: boolean;
@@ -92,6 +96,7 @@ interface ReportsContentProps {
       FetchResult<SalesReportResponse | undefined>,
       FetchResult<InventoryReportResponse | undefined>,
       FetchResult<PersonnelCostReportResponse | undefined>,
+      FetchResult<BreakEvenReportResponse | undefined>,
     ]
   >;
   sortBy?: string;
@@ -100,14 +105,21 @@ interface ReportsContentProps {
 }
 
 const ReportsContent = async ({ reports, ...props }: ReportsContentProps) => {
-  const [salesResult, inventoryResult, personnelResult] = await reports;
+  const [salesResult, inventoryResult, personnelResult, breakEvenResult] =
+    await reports;
 
-  if (salesResult.error || inventoryResult.error || personnelResult.error)
+  if (
+    salesResult.error ||
+    inventoryResult.error ||
+    personnelResult.error ||
+    breakEvenResult.error
+  )
     return <ErrorAlert />;
 
   return (
     <Reports
       {...props}
+      breakEven={breakEvenResult.data}
       inventory={inventoryResult.data}
       key={props.organization.slug}
       personnel={personnelResult.data}
@@ -145,7 +157,14 @@ const ReportsPage = async ({ params, searchParams }: ReportsPageProps) => {
   const canViewWastedCost =
     isAdmin || hasRolePermission(memberRole, { purchasing: ["read"] });
 
+  const canViewBreakEven =
+    isAdmin || hasRolePermission(memberRole, { operatingCost: ["read"] });
+
+  const canManageOperatingCosts =
+    isAdmin || hasRolePermission(memberRole, { operatingCost: ["update"] });
+
   const tabPermissions = {
+    breakEven: canViewBreakEven,
     inventory: canViewInventory,
     personnel: canViewPersonnel,
     sales: canViewSales,
@@ -181,6 +200,7 @@ const ReportsPage = async ({ params, searchParams }: ReportsPageProps) => {
     until: view.until,
     groupBy: view.groupBy,
     month: view.month,
+    ...(view.targetProfit && { targetProfit: view.targetProfit }),
   });
 
   if (
@@ -241,9 +261,16 @@ const ReportsPage = async ({ params, searchParams }: ReportsPageProps) => {
         ? fetcher<PersonnelCostReportResponse>(reportUrl, fetchOptions)
         : Promise.resolve(undefined),
     ),
+    settle(
+      view.tab === "breakEven"
+        ? fetcher<BreakEvenReportResponse>(reportUrl, fetchOptions)
+        : Promise.resolve(undefined),
+    ),
   ]);
 
   const reportsProps = {
+    canManageOperatingCosts,
+    canViewBreakEven,
     canViewInventory,
     canViewPersonnel,
     canViewSales,

@@ -42,5 +42,11 @@
   "checklists": {
     "incomplete": "Incomplete Checklists",
     "incompleteValue": "{incomplete, number} / {total, number} incomplete"
+  },
+  "breakEven": {
+    "period": "This month",
+    "reached": "{revenue} reached this month",
+    "remainingDaily": "{amount} a day over the {days, number} open days left",
+    "unavailable": "Not available yet"
   }
 }

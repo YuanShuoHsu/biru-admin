@@ -235,6 +235,17 @@
   "openingHours": {
     "required": "請設定營業時間，或開啟整天公休。"
   },
+  "operatingCost": {
+    "effectiveFrom": {
+      "required": "請選擇生效月份。"
+    },
+    "monthlyAmount": {
+      "invalid": "請輸入 0 以上、最多兩位小數的金額。"
+    },
+    "note": {
+      "maxLength": "備註最多 200 個字。"
+    }
+  },
   "overtimeExtensionPeriod": {
     "invalid": "請選擇起始月份。"
   },

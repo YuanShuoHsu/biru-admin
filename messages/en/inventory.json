@@ -316,6 +316,13 @@
       "label": "Phone",
       "placeholder": "Please enter your Phone"
     },
+    "uniformInvoice": {
+      "column": "Tax invoice",
+      "hint": "When ticked, ingredients from this supplier are costed before tax, since the 5% input tax is deductible.",
+      "label": "Issues uniform invoices to the store",
+      "no": "No",
+      "yes": "Yes"
+    },
     "url": {
       "label": "Website",
       "placeholder": "Please enter your Website"
