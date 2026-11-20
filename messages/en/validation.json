@@ -496,12 +496,31 @@
     "maxLength": "Name cannot exceed 50 characters.",
     "required": "Name is required."
   },
+  "cashDeviceCollection": {
+    "depositedAmount": {
+      "max": "Deposited amount cannot exceed 9,999,999.",
+      "required": "Deposited amount is required."
+    },
+    "reportedAmount": {
+      "max": "Reported amount cannot exceed 9,999,999.",
+      "required": "Reported amount is required."
+    }
+  },
+  "cashDeviceEventNote": {
+    "maxLength": "Note cannot exceed 500 characters."
+  },
   "cashDeviceModel": {
     "maxLength": "Model cannot exceed 100 characters."
   },
   "cashDeviceName": {
     "maxLength": "Device name cannot exceed 50 characters.",
     "required": "Device name is required."
+  },
+  "cashDeviceRefill": {
+    "count": {
+      "max": "Each denomination count cannot exceed 9,999."
+    },
+    "required": "Enter a count for at least one denomination."
   },
   "cashDeviceVendor": {
     "maxLength": "Vendor cannot exceed 100 characters."

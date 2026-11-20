@@ -3,6 +3,7 @@ import type { Locale } from "@/i18n/routing";
 interface RouteParam {
   addOnId: string;
   botId: string;
+  cashDeviceId: string;
   couponId: string;
   groupId: string;
   ingredientId: string;

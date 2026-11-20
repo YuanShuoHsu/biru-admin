@@ -11,7 +11,11 @@ import DataGrid from "@/components/DataGrid";
 import { renderEmptyableCell } from "@/components/EmptyCell";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
-import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
+import {
+  DEFAULT_PAGE_SIZE,
+  DEFAULT_PAGINATION_QUERY,
+  getPageSizeOptions,
+} from "@/constants/pagination";
 
 import { useDataGridQueryState } from "@/hooks/useDataGridQueryState";
 import {
@@ -20,7 +24,9 @@ import {
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 
-import { Add, Delete, Edit } from "@mui/icons-material";
+import { useRouter } from "@/i18n/navigation";
+
+import { Add, Delete, Edit, ReceiptLong } from "@mui/icons-material";
 import {
   Button,
   Chip,
@@ -118,6 +124,8 @@ const CashDevices = ({
 
   const { setDialog } = useDialogStore((state) => state);
 
+  const router = useRouter();
+
   const dateFilterOperators = useDateFilterOperators();
   const enumFilterOperators = useEnumFilterOperators();
   const stringFilterOperators = useStringFilterOperators();
@@ -200,6 +208,18 @@ const CashDevices = ({
     [mutate, organizationSlug, setDialog, tCashDevices],
   );
 
+  const handleViewEvents = useCallback(
+    ({ id }: CashDevice) => {
+      const params = new URLSearchParams({
+        organization: organizationSlug,
+        ...DEFAULT_PAGINATION_QUERY,
+      });
+
+      router.push(`/cash-devices/${id}?${params.toString()}`);
+    },
+    [organizationSlug, router],
+  );
+
   const handleDeleteCashDevice = useCallback(
     ({ id, name }: CashDevice) => {
       setDialog({
@@ -236,44 +256,45 @@ const CashDevices = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...(canUpdate || canDelete
-        ? [
-            {
-              disableColumnMenu: true,
-              disableExport: true,
-              field: "actions",
-              filterable: false,
-              headerName: tCashDevices("actions.label"),
-              renderCell: ({ row }: GridRenderCellParams<CashDevice>) => (
-                <ActionsStack direction="row">
-                  {canUpdate && (
-                    <Tooltip title={tCashDevices("actions.update.title")}>
-                      <IconButton
-                        onClick={() => handleUpdateCashDevice(row)}
-                        size="small"
-                      >
-                        <Edit fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                  {canDelete && (
-                    <Tooltip title={tCashDevices("actions.delete.title")}>
-                      <IconButton
-                        color="error"
-                        onClick={() => handleDeleteCashDevice(row)}
-                        size="small"
-                      >
-                        <Delete fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                </ActionsStack>
-              ),
-              resizable: false,
-              sortable: false,
-            },
-          ]
-        : []),
+      {
+        disableColumnMenu: true,
+        disableExport: true,
+        field: "actions",
+        filterable: false,
+        headerName: tCashDevices("actions.label"),
+        renderCell: ({ row }: GridRenderCellParams<CashDevice>) => (
+          <ActionsStack direction="row">
+            <Tooltip title={tCashDevices("events.label")}>
+              <IconButton onClick={() => handleViewEvents(row)} size="small">
+                <ReceiptLong fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            {canUpdate && (
+              <Tooltip title={tCashDevices("actions.update.title")}>
+                <IconButton
+                  onClick={() => handleUpdateCashDevice(row)}
+                  size="small"
+                >
+                  <Edit fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
+            {canDelete && (
+              <Tooltip title={tCashDevices("actions.delete.title")}>
+                <IconButton
+                  color="error"
+                  onClick={() => handleDeleteCashDevice(row)}
+                  size="small"
+                >
+                  <Delete fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            )}
+          </ActionsStack>
+        ),
+        resizable: false,
+        sortable: false,
+      },
       {
         field: "name",
         filterOperators: stringFilterOperators,
@@ -338,6 +359,7 @@ const CashDevices = ({
       format,
       handleDeleteCashDevice,
       handleUpdateCashDevice,
+      handleViewEvents,
       stringFilterOperators,
       tCashDevices,
       tCommon,

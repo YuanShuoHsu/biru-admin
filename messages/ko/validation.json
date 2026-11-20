@@ -496,12 +496,31 @@
     "maxLength": "이름은 50자를 초과할 수 없습니다.",
     "required": "이름은 필수입니다."
   },
+  "cashDeviceCollection": {
+    "depositedAmount": {
+      "max": "실제 입금 금액은 9,999,999를 초과할 수 없습니다.",
+      "required": "실제 입금 금액은 필수입니다."
+    },
+    "reportedAmount": {
+      "max": "기기 보고 금액은 9,999,999를 초과할 수 없습니다.",
+      "required": "기기 보고 금액은 필수입니다."
+    }
+  },
+  "cashDeviceEventNote": {
+    "maxLength": "메모는 500자를 초과할 수 없습니다."
+  },
   "cashDeviceModel": {
     "maxLength": "모델은 100자를 초과할 수 없습니다."
   },
   "cashDeviceName": {
     "maxLength": "기기 이름은 50자를 초과할 수 없습니다.",
     "required": "기기 이름은 필수입니다."
+  },
+  "cashDeviceRefill": {
+    "count": {
+      "max": "각 권종 수량은 9,999를 초과할 수 없습니다."
+    },
+    "required": "최소 한 가지 권종의 수량을 입력하세요."
   },
   "cashDeviceVendor": {
     "maxLength": "제조사는 100자를 초과할 수 없습니다."

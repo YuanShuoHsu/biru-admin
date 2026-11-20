@@ -110,6 +110,7 @@ import {
 } from "@mui/icons-material";
 import type { SvgIconProps } from "@mui/material";
 
+import type { CashDevice } from "@/types/cashDevices";
 import type { Coupon } from "@/types/coupons";
 import type { Ingredient, Supplier } from "@/types/inventory";
 import type {
@@ -691,6 +692,13 @@ const routes: Route[] = [
     to: null,
   },
   {
+    children: [
+      {
+        icon: PointOfSale,
+        query: ["organization", "page", "pageSize"],
+        segment: "[cashDeviceId]",
+      },
+    ],
     icon: PointOfSale,
     label: "cashDevices.label",
     query: ["organization", "page", "pageSize"],
@@ -1097,6 +1105,7 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
 
   const {
     botId,
+    cashDeviceId,
     couponId,
     groupId,
     ingredientId,
@@ -1242,6 +1251,21 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
     },
   );
 
+  const { data: cashDeviceName = "" } = useSWR(
+    cashDeviceId && organizationQuery
+      ? `/api/organizations/${organizationQuery}/cash-devices/${cashDeviceId}`
+      : null,
+    async (url) => {
+      try {
+        const { name } = await fetcher<CashDevice>(url);
+
+        return name;
+      } catch {
+        return "";
+      }
+    },
+  );
+
   const { data: modifierGroupName = "" } = useSWR(
     groupId ? `/api/modifier-groups/${groupId}` : null,
     async (url) => {
@@ -1270,6 +1294,7 @@ const useDynamicLabels = (): Partial<Record<string, string>> => {
 
   return {
     botId: botName,
+    cashDeviceId: cashDeviceName,
     couponId: couponCode,
     groupId: modifierGroupName,
     ingredientId: ingredientName,
