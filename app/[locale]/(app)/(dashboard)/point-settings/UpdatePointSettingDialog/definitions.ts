@@ -2,7 +2,7 @@ import { useTranslations } from "next-intl";
 import * as z from "zod";
 
 export const useUpdatePointSettingFormSchema = () => {
-  const tPointSettings = useTranslations("pointSettings");
+  const tValidation = useTranslations("validation");
 
   return z.object({
     accountingValuePerPoint: z.string().trim(),
@@ -11,7 +11,7 @@ export const useUpdatePointSettingFormSchema = () => {
       .trim()
       .refine(
         (value) => value === "" || Number(value) > 0,
-        tPointSettings("amountPerPoint.invalid"),
+        tValidation("number.positive"),
       ),
   });
 };

@@ -9,7 +9,6 @@
   "amountPerPoint": {
     "empty": "未启用",
     "hint": "全品牌通用；清空即停用点数",
-    "invalid": "累积 1 点所需消费金额格式无效",
     "label": "累积 1 点所需消费金额",
     "placeholder": "请输入累积 1 点所需消费金额",
     "value": "{value, number}"

@@ -9,7 +9,6 @@
   "amountPerPoint": {
     "empty": "Disabled",
     "hint": "Applies to all stores; clear to disable points",
-    "invalid": "Spend per point is invalid",
     "label": "Spend per point",
     "placeholder": "Please enter the spend per point",
     "value": "{value, number}"

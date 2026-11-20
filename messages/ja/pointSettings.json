@@ -9,7 +9,6 @@
   "amountPerPoint": {
     "empty": "無効",
     "hint": "全店舗共通。空欄にするとポイントを無効にします",
-    "invalid": "1ポイント獲得に必要な金額が無効です",
     "label": "1ポイント獲得に必要な金額",
     "placeholder": "1ポイント獲得に必要な金額を入力してください",
     "value": "{value, number}"
