@@ -484,5 +484,15 @@
   "checklistTemplateName": {
     "maxLength": "Name cannot exceed 50 characters.",
     "required": "Name is required."
+  },
+  "cashDeviceModel": {
+    "maxLength": "Model cannot exceed 100 characters."
+  },
+  "cashDeviceName": {
+    "maxLength": "Device name cannot exceed 50 characters.",
+    "required": "Device name is required."
+  },
+  "cashDeviceVendor": {
+    "maxLength": "Vendor cannot exceed 100 characters."
   }
 }

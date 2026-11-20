@@ -1,0 +1,39 @@
+{
+  "actions": {
+    "create": {
+      "success": "已新增机台",
+      "title": "新增机台"
+    },
+    "delete": {
+      "confirm": "确定要删除 <bold>{name}</bold> 吗？此操作无法撤销。",
+      "success": "已删除机台",
+      "title": "删除机台"
+    },
+    "label": "操作",
+    "update": {
+      "success": "已更新机台",
+      "title": "编辑机台"
+    }
+  },
+  "createdAt": "创建时间",
+  "label": "现金机台",
+  "lastSeenAt": "最后连接时间",
+  "model": {
+    "label": "型号",
+    "placeholder": "请输入机台型号"
+  },
+  "name": {
+    "label": "机台名称",
+    "placeholder": "请输入机台名称"
+  },
+  "status": {
+    "active": "启用",
+    "inactive": "停用",
+    "label": "状态"
+  },
+  "updatedAt": "更新时间",
+  "vendor": {
+    "label": "厂商",
+    "placeholder": "请输入机台厂商"
+  }
+}
