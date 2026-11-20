@@ -62,6 +62,9 @@ const useNavItems = (): NavItem[][] => {
               ...navItem("/checklists"),
               children: navChildren["/checklists"],
             },
+            ...(hasRolePermission(memberRole, { cashDevice: ["read"] })
+              ? [navItem("/cash-devices")]
+              : []),
             ...(isAdmin ||
             hasRolePermission(memberRole, { revenue: ["read"] }) ||
             hasRolePermission(memberRole, { inventoryTransaction: ["read"] }) ||

@@ -1,0 +1,39 @@
+{
+  "actions": {
+    "create": {
+      "success": "已新增機台",
+      "title": "新增機台"
+    },
+    "delete": {
+      "confirm": "確定要刪除 <bold>{name}</bold> 嗎？此操作無法復原。",
+      "success": "已刪除機台",
+      "title": "刪除機台"
+    },
+    "label": "操作",
+    "update": {
+      "success": "已更新機台",
+      "title": "編輯機台"
+    }
+  },
+  "createdAt": "建立時間",
+  "label": "現金機台",
+  "lastSeenAt": "最後連線時間",
+  "model": {
+    "label": "型號",
+    "placeholder": "請輸入機台型號"
+  },
+  "name": {
+    "label": "機台名稱",
+    "placeholder": "請輸入機台名稱"
+  },
+  "status": {
+    "active": "啟用",
+    "inactive": "停用",
+    "label": "狀態"
+  },
+  "updatedAt": "更新時間",
+  "vendor": {
+    "label": "廠商",
+    "placeholder": "請輸入機台廠商"
+  }
+}

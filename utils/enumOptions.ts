@@ -15,6 +15,7 @@ import {
   auditActionValues,
   auditResourceValues,
   baseUnitCodeValues,
+  cashDeviceStatusValues,
   couponIssueTriggerValues,
   couponScopeValues,
   deletedRecordTableValues,
@@ -367,6 +368,15 @@ export const getWaitlistEnumOptions = (
 ) => ({
   status: waitlistTicketStatusValues.map((value) => ({
     label: tWaitlist(`status.${value}`),
+    value,
+  })),
+});
+
+export const getCashDeviceEnumOptions = (
+  tCashDevices: ReturnType<typeof useTranslations<"cashDevices">>,
+) => ({
+  status: cashDeviceStatusValues.map((value) => ({
+    label: tCashDevices(`status.${value}`),
     value,
   })),
 });

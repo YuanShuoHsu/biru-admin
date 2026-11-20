@@ -11,6 +11,7 @@ const statement = {
   attendanceRequest: ["read", "update"],
   attendanceSetting: ["read", "update"],
   auditLog: ["read"],
+  cashDevice: ["create", "read", "update", "delete", "refill", "collection"],
   coupon: ["create", "read"],
   employee: ["create", "read", "update", "delete"],
   inventory: ["create", "update", "delete", "read"],
@@ -43,6 +44,7 @@ export const owner = ac.newRole({
   attendanceRequest: ["read", "update"],
   attendanceSetting: ["read", "update"],
   auditLog: ["read"],
+  cashDevice: ["create", "read", "update", "delete", "refill", "collection"],
   coupon: ["create", "read"],
   employee: ["create", "read", "update", "delete"],
   inventory: ["create", "update", "delete", "read"],
@@ -72,6 +74,7 @@ export const admin = ac.newRole({
   ...adminAc.statements,
   attendanceRequest: ["read", "update"],
   auditLog: ["read"],
+  cashDevice: ["create", "read", "update", "delete", "refill", "collection"],
   coupon: ["create", "read"],
   employee: ["create", "read", "update", "delete"],
   inventory: ["create", "update", "delete", "read"],
@@ -95,6 +98,7 @@ export const admin = ac.newRole({
 
 export const member = ac.newRole({
   ...memberAc.statements,
+  cashDevice: ["read", "refill", "collection"],
   coupon: ["read"],
   inventory: ["read"],
   inventoryTransaction: ["create", "read"],

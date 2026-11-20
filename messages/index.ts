@@ -4,6 +4,7 @@ import attendance from "./en/attendance.json";
 import audit from "./en/audit.json";
 import auth from "./en/auth.json";
 import banners from "./en/banners.json";
+import cashDevices from "./en/cashDevices.json";
 import checklists from "./en/checklists.json";
 import common from "./en/common.json";
 import company from "./en/company.json";
@@ -36,6 +37,7 @@ const messages = {
   audit,
   auth,
   banners,
+  cashDevices,
   checklists,
   common,
   company,

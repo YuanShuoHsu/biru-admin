@@ -495,5 +495,15 @@
   "checklistTemplateName": {
     "maxLength": "名稱不能超過 50 個字元。",
     "required": "名稱為必填。"
+  },
+  "cashDeviceModel": {
+    "maxLength": "型號不能超過 100 個字元。"
+  },
+  "cashDeviceName": {
+    "maxLength": "機台名稱不能超過 50 個字元。",
+    "required": "機台名稱為必填。"
+  },
+  "cashDeviceVendor": {
+    "maxLength": "廠商不能超過 100 個字元。"
   }
 }

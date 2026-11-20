@@ -495,5 +495,15 @@
   "checklistTemplateName": {
     "maxLength": "이름은 50자를 초과할 수 없습니다.",
     "required": "이름은 필수입니다."
+  },
+  "cashDeviceModel": {
+    "maxLength": "모델은 100자를 초과할 수 없습니다."
+  },
+  "cashDeviceName": {
+    "maxLength": "기기 이름은 50자를 초과할 수 없습니다.",
+    "required": "기기 이름은 필수입니다."
+  },
+  "cashDeviceVendor": {
+    "maxLength": "제조사는 100자를 초과할 수 없습니다."
   }
 }
