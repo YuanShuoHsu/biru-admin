@@ -63,7 +63,11 @@ const BreakEven = ({
             {breakEvenRevenue !== null && (
               <>
                 <LinearProgress
-                  value={Math.min((revenue / breakEvenRevenue) * 100, 100)}
+                  value={
+                    breakEvenRevenue > 0
+                      ? Math.min((revenue / breakEvenRevenue) * 100, 100)
+                      : 100
+                  }
                   variant="determinate"
                 />
                 <Typography variant="body2">
