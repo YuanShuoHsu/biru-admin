@@ -15,6 +15,8 @@ import { sortDirectionValues } from "@/types/api";
 
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
+import { toFetchError } from "@/utils/errors";
+
 import type {
   GridFilterItem,
   GridFilterModel,
@@ -307,3 +309,34 @@ export const getExportFileName = (...parts: (string | null | undefined)[]) =>
     .filter(Boolean)
     .join("_")
     .replace(/[\\/:*?"<>|]/g, "-");
+
+export const downloadCsv = async (
+  path: string,
+  fileName: string,
+  { fallbackMessage, locale }: { fallbackMessage: string; locale: string },
+) => {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_NEST_URL}${path}`, {
+    credentials: "include",
+    headers: { "Accept-Language": locale },
+  });
+
+  if (!response.ok) {
+    const { message } = response.headers
+      .get("content-type")
+      ?.includes("application/json")
+      ? await response.json().catch(() => ({}))
+      : {};
+
+    throw toFetchError({
+      message: message || fallbackMessage,
+      status: response.status,
+    });
+  }
+
+  const url = URL.createObjectURL(await response.blob());
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = `${fileName}.csv`;
+  anchor.click();
+  URL.revokeObjectURL(url);
+};

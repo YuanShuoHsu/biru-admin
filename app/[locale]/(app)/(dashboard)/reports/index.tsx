@@ -79,12 +79,13 @@ import type {
 
 import { fromCents } from "@/utils/attendance";
 import {
+  downloadCsv,
   getDataGridSearchParams,
   getExportDateRange,
   getExportFileName,
 } from "@/utils/dataGrid";
 import { getIngredientEnumOptions } from "@/utils/enumOptions";
-import { getErrorMessage, toFetchError } from "@/utils/errors";
+import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
@@ -918,35 +919,16 @@ const Reports = ({
     try {
       setExporting(true);
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_NEST_URL}${reportPath}/export.csv?${query}`,
-        { credentials: "include", headers: { "Accept-Language": locale } },
+      await downloadCsv(
+        `${reportPath}/export.csv?${query}`,
+        getExportFileName(
+          organization.name,
+          tReports("label"),
+          tReports(`tabs.${tab}`),
+          isMonthly ? month : getExportDateRange([since, until]),
+        ),
+        { fallbackMessage: tCommon("error.title"), locale },
       );
-
-      if (!response.ok) {
-        const { message } = response.headers
-          .get("content-type")
-          ?.includes("application/json")
-          ? await response.json().catch(() => ({}))
-          : {};
-
-        throw toFetchError({
-          message: message || tCommon("error.title"),
-          status: response.status,
-        });
-      }
-
-      const url = URL.createObjectURL(await response.blob());
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.download = `${getExportFileName(
-        organization.name,
-        tReports("label"),
-        tReports(`tabs.${tab}`),
-        isMonthly ? month : getExportDateRange([since, until]),
-      )}.csv`;
-      anchor.click();
-      URL.revokeObjectURL(url);
     } catch (error) {
       enqueueSnackbar(getErrorMessage(error), { variant: "error" });
     } finally {

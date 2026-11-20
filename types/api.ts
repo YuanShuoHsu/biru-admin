@@ -2441,6 +2441,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/inventory/receipts": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 點收一張進貨單 */
+    post: operations["OrganizationInventoryController_createInventoryReceipt"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/ingredients/reorder": {
     parameters: {
       query?: never;
@@ -2526,6 +2543,23 @@ export interface paths {
     put?: never;
     /** 登記食材庫存異動 */
     post: operations["IngredientsController_createTransaction"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/ingredients/{ingredientId}/inventory-transactions/export.csv": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 匯出食材庫存異動 CSV */
+    get: operations["IngredientsController_exportTransactions"];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -4588,6 +4622,23 @@ export interface paths {
     put?: never;
     /** 新增特殊營業日（臨時公休或調整時段） */
     post: operations["SpecialHoursController_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/special-hours/affected": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 依目前的特殊營業日列出受影響的自取訂單與今天的候位號碼；只列出有更新權限的類別 */
+    get: operations["SpecialHoursController_findAffected"];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -8435,6 +8486,9 @@ export interface components {
       name: string;
       enabled?: boolean;
     };
+    ReorderDto: {
+      ids: string[];
+    };
     UpdateChecklistTemplateDto: {
       timing?: components["schemas"]["ChecklistTiming"];
       /** @description 依陣列順序排列；更新時帶上就以這份為準：有 id 的更新、沒有 id 的新增、沒列出的刪除 */
@@ -10093,7 +10147,8 @@ export interface components {
       | "consume"
       | "restore"
       | "batch"
-      | "waste";
+      | "waste"
+      | "receive";
     /** @enum {string} */
     WasteReason: "expired" | "spilled" | "madeWrong" | "damaged" | "other";
     InventoryTransactionResponseDto: {
@@ -10113,6 +10168,7 @@ export interface components {
       wasteBatchId?: string | null;
       wasteMenuItemId?: string | null;
       wasteServings?: number | null;
+      receiptId?: string | null;
       orderId?: string | null;
       orderNumber?: string | null;
       note?: string | null;
@@ -10140,8 +10196,41 @@ export interface components {
       /** @description 異動原因，自由填寫 */
       note?: string | null;
     };
-    ReorderDto: {
-      ids: string[];
+    CreateInventoryReceiptItemDto: {
+      ingredientId: string;
+      /**
+       * @description 到貨的包裝數，依食材的包裝規格換算成庫存數量；與 quantity 擇一，沒有包裝規格的食材只能填 quantity
+       * @example 2
+       */
+      packages?: string;
+      /**
+       * @description 到貨的數量，單位為食材的 unitCode；與 packages 擇一
+       * @example 2000.000
+       */
+      quantity?: string;
+    };
+    CreateInventoryReceiptDto: {
+      /** @description 省略表示不指定供應商 */
+      supplierId?: string;
+      /** @description 到貨時間，省略則為送出當下 */
+      receivedAt?: string;
+      note?: string | null;
+      items: components["schemas"]["CreateInventoryReceiptItemDto"][];
+    };
+    InventoryReceiptResponseDto: {
+      id: string;
+      organizationId: string;
+      supplierId?: string | null;
+      /** Format: date-time */
+      receivedAt: string;
+      note?: string | null;
+      /** @description 點收人 */
+      createdBy?: string | null;
+      inventoryTransactions: components["schemas"]["InventoryTransactionResponseDto"][];
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
     };
     /** @enum {string} */
     SupplierFilterField:
@@ -12923,6 +13012,60 @@ export interface components {
       createdAt: string;
       /** Format: date-time */
       updatedAt: string;
+    };
+    SpecialHoursAffectedOrderDto: {
+      id: string;
+      orderNumber: string;
+      customer: components["schemas"]["OrderCustomerDto"];
+      /** @enum {string} */
+      paymentMethod:
+        | "ApplePay"
+        | "Cash"
+        | "Credit"
+        | "iPASS"
+        | "Jkopay"
+        | "TWQR"
+        | "WeiXin";
+      /** @enum {string} */
+      orderStatus:
+        | "OrderPaymentDue"
+        | "OrderProcessing"
+        | "OrderPickupAvailable"
+        | "OrderDelivered"
+        | "OrderCancelled"
+        | "OrderProblem"
+        | "OrderReturned";
+      /** Format: date-time */
+      paymentDate?: string | null;
+      /** Format: date-time */
+      pickupTime?: string | null;
+      total: string;
+    };
+    SpecialHoursAffectedTicketDto: {
+      /** Format: date-time */
+      calledAt?: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      id: string;
+      partySize: number;
+      status: components["schemas"]["WaitlistTicketStatus"];
+      /** @example A012 */
+      ticketNumber: string;
+      email?: string | null;
+      /** @description 候位結束 30 天後清除個資，此時為 null */
+      name?: string | null;
+      /** @description 候位結束 30 天後清除個資，此時為 null */
+      phoneNumber?: string | null;
+    };
+    SpecialHoursAffectedDto: {
+      /** @description 已付款、可經綠界全額退款（信用卡、Apple Pay）的自取訂單；沒有訂單更新權限時省略 */
+      refundOrders?: components["schemas"]["SpecialHoursAffectedOrderDto"][];
+      /** @description 已付款、須由店員另外退款的自取訂單（信用卡、Apple Pay 以外的付款方式）；沒有訂單更新權限時省略 */
+      manualRefundOrders?: components["schemas"]["SpecialHoursAffectedOrderDto"][];
+      /** @description 尚未付款的自取訂單；沒有訂單更新權限時省略 */
+      unpaidOrders?: components["schemas"]["SpecialHoursAffectedOrderDto"][];
+      /** @description 今天特殊公休或已過特殊時段打烊時間時，今天仍在候位或叫號中的號碼；沒有候位更新權限時省略 */
+      waitlistTickets?: components["schemas"]["SpecialHoursAffectedTicketDto"][];
     };
     CreateSpecialHoursDto: {
       /**
@@ -20566,6 +20709,41 @@ export interface operations {
       };
     };
   };
+  OrganizationInventoryController_createInventoryReceipt: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description 同一張進貨單重試請帶同一把鍵，重送會回傳既有進貨單 */
+        "Idempotency-Key"?: string;
+      };
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateInventoryReceiptDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["InventoryReceiptResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   OrganizationInventoryController_reorderIngredients: {
     parameters: {
       query?: never;
@@ -20916,6 +21094,43 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["InventoryTransactionResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  IngredientsController_exportTransactions: {
+    parameters: {
+      query?: {
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["InventoryTransactionFilterField"];
+        sortBy?: components["schemas"]["InventoryTransactionSortField"];
+        filterValue?: string;
+        quickFilterValue?: string;
+      };
+      header?: never;
+      path: {
+        ingredientId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "text/csv": string;
         };
       };
       /** @description Internal server error */
@@ -22764,14 +22979,14 @@ export interface operations {
   MenusController_findAllMenuSections: {
     parameters: {
       query?: {
-        filterField?: components["schemas"]["MenuSectionFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
-        sortBy?: components["schemas"]["MenuSectionSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
         limit?: number;
         offset?: number;
         filterValue?: string;
         quickFilterValue?: string;
+        filterField?: components["schemas"]["MenuSectionFilterField"];
+        sortBy?: components["schemas"]["MenuSectionSortField"];
         searchField?: "name" | "description";
         searchOperator?: "contains" | "startsWith" | "endsWith";
         searchValue?: string;
@@ -23012,19 +23227,19 @@ export interface operations {
   MenusController_findAllMenuSectionItems: {
     parameters: {
       query?: {
-        filterField?: components["schemas"]["MenuItemFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
         /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
         quickFilterEnums?: string[];
-        sortBy?: components["schemas"]["MenuItemSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["MenuItemFilterField"];
+        sortBy?: components["schemas"]["MenuItemSortField"];
+        searchField?: "name" | "description";
+        searchOperator?: "contains" | "startsWith" | "endsWith";
+        searchValue?: string;
         limit?: number;
         offset?: number;
         filterValue?: string;
         quickFilterValue?: string;
-        searchField?: "name" | "description";
-        searchOperator?: "contains" | "startsWith" | "endsWith";
-        searchValue?: string;
       };
       header?: never;
       path: {
@@ -23386,14 +23601,14 @@ export interface operations {
   MenusController_findAllMenuItemAddOns: {
     parameters: {
       query?: {
-        filterField?: components["schemas"]["AddOnFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
-        sortBy?: components["schemas"]["AddOnSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
         limit?: number;
         offset?: number;
         filterValue?: string;
         quickFilterValue?: string;
+        filterField?: components["schemas"]["AddOnFilterField"];
+        sortBy?: components["schemas"]["AddOnSortField"];
       };
       header?: never;
       path: {
@@ -23577,14 +23792,14 @@ export interface operations {
   MenusController_findAllModifierGroups: {
     parameters: {
       query?: {
-        filterField?: components["schemas"]["ModifierGroupFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
-        sortBy?: components["schemas"]["ModifierGroupSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
         limit?: number;
         offset?: number;
         filterValue?: string;
         quickFilterValue?: string;
+        filterField?: components["schemas"]["ModifierGroupFilterField"];
+        sortBy?: components["schemas"]["ModifierGroupSortField"];
       };
       header?: never;
       path: {
@@ -23794,12 +24009,12 @@ export interface operations {
   MenusController_findAllModifiers: {
     parameters: {
       query?: {
-        filterField?: components["schemas"]["ModifierFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
         /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
         quickFilterEnums?: string[];
-        sortBy?: components["schemas"]["ModifierSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
+        filterField?: components["schemas"]["ModifierFilterField"];
+        sortBy?: components["schemas"]["ModifierSortField"];
         limit?: number;
         offset?: number;
         filterValue?: string;
@@ -24045,14 +24260,14 @@ export interface operations {
   MenusController_findAllMenuItemModifierGroups: {
     parameters: {
       query?: {
-        filterField?: components["schemas"]["ModifierGroupFilterField"];
         filterOperator?: components["schemas"]["FilterOperator"];
-        sortBy?: components["schemas"]["ModifierGroupSortField"];
         sortDirection?: components["schemas"]["SortDirection"];
         limit?: number;
         offset?: number;
         filterValue?: string;
         quickFilterValue?: string;
+        filterField?: components["schemas"]["ModifierGroupFilterField"];
+        sortBy?: components["schemas"]["ModifierGroupSortField"];
       };
       header?: never;
       path: {
@@ -25991,6 +26206,34 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SpecialHoursController_findAffected: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SpecialHoursAffectedDto"];
+        };
       };
       /** @description Internal server error */
       500: {
@@ -28288,6 +28531,11 @@ export interface operations {
       query?: {
         /** @description 不帶則回傳全部交易對 */
         symbol?: string;
+        limit?: number;
+        /** @description 起始時間（毫秒） */
+        startTime?: number;
+        /** @description 只回傳此時間（含）以前的紀錄（毫秒）；換頁時帶上一頁的 nextEndTime */
+        endTime?: number;
       };
       header?: never;
       path: {
@@ -28319,11 +28567,6 @@ export interface operations {
       query?: {
         /** @description 不帶則回傳全部交易對 */
         symbol?: string;
-        limit?: number;
-        /** @description 起始時間（毫秒） */
-        startTime?: number;
-        /** @description 只回傳此時間（含）以前的紀錄（毫秒）；換頁時帶上一頁的 nextEndTime */
-        endTime?: number;
       };
       header?: never;
       path: {
@@ -28647,6 +28890,19 @@ export interface operations {
         /** @description 統計結束時間（不含），須帶時區；須晚於 since，區間最多 366 天 */
         until: string;
         groupBy: components["schemas"]["SalesReportGroupBy"];
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+        /** @description 每頁列數；省略時回傳所有列 */
+        limit?: number;
+        /** @description name 依請求語系的名稱篩選 */
+        filterField?: components["schemas"]["SalesReportFilterField"];
+        /** @description name 依請求語系的名稱排序，hour 的 key 依數值排序；省略時依 rows 說明的預設順序 */
+        sortBy?: components["schemas"]["SalesReportSortField"];
       };
       header?: never;
       path: {
@@ -28681,19 +28937,6 @@ export interface operations {
         /** @description 統計結束時間（不含），須帶時區；須晚於 since，區間最多 366 天 */
         until: string;
         groupBy: components["schemas"]["SalesReportGroupBy"];
-        filterOperator?: components["schemas"]["FilterOperator"];
-        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
-        quickFilterEnums?: string[];
-        sortDirection?: components["schemas"]["SortDirection"];
-        offset?: number;
-        filterValue?: string;
-        quickFilterValue?: string;
-        /** @description 每頁列數；省略時回傳所有列 */
-        limit?: number;
-        /** @description name 依請求語系的名稱篩選 */
-        filterField?: components["schemas"]["SalesReportFilterField"];
-        /** @description name 依請求語系的名稱排序，hour 的 key 依數值排序；省略時依 rows 說明的預設順序 */
-        sortBy?: components["schemas"]["SalesReportSortField"];
       };
       header?: never;
       path: {
@@ -28727,6 +28970,19 @@ export interface operations {
         since: string;
         /** @description 統計結束時間（不含），須帶時區；須晚於 since，區間最多 366 天 */
         until: string;
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+        /** @description 每頁列數；省略時回傳所有列 */
+        limit?: number;
+        /** @description name 依請求語系的名稱篩選，數量依數值比較；無 purchasing 權限時忽略 wastedCost */
+        filterField?: components["schemas"]["InventoryReportFilterField"];
+        /** @description name 依請求語系的名稱排序，數量依數值排序；無 purchasing 權限時忽略 wastedCost；省略時依 rows 說明的預設順序 */
+        sortBy?: components["schemas"]["InventoryReportSortField"];
       };
       header?: never;
       path: {
@@ -28760,19 +29016,6 @@ export interface operations {
         since: string;
         /** @description 統計結束時間（不含），須帶時區；須晚於 since，區間最多 366 天 */
         until: string;
-        filterOperator?: components["schemas"]["FilterOperator"];
-        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
-        quickFilterEnums?: string[];
-        sortDirection?: components["schemas"]["SortDirection"];
-        offset?: number;
-        filterValue?: string;
-        quickFilterValue?: string;
-        /** @description 每頁列數；省略時回傳所有列 */
-        limit?: number;
-        /** @description name 依請求語系的名稱篩選，數量依數值比較；無 purchasing 權限時忽略 wastedCost */
-        filterField?: components["schemas"]["InventoryReportFilterField"];
-        /** @description name 依請求語系的名稱排序，數量依數值排序；無 purchasing 權限時忽略 wastedCost；省略時依 rows 說明的預設順序 */
-        sortBy?: components["schemas"]["InventoryReportSortField"];
       };
       header?: never;
       path: {
@@ -28804,6 +29047,19 @@ export interface operations {
       query: {
         /** @description 薪資計算月份 */
         month: string;
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortDirection?: components["schemas"]["SortDirection"];
+        offset?: number;
+        filterValue?: string;
+        quickFilterValue?: string;
+        /** @description 每頁列數；省略時回傳所有列 */
+        limit?: number;
+        /** @description 金額依數值比較 */
+        filterField?: components["schemas"]["PersonnelCostReportFilterField"];
+        /** @description 金額依數值排序；省略時依職位排序，未設定職位的列在最後 */
+        sortBy?: components["schemas"]["PersonnelCostReportSortField"];
       };
       header?: never;
       path: {
@@ -28835,19 +29091,6 @@ export interface operations {
       query: {
         /** @description 薪資計算月份 */
         month: string;
-        filterOperator?: components["schemas"]["FilterOperator"];
-        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
-        quickFilterEnums?: string[];
-        sortDirection?: components["schemas"]["SortDirection"];
-        offset?: number;
-        filterValue?: string;
-        quickFilterValue?: string;
-        /** @description 每頁列數；省略時回傳所有列 */
-        limit?: number;
-        /** @description 金額依數值比較 */
-        filterField?: components["schemas"]["PersonnelCostReportFilterField"];
-        /** @description 金額依數值排序；省略時依職位排序，未設定職位的列在最後 */
-        sortBy?: components["schemas"]["PersonnelCostReportSortField"];
       };
       header?: never;
       path: {
@@ -30668,7 +30911,7 @@ export const baseUnitCodeValues: ReadonlyArray<
 > = ["GRM", "MLT", "H87"];
 export const inventoryTransactionReasonValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["InventoryTransactionReason"]
-> = ["count", "consume", "restore", "batch", "waste"];
+> = ["count", "consume", "restore", "batch", "waste", "receive"];
 export const wasteReasonValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["WasteReason"]
 > = ["expired", "spilled", "madeWrong", "damaged", "other"];
@@ -31209,6 +31452,20 @@ export const memberResponseDtoRoleValues: ReadonlyArray<
 export const organizationTeamMemberResponseDtoRoleValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrganizationTeamMemberResponseDto"]["role"]
 > = ["admin", "member", "owner"];
+export const specialHoursAffectedOrderDtoPaymentMethodValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["SpecialHoursAffectedOrderDto"]["paymentMethod"]
+> = ["ApplePay", "Cash", "Credit", "iPASS", "Jkopay", "TWQR", "WeiXin"];
+export const specialHoursAffectedOrderDtoOrderStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["SpecialHoursAffectedOrderDto"]["orderStatus"]
+> = [
+  "OrderPaymentDue",
+  "OrderProcessing",
+  "OrderPickupAvailable",
+  "OrderDelivered",
+  "OrderCancelled",
+  "OrderProblem",
+  "OrderReturned",
+];
 export const pushSubscriptionAppValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PushSubscriptionApp"]
 > = ["storefront", "admin"];

@@ -350,7 +350,8 @@
         "consume": "订单耗用",
         "restore": "退单回补",
         "batch": "制作批次",
-        "waste": "报废"
+        "waste": "报废",
+        "receive": "进货验收"
       }
     },
     "unitCost": {

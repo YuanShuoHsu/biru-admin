@@ -109,6 +109,15 @@ const IngredientTransactions = ({
     [tInventory],
   );
 
+  const exportSearchParams = getDataGridSearchParams(
+    paginationModel,
+    filterModel,
+    sortModel,
+    enumOptions,
+  );
+  exportSearchParams.delete("limit");
+  exportSearchParams.delete("offset");
+
   const {
     data: { data: rows, total: rowCount } = {
       data: initialRows,
@@ -269,6 +278,7 @@ const IngredientTransactions = ({
       slotProps={{
         ...DATA_GRID_PROPS.slotProps,
         toolbar: {
+          exportCsvPath: `/api/ingredients/${ingredientId}/inventory-transactions/export.csv?${exportSearchParams}`,
           exportDateField: "createdAt",
         },
       }}
