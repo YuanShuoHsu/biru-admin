@@ -4662,6 +4662,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/special-hours/affected/process": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 取消並通知預覽中仍受影響的項目：綠界付款的自取訂單全額退款並寄信、未付款的取消、今天的候位號碼取消並寄信；逐筆回傳結果，失敗的維持原狀可再送一次 */
+    post: operations["SpecialHoursController_processAffected"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/special-hours/{specialHoursId}": {
     parameters: {
       query?: never;
@@ -10237,6 +10254,7 @@ export interface components {
     InventoryReceiptResponseDto: {
       id: string;
       organizationId: string;
+      /** @description 無 purchasing 權限時不回傳 */
       supplierId?: string | null;
       /** Format: date-time */
       receivedAt: string;
@@ -13084,6 +13102,36 @@ export interface components {
       /** @description 今天特殊公休或已過特殊時段打烊時間時，今天仍在候位或叫號中的號碼；沒有候位更新權限時省略 */
       waitlistTickets?: components["schemas"]["SpecialHoursAffectedTicketDto"][];
     };
+    ProcessSpecialHoursAffectedDto: {
+      /** @description 預覽時列出的自取訂單 id；需要訂單更新與退款權限 */
+      orderIds?: string[];
+      /** @description 預覽時列出的候位號碼 id；需要候位更新權限 */
+      ticketIds?: string[];
+    };
+    /**
+     * @description refunded：已經綠界全額退款，有 email 時寄信；refundPending：已送出綠界退款但尚未確認，確認後才寄信，不必再送；cancelled：已取消（未付款訂單不寄信，候位號碼有 email 時寄信）；manualRefundRequired：非綠界付款，未處理，須由店員另外退款；skipped：已不受影響或已不在進行中，未處理；failed：處理失敗，維持原狀，可再送一次。重送時依目前狀態回報：已因公休退款的訂單回 refunded／refundPending，已取消且取貨時間仍在公休時段的未付款訂單與已因公休取消的候位號碼回 cancelled
+     * @enum {string}
+     */
+    SpecialHoursProcessStatus:
+      | "cancelled"
+      | "failed"
+      | "manualRefundRequired"
+      | "refundPending"
+      | "refunded"
+      | "skipped";
+    SpecialHoursProcessResultDto: {
+      id: string;
+      /** @description refunded：已經綠界全額退款，有 email 時寄信；refundPending：已送出綠界退款但尚未確認，確認後才寄信，不必再送；cancelled：已取消（未付款訂單不寄信，候位號碼有 email 時寄信）；manualRefundRequired：非綠界付款，未處理，須由店員另外退款；skipped：已不受影響或已不在進行中，未處理；failed：處理失敗，維持原狀，可再送一次。重送時依目前狀態回報：已因公休退款的訂單回 refunded／refundPending，已取消且取貨時間仍在公休時段的未付款訂單與已因公休取消的候位號碼回 cancelled */
+      status: components["schemas"]["SpecialHoursProcessStatus"];
+      /** @description 失敗時的錯誤代碼 */
+      code?: string;
+      /** @description 失敗時的錯誤訊息 */
+      message?: string;
+    };
+    SpecialHoursProcessResponseDto: {
+      orders: components["schemas"]["SpecialHoursProcessResultDto"][];
+      waitlistTickets: components["schemas"]["SpecialHoursProcessResultDto"][];
+    };
     CreateSpecialHoursDto: {
       /**
        * @description 開始日期（平台時區）
@@ -14982,7 +15030,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -15019,7 +15069,9 @@ export interface operations {
         quickFilterValue?: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -15045,7 +15097,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -15071,7 +15125,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -15108,7 +15164,9 @@ export interface operations {
         quickFilterValue?: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -15134,7 +15192,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -15164,7 +15224,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -15194,6 +15256,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -15222,6 +15285,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -15248,7 +15312,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -15274,7 +15340,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -15315,7 +15383,9 @@ export interface operations {
         quickFilterValue?: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -15341,7 +15411,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -15371,7 +15443,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -15401,6 +15475,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -15429,6 +15504,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -15474,7 +15550,9 @@ export interface operations {
         quickFilterValue?: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -15500,7 +15578,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -15541,7 +15621,9 @@ export interface operations {
         quickFilterValue?: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -15567,7 +15649,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -15600,7 +15684,9 @@ export interface operations {
         to: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -15629,7 +15715,9 @@ export interface operations {
         to: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -15655,7 +15743,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -15681,7 +15771,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -15713,6 +15805,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -15745,6 +15838,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -15777,6 +15871,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -15803,7 +15898,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -15844,7 +15941,9 @@ export interface operations {
         quickFilterValue?: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -15870,7 +15969,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -15907,7 +16008,9 @@ export interface operations {
         quickFilterValue?: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -15933,7 +16036,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -15966,7 +16071,9 @@ export interface operations {
         to: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -15992,7 +16099,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -16024,6 +16133,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -16054,7 +16164,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -16086,6 +16198,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -16118,6 +16231,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -16155,7 +16269,9 @@ export interface operations {
         quickFilterValue?: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -16181,7 +16297,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -16211,7 +16329,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -16250,7 +16370,9 @@ export interface operations {
         quickFilterValue?: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -16278,6 +16400,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -16306,6 +16429,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -16347,7 +16471,9 @@ export interface operations {
         quickFilterValue?: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -16373,7 +16499,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -16403,7 +16531,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -16433,6 +16563,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -16461,6 +16592,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -16502,7 +16634,9 @@ export interface operations {
         quickFilterValue?: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -16539,7 +16673,9 @@ export interface operations {
         quickFilterValue?: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -16576,7 +16712,9 @@ export interface operations {
         quickFilterValue?: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -16613,7 +16751,9 @@ export interface operations {
         quickFilterValue?: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -16639,7 +16779,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -16669,7 +16811,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -16699,7 +16843,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -16729,6 +16875,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -16767,7 +16914,9 @@ export interface operations {
         quickFilterValue?: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -16793,7 +16942,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -16823,7 +16974,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -16853,6 +17006,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -16890,7 +17044,9 @@ export interface operations {
         quickFilterValue?: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -16916,7 +17072,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -16957,7 +17115,9 @@ export interface operations {
         quickFilterValue?: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -16985,6 +17145,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -17013,6 +17174,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -17045,6 +17207,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -17086,7 +17249,9 @@ export interface operations {
         quickFilterValue?: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -17123,7 +17288,9 @@ export interface operations {
         quickFilterValue?: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -17151,6 +17318,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -17183,6 +17351,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -17215,6 +17384,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -17330,7 +17500,7 @@ export interface operations {
       };
       header?: never;
       path: {
-        organizationSlug: unknown;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -18381,7 +18551,9 @@ export interface operations {
         quickFilterValue?: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -18407,7 +18579,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -18439,6 +18613,7 @@ export interface operations {
       header?: never;
       path: {
         cashDeviceId: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -18467,6 +18642,7 @@ export interface operations {
       header?: never;
       path: {
         cashDeviceId: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -18493,6 +18669,7 @@ export interface operations {
       header?: never;
       path: {
         cashDeviceId: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -18528,6 +18705,7 @@ export interface operations {
       header?: never;
       path: {
         cashDeviceId: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -18556,6 +18734,7 @@ export interface operations {
       header?: never;
       path: {
         cashDeviceId: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -18588,6 +18767,7 @@ export interface operations {
       header?: never;
       path: {
         cashDeviceId: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -18618,7 +18798,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -18644,7 +18826,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -18674,7 +18858,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -18704,6 +18890,7 @@ export interface operations {
       header?: never;
       path: {
         templateId: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -18730,6 +18917,7 @@ export interface operations {
       header?: never;
       path: {
         templateId: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -18760,7 +18948,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -18789,6 +18979,7 @@ export interface operations {
       path: {
         templateId: string;
         itemId: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -18827,7 +19018,9 @@ export interface operations {
         templateId?: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -18930,7 +19123,7 @@ export interface operations {
       };
       header?: never;
       path: {
-        organizationSlug: unknown;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -18958,7 +19151,7 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
-        organizationSlug: unknown;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -18986,7 +19179,7 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
-        organizationSlug: unknown;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -19099,7 +19292,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -19125,7 +19320,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -19166,7 +19363,9 @@ export interface operations {
         quickFilterValue?: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -19192,7 +19391,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -19224,7 +19425,9 @@ export interface operations {
         month: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -19261,7 +19464,9 @@ export interface operations {
         quickFilterValue?: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -19287,7 +19492,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -19317,7 +19524,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -19347,7 +19556,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -19379,6 +19590,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -19411,6 +19623,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -19452,7 +19665,9 @@ export interface operations {
         quickFilterValue?: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -19478,7 +19693,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -19508,7 +19725,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -19538,6 +19757,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -19566,6 +19786,7 @@ export interface operations {
       header?: never;
       path: {
         id: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -19599,7 +19820,9 @@ export interface operations {
         month: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -19627,7 +19850,9 @@ export interface operations {
         year: number;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -19655,7 +19880,9 @@ export interface operations {
         year: number;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -19683,7 +19910,9 @@ export interface operations {
         paymentDate: string;
       };
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -19709,7 +19938,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody: {
@@ -19741,6 +19972,7 @@ export interface operations {
       header?: never;
       path: {
         employeeId: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -19771,7 +20003,9 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        organizationSlug: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -19799,6 +20033,7 @@ export interface operations {
       header?: never;
       path: {
         year: number;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -26168,6 +26403,7 @@ export interface operations {
       header?: never;
       path: {
         memberId: string;
+        organizationSlug: string;
       };
       cookie?: never;
     };
@@ -26278,6 +26514,41 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["SpecialHoursAffectedDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SpecialHoursController_processAffected: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description 同一次確認重試請帶同一把鍵，僅記錄於伺服器日誌；結果依目前狀態判定，已處理的項目不會再退款或寄信 */
+        "Idempotency-Key"?: string;
+      };
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ProcessSpecialHoursAffectedDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SpecialHoursProcessResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -31510,6 +31781,16 @@ export const specialHoursAffectedOrderDtoOrderStatusValues: ReadonlyArray<
   "OrderCancelled",
   "OrderProblem",
   "OrderReturned",
+];
+export const specialHoursProcessStatusValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["SpecialHoursProcessStatus"]
+> = [
+  "cancelled",
+  "failed",
+  "manualRefundRequired",
+  "refundPending",
+  "refunded",
+  "skipped",
 ];
 export const pushSubscriptionAppValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PushSubscriptionApp"]
