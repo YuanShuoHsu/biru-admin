@@ -428,6 +428,42 @@
         "title": "編輯特殊營業日"
       }
     },
+    "affected": {
+      "manualRefundOrders": {
+        "hint": "這些訂單不是信用卡或 Apple Pay 付款，不會自動處理，請另外退款給顧客。",
+        "label": "需另外退款的訂單（{count} 筆）"
+      },
+      "process": {
+        "confirm": "確定要取消並通知以下項目嗎？處理後無法復原。",
+        "manualRefund": "{count} 筆需另外退款的訂單不會處理",
+        "refund": "{count} 筆已付款訂單經綠界全額退款，並寄信通知顧客",
+        "tickets": "取消 {count} 個候位號碼，並寄信通知顧客",
+        "title": "取消並通知",
+        "unpaid": "取消 {count} 筆未付款訂單"
+      },
+      "refundOrders": {
+        "label": "可經綠界退款的訂單（{count} 筆）"
+      },
+      "results": {
+        "retry": "處理失敗的項目維持原狀，可再按一次「取消並通知」。",
+        "status": {
+          "cancelled": "已取消",
+          "failed": "處理失敗",
+          "manualRefundRequired": "需另外退款",
+          "refundPending": "退款處理中，確認後寄信",
+          "refunded": "已退款",
+          "skipped": "已不受影響，未處理"
+        },
+        "title": "處理結果"
+      },
+      "title": "特殊營業日影響了以下項目",
+      "unpaidOrders": {
+        "label": "未付款的訂單（{count} 筆）"
+      },
+      "waitlistTickets": {
+        "label": "今天的候位號碼（{count} 個）"
+      }
+    },
     "closed": {
       "label": "整天公休",
       "value": "公休"

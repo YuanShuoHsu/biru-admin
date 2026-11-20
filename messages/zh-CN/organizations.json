@@ -428,6 +428,42 @@
         "title": "编辑特殊营业日"
       }
     },
+    "affected": {
+      "manualRefundOrders": {
+        "hint": "这些订单不是信用卡或 Apple Pay 付款，不会自动处理，请另外退款给顾客。",
+        "label": "需另外退款的订单（{count} 笔）"
+      },
+      "process": {
+        "confirm": "确定要取消并通知以下项目吗？处理后无法恢复。",
+        "manualRefund": "{count} 笔需另外退款的订单不会处理",
+        "refund": "{count} 笔已付款订单经绿界全额退款，并发信通知顾客",
+        "tickets": "取消 {count} 个排队号码，并发信通知顾客",
+        "title": "取消并通知",
+        "unpaid": "取消 {count} 笔未付款订单"
+      },
+      "refundOrders": {
+        "label": "可经绿界退款的订单（{count} 笔）"
+      },
+      "results": {
+        "retry": "处理失败的项目维持原状，可再按一次「取消并通知」。",
+        "status": {
+          "cancelled": "已取消",
+          "failed": "处理失败",
+          "manualRefundRequired": "需另外退款",
+          "refundPending": "退款处理中，确认后发信",
+          "refunded": "已退款",
+          "skipped": "已不受影响，未处理"
+        },
+        "title": "处理结果"
+      },
+      "title": "特殊营业日影响了以下项目",
+      "unpaidOrders": {
+        "label": "未付款的订单（{count} 笔）"
+      },
+      "waitlistTickets": {
+        "label": "今天的排队号码（{count} 个）"
+      }
+    },
     "closed": {
       "label": "全天休息",
       "value": "休息"

@@ -37,6 +37,7 @@ import WaitlistTicketDialog, {
 import SelectAllTransferList, {
   type SelectAllTransferListAction,
 } from "@/components/SelectAllTransferList";
+import SpecialHoursAffectedAlert from "@/components/SpecialHoursAffectedAlert";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -567,6 +568,10 @@ const AdminWaitlist = ({
 
   return (
     <>
+      <SpecialHoursAffectedAlert
+        onProcessed={() => mutate()}
+        organizationSlug={organizationSlug}
+      />
       <SelectAllTransferList
         columns={columns}
         transferActions={[

@@ -428,6 +428,42 @@
         "title": "Edit special hours"
       }
     },
+    "affected": {
+      "manualRefundOrders": {
+        "hint": "These orders weren't paid by credit card or Apple Pay, so they won't be processed. Refund the customers separately.",
+        "label": "Orders to refund separately ({count})"
+      },
+      "process": {
+        "confirm": "Cancel and notify the following? This can't be undone.",
+        "manualRefund": "{count, plural, one {# order} other {# orders}} to refund separately won't be processed",
+        "refund": "Fully refund {count, plural, one {# paid order} other {# paid orders}} through ECPay and email the customers",
+        "tickets": "Cancel {count, plural, one {# waitlist ticket} other {# waitlist tickets}} and email the guests",
+        "title": "Cancel and notify",
+        "unpaid": "Cancel {count, plural, one {# unpaid order} other {# unpaid orders}}"
+      },
+      "refundOrders": {
+        "label": "Orders refundable through ECPay ({count})"
+      },
+      "results": {
+        "retry": "Failed items are unchanged. Press \"Cancel and notify\" again to retry.",
+        "status": {
+          "cancelled": "Cancelled",
+          "failed": "Failed",
+          "manualRefundRequired": "Refund separately",
+          "refundPending": "Refund pending; email sent once confirmed",
+          "refunded": "Refunded",
+          "skipped": "No longer affected, skipped"
+        },
+        "title": "Results"
+      },
+      "title": "Special hours affect the following",
+      "unpaidOrders": {
+        "label": "Unpaid orders ({count})"
+      },
+      "waitlistTickets": {
+        "label": "Today's waitlist tickets ({count})"
+      }
+    },
     "closed": {
       "label": "Closed all day",
       "value": "Closed"

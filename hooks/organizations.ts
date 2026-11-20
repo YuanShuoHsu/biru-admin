@@ -40,7 +40,7 @@ export const useDefaultOrganizationSlug = () =>
     );
   });
 
-const useMemberRole = (organizationSlug: string) => {
+export const useMemberRole = (organizationSlug: string) => {
   const { data: role } = useSWR(
     organizationSlug ? [activeMemberRoleKey, organizationSlug] : null,
     async ([, slug]: [string, string]) => {
