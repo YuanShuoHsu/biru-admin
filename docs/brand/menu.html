@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <title>碧露菜單</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap"
+    />
+    <style>
+      @page {
+        size: A4;
+        margin: 0;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        background: #fcf7f1;
+      }
+      body {
+        font-family: "Noto Sans TC", sans-serif;
+        color: #2f3a42;
+      }
+      .page {
+        width: 210mm;
+        height: 297mm;
+        margin: 0 auto;
+        padding: 16mm 20mm;
+        display: flex;
+        flex-direction: column;
+        gap: 8mm;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        gap: 6mm;
+      }
+      header img {
+        width: 26mm;
+        height: auto;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 34px;
+        letter-spacing: 0.3em;
+        line-height: 1;
+        color: #617b88;
+      }
+      header p {
+        margin: 6px 0 0;
+        font-size: 12px;
+        letter-spacing: 0.4em;
+        color: #617b88;
+      }
+      section {
+        display: flex;
+        flex-direction: column;
+        gap: 3mm;
+      }
+      h2 {
+        margin: 0;
+        padding-bottom: 2mm;
+        border-bottom: 1px solid #617b88;
+        display: flex;
+        align-items: baseline;
+        gap: 3mm;
+        font-size: 15px;
+        letter-spacing: 0.3em;
+        color: #617b88;
+      }
+      h2 span {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.24em;
+        color: #5c5c5c;
+      }
+      .item {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 4mm;
+        font-size: 16px;
+        font-weight: 500;
+      }
+      .item b {
+        font-weight: 500;
+        font-variant-numeric: tabular-nums;
+      }
+      .desc {
+        margin: 1mm 0 0;
+        font-size: 12.5px;
+        line-height: 1.5;
+        color: #5c5c5c;
+      }
+      .note {
+        font-size: 12.5px;
+        line-height: 1.6;
+        color: #5c5c5c;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12mm;
+      }
+      footer {
+        margin-top: auto;
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        color: #5c5c5c;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <img src="logo-mark.jpg" alt="碧露 Logo" />
+        <div>
+          <h1>碧露</h1>
+          <p>BIRU COFFEE</p>
+        </div>
+      </header>
+
+      <section>
+        <h2>飲品<span>DRINKS</span></h2>
+        <div>
+          <div class="item">碧露咖啡<b>140</b></div>
+          <p class="desc">冷萃麥茶加氣泡水，上層鋪咖啡奶蓋。僅供冷飲。</p>
+        </div>
+      </section>
+
+      <section>
+        <h2>義大利麵<span>PASTA</span></h2>
+        <div class="item">紅醬義大利麵<b>160</b></div>
+        <div class="item">白醬義大利麵<b>160</b></div>
+        <div class="item">粉紅醬義大利麵<b>170</b></div>
+        <div class="item">蒜炒義大利麵<b>150</b></div>
+        <div class="item">松露野菇義大利麵<b>200</b></div>
+        <div class="item">白酒蛤蠣義大利麵<b>290</b></div>
+        <div class="note">
+          辣度：不辣・微辣・小辣・中辣・大辣<br />加點：加麵 +20　加野菇
+          +20　加培根 +40　加雞肉 +50　加鮮蝦 +60　加蛤蠣 +70
+        </div>
+      </section>
+
+      <div class="row">
+        <section>
+          <h2>甜點<span>DESSERT</span></h2>
+          <div class="item">奶酪<b>60</b></div>
+          <div class="item">抹茶奶酪<b>90</b></div>
+          <div>
+            <div class="item">巴斯克乳酪蛋糕<b>140</b></div>
+            <p class="desc">焦香表面，內裡濕潤綿密、帶微微流心。</p>
+          </div>
+        </section>
+        <section>
+          <h2>寵物餐<span>FOR PETS</span></h2>
+          <div class="item">貓咪清燙雞肉<b>60</b></div>
+          <div>
+            <div class="item">狗狗清燙雞肉<b>90</b></div>
+            <p class="desc">清水燙熟的雞腿肉丁，佐紅蘿蔔與綠花椰，不加調味。</p>
+          </div>
+        </section>
+      </div>
+
+      <footer>
+        <span>價格以新台幣計</span>
+        <span>過敏原請洽店員</span>
+      </footer>
+    </div>
+  </body>
+</html>
