@@ -2,61 +2,19 @@ import { cache } from "react";
 
 import { fetcher } from "./fetcher";
 
-import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
+import { type GridQuery, getGridSearchParams } from "@/utils/dataGrid";
 
 import type {
   BannerFilterField,
   BannerListResponse,
   BannerSortField,
 } from "@/types/banners";
-import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
-interface GetBannersQuery {
-  page?: number;
-  pageSize?: number;
-  filterField?: BannerFilterField;
-  filterOperator?: FilterOperator;
-  filterValue?: string;
-  quickFilterEnums?: string[];
-  quickFilterValue?: string;
-  sortBy?: BannerSortField;
-  sortDirection?: SortDirection;
-}
+type GetBannersQuery = GridQuery<BannerFilterField, BannerSortField>;
 
 export const getBanners = cache(
-  async (
-    {
-      page = 1,
-      pageSize = 10,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterEnums,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-    }: GetBannersQuery = {},
-    init?: RequestInit,
-  ) => {
-    const offset = (page - 1) * pageSize;
-    const isNoValueOperator =
-      filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
-    const params = new URLSearchParams({
-      limit: String(pageSize),
-      offset: String(offset),
-      ...(sortBy && { sortBy }),
-      ...(sortDirection && { sortDirection }),
-      ...(filterField &&
-        filterOperator &&
-        (filterValue || isNoValueOperator) && {
-          filterField,
-          filterOperator,
-          ...(filterValue && { filterValue }),
-        }),
-      ...(quickFilterValue && { quickFilterValue }),
-    });
-    for (const entry of quickFilterEnums || [])
-      params.append("quickFilterEnums", entry);
+  async (query: GetBannersQuery = {}, init?: RequestInit) => {
+    const params = getGridSearchParams(query);
 
     const result = await fetcher<BannerListResponse>(
       `/api/banners?${params.toString()}`,
