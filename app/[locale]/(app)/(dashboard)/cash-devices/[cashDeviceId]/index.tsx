@@ -251,7 +251,7 @@ const CashDeviceEvents = ({
               .filter(Boolean)
               .join(tCommon("middleDot"))}
           </Typography>
-          {canRefill && (
+          {canRefill && cashDevice.status === "active" && (
             <Button
               onClick={handleRefill}
               size="small"
@@ -261,7 +261,7 @@ const CashDeviceEvents = ({
               {tCashDevices("actions.refill.title")}
             </Button>
           )}
-          {canCollect && (
+          {canCollect && cashDevice.status === "active" && (
             <Button
               onClick={handleCollect}
               size="small"

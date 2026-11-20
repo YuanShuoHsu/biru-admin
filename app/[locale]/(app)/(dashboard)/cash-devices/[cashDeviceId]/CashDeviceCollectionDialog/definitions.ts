@@ -5,13 +5,26 @@ export const useCashDeviceCollectionFormSchema = () => {
   const tValidation = useTranslations("validation");
 
   return z.object({
-    depositedAmount: z.string().min(1, {
-      error: tValidation("cashDeviceCollection.depositedAmount.required"),
-    }),
-    note: z.string().trim(),
-    reportedAmount: z.string().min(1, {
-      error: tValidation("cashDeviceCollection.reportedAmount.required"),
-    }),
+    depositedAmount: z
+      .string()
+      .min(1, {
+        error: tValidation("cashDeviceCollection.depositedAmount.required"),
+      })
+      .refine((amount) => Number(amount) <= 9_999_999, {
+        error: tValidation("cashDeviceCollection.depositedAmount.max"),
+      }),
+    note: z
+      .string()
+      .trim()
+      .max(500, { error: tValidation("cashDeviceEventNote.maxLength") }),
+    reportedAmount: z
+      .string()
+      .min(1, {
+        error: tValidation("cashDeviceCollection.reportedAmount.required"),
+      })
+      .refine((amount) => Number(amount) <= 9_999_999, {
+        error: tValidation("cashDeviceCollection.reportedAmount.max"),
+      }),
   });
 };
 

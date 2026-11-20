@@ -496,6 +496,19 @@
     "maxLength": "名称不能超过 50 个字符。",
     "required": "名称为必填。"
   },
+  "cashDeviceCollection": {
+    "depositedAmount": {
+      "max": "实际存入金额不能超过 9,999,999。",
+      "required": "实际存入金额为必填。"
+    },
+    "reportedAmount": {
+      "max": "机台回报金额不能超过 9,999,999。",
+      "required": "机台回报金额为必填。"
+    }
+  },
+  "cashDeviceEventNote": {
+    "maxLength": "备注不能超过 500 个字符。"
+  },
   "cashDeviceModel": {
     "maxLength": "型号不能超过 100 个字符。"
   },
@@ -503,18 +516,13 @@
     "maxLength": "机台名称不能超过 50 个字符。",
     "required": "机台名称为必填。"
   },
+  "cashDeviceRefill": {
+    "count": {
+      "max": "每种面额数量不能超过 9,999。"
+    },
+    "required": "请输入至少一种面额的数量。"
+  },
   "cashDeviceVendor": {
     "maxLength": "厂商不能超过 100 个字符。"
-  },
-  "cashDeviceCollection": {
-    "depositedAmount": {
-      "required": "实际存入金额为必填。"
-    },
-    "reportedAmount": {
-      "required": "机台回报金额为必填。"
-    }
-  },
-  "cashDeviceRefill": {
-    "required": "请输入至少一种面额的数量。"
   }
 }

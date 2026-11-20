@@ -149,7 +149,9 @@ const CashDeviceCollectionDialog = ({
         valueIsNumericString
       />
       <TextField
+        error={!!errors.note}
         fullWidth
+        helperText={errors.note?.message}
         label={`${tCashDevices("events.note")} ${tCommon("optional")}`}
         {...register("note")}
       />

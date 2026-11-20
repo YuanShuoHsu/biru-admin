@@ -123,8 +123,9 @@ const CashDeviceRefillDialog = ({
               allowNegative={false}
               customInput={TextField}
               decimalScale={0}
-              error={!!errors.counts}
+              error={!!errors.counts?.message || !!errors.counts?.[index]}
               fullWidth
+              helperText={errors.counts?.[index]?.message}
               label={formatMoney(denomination, currency)}
               name={`counts.${index}`}
               onValueChange={({ value }) =>
@@ -148,7 +149,9 @@ const CashDeviceRefillDialog = ({
         })}
       </Typography>
       <TextField
+        error={!!errors.note}
         fullWidth
+        helperText={errors.note?.message}
         label={`${tCashDevices("events.note")} ${tCommon("optional")}`}
         {...register("note")}
       />

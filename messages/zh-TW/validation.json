@@ -496,6 +496,19 @@
     "maxLength": "名稱不能超過 50 個字元。",
     "required": "名稱為必填。"
   },
+  "cashDeviceCollection": {
+    "depositedAmount": {
+      "max": "實際存入金額不能超過 9,999,999。",
+      "required": "實際存入金額為必填。"
+    },
+    "reportedAmount": {
+      "max": "機台回報金額不能超過 9,999,999。",
+      "required": "機台回報金額為必填。"
+    }
+  },
+  "cashDeviceEventNote": {
+    "maxLength": "備註不能超過 500 個字元。"
+  },
   "cashDeviceModel": {
     "maxLength": "型號不能超過 100 個字元。"
   },
@@ -503,18 +516,13 @@
     "maxLength": "機台名稱不能超過 50 個字元。",
     "required": "機台名稱為必填。"
   },
+  "cashDeviceRefill": {
+    "count": {
+      "max": "每種面額數量不能超過 9,999。"
+    },
+    "required": "請輸入至少一種面額的數量。"
+  },
   "cashDeviceVendor": {
     "maxLength": "廠商不能超過 100 個字元。"
-  },
-  "cashDeviceCollection": {
-    "depositedAmount": {
-      "required": "實際存入金額為必填。"
-    },
-    "reportedAmount": {
-      "required": "機台回報金額為必填。"
-    }
-  },
-  "cashDeviceRefill": {
-    "required": "請輸入至少一種面額的數量。"
   }
 }

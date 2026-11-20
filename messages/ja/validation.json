@@ -496,6 +496,19 @@
     "maxLength": "名前は50文字以内で入力してください。",
     "required": "名前は必須です。"
   },
+  "cashDeviceCollection": {
+    "depositedAmount": {
+      "max": "実際の入金額は 9,999,999 以下で入力してください。",
+      "required": "実際の入金額は必須です。"
+    },
+    "reportedAmount": {
+      "max": "機器報告額は 9,999,999 以下で入力してください。",
+      "required": "機器報告額は必須です。"
+    }
+  },
+  "cashDeviceEventNote": {
+    "maxLength": "備考は 500 文字以内で入力してください。"
+  },
   "cashDeviceModel": {
     "maxLength": "型番は100文字以内で入力してください。"
   },
@@ -503,18 +516,13 @@
     "maxLength": "端末名は50文字以内で入力してください。",
     "required": "端末名は必須です。"
   },
+  "cashDeviceRefill": {
+    "count": {
+      "max": "各金種の枚数は 9,999 以下で入力してください。"
+    },
+    "required": "少なくとも1つの金種の枚数を入力してください。"
+  },
   "cashDeviceVendor": {
     "maxLength": "メーカーは100文字以内で入力してください。"
-  },
-  "cashDeviceCollection": {
-    "depositedAmount": {
-      "required": "実際の入金額は必須です。"
-    },
-    "reportedAmount": {
-      "required": "機器報告額は必須です。"
-    }
-  },
-  "cashDeviceRefill": {
-    "required": "少なくとも1つの金種の枚数を入力してください。"
   }
 }

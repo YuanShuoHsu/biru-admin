@@ -12,12 +12,19 @@ export const useCashDeviceRefillFormSchema = () => {
 
   return z.object({
     counts: z
-      .array(z.string())
+      .array(
+        z.string().refine((count) => Number(count) <= 9999, {
+          error: tValidation("cashDeviceRefill.count.max"),
+        }),
+      )
       .length(CASH_DENOMINATIONS.length)
       .refine((counts) => counts.some((count) => Number(count) > 0), {
         error: tValidation("cashDeviceRefill.required"),
       }),
-    note: z.string().trim(),
+    note: z
+      .string()
+      .trim()
+      .max(500, { error: tValidation("cashDeviceEventNote.maxLength") }),
   });
 };
 
