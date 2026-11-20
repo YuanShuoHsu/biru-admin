@@ -19,7 +19,7 @@ import { useRouter } from "@/i18n/navigation";
 
 import { apiClient } from "@/lib/api-client";
 
-import { TextField } from "@mui/material";
+import { Alert, TextField } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -68,6 +68,9 @@ const UpdatePointSettingDialog = ({
     name: ["accountingValuePerPoint", "amountPerPoint"],
   });
 
+  const disabling =
+    pointSetting.amountPerPoint != null && amountPerPoint === "";
+
   const onSubmitHandler = async (values: UpdatePointSettingForm) => {
     try {
       setDialog({ confirmLoading: true });
@@ -81,9 +84,10 @@ const UpdatePointSettingDialog = ({
         },
       });
 
-      enqueueSnackbar(tPointSettings("update.success"), {
-        variant: "success",
-      });
+      enqueueSnackbar(
+        tPointSettings(disabling ? "update.disabled" : "update.success"),
+        { variant: "success" },
+      );
 
       closeDialog();
 
@@ -123,6 +127,11 @@ const UpdatePointSettingDialog = ({
         value={amountPerPoint}
         valueIsNumericString
       />
+      {disabling && (
+        <Alert severity="warning">
+          {tPointSettings("update.disableWarning")}
+        </Alert>
+      )}
       <NumericFormat
         allowNegative={false}
         customInput={TextField}
