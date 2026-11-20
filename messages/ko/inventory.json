@@ -350,7 +350,8 @@
         "consume": "주문 소비",
         "restore": "주문 환불",
         "batch": "배치 생산",
-        "waste": "폐기"
+        "waste": "폐기",
+        "receive": "입고"
       }
     },
     "unitCost": {

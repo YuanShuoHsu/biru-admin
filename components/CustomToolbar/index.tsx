@@ -103,6 +103,8 @@ declare module "@mui/x-data-grid" {
     disableExport?: boolean;
     disableQuickFilter?: boolean;
     exportDateField?: string;
+    exportingCsv?: boolean;
+    onExportCsv?: (fileName: string) => void;
   }
 }
 
@@ -111,6 +113,8 @@ interface CustomToolbarProps {
   disableExport?: boolean;
   disableQuickFilter?: boolean;
   exportDateField?: string;
+  exportingCsv?: boolean;
+  onExportCsv?: (fileName: string) => void;
 }
 
 const CustomToolbar = ({
@@ -118,6 +122,8 @@ const CustomToolbar = ({
   disableExport = false,
   disableQuickFilter = false,
   exportDateField,
+  exportingCsv = false,
+  onExportCsv,
 }: CustomToolbarProps) => {
   const apiRef = useGridApiContext();
 
@@ -144,6 +150,17 @@ const CustomToolbar = ({
         )
       : toExportDate(),
   );
+
+  const handleExportCsv = (exportCsv: (fileName: string) => void) => {
+    setExportMenuTrigger(null);
+    exportCsv(
+      getExportFileName(
+        organizationName,
+        ...segments.map(({ label }) => label),
+        toExportDate(),
+      ),
+    );
+  };
 
   return (
     <Toolbar>
@@ -204,13 +221,22 @@ const CustomToolbar = ({
             >
               {tToolbar("export.print")}
             </ExportPrint>
-            <ExportCsv
-              onClick={() => setExportMenuTrigger(null)}
-              options={{ fileName: exportFileName }}
-              render={<MenuItem />}
-            >
-              {tToolbar("export.csv")}
-            </ExportCsv>
+            {onExportCsv ? (
+              <MenuItem
+                disabled={exportingCsv}
+                onClick={() => handleExportCsv(onExportCsv)}
+              >
+                {tToolbar("export.csv")}
+              </MenuItem>
+            ) : (
+              <ExportCsv
+                onClick={() => setExportMenuTrigger(null)}
+                options={{ fileName: exportFileName }}
+                render={<MenuItem />}
+              >
+                {tToolbar("export.csv")}
+              </ExportCsv>
+            )}
             {/* Available to MUI X Premium users */}
             {/* <ExportExcel render={<MenuItem />}>
           Download as Excel

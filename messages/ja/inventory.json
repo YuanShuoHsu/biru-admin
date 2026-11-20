@@ -350,7 +350,8 @@
         "consume": "注文消費",
         "restore": "返品戻し",
         "batch": "仕込み",
-        "waste": "廃棄"
+        "waste": "廃棄",
+        "receive": "入荷"
       }
     },
     "unitCost": {

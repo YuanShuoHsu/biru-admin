@@ -5,7 +5,6 @@ import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { enqueueSnackbar } from "notistack";
 import { useMemo, useState } from "react";
 import { NumericFormat } from "react-number-format";
 import useSWR from "swr";
@@ -33,6 +32,7 @@ import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
+import { useCsvDownload } from "@/hooks/useCsvDownload";
 import { useDataGridQueryState } from "@/hooks/useDataGridQueryState";
 import {
   useEnumFilterOperators,
@@ -84,7 +84,6 @@ import {
   getExportFileName,
 } from "@/utils/dataGrid";
 import { getIngredientEnumOptions } from "@/utils/enumOptions";
-import { getErrorMessage, toFetchError } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
@@ -862,19 +861,17 @@ const Reports = ({
     page,
     pageSize,
   });
-  const [exporting, setExporting] = useState(false);
 
   const { groupBy, month, since, tab, targetProfit, until } = view;
 
-  const navItem = useRoutes();
+  const { download, downloading } = useCsvDownload();
 
-  const locale = useLocale();
+  const navItem = useRoutes();
 
   const monthFormat = useMonthFormat();
 
   const searchParams = useSearchParams();
 
-  const tCommon = useTranslations("common");
   const tReports = useTranslations("reports");
 
   const updateQuery = useUpdateQuery();
@@ -914,45 +911,16 @@ const Reports = ({
     updateView({ until: value.format(DATE_FORMAT) });
   };
 
-  const handleExport = async () => {
-    try {
-      setExporting(true);
-
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_NEST_URL}${reportPath}/export.csv?${query}`,
-        { credentials: "include", headers: { "Accept-Language": locale } },
-      );
-
-      if (!response.ok) {
-        const { message } = response.headers
-          .get("content-type")
-          ?.includes("application/json")
-          ? await response.json().catch(() => ({}))
-          : {};
-
-        throw toFetchError({
-          message: message || tCommon("error.title"),
-          status: response.status,
-        });
-      }
-
-      const url = URL.createObjectURL(await response.blob());
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.download = `${getExportFileName(
+  const handleExport = () =>
+    download(
+      `${reportPath}/export.csv?${query}`,
+      getExportFileName(
         organization.name,
         tReports("label"),
         tReports(`tabs.${tab}`),
         isMonthly ? month : getExportDateRange([since, until]),
-      )}.csv`;
-      anchor.click();
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
-    } finally {
-      setExporting(false);
-    }
-  };
+      ),
+    );
 
   const isSales = tab === "sales";
   const isBreakEven = tab === "breakEven";
@@ -1075,7 +1043,7 @@ const Reports = ({
         )}
         <Button
           disabled={loading}
-          loading={exporting}
+          loading={downloading}
           onClick={handleExport}
           startIcon={<Download />}
           variant="contained"

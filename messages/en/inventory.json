@@ -350,7 +350,8 @@
         "consume": "Order usage",
         "restore": "Order refund",
         "batch": "Batch made",
-        "waste": "Waste"
+        "waste": "Waste",
+        "receive": "Delivery received"
       }
     },
     "unitCost": {

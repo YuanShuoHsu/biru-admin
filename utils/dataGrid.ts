@@ -15,6 +15,8 @@ import { sortDirectionValues } from "@/types/api";
 
 import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
+import { toFetchError } from "@/utils/errors";
+
 import type {
   GridFilterItem,
   GridFilterModel,
@@ -255,8 +257,7 @@ export const resolveGridSearchParams = <
   };
 };
 
-export const getDataGridSearchParams = (
-  paginationModel: GridPaginationModel,
+export const getDataGridFilterSortParams = (
   filterModel: GridFilterModel,
   sortModel: GridSortModel,
   enumOptions?: QuickFilterEnumOptions,
@@ -266,8 +267,6 @@ export const getDataGridSearchParams = (
     .trim();
 
   const params = new URLSearchParams({
-    limit: String(paginationModel.pageSize),
-    offset: String(paginationModel.page * paginationModel.pageSize),
     ...getFilterItemParams(filterModel.items[0]),
     ...(quickFilterValue && { quickFilterValue }),
     ...(sortModel[0]?.field && { sortBy: sortModel[0].field }),
@@ -280,6 +279,18 @@ export const getDataGridSearchParams = (
 
   return params;
 };
+
+export const getDataGridSearchParams = (
+  paginationModel: GridPaginationModel,
+  filterModel: GridFilterModel,
+  sortModel: GridSortModel,
+  enumOptions?: QuickFilterEnumOptions,
+) =>
+  new URLSearchParams([
+    ["limit", String(paginationModel.pageSize)],
+    ["offset", String(paginationModel.page * paginationModel.pageSize)],
+    ...getDataGridFilterSortParams(filterModel, sortModel, enumOptions),
+  ]);
 
 export const getSelectedRows = <Row extends { id: string }>(
   rows: Row[],
@@ -307,3 +318,34 @@ export const getExportFileName = (...parts: (string | null | undefined)[]) =>
     .filter(Boolean)
     .join("_")
     .replace(/[\\/:*?"<>|]/g, "-");
+
+export const downloadCsv = async (
+  path: string,
+  fileName: string,
+  { fallbackMessage, locale }: { fallbackMessage: string; locale: string },
+) => {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_NEST_URL}${path}`, {
+    credentials: "include",
+    headers: { "Accept-Language": locale },
+  });
+
+  if (!response.ok) {
+    const { message } = response.headers
+      .get("content-type")
+      ?.includes("application/json")
+      ? await response.json().catch(() => ({}))
+      : {};
+
+    throw toFetchError({
+      message: message || fallbackMessage,
+      status: response.status,
+    });
+  }
+
+  const url = URL.createObjectURL(await response.blob());
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = `${fileName}.csv`;
+  anchor.click();
+  URL.revokeObjectURL(url);
+};
