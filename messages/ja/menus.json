@@ -9,6 +9,9 @@
       "success": "メニュー {name} を削除しました",
       "title": "メニューを削除"
     },
+    "exportMenu": {
+      "title": "メニューを CSV でエクスポート"
+    },
     "label": "操作",
     "updateMenu": {
       "success": "メニュー {name} を更新しました",
