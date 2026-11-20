@@ -109,12 +109,13 @@ const IngredientTransactions = ({
     [tInventory],
   );
 
-  const exportSearchParams = getDataGridSearchParams(
+  const searchParams = getDataGridSearchParams(
     paginationModel,
     filterModel,
     sortModel,
     enumOptions,
   );
+  const exportSearchParams = new URLSearchParams(searchParams);
   exportSearchParams.delete("limit");
   exportSearchParams.delete("offset");
 
@@ -137,7 +138,7 @@ const IngredientTransactions = ({
     ],
     async () =>
       fetcher<InventoryTransactionListResponse>(
-        `/api/ingredients/${ingredientId}/inventory-transactions?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
+        `/api/ingredients/${ingredientId}/inventory-transactions?${searchParams}`,
       ),
     {
       fallbackData: { data: initialRows, total: initialRowCount },
@@ -278,7 +279,9 @@ const IngredientTransactions = ({
       slotProps={{
         ...DATA_GRID_PROPS.slotProps,
         toolbar: {
-          exportCsvPath: `/api/ingredients/${ingredientId}/inventory-transactions/export.csv?${exportSearchParams}`,
+          exportCsvPath:
+            ingredient &&
+            `/api/ingredients/${ingredient.id}/inventory-transactions/export.csv?${exportSearchParams}`,
           exportDateField: "createdAt",
         },
       }}

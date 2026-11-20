@@ -351,7 +351,7 @@
         "restore": "退單回補",
         "batch": "製作批次",
         "waste": "報廢",
-        "receive": "進貨驗收"
+        "receive": "進貨"
       }
     },
     "unitCost": {
