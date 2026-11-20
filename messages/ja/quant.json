@@ -563,6 +563,7 @@
     "webhook": {
       "actionsHint": "action は buy、sell、close が使えます。sell に amount を付けると一部だけ売却します",
       "copied": "コピーしました",
+      "copyFailed": "クリップボードにコピーできませんでした",
       "copy": "コピー",
       "regenerate": {
         "confirm": "古いトークンはすぐに無効になります。TradingView のアラートも更新してください。",

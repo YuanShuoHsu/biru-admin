@@ -563,6 +563,7 @@
     "webhook": {
       "actionsHint": "可用的 action：buy、sell、close；sell 可加 amount 只卖出部分",
       "copied": "已复制",
+      "copyFailed": "无法复制到剪贴板",
       "copy": "复制",
       "regenerate": {
         "confirm": "重新生成后，旧的 token 会立即失效，TradingView 的 alert 也要一并更新。",

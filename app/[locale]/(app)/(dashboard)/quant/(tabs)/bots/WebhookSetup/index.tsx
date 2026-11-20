@@ -32,8 +32,12 @@ export const CopyField = ({
   const tWebhook = useTranslations("quant.bots.webhook");
 
   const copy = async () => {
-    await navigator.clipboard.writeText(value);
-    enqueueSnackbar(tWebhook("copied"), { variant: "success" });
+    try {
+      await navigator.clipboard.writeText(value);
+      enqueueSnackbar(tWebhook("copied"), { variant: "success" });
+    } catch {
+      enqueueSnackbar(tWebhook("copyFailed"), { variant: "error" });
+    }
   };
 
   return (
