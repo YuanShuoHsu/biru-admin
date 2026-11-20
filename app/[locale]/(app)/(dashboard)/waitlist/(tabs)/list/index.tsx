@@ -60,7 +60,7 @@ const StyledIconButton = styled(IconButton, {
   visibility: visible ? "visible" : "hidden",
 }));
 
-const isEditable = ({ status }: WaitlistTicketListItem) =>
+const isEditable = ({ status }: Pick<WaitlistTicketListItem, "status">) =>
   status === "waiting" || status === "called";
 
 interface WaitlistTicketsProps {
@@ -174,25 +174,29 @@ const WaitlistTickets = ({
 
   const handleEditDialog = useCallback(
     async (ticket: WaitlistTicketListItem) => {
-      const groups = await fetcher<AdminWaitlistResponse>(
+      const waitlist = await fetcher<AdminWaitlistResponse>(
         `/api/organizations/${organizationSlug}/waitlist/tickets`,
-      ).then(
-        (waitlist) => waitlist.groups,
-        (error) => {
-          enqueueSnackbar(getErrorMessage(error), { variant: "error" });
-        },
-      );
-      if (!groups) return;
+      ).catch((error) => {
+        enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+      });
+      if (!waitlist) return;
+
+      const current = waitlist.tickets.find(({ id }) => id === ticket.id);
+
+      if (!current || !isEditable(current)) {
+        mutate();
+        return;
+      }
 
       setDialog({
         content: (
           <WaitlistTicketDialog
             maxPartySize={Math.max(
-              ...groups.map(({ maxPartySize }) => maxPartySize),
+              ...waitlist.groups.map(({ maxPartySize }) => maxPartySize),
             )}
             mutate={() => mutate()}
             organizationSlug={organizationSlug}
-            ticket={ticket}
+            ticket={current}
           />
         ),
         formId: WAITLIST_TICKET_FORM_ID,
