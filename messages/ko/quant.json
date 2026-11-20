@@ -563,6 +563,7 @@
     "webhook": {
       "actionsHint": "action은 buy, sell, close를 사용할 수 있습니다. sell에 amount를 추가하면 일부만 매도합니다",
       "copied": "복사했습니다",
+      "copyFailed": "클립보드에 복사하지 못했습니다",
       "copy": "복사",
       "regenerate": {
         "confirm": "이전 토큰은 즉시 무효가 됩니다. TradingView 알림도 함께 수정하세요.",

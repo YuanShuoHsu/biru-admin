@@ -563,6 +563,7 @@
     "webhook": {
       "actionsHint": "Actions: buy, sell, close. Add amount to sell to sell only part.",
       "copied": "Copied",
+      "copyFailed": "Couldn't copy to the clipboard",
       "copy": "Copy",
       "regenerate": {
         "confirm": "The old token stops working immediately; update your TradingView alerts too.",
