@@ -257,8 +257,7 @@ export const resolveGridSearchParams = <
   };
 };
 
-export const getDataGridSearchParams = (
-  paginationModel: GridPaginationModel,
+export const getDataGridFilterSortParams = (
   filterModel: GridFilterModel,
   sortModel: GridSortModel,
   enumOptions?: QuickFilterEnumOptions,
@@ -268,8 +267,6 @@ export const getDataGridSearchParams = (
     .trim();
 
   const params = new URLSearchParams({
-    limit: String(paginationModel.pageSize),
-    offset: String(paginationModel.page * paginationModel.pageSize),
     ...getFilterItemParams(filterModel.items[0]),
     ...(quickFilterValue && { quickFilterValue }),
     ...(sortModel[0]?.field && { sortBy: sortModel[0].field }),
@@ -282,6 +279,18 @@ export const getDataGridSearchParams = (
 
   return params;
 };
+
+export const getDataGridSearchParams = (
+  paginationModel: GridPaginationModel,
+  filterModel: GridFilterModel,
+  sortModel: GridSortModel,
+  enumOptions?: QuickFilterEnumOptions,
+) =>
+  new URLSearchParams([
+    ["limit", String(paginationModel.pageSize)],
+    ["offset", String(paginationModel.page * paginationModel.pageSize)],
+    ...getDataGridFilterSortParams(filterModel, sortModel, enumOptions),
+  ]);
 
 export const getSelectedRows = <Row extends { id: string }>(
   rows: Row[],

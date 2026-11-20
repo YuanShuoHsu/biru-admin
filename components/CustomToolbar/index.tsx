@@ -4,9 +4,8 @@
 
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { useSnackbar } from "notistack";
 import { type ReactNode, useState } from "react";
 
 import { useOrganizationName } from "@/hooks/organizations";
@@ -47,13 +46,11 @@ import {
 } from "@mui/x-data-grid";
 
 import {
-  downloadCsv,
   getExportDateRange,
   getExportFileName,
   getSoleValue,
   toExportDate,
 } from "@/utils/dataGrid";
-import { getErrorMessage } from "@/utils/errors";
 
 const StyledBox = styled(Box)({
   flex: 1,
@@ -105,8 +102,9 @@ declare module "@mui/x-data-grid" {
     action?: ReactNode;
     disableExport?: boolean;
     disableQuickFilter?: boolean;
-    exportCsvPath?: string;
     exportDateField?: string;
+    exportingCsv?: boolean;
+    onExportCsv?: (fileName: string) => void;
   }
 }
 
@@ -114,22 +112,20 @@ interface CustomToolbarProps {
   action?: ReactNode;
   disableExport?: boolean;
   disableQuickFilter?: boolean;
-  exportCsvPath?: string;
   exportDateField?: string;
+  exportingCsv?: boolean;
+  onExportCsv?: (fileName: string) => void;
 }
 
 const CustomToolbar = ({
   action,
   disableExport = false,
   disableQuickFilter = false,
-  exportCsvPath,
   exportDateField,
+  exportingCsv = false,
+  onExportCsv,
 }: CustomToolbarProps) => {
   const apiRef = useGridApiContext();
-
-  const locale = useLocale();
-
-  const { enqueueSnackbar } = useSnackbar();
 
   const segments = useRouteSegments();
 
@@ -137,7 +133,6 @@ const CustomToolbar = ({
     useSearchParams().get("organization"),
   );
 
-  const tCommon = useTranslations("common");
   const tToolbar = useTranslations("dataGrid.toolbar");
   const [exportMenuTrigger, setExportMenuTrigger] =
     useState<HTMLElement | null>(null);
@@ -156,22 +151,15 @@ const CustomToolbar = ({
       : toExportDate(),
   );
 
-  const handleServerExportCsv = async (path: string) => {
+  const handleExportCsv = (exportCsv: (fileName: string) => void) => {
     setExportMenuTrigger(null);
-
-    try {
-      await downloadCsv(
-        path,
-        getExportFileName(
-          organizationName,
-          ...segments.map(({ label }) => label),
-          toExportDate(),
-        ),
-        { fallbackMessage: tCommon("error.title"), locale },
-      );
-    } catch (error) {
-      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
-    }
+    exportCsv(
+      getExportFileName(
+        organizationName,
+        ...segments.map(({ label }) => label),
+        toExportDate(),
+      ),
+    );
   };
 
   return (
@@ -233,8 +221,11 @@ const CustomToolbar = ({
             >
               {tToolbar("export.print")}
             </ExportPrint>
-            {exportCsvPath ? (
-              <MenuItem onClick={() => handleServerExportCsv(exportCsvPath)}>
+            {onExportCsv ? (
+              <MenuItem
+                disabled={exportingCsv}
+                onClick={() => handleExportCsv(onExportCsv)}
+              >
                 {tToolbar("export.csv")}
               </MenuItem>
             ) : (

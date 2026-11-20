@@ -12,6 +12,7 @@ import { renderEmptyableCell } from "@/components/EmptyCell";
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
+import { useCsvDownload } from "@/hooks/useCsvDownload";
 import { useDataGridQueryState } from "@/hooks/useDataGridQueryState";
 import {
   useDateFilterOperators,
@@ -34,7 +35,10 @@ import type {
   InventoryTransactionSortField,
 } from "@/types/inventory";
 
-import { getDataGridSearchParams } from "@/utils/dataGrid";
+import {
+  getDataGridFilterSortParams,
+  getDataGridSearchParams,
+} from "@/utils/dataGrid";
 import { getInventoryTransactionEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 import { formatStockDelta, formatUnitPriceOf } from "@/utils/ingredients";
@@ -101,6 +105,8 @@ const IngredientTransactions = ({
 
   const apiRef = useGridApiRef();
 
+  const { download, downloading } = useCsvDownload();
+
   const tCommon = useTranslations("common");
   const tInventory = useTranslations("inventory");
 
@@ -108,16 +114,6 @@ const IngredientTransactions = ({
     () => getInventoryTransactionEnumOptions(tInventory),
     [tInventory],
   );
-
-  const searchParams = getDataGridSearchParams(
-    paginationModel,
-    filterModel,
-    sortModel,
-    enumOptions,
-  );
-  const exportSearchParams = new URLSearchParams(searchParams);
-  exportSearchParams.delete("limit");
-  exportSearchParams.delete("offset");
 
   const {
     data: { data: rows, total: rowCount } = {
@@ -138,7 +134,7 @@ const IngredientTransactions = ({
     ],
     async () =>
       fetcher<InventoryTransactionListResponse>(
-        `/api/ingredients/${ingredientId}/inventory-transactions?${searchParams}`,
+        `/api/ingredients/${ingredientId}/inventory-transactions?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
       ),
     {
       fallbackData: { data: initialRows, total: initialRowCount },
@@ -279,10 +275,15 @@ const IngredientTransactions = ({
       slotProps={{
         ...DATA_GRID_PROPS.slotProps,
         toolbar: {
-          exportCsvPath:
-            ingredient &&
-            `/api/ingredients/${ingredient.id}/inventory-transactions/export.csv?${exportSearchParams}`,
           exportDateField: "createdAt",
+          exportingCsv: downloading,
+          onExportCsv:
+            ingredient &&
+            ((fileName) =>
+              download(
+                `/api/ingredients/${ingredient.id}/inventory-transactions/export.csv?${getDataGridFilterSortParams(filterModel, sortModel, enumOptions)}`,
+                fileName,
+              )),
         },
       }}
     />
