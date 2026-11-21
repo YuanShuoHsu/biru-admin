@@ -3394,23 +3394,6 @@ export interface paths {
     patch: operations["MenusController_updateMenu"];
     trace?: never;
   };
-  "/api/menus/{menuId}/export.csv": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** 匯出點餐菜單 CSV */
-    get: operations["MenusController_exportMenu"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   "/api/menus/{menuId}/menu-sections": {
     parameters: {
       query?: never;
@@ -23217,34 +23200,6 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["MenuResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  MenusController_exportMenu: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        menuId: unknown;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "text/csv": string;
         };
       };
       /** @description Internal server error */

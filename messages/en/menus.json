@@ -9,9 +9,6 @@
       "success": "Menu {name} deleted",
       "title": "Delete menu"
     },
-    "exportMenu": {
-      "title": "Export menu CSV"
-    },
     "label": "Actions",
     "updateMenu": {
       "success": "Menu {name} updated",
