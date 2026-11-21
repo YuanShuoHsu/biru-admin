@@ -25,7 +25,6 @@ import { arrayMove } from "@dnd-kit/helpers";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
 import { isSortableOperation } from "@dnd-kit/react/sortable";
 
-import { useOrganizationName } from "@/hooks/organizations";
 import { useDataGridQueryState } from "@/hooks/useDataGridQueryState";
 import {
   useDateFilterOperators,
@@ -39,7 +38,6 @@ import {
   Add,
   Cancel,
   Delete,
-  Download,
   Edit,
   ListAlt,
   Save,
@@ -74,13 +72,7 @@ import type {
   MenuSectionSortField,
 } from "@/types/menus";
 
-import {
-  getDataGridSearchParams,
-  getExportFileName,
-  isFilteredOrSorted,
-  toExportDate,
-} from "@/utils/dataGrid";
-import { getErrorMessage, toFetchError } from "@/utils/errors";
+import { getDataGridSearchParams, isFilteredOrSorted } from "@/utils/dataGrid";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
@@ -171,7 +163,6 @@ const MenusMenuId = ({
   const router = useRouter();
   const searchParams = useSearchParams();
   const organization = searchParams.get("organization");
-  const organizationName = useOrganizationName(organization);
 
   const tCommon = useTranslations("common");
   const tMenus = useTranslations("menus");
@@ -465,47 +456,6 @@ const MenusMenuId = ({
     setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
   }, [apiRef, clearRowSelection]);
 
-  const [exporting, setExporting] = useState(false);
-
-  const handleExport = async () => {
-    try {
-      setExporting(true);
-
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_NEST_URL}/api/menus/${menuId}/export.csv`,
-        { credentials: "include", headers: { "Accept-Language": locale } },
-      );
-
-      if (!response.ok) {
-        const { message } = response.headers
-          .get("content-type")
-          ?.includes("application/json")
-          ? await response.json().catch(() => ({}))
-          : {};
-
-        throw toFetchError({
-          message: message || tCommon("error.title"),
-          status: response.status,
-        });
-      }
-
-      const url = URL.createObjectURL(await response.blob());
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.download = `${getExportFileName(
-        organizationName,
-        localize(menu?.name, locale),
-        toExportDate(),
-      )}.csv`;
-      anchor.click();
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
-    } finally {
-      setExporting(false);
-    }
-  };
-
   const columns = useMemo<GridColDef[]>(
     () => [
       ...(isReorderMode
@@ -669,16 +619,6 @@ const MenusMenuId = ({
                 {tMenus("sections.actions.batchDeleteSection.title")}
               </Button>
             )}
-            <Button
-              disabled={!menuId}
-              loading={exporting}
-              onClick={handleExport}
-              size="small"
-              startIcon={<Download />}
-              variant="outlined"
-            >
-              {tMenus("actions.exportMenu.title")}
-            </Button>
           </>
         )}
         {isReorderMode && (
