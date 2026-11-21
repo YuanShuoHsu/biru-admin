@@ -18,23 +18,22 @@
 
 ![碧露 Logo](logo.svg)
 
-| 項目   | 內容                                                                     |
-| ------ | ------------------------------------------------------------------------ |
-| 原稿   | [logo.jpg](logo.jpg)（1254×1254 JPG）                                    |
-| 向量檔 | [logo.svg](logo.svg)／[logo.pdf](logo.pdf)：貓與杯子加 Biru Coffee 字樣  |
-| 主圖   | [logo-mark.svg](logo-mark.svg)／[logo-mark.pdf](logo-mark.pdf)：貓與杯子 |
-| 文字標 | [wordmark.svg](wordmark.svg)／[wordmark.pdf](wordmark.pdf)：Biru Coffee  |
-| 元素   | 咖啡、啤酒、貓（舉例：貓貓坐在啤酒奶泡上，尾巴是咖啡杯手柄）             |
-| 風格   | 看起來簡約舒適，有點日系的風格，但還是要有咖啡廳的感覺                   |
+| 項目     | 內容                                                                                                 |
+| -------- | ---------------------------------------------------------------------------------------------------- |
+| 原稿     | [logo.jpg](logo.jpg)（1254×1254 JPG）                                                                |
+| 向量檔   | [logo.svg](logo.svg)／[logo.pdf](logo.pdf)：貓與杯子加 Biru Coffee 字樣                              |
+| 主圖     | [logo-mark.svg](logo-mark.svg)／[logo-mark.pdf](logo-mark.pdf)：貓與杯子                             |
+| 文字標   | [wordmark.svg](wordmark.svg)／[wordmark.pdf](wordmark.pdf)：Biru Coffee                              |
+| 單色版   | [logo-mono.svg](logo-mono.svg)／[logo-mono.pdf](logo-mono.pdf)：只用藍灰一色，餐具、紙杯等單色印刷用 |
+| App 圖示 | [logo-icon.svg](logo-icon.svg)：藍灰圓角方底配奶泡白貓杯，給 favicon、PWA、社群頭像用                |
+| 元素     | 咖啡、啤酒、貓（舉例：貓貓坐在啤酒奶泡上，尾巴是咖啡杯手柄）                                         |
+| 風格     | 看起來簡約舒適，有點日系的風格，但還是要有咖啡廳的感覺                                               |
 
 向量檔照原稿描製，對照見 [previews/logo-vector.png](previews/logo-vector.png)。SVG 給網頁與系統用；PDF 給印刷用，全為向量、文字已轉外框、色彩為 CMYK，可任意縮放。
 
-待製作：
+彩色版的貓身與奶泡填滿奶泡白，只有杯子把手內側透明，放在任何底色上都一樣，見 [previews/logo-backgrounds.png](previews/logo-backgrounds.png)。
 
-- 單色版（餐具、紙杯等單色印刷用）
-- App 圖示版
-
-原稿上的單色小圖與 App 圖示是另外簡化重畫的，要重新設計，不能從彩色版直接轉色。
+單色版與 App 圖示照原稿上的小圖簡化：虎斑整理成色塊與幾條斑紋，單色版的淺色部分挖空、不上墨。見 [previews/logo-variants.png](previews/logo-variants.png)。App 圖示在 32px 只看得出輪廓，做 favicon 時可能要再簡化；前台與後台的 favicon、PWA 圖示之後再替換。
 
 ### 配色
 
