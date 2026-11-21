@@ -65,7 +65,7 @@
   },
   "updatedAt": "更新时间",
   "url": {
-    "helperText": "站内路径以 / 开头，外部网址需为 https://",
+    "helperText": "站内路径以 / 开头且不含语言（例如 /order），外部网址需为 https://",
     "label": "点击链接"
   }
 }

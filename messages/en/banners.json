@@ -65,7 +65,7 @@
   },
   "updatedAt": "Updated",
   "url": {
-    "helperText": "Site paths start with /; external links must use https://",
+    "helperText": "Site paths start with / and leave out the language (e.g. /order); external links must use https://",
     "label": "Link"
   }
 }

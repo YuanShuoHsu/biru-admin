@@ -365,7 +365,8 @@
     "notSelected": "請選擇您的內容量單位。"
   },
   "url": {
-    "invalid": "網址格式無效。"
+    "invalid": "網址格式無效。",
+    "localePrefix": "站內路徑不可包含語系，例如請填 /order 而不是 /zh-TW/order。"
   },
   "validFrom": {
     "order": "截止日期不可早於生效日期。",

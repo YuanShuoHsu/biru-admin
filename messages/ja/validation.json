@@ -365,7 +365,8 @@
     "notSelected": "内容量の単位を選択してください。"
   },
   "url": {
-    "invalid": "URLの形式が無効です。"
+    "invalid": "URLの形式が無効です。",
+    "localePrefix": "サイト内パスに言語を含めないでください（/ja/order ではなく /order）。"
   },
   "validFrom": {
     "order": "終了日は開始日より前にできません。",
