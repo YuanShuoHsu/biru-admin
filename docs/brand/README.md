@@ -16,31 +16,49 @@
 
 ## Logo
 
-![碧露 Logo](logo.jpg)
+![碧露 Logo](logo.svg)
 
 | 項目   | 內容                                                                     |
 | ------ | ------------------------------------------------------------------------ |
-| 檔案   | [logo.jpg](logo.jpg)（1254×1254 JPG，目前唯一的原稿）                    |
-| 主圖   | [logo-mark.jpg](logo-mark.jpg)（從原稿裁出貓與杯子，菜單頁首用）         |
+| 原稿   | [logo.jpg](logo.jpg)（1254×1254 JPG）                                    |
+| 向量檔 | [logo.svg](logo.svg)／[logo.pdf](logo.pdf)：貓與杯子加 Biru Coffee 字樣  |
+| 主圖   | [logo-mark.svg](logo-mark.svg)／[logo-mark.pdf](logo-mark.pdf)：貓與杯子 |
+| 文字標 | [wordmark.svg](wordmark.svg)／[wordmark.pdf](wordmark.pdf)：Biru Coffee  |
 | 元素   | 咖啡、啤酒、貓（舉例：貓貓坐在啤酒奶泡上，尾巴是咖啡杯手柄）             |
 | 風格   | 看起來簡約舒適，有點日系的風格，但還是要有咖啡廳的感覺                   |
-| 向量檔 | （待製作，給廠商印刷用，見[餐具設計](../tableware.md#給廠商的檔案清單)） |
+
+向量檔照原稿描製，對照見 [previews/logo-vector.png](previews/logo-vector.png)。SVG 給網頁與系統用；PDF 給印刷用，全為向量、文字已轉外框、色彩為 CMYK，可任意縮放。
+
+彩色版的貓身與奶泡填滿奶泡白，只有杯子把手內側透明，放在任何底色上都一樣，見 [previews/logo-backgrounds.png](previews/logo-backgrounds.png)。
+
+待製作（要重新設計，不能從彩色版直接轉色或描圖）：
+
+- 單色版：餐具、紙杯等單色印刷用，參考 [logo.jpg](logo.jpg) 左下的小圖
+- App 圖示：favicon、PWA、社群頭像用，參考 [logo.jpg](logo.jpg) 右下的小圖
 
 ### 配色
 
-從 Logo 原稿取色，JPG 取色有誤差，製作向量檔時再定正式色號。
+向量檔使用以下色彩。CMYK 以 FOGRA39（Coated）相對比色換算，正式色號以印刷廠的色彩描述檔為準。
 
-| 名稱   | 色碼    | 用途             |
-| ------ | ------- | ---------------- |
-| 藍灰   | #617B88 | 主色、線條、文字 |
-| 奶泡白 | #F0E7D8 | 奶泡、底色       |
-| 琥珀   | #CE9B5C | 咖啡、啤酒、點綴 |
-| 米白   | #FCF7F1 | 背景             |
+貓身上的白色印奶泡白，不留紙白。
+
+| 名稱     | RGB     | CMYK            | 用途                   |
+| -------- | ------- | --------------- | ---------------------- |
+| 藍灰     | #607A87 | C62 M36 Y31 K25 | 主色、輪廓、杯身、文字 |
+| 奶泡白   | #FAF7F1 | C4 M3 Y7 K0     | 奶泡、貓身白色、背景   |
+| 拿鐵琥珀 | #CE9C61 | C17 M40 Y67 K7  | 咖啡、點綴             |
+| 虎斑棕   | #B29D86 | C33 M36 Y47 K6  | 貓毛                   |
+| 斑紋深棕 | #6A645E | C58 M52 Y55 K30 | 虎斑                   |
+| 斑紋深灰 | #504D4C | C67 M60 Y58 K45 | 虎斑暗部               |
+| 耳朵粉   | #E2C6BA | C13 M26 Y27 K0  | 耳朵                   |
+| 瞳孔青   | #7F9A98 | C53 M27 Y36 K10 | 眼睛                   |
+| 眼鼻深藍 | #38444A | C80 M57 Y50 K55 | 瞳孔、鼻子、美人瘤     |
+| 嘴巴粉   | #C9A39A | C22 M38 Y35 K5  | 嘴巴                   |
+| 高光白   | #FFFFFF | C0 M0 Y0 K0     | 眼睛高光               |
 
 ## 紙本菜單
 
 [menu.html](menu.html) 是 A4 紙本菜單的版型，用瀏覽器開啟後列印或另存 PDF。
 目前的樣子見 [previews/menu.png](previews/menu.png)。
 
-品項、價格與說明以系統菜單為準：列印前從後台「匯出菜單 CSV」取得最新內容，再更新這個檔案。
-檔案中目前的品項與價格取自 [recipes.md](../recipes.md)。
+品項、價格與說明以系統菜單為準。正式的紙本菜單改由系統依這個版型直接產生 PDF（YuanShuoHsu/biru-api#569），這個檔案只是版型稿，目前的品項與價格取自 [recipes.md](../recipes.md)。
