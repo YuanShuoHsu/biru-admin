@@ -508,6 +508,13 @@ const Banners = ({
           localize(alt, locale),
       },
       {
+        field: "url",
+        filterable: false,
+        headerName: tBanners("url.label"),
+        renderCell: renderEmptyableCell,
+        sortable: false,
+      },
+      {
         field: "isActive",
         filterOperators: booleanFilterOperators,
         headerName: tBanners("isActive.label"),
