@@ -365,7 +365,8 @@
     "notSelected": "Please select your content unit."
   },
   "url": {
-    "invalid": "URL format is invalid."
+    "invalid": "URL format is invalid.",
+    "localePrefix": "Leave the language out of site paths: use /order, not /en/order."
   },
   "validFrom": {
     "order": "The end date can't be before the start date.",

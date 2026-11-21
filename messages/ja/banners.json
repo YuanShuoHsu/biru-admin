@@ -65,7 +65,7 @@
   },
   "updatedAt": "更新日時",
   "url": {
-    "helperText": "サイト内パスは / で始め、外部 URL は https:// にしてください",
+    "helperText": "サイト内パスは / で始めて言語を含めず（例：/order）、外部 URL は https:// にしてください",
     "label": "リンク先"
   }
 }

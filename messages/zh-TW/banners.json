@@ -65,7 +65,7 @@
   },
   "updatedAt": "更新時間",
   "url": {
-    "helperText": "站內路徑以 / 開頭，外部網址需為 https://",
+    "helperText": "站內路徑以 / 開頭且不含語系（例如 /order），外部網址需為 https://",
     "label": "點擊連結"
   }
 }

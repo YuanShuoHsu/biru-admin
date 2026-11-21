@@ -1,7 +1,13 @@
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-const BANNER_URL_PATTERN = /^(?:\/(?![/\\])|https:\/\/[^\s\\/])[^\s\\]*$/;
+import { routing } from "@/i18n/routing";
+
+const BANNER_URL_PATTERN = /^(?:\/(?![/\\])|https:\/\/[^\s\\/])[^\s\\]*$/i;
+const LOCALE_PREFIX_PATTERN = new RegExp(
+  `^/(?:${routing.locales.join("|")})(?:[/?#]|$)`,
+  "i",
+);
 
 export const useBannerFormSchema = () => {
   const tValidation = useTranslations("validation");
@@ -34,6 +40,9 @@ export const useBannerFormSchema = () => {
         .trim()
         .refine((value) => !value || BANNER_URL_PATTERN.test(value), {
           error: tValidation("url.invalid"),
+        })
+        .refine((value) => !LOCALE_PREFIX_PATTERN.test(value), {
+          error: tValidation("url.localePrefix"),
         }),
     })
     .refine(

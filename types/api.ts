@@ -7896,7 +7896,7 @@ export interface components {
        */
       alt?: components["schemas"]["LocalizedTextDto"] | null;
       /**
-       * @description 點擊後前往的站內路徑（/ 開頭）或 https 網址
+       * @description 點擊後前往的站內路徑（/ 開頭、不含語系前綴）或 https 網址
        * @example /order
        */
       url?: string | null;
@@ -7942,7 +7942,7 @@ export interface components {
        */
       alt?: components["schemas"]["LocalizedTextDto"] | null;
       /**
-       * @description 點擊後前往的站內路徑（/ 開頭）或 https 網址
+       * @description 點擊後前往的站內路徑（/ 開頭、不含語系前綴）或 https 網址
        * @example /order
        */
       url?: string | null;
