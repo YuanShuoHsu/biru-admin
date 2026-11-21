@@ -42,6 +42,7 @@ import PrintJobChip from "@/components/PrintJobChip";
 import SelectAllTransferList, {
   type SelectAllTransferListAction,
 } from "@/components/SelectAllTransferList";
+import SpecialHoursAffectedAlert from "@/components/SpecialHoursAffectedAlert";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -425,11 +426,17 @@ const OrdersBoard = ({
     );
 
   return (
-    <SelectAllTransferList
-      actionsAlign="start"
-      columns={columns}
-      transferActions={transferActions}
-    />
+    <>
+      <SpecialHoursAffectedAlert
+        onProcessed={() => mutate()}
+        organizationSlug={organizationSlug}
+      />
+      <SelectAllTransferList
+        actionsAlign="start"
+        columns={columns}
+        transferActions={transferActions}
+      />
+    </>
   );
 };
 

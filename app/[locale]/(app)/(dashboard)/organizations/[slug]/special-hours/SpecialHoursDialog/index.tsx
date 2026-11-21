@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { type BaseSyntheticEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { useSWRConfig } from "swr";
 
 import {
   type SpecialHoursForm,
@@ -15,6 +16,7 @@ import {
 
 import FormBox from "@/components/FormBox";
 import OpeningHoursField from "@/components/OpeningHoursField";
+import { useSpecialHoursAffectedPreview } from "@/components/SpecialHoursAffectedAlert";
 
 import { PLATFORM_TIMEZONE } from "@/constants/timezone";
 
@@ -33,6 +35,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type {
   CreateSpecialHoursDto,
   SpecialHours,
+  SpecialHoursAffected,
 } from "@/types/organizations";
 
 import { getErrorMessage } from "@/utils/errors";
@@ -56,6 +59,11 @@ const SpecialHoursDialog = ({
   specialHours,
 }: SpecialHoursDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
+
+  const { mutate: mutateKey } = useSWRConfig();
+
+  const { affectedUrl, openPreview } =
+    useSpecialHoursAffectedPreview(organizationSlug);
 
   const tCommon = useTranslations("common");
   const tOrganizations = useTranslations("organizations");
@@ -111,9 +119,16 @@ const SpecialHoursDialog = ({
         { variant: "success" },
       );
 
-      closeDialog();
+      const [, affected] = await Promise.all([
+        mutate(),
+        mutateKey<SpecialHoursAffected>(affectedUrl),
+      ]);
 
-      await mutate();
+      if (
+        !affected ||
+        !openPreview(affected, () => void mutateKey(affectedUrl))
+      )
+        closeDialog();
     } catch (error) {
       enqueueSnackbar(getErrorMessage(error), { variant: "error" });
 

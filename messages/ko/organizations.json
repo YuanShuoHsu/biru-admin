@@ -428,6 +428,43 @@
         "title": "특별 영업일 수정"
       }
     },
+    "affected": {
+      "details": "자세히 보기",
+      "manualRefundOrders": {
+        "hint": "신용카드 또는 Apple Pay 이외의 방법으로 결제된 주문은 자동 처리되지 않습니다. 고객에게 별도로 환불해 주세요.",
+        "label": "별도 환불이 필요한 주문 ({count}건)"
+      },
+      "process": {
+        "confirm": "다음 항목을 취소하고 알리시겠습니까? 처리 후에는 되돌릴 수 없습니다.",
+        "manualRefund": "별도 환불이 필요한 주문 {count}건은 처리되지 않습니다",
+        "refund": "결제된 주문 {count}건을 ECPay로 전액 환불하고 고객에게 이메일로 알립니다",
+        "tickets": "대기 번호 {count}개를 취소하고 고객에게 이메일로 알립니다",
+        "title": "취소 및 알림",
+        "unpaid": "미결제 주문 {count}건을 취소합니다"
+      },
+      "refundOrders": {
+        "label": "ECPay로 환불 가능한 주문 ({count}건)"
+      },
+      "results": {
+        "retry": "실패한 항목은 그대로 유지됩니다. \"취소 및 알림\"을 다시 누를 수 있습니다.",
+        "status": {
+          "cancelled": "취소됨",
+          "failed": "실패",
+          "manualRefundRequired": "별도 환불 필요",
+          "refundPending": "환불 처리 중(확인 후 이메일 발송)",
+          "refunded": "환불됨",
+          "skipped": "더 이상 영향 없음, 처리 안 함"
+        },
+        "title": "처리 결과"
+      },
+      "title": "특별 영업일의 영향을 받는 항목이 있습니다",
+      "unpaidOrders": {
+        "label": "미결제 주문 ({count}건)"
+      },
+      "waitlistTickets": {
+        "label": "오늘의 대기 번호 ({count}개)"
+      }
+    },
     "closed": {
       "label": "종일 휴무",
       "value": "휴무"

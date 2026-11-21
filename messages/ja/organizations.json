@@ -428,6 +428,43 @@
         "title": "特別営業日を編集"
       }
     },
+    "affected": {
+      "details": "詳細を見る",
+      "manualRefundOrders": {
+        "hint": "クレジットカード・Apple Pay 以外で支払われた注文は自動処理されません。別途お客様に返金してください。",
+        "label": "別途返金が必要な注文（{count} 件）"
+      },
+      "process": {
+        "confirm": "以下の項目をキャンセルして通知しますか？この操作は元に戻せません。",
+        "manualRefund": "別途返金が必要な注文 {count} 件は処理されません",
+        "refund": "支払い済みの注文 {count} 件を ECPay で全額返金し、お客様にメールで通知します",
+        "tickets": "順番待ち番号 {count} 件をキャンセルし、お客様にメールで通知します",
+        "title": "キャンセルして通知",
+        "unpaid": "未払いの注文 {count} 件をキャンセルします"
+      },
+      "refundOrders": {
+        "label": "ECPay で返金できる注文（{count} 件）"
+      },
+      "results": {
+        "retry": "失敗した項目はそのままです。もう一度「キャンセルして通知」を押せます。",
+        "status": {
+          "cancelled": "キャンセル済み",
+          "failed": "失敗",
+          "manualRefundRequired": "別途返金が必要",
+          "refundPending": "返金処理中（確認後にメール送信）",
+          "refunded": "返金済み",
+          "skipped": "影響がなくなったため未処理"
+        },
+        "title": "処理結果"
+      },
+      "title": "特別営業日の影響を受ける項目があります",
+      "unpaidOrders": {
+        "label": "未払いの注文（{count} 件）"
+      },
+      "waitlistTickets": {
+        "label": "本日の順番待ち番号（{count} 件）"
+      }
+    },
     "closed": {
       "label": "終日休業",
       "value": "休業"

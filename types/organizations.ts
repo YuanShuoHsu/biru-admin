@@ -21,4 +21,14 @@ export type OrganizationStats =
   components["schemas"]["OrganizationStatsResponseDto"];
 export type Printer = components["schemas"]["PrinterDto"];
 export type PrinterCredentials = components["schemas"]["PrinterCredentialsDto"];
+export type ProcessSpecialHoursAffectedDto =
+  components["schemas"]["ProcessSpecialHoursAffectedDto"];
 export type SpecialHours = components["schemas"]["SpecialHoursDto"];
+export type SpecialHoursAffected =
+  components["schemas"]["SpecialHoursAffectedDto"];
+export type SpecialHoursAffectedOrder =
+  components["schemas"]["SpecialHoursAffectedOrderDto"];
+export type SpecialHoursProcessResponse =
+  components["schemas"]["SpecialHoursProcessResponseDto"];
+export type SpecialHoursProcessStatus =
+  components["schemas"]["SpecialHoursProcessStatus"];

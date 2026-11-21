@@ -6,11 +6,12 @@ import utc from "dayjs/plugin/utc";
 import { useFormatter, useTranslations } from "next-intl";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useMemo } from "react";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 
 import SpecialHoursDialog from "./SpecialHoursDialog";
 
 import DataGrid from "@/components/DataGrid";
+import SpecialHoursAffectedAlert from "@/components/SpecialHoursAffectedAlert";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { PLATFORM_TIMEZONE } from "@/constants/timezone";
@@ -67,10 +68,12 @@ const OrganizationsSlugSpecialHours = ({
 
   const specialHoursUrl = `/api/organizations/${organizationSlug}/special-hours`;
 
+  const { mutate: mutateKey } = useSWRConfig();
+
   const {
     data: rows = [],
     isValidating,
-    mutate,
+    mutate: mutateRows,
   } = useSWR<SpecialHours[]>(specialHoursUrl, {
     onSuccess: () => {
       setTimeout(() => {
@@ -78,6 +81,11 @@ const OrganizationsSlugSpecialHours = ({
       }, 0);
     },
   });
+
+  const mutate = useCallback(
+    () => Promise.all([mutateRows(), mutateKey(`${specialHoursUrl}/affected`)]),
+    [mutateKey, mutateRows, specialHoursUrl],
+  );
 
   const formatPeriod = useCallback(
     ({
@@ -97,7 +105,7 @@ const OrganizationsSlugSpecialHours = ({
       setDialog({
         content: (
           <SpecialHoursDialog
-            mutate={mutate}
+            mutate={mutateRows}
             organizationSlug={organizationSlug}
             specialHours={specialHours}
           />
@@ -108,7 +116,7 @@ const OrganizationsSlugSpecialHours = ({
           specialHours ? "actions.update.title" : "actions.create.title",
         ),
       }),
-    [mutate, organizationSlug, setDialog, tSpecialHours],
+    [mutateRows, organizationSlug, setDialog, tSpecialHours],
   );
 
   const handleRemove = useCallback(
@@ -223,6 +231,7 @@ const OrganizationsSlugSpecialHours = ({
           {tSpecialHours("actions.create.title")}
         </Button>
       </ToolbarStack>
+      <SpecialHoursAffectedAlert organizationSlug={organizationSlug} />
       <DataGrid
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
