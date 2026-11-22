@@ -56,7 +56,7 @@ Biru 由三個部分組成：顧客使用的點餐網站、門市與總部使用
 | 出餐等候時間   | 依目前訂單量估算出餐時間，常態顯示給顧客。                                                | 已完成                                                               |
 | 共享點餐       | 多人以各自的手機加入同一張訂單一起點餐，由其中一人結帳付款。                              | 開發中（[#392](https://github.com/YuanShuoHsu/biru-api/issues/392)） |
 | 站內付款       | 信用卡、Apple Pay 與 TWQR 直接在點餐頁面內完成付款，不必跳轉到金流頁面。                  | 開發中（[#480](https://github.com/YuanShuoHsu/biru-api/issues/480)） |
-| 寄杯           | 會員一次購買多杯、分次領取，全品牌門市皆可領取。                                          | 開發中（[#459](https://github.com/YuanShuoHsu/biru-api/issues/459)） |
+| 寄杯           | 會員一次購買多杯、分次領取，直營門市皆可領取。                                            | 開發中（[#459](https://github.com/YuanShuoHsu/biru-api/issues/459)） |
 | 電子餐券       | 會員預先購買儲值金額、結帳時分次折抵，直營門市皆可使用。                                  | 開發中（[#572](https://github.com/YuanShuoHsu/biru-api/issues/572)） |
 | 推播通知       | 餐點完成與候位叫號時以瀏覽器推播通知顧客，門市人員也會收到營運通知。                      | 開發中（[#148](https://github.com/YuanShuoHsu/biru-api/issues/148)） |
 | 餐點標示       | 菜單標示咖啡因、整杯糖量與熱量、茶與咖啡原料產地及過敏原。                                | 開發中（[#445](https://github.com/YuanShuoHsu/biru-api/issues/445)） |
