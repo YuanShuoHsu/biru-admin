@@ -1,11 +1,11 @@
 import type { MetadataRoute } from "next";
 
-const APP_NAME = "Biru Coffee";
+const APP_NAME = "Biru Coffee Admin";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Biru Coffee",
-    short_name: "Biru",
+    name: APP_NAME,
+    short_name: APP_NAME,
     description: APP_NAME,
     start_url: "/",
     scope: "/",
