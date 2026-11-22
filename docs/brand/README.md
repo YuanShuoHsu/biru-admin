@@ -70,11 +70,11 @@
 
 系統目前使用的名稱與標語：
 
-| 項目                     | 內容                                                                  | 位置                                                                                          |
-| ------------------------ | --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| 網站名稱、信件寄件人名稱 | Biru Coffee                                                           | biru、biru-admin 的 `messages/*/metadata.json`；biru-api 的 `src/common/constants/product.ts` |
-| PWA 名稱                 | Biru Coffee（主畫面上的短名稱為 Biru）                                | biru、biru-admin 的 `app/manifest.ts`                                                         |
-| 標語                     | 為你的每一天，沖煮一杯好咖啡。（英文：Coffee, crafted for your day.） | biru 的 `messages/*/home.json`、`messages/*/metadata.json`                                    |
+| 項目                     | 內容                                                                      | 位置                                                                                          |
+| ------------------------ | ------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| 網站名稱、信件寄件人名稱 | Biru Coffee                                                               | biru、biru-admin 的 `messages/*/metadata.json`；biru-api 的 `src/common/constants/product.ts` |
+| PWA 名稱                 | 前台 Biru Coffee；後台 Biru Coffee Admin（主畫面上的短名稱為 Biru Admin） | biru、biru-admin 的 `app/manifest.ts`（YuanShuoHsu/biru#203、YuanShuoHsu/biru-admin#363）     |
+| 標語                     | 為你的每一天，沖煮一杯好咖啡。（英文：Coffee, crafted for your day.）     | biru 的 `messages/*/home.json`、`messages/*/metadata.json`                                    |
 
 ### 版本選用
 
