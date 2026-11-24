@@ -38,7 +38,8 @@
 
 ### 配色
 
-向量檔使用以下色彩。CMYK 以 FOGRA39（Coated）相對比色換算，正式色號以印刷廠的色彩描述檔為準；印刷條件見[印刷規格](#印刷規格)。
+向量檔使用以下色彩。CMYK 以 FOGRA39（Coated）相對比色換算，正式色號以印刷廠的色彩描述檔為準。
+印刷條件見[印刷規格](#印刷規格)。
 
 貓身上的白色印奶泡白，不留紙白。
 
@@ -116,13 +117,13 @@ Logo 四周至少保留 Logo 寬度的十分之一，不放文字、圖片或裁
 
 ### 印刷規格
 
-系統產生的紙本 PDF 都依這個規格輸出，交給印刷廠的檔案也以此為準。
+系統產生的紙本 PDF（YuanShuoHsu/biru-api#569、YuanShuoHsu/biru-api#570）都要依這個規格輸出。
 [menu.html](menu.html) 用瀏覽器列印或另存的 PDF 是 RGB，只能看版面，不能拿去印。
 
 | 項目     | 規格                                                                                                                                                                         |
 | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 印刷條件 | [FOGRA39](https://registry.color.org/cmyk-registry/fogra39)：ISO 12647-2:2004/Amd 1 平版印刷、塗佈紙；和[配色](#配色)的 CMYK 換算基準相同                                    |
-| 檔案格式 | [PDF/X-1a:2003](https://printtechnologies.org/standards/files/pdf-x-application-notes_v4-sep06.pdf)：只用 CMYK、字型全部內嵌、沒有透明                                       |
+| 檔案格式 | PDF/X-1a:2003（ISO 15930-4，見 [PDF/X 應用說明](https://printtechnologies.org/standards/files/pdf-x-application-notes_v4-sep06.pdf)）：只用 CMYK、字型全部內嵌、沒有透明     |
 | 色彩描述 | 只寫 ICC 登錄的條件名稱 FOGRA39，不內嵌 ICC 檔；登錄的標準條件可以不附描述檔（[Adobe Technote 5413](https://printtechnologies.org/standards/files/technote5413.pdf) 表 1.2） |
 | 尺寸     | 實際尺寸、不出血；出血與裁切線尚未提供                                                                                                                                       |
 
