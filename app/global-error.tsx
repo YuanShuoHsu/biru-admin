@@ -15,10 +15,13 @@ interface GlobalErrorProps {
 }
 
 const GlobalError = ({ error, retry }: GlobalErrorProps) => {
+  const digest =
+    error instanceof Error ? (error as { digest?: string }).digest : undefined;
+
   useEffect(() => {
     console.error(error);
-    Sentry.captureException(error);
-  }, [error]);
+    if (!digest) Sentry.captureException(error);
+  }, [digest, error]);
 
   return (
     <html lang={LocaleEnum.ZhTW}>
