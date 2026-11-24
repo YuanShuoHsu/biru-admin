@@ -38,7 +38,7 @@ interface WaitlistTicketDialogProps {
   mutate: () => void;
   organizationSlug: string;
   ticket?: WaitlistTicketListItem;
-  unavailable?: "closed" | "cutoff" | "paused" | null;
+  unavailable?: "closed" | "cutoff" | null;
 }
 
 const WaitlistTicketDialog = ({

@@ -1,5 +1,4 @@
 {
-  "accepting": "开放取号",
   "actions": {
     "cancel": "取消",
     "cancelConfirm": "确定要取消 <bold>{ticketNumber}</bold>（{name}）的排队吗？",
@@ -33,8 +32,7 @@
     "success": "已新增排队 {ticketNumber}",
     "unavailable": {
       "closed": "当前非营业时间，顾客无法自行取号；代客登记不受影响。",
-      "cutoff": "已过打烊前停止取号时间，顾客无法自行取号；代客登记不受影响。",
-      "paused": "当前暂停取号，顾客无法自行取号；代客登记不受影响。"
+      "cutoff": "已过打烊前停止取号时间，顾客无法自行取号；代客登记不受影响。"
     }
   },
   "board": {
@@ -63,14 +61,6 @@
     "phoneNumber": "电话",
     "status": "状态",
     "ticketNumber": "号码"
-  },
-  "paused": {
-    "confirm": "暂停后顾客将无法自行取号，代客登记不受影响。确定要暂停 <bold>{name}</bold> 的取号吗？",
-    "off": "{name} 已恢复取号",
-    "on": "{name} 已暂停取号",
-    "resumeConfirm": "恢复后顾客即可自行取号。确定要恢复 <bold>{name}</bold> 的取号吗？",
-    "resumeTitle": "恢复取号",
-    "title": "暂停取号"
   },
   "range": "{min}–{max} 位",
   "single": "{count} 位",
