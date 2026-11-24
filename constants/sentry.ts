@@ -1,5 +1,5 @@
 const clientIdentityKeys = {
-  deny: ["forwarded", "-ip", "remote-", "via", "-user"],
+  deny: ["forwarded", "-ip", "remote-", "via", "-user", "referer"],
 };
 
 export const SENTRY_OPTIONS = {
