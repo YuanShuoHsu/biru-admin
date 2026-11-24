@@ -1,5 +1,4 @@
 {
-  "accepting": "新規受付",
   "actions": {
     "cancel": "キャンセル",
     "cancelConfirm": "<bold>{ticketNumber}</bold>（{name}）の順番待ちをキャンセルしますか？",
@@ -33,8 +32,7 @@
     "success": "{ticketNumber} を順番待ちに追加しました",
     "unavailable": {
       "closed": "営業時間外のため、お客様ご自身での受付はできません。代理登録は引き続き可能です。",
-      "cutoff": "閉店前の受付終了時間を過ぎたため、お客様ご自身での受付はできません。代理登録は引き続き可能です。",
-      "paused": "受付を一時停止中のため、お客様ご自身での受付はできません。代理登録は引き続き可能です。"
+      "cutoff": "閉店前の受付終了時間を過ぎたため、お客様ご自身での受付はできません。代理登録は引き続き可能です。"
     }
   },
   "board": {
@@ -63,14 +61,6 @@
     "phoneNumber": "電話番号",
     "status": "状態",
     "ticketNumber": "番号"
-  },
-  "paused": {
-    "confirm": "一時停止中はお客様ご自身での受付ができなくなります。代理登録は引き続き可能です。<bold>{name}</bold> の受付を一時停止しますか？",
-    "off": "{name} の受付を再開しました",
-    "on": "{name} の受付を一時停止しました",
-    "resumeConfirm": "再開するとお客様ご自身で受付できるようになります。<bold>{name}</bold> の受付を再開しますか？",
-    "resumeTitle": "受付を再開",
-    "title": "受付を一時停止"
   },
   "range": "{min}～{max} 名",
   "single": "{count} 名",

@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import useSWR, { useSWRConfig } from "swr";
 
 import { useOrganization } from "@/hooks/organizations";
@@ -12,14 +12,7 @@ import { useSocketConnection } from "@/hooks/useSocketConnection";
 import { emitMenuWithAck, menuSocket } from "@/app/socket";
 
 import { Add } from "@mui/icons-material";
-import {
-  Alert,
-  Button,
-  DialogContentText,
-  FormControlLabel,
-  Stack,
-  Switch,
-} from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import WaitlistTicketDialog, {
@@ -31,7 +24,6 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type { AdminWaitlistResponse } from "@/types/waitlist";
 
 import { getErrorMessage } from "@/utils/errors";
-import { fetcher } from "@/utils/fetcher";
 
 const HeaderStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",
@@ -40,18 +32,11 @@ const HeaderStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-const StyledFormControlLabel = styled(FormControlLabel)({
-  marginRight: 0,
-});
-
 const WaitlistControls = () => {
   const { setDialog } = useDialogStore((state) => state);
 
-  const [isPausing, setIsPausing] = useState(false);
-
   const organizationSlug = useSearchParams().get("organization");
   const organization = useOrganization(organizationSlug);
-  const name = organization?.name;
 
   const tWaitlist = useTranslations("waitlist");
 
@@ -96,10 +81,6 @@ const WaitlistControls = () => {
 
   if (!organizationSlug || !waitlist?.enabled) return null;
 
-  const showError = (error: unknown) => {
-    enqueueSnackbar(getErrorMessage(error), { variant: "error" });
-  };
-
   const handleAddDialog = async () => {
     const latest = (await mutate()) || waitlist;
 
@@ -112,13 +93,7 @@ const WaitlistControls = () => {
           mutate={refreshWaitlist}
           organizationSlug={organizationSlug}
           unavailable={
-            latest.paused
-              ? "paused"
-              : !latest.open
-                ? "closed"
-                : latest.cutoff
-                  ? "cutoff"
-                  : null
+            !latest.open ? "closed" : latest.cutoff ? "cutoff" : null
           }
         />
       ),
@@ -128,71 +103,12 @@ const WaitlistControls = () => {
     });
   };
 
-  const handleUpdatePaused = async (paused: boolean) => {
-    setIsPausing(true);
-
-    try {
-      await fetcher(`${waitlistUrl}/paused`, {
-        body: JSON.stringify({ paused }),
-        headers: { "Content-Type": "application/json" },
-        method: "PUT",
-      });
-
-      enqueueSnackbar(
-        tWaitlist(paused ? "paused.on" : "paused.off", { name: name || "" }),
-        { variant: "success" },
-      );
-    } catch (error) {
-      showError(error);
-    } finally {
-      await mutate();
-      setIsPausing(false);
-    }
-  };
-
-  const handleAcceptingChange = (
-    _event: React.ChangeEvent<HTMLInputElement>,
-    checked: boolean,
-  ) =>
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tWaitlist.rich(checked ? "paused.resumeConfirm" : "paused.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-            name: name || "",
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: () => handleUpdatePaused(!checked),
-      open: true,
-      title: tWaitlist(checked ? "paused.resumeTitle" : "paused.title"),
-    });
-
   return (
-    <>
-      <HeaderStack direction="row">
-        <Button
-          onClick={handleAddDialog}
-          startIcon={<Add />}
-          variant="contained"
-        >
-          {tWaitlist("add.label")}
-        </Button>
-        <StyledFormControlLabel
-          control={
-            <Switch
-              checked={!waitlist.paused}
-              disabled={isPausing}
-              onChange={handleAcceptingChange}
-            />
-          }
-          label={tWaitlist("accepting")}
-        />
-      </HeaderStack>
-      {waitlist.paused && (
-        <Alert severity="warning">{tWaitlist("add.unavailable.paused")}</Alert>
-      )}
-    </>
+    <HeaderStack direction="row">
+      <Button onClick={handleAddDialog} startIcon={<Add />} variant="contained">
+        {tWaitlist("add.label")}
+      </Button>
+    </HeaderStack>
   );
 };
 
