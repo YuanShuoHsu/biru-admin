@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { STORE_LAYOUT_FOV } from "@/constants/storeLayout";
 
@@ -28,6 +28,9 @@ const cache = new Map<string, CachedLabel>();
 const cssVar = (name: string) =>
   getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
+const labelFont = () =>
+  `${FONT_SIZE * SUPERSAMPLE}px ${getComputedStyle(document.body).fontFamily}`;
+
 const roundedRect = (
   ctx: CanvasRenderingContext2D,
   width: number,
@@ -48,7 +51,7 @@ const build = (text: string, plain: boolean) => {
   const ctx = canvas.getContext("2d");
   if (!ctx) return null;
 
-  const font = `${FONT_SIZE * SUPERSAMPLE}px ${getComputedStyle(document.body).fontFamily}`;
+  const font = labelFont();
 
   ctx.font = font;
 
@@ -101,7 +104,25 @@ const SpriteLabel = ({ plain = false, position, text }: SpriteLabelProps) => {
 
   const scheme = (mode === "system" ? systemMode : mode) ?? "light";
 
+  const [fontLoadedText, setFontLoadedText] = useState<string>();
+
+  useEffect(() => {
+    let active = true;
+
+    document.fonts.load(labelFont(), text).then(() => {
+      if (active) setFontLoadedText(text);
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [text]);
+
+  const fontLoaded = fontLoadedText === text;
+
   const label = useMemo(() => {
+    if (!fontLoaded) return null;
+
     const key = `${scheme}|${plain}|${text}`;
     const cached = cache.get(key);
 
@@ -112,7 +133,7 @@ const SpriteLabel = ({ plain = false, position, text }: SpriteLabelProps) => {
     if (built) cache.set(key, built);
 
     return built;
-  }, [plain, scheme, text]);
+  }, [fontLoaded, plain, scheme, text]);
 
   if (!label) return null;
 
