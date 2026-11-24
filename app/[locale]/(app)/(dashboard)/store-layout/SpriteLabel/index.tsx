@@ -109,16 +109,19 @@ const SpriteLabel = ({ plain = false, position, text }: SpriteLabelProps) => {
   useEffect(() => {
     let active = true;
 
-    document.fonts.load(labelFont(), text).then(() => {
+    const markLoaded = () => {
       if (active) setFontLoadedText(text);
-    });
+    };
+
+    document.fonts.load(labelFont(), text).then(markLoaded, markLoaded);
 
     return () => {
       active = false;
     };
   }, [text]);
 
-  const fontLoaded = fontLoadedText === text;
+  const fontLoaded =
+    fontLoadedText === text || document.fonts.check(labelFont(), text);
 
   const label = useMemo(() => {
     if (!fontLoaded) return null;
