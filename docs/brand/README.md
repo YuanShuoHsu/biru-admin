@@ -38,7 +38,7 @@
 
 ### 配色
 
-向量檔使用以下色彩。CMYK 以 FOGRA39（Coated）相對比色換算，正式色號以印刷廠的色彩描述檔為準。
+向量檔使用以下色彩。CMYK 以 FOGRA39（Coated）相對比色換算，正式色號以印刷廠的色彩描述檔為準；印刷條件見[印刷規格](#印刷規格)。
 
 貓身上的白色印奶泡白，不留紙白。
 
@@ -107,8 +107,26 @@ Logo 四周至少保留 Logo 寬度的十分之一，不放文字、圖片或裁
 | 用途                 | 字體                                                                            | 授權                                                                  |
 | -------------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
 | 中文、英文內文與標題 | [Noto Sans TC（思源黑體）](https://fonts.google.com/noto/specimen/Noto+Sans+TC) | [SIL Open Font License 1.1](https://openfontlicense.org/)，可免費商用 |
+| 日文                 | [Noto Sans JP](https://fonts.google.com/noto/specimen/Noto+Sans+JP)             | [SIL Open Font License 1.1](https://openfontlicense.org/)，可免費商用 |
+| 韓文                 | [Noto Sans KR](https://fonts.google.com/noto/specimen/Noto+Sans+KR)             | [SIL Open Font License 1.1](https://openfontlicense.org/)，可免費商用 |
+| 簡體中文             | [Noto Sans SC](https://fonts.google.com/noto/specimen/Noto+Sans+SC)             | [SIL Open Font License 1.1](https://openfontlicense.org/)，可免費商用 |
 
 [menu.html](menu.html) 與系統產生的紙本（YuanShuoHsu/biru-api#569、YuanShuoHsu/biru-api#570）都用這套字體。
+系統產生的紙本依語系選字型，該字型缺字時改用其他 Noto Sans。
+
+### 印刷規格
+
+系統產生的紙本 PDF 都依這個規格輸出，交給印刷廠的檔案也以此為準。
+[menu.html](menu.html) 用瀏覽器列印或另存的 PDF 是 RGB，只能看版面，不能拿去印。
+
+| 項目     | 規格                                                                                                                                                                         |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 印刷條件 | [FOGRA39](https://registry.color.org/cmyk-registry/fogra39)：ISO 12647-2:2004/Amd 1 平版印刷、塗佈紙；和[配色](#配色)的 CMYK 換算基準相同                                    |
+| 檔案格式 | [PDF/X-1a:2003](https://printtechnologies.org/standards/files/pdf-x-application-notes_v4-sep06.pdf)：只用 CMYK、字型全部內嵌、沒有透明                                       |
+| 色彩描述 | 只寫 ICC 登錄的條件名稱 FOGRA39，不內嵌 ICC 檔；登錄的標準條件可以不附描述檔（[Adobe Technote 5413](https://printtechnologies.org/standards/files/technote5413.pdf) 表 1.2） |
+| 尺寸     | 實際尺寸、不出血；出血與裁切線尚未提供                                                                                                                                       |
+
+印刷廠若用其他印刷條件（例如 Japan Color），[配色](#配色)的 CMYK 要依該條件重新換算，biru-api 的紙本 PDF 也要一起改。
 
 ## 社群與線上素材
 
