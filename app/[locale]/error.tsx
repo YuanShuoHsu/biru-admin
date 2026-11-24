@@ -2,6 +2,7 @@
 
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
 
 import ErrorAlert from "@/components/ErrorAlert";
@@ -12,20 +13,15 @@ interface ErrorPageProps {
 }
 
 const ErrorPage = ({ error, retry }: ErrorPageProps) => {
+  const digest =
+    error instanceof Error ? (error as { digest?: string }).digest : undefined;
+
   useEffect(() => {
     console.error(error);
-  }, [error]);
+    if (!digest) Sentry.captureException(error);
+  }, [digest, error]);
 
-  return (
-    <ErrorAlert
-      digest={
-        error instanceof Error
-          ? (error as { digest?: string }).digest
-          : undefined
-      }
-      onRetry={retry}
-    />
-  );
+  return <ErrorAlert digest={digest} onRetry={retry} />;
 };
 
 export default ErrorPage;
