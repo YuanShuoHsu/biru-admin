@@ -14,7 +14,7 @@ export const SENTRY_OPTIONS = {
       response: clientIdentityKeys,
     },
     httpBodies: [],
-    urlQueryParams: clientIdentityKeys,
+    urlQueryParams: false,
     genAI: { inputs: false, outputs: false },
     databaseQueryData: false,
     queues: false,
