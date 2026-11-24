@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, use, useMemo } from "react";
 
 import { STORE_LAYOUT_FOV } from "@/constants/storeLayout";
 
@@ -25,11 +25,29 @@ interface CachedLabel {
 
 const cache = new Map<string, CachedLabel>();
 
+// https://react.dev/reference/react/use#caching-promises-for-client-components
+const fontLoads = new Map<string, Promise<void>>();
+
 const cssVar = (name: string) =>
   getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
 const labelFont = () =>
   `${FONT_SIZE * SUPERSAMPLE}px ${getComputedStyle(document.body).fontFamily}`;
+
+// https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/load
+const loadFont = (font: string, text: string) => {
+  const key = `${font}|${text}`;
+  const cached = fontLoads.get(key);
+
+  if (cached) return cached;
+
+  const settle = () => undefined;
+  const loading = document.fonts.load(font, text).then(settle, settle);
+
+  fontLoads.set(key, loading);
+
+  return loading;
+};
 
 const roundedRect = (
   ctx: CanvasRenderingContext2D,
@@ -46,12 +64,10 @@ const roundedRect = (
   ctx.closePath();
 };
 
-const build = (text: string, plain: boolean) => {
+const build = (font: string, text: string, plain: boolean) => {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
   if (!ctx) return null;
-
-  const font = labelFont();
 
   ctx.font = font;
 
@@ -98,45 +114,28 @@ interface SpriteLabelProps {
   text: string;
 }
 
-const SpriteLabel = ({ plain = false, position, text }: SpriteLabelProps) => {
+const Label = ({ plain = false, position, text }: SpriteLabelProps) => {
   const viewportHeight = useThree((state) => state.size.height);
   const { mode, systemMode } = useColorScheme();
 
   const scheme = (mode === "system" ? systemMode : mode) ?? "light";
 
-  const [fontLoadedText, setFontLoadedText] = useState<string>();
+  const font = labelFont();
 
-  useEffect(() => {
-    let active = true;
-
-    const markLoaded = () => {
-      if (active) setFontLoadedText(text);
-    };
-
-    document.fonts.load(labelFont(), text).then(markLoaded, markLoaded);
-
-    return () => {
-      active = false;
-    };
-  }, [text]);
-
-  const fontLoaded =
-    fontLoadedText === text || document.fonts.check(labelFont(), text);
+  use(loadFont(font, text));
 
   const label = useMemo(() => {
-    if (!fontLoaded) return null;
-
-    const key = `${scheme}|${plain}|${text}`;
+    const key = `${font}|${scheme}|${plain}|${text}`;
     const cached = cache.get(key);
 
     if (cached) return cached;
 
-    const built = build(text, plain);
+    const built = build(font, text, plain);
 
     if (built) cache.set(key, built);
 
     return built;
-  }, [fontLoaded, plain, scheme, text]);
+  }, [font, plain, scheme, text]);
 
   if (!label) return null;
 
@@ -164,5 +163,11 @@ const SpriteLabel = ({ plain = false, position, text }: SpriteLabelProps) => {
     </sprite>
   );
 };
+
+const SpriteLabel = (props: SpriteLabelProps) => (
+  <Suspense>
+    <Label {...props} />
+  </Suspense>
+);
 
 export default SpriteLabel;
