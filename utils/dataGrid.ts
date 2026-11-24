@@ -7,6 +7,7 @@ import {
   DEFAULT_PAGE,
   DEFAULT_PAGE_SIZE,
   MAX_PAGE_SIZE,
+  toBoundedInt,
 } from "@/constants/pagination";
 
 import { STORE_TIMEZONE } from "@/constants/timezone";
@@ -150,17 +151,6 @@ interface GridSearchParams {
   sortBy?: string;
   sortDirection?: string;
 }
-
-const toBoundedInt = (
-  raw: string | undefined,
-  fallback: number,
-  max = Infinity,
-) => {
-  const value = Math.floor(Number(raw));
-  if (!Number.isSafeInteger(value) || value < 1) return fallback;
-
-  return Math.min(value, max);
-};
 
 interface ResolveGridSearchParamsOptions<
   SortField extends string,

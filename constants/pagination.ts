@@ -12,3 +12,14 @@ export const PAGE_SIZE_OPTIONS = [5, 10, 50, 100];
 
 export const getPageSizeOptions = (pageSize: number) =>
   [...new Set([...PAGE_SIZE_OPTIONS, pageSize])].sort((a, b) => a - b);
+
+export const toBoundedInt = (
+  raw: string | string[] | undefined,
+  fallback: number,
+  max = Infinity,
+) => {
+  const value = Math.floor(Number(raw));
+  if (!Number.isSafeInteger(value) || value < 1) return fallback;
+
+  return Math.min(value, max);
+};

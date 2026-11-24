@@ -9,7 +9,12 @@ import { getPointsKey } from "./constants";
 
 import ErrorAlert from "@/components/ErrorAlert";
 
-import { DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE } from "@/constants/pagination";
+import {
+  DEFAULT_PAGE,
+  DEFAULT_PAGE_SIZE,
+  MAX_PAGE_SIZE,
+  toBoundedInt,
+} from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
@@ -37,11 +42,8 @@ const AuthPointsPage = async ({
     searchParams,
   ]);
 
-  const page = Math.max(1, Number(rawPage) || 1);
-  const pageSize = Math.min(
-    Math.max(1, Number(rawPageSize) || DEFAULT_PAGE_SIZE),
-    MAX_PAGE_SIZE,
-  );
+  const page = toBoundedInt(rawPage, DEFAULT_PAGE);
+  const pageSize = toBoundedInt(rawPageSize, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE);
 
   if (
     (rawPage !== undefined && rawPage !== String(page)) ||
