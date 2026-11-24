@@ -2,6 +2,7 @@
 
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
 
 import { LocaleEnum } from "@/enums/Locale";
@@ -16,6 +17,7 @@ interface GlobalErrorProps {
 const GlobalError = ({ error, retry }: GlobalErrorProps) => {
   useEffect(() => {
     console.error(error);
+    Sentry.captureException(error);
   }, [error]);
 
   return (
