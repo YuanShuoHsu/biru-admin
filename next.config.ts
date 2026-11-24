@@ -6,6 +6,9 @@ import createNextIntlPlugin from "next-intl/plugin";
 const nextConfig: NextConfig = {
   /* config options here */
   cacheComponents: true,
+  experimental: {
+    agentUpgrade: "security",
+  },
   partialPrefetching: true,
   turbopack: {
     rules: {
