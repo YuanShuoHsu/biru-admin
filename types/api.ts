@@ -4230,23 +4230,6 @@ export interface paths {
     patch: operations["WaitlistController_transitionTicket"];
     trace?: never;
   };
-  "/api/organizations/{organizationSlug}/waitlist/paused": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /** 暫停／恢復取號 */
-    put: operations["WaitlistController_updatePaused"];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   "/api/organizations/{organizationSlug}/waitlist/settings": {
     parameters: {
       query?: never;
@@ -12452,7 +12435,6 @@ export interface components {
       | "waitlistGroupsInvalid"
       | "waitlistIdempotencyConflict"
       | "waitlistPartySizeUnavailable"
-      | "waitlistPaused"
       | "waitlistPhoneInQueue"
       | "waitlistQrRequired"
       | "waitlistQrSessionNotFound"
@@ -12506,7 +12488,6 @@ export interface components {
       groups: components["schemas"]["WaitlistGroupStatusDto"][];
       /** @description 是否在營業時間內 */
       open: boolean;
-      paused: boolean;
       /** @description 日期範圍涵蓋今天的特殊營業日（最多一筆）；open 與 cutoff 另外也套用了前一天特殊營業日延到今天凌晨的跨夜時段，該筆不列在這裡 */
       specialHours: components["schemas"]["PublicSpecialHoursDto"][];
     };
@@ -12626,7 +12607,6 @@ export interface components {
       holdMinutes: number;
       /** @description 是否在營業時間內 */
       open: boolean;
-      paused: boolean;
       /** @description 日期範圍涵蓋今天的特殊營業日（最多一筆）；open 與 cutoff 另外也套用了前一天特殊營業日延到今天凌晨的跨夜時段，該筆不列在這裡 */
       specialHours: components["schemas"]["PublicSpecialHoursDto"][];
       /** @description 進行中的號碼牌與今日已結束的號碼牌 */
@@ -12727,9 +12707,6 @@ export interface components {
        */
       currentTicketNumber?: string | null;
     };
-    UpdateWaitlistPausedDto: {
-      paused: boolean;
-    };
     WaitlistSettingsResponseDto: {
       /** @description 打烊前幾分鐘停止顧客自助取號 */
       cutoffMinutes: number;
@@ -12739,7 +12716,6 @@ export interface components {
       graceMinutes: number;
       /** @description 叫號後保留分鐘數 */
       holdMinutes: number;
-      paused: boolean;
     };
     UpdateWaitlistGroupDto: {
       /** @example 4 */
@@ -25528,38 +25504,6 @@ export interface operations {
       };
     };
   };
-  WaitlistController_updatePaused: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        organizationSlug: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateWaitlistPausedDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WaitlistSettingsResponseDto"];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
   WaitlistController_settings: {
     parameters: {
       query?: never;
@@ -31638,7 +31582,6 @@ export const waitlistErrorCodeValues: ReadonlyArray<
   "waitlistGroupsInvalid",
   "waitlistIdempotencyConflict",
   "waitlistPartySizeUnavailable",
-  "waitlistPaused",
   "waitlistPhoneInQueue",
   "waitlistQrRequired",
   "waitlistQrSessionNotFound",
