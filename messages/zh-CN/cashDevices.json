@@ -1,6 +1,7 @@
 {
   "actions": {
     "collection": {
+      "difference": "存入与回报差额：{difference}",
       "success": "已记录收钞，存入与回报差额 {difference}",
       "title": "收钞"
     },

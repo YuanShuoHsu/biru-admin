@@ -17,7 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useFormatMoney } from "@/hooks/useFormatMoney";
 
-import { TextField } from "@mui/material";
+import { TextField, Typography } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
@@ -68,6 +68,8 @@ const CashDeviceCollectionDialog = ({
     name: ["depositedAmount", "reportedAmount"],
   });
 
+  const difference = Number(depositedAmount) - Number(reportedAmount);
+
   const onSubmitHandler = async ({
     depositedAmount,
     note,
@@ -76,7 +78,7 @@ const CashDeviceCollectionDialog = ({
     try {
       setDialog({ confirmLoading: true });
 
-      const { difference } = await fetcher<CashDeviceEvent>(
+      const event = await fetcher<CashDeviceEvent>(
         `/api/organizations/${organizationSlug}/cash-devices/${cashDeviceId}/collections`,
         {
           method: "POST",
@@ -92,11 +94,11 @@ const CashDeviceCollectionDialog = ({
 
       enqueueSnackbar(
         tCashDevices("actions.collection.success", {
-          difference: formatMoney(Number(difference), currency, {
+          difference: formatMoney(Number(event.difference), currency, {
             signDisplay: "exceptZero",
           }),
         }),
-        { variant: Number(difference) === 0 ? "success" : "warning" },
+        { variant: Number(event.difference) === 0 ? "success" : "warning" },
       );
 
       closeDialog();
@@ -148,6 +150,13 @@ const CashDeviceCollectionDialog = ({
         value={depositedAmount}
         valueIsNumericString
       />
+      <Typography color={difference === 0 ? undefined : "warning"}>
+        {tCashDevices("actions.collection.difference", {
+          difference: formatMoney(difference, currency, {
+            signDisplay: "exceptZero",
+          }),
+        })}
+      </Typography>
       <TextField
         error={!!errors.note}
         fullWidth

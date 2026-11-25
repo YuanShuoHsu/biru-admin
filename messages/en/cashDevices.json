@@ -1,6 +1,7 @@
 {
   "actions": {
     "collection": {
+      "difference": "Deposited minus reported: {difference}",
       "success": "Collection recorded. Deposited minus reported: {difference}",
       "title": "Collect Cash"
     },
