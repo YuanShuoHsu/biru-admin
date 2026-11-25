@@ -7,6 +7,10 @@ import useSWR from "swr";
 
 import { WAITLIST_STATUS_COLORS } from "@/constants/waitlist";
 
+import { useSocketConnection } from "@/hooks/useSocketConnection";
+
+import { menuSocket } from "@/app/socket";
+
 import {
   AccessTime,
   Campaign,
@@ -51,6 +55,8 @@ import type {
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
+
+const POLL_INTERVAL_MS = 15_000;
 
 const COLUMN_STATUSES = [
   "waiting",
@@ -146,9 +152,12 @@ const AdminWaitlist = ({
 
   const waitlistUrl = `/api/organizations/${organizationSlug}/waitlist`;
 
+  const { isConnected } = useSocketConnection(menuSocket);
+
   const { data: waitlist = initialWaitlist, mutate } =
     useSWR<AdminWaitlistResponse>(`${waitlistUrl}/tickets`, {
       fallbackData: initialWaitlist,
+      refreshInterval: isConnected ? 0 : POLL_INTERVAL_MS,
     });
 
   const showError = (error: unknown) => {
