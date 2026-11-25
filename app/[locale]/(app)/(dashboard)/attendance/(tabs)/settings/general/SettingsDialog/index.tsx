@@ -457,7 +457,7 @@ const SettingsDialog = ({
         timezone={STORE_TIMEZONE}
         value={
           voluntaryLaborInsuranceFrom
-            ? dayjs(voluntaryLaborInsuranceFrom, "YYYY-MM")
+            ? dayjs.tz(`${voluntaryLaborInsuranceFrom}-01`, STORE_TIMEZONE)
             : null
         }
         views={["year", "month"]}
@@ -533,7 +533,7 @@ const SettingsDialog = ({
               timezone={STORE_TIMEZONE}
               value={
                 periods?.[index]?.value
-                  ? dayjs(periods[index].value, "YYYY-MM")
+                  ? dayjs.tz(`${periods[index].value}-01`, STORE_TIMEZONE)
                   : null
               }
               views={["year", "month"]}

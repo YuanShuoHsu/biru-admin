@@ -1,6 +1,6 @@
 # 品牌
 
-碧露的 Logo、品牌故事與紙本菜單版型。
+碧露的品牌故事、Logo、使用規範、線上素材與紙本菜單版型。
 
 ## 碧露的故事
 
@@ -36,6 +36,8 @@
 - 單色版：餐具、紙杯等單色印刷用，參考 [logo.jpg](logo.jpg) 左下的小圖
 - App 圖示：favicon、PWA、社群頭像用，參考 [logo.jpg](logo.jpg) 右下的小圖
 
+前台與後台的 favicon、PWA 圖示目前暫用照片（兩個 repo 的 `app/icon.svg`、`app/apple-icon.png`、`app/favicon.ico`、`public/icon-192x192.png`、`public/icon-512x512.png`），App 圖示完成後一起替換。
+
 ### 配色
 
 向量檔使用以下色彩。CMYK 以 FOGRA39（Coated）相對比色換算，正式色號以印刷廠的色彩描述檔為準。
@@ -65,6 +67,14 @@
 
 招牌用英文的 Logo（Biru Coffee）。
 「碧露咖啡」是招牌飲品的名稱（見 [recipes.md](../recipes.md#碧露咖啡)），點餐與菜單照系統菜單的品名。
+
+系統目前使用的名稱與標語：
+
+| 項目                     | 內容                                                                  | 位置                                                                                          |
+| ------------------------ | --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| 網站名稱、信件寄件人名稱 | Biru Coffee                                                           | biru、biru-admin 的 `messages/*/metadata.json`；biru-api 的 `src/common/constants/product.ts` |
+| PWA 名稱                 | 前台 Biru Coffee；後台 Biru Coffee Admin                              | biru、biru-admin 的 `app/manifest.ts`（YuanShuoHsu/biru#203、YuanShuoHsu/biru-admin#363）     |
+| 標語                     | 為你的每一天，沖煮一杯好咖啡。（英文：Coffee, crafted for your day.） | biru 的 `messages/*/home.json`、`messages/*/metadata.json`                                    |
 
 ### 版本選用
 

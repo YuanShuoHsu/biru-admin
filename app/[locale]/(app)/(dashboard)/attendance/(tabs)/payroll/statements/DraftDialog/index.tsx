@@ -306,7 +306,7 @@ const DraftDialog = ({
           },
         }}
         timezone={STORE_TIMEZONE}
-        value={month ? dayjs(month, "YYYY-MM") : null}
+        value={month ? dayjs.tz(`${month}-01`, STORE_TIMEZONE) : null}
         views={["year", "month"]}
       />
       <TextField
