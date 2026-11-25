@@ -97,7 +97,7 @@ export const isReportMonth = (value: string | undefined): value is string =>
   /^20\d{2}-(0[1-9]|1[0-2])$/.test(value) &&
   !toStoreDate(`${value}-01`).isAfter(storeToday(), "month");
 
-export const isTargetProfit = (value: string | undefined): value is string =>
+const isTargetProfit = (value: string | undefined): value is string =>
   !!value && /^\d{1,10}(\.\d{1,2})?$/.test(value);
 
 export const isValidRange = (since: string, until: string) => {

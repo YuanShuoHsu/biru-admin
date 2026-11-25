@@ -5,7 +5,6 @@ import { cache } from "react";
 
 import { fetcher } from "./fetcher";
 
-import { LOW_STOCK_THRESHOLD } from "@/constants/menus";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import type { FilterOperator } from "@/types/dataGrid";
@@ -21,21 +20,12 @@ import type {
   ModifierGroup,
   ModifierGroupListResponse,
   ModifierListResponse,
-  OrderMenuOffer,
 } from "@/types/menus";
 
 import { getGridSearchParams } from "@/utils/dataGrid";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
-
-export const isLowStock = (offer?: OrderMenuOffer): boolean => {
-  const stock = offer?.inventoryLevel?.value;
-  if (stock == null || stock <= 0) return false;
-  if (offer?.availability === "SoldOut") return false;
-
-  return stock <= LOW_STOCK_THRESHOLD;
-};
 
 // API 計價用同一個格式判斷促銷期間，改這裡要一起改
 const PROMO_DATE_PATTERN =
