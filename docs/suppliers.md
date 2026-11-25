@@ -32,6 +32,7 @@
 | [明光行](https://hocom.tw)                                          |                        | 濃縮鮮雞汁                                                                                                                                 |                                  |
 | [momo購物網](https://www.momoshop.com.tw)                           |                        | 糖                                                                                                                                         |                                  |
 | [台糖健康易購網](https://www.ego888.com.tw)                         |                        | 甘蔗液糖                                                                                                                                   |                                  |
+| [三商食品](https://www.mlf.com.tw)                                  |                        | 彈珠汽水糖漿、哈密瓜濃縮汁                                                                                                                 | 三田飲料；營業用需詢價           |
 
 ## 包材耗材
 

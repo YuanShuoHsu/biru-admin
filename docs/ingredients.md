@@ -23,6 +23,8 @@
 | 榛果可可醬     | [Nutella 能多益榛果可可醬](https://www.costco.com.tw/p/168704)                                                                                  | [Costco](https://www.costco.com.tw)                                 | 279元   | 750g   | 0.372元/g     |
 | 椰子水         | [IF 純椰子汁](https://www.costco.com.tw/p/145957)                                                                                               | [Costco](https://www.costco.com.tw)                                 | 369元   | 6L     | 0.062元/ml    |
 | 蘋果汁         | [希望之雫蘋果汁](https://pxbox.es.pxmart.com.tw/product/151600)                                                                                 | [全聯全電商](https://pxbox.es.pxmart.com.tw)                        | 1199元  | 6L     | 0.2元/ml      |
+| 彈珠汽水糖漿   | [三田飲料 彈珠汽水糖漿 1000ml](https://www.mlf.com.tw/index.php?route=product/product&product_id=415&shop_type=1&path=193)                      | [三商食品](https://www.mlf.com.tw)                                  | 待詢價  | 1000ml | 待定          |
+| 哈密瓜濃縮汁   | [三田飲料 哈密瓜濃縮汁 1000ml](https://www.mlf.com.tw/index.php?route=product/product&product_id=687&shop_type=1&path=193)                      | [三商食品](https://www.mlf.com.tw)                                  | 待詢價  | 1000ml | 待定          |
 | 橄欖油         | [奧利塔純橄欖油 1L](https://shop.hseiyi.com/SalePage/Index/5815098)                                                                             | [義大利廚房](https://shop.hseiyi.com)                               | 499元   | 1L     | 0.499元/ml    |
 | 牛番茄         | [履歷牛番茄 500g/盒](https://online.uni-prosperity.com.tw/zh/2202103200101.html)                                                                | [萬家福](https://online.uni-prosperity.com.tw)                      | 69元    | 500g   | 0.138元/g     |
 | 西芹           | [美國西芹 600g](https://online.uni-prosperity.com.tw/zh/2201039800101.html)                                                                     | [萬家福](https://online.uni-prosperity.com.tw)                      | 79元    | 600g   | 0.132元/g     |
@@ -71,6 +73,7 @@
 - 麥茶：420 元是 Costco 每包 3.5 元 × 120 包；成分為大麥與黑豆，冷熱泡皆可。
 - 氣泡水：用水與 CO₂ 現打，不是預先做好的半成品；6L 鋼瓶（約 3.5kg CO₂）約可打 410–490 公升，單價待取得 CO₂ 充填費後依水費與 CO₂ 用量計算。
 - 咖啡豆：供應商為百里特（見 [進貨商清單](suppliers.md#咖啡豆)），品項待樣品豆試做後決定；選義式配方豆，萃成濃縮後不加奶（美式、碧露咖啡）與加奶（拿鐵、奶蓋）都要好喝，同時帶果香。
+- 彈珠汽水糖漿、哈密瓜濃縮汁：三商食品營業用詢價，取得報價後更新；之後用於加希臘優格冰淇淋的氣泡水。兩者都含人工色素（彈珠汽水糖漿：食用藍色一號；哈密瓜濃縮汁：食用黃色四號、食用藍色一號），菜單說明要標示。
 - 蛤蠣：海鮮價格隨季節浮動，199 元是主婦聯盟的牌價，進貨時以實際價格更新。
 - 白酒：依菸酒管理法不能網路下單，要打電話（07-554-6820）或到高雄門市購買；查價時網站顯示缺貨。
 - 雞腿肉：3429 元是原價，網站常有特價（查價時 3019 元）；約 13–15 片一袋，每片約 180g。冷凍保存，前一天移到冷藏解凍。
