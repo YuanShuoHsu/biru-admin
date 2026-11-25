@@ -121,9 +121,9 @@ const StorePhotoDialog = ({ mutate, storePhoto }: StorePhotoDialogProps) => {
           shape="square"
           uploadKey={uploadKey}
         />
-        {errors.image && (
-          <FormHelperText>{errors.image.message}</FormHelperText>
-        )}
+        <FormHelperText>
+          {errors.image?.message ?? tStorePhotos("image.helperText")}
+        </FormHelperText>
       </FormControl>
       <LocalizedTextFields
         fields={(lang) => [

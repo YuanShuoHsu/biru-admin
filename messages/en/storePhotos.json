@@ -46,6 +46,7 @@
   },
   "createdAt": "Created",
   "image": {
+    "helperText": "Shown at 4:3 in the scrolling strip on the storefront About page, whose left and right ends fade out; keep the subject in the middle.",
     "label": "Image"
   },
   "isActive": {
