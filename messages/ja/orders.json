@@ -164,6 +164,7 @@
       }
     },
     "items": {
+      "participant": "注文者：{nickname}",
       "title": "注文明細"
     },
     "notifications": {

@@ -247,7 +247,15 @@ const OrdersKitchen = ({
 
   const renderItem = (order: KitchenOrderResponse, item: KitchenOrderItem) => {
     const refunded = item.refundedQuantity >= item.orderQuantity;
-    const choiceNames = getOrderItemChoiceNames(item);
+    const details = [
+      getOrderItemChoiceNames(item),
+      item.participantNickname &&
+        tOrders("detail.items.participant", {
+          nickname: item.participantNickname,
+        }),
+    ]
+      .filter(Boolean)
+      .join(tCommon("delimiter"));
 
     return (
       <ListItemButton
@@ -266,7 +274,7 @@ const OrdersKitchen = ({
           done={!!item.preparedAt || refunded}
           primary={`${item.menuItemName} ${tCommon("multiply")} ${item.orderQuantity - item.refundedQuantity}`}
           secondary={
-            refunded ? tOrders("kitchen.refunded") : choiceNames || undefined
+            refunded ? tOrders("kitchen.refunded") : details || undefined
           }
           slotProps={{ primary: { variant: "h6" } }}
         />

@@ -164,6 +164,7 @@
       }
     },
     "items": {
+      "participant": "주문자: {nickname}",
       "title": "주문 내역"
     },
     "notifications": {

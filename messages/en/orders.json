@@ -164,6 +164,7 @@
       }
     },
     "items": {
+      "participant": "Ordered by: {nickname}",
       "title": "Order summary"
     },
     "notifications": {
