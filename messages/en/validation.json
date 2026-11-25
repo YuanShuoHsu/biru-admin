@@ -502,6 +502,7 @@
       "max": "Deposited amount cannot exceed 9,999,999.",
       "required": "Deposited amount is required."
     },
+    "empty": "The reported and deposited amounts can't both be 0.",
     "reportedAmount": {
       "max": "Reported amount cannot exceed 9,999,999.",
       "required": "Reported amount is required."
