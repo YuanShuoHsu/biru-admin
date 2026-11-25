@@ -9,7 +9,7 @@ import { getOrdersKey } from "./constants";
 
 import ErrorAlert from "@/components/ErrorAlert";
 
-import { DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE } from "@/constants/pagination";
+import { resolvePagination } from "@/constants/pagination";
 
 import { redirect } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
@@ -37,11 +37,7 @@ const AuthOrdersPage = async ({
     searchParams,
   ]);
 
-  const page = Math.max(1, Number(rawPage) || 1);
-  const pageSize = Math.min(
-    Math.max(1, Number(rawPageSize) || DEFAULT_PAGE_SIZE),
-    MAX_PAGE_SIZE,
-  );
+  const { page, pageSize } = resolvePagination(rawPage, rawPageSize);
 
   if (
     (rawPage !== undefined && rawPage !== String(page)) ||
