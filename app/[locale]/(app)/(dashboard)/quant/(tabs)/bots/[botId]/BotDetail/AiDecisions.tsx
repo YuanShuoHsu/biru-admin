@@ -5,6 +5,8 @@ import useSWR from "swr";
 
 import { QUANT_BOTS_URL, useBotLabels } from "../../useQuantBots";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { MAX_PAGE_SIZE } from "@/constants/pagination";
 
 import {
@@ -34,7 +36,11 @@ const AiDecisions = ({ bot }: { bot: QuantBot }) => {
 
   const params = new URLSearchParams({ limit: String(MAX_PAGE_SIZE) });
   for (const kind of AI_EVENT_KINDS) params.append("kinds", kind);
-  const { data: { data: decisions } = { data: [] } } = useSWR<{
+  const {
+    data: { data: decisions } = { data: [] },
+    error,
+    mutate,
+  } = useSWR<{
     data: QuantBotEvent[];
   }>(`${QUANT_BOTS_URL}/${bot.id}/events?${params}`, fetcher);
 
@@ -65,7 +71,8 @@ const AiDecisions = ({ bot }: { bot: QuantBot }) => {
           />
         </Stack>
       )}
-      {!decisions.length && (
+      {error && !decisions.length && <ErrorAlert onRetry={() => mutate()} />}
+      {!error && !decisions.length && (
         <Typography color="text.secondary" variant="body2">
           {tAi("empty")}
         </Typography>
