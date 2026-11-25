@@ -109,7 +109,7 @@
         "telecom": "Phone and internet",
         "water": "Water"
       },
-      "personnelHint": "Used only for months without any published payslip; otherwise the payslips' personnel cost is used."
+      "personnelHint": "Used only for months in which no employee has a published payslip or can be estimated from the schedule and pay terms; otherwise those payslips and estimates are used."
     },
     "createdAt": "Created at",
     "description": "Enter each category once with the month it takes effect; it then carries forward every month. When the amount changes, add a new entry with a later effective month.",
