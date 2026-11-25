@@ -164,6 +164,7 @@
       }
     },
     "items": {
+      "participant": "點餐人：{nickname}",
       "title": "訂單明細"
     },
     "notifications": {

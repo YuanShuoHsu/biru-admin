@@ -306,6 +306,13 @@ const OrderDetailDialog = ({
                     {choiceNames}
                   </Typography>
                 )}
+                {item.participantNickname && (
+                  <Typography color="textSecondary" variant="caption">
+                    {tOrders("detail.items.participant", {
+                      nickname: item.participantNickname,
+                    })}
+                  </Typography>
+                )}
               </Stack>
               <AmountTypography variant="body2">
                 {formatMoney(
