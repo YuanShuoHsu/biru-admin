@@ -1,6 +1,7 @@
 {
   "actions": {
     "collection": {
+      "difference": "入金額と報告額の差額：{difference}",
       "success": "紙幣回収を記録しました。入金額と報告額の差額：{difference}",
       "title": "紙幣回収"
     },

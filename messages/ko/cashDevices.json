@@ -1,6 +1,7 @@
 {
   "actions": {
     "collection": {
+      "difference": "입금액과 보고액의 차액: {difference}",
       "success": "지폐 회수를 기록했습니다. 입금액과 보고액의 차액: {difference}",
       "title": "지폐 회수"
     },
