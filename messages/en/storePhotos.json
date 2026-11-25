@@ -46,7 +46,7 @@
   },
   "createdAt": "Created",
   "image": {
-    "helperText": "Shown at 4:3 on the storefront About page, where phones fade out the left and right edges; keep the subject in the middle.",
+    "helperText": "Shown at 4:3 in the scrolling strip on the storefront About page, whose left and right ends fade out; keep the subject in the middle.",
     "label": "Image"
   },
   "isActive": {
