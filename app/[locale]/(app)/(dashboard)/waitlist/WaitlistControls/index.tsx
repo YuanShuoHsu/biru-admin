@@ -53,9 +53,11 @@ const WaitlistControls = () => {
       mutateGlobal(
         (key) =>
           key === `${waitlistUrl}/tickets` ||
+          key ===
+            `/api/organizations/${organizationSlug}/special-hours/affected` ||
           (Array.isArray(key) && key[0] === `${waitlistUrl}/tickets/list`),
       ),
-    [mutateGlobal, waitlistUrl],
+    [mutateGlobal, organizationSlug, waitlistUrl],
   );
 
   const { isConnected } = useSocketConnection(menuSocket);
