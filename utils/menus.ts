@@ -7,22 +7,31 @@ import { fetcher } from "./fetcher";
 
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
-import type { FilterOperator } from "@/types/dataGrid";
 import type {
+  AddOnFilterField,
+  AddOnSortField,
   Menu,
   MenuItem,
   MenuItemAddOnListResponse,
+  MenuItemFilterField,
   MenuItemListResponse,
   MenuItemModifierGroupListResponse,
+  MenuItemSortField,
   MenuSection,
+  MenuSectionFilterField,
   MenuSectionListResponse,
+  MenuSectionSortField,
   Modifier,
+  ModifierFilterField,
   ModifierGroup,
+  ModifierGroupFilterField,
   ModifierGroupListResponse,
+  ModifierGroupSortField,
   ModifierListResponse,
+  ModifierSortField,
 } from "@/types/menus";
 
-import { getGridSearchParams } from "@/utils/dataGrid";
+import { type GridQuery, getGridSearchParams } from "@/utils/dataGrid";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -46,26 +55,10 @@ export const getAdminMenu = cache(
 export const getAdminMenuSections = cache(
   async (
     menuId: string,
-    page: number,
-    pageSize: number,
-    filterField?: string,
-    filterOperator?: FilterOperator,
-    filterValue?: string,
-    quickFilterValue?: string,
-    sortBy?: string,
-    sortDirection?: "asc" | "desc",
+    query: GridQuery<MenuSectionFilterField, MenuSectionSortField> = {},
     init?: RequestInit,
   ) => {
-    const params = getGridSearchParams({
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-    });
+    const params = getGridSearchParams(query);
     const result = await fetcher<MenuSectionListResponse>(
       `/api/menus/${menuId}/menu-sections?${params.toString()}`,
       init,
@@ -92,28 +85,10 @@ export const getAdminMenuItem = cache(
 export const getAdminMenuSectionItems = cache(
   async (
     sectionId: string,
-    page: number,
-    pageSize: number,
-    filterField?: string,
-    filterOperator?: FilterOperator,
-    filterValue?: string,
-    quickFilterValue?: string,
-    quickFilterEnums?: string[],
-    sortBy?: string,
-    sortDirection?: "asc" | "desc",
+    query: GridQuery<MenuItemFilterField, MenuItemSortField> = {},
     init?: RequestInit,
   ) => {
-    const params = getGridSearchParams({
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterEnums,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-    });
+    const params = getGridSearchParams(query);
     const result = await fetcher<MenuItemListResponse>(
       `/api/menu-sections/${sectionId}/menu-items?${params.toString()}`,
       init,
@@ -128,26 +103,10 @@ export const getAdminMenuSectionItems = cache(
 export const getAdminMenuItemAddOns = cache(
   async (
     menuItemId: string,
-    page: number,
-    pageSize: number,
-    filterField?: string,
-    filterOperator?: FilterOperator,
-    filterValue?: string,
-    quickFilterValue?: string,
-    sortBy?: string,
-    sortDirection?: "asc" | "desc",
+    query: GridQuery<AddOnFilterField, AddOnSortField> = {},
     init?: RequestInit,
   ) => {
-    const params = getGridSearchParams({
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-    });
+    const params = getGridSearchParams(query);
     const result = await fetcher<MenuItemAddOnListResponse>(
       `/api/menu-items/${menuItemId}/add-ons?${params.toString()}`,
       init,
@@ -162,26 +121,10 @@ export const getAdminMenuItemAddOns = cache(
 export const getAdminModifierGroups = cache(
   async (
     menuId: string,
-    page: number,
-    pageSize: number,
-    filterField?: string,
-    filterOperator?: FilterOperator,
-    filterValue?: string,
-    quickFilterValue?: string,
-    sortBy?: string,
-    sortDirection?: "asc" | "desc",
+    query: GridQuery<ModifierGroupFilterField, ModifierGroupSortField> = {},
     init?: RequestInit,
   ) => {
-    const params = getGridSearchParams({
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-    });
+    const params = getGridSearchParams(query);
     const result = await fetcher<ModifierGroupListResponse>(
       `/api/menus/${menuId}/modifier-groups?${params.toString()}`,
       init,
@@ -208,28 +151,10 @@ export const getAdminModifier = cache(
 export const getAdminModifiers = cache(
   async (
     groupId: string,
-    page: number,
-    pageSize: number,
-    filterField?: string,
-    filterOperator?: FilterOperator,
-    filterValue?: string,
-    quickFilterValue?: string,
-    quickFilterEnums?: string[],
-    sortBy?: string,
-    sortDirection?: "asc" | "desc",
+    query: GridQuery<ModifierFilterField, ModifierSortField> = {},
     init?: RequestInit,
   ) => {
-    const params = getGridSearchParams({
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterEnums,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-    });
+    const params = getGridSearchParams(query);
     const result = await fetcher<ModifierListResponse>(
       `/api/modifier-groups/${groupId}/modifiers?${params.toString()}`,
       init,
@@ -244,26 +169,10 @@ export const getAdminModifiers = cache(
 export const getAdminMenuItemModifierGroups = cache(
   async (
     menuItemId: string,
-    page: number,
-    pageSize: number,
-    filterField?: string,
-    filterOperator?: FilterOperator,
-    filterValue?: string,
-    quickFilterValue?: string,
-    sortBy?: string,
-    sortDirection?: "asc" | "desc",
+    query: GridQuery<ModifierGroupFilterField, ModifierGroupSortField> = {},
     init?: RequestInit,
   ) => {
-    const params = getGridSearchParams({
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-    });
+    const params = getGridSearchParams(query);
     const result = await fetcher<MenuItemModifierGroupListResponse>(
       `/api/menu-items/${menuItemId}/modifier-groups?${params.toString()}`,
       init,

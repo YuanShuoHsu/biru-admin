@@ -165,14 +165,16 @@ const MenuItemModifierGroupsPage = async ({
   const links = settle(
     getAdminMenuItemModifierGroups(
       menuItemId,
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
       fetchOptions,
     ),
   );

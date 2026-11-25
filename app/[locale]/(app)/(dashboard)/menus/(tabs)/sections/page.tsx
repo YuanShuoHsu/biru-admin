@@ -141,14 +141,16 @@ const MenusSectionsPage = async ({
   const sections = settle(
     getAdminMenuSections(
       menu.id,
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
       fetchOptions,
     ),
   );

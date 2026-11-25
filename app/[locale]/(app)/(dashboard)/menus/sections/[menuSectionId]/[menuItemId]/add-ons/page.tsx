@@ -163,14 +163,16 @@ const MenuItemAddOnsPage = async ({
   const addOns = settle(
     getAdminMenuItemAddOns(
       menuItemId,
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
       fetchOptions,
     ),
   );
