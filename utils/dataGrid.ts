@@ -6,8 +6,7 @@ import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
 import {
   DEFAULT_PAGE,
   DEFAULT_PAGE_SIZE,
-  MAX_PAGE_SIZE,
-  toBoundedInt,
+  resolvePagination,
 } from "@/constants/pagination";
 
 import { STORE_TIMEZONE } from "@/constants/timezone";
@@ -189,8 +188,7 @@ export const resolveGridSearchParams = <
     ...restSearchParams
   } = searchParams;
 
-  const page = toBoundedInt(rawPage, DEFAULT_PAGE);
-  const pageSize = toBoundedInt(rawPageSize, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE);
+  const { page, pageSize } = resolvePagination(rawPage, rawPageSize);
 
   const sortBy = sortFields.find((field) => field === rawSortBy);
   const sortDirection = sortDirectionValues.find(
