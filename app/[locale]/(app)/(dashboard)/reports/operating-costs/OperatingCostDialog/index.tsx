@@ -15,6 +15,8 @@ import {
   useOperatingCostFormSchema,
 } from "./definitions";
 
+import { toStoreDate } from "@/app/[locale]/(app)/(dashboard)/reports/definitions";
+
 import FormBox from "@/components/FormBox";
 
 import { STORE_TIMEZONE } from "@/constants/timezone";
@@ -197,7 +199,7 @@ const OperatingCostDialog = ({
           },
         }}
         timezone={STORE_TIMEZONE}
-        value={effectiveFrom ? dayjs(effectiveFrom, MONTH_FORMAT) : null}
+        value={effectiveFrom ? toStoreDate(`${effectiveFrom}-01`) : null}
         views={["year", "month"]}
       />
       <NumericFormat
