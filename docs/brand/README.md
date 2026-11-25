@@ -113,6 +113,7 @@ Logo 四周至少保留 Logo 寬度的十分之一，不放文字、圖片或裁
 | 簡體中文             | [Noto Sans SC](https://fonts.google.com/noto/specimen/Noto+Sans+SC)             | [SIL Open Font License 1.1](https://openfontlicense.org/)，可免費商用 |
 
 [menu.html](menu.html) 與系統產生的紙本（YuanShuoHsu/biru-api#569、YuanShuoHsu/biru-api#570）都用這套字體。
+前台與後台網站也依語言使用這套字體：繁體中文與英文用 Noto Sans TC，日文用 Noto Sans JP，韓文用 Noto Sans KR，簡體中文用 Noto Sans SC。
 系統產生的紙本依語系選字型，該字型缺字時改用其他 Noto Sans。
 
 ### 印刷規格

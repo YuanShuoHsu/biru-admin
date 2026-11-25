@@ -4,7 +4,12 @@
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations } from "next-intl/server";
-import { Geist, Geist_Mono } from "next/font/google";
+import {
+  Noto_Sans_JP,
+  Noto_Sans_KR,
+  Noto_Sans_SC,
+  Noto_Sans_TC,
+} from "next/font/google";
 import { notFound } from "next/navigation";
 import { locale as rootLocale } from "next/root-params";
 
@@ -12,6 +17,9 @@ import "./globals.css";
 
 import AppProviders from "@/components/AppProviders";
 
+import { LocaleEnum } from "@/enums/Locale";
+
+import type { Locale } from "@/i18n/routing";
 import { routing } from "@/i18n/routing";
 
 import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
@@ -25,15 +33,34 @@ import { getSiteMeta } from "@/utils/siteMeta";
 // https://nextjs.org/docs/messages/blocking-prerender-dynamic
 export const instant = false;
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+// https://nextjs.org/docs/app/api-reference/components/font#preloading
+const notoSansTC = Noto_Sans_TC({
+  preload: false,
+  variable: "--font-brand",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const notoSansJP = Noto_Sans_JP({
+  preload: false,
+  variable: "--font-brand",
 });
+
+const notoSansKR = Noto_Sans_KR({
+  preload: false,
+  variable: "--font-brand",
+});
+
+const notoSansSC = Noto_Sans_SC({
+  preload: false,
+  variable: "--font-brand",
+});
+
+const brandFonts: Record<Locale, typeof notoSansTC> = {
+  [LocaleEnum.ZhTW]: notoSansTC,
+  [LocaleEnum.En]: notoSansTC,
+  [LocaleEnum.Ja]: notoSansJP,
+  [LocaleEnum.Ko]: notoSansKR,
+  [LocaleEnum.ZhCN]: notoSansSC,
+};
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const locale = await rootLocale();
@@ -64,7 +91,7 @@ const RootLayout = async ({ children }: LayoutProps<"/[locale]">) => {
 
   return (
     <html
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${brandFonts[locale].variable} h-full antialiased`}
       data-scroll-behavior="smooth"
       lang={locale}
       suppressHydrationWarning
