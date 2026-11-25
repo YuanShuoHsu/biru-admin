@@ -58,6 +58,7 @@ const CashDeviceCollectionDialog = ({
     handleSubmit,
     register,
     setValue,
+    trigger,
   } = useForm<CashDeviceCollectionForm>({
     defaultValues: { depositedAmount: "", note: "", reportedAmount: "" },
     resolver: zodResolver(cashDeviceCollectionFormSchema),
@@ -125,9 +126,11 @@ const CashDeviceCollectionDialog = ({
         helperText={errors.reportedAmount?.message}
         label={tCashDevices("events.reportedAmount")}
         name="reportedAmount"
-        onValueChange={({ value }) =>
-          setValue("reportedAmount", value, { shouldValidate: isSubmitted })
-        }
+        onValueChange={({ value }) => {
+          setValue("reportedAmount", value);
+
+          if (isSubmitted) trigger(["depositedAmount", "reportedAmount"]);
+        }}
         required
         thousandSeparator=","
         value={reportedAmount}
@@ -142,9 +145,11 @@ const CashDeviceCollectionDialog = ({
         helperText={errors.depositedAmount?.message}
         label={tCashDevices("events.depositedAmount")}
         name="depositedAmount"
-        onValueChange={({ value }) =>
-          setValue("depositedAmount", value, { shouldValidate: isSubmitted })
-        }
+        onValueChange={({ value }) => {
+          setValue("depositedAmount", value);
+
+          if (isSubmitted) trigger(["depositedAmount", "reportedAmount"]);
+        }}
         required
         thousandSeparator=","
         value={depositedAmount}

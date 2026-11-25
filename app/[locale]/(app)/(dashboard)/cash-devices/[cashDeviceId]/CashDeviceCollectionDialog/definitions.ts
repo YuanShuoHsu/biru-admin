@@ -29,7 +29,10 @@ export const useCashDeviceCollectionFormSchema = () => {
     })
     .refine(
       ({ depositedAmount, reportedAmount }) =>
-        Number(depositedAmount) > 0 || Number(reportedAmount) > 0,
+        !depositedAmount ||
+        !reportedAmount ||
+        Number(depositedAmount) > 0 ||
+        Number(reportedAmount) > 0,
       {
         error: tValidation("cashDeviceCollection.empty"),
         path: ["depositedAmount"],
