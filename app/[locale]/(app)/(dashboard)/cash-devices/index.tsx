@@ -386,6 +386,10 @@ const CashDevices = ({
         columns={columns}
         filterMode="server"
         filterModel={filterModel}
+        initialState={{
+          ...DATA_GRID_PROPS.initialState,
+          columns: { columnVisibilityModel: { lastSeenAt: false } },
+        }}
         loading={loading || isValidating}
         onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
