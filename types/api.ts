@@ -7935,7 +7935,9 @@ export interface components {
         | "storePhoto"
         | "catalogSection"
         | "catalogItem"
-        | "catalogModifier";
+        | "catalogModifier"
+        | "user"
+        | "organization";
       scanned: number;
       count: number;
       keys: string[];
@@ -30427,6 +30429,8 @@ export const imageOrphanKindDtoKindValues: ReadonlyArray<
   "catalogSection",
   "catalogItem",
   "catalogModifier",
+  "user",
+  "organization",
 ];
 export const couponDiscountTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CouponDiscountType"]
