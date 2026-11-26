@@ -175,19 +175,23 @@ const DeletedRecordsPage = async ({
     ),
   );
 
+  const deletedRecordsProps = {
+    filterField,
+    filterOperator,
+    filterValue,
+    organizationSlug: organization?.slug,
+    page,
+    pageSize,
+    quickFilterValue,
+    sortBy,
+    sortDirection,
+  };
+
   return (
-    <Suspense fallback={<DeletedRecords loading />}>
+    <Suspense fallback={<DeletedRecords {...deletedRecordsProps} loading />}>
       <DeletedRecordsContent
+        {...deletedRecordsProps}
         deletedRecords={deletedRecords}
-        filterField={filterField}
-        filterOperator={filterOperator}
-        filterValue={filterValue}
-        organizationSlug={organization?.slug}
-        page={page}
-        pageSize={pageSize}
-        quickFilterValue={quickFilterValue}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
       />
     </Suspense>
   );
