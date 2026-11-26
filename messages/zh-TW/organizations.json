@@ -27,6 +27,11 @@
       "title": "刪除組織",
       "typeName": "請輸入店名「{name}」以確認"
     },
+    "joinAsPlatformAdmin": {
+      "confirm": "確定要以平台管理員身分加入 <bold>{name}</bold> 嗎？加入後您會成為這間門市的擁有者，並記錄在異動紀錄。",
+      "success": "已以平台管理員身分加入 {name}",
+      "title": "以平台管理員身分加入"
+    },
     "label": "操作",
     "leaveOrganization": {
       "confirm": "確定要離開 <bold>{name}</bold> 嗎？",
@@ -331,6 +336,11 @@
       "option": "{name} ({email})",
       "placeholder": "請選擇您的成員"
     }
+  },
+  "membership": {
+    "joinedAsPlatformAdmin": "以平台管理員身分加入",
+    "label": "加入狀態",
+    "notJoined": "未加入"
   },
   "name": {
     "label": "組織名稱",

@@ -10,6 +10,8 @@ import type { Locale } from "@/i18n/routing";
 import type { MyOrganization } from "@/types/organizations";
 
 import { fetcher } from "@/utils/fetcher";
+import { getOrganizations } from "@/utils/organizations";
+import { getSession } from "@/utils/session";
 
 interface OrganizationsPageProps {
   params: Promise<{ locale: Locale }>;
@@ -28,13 +30,15 @@ export const generateMetadata = async ({
 };
 
 const OrganizationsContent = async () => {
-  const cookieStore = await cookies();
+  const [cookieStore, session] = await Promise.all([cookies(), getSession()]);
+  const fetchOptions = { headers: { cookie: cookieStore.toString() } };
 
-  const rows = await fetcher<MyOrganization[]>("/api/users/me/organizations", {
-    headers: { cookie: cookieStore.toString() },
-  });
+  const [rows, organizations] = await Promise.all([
+    fetcher<MyOrganization[]>("/api/users/me/organizations", fetchOptions),
+    session?.user.role === "admin" ? getOrganizations(fetchOptions) : [],
+  ]);
 
-  return <Organizations rows={rows} />;
+  return <Organizations organizations={organizations} rows={rows} />;
 };
 
 const OrganizationsPage = () => (

@@ -38,6 +38,7 @@ import {
   DoNotDisturbOn,
   Edit,
   ManageAccounts,
+  PersonAdd,
   Storefront,
 } from "@mui/icons-material";
 import {
@@ -55,11 +56,15 @@ import { useGridApiRef } from "@mui/x-data-grid";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { MyOrganization } from "@/types/organizations";
+import type {
+  MyOrganization,
+  OrganizationResponse,
+} from "@/types/organizations";
 
 import { stringAvatar } from "@/utils/avatar";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
+import { getOrganizations } from "@/utils/organizations";
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
   height: "100%",
@@ -91,13 +96,20 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(1),
 }));
 
+type OrganizationRow = MyOrganization | OrganizationResponse;
+
+const isMyOrganization = (row: OrganizationRow): row is MyOrganization =>
+  "joinedAsPlatformAdmin" in row;
+
 interface OrganizationsProps {
   loading?: boolean;
+  organizations?: OrganizationResponse[];
   rows?: MyOrganization[];
 }
 
 const Organizations = ({
   loading = false,
+  organizations: initialOrganizations = [],
   rows: initialRows = [],
 }: OrganizationsProps) => {
   const [isSelectMode, setIsSelectMode] = useState(false);
@@ -126,6 +138,21 @@ const Organizations = ({
       },
     },
   );
+
+  const { data: organizations = initialOrganizations } = useSWR(
+    !loading && isPlatformAdmin && "/api/organizations?includeClosed=true",
+    () => getOrganizations(),
+    { fallbackData: initialOrganizations },
+  );
+
+  const gridRows = useMemo<OrganizationRow[]>(() => {
+    const memberOrganizationIds = new Set(rows.map(({ id }) => id));
+
+    return [
+      ...rows,
+      ...organizations.filter(({ id }) => !memberOrganizationIds.has(id)),
+    ];
+  }, [organizations, rows]);
 
   const mutate = useCallback(() => {
     mutateMyOrganizations();
@@ -332,8 +359,46 @@ const Organizations = ({
     [mutate, setDialog, tOrganizations],
   );
 
+  const handleJoinOrganization = useCallback(
+    ({ id, name }: OrganizationResponse) => {
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tOrganizations.rich("actions.joinAsPlatformAdmin.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              name,
+            })}
+          </DialogContentText>
+        ),
+        onConfirm: async () => {
+          try {
+            await fetcher(
+              `/api/organizations/${id}/platform-admin-membership`,
+              { method: "POST" },
+            );
+
+            enqueueSnackbar(
+              tOrganizations("actions.joinAsPlatformAdmin.success", { name }),
+              { variant: "success" },
+            );
+
+            mutate();
+          } catch (error) {
+            enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+          }
+        },
+        open: true,
+        title: tOrganizations("actions.joinAsPlatformAdmin.title"),
+      });
+    },
+    [mutate, setDialog, tOrganizations],
+  );
+
   const canUpdateOrganizations = rows.some(({ canUpdate }) => canUpdate);
   const canDeleteOrganizations = rows.some(({ deletable }) => deletable);
+  const hasMembershipColumn = gridRows.some(
+    (row) => !isMyOrganization(row) || row.joinedAsPlatformAdmin,
+  );
 
   const columns = useMemo<GridColDef[]>(
     () => [
@@ -345,7 +410,29 @@ const Organizations = ({
               field: "actions",
               filterable: false,
               headerName: tOrganizations("actions.label"),
-              renderCell: ({ row }: GridRenderCellParams<MyOrganization>) => {
+              renderCell: ({ row }: GridRenderCellParams<OrganizationRow>) => {
+                if (!isMyOrganization(row))
+                  return (
+                    <ActionsStack direction="row">
+                      <Tooltip
+                        title={tOrganizations(
+                          "actions.joinAsPlatformAdmin.title",
+                        )}
+                      >
+                        <IconButton
+                          onClick={(event) => {
+                            event.stopPropagation();
+
+                            handleJoinOrganization(row);
+                          }}
+                          size="small"
+                        >
+                          <PersonAdd fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </ActionsStack>
+                  );
+
                 const {
                   canUpdate: canUpdateOrganization,
                   deletable: canDeleteOrganization,
@@ -449,6 +536,35 @@ const Organizations = ({
           />
         ),
       },
+      ...(hasMembershipColumn
+        ? [
+            {
+              field: "joinedAsPlatformAdmin",
+              headerName: tOrganizations("membership.label"),
+              renderCell: ({ row }: GridRenderCellParams<OrganizationRow>) => {
+                if (!isMyOrganization(row))
+                  return (
+                    <Chip
+                      label={tOrganizations("membership.notJoined")}
+                      size="small"
+                      variant="outlined"
+                    />
+                  );
+
+                return (
+                  row.joinedAsPlatformAdmin && (
+                    <Chip
+                      color="primary"
+                      label={tOrganizations("membership.joinedAsPlatformAdmin")}
+                      size="small"
+                      variant="outlined"
+                    />
+                  )
+                );
+              },
+            },
+          ]
+        : []),
       {
         field: "logo",
         headerName: tOrganizations("logo"),
@@ -486,8 +602,10 @@ const Organizations = ({
       canUpdateOrganizations,
       format,
       handleDeleteOrganization,
+      handleJoinOrganization,
       handleToggleClosed,
       handleUpdateOrganization,
+      hasMembershipColumn,
       isPlatformAdmin,
       isSelectMode,
       router,
@@ -561,7 +679,7 @@ const Organizations = ({
         onPaginationModelChange={() =>
           apiRef.current?.autosizeColumns(autosizeOptions)
         }
-        rows={rows}
+        rows={gridRows}
       />
     </>
   );
