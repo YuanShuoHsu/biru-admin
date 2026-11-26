@@ -123,6 +123,8 @@ import type {
 
 import { getErrorMessage } from "@/utils/errors";
 
+const POLL_INTERVAL_MS = 15_000;
+
 const Joystick = dynamic(() => import("./Joystick"), { ssr: false });
 
 const ToolbarStack = styled(Stack)(({ theme }) => ({
@@ -584,16 +586,19 @@ const StoreLayout = ({
 
   const theme = useTheme();
 
+  const { isConnected } = useSocketConnection(menuSocket);
+
   const { data: boardColumns = initialColumns, mutate } = useSWR<
     AdminOrderBoardColumn[]
   >(
     hasBoard
       ? `/api/organizations/${organizationSlug}/orders/board/admin`
       : null,
-    { fallbackData: initialColumns },
+    {
+      fallbackData: initialColumns,
+      refreshInterval: isConnected ? 0 : POLL_INTERVAL_MS,
+    },
   );
-
-  const { isConnected } = useSocketConnection(menuSocket);
 
   useEffect(() => {
     if (!hasBoard || !isConnected) return;
