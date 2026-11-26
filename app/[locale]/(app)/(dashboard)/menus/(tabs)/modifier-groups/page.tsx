@@ -144,14 +144,16 @@ const ModifierGroupsPage = async ({
   const groups = settle(
     getAdminModifierGroups(
       menu.id,
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
       fetchOptions,
     ),
   );

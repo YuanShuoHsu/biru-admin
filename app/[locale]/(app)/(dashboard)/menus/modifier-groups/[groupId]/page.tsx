@@ -162,15 +162,17 @@ const ModifiersPage = async ({ params, searchParams }: ModifiersPageProps) => {
   const modifiers = settle(
     getAdminModifiers(
       groupId,
-      page,
-      pageSize,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterValue,
-      quickFilterEnums,
-      sortBy,
-      sortDirection,
+      {
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        quickFilterEnums,
+        quickFilterValue,
+        sortBy,
+        sortDirection,
+      },
       fetchOptions,
     ),
   );
