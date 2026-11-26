@@ -2,28 +2,18 @@ import { cache } from "react";
 
 import { fetcher } from "./fetcher";
 
-import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
-import { DEFAULT_PAGE_SIZE } from "@/constants/pagination";
-
 import type {
   AuditLogFilterField,
   AuditLogListResponse,
   AuditLogSortField,
   AuditResource,
 } from "@/types/audit";
-import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 
-interface GetAuditLogsQuery {
+import { type GridQuery, getGridSearchParams } from "@/utils/dataGrid";
+
+interface GetAuditLogsQuery
+  extends GridQuery<AuditLogFilterField, AuditLogSortField> {
   actorId?: string;
-  filterField?: AuditLogFilterField;
-  filterOperator?: FilterOperator;
-  filterValue?: string;
-  page?: number;
-  pageSize?: number;
-  quickFilterEnums?: string[];
-  quickFilterValue?: string;
-  sortBy?: AuditLogSortField;
-  sortDirection?: SortDirection;
 }
 
 export const getAuditLogsPath = (organizationSlug?: string) =>
@@ -127,42 +117,17 @@ export const getAuditLogs = cache(
     resource: AuditResource | undefined,
     resourceId: string | undefined,
     ancestorId: string | undefined,
-    {
-      actorId,
-      page = 1,
-      pageSize = DEFAULT_PAGE_SIZE,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterEnums,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-    }: GetAuditLogsQuery = {},
+    { actorId, ...query }: GetAuditLogsQuery = {},
     init?: RequestInit,
   ) => {
-    const isNoValueOperator =
-      filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
-    const params = new URLSearchParams({
-      ...(resource && { resource }),
-      ...(resourceId && { resourceId }),
-      ...(ancestorId && { ancestorId }),
-      ...(actorId && { actorId }),
-      limit: String(pageSize),
-      offset: String((page - 1) * pageSize),
-      ...(sortBy && { sortBy }),
-      ...(sortDirection && { sortDirection }),
-      ...(filterField &&
-        filterOperator &&
-        (filterValue || isNoValueOperator) && {
-          filterField,
-          filterOperator,
-          ...(filterValue && { filterValue }),
-        }),
-      ...(quickFilterValue && { quickFilterValue }),
-    });
-    for (const entry of quickFilterEnums || [])
-      params.append("quickFilterEnums", entry);
+    const params = getGridSearchParams(query);
+    for (const [key, value] of Object.entries({
+      resource,
+      resourceId,
+      ancestorId,
+      actorId,
+    }))
+      if (value) params.set(key, value);
 
     const result = await fetcher<AuditLogListResponse>(
       `${getAuditLogsPath(organizationSlug)}?${params.toString()}`,
