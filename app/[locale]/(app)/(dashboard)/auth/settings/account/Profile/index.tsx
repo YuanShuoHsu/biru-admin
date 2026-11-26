@@ -147,7 +147,11 @@ const Profile = () => {
     telephone: telephoneValue,
     emailSubscribed: emailSubscribedValue,
   }: ProfileForm) => {
-    const name = formatFullName(locale, firstName, lastName);
+    const name = formatFullName(
+      session?.user.lang ?? locale,
+      firstName,
+      lastName,
+    );
 
     await authClient.updateUser({
       ...(isAvatarDirty && { image: avatarSrc }),
