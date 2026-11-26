@@ -48,6 +48,26 @@
 | [德暘](https://www.dycup.com/tw/product/%E7%92%B0%E4%BF%9D%E7%B4%99%E6%9D%AF4.0-eco-new-/%E7%92%B0%E4%BF%9D%E7%B4%99%E6%9D%AF4.0-%E7%84%A1%E6%B7%8B%E8%86%9C%E5%86%B7%E7%86%B1%E5%85%B1%E7%94%A8%E7%B4%99%E6%9D%AF-12oz) | 環保紙杯 4.0 無淋膜冷熱共用：12oz 440cc、16oz 530cc，90mm；100% 防水紙漿                                                                                                                                                              | 沒寫                                                                                                                                                                                                                                | 沒寫                                                                                                                                                                                                                                                                                                          | 耐熱溫度、能否封膜、杯蓋、客製與價格                             |
 | [萬福](https://www.onefu.com.tw/private-printing.html)（目前暫定）                                                                                                                                                       | [私版 90 口徑冷熱共用杯](https://www.onefu.com.tw/design002.html)：PE 淋膜，耐熱 95°C，印刷 30,000 個起                                                                                                                               | 有                                                                                                                                                                                                                                  | [90 口徑杯蓋](https://www.onefu.com.tw/d0412.html)：[咖啡凸蓋含杯塞](https://www.onefu.com.tw/product-detail-3429840.html)（PP，95°C）、[就口掀蓋](https://www.onefu.com.tw/product-detail-3383027.html)（PET，40°C，熱飲不可用）、[純牛皮紙蓋](https://www.onefu.com.tw/product-detail-3724129.html)（95°C） | 純牛皮紙蓋是否含塑膠、能否直接就口                               |
 
+#### 目前傾向：封王預切膜（待討論）
+
+開發者比較想用封王的[預切膜](https://zh-tw.phoenixes.com.tw/precut-film)，因為插吸管和直接就口都能用膜處理，不用另外叫杯蓋：
+
+| 用途           | 膜         | 材質                 | 官網寫的適用飲品     | 開口             |
+| -------------- | ---------- | -------------------- | -------------------- | ---------------- |
+| 預設：插吸管   | 星月鋁片膜 | PET／AL／EVA         | 冷飲、常溫           | 沒寫             |
+| 例外：直接就口 | 咖啡紙片膜 | 食品紙＋單面 PE 淋膜 | 熱咖啡、溫熱中杯飲品 | 可就口，不用吸管 |
+
+兩款都是 91 × 101mm 的預切片，頁面寫「需搭配專用封口機使用」，但沒寫型號。PH-588S 是捲膜機，封王的單片式咖啡杯封口機是 [PH-989H](https://www.phoenixesgroup.com/en/products/equipment/cat-small-machines/tabletop_cup_sealing_machine-ph-989h)。
+
+待確認：
+
+- 鋁片膜能不能封熱飲、吸管好不好戳
+- 紙片膜能不能封冷飲
+- 兩款能不能封自家的無塑紙杯
+- 要用哪台封口機，和已選的 PH-588S 怎麼取捨
+- 紙片膜客製印刷的起印量：頁面同時寫了 3,600 張與 1,000 個
+- 兩款都含塑膠層（PE、PET、EVA），不是完全零塑膠
+
 ## 內用餐具
 
 內用熱飲杯、冷飲杯的容量以外帶杯為準：[萬福](suppliers.md#包材耗材)官網標示 12oz 約 360ml、16oz 約 480ml，滿口容量待向萬福確認，下表這兩項的容量為暫定。
