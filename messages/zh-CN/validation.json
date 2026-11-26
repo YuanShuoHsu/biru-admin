@@ -21,6 +21,9 @@
   "banReason": {
     "maxLength": "封禁原因不能超过 160 个字符。"
   },
+  "backupCode": {
+    "required": "备用码为必填。"
+  },
   "bio": {
     "maxLength": "个人简介不能超过 160 个字符。"
   },
@@ -360,6 +363,9 @@
   },
   "terminatedAt": {
     "afterHiredAt": "离职时间必须晚于入职时间。"
+  },
+  "twoFactorCode": {
+    "invalid": "请输入 6 位验证码。"
   },
   "unitCode": {
     "notSelected": "请选择您的内容量单位。"

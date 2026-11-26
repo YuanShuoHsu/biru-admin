@@ -21,6 +21,9 @@
   "banReason": {
     "maxLength": "Ban reason must not exceed 160 characters."
   },
+  "backupCode": {
+    "required": "Backup code is required."
+  },
   "bio": {
     "maxLength": "Bio must not exceed 160 characters."
   },
@@ -360,6 +363,9 @@
   },
   "terminatedAt": {
     "afterHiredAt": "Employment end must be after employment start."
+  },
+  "twoFactorCode": {
+    "invalid": "Enter the 6-digit code."
   },
   "unitCode": {
     "notSelected": "Please select your content unit."

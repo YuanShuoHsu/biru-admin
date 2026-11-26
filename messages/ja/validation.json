@@ -21,6 +21,9 @@
   "banReason": {
     "maxLength": "BAN理由は160文字以内で入力してください。"
   },
+  "backupCode": {
+    "required": "バックアップコードは必須です。"
+  },
   "bio": {
     "maxLength": "自己紹介は160文字以内で入力してください。"
   },
@@ -360,6 +363,9 @@
   },
   "terminatedAt": {
     "afterHiredAt": "退職日時は入社日時より後でなければなりません。"
+  },
+  "twoFactorCode": {
+    "invalid": "6桁の認証コードを入力してください。"
   },
   "unitCode": {
     "notSelected": "内容量の単位を選択してください。"
