@@ -575,16 +575,17 @@ const Admins = ({
                       </IconButton>
                     </Tooltip>
                     <Tooltip title={tAdmins("actions.setRole.title")}>
-                      <IconButton
+                      <StyledIconButton
                         onClick={(event) => {
                           event.stopPropagation();
 
                           handleSetRole(row);
                         }}
                         size="small"
+                        visible={!isCurrentUser}
                       >
                         <AssignmentInd fontSize="small" />
-                      </IconButton>
+                      </StyledIconButton>
                     </Tooltip>
                     <Tooltip title={tAdmins("actions.setUserPassword.title")}>
                       <IconButton
