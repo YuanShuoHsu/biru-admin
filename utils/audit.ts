@@ -31,6 +31,12 @@ export const getAuditLogsPath = (organizationSlug?: string) =>
     ? `/api/organizations/${organizationSlug}/audit-logs`
     : "/api/audit-logs";
 
+export const ADMIN_SCOPE_AUDIT_RESOURCES: AuditResource[] = [
+  "banner",
+  "storePhoto",
+  "userCoupon",
+];
+
 export const getAuditLogHref = (
   resource: AuditResource,
   resourceId: string,

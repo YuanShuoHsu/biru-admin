@@ -71,7 +71,7 @@ interface AuditLogsContentProps {
   filterOperator?: FilterOperator;
   filterValue?: string;
   ingredient?: Ingredient;
-  joinedOrganizations: Promise<Organization[] | undefined>;
+  joinedOrganizations: Promise<FetchResult<Organization[] | undefined>>;
   organization?: Organization;
   organizations: Promise<FetchResult<OrganizationResponse[]>>;
   page: number;
@@ -96,17 +96,20 @@ const AuditLogsContent = async ({
   const { data: auditLogs, error } = await auditLogsResult;
   if (error) return <ErrorAlert />;
 
-  const { logs, total } = auditLogs;
+  const { data: joinedOrganizations, error: joinedOrganizationsError } =
+    await joinedOrganizationsResult;
+  if (joinedOrganizationsError) return <ErrorAlert />;
 
-  const joinedOrganizations = (await joinedOrganizationsResult)?.map(
-    ({ id, slug }) => ({ id, slug }),
-  );
+  const { logs, total } = auditLogs;
 
   return (
     <AuditLogs
       {...props}
       key={props.organization?.slug}
-      joinedOrganizations={joinedOrganizations}
+      joinedOrganizations={joinedOrganizations?.map(({ id, slug }) => ({
+        id,
+        slug,
+      }))}
       logs={logs}
       organizations={organizations}
       rowCount={total}
@@ -214,9 +217,9 @@ const AuditLogsPage = async ({
         filterOperator={filterOperator}
         filterValue={filterValue}
         ingredient={ingredient}
-        joinedOrganizations={
-          isAdmin ? listOrganizations() : Promise.resolve(undefined)
-        }
+        joinedOrganizations={settle(
+          isAdmin ? listOrganizations() : Promise.resolve(undefined),
+        )}
         organization={selectedOrganization}
         organizations={organizations}
         page={page}

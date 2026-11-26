@@ -56,7 +56,11 @@ import type { LocalizedText } from "@/types/locale";
 import type { Organization, OrganizationResponse } from "@/types/organizations";
 
 import { formatLeaveDuration, weekdayDate } from "@/utils/attendance";
-import { getAuditLogHref, getAuditLogsPath } from "@/utils/audit";
+import {
+  ADMIN_SCOPE_AUDIT_RESOURCES,
+  getAuditLogHref,
+  getAuditLogsPath,
+} from "@/utils/audit";
 import { getDataGridSearchParams } from "@/utils/dataGrid";
 import { getAuditLogEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
@@ -809,6 +813,7 @@ const AuditLogs = ({
                 const canOpenTarget =
                   !joinedOrganizations ||
                   !row.organizationId ||
+                  ADMIN_SCOPE_AUDIT_RESOURCES.includes(row.resource) ||
                   targetOrganization;
 
                 return label && href && canOpenTarget ? (
