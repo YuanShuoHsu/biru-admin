@@ -1,10 +1,8 @@
 {
   "batchRestore": {
     "cancel": {
-      "confirm": "確定要取消<bold>資料</bold>批次還原嗎？已勾選的項目將會清除。",
       "label": "取消批次還原資料"
     },
-    "confirm": "確定要進行<bold>資料</bold>批次還原嗎？",
     "submit": {
       "confirm": "確定要還原所選的 <bold>{count} 筆資料</bold>嗎？同一次刪除的相關資料也會一起還原。",
       "label": "還原所選資料（{count}）",

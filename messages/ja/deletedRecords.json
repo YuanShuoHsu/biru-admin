@@ -1,10 +1,8 @@
 {
   "batchRestore": {
     "cancel": {
-      "confirm": "<bold>データ</bold>の一括復元をキャンセルしますか？選択した項目はクリアされます。",
       "label": "データの一括復元をキャンセル"
     },
-    "confirm": "<bold>データ</bold>を一括復元しますか？",
     "submit": {
       "confirm": "選択した <bold>{count} 件のデータ</bold>を復元しますか？同時に削除された関連データも復元されます。",
       "label": "選択したデータを復元（{count}）",

@@ -232,22 +232,9 @@ const DeletedRecords = ({
   );
 
   const handleEnterDeletedRecordBatchRestoreMode = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tDeletedRecords.rich("batchRestore.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setIsSelectMode(true);
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tDeletedRecords("batchRestore.title"),
-    });
-  }, [apiRef, setDialog, tDeletedRecords]);
+    setIsSelectMode(true);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef]);
 
   const handleSubmitDeletedRecordBatchRestore = useCallback(() => {
     const count = selectedRows.length;
@@ -296,24 +283,11 @@ const DeletedRecords = ({
   ]);
 
   const handleCancelDeletedRecordBatchRestore = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tDeletedRecords.rich("batchRestore.cancel.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setIsSelectMode(false);
-        clearRowSelection();
+    setIsSelectMode(false);
+    clearRowSelection();
 
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tDeletedRecords("batchRestore.cancel.label"),
-    });
-  }, [apiRef, clearRowSelection, setDialog, tDeletedRecords]);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef, clearRowSelection]);
 
   const columns = useMemo<GridColDef[]>(
     () => [
