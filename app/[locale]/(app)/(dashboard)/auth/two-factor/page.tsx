@@ -22,13 +22,16 @@ export const generateMetadata = async ({
 const AuthTwoFactorPage = async ({ searchParams }: AuthTwoFactorPageProps) => {
   const { methods, redirectTo } = await searchParams;
 
-  const safeMethods = typeof methods === "string" ? methods.split(",") : [];
+  const twoFactorMethods =
+    typeof methods === "string" ? methods.split(",") : [];
   const safeRedirectTo =
     typeof redirectTo === "string" && redirectTo.startsWith("/")
       ? redirectTo
       : undefined;
 
-  return <AuthTwoFactor methods={safeMethods} redirectTo={safeRedirectTo} />;
+  return (
+    <AuthTwoFactor methods={twoFactorMethods} redirectTo={safeRedirectTo} />
+  );
 };
 
 export default AuthTwoFactorPage;

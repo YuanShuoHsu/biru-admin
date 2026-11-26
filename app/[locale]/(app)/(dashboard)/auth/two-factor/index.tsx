@@ -218,9 +218,7 @@ const AuthTwoFactor = ({ methods, redirectTo }: AuthTwoFactorProps) => {
           )}
           required
           slotProps={{
-            htmlInput: isBackupCode
-              ? undefined
-              : { inputMode: "numeric", maxLength: 6 },
+            htmlInput: isBackupCode ? undefined : { inputMode: "numeric" },
           }}
           {...register("code")}
         />

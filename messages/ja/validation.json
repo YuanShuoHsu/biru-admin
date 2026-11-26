@@ -18,11 +18,11 @@
   "availableModes": {
     "notSelected": "提供方式を選択してください。"
   },
-  "banReason": {
-    "maxLength": "BAN理由は160文字以内で入力してください。"
-  },
   "backupCode": {
     "required": "バックアップコードは必須です。"
+  },
+  "banReason": {
+    "maxLength": "BAN理由は160文字以内で入力してください。"
   },
   "bio": {
     "maxLength": "自己紹介は160文字以内で入力してください。"

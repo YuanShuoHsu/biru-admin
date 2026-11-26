@@ -18,11 +18,11 @@
   "availableModes": {
     "notSelected": "Please select your sold in modes."
   },
-  "banReason": {
-    "maxLength": "Ban reason must not exceed 160 characters."
-  },
   "backupCode": {
     "required": "Backup code is required."
+  },
+  "banReason": {
+    "maxLength": "Ban reason must not exceed 160 characters."
   },
   "bio": {
     "maxLength": "Bio must not exceed 160 characters."

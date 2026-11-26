@@ -18,11 +18,11 @@
   "availableModes": {
     "notSelected": "請選擇您的販售方式。"
   },
-  "banReason": {
-    "maxLength": "封禁原因不能超過 160 個字元。"
-  },
   "backupCode": {
     "required": "備用碼為必填。"
+  },
+  "banReason": {
+    "maxLength": "封禁原因不能超過 160 個字元。"
   },
   "bio": {
     "maxLength": "個人簡介不能超過 160 個字元。"

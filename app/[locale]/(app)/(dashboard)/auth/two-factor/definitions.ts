@@ -22,7 +22,7 @@ export const useTwoFactorFormSchema = (method: TwoFactorMethod) => {
             .min(1, { error: tValidation("backupCode.required") })
         : z
             .string()
-            .trim()
+            .overwrite((code) => code.replace(/\s/g, ""))
             .regex(/^\d{6}$/, { error: tValidation("twoFactorCode.invalid") }),
     trustDevice: z.boolean(),
   });

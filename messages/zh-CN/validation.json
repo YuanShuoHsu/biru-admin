@@ -18,11 +18,11 @@
   "availableModes": {
     "notSelected": "请选择您的销售方式。"
   },
-  "banReason": {
-    "maxLength": "封禁原因不能超过 160 个字符。"
-  },
   "backupCode": {
     "required": "备用码为必填。"
+  },
+  "banReason": {
+    "maxLength": "封禁原因不能超过 160 个字符。"
   },
   "bio": {
     "maxLength": "个人简介不能超过 160 个字符。"
