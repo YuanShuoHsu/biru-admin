@@ -68,10 +68,10 @@ const OrganizationsSlugMembersPage = async ({
   });
 
   const members = sortByCreatedAtDesc(data.members);
-  const fetchesPlatformAdminMemberIds = needsPlatformAdminMemberIds(
-    currentUserRole,
-    session.user.role,
-  );
+  const isPlatformAdmin = session.user.role === "admin";
+  const fetchesPlatformAdminMemberIds =
+    isPlatformAdmin ||
+    needsPlatformAdminMemberIds(currentUserRole, session.user.role);
   const { data: platformAdminMemberIds = [] } = fetchesPlatformAdminMemberIds
     ? await settle(
         getPlatformAdminMemberIds(data.id, {
@@ -87,7 +87,7 @@ const OrganizationsSlugMembersPage = async ({
       currentUserId: session.user.id,
       currentUserRole,
       members,
-      platformAdminMemberIds,
+      platformAdminMemberIds: isPlatformAdmin ? [] : platformAdminMemberIds,
     }),
   );
   const canUpdateMemberRoles = permissions.some(
@@ -113,6 +113,7 @@ const OrganizationsSlugMembersPage = async ({
       currentUserRole={currentUserRole}
       fetchesPlatformAdminMemberIds={fetchesPlatformAdminMemberIds}
       initialPlatformAdminMemberIds={platformAdminMemberIds}
+      isPlatformAdmin={isPlatformAdmin}
     />
   );
 };

@@ -272,6 +272,11 @@
         },
         "title": "批次移除團隊成員"
       },
+      "confirmOwner": {
+        "confirm": "確定要將 <bold>{email}</bold> 轉為真正店主嗎？角色會改為顯示「擁有者」。",
+        "success": "已將 {email} 轉為真正店主",
+        "title": "轉為真正店主"
+      },
       "inviteMember": {
         "email": {
           "label": "電子郵件",
@@ -309,7 +314,8 @@
       "label": "角色",
       "member": "成員",
       "owner": "擁有者",
-      "placeholder": "請選擇您的角色"
+      "placeholder": "請選擇您的角色",
+      "platformAdmin": "平台管理員"
     },
     "showcase": {
       "label": "顯示在官網",

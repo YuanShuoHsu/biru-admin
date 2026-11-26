@@ -272,6 +272,11 @@
         },
         "title": "Batch Remove Team Members"
       },
+      "confirmOwner": {
+        "confirm": "Confirm <bold>{email}</bold> as a store owner? Their role will show as Owner.",
+        "success": "Confirmed {email} as a store owner",
+        "title": "Confirm as store owner"
+      },
       "inviteMember": {
         "email": {
           "label": "Email",
@@ -309,7 +314,8 @@
       "label": "Role",
       "member": "Member",
       "owner": "Owner",
-      "placeholder": "Please select your role"
+      "placeholder": "Please select your role",
+      "platformAdmin": "Platform admin"
     },
     "showcase": {
       "label": "Show on website",
