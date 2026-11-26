@@ -7936,6 +7936,7 @@ export interface components {
         | "catalogSection"
         | "catalogItem"
         | "catalogModifier"
+        | "user"
         | "organization";
       scanned: number;
       count: number;
@@ -30428,6 +30429,7 @@ export const imageOrphanKindDtoKindValues: ReadonlyArray<
   "catalogSection",
   "catalogItem",
   "catalogModifier",
+  "user",
   "organization",
 ];
 export const couponDiscountTypeValues: ReadonlyArray<
