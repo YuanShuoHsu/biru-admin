@@ -182,10 +182,8 @@
     "actions": {
       "batchCancelInvitation": {
         "cancel": {
-          "confirm": "<bold>招待</bold>の一括キャンセルをキャンセルしますか？選択した項目はクリアされます。",
           "label": "招待の一括キャンセルをキャンセル"
         },
-        "confirm": "<bold>招待</bold>を一括キャンセルしますか？",
         "submit": {
           "confirm": "選択した <bold>{count} 件の招待</bold>をキャンセルしますか？",
           "label": "選択した招待をキャンセル（{count}）",

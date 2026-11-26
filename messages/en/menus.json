@@ -184,10 +184,8 @@
         },
         "batchDetach": {
           "cancel": {
-            "confirm": "Are you sure you want to cancel batch detach <bold>modifier group attachments</bold>? Your selection will be cleared.",
             "label": "Cancel Batch Detach Modifier Group Attachments"
           },
-          "confirm": "Are you sure you want to batch detach <bold>modifier group attachments</bold>?",
           "submit": {
             "confirm": "Are you sure you want to detach the <bold>{count, plural, one {# selected modifier group attachment} other {# selected modifier group attachments}}</bold>? This does not delete the groups themselves.",
             "error": "Failed to batch detach modifier group attachments",

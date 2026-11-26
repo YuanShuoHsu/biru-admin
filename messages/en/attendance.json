@@ -36,10 +36,8 @@
     "actions": {
       "batchRevokeDeferral": {
         "cancel": {
-          "confirm": "Are you sure you want to cancel batch revoke <bold>deferral agreements</bold>? Your selection will be cleared.",
           "label": "Cancel Batch Revoke Deferral Agreements"
         },
-        "confirm": "Are you sure you want to batch revoke <bold>deferral agreements</bold>?",
         "submit": {
           "confirm": "Are you sure you want to revoke the <bold>{count, plural, one {# selected deferral agreement} other {# selected deferral agreements}}</bold>?",
           "label": "Revoke Selected Deferral Agreements ({count})",
@@ -830,10 +828,8 @@
     "actions": {
       "batchRevoke": {
         "cancel": {
-          "confirm": "Are you sure you want to cancel batch revoke <bold>substitute days</bold>? Your selection will be cleared.",
           "label": "Cancel Batch Revoke Substitute Days"
         },
-        "confirm": "Are you sure you want to batch revoke <bold>substitute days</bold>?",
         "submit": {
           "confirm": "Are you sure you want to revoke the <bold>{count, plural, one {# selected substitute day} other {# selected substitute days}}</bold>?",
           "label": "Revoke Selected Substitute Days ({count})",

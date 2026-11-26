@@ -184,10 +184,8 @@
         },
         "batchDetach": {
           "cancel": {
-            "confirm": "确定要取消<bold>选项组挂载</bold>批量解除吗？已勾选的项目将会清除。",
             "label": "取消批量解除选项组挂载"
           },
-          "confirm": "确定要进行<bold>选项组挂载</bold>批量解除吗？",
           "submit": {
             "confirm": "确定要解除所选的 <bold>{count} 条选项组挂载</bold>吗？此操作不会删除组本身。",
             "error": "批量解除选项组挂载失败",

@@ -36,10 +36,8 @@
     "actions": {
       "batchRevokeDeferral": {
         "cancel": {
-          "confirm": "<bold>繰越協定</bold>の一括取消をキャンセルしますか？選択した項目はクリアされます。",
           "label": "繰越協定の一括取消をキャンセル"
         },
-        "confirm": "<bold>繰越協定</bold>を一括取消しますか？",
         "submit": {
           "confirm": "選択した <bold>{count} 件の繰越協定</bold>を取消しますか？",
           "label": "選択した繰越協定を取消（{count}）",
@@ -830,10 +828,8 @@
     "actions": {
       "batchRevoke": {
         "cancel": {
-          "confirm": "<bold>振替休日</bold>の一括取消をキャンセルしますか？選択した項目はクリアされます。",
           "label": "振替休日の一括取消をキャンセル"
         },
-        "confirm": "<bold>振替休日</bold>を一括取消しますか？",
         "submit": {
           "confirm": "選択した <bold>{count} 件の振替休日</bold>を取消しますか？",
           "label": "選択した振替休日を取消（{count}）",

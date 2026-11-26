@@ -113,10 +113,8 @@
     "actions": {
       "batchRevokeUserSession": {
         "cancel": {
-          "confirm": "<bold>セッション</bold>の一括無効化をキャンセルしますか？選択した項目はクリアされます。",
           "label": "セッションの一括無効化をキャンセル"
         },
-        "confirm": "<bold>セッション</bold>を一括無効化しますか？",
         "submit": {
           "confirm": "選択した <bold>{count} 件のセッション</bold>を無効化しますか？",
           "label": "選択したセッションを無効化（{count}）",

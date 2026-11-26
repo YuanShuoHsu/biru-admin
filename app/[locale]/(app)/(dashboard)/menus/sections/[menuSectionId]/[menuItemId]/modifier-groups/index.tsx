@@ -246,22 +246,9 @@ const MenuItemModifierGroups = ({
   );
 
   const handleEnterBatchDetachMode = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tMenus.rich("items.modifierGroups.actions.batchDetach.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setToolbarMode("select");
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tMenus("items.modifierGroups.actions.batchDetach.title"),
-    });
-  }, [apiRef, setDialog, tMenus]);
+    setToolbarMode("select");
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef]);
 
   const handleSubmitBatchDetach = useCallback(() => {
     const count = selectedRows.length;
@@ -324,27 +311,11 @@ const MenuItemModifierGroups = ({
   ]);
 
   const handleCancelBatchDetach = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tMenus.rich(
-            "items.modifierGroups.actions.batchDetach.cancel.confirm",
-            {
-              bold: (chunks) => <strong>{chunks}</strong>,
-            },
-          )}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setToolbarMode(null);
-        clearRowSelection();
+    setToolbarMode(null);
+    clearRowSelection();
 
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tMenus("items.modifierGroups.actions.batchDetach.cancel.label"),
-    });
-  }, [apiRef, clearRowSelection, setDialog, tMenus]);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef, clearRowSelection]);
 
   const handleEnterReorderMode = useCallback(() => {
     setDialog({

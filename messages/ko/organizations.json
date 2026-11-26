@@ -182,10 +182,8 @@
     "actions": {
       "batchCancelInvitation": {
         "cancel": {
-          "confirm": "<bold>초대</bold> 일괄 취소를 취소하시겠습니까? 선택한 항목이 해제됩니다.",
           "label": "초대 일괄 취소 취소"
         },
-        "confirm": "<bold>초대</bold>를 일괄 취소하시겠습니까?",
         "submit": {
           "confirm": "선택한 <bold>{count}개의 초대</bold>를 취소하시겠습니까?",
           "label": "선택한 초대 취소 ({count})",

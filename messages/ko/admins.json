@@ -113,10 +113,8 @@
     "actions": {
       "batchRevokeUserSession": {
         "cancel": {
-          "confirm": "<bold>세션</bold> 일괄 취소를 취소하시겠습니까? 선택한 항목이 해제됩니다.",
           "label": "세션 일괄 취소 취소"
         },
-        "confirm": "<bold>세션</bold>을 일괄 취소하시겠습니까?",
         "submit": {
           "confirm": "선택한 <bold>{count}개의 세션</bold>을 취소하시겠습니까?",
           "label": "선택한 세션 취소 ({count})",

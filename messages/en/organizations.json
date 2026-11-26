@@ -182,10 +182,8 @@
     "actions": {
       "batchCancelInvitation": {
         "cancel": {
-          "confirm": "Are you sure you want to cancel batch cancel <bold>invitations</bold>? Your selection will be cleared.",
           "label": "Cancel Batch Cancel Invitations"
         },
-        "confirm": "Are you sure you want to batch cancel <bold>invitations</bold>?",
         "submit": {
           "confirm": "Are you sure you want to cancel the <bold>{count, plural, one {# selected invitation} other {# selected invitations}}</bold>?",
           "label": "Cancel Selected Invitations ({count})",

@@ -184,10 +184,8 @@
         },
         "batchDetach": {
           "cancel": {
-            "confirm": "確定要取消<bold>選項群組掛載</bold>批次解除嗎？已勾選的項目將會清除。",
             "label": "取消批次解除選項群組掛載"
           },
-          "confirm": "確定要進行<bold>選項群組掛載</bold>批次解除嗎？",
           "submit": {
             "confirm": "確定要解除所選的 <bold>{count} 筆選項群組掛載</bold>嗎？此操作不會刪除群組本身。",
             "error": "批次解除選項群組掛載失敗",
