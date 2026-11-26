@@ -806,7 +806,10 @@ const AuditLogs = ({
                   <MuiLink
                     href={getHref(href, {
                       ...DEFAULT_PAGINATION_QUERY,
-                      organization: searchParams.get("organization"),
+                      organization:
+                        organizations.find(
+                          ({ id }) => id === row.organizationId,
+                        )?.slug ?? searchParams.get("organization"),
                     })}
                   >
                     {label}
