@@ -129,6 +129,11 @@ const AuditLogsPage = async ({
     : await getResolvedAdminOrganization(searchParams.organization);
   if (!isAdmin && !selectedOrganization) notFound();
 
+  const isVisibleField = (field: string) =>
+    field !== "resourceId" &&
+    (isAdmin || field !== "organizationId") &&
+    (!resource || field !== "resource");
+
   const {
     filterField,
     filterOperator,
@@ -141,8 +146,8 @@ const AuditLogsPage = async ({
     sortDirection,
   } = resolveGridSearchParams({
     searchParams,
-    sortFields: auditLogSortFieldValues,
-    filterFields: auditLogFilterFieldValues,
+    sortFields: auditLogSortFieldValues.filter(isVisibleField),
+    filterFields: auditLogFilterFieldValues.filter(isVisibleField),
     filterOperators: filterOperatorValues,
     organizationSlug: selectedOrganization?.slug,
   });
