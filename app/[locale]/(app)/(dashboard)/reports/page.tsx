@@ -10,6 +10,7 @@ import Reports from ".";
 import {
   getReportPath,
   getReportQuery,
+  isItemGroupBy,
   REPORT_GRID_FIELDS,
   REPORT_TABS,
   type ReportView,
@@ -39,6 +40,7 @@ import {
 } from "@/utils/dataGrid";
 import { getIngredientEnumOptions } from "@/utils/enumOptions";
 import { type FetchResult, fetcher, settle } from "@/utils/fetcher";
+import { getHref } from "@/utils/href";
 import { hasRolePermission } from "@/utils/organizations";
 import {
   getMemberRole,
@@ -216,6 +218,16 @@ const ReportsPage = async ({ params, searchParams }: ReportsPageProps) => {
 
   if (redirectParams)
     redirect({ href: `/reports?${redirectParams.toString()}`, locale });
+
+  if (view.tab === "sales" && !isItemGroupBy(view.groupBy) && quickFilterValue)
+    redirect({
+      href: getHref("/reports", {
+        ...rawSearchParams,
+        quickFilterEnums: undefined,
+        quickFilterValue: undefined,
+      }),
+      locale,
+    });
 
   const quickFilterEnums =
     view.tab === "inventory" && quickFilterValue

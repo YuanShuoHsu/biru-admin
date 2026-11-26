@@ -13,6 +13,7 @@ import {
   DATE_FORMAT,
   getReportPath,
   getReportQuery,
+  isItemGroupBy,
   isValidRange,
   MAX_RANGE_DAYS,
   MONTH_FORMAT,
@@ -328,9 +329,9 @@ const ReportTable = ({
 
   const formatRate = (value: number) => format.number(value, PERCENT_FORMAT);
 
-  const isItemGroupBy = groupBy === "menuItem" || groupBy === "category";
-
   const salesColumns = useMemo<GridColDef[]>(() => {
+    const isItemGroup = isItemGroupBy(groupBy);
+
     const groupLabel = ({ key, name }: SalesReportRow) => {
       switch (groupBy) {
         case "day":
@@ -353,7 +354,7 @@ const ReportTable = ({
 
     return [
       {
-        field: isItemGroupBy ? "name" : "key",
+        field: isItemGroup ? "name" : "key",
         filterable: groupBy !== "paymentMethod" && groupBy !== "mode",
         filterOperators: stringFilterOperators,
         headerName: tReports(`groupBy.${groupBy}`),
@@ -372,7 +373,7 @@ const ReportTable = ({
         headerName: tReports("sales.orders"),
         type: "number",
       },
-      ...(isItemGroupBy
+      ...(isItemGroup
         ? (["quantity", "refundedQuantity"] as const).map((field) => ({
             field,
             filterOperators: numberFilterOperators,
@@ -393,7 +394,6 @@ const ReportTable = ({
     format,
     formatMoney,
     groupBy,
-    isItemGroupBy,
     locale,
     numberFilterOperators,
     stringFilterOperators,
@@ -748,7 +748,7 @@ const ReportTable = ({
           ...REPORT_DATA_GRID_PROPS.slotProps,
           toolbar: {
             ...REPORT_DATA_GRID_PROPS.slotProps.toolbar,
-            disableQuickFilter: !isItemGroupBy,
+            disableQuickFilter: !isItemGroupBy(groupBy),
           },
         }}
       />
