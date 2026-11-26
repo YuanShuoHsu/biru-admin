@@ -328,9 +328,9 @@ const ReportTable = ({
 
   const formatRate = (value: number) => format.number(value, PERCENT_FORMAT);
 
-  const salesColumns = useMemo<GridColDef[]>(() => {
-    const isItemGroupBy = groupBy === "menuItem" || groupBy === "category";
+  const isItemGroupBy = groupBy === "menuItem" || groupBy === "category";
 
+  const salesColumns = useMemo<GridColDef[]>(() => {
     const groupLabel = ({ key, name }: SalesReportRow) => {
       switch (groupBy) {
         case "day":
@@ -393,6 +393,7 @@ const ReportTable = ({
     format,
     formatMoney,
     groupBy,
+    isItemGroupBy,
     locale,
     numberFilterOperators,
     stringFilterOperators,
@@ -743,6 +744,13 @@ const ReportTable = ({
         getRowId={({ key }) => key}
         rowCount={sales?.total ?? 0}
         rows={sales?.rows ?? []}
+        slotProps={{
+          ...REPORT_DATA_GRID_PROPS.slotProps,
+          toolbar: {
+            ...REPORT_DATA_GRID_PROPS.slotProps.toolbar,
+            disableQuickFilter: !isItemGroupBy,
+          },
+        }}
       />
     </>
   ) : tab === "personnel" ? (
