@@ -474,6 +474,7 @@ interface AuditLogsProps {
   filterOperator?: FilterOperator;
   filterValue?: string;
   ingredient?: Ingredient;
+  joinedOrganizations?: Pick<Organization, "id" | "slug">[];
   loading?: boolean;
   logs?: AuditLogResponse[];
   organization?: Organization;
@@ -494,6 +495,7 @@ const AuditLogs = ({
   filterOperator,
   filterValue,
   ingredient,
+  joinedOrganizations,
   loading = false,
   logs: initialLogs = [],
   organization,
@@ -801,15 +803,21 @@ const AuditLogs = ({
                   row.resourceId,
                   row.ancestorIds ?? [],
                 );
+                const targetOrganization = joinedOrganizations?.find(
+                  ({ id }) => id === row.organizationId,
+                );
+                const canOpenTarget =
+                  !joinedOrganizations ||
+                  !row.organizationId ||
+                  targetOrganization;
 
-                return label && href ? (
+                return label && href && canOpenTarget ? (
                   <MuiLink
                     href={getHref(href, {
                       ...DEFAULT_PAGINATION_QUERY,
                       organization:
-                        organizations.find(
-                          ({ id }) => id === row.organizationId,
-                        )?.slug ?? searchParams.get("organization"),
+                        targetOrganization?.slug ??
+                        searchParams.get("organization"),
                     })}
                   >
                     {label}
@@ -929,6 +937,7 @@ const AuditLogs = ({
       getFieldLabel,
       getValueText,
       handleActorIdChange,
+      joinedOrganizations,
       locale,
       organizations,
       resource,
