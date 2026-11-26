@@ -28,7 +28,7 @@
       "typeName": "Type \"{name}\" to confirm"
     },
     "joinAsPlatformAdmin": {
-      "confirm": "Join <bold>{name}</bold> as a platform admin? You will become an owner of this store, and the change will be recorded in the change history.",
+      "confirm": "Join <bold>{name}</bold> as a platform admin? You will be able to manage all of this store's data, and the join will be recorded in the change history.",
       "success": "Joined {name} as a platform admin",
       "title": "Join as platform admin"
     },

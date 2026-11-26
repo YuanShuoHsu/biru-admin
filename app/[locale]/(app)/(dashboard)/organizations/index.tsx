@@ -64,7 +64,6 @@ import type {
 import { stringAvatar } from "@/utils/avatar";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
-import { getOrganizations } from "@/utils/organizations";
 
 const ActionsStack = styled(Stack)(({ theme }) => ({
   height: "100%",
@@ -97,9 +96,6 @@ const ToolbarStack = styled(Stack)(({ theme }) => ({
 }));
 
 type OrganizationRow = MyOrganization | OrganizationResponse;
-
-const isMyOrganization = (row: OrganizationRow): row is MyOrganization =>
-  "joinedAsPlatformAdmin" in row;
 
 interface OrganizationsProps {
   loading?: boolean;
@@ -139,27 +135,38 @@ const Organizations = ({
     },
   );
 
-  const { data: organizations = initialOrganizations } = useSWR(
-    !loading && isPlatformAdmin && "/api/organizations?includeClosed=true",
-    () => getOrganizations(),
+  const {
+    data: organizations = initialOrganizations,
+    mutate: mutateAllOrganizations,
+  } = useSWR<OrganizationResponse[]>(
+    !loading && isPlatformAdmin
+      ? "/api/organizations?includeClosed=true"
+      : null,
+    fetcher,
     { fallbackData: initialOrganizations },
   );
 
-  const gridRows = useMemo<OrganizationRow[]>(() => {
-    const memberOrganizationIds = new Set(rows.map(({ id }) => id));
+  const myOrganizationsById = useMemo(
+    () => new Map(rows.map((row) => [row.id, row])),
+    [rows],
+  );
 
-    return [
+  const gridRows = useMemo<OrganizationRow[]>(
+    () => [
       ...rows,
-      ...organizations.filter(({ id }) => !memberOrganizationIds.has(id)),
-    ];
-  }, [organizations, rows]);
+      ...organizations.filter(({ id }) => !myOrganizationsById.has(id)),
+    ],
+    [myOrganizationsById, organizations, rows],
+  );
 
   const mutate = useCallback(() => {
     mutateMyOrganizations();
+    mutateAllOrganizations();
     mutateOrganizations();
     mutateDefaultOrganizationSlug();
   }, [
     mutateMyOrganizations,
+    mutateAllOrganizations,
     mutateOrganizations,
     mutateDefaultOrganizationSlug,
   ]);
@@ -321,7 +328,7 @@ const Organizations = ({
   }, [apiRef, clearRowSelection]);
 
   const handleToggleClosed = useCallback(
-    ({ closedAt, id, name }: MyOrganization) => {
+    ({ closedAt, id, name }: OrganizationRow) => {
       const action = closedAt ? "reopenOrganization" : "closeOrganization";
 
       setDialog({
@@ -396,9 +403,9 @@ const Organizations = ({
 
   const canUpdateOrganizations = rows.some(({ canUpdate }) => canUpdate);
   const canDeleteOrganizations = rows.some(({ deletable }) => deletable);
-  const hasMembershipColumn = gridRows.some(
-    (row) => !isMyOrganization(row) || row.joinedAsPlatformAdmin,
-  );
+  const hasMembershipColumn =
+    gridRows.length > rows.length ||
+    rows.some(({ joinedAsPlatformAdmin }) => joinedAsPlatformAdmin);
 
   const columns = useMemo<GridColDef[]>(
     () => [
@@ -411,32 +418,53 @@ const Organizations = ({
               filterable: false,
               headerName: tOrganizations("actions.label"),
               renderCell: ({ row }: GridRenderCellParams<OrganizationRow>) => {
-                if (!isMyOrganization(row))
+                const myOrganization = myOrganizationsById.get(row.id);
+
+                if (!myOrganization)
                   return (
                     <ActionsStack direction="row">
-                      <Tooltip
-                        title={tOrganizations(
-                          "actions.joinAsPlatformAdmin.title",
-                        )}
-                      >
-                        <IconButton
-                          onClick={(event) => {
-                            event.stopPropagation();
-
-                            handleJoinOrganization(row);
-                          }}
-                          size="small"
+                      {row.closedAt ? (
+                        <Tooltip
+                          title={tOrganizations(
+                            "actions.reopenOrganization.title",
+                          )}
                         >
-                          <PersonAdd fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
+                          <IconButton
+                            onClick={(event) => {
+                              event.stopPropagation();
+
+                              handleToggleClosed(row);
+                            }}
+                            size="small"
+                          >
+                            <Storefront fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      ) : (
+                        <Tooltip
+                          title={tOrganizations(
+                            "actions.joinAsPlatformAdmin.title",
+                          )}
+                        >
+                          <IconButton
+                            onClick={(event) => {
+                              event.stopPropagation();
+
+                              handleJoinOrganization(row);
+                            }}
+                            size="small"
+                          >
+                            <PersonAdd fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
                     </ActionsStack>
                   );
 
                 const {
                   canUpdate: canUpdateOrganization,
                   deletable: canDeleteOrganization,
-                } = row;
+                } = myOrganization;
 
                 return (
                   <ActionsStack direction="row">
@@ -464,7 +492,7 @@ const Organizations = ({
                           onClick={(event) => {
                             event.stopPropagation();
 
-                            handleUpdateOrganization(row);
+                            handleUpdateOrganization(myOrganization);
                           }}
                           size="small"
                           visible={canUpdateOrganization}
@@ -484,7 +512,7 @@ const Organizations = ({
                           onClick={(event) => {
                             event.stopPropagation();
 
-                            handleDeleteOrganization(row);
+                            handleDeleteOrganization(myOrganization);
                           }}
                           size="small"
                           visible={canDeleteOrganization}
@@ -541,26 +569,27 @@ const Organizations = ({
             {
               field: "joinedAsPlatformAdmin",
               headerName: tOrganizations("membership.label"),
-              renderCell: ({ row }: GridRenderCellParams<OrganizationRow>) => {
-                if (!isMyOrganization(row))
-                  return (
-                    <Chip
-                      label={tOrganizations("membership.notJoined")}
-                      size="small"
-                      variant="outlined"
-                    />
-                  );
+              renderCell: ({
+                row: { id },
+                value,
+              }: GridRenderCellParams<OrganizationRow>) =>
+                value && (
+                  <Chip
+                    color={myOrganizationsById.has(id) ? "primary" : "default"}
+                    label={value}
+                    size="small"
+                    variant="outlined"
+                  />
+                ),
+              valueGetter: (_value: unknown, { id }: OrganizationRow) => {
+                const myOrganization = myOrganizationsById.get(id);
 
-                return (
-                  row.joinedAsPlatformAdmin && (
-                    <Chip
-                      color="primary"
-                      label={tOrganizations("membership.joinedAsPlatformAdmin")}
-                      size="small"
-                      variant="outlined"
-                    />
-                  )
-                );
+                if (!myOrganization)
+                  return tOrganizations("membership.notJoined");
+
+                return myOrganization.joinedAsPlatformAdmin
+                  ? tOrganizations("membership.joinedAsPlatformAdmin")
+                  : "";
               },
             },
           ]
@@ -608,6 +637,7 @@ const Organizations = ({
       hasMembershipColumn,
       isPlatformAdmin,
       isSelectMode,
+      myOrganizationsById,
       router,
       tOrganizations,
     ],

@@ -28,7 +28,7 @@
       "typeName": "請輸入店名「{name}」以確認"
     },
     "joinAsPlatformAdmin": {
-      "confirm": "確定要以平台管理員身分加入 <bold>{name}</bold> 嗎？加入後您會成為這間門市的擁有者，並記錄在異動紀錄。",
+      "confirm": "確定要以平台管理員身分加入 <bold>{name}</bold> 嗎？加入後可以管理這間門市的所有資料，並會寫入異動紀錄。",
       "success": "已以平台管理員身分加入 {name}",
       "title": "以平台管理員身分加入"
     },

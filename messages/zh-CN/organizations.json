@@ -28,7 +28,7 @@
       "typeName": "请输入店名“{name}”以确认"
     },
     "joinAsPlatformAdmin": {
-      "confirm": "确定要以平台管理员身份加入 <bold>{name}</bold> 吗？加入后您会成为这家门店的所有者，并记录在变更记录中。",
+      "confirm": "确定要以平台管理员身份加入 <bold>{name}</bold> 吗？加入后可以管理这家门店的所有数据，并会写入变更记录。",
       "success": "已以平台管理员身份加入 {name}",
       "title": "以平台管理员身份加入"
     },
