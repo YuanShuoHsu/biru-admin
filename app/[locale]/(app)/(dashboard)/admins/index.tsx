@@ -27,7 +27,11 @@ import DataGrid from "@/components/DataGrid";
 import EmptyCell, { renderEmptyableCell } from "@/components/EmptyCell";
 
 import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
-import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
+import {
+  DEFAULT_PAGE_SIZE,
+  DEFAULT_PAGINATION_QUERY,
+  getPageSizeOptions,
+} from "@/constants/pagination";
 import {
   DEFAULT_AUTHENTICATED_ROUTE,
   IMPERSONATE_RETURN_KEY,
@@ -96,6 +100,7 @@ import { getDataGridSearchParams } from "@/utils/dataGrid";
 import { getAdminEnumOptions } from "@/utils/enumOptions";
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
+import { getHref } from "@/utils/href";
 
 const ConfirmStack = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(1),
@@ -634,7 +639,12 @@ const Admins = ({
                           onClick={(event) => {
                             event.stopPropagation();
 
-                            router.push(`/admins/${row.id}`);
+                            router.push(
+                              getHref(
+                                `/admins/${row.id}`,
+                                DEFAULT_PAGINATION_QUERY,
+                              ),
+                            );
                           }}
                           size="small"
                           visible={row.hasSession}
