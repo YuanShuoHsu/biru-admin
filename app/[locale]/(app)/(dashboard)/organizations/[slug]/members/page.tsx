@@ -16,7 +16,6 @@ import {
   getMemberPermissions,
   getPlatformAdminMemberIds,
   hasRolePermission,
-  needsPlatformAdminMemberIds,
   sortByCreatedAtDesc,
 } from "@/utils/organizations";
 import { getFullOrganization, getSession } from "@/utils/session";
@@ -69,16 +68,11 @@ const OrganizationsSlugMembersPage = async ({
 
   const members = sortByCreatedAtDesc(data.members);
   const isPlatformAdmin = session.user.role === "admin";
-  const fetchesPlatformAdminMemberIds =
-    isPlatformAdmin ||
-    needsPlatformAdminMemberIds(currentUserRole, session.user.role);
-  const { data: platformAdminMemberIds = [] } = fetchesPlatformAdminMemberIds
-    ? await settle(
-        getPlatformAdminMemberIds(data.id, {
-          headers: { cookie: (await cookies()).toString() },
-        }),
-      )
-    : { data: [] };
+  const { data: platformAdminMemberIds = [] } = await settle(
+    getPlatformAdminMemberIds(data.id, {
+      headers: { cookie: (await cookies()).toString() },
+    }),
+  );
 
   const permissions = members.map((member) =>
     getMemberPermissions(member, {
@@ -111,7 +105,6 @@ const OrganizationsSlugMembersPage = async ({
       canUpdateMemberRoles={canUpdateMemberRoles}
       currentUserId={session.user.id}
       currentUserRole={currentUserRole}
-      fetchesPlatformAdminMemberIds={fetchesPlatformAdminMemberIds}
       initialPlatformAdminMemberIds={platformAdminMemberIds}
       isPlatformAdmin={isPlatformAdmin}
     />

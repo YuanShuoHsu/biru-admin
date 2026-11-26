@@ -133,7 +133,6 @@ interface OrganizationsSlugMembersProps {
   canUpdateMemberRoles: boolean;
   currentUserId: string;
   currentUserRole: string;
-  fetchesPlatformAdminMemberIds: boolean;
   initialPlatformAdminMemberIds: Member["id"][];
   isPlatformAdmin: boolean;
 }
@@ -148,7 +147,6 @@ const OrganizationsSlugMembers = ({
   canUpdateMemberRoles,
   currentUserId,
   currentUserRole,
-  fetchesPlatformAdminMemberIds,
   initialPlatformAdminMemberIds,
   isPlatformAdmin,
 }: OrganizationsSlugMembersProps) => {
@@ -220,7 +218,7 @@ const OrganizationsSlugMembers = ({
   );
 
   const platformAdminMemberIds = usePlatformAdminMemberIds(organizationId, {
-    enabled: fetchesPlatformAdminMemberIds,
+    enabled: true,
     fallbackData: initialPlatformAdminMemberIds,
   });
 
