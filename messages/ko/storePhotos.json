@@ -5,7 +5,7 @@
         "label": "매장 사진 일괄 삭제 취소"
       },
       "submit": {
-        "confirm": "다음 <bold>{count}개의 매장 사진</bold>을 삭제하시겠습니까?",
+        "confirm": "다음 <bold>{count}개의 매장 사진</bold>을 삭제하시겠습니까? 30일 이내에는 「최근 삭제됨」에서 복원할 수 있습니다.",
         "label": "선택한 매장 사진 삭제 ({count})",
         "success": "매장 사진 {count}개를 삭제했습니다"
       },

@@ -7,7 +7,7 @@
           "label": "食材の一括削除をキャンセル"
         },
         "submit": {
-          "confirm": "以下の <bold>{count} 件の食材</bold>を削除しますか？",
+          "confirm": "以下の <bold>{count} 件の食材</bold>を削除しますか？30 日以内であれば「最近削除した項目」から復元できます。",
           "label": "選択した食材を削除（{count}）",
           "success": "食材 {count} 件を削除しました"
         },
@@ -197,7 +197,7 @@
             "label": "材料の一括削除をキャンセル"
           },
           "submit": {
-            "confirm": "以下の <bold>{count} 件の材料</bold>を削除しますか？",
+            "confirm": "以下の <bold>{count} 件の材料</bold>を削除しますか？30 日以内であれば「最近削除した項目」から復元できます。",
             "label": "選択した材料を削除（{count}）",
             "success": "材料 {count} 件を削除しました"
           },
@@ -278,7 +278,7 @@
           "label": "仕入先の一括削除をキャンセル"
         },
         "submit": {
-          "confirm": "以下の <bold>{count} 件の仕入先</bold>を削除しますか？",
+          "confirm": "以下の <bold>{count} 件の仕入先</bold>を削除しますか？30 日以内であれば「最近削除した項目」から復元できます。",
           "label": "選択した仕入先を削除（{count}）",
           "success": "仕入先 {count} 件を削除しました"
         },

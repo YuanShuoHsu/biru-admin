@@ -5,7 +5,7 @@
         "label": "取消批次刪除輪播圖"
       },
       "submit": {
-        "confirm": "確定要刪除以下 <bold>{count} 張輪播圖</bold>嗎？",
+        "confirm": "確定要刪除以下 <bold>{count} 張輪播圖</bold>嗎？30 天內可在「最近刪除」還原。",
         "label": "刪除所選輪播圖（{count}）",
         "success": "已刪除 {count} 張輪播圖"
       },

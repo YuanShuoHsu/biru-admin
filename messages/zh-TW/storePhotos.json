@@ -5,7 +5,7 @@
         "label": "取消批次刪除門市照片"
       },
       "submit": {
-        "confirm": "確定要刪除以下 <bold>{count} 張門市照片</bold>嗎？",
+        "confirm": "確定要刪除以下 <bold>{count} 張門市照片</bold>嗎？30 天內可在「最近刪除」還原。",
         "label": "刪除所選門市照片（{count}）",
         "success": "已刪除 {count} 張門市照片"
       },

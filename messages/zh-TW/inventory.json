@@ -7,7 +7,7 @@
           "label": "取消批次刪除食材"
         },
         "submit": {
-          "confirm": "確定要刪除以下 <bold>{count} 筆食材</bold>嗎？",
+          "confirm": "確定要刪除以下 <bold>{count} 筆食材</bold>嗎？30 天內可在「最近刪除」還原。",
           "label": "刪除所選食材（{count}）",
           "success": "已刪除 {count} 筆食材"
         },
@@ -197,7 +197,7 @@
             "label": "取消批次刪除材料"
           },
           "submit": {
-            "confirm": "確定要刪除以下 <bold>{count} 筆材料</bold>嗎？",
+            "confirm": "確定要刪除以下 <bold>{count} 筆材料</bold>嗎？30 天內可在「最近刪除」還原。",
             "label": "刪除所選材料（{count}）",
             "success": "已刪除 {count} 筆材料"
           },
@@ -278,7 +278,7 @@
           "label": "取消批次刪除供應商"
         },
         "submit": {
-          "confirm": "確定要刪除以下 <bold>{count} 家供應商</bold>嗎？",
+          "confirm": "確定要刪除以下 <bold>{count} 家供應商</bold>嗎？30 天內可在「最近刪除」還原。",
           "label": "刪除所選供應商（{count}）",
           "success": "已刪除 {count} 家供應商"
         },

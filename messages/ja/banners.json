@@ -5,7 +5,7 @@
         "label": "バナーの一括削除をキャンセル"
       },
       "submit": {
-        "confirm": "以下の <bold>{count} 件のバナー</bold>を削除しますか？",
+        "confirm": "以下の <bold>{count} 件のバナー</bold>を削除しますか？30 日以内であれば「最近削除した項目」から復元できます。",
         "label": "選択したバナーを削除（{count}）",
         "success": "バナー {count} 件を削除しました"
       },
