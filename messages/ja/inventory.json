@@ -18,7 +18,7 @@
         "title": "食材を追加"
       },
       "deleteIngredient": {
-        "confirm": "<bold>{name}</bold> を削除しますか？この操作は取り消せません。",
+        "confirm": "<bold>{name}</bold> を削除しますか？30 日以内であれば「最近削除した項目」から復元できます。",
         "success": "食材 {name} を削除しました",
         "title": "食材を削除"
       },
@@ -163,7 +163,7 @@
         "title": "レシピを追加"
       },
       "deleteRecipe": {
-        "confirm": "<bold>{name}</bold> を削除しますか？この操作は取り消せません。",
+        "confirm": "<bold>{name}</bold> を削除しますか？30 日以内であれば「最近削除した項目」から復元できます。",
         "success": "レシピを削除しました",
         "title": "レシピを削除"
       },
@@ -208,7 +208,7 @@
           "title": "材料を追加"
         },
         "deleteRecipeIngredient": {
-          "confirm": "<bold>{name}</bold> を削除しますか？この操作は取り消せません。",
+          "confirm": "<bold>{name}</bold> を削除しますか？30 日以内であれば「最近削除した項目」から復元できます。",
           "success": "材料を削除しました",
           "title": "材料を削除"
         },
@@ -289,7 +289,7 @@
         "title": "仕入先を追加"
       },
       "deleteSupplier": {
-        "confirm": "<bold>{name}</bold> を削除しますか？この操作は取り消せません。",
+        "confirm": "<bold>{name}</bold> を削除しますか？30 日以内であれば「最近削除した項目」から復元できます。",
         "success": "仕入先を削除しました",
         "title": "仕入先を削除"
       },

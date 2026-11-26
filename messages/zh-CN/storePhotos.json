@@ -16,7 +16,7 @@
       "title": "新增门店照片"
     },
     "deleteStorePhoto": {
-      "confirm": "确定要删除这张<bold>门店照片</bold>吗？此操作无法撤销。",
+      "confirm": "确定要删除这张<bold>门店照片</bold>吗？30 天内可在「最近删除」还原。",
       "success": "已删除门店照片",
       "title": "删除门店照片"
     },

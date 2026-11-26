@@ -18,7 +18,7 @@
         "title": "식자재 추가"
       },
       "deleteIngredient": {
-        "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+        "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 30일 이내에는 「최근 삭제됨」에서 복원할 수 있습니다.",
         "success": "식자재 {name}이(가) 삭제되었습니다",
         "title": "식자재 삭제"
       },
@@ -163,7 +163,7 @@
         "title": "레시피 추가"
       },
       "deleteRecipe": {
-        "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+        "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 30일 이내에는 「최근 삭제됨」에서 복원할 수 있습니다.",
         "success": "레시피가 삭제되었습니다",
         "title": "레시피 삭제"
       },
@@ -208,7 +208,7 @@
           "title": "재료 추가"
         },
         "deleteRecipeIngredient": {
-          "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+          "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 30일 이내에는 「최근 삭제됨」에서 복원할 수 있습니다.",
           "success": "재료가 삭제되었습니다",
           "title": "재료 삭제"
         },
@@ -289,7 +289,7 @@
         "title": "공급업체 추가"
       },
       "deleteSupplier": {
-        "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+        "confirm": "<bold>{name}</bold>을(를) 삭제하시겠습니까? 30일 이내에는 「최근 삭제됨」에서 복원할 수 있습니다.",
         "success": "공급업체가 삭제되었습니다",
         "title": "공급업체 삭제"
       },

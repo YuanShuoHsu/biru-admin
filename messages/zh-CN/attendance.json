@@ -361,7 +361,7 @@
           "label": "取消批量删除假别"
         },
         "submit": {
-          "confirm": "确定要删除以下 <bold>{count} 条假别</bold>吗？尚未使用的假别额度将一并删除，且无法撤销。",
+          "confirm": "确定要删除以下 <bold>{count} 条假别</bold>吗？尚未使用的假别额度将一并删除，30 天内可在「最近删除」还原。",
           "label": "删除所选假别（{count}）",
           "success": "已删除 {count} 条假别"
         },
@@ -372,7 +372,7 @@
         "title": "新增假别"
       },
       "delete": {
-        "confirm": "确定要删除 <bold>{name}</bold> 吗？尚未使用的假别额度将一并删除，且无法撤销。",
+        "confirm": "确定要删除 <bold>{name}</bold> 吗？尚未使用的假别额度将一并删除，30 天内可在「最近删除」还原。",
         "success": "已删除假别 {name}",
         "title": "删除假别"
       },

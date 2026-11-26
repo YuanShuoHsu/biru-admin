@@ -16,7 +16,7 @@
       "title": "Create store photo"
     },
     "deleteStorePhoto": {
-      "confirm": "Are you sure you want to delete this <bold>store photo</bold>? This action cannot be undone.",
+      "confirm": "Are you sure you want to delete this <bold>store photo</bold>? You can restore it from Recently deleted within 30 days.",
       "success": "Store photo deleted",
       "title": "Delete store photo"
     },

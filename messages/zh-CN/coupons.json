@@ -16,7 +16,7 @@
       "title": "新增优惠券"
     },
     "deleteCoupon": {
-      "confirm": "确定要删除优惠券 <bold>{code}</bold> 吗？此操作无法撤销。",
+      "confirm": "确定要删除优惠券 <bold>{code}</bold> 吗？30 天内可在「最近删除」还原。",
       "success": "已删除优惠券 {code}",
       "title": "删除优惠券"
     },

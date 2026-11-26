@@ -16,7 +16,7 @@
       "title": "Create banner"
     },
     "deleteBanner": {
-      "confirm": "Are you sure you want to delete this <bold>banner</bold>? This action cannot be undone.",
+      "confirm": "Are you sure you want to delete this <bold>banner</bold>? You can restore it from Recently deleted within 30 days.",
       "success": "Banner deleted",
       "title": "Delete banner"
     },

@@ -16,7 +16,7 @@
       "title": "Create coupon"
     },
     "deleteCoupon": {
-      "confirm": "Are you sure you want to delete coupon <bold>{code}</bold>? This action cannot be undone.",
+      "confirm": "Are you sure you want to delete coupon <bold>{code}</bold>? You can restore it from Recently deleted within 30 days.",
       "success": "Coupon {code} deleted",
       "title": "Delete coupon"
     },

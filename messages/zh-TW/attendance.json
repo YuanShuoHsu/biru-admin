@@ -361,7 +361,7 @@
           "label": "取消批次刪除假別"
         },
         "submit": {
-          "confirm": "確定要刪除以下 <bold>{count} 筆假別</bold>嗎？尚未使用的假別額度將一併刪除，且無法復原。",
+          "confirm": "確定要刪除以下 <bold>{count} 筆假別</bold>嗎？尚未使用的假別額度將一併刪除，30 天內可在「最近刪除」還原。",
           "label": "刪除所選假別（{count}）",
           "success": "已刪除 {count} 筆假別"
         },
@@ -372,7 +372,7 @@
         "title": "新增假別"
       },
       "delete": {
-        "confirm": "確定要刪除 <bold>{name}</bold> 嗎？尚未使用的假別額度將一併刪除，且無法復原。",
+        "confirm": "確定要刪除 <bold>{name}</bold> 嗎？尚未使用的假別額度將一併刪除，30 天內可在「最近刪除」還原。",
         "success": "已刪除假別 {name}",
         "title": "刪除假別"
       },
