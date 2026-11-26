@@ -233,22 +233,9 @@ const UserSessions = ({
   );
 
   const handleEnterUserSessionBatchRevokeMode = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tUserSessions.rich("actions.batchRevokeUserSession.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setIsSelectMode(true);
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tUserSessions("actions.batchRevokeUserSession.title"),
-    });
-  }, [apiRef, setDialog, tUserSessions]);
+    setIsSelectMode(true);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef]);
 
   const handleSubmitUserSessionBatchRevoke = useCallback(() => {
     const count = selectedRows.length;
@@ -300,24 +287,11 @@ const UserSessions = ({
   ]);
 
   const handleCancelUserSessionBatchRevoke = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tUserSessions.rich("actions.batchRevokeUserSession.cancel.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setIsSelectMode(false);
-        clearRowSelection();
+    setIsSelectMode(false);
+    clearRowSelection();
 
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tUserSessions("actions.batchRevokeUserSession.cancel.label"),
-    });
-  }, [apiRef, clearRowSelection, setDialog, tUserSessions]);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef, clearRowSelection]);
 
   const columns = useMemo<GridColDef[]>(
     () => [

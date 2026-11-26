@@ -177,22 +177,9 @@ const OrganizationsSlugInvitations = ({
   );
 
   const handleEnterInvitationBatchCancelMode = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tInvitations.rich("actions.batchCancelInvitation.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setIsSelectMode(true);
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tInvitations("actions.batchCancelInvitation.title"),
-    });
-  }, [apiRef, setDialog, tInvitations]);
+    setIsSelectMode(true);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef]);
 
   const handleSubmitInvitationBatchCancel = useCallback(() => {
     const count = selectedRows.length;
@@ -251,24 +238,11 @@ const OrganizationsSlugInvitations = ({
   ]);
 
   const handleCancelInvitationBatchCancel = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tInvitations.rich("actions.batchCancelInvitation.cancel.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setIsSelectMode(false);
-        clearRowSelection();
+    setIsSelectMode(false);
+    clearRowSelection();
 
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tInvitations("actions.batchCancelInvitation.cancel.label"),
-    });
-  }, [apiRef, clearRowSelection, setDialog, tInvitations]);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef, clearRowSelection]);
 
   const columns = useMemo<GridColDef[]>(
     () => [

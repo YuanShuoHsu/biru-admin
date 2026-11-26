@@ -182,10 +182,8 @@
     "actions": {
       "batchCancelInvitation": {
         "cancel": {
-          "confirm": "确定要取消<bold>邀请</bold>批量取消吗？已勾选的项目将会清除。",
           "label": "取消批量取消邀请"
         },
-        "confirm": "确定要进行<bold>邀请</bold>批量取消吗？",
         "submit": {
           "confirm": "确定要取消所选的 <bold>{count} 条邀请</bold>吗？",
           "label": "取消所选邀请（{count}）",

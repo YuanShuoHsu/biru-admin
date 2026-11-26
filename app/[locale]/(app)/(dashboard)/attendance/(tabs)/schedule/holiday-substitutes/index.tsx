@@ -282,22 +282,9 @@ const HolidaySubstitutes = ({
   );
 
   const handleEnterHolidaySubstituteBatchRevokeMode = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tAttendance.rich("holidaySubstitutes.actions.batchRevoke.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setIsSelectMode(true);
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tAttendance("holidaySubstitutes.actions.batchRevoke.title"),
-    });
-  }, [apiRef, setDialog, tAttendance]);
+    setIsSelectMode(true);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef]);
 
   const handleSubmitHolidaySubstituteBatchRevoke = useCallback(() => {
     const count = selectedRows.length;
@@ -368,27 +355,11 @@ const HolidaySubstitutes = ({
   ]);
 
   const handleCancelHolidaySubstituteBatchRevoke = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tAttendance.rich(
-            "holidaySubstitutes.actions.batchRevoke.cancel.confirm",
-            {
-              bold: (chunks) => <strong>{chunks}</strong>,
-            },
-          )}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setIsSelectMode(false);
-        clearRowSelection();
+    setIsSelectMode(false);
+    clearRowSelection();
 
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tAttendance("holidaySubstitutes.actions.batchRevoke.cancel.label"),
-    });
-  }, [apiRef, clearRowSelection, setDialog, tAttendance]);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef, clearRowSelection]);
 
   const columns = useMemo<GridColDef[]>(
     () => [

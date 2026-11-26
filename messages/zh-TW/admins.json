@@ -113,10 +113,8 @@
     "actions": {
       "batchRevokeUserSession": {
         "cancel": {
-          "confirm": "確定要取消<bold>Session</bold>批次撤銷嗎？已勾選的項目將會清除。",
           "label": "取消批次撤銷Session"
         },
-        "confirm": "確定要進行<bold>Session</bold>批次撤銷嗎？",
         "submit": {
           "confirm": "確定要撤銷所選的 <bold>{count} 個 Session</bold>嗎？",
           "label": "撤銷所選Session（{count}）",

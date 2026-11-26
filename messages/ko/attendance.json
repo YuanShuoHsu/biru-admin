@@ -36,10 +36,8 @@
     "actions": {
       "batchRevokeDeferral": {
         "cancel": {
-          "confirm": "<bold>이월 합의</bold> 일괄 취소를 취소하시겠습니까? 선택한 항목이 해제됩니다.",
           "label": "이월 합의 일괄 취소 취소"
         },
-        "confirm": "<bold>이월 합의</bold>를 일괄 취소하시겠습니까?",
         "submit": {
           "confirm": "선택한 <bold>{count}개의 이월 합의</bold>를 취소하시겠습니까?",
           "label": "선택한 이월 합의 취소 ({count})",
@@ -830,10 +828,8 @@
     "actions": {
       "batchRevoke": {
         "cancel": {
-          "confirm": "<bold>대체휴일</bold> 일괄 취소를 취소하시겠습니까? 선택한 항목이 해제됩니다.",
           "label": "대체휴일 일괄 취소 취소"
         },
-        "confirm": "<bold>대체휴일</bold>을 일괄 취소하시겠습니까?",
         "submit": {
           "confirm": "선택한 <bold>{count}개의 대체휴일</bold>을 취소하시겠습니까?",
           "label": "선택한 대체휴일 취소 ({count})",

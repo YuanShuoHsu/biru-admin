@@ -36,10 +36,8 @@
     "actions": {
       "batchRevokeDeferral": {
         "cancel": {
-          "confirm": "确定要取消<bold>递延协议</bold>批量撤销吗？已勾选的项目将会清除。",
           "label": "取消批量撤销递延协议"
         },
-        "confirm": "确定要进行<bold>递延协议</bold>批量撤销吗？",
         "submit": {
           "confirm": "确定要撤销所选的 <bold>{count} 条递延协议</bold>吗？",
           "label": "撤销所选递延协议（{count}）",
@@ -830,10 +828,8 @@
     "actions": {
       "batchRevoke": {
         "cancel": {
-          "confirm": "确定要取消<bold>补假日</bold>批量撤销吗？已勾选的项目将会清除。",
           "label": "取消批量撤销补假日"
         },
-        "confirm": "确定要进行<bold>补假日</bold>批量撤销吗？",
         "submit": {
           "confirm": "确定要撤销所选的 <bold>{count} 条补假日</bold>吗？",
           "label": "撤销所选补假日（{count}）",

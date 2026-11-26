@@ -281,22 +281,9 @@ const Balances = ({
   );
 
   const handleEnterDeferralBatchRevokeMode = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tAttendance.rich("balances.actions.batchRevokeDeferral.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setIsSelectMode(true);
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tAttendance("balances.actions.batchRevokeDeferral.title"),
-    });
-  }, [apiRef, setDialog, tAttendance]);
+    setIsSelectMode(true);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef]);
 
   const handleSubmitDeferralBatchRevoke = useCallback(() => {
     const count = selectedRows.length;
@@ -365,27 +352,11 @@ const Balances = ({
   ]);
 
   const handleCancelDeferralBatchRevoke = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tAttendance.rich(
-            "balances.actions.batchRevokeDeferral.cancel.confirm",
-            {
-              bold: (chunks) => <strong>{chunks}</strong>,
-            },
-          )}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setIsSelectMode(false);
-        clearRowSelection();
+    setIsSelectMode(false);
+    clearRowSelection();
 
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tAttendance("balances.actions.batchRevokeDeferral.cancel.label"),
-    });
-  }, [apiRef, clearRowSelection, setDialog, tAttendance]);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef, clearRowSelection]);
 
   const leaveTypeOptions = useMemo(
     () =>

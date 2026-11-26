@@ -182,10 +182,8 @@
     "actions": {
       "batchCancelInvitation": {
         "cancel": {
-          "confirm": "確定要取消<bold>邀請</bold>批次取消嗎？已勾選的項目將會清除。",
           "label": "取消批次取消邀請"
         },
-        "confirm": "確定要進行<bold>邀請</bold>批次取消嗎？",
         "submit": {
           "confirm": "確定要取消所選的 <bold>{count} 筆邀請</bold>嗎？",
           "label": "取消所選邀請（{count}）",
