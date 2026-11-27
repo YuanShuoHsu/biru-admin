@@ -84,7 +84,7 @@ jobs:
       - name: Start biru-api
         working-directory: biru-api
         run: |
-          pnpm install --no-frozen-lockfile
+          pnpm install --frozen-lockfile
           pnpm tsx scripts/migrate-fresh-db.ts
           pnpm tsx scripts/seed-e2e.ts
           pnpm run build
