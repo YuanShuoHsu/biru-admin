@@ -1,14 +1,21 @@
 "use client";
 
-import NavItemBadge from "@/components/NavItemBadge";
+import { useTranslations } from "next-intl";
 
 import { useRoutes } from "@/hooks/useRoutes";
 
 import { usePathname } from "@/i18n/navigation";
 
-import { Tab, Tabs } from "@mui/material";
+import { ErrorOutlined } from "@mui/icons-material";
+import { Chip, Stack, Tab, Tabs } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import type { NavBadge } from "@/types/navItem";
+
+const TabLabelStack = styled(Stack)(({ theme }) => ({
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
 
 interface RouteTab {
   badge?: NavBadge;
@@ -25,6 +32,8 @@ const RouteTabs = ({ ariaLabel, tabs }: RouteTabsProps) => {
   const pathname = usePathname();
 
   const navItem = useRoutes();
+
+  const tCommon = useTranslations("common");
 
   const value =
     tabs.find(({ path }) => pathname.startsWith(path))?.path ||
@@ -44,16 +53,32 @@ const RouteTabs = ({ ariaLabel, tabs }: RouteTabsProps) => {
         return (
           <Tab
             {...(to ? { href: to } : {})}
-            icon={
-              Icon && (
-                <NavItemBadge badge={badge}>
-                  <Icon fontSize="small" />
-                </NavItemBadge>
-              )
-            }
+            icon={Icon && <Icon fontSize="small" />}
             iconPosition="start"
             key={path}
-            label={label || routeLabel}
+            label={
+              badge ? (
+                <TabLabelStack direction="row">
+                  {label || routeLabel}
+                  <Chip
+                    color={badge === "error" ? "error" : "secondary"}
+                    label={
+                      badge === "error" ? (
+                        <ErrorOutlined
+                          fontSize="inherit"
+                          titleAccess={tCommon("error.title")}
+                        />
+                      ) : (
+                        badge
+                      )
+                    }
+                    size="small"
+                  />
+                </TabLabelStack>
+              ) : (
+                label || routeLabel
+              )
+            }
             value={path}
           />
         );
