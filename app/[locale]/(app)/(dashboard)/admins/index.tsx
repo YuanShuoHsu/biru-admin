@@ -579,18 +579,21 @@ const Admins = ({
                         <ManageAccounts fontSize="small" />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title={tAdmins("actions.setRole.title")}>
-                      <IconButton
-                        onClick={(event) => {
-                          event.stopPropagation();
+                    {hasOtherUser && (
+                      <Tooltip title={tAdmins("actions.setRole.title")}>
+                        <StyledIconButton
+                          onClick={(event) => {
+                            event.stopPropagation();
 
-                          handleSetRole(row);
-                        }}
-                        size="small"
-                      >
-                        <AssignmentInd fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
+                            handleSetRole(row);
+                          }}
+                          size="small"
+                          visible={!isCurrentUser}
+                        >
+                          <AssignmentInd fontSize="small" />
+                        </StyledIconButton>
+                      </Tooltip>
+                    )}
                     <Tooltip title={tAdmins("actions.setUserPassword.title")}>
                       <IconButton
                         onClick={(event) => {
