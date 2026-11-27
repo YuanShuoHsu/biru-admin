@@ -191,7 +191,9 @@ const MenusContent = async ({
   );
   const nameByMenuItemId = new Map(menuItems.map(({ id, name }) => [id, name]));
 
-  const topItems: MenuItemSales[] = [...sales]
+  const soldItems = sales.filter(({ sold }) => sold > 0);
+
+  const topItems: MenuItemSales[] = soldItems
     .sort((a, b) => b.sold - a.sold)
     .slice(0, 10)
     .map(({ menuItemId, menuItemName, sold }) => ({
@@ -200,7 +202,7 @@ const MenusContent = async ({
     }));
 
   const soldByMenuItemId = new Map(
-    sales.map(({ menuItemId, sold }) => [menuItemId, sold]),
+    soldItems.map(({ menuItemId, sold }) => [menuItemId, sold]),
   );
 
   const slowItems: MenuItemSales[] = menuItems
