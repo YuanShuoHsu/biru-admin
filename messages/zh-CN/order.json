@@ -92,18 +92,14 @@
       "title": "付款成功"
     },
     "summary": {
-      "discount": "折扣",
-      "title": "订单明细",
-      "total": "总计"
+      "title": "订单明细"
     },
     "transaction": {
       "amount": "付款金额",
       "mode": "点餐方式",
-      "orderNo": "订单编号",
       "paid": "已付款",
       "paymentDate": "付款时间",
       "paymentMethod": "付款方式",
-      "pickupTime": "取餐时间",
       "status": "交易状态",
       "title": "交易信息",
       "tradeNo": "绿界交易编号",
@@ -112,7 +108,6 @@
     "invoice": {
       "copied": "已复制发票号码",
       "invoiceDate": "开立时间",
-      "invoiceNumber": "发票号码",
       "status": {
         "issued": "已开立",
         "issuing": "开立中",

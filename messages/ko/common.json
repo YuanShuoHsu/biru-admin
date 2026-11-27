@@ -53,10 +53,6 @@
     "label": "조직",
     "placeholder": "조직을 선택해 주세요"
   },
-  "pagination": {
-    "labelDisplayedRows": "{from}–{to} of {count}",
-    "labelRowsPerPage": "페이지 당 행:"
-  },
   "parenthesisClose": ")",
   "parenthesisOpen": "(",
   "quantity": "수량",

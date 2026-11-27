@@ -37,6 +37,7 @@ import {
   IMPERSONATE_RETURN_KEY,
 } from "@/constants/route";
 
+import { useStorefrontHref } from "@/hooks/useAuth";
 import { useDataGridQueryState } from "@/hooks/useDataGridQueryState";
 import { deviceSessionsKey } from "@/hooks/useDeviceSessions";
 import {
@@ -211,6 +212,8 @@ const Admins = ({
   const searchParams = useSearchParams();
 
   const router = useRouter();
+
+  const storefrontAccountHref = useStorefrontHref()("/auth/settings/account");
 
   const { mutate } = useSWRConfig();
 
@@ -425,7 +428,7 @@ const Admins = ({
                 router.replace(
                   canAccessAdmin
                     ? DEFAULT_AUTHENTICATED_ROUTE
-                    : "/auth/settings/account",
+                    : storefrontAccountHref,
                 );
               },
             },
@@ -435,7 +438,15 @@ const Admins = ({
         title: tAdmins("actions.impersonateUser.title"),
       });
     },
-    [pathname, router, searchParams, setDialog, setSession, tAdmins],
+    [
+      pathname,
+      router,
+      searchParams,
+      setDialog,
+      setSession,
+      storefrontAccountHref,
+      tAdmins,
+    ],
   );
 
   const handleRemoveUser = useCallback(

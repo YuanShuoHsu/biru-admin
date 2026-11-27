@@ -92,18 +92,14 @@
       "title": "付款成功"
     },
     "summary": {
-      "discount": "折扣",
-      "title": "訂單明細",
-      "total": "總計"
+      "title": "訂單明細"
     },
     "transaction": {
       "amount": "付款金額",
       "mode": "點餐方式",
-      "orderNo": "訂單編號",
       "paid": "已付款",
       "paymentDate": "付款時間",
       "paymentMethod": "付款方式",
-      "pickupTime": "取餐時間",
       "status": "交易狀態",
       "title": "交易資訊",
       "tradeNo": "綠界交易編號",
@@ -112,7 +108,6 @@
     "invoice": {
       "copied": "已複製發票號碼",
       "invoiceDate": "開立時間",
-      "invoiceNumber": "發票號碼",
       "status": {
         "issued": "已開立",
         "issuing": "開立中",
