@@ -14,7 +14,6 @@ import {
   getReportPath,
   getReportQuery,
   getSalesGroupField,
-  getSalesGroupFilterType,
   isItemGroupBy,
   isValidRange,
   MAX_RANGE_DAYS,
@@ -23,8 +22,9 @@ import {
   RESET_GRID_QUERY,
   type ReportTab,
   type ReportView,
+  SALES_GROUP_COLUMN_TYPES,
   SALES_ITEM_FIELDS,
-  type SalesGroupFilterType,
+  SALES_MONEY_FIELDS,
   toReportGridQuery,
   toStoreDate,
 } from "./definitions";
@@ -62,7 +62,11 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { type GridColDef, useGridApiRef } from "@mui/x-data-grid";
+import {
+  type GridColDef,
+  useGridApiRef,
+  type ValueOptions,
+} from "@mui/x-data-grid";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import type { PickerChangeHandlerContext } from "@mui/x-date-pickers/models";
 
@@ -157,15 +161,6 @@ const BREAK_EVEN_TARGET_SUMMARY = [
   "targetRevenue",
   "dailyTargetRevenue",
 ] as const;
-
-const MONEY_FIELDS = ["revenue", "discount", "refunded", "net"] as const;
-
-const SALES_GROUP_COLUMN_TYPES = {
-  date: "date",
-  enum: "singleSelect",
-  number: "number",
-  string: "string",
-} as const satisfies Record<SalesGroupFilterType, GridColDef["type"]>;
 
 const INVENTORY_FIELDS = [
   "opening",
@@ -281,10 +276,13 @@ const ReportTable = ({
     [tInventory],
   );
 
-  const orderEnumOptions = useMemo(
-    () => getOrderEnumOptions(tOrder, tOrders),
-    [tOrder, tOrders],
-  );
+  const salesValueOptions = useMemo<
+    Partial<Record<SalesReportGroupBy, ValueOptions[]>>
+  >(() => {
+    const { mode, paymentMethod } = getOrderEnumOptions(tOrder, tOrders);
+
+    return { mode, paymentMethod };
+  }, [tOrder, tOrders]);
 
   const reportUrl = `${getReportPath(organization.slug, tab)}?${getReportQuery(view)}&${toReportGridQuery(
     tab,
@@ -374,29 +372,27 @@ const ReportTable = ({
       }
     };
 
-    const groupFilterType = getSalesGroupFilterType(groupBy);
+    const groupType = SALES_GROUP_COLUMN_TYPES[groupBy];
 
     return [
       {
         field: getSalesGroupField(groupBy),
         filterOperators: {
           date: dateFilterOperators,
-          enum: enumFilterOperators,
           number: numberFilterOperators,
+          singleSelect: enumFilterOperators,
           string: stringFilterOperators,
-        }[groupFilterType],
+        }[groupType],
         headerName: tReports(`groupBy.${groupBy}`),
-        type: SALES_GROUP_COLUMN_TYPES[groupFilterType],
-        ...((groupBy === "paymentMethod" || groupBy === "mode") && {
-          valueOptions: orderEnumOptions[groupBy],
-        }),
+        type: groupType,
+        valueOptions: salesValueOptions[groupBy],
         valueGetter: (_value: unknown, row: SalesReportRow) => {
-          switch (groupFilterType) {
+          switch (groupType) {
             case "date":
               return toStoreDate(row.key).toDate();
             case "number":
               return Number(row.key);
-            case "enum":
+            case "singleSelect":
               return row.key;
             default:
               return groupLabel(row);
@@ -418,7 +414,7 @@ const ReportTable = ({
             type: "number" as const,
           }))
         : []),
-      ...MONEY_FIELDS.map((field) => ({
+      ...SALES_MONEY_FIELDS.map((field) => ({
         field,
         filterOperators: numberFilterOperators,
         headerName: tReports(`sales.${field}`),
@@ -435,7 +431,7 @@ const ReportTable = ({
     groupBy,
     locale,
     numberFilterOperators,
-    orderEnumOptions,
+    salesValueOptions,
     stringFilterOperators,
     tMenus,
     tOrder,
@@ -770,7 +766,7 @@ const ReportTable = ({
           <Typography variant="body2">
             {tReports("sales.orders")} {format.number(sales.totals.orders)}
           </Typography>
-          {MONEY_FIELDS.map((field) => (
+          {SALES_MONEY_FIELDS.map((field) => (
             <Typography key={field} variant="body2">
               {tReports(`sales.${field}`)}{" "}
               {formatMoney(sales.totals[field], currency)}
