@@ -93,6 +93,7 @@ import {
   Rule,
   Scale,
   Schedule,
+  Security,
   Settings,
   SmartToy,
   SoupKitchen,
@@ -1042,6 +1043,11 @@ const routes: Route[] = [
         label: "auth.signUp.label",
         query: ["redirectTo"],
         segment: "sign-up",
+      },
+      {
+        icon: Security,
+        label: "auth.twoFactor.label",
+        segment: "two-factor",
       },
       {
         icon: Email,

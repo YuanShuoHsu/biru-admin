@@ -18,6 +18,9 @@
   "availableModes": {
     "notSelected": "판매 방식을 선택해 주세요."
   },
+  "backupCode": {
+    "required": "백업 코드는 필수입니다."
+  },
   "banReason": {
     "maxLength": "정지 사유는 160자를 초과할 수 없습니다."
   },
@@ -360,6 +363,9 @@
   },
   "terminatedAt": {
     "afterHiredAt": "퇴사 일시는 입사 시간보다 늦어야 합니다."
+  },
+  "twoFactorCode": {
+    "invalid": "6자리 인증 코드를 입력하세요."
   },
   "unitCode": {
     "notSelected": "내용량 단위를 선택해 주세요."

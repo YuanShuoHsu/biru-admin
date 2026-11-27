@@ -158,7 +158,19 @@ const AuthSignIn = ({ redirectTo, rememberMe }: AuthSignInProps) => {
             variant: "error",
           });
         },
-        onSuccess: async () => {
+        onSuccess: async ({ data: result }) => {
+          if (result.twoFactorRedirect) {
+            router.push({
+              pathname: "/auth/two-factor",
+              query: {
+                [query.methods]: result.twoFactorMethods.join(","),
+                [query.redirectTo]: redirectTo,
+              },
+            });
+
+            return;
+          }
+
           const { data: session } = await authClient.getSession();
           setSession(session);
 
