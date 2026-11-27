@@ -47,6 +47,7 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 import type {
   StorePhoto,
   StorePhotoFilterField,
+  StorePhotoListResponse,
   StorePhotoSortField,
 } from "@/types/storePhotos";
 import type {
@@ -175,7 +176,7 @@ const StorePhotos = ({
       sortModel,
     ],
     async () =>
-      fetcher<{ data: StorePhoto[]; total: number }>(
+      fetcher<StorePhotoListResponse>(
         `/api/store-photos?${getDataGridSearchParams(paginationModel, filterModel, sortModel, enumOptions)}`,
       ),
     {

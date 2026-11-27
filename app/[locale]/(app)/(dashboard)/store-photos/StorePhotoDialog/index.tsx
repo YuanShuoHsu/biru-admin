@@ -25,7 +25,7 @@ import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
-import type { CreateStorePhotoDto, StorePhoto } from "@/types/storePhotos";
+import type { StorePhoto, UpdateStorePhotoDto } from "@/types/storePhotos";
 
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
@@ -71,18 +71,16 @@ const StorePhotoDialog = ({ mutate, storePhoto }: StorePhotoDialogProps) => {
     try {
       setDialog({ confirmLoading: true });
 
-      const body: Partial<CreateStorePhotoDto> = {
-        alt,
-        isActive,
-        ...(image !== storePhoto?.imageUrl && { image }),
-      };
-
       await fetcher(
         storePhoto ? `/api/store-photos/${storePhoto.id}` : "/api/store-photos",
         {
           method: storePhoto ? "PATCH" : "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
+          body: JSON.stringify({
+            alt,
+            isActive,
+            ...(image !== storePhoto?.imageUrl && { image }),
+          } satisfies UpdateStorePhotoDto),
         },
       );
 

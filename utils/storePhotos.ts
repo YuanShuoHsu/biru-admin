@@ -5,8 +5,8 @@ import { fetcher } from "./fetcher";
 import { type GridQuery, getGridSearchParams } from "@/utils/dataGrid";
 
 import type {
-  StorePhoto,
   StorePhotoFilterField,
+  StorePhotoListResponse,
   StorePhotoSortField,
 } from "@/types/storePhotos";
 
@@ -19,7 +19,7 @@ export const getStorePhotos = cache(
   async (query: GetStorePhotosQuery = {}, init?: RequestInit) => {
     const params = getGridSearchParams(query);
 
-    const result = await fetcher<{ data: StorePhoto[]; total: number }>(
+    const result = await fetcher<StorePhotoListResponse>(
       `/api/store-photos?${params.toString()}`,
       init,
     );
