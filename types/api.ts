@@ -10247,6 +10247,7 @@ export interface components {
       | "telephone"
       | "url"
       | "note"
+      | "uniformInvoice"
       | "createdAt"
       | "updatedAt";
     /** @enum {string} */
@@ -10255,6 +10256,7 @@ export interface components {
       | "telephone"
       | "url"
       | "note"
+      | "uniformInvoice"
       | "createdAt"
       | "updatedAt";
     SupplierIngredientResponseDto: {
@@ -31147,10 +31149,26 @@ export const wasteReasonValues: ReadonlyArray<
 > = ["expired", "spilled", "madeWrong", "damaged", "other"];
 export const supplierFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["SupplierFilterField"]
-> = ["name", "telephone", "url", "note", "createdAt", "updatedAt"];
+> = [
+  "name",
+  "telephone",
+  "url",
+  "note",
+  "uniformInvoice",
+  "createdAt",
+  "updatedAt",
+];
 export const supplierSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["SupplierSortField"]
-> = ["name", "telephone", "url", "note", "createdAt", "updatedAt"];
+> = [
+  "name",
+  "telephone",
+  "url",
+  "note",
+  "uniformInvoice",
+  "createdAt",
+  "updatedAt",
+];
 export const recipeFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["RecipeFilterField"]
 > = ["name", "recipeYield", "createdAt", "updatedAt"];
