@@ -26,7 +26,12 @@ import { wasteReasonValues } from "@/types/api";
 import type { Ingredient } from "@/types/inventory";
 
 import { getErrorMessage } from "@/utils/errors";
+import type { FetchError } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
+
+type ShortfallError = FetchError & {
+  info?: { ingredients?: Pick<Ingredient, "id">[] };
+};
 
 interface IngredientWasteDialogProps {
   ingredient: Ingredient;
@@ -50,6 +55,7 @@ const IngredientWasteDialog = ({
     formState: { errors, isSubmitted },
     handleSubmit,
     register,
+    setError,
     setValue,
   } = useForm<IngredientWasteFormInput, unknown, IngredientWasteFormOutput>({
     defaultValues: { note: "", quantity: "", wasteReason: "" },
@@ -83,7 +89,9 @@ const IngredientWasteDialog = ({
 
       mutate();
     } catch (error) {
-      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+      if ((error as ShortfallError).info?.ingredients?.length)
+        setError("quantity", { message: getErrorMessage(error) });
+      else enqueueSnackbar(getErrorMessage(error), { variant: "error" });
 
       setDialog({ confirmLoading: false });
     }
