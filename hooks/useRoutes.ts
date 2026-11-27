@@ -852,22 +852,30 @@ const routes: Route[] = [
     segment: "admins",
   },
   {
-    icon: Stars,
-    label: "pointSettings.label",
-    segment: "point-settings",
-  },
-  {
     children: [
       {
-        icon: Storefront,
-        label: "pointReports.detail.label",
-        segment: "[organizationId]",
+        icon: Stars,
+        label: "pointSettings.label",
+        segment: "settings",
+      },
+      {
+        children: [
+          {
+            icon: Storefront,
+            label: "pointReports.detail.label",
+            segment: "[organizationId]",
+          },
+        ],
+        icon: AccountBalance,
+        label: "pointReports.label",
+        query: ["month"],
+        segment: "reports",
       },
     ],
-    icon: AccountBalance,
-    label: "pointReports.label",
-    query: ["month"],
-    segment: "point-reports",
+    icon: Stars,
+    label: "organizations.points.label",
+    segment: "points",
+    to: null,
   },
   {
     icon: Rule,
