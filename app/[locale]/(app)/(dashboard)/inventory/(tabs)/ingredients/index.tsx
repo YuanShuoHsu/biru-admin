@@ -724,16 +724,16 @@ const Ingredients = ({
                         onClick={() => {
                           if (
                             canWrite ||
-                            row.packageBaseQuantity ||
-                            row.recipeId
+                            (!row.unlimitedStock &&
+                              (row.packageBaseQuantity || row.recipeId))
                           )
                             handleUpdateIngredient(row);
                         }}
                         size="small"
                         visible={
                           canWrite ||
-                          !!row.packageBaseQuantity ||
-                          !!row.recipeId
+                          (!row.unlimitedStock &&
+                            (!!row.packageBaseQuantity || !!row.recipeId))
                         }
                       >
                         <Edit fontSize="small" />

@@ -127,7 +127,7 @@ const PointReports = ({ report }: PointReportsProps) => {
         onRowClick={({ row: { organizationId } }) => {
           if (organizationId)
             router.push(
-              `/point-reports/${organizationId}?month=${report.month}`,
+              `/points/reports/${organizationId}?month=${report.month}`,
             );
         }}
         rows={report.rows.map((row) => ({ ...row, month: report.month }))}

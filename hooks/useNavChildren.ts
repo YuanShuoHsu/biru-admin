@@ -71,6 +71,7 @@ export const useNavChildren = (): Record<string, NavItem[]> => {
     ],
     "/menus": [navItem("/menus/sections"), navItem("/menus/modifier-groups")],
     "/orders": [navItem("/orders/board"), navItem("/orders/list")],
+    "/points": [navItem("/points/settings"), navItem("/points/reports")],
     "/quant": [
       navItem("/quant/market"),
       navItem("/quant/bots"),

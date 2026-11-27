@@ -61,7 +61,10 @@ import { localize } from "@/utils/locale";
 
 const INGREDIENT_IMAGE_KEY = "ingredient-image";
 
-type RecipeOption = Pick<Recipe, "id" | "name">;
+type RecipeOption = Pick<
+  Recipe,
+  "id" | "name" | "recipeYieldQuantity" | "recipeYieldUnitCode"
+>;
 type SupplierOption = Pick<Supplier, "id" | "name">;
 
 const StyledGrid = styled(Grid)({
@@ -433,11 +436,18 @@ const IngredientDialog = ({
         {...recipeSearch}
         disabled={!editable}
         fullWidth
+        getOptionDisabled={({ recipeYieldQuantity }) =>
+          recipeYieldQuantity === null
+        }
         getOptionLabel={({ name }) => localize(name, locale)}
         isOptionEqualToValue={(option, value) => option.id === value.id}
         onChange={(_, value) => {
           setRecipe(value);
           setValue("recipeId", value?.id ?? "");
+          if (value?.recipeYieldUnitCode)
+            setValue("unitCode", BASE_UNIT_CODES[value.recipeYieldUnitCode], {
+              shouldValidate: isSubmitted,
+            });
         }}
         renderInput={(params) => (
           <TextField

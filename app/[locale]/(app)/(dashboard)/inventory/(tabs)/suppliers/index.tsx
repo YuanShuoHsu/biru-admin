@@ -16,6 +16,7 @@ import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import { useDataGridQueryState } from "@/hooks/useDataGridQueryState";
 import {
+  useBooleanFilterOperators,
   useDateFilterOperators,
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
@@ -132,6 +133,7 @@ const Suppliers = ({
 
   const { setDialog } = useDialogStore((state) => state);
 
+  const booleanFilterOperators = useBooleanFilterOperators();
   const dateFilterOperators = useDateFilterOperators();
   const stringFilterOperators = useStringFilterOperators();
 
@@ -402,7 +404,7 @@ const Suppliers = ({
       },
       {
         field: "uniformInvoice",
-        filterable: false,
+        filterOperators: booleanFilterOperators,
         headerName: tInventory("suppliers.uniformInvoice.column"),
         renderCell: ({ value }: GridRenderCellParams<Supplier>) => (
           <Chip
@@ -416,7 +418,6 @@ const Suppliers = ({
             variant="outlined"
           />
         ),
-        sortable: false,
         type: "boolean",
       },
       {
@@ -462,6 +463,7 @@ const Suppliers = ({
       },
     ],
     [
+      booleanFilterOperators,
       canViewAuditLog,
       canWrite,
       dateFilterOperators,
