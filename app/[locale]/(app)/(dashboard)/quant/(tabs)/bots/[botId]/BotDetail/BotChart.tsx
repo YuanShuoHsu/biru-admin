@@ -23,6 +23,8 @@ import useSWR from "swr";
 import { useChartPalette } from "../../../useChartPalette";
 import { QUANT_BOTS_URL } from "../../useQuantBots";
 
+import ErrorAlert from "@/components/ErrorAlert";
+
 import { isIntradayInterval } from "@/constants/quant";
 
 import { Box } from "@mui/material";
@@ -75,7 +77,11 @@ const BotChart = ({ bot, pricePrecision }: BotChartProps) => {
   const markersRef = useRef<ISeriesMarkersPluginApi<Time> | null>(null);
   const linesRef = useRef<IPriceLine[]>([]);
 
-  const { data: candles } = useSWR<QuantCandle[]>(
+  const {
+    data: candles,
+    error: candlesError,
+    mutate: mutateCandles,
+  } = useSWR<QuantCandle[]>(
     `/api/quant/markets/${bot.symbol}/candles?interval=${interval}&limit=${CHART_CANDLES}`,
     fetcher,
     { refreshInterval: 60_000 },
@@ -224,7 +230,14 @@ const BotChart = ({ bot, pricePrecision }: BotChartProps) => {
     );
   }, [bot, candles, fills, palette]);
 
-  return <Box ref={containerRef} sx={{ height: 420 }} />;
+  return (
+    <>
+      {candlesError && !candles && (
+        <ErrorAlert onRetry={() => mutateCandles()} />
+      )}
+      <Box ref={containerRef} sx={{ height: 420 }} />
+    </>
+  );
 };
 
 export default BotChart;

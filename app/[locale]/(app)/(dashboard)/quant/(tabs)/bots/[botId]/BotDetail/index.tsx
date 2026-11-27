@@ -32,6 +32,7 @@ import AiRequests from "./AiRequests";
 import EquityChart from "./EquityChart";
 import SignalPanel from "./SignalPanel";
 
+import ErrorAlert from "@/components/ErrorAlert";
 import RouteTabs from "@/components/RouteTabs";
 
 import { quantMarketTypeOf, quantPairOf } from "@/constants/quant";
@@ -73,7 +74,7 @@ import type {
 } from "@/types/quant";
 
 import { getErrorMessage } from "@/utils/errors";
-import { fetcher } from "@/utils/fetcher";
+import { fetcher, isMissingResource } from "@/utils/fetcher";
 
 const BotChart = dynamic(() => import("./BotChart"), { ssr: false });
 
@@ -125,23 +126,34 @@ const BotDetail = ({ botId, children }: BotDetailProps) => {
   useBotStream(botId);
 
   const botUrl = `${QUANT_BOTS_URL}/${botId}`;
-  const { data: bot, error } = useSWR<QuantBot>(botUrl, fetcher);
+  const {
+    data: bot,
+    error,
+    mutate: mutateBot,
+  } = useSWR<QuantBot>(botUrl, fetcher);
   const {
     base,
     formatPrice,
     formatQuote,
     formatSize,
     market,
+    marketsError,
     pricePrecision,
     quote,
+    retryMarkets,
   } = useBotMarket(bot?.symbol);
 
   const [operationAnchor, setOperationAnchor] = useState<HTMLElement | null>(
     null,
   );
 
-  if (error) return <Alert severity="error">{getErrorMessage(error)}</Alert>;
-  if (!bot) return <Skeleton height={480} variant="rounded" />;
+  if (!bot) {
+    if (isMissingResource(error))
+      return <Alert severity="error">{getErrorMessage(error)}</Alert>;
+    if (error) return <ErrorAlert onRetry={() => mutateBot()} />;
+
+    return <Skeleton height={480} variant="rounded" />;
+  }
 
   const isPionexGrid = bot.executor === "pionex";
   const isGrid = bot.type === "grid" || bot.type === "futures_grid";
@@ -302,6 +314,7 @@ const BotDetail = ({ botId, children }: BotDetailProps) => {
 
   return (
     <Stack sx={{ gap: 2 }}>
+      {marketsError && !market && <ErrorAlert onRetry={retryMarkets} />}
       <Panel>
         <Stack
           sx={{

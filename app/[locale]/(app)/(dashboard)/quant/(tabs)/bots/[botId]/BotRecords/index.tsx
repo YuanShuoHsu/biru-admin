@@ -7,6 +7,7 @@ import { QUANT_BOTS_URL, useBotLabels } from "../../useQuantBots";
 import { useBotMarket } from "../useBotMarket";
 
 import DataGrid from "@/components/DataGrid";
+import DataGridErrorOverlay from "@/components/DataGridErrorOverlay";
 
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
@@ -94,7 +95,9 @@ const BotRecords = ({
       data: initialRows,
       total: initialRowCount,
     },
+    error,
     isLoading,
+    mutate,
   } = useSWR(
     !loading &&
       !!bot && [
@@ -259,8 +262,16 @@ const BotRecords = ({
         paginationMode="server"
         paginationModel={paginationModel}
         rowCount={rowCount}
-        rows={rows}
+        rows={error ? [] : rows}
         showToolbar={false}
+        slots={{
+          ...DATA_GRID_PROPS.slots,
+          noRowsOverlay: DataGridErrorOverlay,
+        }}
+        slotProps={{
+          ...DATA_GRID_PROPS.slotProps,
+          noRowsOverlay: { error, onRetry: () => mutate() },
+        }}
         sortingMode="server"
         sortModel={sortModel}
       />

@@ -10,7 +10,11 @@ import { fetcher } from "@/utils/fetcher";
 export const useBotMarket = (symbol?: string) => {
   const format = useFormatter();
 
-  const { data: markets } = useSWR<QuantMarket[]>(
+  const {
+    data: markets,
+    error: marketsError,
+    mutate,
+  } = useSWR<QuantMarket[]>(
     symbol ? `/api/quant/markets?type=${quantMarketTypeOf(symbol)}` : null,
     fetcher,
   );
@@ -41,7 +45,9 @@ export const useBotMarket = (symbol?: string) => {
     formatQuote,
     formatSize,
     market,
+    marketsError,
     pricePrecision,
     quote,
+    retryMarkets: () => mutate(),
   };
 };
