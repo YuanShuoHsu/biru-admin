@@ -53,6 +53,10 @@
     "label": "Organization",
     "placeholder": "Please select your organization"
   },
+  "pagination": {
+    "labelDisplayedRows": "{from}–{to} of {count}",
+    "labelRowsPerPage": "Rows per page:"
+  },
   "parenthesisClose": ")",
   "parenthesisOpen": "(",
   "quantity": "Quantity",

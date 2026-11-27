@@ -1021,7 +1021,6 @@ const routes: Route[] = [
       {
         icon: PersonAdd,
         label: "auth.signUp.label",
-        query: ["redirectTo"],
         segment: "sign-up",
       },
       {

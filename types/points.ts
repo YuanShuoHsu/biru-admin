@@ -4,7 +4,6 @@ import {
   type components,
 } from "@/types/api";
 
-export type MyPoints = components["schemas"]["MyPointsDto"];
 export type OrganizationPointTransaction =
   components["schemas"]["OrganizationPointTransactionDto"];
 export type OrganizationPointTransactionListResponse =
@@ -23,4 +22,3 @@ export type PointTransactionFilterField =
   (typeof pointTransactionFilterFieldValues)[number];
 export type PointTransactionSortField =
   (typeof pointTransactionSortFieldValues)[number];
-export type PointsCoupon = components["schemas"]["PointsCouponDto"];

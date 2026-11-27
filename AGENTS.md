@@ -38,7 +38,7 @@ The middleware at `proxy.ts` handles:
 - Redirecting authenticated users at `/` to `DEFAULT_AUTHENTICATED_ROUTE` (`/dashboard`, see `constants/route.ts`)
 - Redirecting unauthenticated users to `/auth/sign-in?redirectTo=...`
 - Global maintenance mode (`NEXT_PUBLIC_MAINTENANCE` env flag)
-- Public pages: `/auth/*` (sign-in, two-factor, email verification, password reset and no-access) and `/company/*`
+- Public pages: `/auth/*` (sign-in, two-factor, email verification, forgot and reset password, and no-access) and `/company/*`
 
 Browser calls go straight to `NEXT_PUBLIC_NEST_URL`: `utils/fetcher.ts` and `lib/api-client.ts` prefix relative `/api/...` paths and send `credentials: "include"`, and it is the better-auth client's `baseURL`; a browser request that bypasses them must do the same. The session cookie reaches the API host and this app's server-side requests only because biru-api scopes it to the shared parent domain (biru-api AGENTS.md, Global Setup). `next.config.ts` rewrites only the relative image URLs the API returns (`/api/images/*` and the user avatars' `/api/users/:id/image/*`), which `<img>` and `next/image` request from this app. A relative better-auth `callbackURL` / `redirectTo` resolves against the API, not this app; pass a relative one only where biru-api's mails turn it into a `redirectTo` query (verification and password-reset mails).
 

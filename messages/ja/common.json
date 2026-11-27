@@ -53,6 +53,10 @@
     "label": "組織",
     "placeholder": "組織を選択してください"
   },
+  "pagination": {
+    "labelDisplayedRows": "{from}–{to} of {count}",
+    "labelRowsPerPage": "ページあたりの行数:"
+  },
   "parenthesisClose": ")",
   "parenthesisOpen": "(",
   "quantity": "数量",

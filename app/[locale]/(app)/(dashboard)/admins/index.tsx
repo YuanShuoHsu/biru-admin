@@ -37,7 +37,7 @@ import {
   IMPERSONATE_RETURN_KEY,
 } from "@/constants/route";
 
-import { useStorefrontHref } from "@/hooks/useAuth";
+import { useStorefrontNavItem } from "@/hooks/useAuth";
 import { useDataGridQueryState } from "@/hooks/useDataGridQueryState";
 import { deviceSessionsKey } from "@/hooks/useDeviceSessions";
 import {
@@ -213,7 +213,7 @@ const Admins = ({
 
   const router = useRouter();
 
-  const storefrontAccountHref = useStorefrontHref()("/auth/settings/account");
+  const storefrontSettingsHref = useStorefrontNavItem()("/auth/settings").to;
 
   const { mutate } = useSWRConfig();
 
@@ -428,7 +428,7 @@ const Admins = ({
                 router.replace(
                   canAccessAdmin
                     ? DEFAULT_AUTHENTICATED_ROUTE
-                    : storefrontAccountHref,
+                    : storefrontSettingsHref!,
                 );
               },
             },
@@ -444,7 +444,7 @@ const Admins = ({
       searchParams,
       setDialog,
       setSession,
-      storefrontAccountHref,
+      storefrontSettingsHref,
       tAdmins,
     ],
   );

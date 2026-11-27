@@ -53,6 +53,10 @@
     "label": "组织",
     "placeholder": "请选择您的组织"
   },
+  "pagination": {
+    "labelDisplayedRows": "{from}–{to} 共 {count}",
+    "labelRowsPerPage": "每页行数:"
+  },
   "parenthesisClose": "）",
   "parenthesisOpen": "（",
   "quantity": "数量",
