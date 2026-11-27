@@ -1,4 +1,8 @@
 {
+  "carousel": {
+    "next": "次のスライド",
+    "previous": "前のスライド"
+  },
   "colon": "：",
   "currency": "NT$",
   "decrease": "減らす",

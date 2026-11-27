@@ -1,4 +1,8 @@
 {
+  "carousel": {
+    "next": "下一張",
+    "previous": "上一張"
+  },
   "colon": "：",
   "currency": "NT$",
   "decrease": "減少",
