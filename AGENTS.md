@@ -16,7 +16,7 @@
 ## 指令（Commands）
 
 ```bash
-pnpm dev          # 啟動開發伺服器（localhost:3000）
+pnpm dev          # 啟動開發伺服器（localhost:3002）
 pnpm build        # production build
 pnpm start        # 啟動 production 伺服器
 pnpm lint         # 執行 ESLint
@@ -27,6 +27,8 @@ pnpm test:e2e     # Playwright 端對端測試（見下方）
 ```
 
 `pnpm test:e2e` 會對 :3002 上的本 app 跑 `e2e/`（由 Playwright 的 `webServer` 啟動：本機用 `pnpm dev`，已在執行就沿用；CI 上在 `pnpm build` 後用 `pnpm start`），搭配一個在 :3001 的 biru-api，其資料庫由它的 `scripts/migrate-fresh-db.ts` 建立、`scripts/seed-e2e.ts` 填入資料（biru-api AGENTS.md「Database Schema」）：用你自己的空資料庫，絕不用共用的那個。把同一組 `E2E_{PLATFORM_ADMIN,OWNER,ADMIN,MEMBER,CUSTOMER}_{EMAIL,PASSWORD}` export 給 seed 與 Playwright；`setup` project 會讓每個門市角色各登入一次，並把 session 存到 `playwright/.auth/`。biru-api 執行時要設 `NEXT_ADMIN_URL=http://localhost:3002`，不設 `NODE_ENV=production`（否則它的 cookie 會設到 `.birucoffee.com`），也不設 `TRUSTED_PROXIES`／`CLIENT_IP_HEADER`（所有測試共用一個 client IP，每分鐘 100 次的限制會把整輪測試卡住）。`.github/workflows/e2e.yml` 在每個 PR 上用 PostgreSQL service 與 biru-api 的 `develop` 做完上述所有步驟。
+
+開 PR 前依序跑 `pnpm install --frozen-lockfile`、`pnpm format`、`pnpm lint`、`npx tsc --noEmit`、`pnpm build`。`tsc` 前先 `rm -rf .next/types .next/dev` 再 `npx next typegen`：別的分支或 dev server 留下的過期型別會讓 `tsc` 誤報。
 
 pre-commit hook（Husky + lint-staged）會對 staged 的檔案跑 `pnpm format`、`pnpm lint` 與 `prettier --write`。不要用 `--no-verify` 跳過。
 
