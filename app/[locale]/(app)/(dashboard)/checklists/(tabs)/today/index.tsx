@@ -69,7 +69,7 @@ const ChecklistToday = ({
   );
 
   const fill = async (
-    templateId: ChecklistRun["templateId"],
+    { businessDate, templateId }: ChecklistRun,
     itemId: string,
     dto: FillChecklistItemDto,
   ) => {
@@ -82,7 +82,7 @@ const ChecklistToday = ({
       const run = await fetcher<ChecklistRun>(
         `${todayUrl}/${templateId}/items/${itemId}`,
         {
-          body: JSON.stringify(dto),
+          body: JSON.stringify({ ...dto, businessDate }),
           headers: { "Content-Type": "application/json" },
           method: "PUT",
         },
@@ -117,16 +117,13 @@ const ChecklistToday = ({
     }
   };
 
-  const handleSelect = async (
-    { templateId }: ChecklistRun,
-    item: ChecklistRunItem,
-  ) => {
+  const handleSelect = async (run: ChecklistRun, item: ChecklistRunItem) => {
     if (item.type === "number") {
       setDialog({
         content: (
           <ChecklistItemDialog
             item={item}
-            onSubmit={(dto) => fill(templateId, item.id, dto)}
+            onSubmit={(dto) => fill(run, item.id, dto)}
             rangeText={getRangeText(item)}
           />
         ),
@@ -139,7 +136,7 @@ const ChecklistToday = ({
     }
 
     try {
-      await fill(templateId, item.id, { checked: !item.checked });
+      await fill(run, item.id, { checked: !item.checked });
     } catch (error) {
       enqueueSnackbar(getErrorMessage(error), { variant: "error" });
     }

@@ -8975,6 +8975,11 @@ export interface components {
       value?: number;
       /** @description 處置說明；數值超出允許範圍時必填 */
       actionNote?: string | null;
+      /**
+       * @description 畫面上這份紀錄的營業日；與伺服器的營業日不同時回 409 checklistBusinessDateChanged
+       * @example 2026-11-27
+       */
+      businessDate?: string;
     };
     ChecklistRunListResponseDto: {
       data: components["schemas"]["ChecklistRunDto"][];
