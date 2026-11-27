@@ -5,7 +5,9 @@ import {
 } from "@/types/api";
 
 export type StorePhoto = components["schemas"]["StorePhotoResponseDto"];
-export type CreateStorePhotoDto = components["schemas"]["CreateStorePhotoDto"];
+export type StorePhotoListResponse =
+  components["schemas"]["StorePhotoListResponseDto"];
+export type UpdateStorePhotoDto = components["schemas"]["UpdateStorePhotoDto"];
 
 export type StorePhotoFilterField =
   (typeof storePhotoFilterFieldValues)[number];
