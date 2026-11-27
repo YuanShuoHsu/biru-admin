@@ -143,6 +143,17 @@ const SALES_GROUP_FILTER_OPERATORS: Record<
 export const getSalesGroupField = (groupBy: SalesReportGroupBy) =>
   isItemGroupBy(groupBy) ? "name" : "key";
 
+const getSalesNumberFields = (groupBy: SalesReportGroupBy) => [
+  "orders" as const,
+  ...SALES_MONEY_FIELDS,
+  ...(isItemGroupBy(groupBy) ? SALES_ITEM_FIELDS : []),
+];
+
+export const getSalesFields = (groupBy: SalesReportGroupBy) => [
+  getSalesGroupField(groupBy),
+  ...getSalesNumberFields(groupBy),
+];
+
 export const getSalesFilterOperators = (
   groupBy: SalesReportGroupBy,
   filterField: string | undefined,
@@ -150,13 +161,7 @@ export const getSalesFilterOperators = (
   if (filterField === getSalesGroupField(groupBy))
     return SALES_GROUP_FILTER_OPERATORS[SALES_GROUP_COLUMN_TYPES[groupBy]];
 
-  const numberFields: readonly string[] = [
-    "orders",
-    ...SALES_MONEY_FIELDS,
-    ...(isItemGroupBy(groupBy) ? SALES_ITEM_FIELDS : []),
-  ];
-
-  return filterField && numberFields.includes(filterField)
+  return getSalesNumberFields(groupBy).some((field) => field === filterField)
     ? NUMBER_FILTER_OPERATORS
     : [];
 };
