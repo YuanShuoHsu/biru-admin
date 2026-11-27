@@ -83,8 +83,9 @@ jobs:
           done
       - name: Start biru-api
         working-directory: biru-api
+        env:
+          pnpm_config_manage_package_manager_versions: "false"
         run: |
-          pnpm() { npx --yes "$(jq -r .packageManager package.json)" "$@"; }
           pnpm install --frozen-lockfile
           pnpm tsx scripts/migrate-fresh-db.ts
           pnpm tsx scripts/seed-e2e.ts
