@@ -1,4 +1,8 @@
 {
+  "carousel": {
+    "next": "다음 슬라이드",
+    "previous": "이전 슬라이드"
+  },
   "colon": ": ",
   "currency": "NT$",
   "decrease": "감소",

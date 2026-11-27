@@ -1,4 +1,8 @@
 {
+  "carousel": {
+    "next": "Next slide",
+    "previous": "Previous slide"
+  },
   "colon": ": ",
   "currency": "NT$",
   "decrease": "Decrease",
