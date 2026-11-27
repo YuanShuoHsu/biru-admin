@@ -509,10 +509,9 @@ const Banners = ({
       },
       {
         field: "url",
-        filterable: false,
+        filterOperators: stringFilterOperators,
         headerName: tBanners("url.label"),
         renderCell: renderEmptyableCell,
-        sortable: false,
       },
       {
         field: "isActive",
