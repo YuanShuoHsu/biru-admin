@@ -100,6 +100,9 @@ export const isReportMonth = (value: string | undefined): value is string =>
 const isTargetProfit = (value: string | undefined): value is string =>
   !!value && /^\d{1,10}(\.\d{1,2})?$/.test(value);
 
+export const isItemGroupBy = (groupBy: SalesReportGroupBy) =>
+  groupBy === "menuItem" || groupBy === "category";
+
 export const isValidRange = (since: string, until: string) => {
   const start = toStoreDate(since);
   const end = toStoreDate(until);
