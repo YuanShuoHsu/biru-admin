@@ -31,6 +31,8 @@ import { useDialogStore } from "@/providers/dialog-store-provider";
 
 import type { User } from "@/types/admins";
 
+import { formatFullName } from "@/utils/auth";
+
 const NameStack = styled(Stack)(({ theme }) => ({
   width: "100%",
   gap: theme.spacing(2),
@@ -86,12 +88,7 @@ const UpdateUserDialogContent = ({
           {
             userId: user.id,
             data: {
-              name: (locale === LocaleEnum.En
-                ? [firstName, lastName]
-                : [lastName, firstName]
-              )
-                .filter(Boolean)
-                .join(locale === LocaleEnum.En ? " " : ""),
+              name: formatFullName(user.lang, firstName, lastName),
               email,
               firstName,
               lastName,

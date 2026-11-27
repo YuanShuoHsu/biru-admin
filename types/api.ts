@@ -7780,6 +7780,12 @@ export interface components {
        */
       imageUrl: string | null;
       /**
+       * @description 語系
+       * @example zh-TW
+       * @enum {string}
+       */
+      lang: "en" | "ja" | "ko" | "zh-CN" | "zh-TW";
+      /**
        * @description 姓
        * @example Biru
        */
@@ -30404,6 +30410,9 @@ export const userSortFieldValues: ReadonlyArray<
 export const userRoleValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["UserRole"]
 > = ["admin", "user"];
+export const userListItemDtoLangValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["UserListItemDto"]["lang"]
+> = ["en", "ja", "ko", "zh-CN", "zh-TW"];
 export const statsBucketUnitValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["StatsBucketUnit"]
 > = ["day", "hour", "month"];

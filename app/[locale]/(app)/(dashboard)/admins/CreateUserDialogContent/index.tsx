@@ -41,6 +41,7 @@ import { styled } from "@mui/material/styles";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
 
+import { formatFullName } from "@/utils/auth";
 import {
   handleMouseDownPassword,
   handleMouseUpPassword,
@@ -131,12 +132,7 @@ const CreateUserDialogContent = ({
       }) => {
         await authClient.admin.createUser(
           {
-            name: (locale === LocaleEnum.En
-              ? [firstName, lastName]
-              : [lastName, firstName]
-            )
-              .filter(Boolean)
-              .join(locale === LocaleEnum.En ? " " : ""),
+            name: formatFullName(locale, firstName, lastName),
             email,
             password,
             role,
