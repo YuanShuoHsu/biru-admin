@@ -14567,7 +14567,7 @@ export interface components {
       net: number;
       /** @description day：店家時區日期 YYYY-MM-DD；hour：店家時區小時 0–23；paymentMethod／mode：該列舉值；menuItem：品項 id；category：品項目前所屬菜單分類 id，品項已刪除或未分類為 uncategorized */
       key: string;
-      /** @description 僅 menuItem／category：目前的品項或分類名稱；品項已刪除時為最近一次訂單快照的名稱（以預設語系為 key 存放，快照當時未必是該語系的文字），未分類為 null */
+      /** @description 僅 menuItem／category：目前的品項或分類名稱；品項已刪除時為最近一次訂單快照的名稱（以預設語系為 key 存放，快照當時未必是該語系的文字），未分類為各語系的「未分類」 */
       name?: components["schemas"]["LocalizedTextDto"] | null;
       /** @description 僅 menuItem／category：售出份數，含被加購的次數 */
       quantity?: number;

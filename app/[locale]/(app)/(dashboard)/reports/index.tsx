@@ -91,8 +91,6 @@ import { localize } from "@/utils/locale";
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
 
-const UNCATEGORIZED_KEY = "uncategorized";
-
 const ToolbarStack = styled(Stack)(({ theme }) => ({
   alignItems: "center",
   flexWrap: "wrap",
@@ -255,7 +253,6 @@ const ReportTable = ({
 
   const tAttendance = useTranslations("attendance");
   const tInventory = useTranslations("inventory");
-  const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
   const tReports = useTranslations("reports");
 
@@ -346,9 +343,7 @@ const ReportTable = ({
         case "mode":
           return tOrder(`mode.${key as ApiOrderMode}.label`);
         default:
-          return key === UNCATEGORIZED_KEY
-            ? tMenus("sections.unassigned")
-            : localize(name, locale) || key;
+          return localize(name, locale) || key;
       }
     };
 
@@ -397,7 +392,6 @@ const ReportTable = ({
     locale,
     numberFilterOperators,
     stringFilterOperators,
-    tMenus,
     tOrder,
     tReports,
   ]);
