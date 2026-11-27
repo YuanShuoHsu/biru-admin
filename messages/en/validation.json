@@ -60,10 +60,6 @@
   "clockOutAt": {
     "afterClockInAt": "Clock-out must be later than clock-in."
   },
-  "confirmNewPassword": {
-    "mismatch": "Passwords do not match.",
-    "required": "Confirm new password is required."
-  },
   "confirmPassword": {
     "mismatch": "Passwords do not match.",
     "required": "Confirm password is required."
@@ -78,9 +74,6 @@
   },
   "currency": {
     "notSelected": "Please select your currency."
-  },
-  "currentPassword": {
-    "required": "Current password is required."
   },
   "customerAddr": {
     "required": "Company address is required."
@@ -214,12 +207,7 @@
   },
   "newPassword": {
     "differentFromCurrent": "Be different from your current password.",
-    "letter": "Contain at least one letter.",
-    "match": "Matches the new password.",
-    "maxLength": "Be at most 128 characters long.",
-    "minLength": "Be at least 8 characters long.",
-    "number": "Contain at least one number.",
-    "sameAsCurrent": "New password must be different from your current password."
+    "match": "Matches the new password."
   },
   "note": {
     "maxLength": "Notes must not exceed 50 characters."

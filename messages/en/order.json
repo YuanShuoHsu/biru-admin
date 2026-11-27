@@ -92,18 +92,14 @@
       "title": "Payment successful"
     },
     "summary": {
-      "discount": "Discount",
-      "title": "Order summary",
-      "total": "Total"
+      "title": "Order summary"
     },
     "transaction": {
       "amount": "Amount paid",
       "mode": "Order mode",
-      "orderNo": "Order number",
       "paid": "Paid",
       "paymentDate": "Paid at",
       "paymentMethod": "Payment method",
-      "pickupTime": "Pickup time",
       "status": "Status",
       "title": "Transaction details",
       "tradeNo": "ECPay trade number",
@@ -112,7 +108,6 @@
     "invoice": {
       "copied": "Invoice number copied",
       "invoiceDate": "Issued at",
-      "invoiceNumber": "Invoice number",
       "status": {
         "issued": "Issued",
         "issuing": "Issuing",

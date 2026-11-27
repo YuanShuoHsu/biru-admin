@@ -60,10 +60,6 @@
   "clockOutAt": {
     "afterClockInAt": "퇴근 시간은 출근 시간보다 늦어야 합니다."
   },
-  "confirmNewPassword": {
-    "mismatch": "비밀번호가 일치하지 않습니다.",
-    "required": "새 비밀번호 확인은 필수입니다."
-  },
   "confirmPassword": {
     "mismatch": "비밀번호가 일치하지 않습니다.",
     "required": "비밀번호 확인은 필수입니다."
@@ -78,9 +74,6 @@
   },
   "currency": {
     "notSelected": "통화를 선택해 주세요."
-  },
-  "currentPassword": {
-    "required": "현재 비밀번호는 필수입니다."
   },
   "customerAddr": {
     "required": "회사 주소는 필수입니다."
@@ -214,12 +207,7 @@
   },
   "newPassword": {
     "differentFromCurrent": "현재 비밀번호와 달라야 함.",
-    "letter": "영문자를 최소 1개 포함.",
-    "match": "새 비밀번호와 일치.",
-    "maxLength": "128자 이하 길이.",
-    "minLength": "8자 이상 길이.",
-    "number": "숫자를 최소 1개 포함.",
-    "sameAsCurrent": "새 비밀번호는 현재 비밀번호와 달라야 합니다."
+    "match": "새 비밀번호와 일치."
   },
   "note": {
     "maxLength": "메모는 50자를 초과할 수 없습니다."

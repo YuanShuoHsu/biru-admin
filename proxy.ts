@@ -76,17 +76,11 @@ export const proxy = async (request: NextRequest) => {
 
   const isRootPage = pathname === `/${locale}`;
   const isAuthPage = pathname.startsWith(`/${locale}/auth/`);
-  const isAccountPage = [
-    `/${locale}/auth/coupons`,
-    `/${locale}/auth/orders`,
-    `/${locale}/auth/points`,
-    `/${locale}/auth/settings`,
-  ].some((prefix) => pathname.startsWith(prefix));
   const isCompanyPage = pathname.startsWith(`/${locale}/company`);
-  const isPublicPage = (isAuthPage && !isAccountPage) || isCompanyPage;
+  const isPublicPage = isAuthPage || isCompanyPage;
   const isNoAccessPage = pathname === `/${locale}${NO_ADMIN_ACCESS_ROUTE}`;
 
-  const needsAdminAccess = !isPublicPage && !isAccountPage;
+  const needsAdminAccess = !isPublicPage;
 
   const redirectWithReturn = (route: string) => {
     const redirectTo =

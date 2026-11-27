@@ -92,18 +92,14 @@
       "title": "決済が完了しました"
     },
     "summary": {
-      "discount": "割引",
-      "title": "注文明細",
-      "total": "合計"
+      "title": "注文明細"
     },
     "transaction": {
       "amount": "お支払い金額",
       "mode": "注文方法",
-      "orderNo": "注文番号",
       "paid": "支払い済み",
       "paymentDate": "お支払い日時",
       "paymentMethod": "お支払い方法",
-      "pickupTime": "受け取り時間",
       "status": "取引ステータス",
       "title": "取引情報",
       "tradeNo": "ECPay取引番号",
@@ -112,7 +108,6 @@
     "invoice": {
       "copied": "インボイス番号をコピーしました",
       "invoiceDate": "発行日時",
-      "invoiceNumber": "インボイス番号",
       "status": {
         "issued": "発行済み",
         "issuing": "発行中",
