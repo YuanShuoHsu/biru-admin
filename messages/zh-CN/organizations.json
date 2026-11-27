@@ -27,6 +27,11 @@
       "title": "删除组织",
       "typeName": "请输入店名“{name}”以确认"
     },
+    "joinAsPlatformAdmin": {
+      "confirm": "确定要以平台管理员身份加入 <bold>{name}</bold> 吗？加入后可以管理这家门店的所有数据，并会写入变更记录。",
+      "success": "已以平台管理员身份加入 {name}",
+      "title": "以平台管理员身份加入"
+    },
     "label": "操作",
     "leaveOrganization": {
       "confirm": "确定要离开 <bold>{name}</bold> 吗？",
@@ -331,6 +336,11 @@
       "option": "{name} ({email})",
       "placeholder": "请选择您的成员"
     }
+  },
+  "membership": {
+    "joinedAsPlatformAdmin": "以平台管理员身份加入",
+    "label": "加入状态",
+    "notJoined": "未加入"
   },
   "name": {
     "label": "组织名称",

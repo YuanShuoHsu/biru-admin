@@ -27,6 +27,11 @@
       "title": "Delete organization",
       "typeName": "Type \"{name}\" to confirm"
     },
+    "joinAsPlatformAdmin": {
+      "confirm": "Join <bold>{name}</bold> as a platform admin? You will be able to manage all of this store's data, and the join will be recorded in the change history.",
+      "success": "Joined {name} as a platform admin",
+      "title": "Join as platform admin"
+    },
     "label": "Actions",
     "leaveOrganization": {
       "confirm": "Are you sure you want to leave <bold>{name}</bold>?",
@@ -331,6 +336,11 @@
       "option": "{name} ({email})",
       "placeholder": "Please select your member"
     }
+  },
+  "membership": {
+    "joinedAsPlatformAdmin": "Joined as platform admin",
+    "label": "Membership",
+    "notJoined": "Not joined"
   },
   "name": {
     "label": "Organization name",
