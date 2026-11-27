@@ -7,13 +7,14 @@ import { QUANT_BOTS_URL, useBotLabels } from "../../useQuantBots";
 import { useBotMarket } from "../useBotMarket";
 
 import DataGrid from "@/components/DataGrid";
+import ErrorAlert from "@/components/ErrorAlert";
 
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import { useDataGridQueryState } from "@/hooks/useDataGridQueryState";
 
-import { Box } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
 import type { SortDirection } from "@/types/dataGrid";
@@ -94,7 +95,9 @@ const BotRecords = ({
       data: initialRows,
       total: initialRowCount,
     },
+    error,
     isLoading,
+    mutate,
   } = useSWR(
     !loading &&
       !!bot && [
@@ -247,24 +250,27 @@ const BotRecords = ({
   };
 
   return (
-    <Box sx={{ height: GRID_HEIGHT }}>
-      <DataGrid
-        {...DATA_GRID_PROPS}
-        columns={columns[tab]}
-        disableColumnFilter
-        loading={loading || isLoading}
-        onPaginationModelChange={handlePaginationModelChange}
-        onSortModelChange={handleSortModelChange}
-        pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
-        paginationMode="server"
-        paginationModel={paginationModel}
-        rowCount={rowCount}
-        rows={rows}
-        showToolbar={false}
-        sortingMode="server"
-        sortModel={sortModel}
-      />
-    </Box>
+    <Stack sx={{ gap: 2 }}>
+      {error && <ErrorAlert onRetry={() => mutate()} />}
+      <Box sx={{ height: GRID_HEIGHT }}>
+        <DataGrid
+          {...DATA_GRID_PROPS}
+          columns={columns[tab]}
+          disableColumnFilter
+          loading={loading || isLoading}
+          onPaginationModelChange={handlePaginationModelChange}
+          onSortModelChange={handleSortModelChange}
+          pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
+          paginationMode="server"
+          paginationModel={paginationModel}
+          rowCount={rowCount}
+          rows={error ? [] : rows}
+          showToolbar={false}
+          sortingMode="server"
+          sortModel={sortModel}
+        />
+      </Box>
+    </Stack>
   );
 };
 
