@@ -116,7 +116,10 @@ const Overview = ({
           const { chipColor, trendColor } = getTrendColors(trend.percent);
 
           return (
-            <Grid key={label} size={{ xs: 12, sm: 6, md: 4 }}>
+            <Grid
+              key={label}
+              size={{ xs: 12, sm: 6, md: 12 / statCards.length }}
+            >
               <ChartCard
                 chartHeight={50}
                 href={href}
