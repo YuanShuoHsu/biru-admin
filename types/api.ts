@@ -8061,6 +8061,7 @@ export interface components {
     /** @enum {string} */
     BannerFilterField:
       | "alt"
+      | "url"
       | "isActive"
       | "startsAt"
       | "endsAt"
@@ -8069,6 +8070,7 @@ export interface components {
     /** @enum {string} */
     BannerSortField:
       | "alt"
+      | "url"
       | "isActive"
       | "startsAt"
       | "endsAt"
@@ -31420,10 +31422,10 @@ export const userSessionSortFieldValues: ReadonlyArray<
 > = ["userAgent", "ipAddress", "createdAt", "expiresAt"];
 export const bannerFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["BannerFilterField"]
-> = ["alt", "isActive", "startsAt", "endsAt", "createdAt", "updatedAt"];
+> = ["alt", "url", "isActive", "startsAt", "endsAt", "createdAt", "updatedAt"];
 export const bannerSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["BannerSortField"]
-> = ["alt", "isActive", "startsAt", "endsAt", "createdAt", "updatedAt"];
+> = ["alt", "url", "isActive", "startsAt", "endsAt", "createdAt", "updatedAt"];
 export const imageOrphanKindDtoKindValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["ImageOrphanKindDto"]["kind"]
 > = [
