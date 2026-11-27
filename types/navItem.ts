@@ -14,3 +14,8 @@ export interface NavItem {
   slot?: Slot;
   to?: string;
 }
+
+export interface NavGroup {
+  items: NavItem[];
+  label?: string;
+}
