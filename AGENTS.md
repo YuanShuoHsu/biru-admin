@@ -5,7 +5,7 @@
 ## 語言（Language）
 
 - 與開發者的對話、PR 描述、issue 與留言用繁體中文。
-- commit 與 PR 標題用英文 Conventional Commits、小寫開頭。
+- commit 與 PR 標題用英文 Conventional Commits、小寫開頭，用詞先對照 `git log --format=%s -20`。
 - 程式碼註解用繁體中文；識別字、指令、路徑、套件與 API 名稱維持原文。
 - 本檔的「Behavioral Guidelines」（照抄上游）與 `next dev` 自動產生的 Next.js 區塊維持英文原文，不要翻譯。
 
@@ -157,9 +157,11 @@ MUI v9 搭配自訂主題（`theme.ts`），透過 CSS 變數支援淺色／深�
 
 依以下順序決定：
 
-1. **已安裝版本的官方文件**：先查 `package.json`／`node_modules` 的版本，絕不憑記憶。Next.js（`node_modules/next/dist/docs/`、next-devtools MCP）、MUI（mui-mcp）、better-auth、Drizzle、NestJS、next-intl、SWR、Zod 等。用文件示範的寫法，不用繞路；絕不用文件標為 deprecated 的 API。
-2. **本 repo 的既有模式**：文件沒定死時，照 codebase 現有的做法。照抄前先確認它沒有你正在修的缺陷；有的話那部分不要抄，並在 PR 點名那份複本，讓它也被修掉。
+1. **已安裝版本的官方文件**：先查 `package.json`／`node_modules` 的版本，絕不憑記憶。Next.js（`node_modules/next/dist/docs/`、next-devtools MCP）、MUI（mui-mcp）、better-auth、Drizzle、NestJS、next-intl、SWR、Zod 等。用文件示範的寫法，不用繞路；絕不用文件標為 deprecated 的 API。已安裝套件的 `.d.ts` 是最終依據；部落格、問答等二手資料不能當依據。
+2. **本 repo 的既有模式**：文件沒定死時，先用 `rg` 找同 repo 解決同一類問題的既有機制（helper、hook、元件、表單、store、SWR mutate），有就重用，照最相近實作的結構、命名與位置寫。照抄前先確認它沒有你正在修的缺陷；有的話那部分不要抄，並在 PR 點名那份複本，讓它也被修掉。
 3. **最主流的選項**：前兩者都決定不了時。
+
+**分層**：計算、驗證、權限判斷與業務規則放在 biru-api，前端只負責顯示與操作；需要後端配合時一起改 biru-api，不在前端繞過去。API 型別一律取自 `types/api.ts`，不手寫；能用 Server Component 就不加 `'use client'`。
 
 ## Behavioral Guidelines
 
