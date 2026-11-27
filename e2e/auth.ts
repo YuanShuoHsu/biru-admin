@@ -26,8 +26,10 @@ export const signIn = async (page: Page, role: Role) => {
   // 沒有 client IP 時 better-auth 的登入限流是全平台共用一桶，被擋就等它說的秒數再送
   for (;;) {
     const [response] = await Promise.all([
-      page.waitForResponse((response) =>
-        response.url().endsWith("/api/auth/sign-in/email"),
+      page.waitForResponse(
+        (response) =>
+          response.request().method() === "POST" &&
+          response.url().endsWith("/api/auth/sign-in/email"),
       ),
       page.getByRole("button", { name: "Sign in", exact: true }).click(),
     ]);

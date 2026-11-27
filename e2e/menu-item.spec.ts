@@ -22,7 +22,7 @@ const fillItemName = async (dialog: Locator, name: string) => {
 test("adds, renames and deletes a menu item", async ({ page }, testInfo) => {
   test.slow();
 
-  const name = `E2E item ${testInfo.project.name}`;
+  const name = `E2E item ${testInfo.project.name} ${testInfo.retry}`;
   const renamed = `${name} renamed`;
 
   await page.goto("/en/menus/sections");

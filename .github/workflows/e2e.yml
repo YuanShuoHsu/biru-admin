@@ -55,8 +55,13 @@ jobs:
       NEXT_PUBLIC_NEXT_URL: http://localhost:3000
       NEXT_PUBLIC_ADMIN_URL: http://localhost:3002
       NEXT_PUBLIC_MAINTENANCE: "false"
+    defaults:
+      run:
+        working-directory: admin
     steps:
       - uses: actions/checkout@v7
+        with:
+          path: admin
       - uses: actions/checkout@v7
         with:
           repository: YuanShuoHsu/biru-api
@@ -65,7 +70,7 @@ jobs:
       - uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2
         with:
           runtime: node@24
-          cache: true
+          cache: false
           install: false
       - name: Generate test accounts
         run: |
@@ -98,7 +103,7 @@ jobs:
         with:
           name: playwright-report
           path: |
-            playwright-report/
-            test-results/
+            admin/playwright-report/
+            admin/test-results/
             biru-api/api.log
           retention-days: 7
