@@ -13,8 +13,11 @@ import { useSWRConfig } from "swr";
 
 import BadgeAvatars from "@/components/BadgeAvatars";
 
-import { useAuthNavItems, useLogoutNavItem } from "@/hooks/useAuth";
-import { useRoutes } from "@/hooks/useRoutes";
+import {
+  useAuthNavItems,
+  useLogoutNavItem,
+  useStorefrontNavItem,
+} from "@/hooks/useAuth";
 
 import { Link, usePathname } from "@/i18n/navigation";
 
@@ -147,7 +150,7 @@ const AccountMenu = () => {
   const tAuth = useTranslations("auth");
   const tooltipTitle = session ? session.user.email : tAuth("label");
 
-  const navItem = useRoutes();
+  const storefrontNavItem = useStorefrontNavItem();
 
   const addAccountItem = useAddAccountNavItem();
   const authNavItems = useAuthNavItems();
@@ -256,10 +259,10 @@ const AccountMenu = () => {
         {session && <Divider />}
         {session &&
           renderMenuItems(pathname, [
-            navItem("/auth/orders"),
-            navItem("/auth/coupons"),
-            navItem("/auth/points"),
-            navItem("/auth/settings"),
+            storefrontNavItem("/auth/orders"),
+            storefrontNavItem("/auth/coupons"),
+            storefrontNavItem("/auth/points"),
+            storefrontNavItem("/auth/settings"),
             logoutItem,
           ])}
         {session && <Divider />}

@@ -13,6 +13,8 @@ import StatusFormCard, {
 
 import { query } from "@/constants/query";
 
+import { useStorefrontHref } from "@/hooks/useAuth";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useRouter } from "@/i18n/navigation";
@@ -75,6 +77,7 @@ const AuthVerifyEmail = ({
   const redirectCountdown = items["verify-email-redirect"];
 
   const router = useRouter();
+  const storefrontHref = useStorefrontHref();
 
   useEffect(() => {
     if (!token) return;
@@ -149,9 +152,7 @@ const AuthVerifyEmail = ({
   const signInHref = getHref("/auth/sign-in", {
     [query.redirectTo]: redirectTo,
   });
-  const signUpHref = getHref("/auth/sign-up", {
-    [query.redirectTo]: redirectTo,
-  });
+  const signUpHref = storefrontHref("/auth/sign-up");
 
   const onSubmit = handleSubmit(async () => {
     await authClient.sendVerificationEmail(

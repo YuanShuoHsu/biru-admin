@@ -26,6 +26,8 @@ import {
 } from "@/constants/route";
 import { REMEMBER_ME } from "@/constants/sign-in";
 
+import { useStorefrontHref } from "@/hooks/useAuth";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useRouter } from "@/i18n/navigation";
@@ -86,9 +88,8 @@ const AuthSignIn = ({ redirectTo, rememberMe }: AuthSignInProps) => {
     [query.redirectTo]: redirectTo,
   });
 
-  const signUpHref = getHref("/auth/sign-up", {
-    [query.redirectTo]: redirectTo,
-  });
+  const storefrontHref = useStorefrontHref();
+  const signUpHref = storefrontHref("/auth/sign-up");
 
   const { setSession } = useAuthStore((state) => state);
 
