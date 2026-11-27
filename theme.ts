@@ -7,7 +7,6 @@
 // https://mui.com/x/react-data-grid/style/#SxProp.tsx
 // https://mui.com/x/react-date-pickers/quickstart/#typescript
 // https://mui.com/x/react-date-pickers/quickstart/#date-value-types
-// https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:active-view-transition
 // https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/::view-transition-new
 
 import LinkBehavior from "@/components/LinkBehavior";
@@ -121,9 +120,6 @@ const theme = createTheme({
         },
         ".notistack-MuiContent": {
           overflowWrap: "anywhere",
-        },
-        ":root:active-view-transition *": {
-          transition: "none !important",
         },
         "::view-transition-old(root), ::view-transition-new(root)": {
           animationDuration: `${theme.transitions.duration.standard}ms`,
