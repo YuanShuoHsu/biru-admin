@@ -8,7 +8,6 @@ import { resolvePointReportMonth } from "../definitions";
 
 import ErrorAlert from "@/components/ErrorAlert";
 
-import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 import { isMissingResource, settle } from "@/utils/fetcher";
@@ -46,12 +45,6 @@ const PointReportDetailPage = async ({
   if (session?.user?.role !== "admin") notFound();
 
   const month = resolvePointReportMonth(rawMonth);
-
-  if (rawMonth !== month)
-    redirect({
-      href: `/point-reports/${organizationId}?month=${month}`,
-      locale,
-    });
 
   const { data, error } = await settle(
     getPointReportDetail(organizationId, month, {
