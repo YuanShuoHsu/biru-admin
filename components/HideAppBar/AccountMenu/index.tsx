@@ -92,10 +92,6 @@ const StyledListSubheader = styled(ListSubheader)(({ theme }) => ({
   },
 }));
 
-const StyledGroupLabel = styled(ListSubheader)({
-  backgroundImage: "var(--Paper-overlay)",
-});
-
 const StyledListAvatar = styled(StyledAvatar)(({ theme }) => ({
   border: `1px solid ${theme.vars.palette.primary.main}`,
 
@@ -263,9 +259,9 @@ const AccountMenu = () => {
         )}
         {session && <Divider />}
         {session && (
-          <StyledGroupLabel>
+          <ListSubheader color="primary">
             {tAuth("accountMenu.group.member")}
-          </StyledGroupLabel>
+          </ListSubheader>
         )}
         {session &&
           renderMenuItems(pathname, [
@@ -275,9 +271,9 @@ const AccountMenu = () => {
           ])}
         {session && <Divider />}
         {session && (
-          <StyledGroupLabel>
+          <ListSubheader color="primary">
             {tAuth("accountMenu.group.account")}
-          </StyledGroupLabel>
+          </ListSubheader>
         )}
         {session &&
           renderMenuItems(pathname, [
@@ -286,9 +282,9 @@ const AccountMenu = () => {
           ])}
         {session && <Divider />}
         {session && (
-          <StyledGroupLabel>
+          <ListSubheader color="primary">
             {tAuth("accountMenu.group.otherAccounts")}
-          </StyledGroupLabel>
+          </ListSubheader>
         )}
         {session &&
           otherSessions.map(({ session: { token }, user }) => {
