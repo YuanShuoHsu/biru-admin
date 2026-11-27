@@ -2,7 +2,15 @@ import dayjs from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 
+import {
+  DATE_FILTER_OPERATORS,
+  ENUM_FILTER_OPERATORS,
+  NUMBER_FILTER_OPERATORS,
+  STRING_FILTER_OPERATORS,
+} from "@/constants/dataGrid";
 import { STORE_TIMEZONE } from "@/constants/timezone";
+
+import type { GridColType } from "@mui/x-data-grid";
 
 import {
   breakEvenItemFilterFieldValues,
@@ -15,6 +23,7 @@ import {
   salesReportGroupByValues,
   salesReportSortFieldValues,
 } from "@/types/api";
+import type { FilterOperator } from "@/types/dataGrid";
 import type { SalesReportGroupBy } from "@/types/reports";
 
 dayjs.extend(utc);
@@ -102,6 +111,60 @@ const isTargetProfit = (value: string | undefined): value is string =>
 
 export const isItemGroupBy = (groupBy: SalesReportGroupBy) =>
   groupBy === "menuItem" || groupBy === "category";
+
+export const SALES_MONEY_FIELDS = [
+  "revenue",
+  "discount",
+  "refunded",
+  "net",
+] as const;
+
+export const SALES_ITEM_FIELDS = ["quantity", "refundedQuantity"] as const;
+
+export const SALES_GROUP_COLUMN_TYPES = {
+  category: "string",
+  day: "date",
+  hour: "number",
+  menuItem: "string",
+  mode: "singleSelect",
+  paymentMethod: "singleSelect",
+} as const satisfies Record<SalesReportGroupBy, GridColType>;
+
+const SALES_GROUP_FILTER_OPERATORS: Record<
+  (typeof SALES_GROUP_COLUMN_TYPES)[SalesReportGroupBy],
+  readonly FilterOperator[]
+> = {
+  date: DATE_FILTER_OPERATORS,
+  number: NUMBER_FILTER_OPERATORS,
+  singleSelect: ENUM_FILTER_OPERATORS,
+  string: STRING_FILTER_OPERATORS,
+};
+
+export const getSalesGroupField = (groupBy: SalesReportGroupBy) =>
+  isItemGroupBy(groupBy) ? "name" : "key";
+
+const getSalesNumberFields = (groupBy: SalesReportGroupBy) => [
+  "orders" as const,
+  ...SALES_MONEY_FIELDS,
+  ...(isItemGroupBy(groupBy) ? SALES_ITEM_FIELDS : []),
+];
+
+export const getSalesFields = (groupBy: SalesReportGroupBy) => [
+  getSalesGroupField(groupBy),
+  ...getSalesNumberFields(groupBy),
+];
+
+export const getSalesFilterOperators = (
+  groupBy: SalesReportGroupBy,
+  filterField: string | undefined,
+): readonly FilterOperator[] => {
+  if (filterField === getSalesGroupField(groupBy))
+    return SALES_GROUP_FILTER_OPERATORS[SALES_GROUP_COLUMN_TYPES[groupBy]];
+
+  return getSalesNumberFields(groupBy).some((field) => field === filterField)
+    ? NUMBER_FILTER_OPERATORS
+    : [];
+};
 
 export const isValidRange = (since: string, until: string) => {
   const start = toStoreDate(since);

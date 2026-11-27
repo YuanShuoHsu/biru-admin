@@ -21,6 +21,8 @@ The pre-commit hook (Husky + lint-staged) runs `pnpm format`, `pnpm lint`, and `
 
 Format with the repo's own Prettier (`pnpm format` or `pnpm exec prettier`) after `pnpm install --frozen-lockfile`, never `npx prettier`: without `node_modules` it downloads whatever Prettier is latest, which can format differently from the pinned one.
 
+Where `fonts.googleapis.com` is unreachable (e.g. a sandbox), `next/font/google` fails the build. Point `NEXT_FONT_GOOGLE_MOCKED_RESPONSES` at a CommonJS file exporting `{ [url]: css }`, one entry per font in `app/[locale]/layout.tsx`: the URL as `node_modules/next/dist/compiled/@next/font/dist/google/get-google-fonts-url.js` builds it (`https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap`, likewise JP, KR and SC), the css one `@font-face` with `font-weight: 100 900` whose `src` is `url(<absolute path to any local .woff2>)`. Only the webpack build reads it (`next build --webpack`); a `Missing mocked response for URL` error names a URL to add.
+
 Branch from `develop` and open every PR against `develop`, which is GitHub's default branch. Never target `master`: a PR merged only into `master` never reaches `develop`, so work branched from `develop` misses it and conflicts when `master` is merged back. Because `develop` is the default branch, `Closes #n` in a PR closes the issue when the PR merges into `develop`; use `Part of #n` for PRs that only finish part of an issue.
 
 ## Architecture
@@ -35,13 +37,13 @@ The `(dashboard)` layout renders three **parallel route slots**: `@breadcrumb`, 
 
 The middleware at `proxy.ts` handles:
 
-- Auth check via `better-auth` session + platform admin (`user.role === "admin"`) or org membership (`isOrganizationMember`); otherwise redirect to `/auth/no-access` without touching the session (it is shared with the biru storefront). Member account pages (`/auth/{settings,orders,coupons,points}`) only require a session
+- Auth check via `better-auth` session + platform admin (`user.role === "admin"`) or org membership (`isOrganizationMember`); otherwise redirect to `/auth/no-access` without touching the session (it is shared with the biru storefront)
 - Redirecting authenticated users at `/` to `DEFAULT_AUTHENTICATED_ROUTE` (`/dashboard`, see `constants/route.ts`)
 - Redirecting unauthenticated users to `/auth/sign-in?redirectTo=...`
 - Global maintenance mode (`NEXT_PUBLIC_MAINTENANCE` env flag)
-- Public pages: `/auth/*` (except the member account pages) and `/company/*`
+- Public pages: `/auth/*` (sign-in, two-factor, email verification, forgot and reset password, and no-access) and `/company/*`
 
-Browser calls go straight to `NEXT_PUBLIC_NEST_URL`: `utils/fetcher.ts` and `lib/api-client.ts` prefix relative `/api/...` paths and send `credentials: "include"`, and it is the better-auth client's `baseURL`; a browser request that bypasses them must do the same. The session cookie reaches the API host and this app's server-side requests only because biru-api scopes it to the shared parent domain (biru-api AGENTS.md, Global Setup). `next.config.ts` rewrites only the relative image URLs the API returns (`/api/images/*` and the user avatars' `/api/users/:id/image/*`), which `<img>` and `next/image` request from this app. A relative better-auth `callbackURL` / `redirectTo` resolves against the API, not this app; pass a relative one only where biru-api's mails turn it into a `redirectTo` query (sign-up, verification and password-reset mails).
+Browser calls go straight to `NEXT_PUBLIC_NEST_URL`: `utils/fetcher.ts` and `lib/api-client.ts` prefix relative `/api/...` paths and send `credentials: "include"`, and it is the better-auth client's `baseURL`; a browser request that bypasses them must do the same. The session cookie reaches the API host and this app's server-side requests only because biru-api scopes it to the shared parent domain (biru-api AGENTS.md, Global Setup). `next.config.ts` rewrites only the relative image URLs the API returns (`/api/images/*` and the user avatars' `/api/users/:id/image/*`), which `<img>` and `next/image` request from this app. A relative better-auth `callbackURL` / `redirectTo` resolves against the API, not this app; pass a relative one only where biru-api's mails turn it into a `redirectTo` query (verification and password-reset mails).
 
 ### State Management
 
@@ -79,7 +81,9 @@ Equipment models for the store layout 3D page are built in Blender: `blender/<la
 
 `better-auth` client in `lib/auth-client.ts` with `adminClient` and `organizationClient` plugins. Auth flow: sign in → verify platform admin or org membership (else `/auth/no-access`) → redirect to `DEFAULT_AUTHENTICATED_ROUTE` (`/dashboard`).
 
-Auth and account UI built on better-auth (sign-in, two-factor, account and security settings) takes its flow and layout from better-auth's own demo (`demo/nextjs` in the better-auth repo) and, where the demo has none, from Better Auth UI: which card a feature lives in, its steps and its states. Build it with this repo's MUI components and conventions (React Hook Form + Zod, the dialog store, next-intl); never install Better Auth UI or copy its markup or localization.
+This app only has the pages needed to sign in to it. The member's own account pages (sign-up, orders, coupons, points, account and security settings, account deletion) live only on the biru storefront: the account menu, the drawer and the sign-in links open them there (`useStorefrontHref` / `useStorefrontNavItem` in `hooks/useAuth.ts`), taking their label, icon and query from the `auth` entries kept in `hooks/useRoutes.ts`. Don't add them back here.
+
+Auth UI built on better-auth (sign-in, two-factor, email verification, password reset) takes its flow and layout from better-auth's own demo (`demo/nextjs` in the better-auth repo) and, where the demo has none, from Better Auth UI: which card a feature lives in, its steps and its states. Build it with this repo's MUI components and conventions (React Hook Form + Zod, the dialog store, next-intl); never install Better Auth UI or copy its markup or localization.
 
 ### API Types (Codegen)
 

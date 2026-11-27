@@ -79,7 +79,7 @@
     "tailwindcss": "^4",
     "typescript": "^5"
   },
-  "packageManager": "pnpm@12.4.2",
+  "packageManager": "pnpm@12.23.0",
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
   }

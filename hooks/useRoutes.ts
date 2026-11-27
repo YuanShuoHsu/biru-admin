@@ -45,7 +45,6 @@ import {
   ConfirmationNumber,
   ContentPaste,
   Dashboard,
-  DeleteForever,
   Description,
   Devices,
   Email,
@@ -69,7 +68,6 @@ import {
   ListAlt,
   LocalShipping,
   LocationOn,
-  Lock,
   LockReset,
   Login,
   Mail,
@@ -973,11 +971,6 @@ const routes: Route[] = [
         segment: "coupons",
       },
       {
-        icon: DeleteForever,
-        label: "auth.deleteAccount.label",
-        segment: "delete-account",
-      },
-      {
         icon: HelpOutlined,
         label: "auth.forgotPassword.label",
         segment: "forgot-password",
@@ -996,7 +989,6 @@ const routes: Route[] = [
       },
       {
         children: [
-          { icon: Storefront, label: "auth.store.label", segment: "store" },
           {
             icon: Stars,
             label: "auth.points.transactions.label",
@@ -1015,18 +1007,6 @@ const routes: Route[] = [
         segment: "reset-password",
       },
       {
-        children: [
-          {
-            icon: Person,
-            label: "auth.settings.account.label",
-            segment: "account",
-          },
-          {
-            icon: Lock,
-            label: "auth.settings.security.label",
-            segment: "security",
-          },
-        ],
         icon: Settings,
         label: "auth.settings.label",
         segment: "settings",
@@ -1041,7 +1021,6 @@ const routes: Route[] = [
       {
         icon: PersonAdd,
         label: "auth.signUp.label",
-        query: ["redirectTo"],
         segment: "sign-up",
       },
       {

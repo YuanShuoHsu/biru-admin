@@ -10,6 +10,8 @@ import Reports from ".";
 import {
   getReportPath,
   getReportQuery,
+  getSalesFields,
+  getSalesFilterOperators,
   isItemGroupBy,
   REPORT_GRID_FIELDS,
   REPORT_TABS,
@@ -191,7 +193,11 @@ const ReportsPage = async ({ params, searchParams }: ReportsPageProps) => {
   } = resolveGridSearchParams({
     searchParams: rawSearchParams,
     ...REPORT_GRID_FIELDS[view.tab],
-    filterOperators: filterOperatorValues,
+    ...(view.tab === "sales" && { sortFields: getSalesFields(view.groupBy) }),
+    filterOperators:
+      view.tab === "sales"
+        ? getSalesFilterOperators(view.groupBy, rawSearchParams.filterField)
+        : filterOperatorValues,
     organizationSlug: organization.slug,
   });
 

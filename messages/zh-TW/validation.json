@@ -60,10 +60,6 @@
   "clockOutAt": {
     "afterClockInAt": "下班時間必須晚於上班時間。"
   },
-  "confirmNewPassword": {
-    "mismatch": "兩次輸入的密碼不一致。",
-    "required": "確認新密碼為必填。"
-  },
   "confirmPassword": {
     "mismatch": "兩次輸入的密碼不一致。",
     "required": "確認密碼為必填。"
@@ -78,9 +74,6 @@
   },
   "currency": {
     "notSelected": "請選擇您的幣別。"
-  },
-  "currentPassword": {
-    "required": "目前密碼為必填。"
   },
   "customerAddr": {
     "required": "公司地址為必填。"
@@ -214,12 +207,7 @@
   },
   "newPassword": {
     "differentFromCurrent": "與目前密碼不相同。",
-    "letter": "包含至少一個英文字母。",
-    "match": "與新密碼一致。",
-    "maxLength": "最多 128 個字元長度。",
-    "minLength": "至少 8 個字元長度。",
-    "number": "包含至少一個數字。",
-    "sameAsCurrent": "新密碼不能與目前密碼相同。"
+    "match": "與新密碼一致。"
   },
   "note": {
     "maxLength": "備註不能超過 50 個字元。"

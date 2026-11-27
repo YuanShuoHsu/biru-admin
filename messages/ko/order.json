@@ -92,18 +92,14 @@
       "title": "결제 완료"
     },
     "summary": {
-      "discount": "할인",
-      "title": "주문 내역",
-      "total": "합계"
+      "title": "주문 내역"
     },
     "transaction": {
       "amount": "결제 금액",
       "mode": "주문 방식",
-      "orderNo": "주문 번호",
       "paid": "결제 완료",
       "paymentDate": "결제 시간",
       "paymentMethod": "결제 수단",
-      "pickupTime": "픽업 시간",
       "status": "거래 상태",
       "title": "거래 정보",
       "tradeNo": "ECPay 거래 번호",
@@ -112,7 +108,6 @@
     "invoice": {
       "copied": "영수증 번호가 복사되었습니다",
       "invoiceDate": "발행 시간",
-      "invoiceNumber": "영수증 번호",
       "status": {
         "issued": "발행 완료",
         "issuing": "발행 중",
