@@ -1,6 +1,12 @@
 {
   "cart": "장바구니",
   "darkMode": "다크 모드",
+  "navGroup": {
+    "management": "관리",
+    "more": "더보기",
+    "platform": "플랫폼",
+    "store": "매장"
+  },
   "languageSwitcher": "언어 변경",
   "lightMode": "라이트 모드",
   "switchMode": "모드 전환",

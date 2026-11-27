@@ -1,6 +1,12 @@
 {
   "cart": "購物車",
   "darkMode": "暗色模式",
+  "navGroup": {
+    "management": "管理",
+    "more": "更多",
+    "platform": "平台",
+    "store": "門市"
+  },
   "languageSwitcher": "切換語言",
   "lightMode": "亮色模式",
   "switchMode": "切換模式",
