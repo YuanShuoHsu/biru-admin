@@ -161,6 +161,5 @@
   },
   "validUntil": {
     "label": "Valid until"
-  },
-  "validity": "Validity"
+  }
 }

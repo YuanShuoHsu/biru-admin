@@ -8206,11 +8206,14 @@ export interface components {
     CouponFilterField:
       | "code"
       | "scope"
+      | "discountType"
       | "isActive"
       | "validFrom"
+      | "validThrough"
       | "createdAt"
       | "discountValue"
       | "minSubtotal"
+      | "totalLimit"
       | "usedCount"
       | "perUserLimit"
       | "pointsCost"
@@ -8225,10 +8228,12 @@ export interface components {
       | "menuItemIds"
       | "discountValue"
       | "minSubtotal"
+      | "totalLimit"
       | "usedCount"
       | "perUserLimit"
       | "pointsCost"
       | "validFrom"
+      | "validThrough"
       | "distribution"
       | "isActive"
       | "createdAt";
@@ -31443,11 +31448,14 @@ export const couponFilterFieldValues: ReadonlyArray<
 > = [
   "code",
   "scope",
+  "discountType",
   "isActive",
   "validFrom",
+  "validThrough",
   "createdAt",
   "discountValue",
   "minSubtotal",
+  "totalLimit",
   "usedCount",
   "perUserLimit",
   "pointsCost",
@@ -31464,10 +31472,12 @@ export const couponSortFieldValues: ReadonlyArray<
   "menuItemIds",
   "discountValue",
   "minSubtotal",
+  "totalLimit",
   "usedCount",
   "perUserLimit",
   "pointsCost",
   "validFrom",
+  "validThrough",
   "distribution",
   "isActive",
   "createdAt",
