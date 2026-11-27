@@ -136,6 +136,14 @@ const theme = createTheme({
         cell: ({ theme }) => ({
           transition: theme.transitions.create("color"),
 
+          ".MuiChip-root": {
+            transition: theme.transitions.create([
+              "background-color",
+              "border-color",
+              "color",
+            ]),
+          },
+
           "&:hover": {
             color: theme.vars.palette.primary.main,
 
