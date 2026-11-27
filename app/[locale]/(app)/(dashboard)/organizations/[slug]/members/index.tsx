@@ -32,6 +32,7 @@ import {
   ExitToApp,
   GroupAdd,
   PersonRemove,
+  VerifiedUser,
 } from "@mui/icons-material";
 import {
   Avatar,
@@ -84,6 +85,12 @@ const StyledIconButton = styled(IconButton, {
   visibility: visible ? "visible" : "hidden",
 }));
 
+const RoleStack = styled(Stack)(({ theme }) => ({
+  height: "100%",
+  alignItems: "center",
+  gap: theme.spacing(0.5),
+}));
+
 const AvatarStack = styled(Stack)({
   height: "100%",
   alignItems: "center",
@@ -126,8 +133,8 @@ interface OrganizationsSlugMembersProps {
   canUpdateMemberRoles: boolean;
   currentUserId: string;
   currentUserRole: string;
-  fetchesPlatformAdminMemberIds: boolean;
   initialPlatformAdminMemberIds: Member["id"][];
+  isPlatformAdmin: boolean;
 }
 
 const OrganizationsSlugMembers = ({
@@ -140,8 +147,8 @@ const OrganizationsSlugMembers = ({
   canUpdateMemberRoles,
   currentUserId,
   currentUserRole,
-  fetchesPlatformAdminMemberIds,
   initialPlatformAdminMemberIds,
+  isPlatformAdmin,
 }: OrganizationsSlugMembersProps) => {
   const organizationId = activeOrganization.id;
   const initialMembers = activeOrganization.members;
@@ -211,7 +218,7 @@ const OrganizationsSlugMembers = ({
   );
 
   const platformAdminMemberIds = usePlatformAdminMemberIds(organizationId, {
-    enabled: fetchesPlatformAdminMemberIds,
+    enabled: true,
     fallbackData: initialPlatformAdminMemberIds,
   });
 
@@ -223,17 +230,31 @@ const OrganizationsSlugMembers = ({
         currentUserId,
         currentUserRole,
         members: rows,
-        platformAdminMemberIds,
+        platformAdminMemberIds: isPlatformAdmin ? [] : platformAdminMemberIds,
       }),
     [
       canDeleteMember,
       canUpdateMember,
       currentUserId,
       currentUserRole,
+      isPlatformAdmin,
       platformAdminMemberIds,
       rows,
     ],
   );
+
+  const canConfirmOwners =
+    (isPlatformAdmin ||
+      rows.some(
+        ({ joinedAsPlatformAdmin, role, userId }) =>
+          userId === currentUserId &&
+          role === "owner" &&
+          !joinedAsPlatformAdmin,
+      )) &&
+    rows.some(
+      ({ joinedAsPlatformAdmin, role }) =>
+        role === "owner" && joinedAsPlatformAdmin,
+    );
 
   const isMemberSelectable = useCallback(
     (member: Member) => permissionsOf(member).canRemoveMember,
@@ -317,6 +338,41 @@ const OrganizationsSlugMembers = ({
         },
         open: true,
         title: tMembers("actions.removeMember.title"),
+      });
+    },
+    [mutate, organizationId, setDialog, tMembers],
+  );
+
+  const handleConfirmOwner = useCallback(
+    ({ id: memberId, user: { email } }: Member) => {
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tMembers.rich("actions.confirmOwner.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              email,
+            })}
+          </DialogContentText>
+        ),
+        onConfirm: async () => {
+          try {
+            await fetcher(
+              `/api/organizations/${organizationId}/members/${memberId}/confirm-owner`,
+              { method: "POST" },
+            );
+
+            enqueueSnackbar(
+              tMembers("actions.confirmOwner.success", { email }),
+              { variant: "success" },
+            );
+          } catch (error) {
+            enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+          } finally {
+            await mutate();
+          }
+        },
+        open: true,
+        title: tMembers("actions.confirmOwner.title"),
       });
     },
     [mutate, organizationId, setDialog, tMembers],
@@ -513,7 +569,10 @@ const OrganizationsSlugMembers = ({
 
   const columns = useMemo<GridColDef[]>(
     () => [
-      ...((canUpdateMemberRoles || canRemoveMembers || canLeaveOrganizations) &&
+      ...((canUpdateMemberRoles ||
+        canRemoveMembers ||
+        canLeaveOrganizations ||
+        canConfirmOwners) &&
       !isSelectMode
         ? [
             {
@@ -559,6 +618,22 @@ const OrganizationsSlugMembers = ({
                           visible={canRemoveMember}
                         >
                           <PersonRemove fontSize="small" />
+                        </StyledIconButton>
+                      </Tooltip>
+                    )}
+                    {canConfirmOwners && (
+                      <Tooltip title={tMembers("actions.confirmOwner.title")}>
+                        <StyledIconButton
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleConfirmOwner(row);
+                          }}
+                          size="small"
+                          visible={
+                            row.role === "owner" && !!row.joinedAsPlatformAdmin
+                          }
+                        >
+                          <VerifiedUser fontSize="small" />
                         </StyledIconButton>
                       </Tooltip>
                     )}
@@ -619,14 +694,32 @@ const OrganizationsSlugMembers = ({
       {
         field: "role",
         headerName: tMembers("role.label"),
-        renderCell: ({ row: { role } }: GridRenderCellParams<Member>) => (
-          <Chip
-            color={ROLE_COLOR_MAP[role]}
-            label={tMembers(`role.${role}`)}
-            size="small"
-            variant="outlined"
-          />
-        ),
+        renderCell: ({
+          row: { id, joinedAsPlatformAdmin, role },
+        }: GridRenderCellParams<Member>) => {
+          const isPlatformAdminOwner =
+            role === "owner" && joinedAsPlatformAdmin;
+
+          return (
+            <RoleStack direction="row">
+              <Chip
+                color={ROLE_COLOR_MAP[role]}
+                label={tMembers(
+                  isPlatformAdminOwner ? "role.platformAdmin" : `role.${role}`,
+                )}
+                size="small"
+                variant="outlined"
+              />
+              {!isPlatformAdminOwner && platformAdminMemberIds.includes(id) && (
+                <Chip
+                  label={tMembers("role.platformAdmin")}
+                  size="small"
+                  variant="outlined"
+                />
+              )}
+            </RoleStack>
+          );
+        },
         sortComparator: (a, b) => ROLE_RANK[a] - ROLE_RANK[b],
       },
       {
@@ -665,16 +758,19 @@ const OrganizationsSlugMembers = ({
       },
     ],
     [
+      canConfirmOwners,
       canLeaveOrganizations,
       canRemoveMembers,
       canUpdateMemberRoles,
       format,
       permissionsOf,
+      handleConfirmOwner,
       handleLeaveOrganization,
       handleRemoveMember,
       handleUpdateMemberRole,
       handleUpdateShowcase,
       isSelectMode,
+      platformAdminMemberIds,
       tMembers,
       tOrganizations,
     ],

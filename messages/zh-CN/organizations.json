@@ -277,6 +277,11 @@
         },
         "title": "批量移除团队成员"
       },
+      "confirmOwner": {
+        "confirm": "确定要将 <bold>{email}</bold> 转为真正店主吗？角色会改为显示「拥有者」。",
+        "success": "已将 {email} 转为真正店主",
+        "title": "转为真正店主"
+      },
       "inviteMember": {
         "email": {
           "label": "电子邮件",
@@ -314,7 +319,8 @@
       "label": "角色",
       "member": "成员",
       "owner": "拥有者",
-      "placeholder": "请选择您的角色"
+      "placeholder": "请选择您的角色",
+      "platformAdmin": "平台管理员"
     },
     "showcase": {
       "label": "显示在官网",

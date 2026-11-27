@@ -277,6 +277,11 @@
         },
         "title": "チームメンバーを一括削除"
       },
+      "confirmOwner": {
+        "confirm": "<bold>{email}</bold> を正式な店舗オーナーにしますか？役割は「オーナー」と表示されます。",
+        "success": "{email} を正式な店舗オーナーにしました",
+        "title": "正式な店舗オーナーにする"
+      },
       "inviteMember": {
         "email": {
           "label": "メール",
@@ -314,7 +319,8 @@
       "label": "役割",
       "member": "メンバー",
       "owner": "オーナー",
-      "placeholder": "あなたの役割を選択してください"
+      "placeholder": "あなたの役割を選択してください",
+      "platformAdmin": "プラットフォーム管理者"
     },
     "showcase": {
       "label": "公式サイトに表示",

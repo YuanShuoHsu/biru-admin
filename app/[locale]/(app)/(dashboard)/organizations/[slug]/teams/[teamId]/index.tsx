@@ -375,7 +375,11 @@ const OrganizationsSlugTeamsTeamId = ({
         renderCell: ({ row }: GridRenderCellParams<TeamMemberRow>) => (
           <Chip
             color={ROLE_COLOR_MAP[row.role] || "default"}
-            label={tMembers(`role.${row.role as "owner" | "admin" | "member"}`)}
+            label={tMembers(
+              row.role === "owner" && row.joinedAsPlatformAdmin
+                ? "role.platformAdmin"
+                : `role.${row.role as "owner" | "admin" | "member"}`,
+            )}
             size="small"
             variant="outlined"
           />

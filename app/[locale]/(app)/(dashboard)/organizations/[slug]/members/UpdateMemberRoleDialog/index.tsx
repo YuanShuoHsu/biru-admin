@@ -57,6 +57,13 @@ const UpdateMemberRoleDialog = ({
 
   const role = useWatch({ control, name: "role" });
 
+  const roleLabel = (role: (typeof roles)[number]) =>
+    tMembers(
+      role === "owner" && member.joinedAsPlatformAdmin
+        ? "role.platformAdmin"
+        : `role.${role}`,
+    );
+
   const onSubmit = (event: BaseSyntheticEvent) =>
     handleSubmit(async ({ role }) => {
       await authClient.organization.updateMemberRole(
@@ -111,7 +118,7 @@ const UpdateMemberRoleDialog = ({
               const selectedRole = roles.find((role) => role === selected);
 
               return selectedRole ? (
-                tMembers(`role.${selectedRole}`)
+                roleLabel(selectedRole)
               ) : (
                 <em>{tMembers("role.placeholder")}</em>
               );
@@ -128,7 +135,7 @@ const UpdateMemberRoleDialog = ({
           .filter((role) => ROLE_RANK[role] <= ROLE_RANK[currentUserRole])
           .map((role) => (
             <MenuItem key={role} value={role}>
-              {tMembers(`role.${role}`)}
+              {roleLabel(role)}
             </MenuItem>
           ))}
       </TextField>

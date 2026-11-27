@@ -277,6 +277,11 @@
         },
         "title": "팀 멤버 일괄 제거"
       },
+      "confirmOwner": {
+        "confirm": "<bold>{email}</bold> 님을 실제 매장 소유자로 전환하시겠습니까? 역할이 \"소유자\"로 표시됩니다.",
+        "success": "{email} 님을 실제 매장 소유자로 전환했습니다",
+        "title": "실제 매장 소유자로 전환"
+      },
       "inviteMember": {
         "email": {
           "label": "이메일",
@@ -314,7 +319,8 @@
       "label": "역할",
       "member": "멤버",
       "owner": "소유자",
-      "placeholder": "귀하의 역할을 선택해 주세요"
+      "placeholder": "귀하의 역할을 선택해 주세요",
+      "platformAdmin": "플랫폼 관리자"
     },
     "showcase": {
       "label": "공식 사이트에 표시",
