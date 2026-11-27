@@ -13,6 +13,7 @@ import {
   DATE_FORMAT,
   getReportPath,
   getReportQuery,
+  getSalesGroupField,
   isItemGroupBy,
   isValidRange,
   MAX_RANGE_DAYS,
@@ -21,6 +22,9 @@ import {
   RESET_GRID_QUERY,
   type ReportTab,
   type ReportView,
+  SALES_GROUP_COLUMN_TYPES,
+  SALES_ITEM_FIELDS,
+  SALES_MONEY_FIELDS,
   toReportGridQuery,
   toStoreDate,
 } from "./definitions";
@@ -36,6 +40,7 @@ import { STORE_TIMEZONE } from "@/constants/timezone";
 import { useCsvDownload } from "@/hooks/useCsvDownload";
 import { useDataGridQueryState } from "@/hooks/useDataGridQueryState";
 import {
+  useDateFilterOperators,
   useEnumFilterOperators,
   useNumberFilterOperators,
   useStringFilterOperators,
@@ -57,7 +62,11 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { type GridColDef, useGridApiRef } from "@mui/x-data-grid";
+import {
+  type GridColDef,
+  useGridApiRef,
+  type ValueOptions,
+} from "@mui/x-data-grid";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import type { PickerChangeHandlerContext } from "@mui/x-date-pickers/models";
 
@@ -84,7 +93,10 @@ import {
   getExportDateRange,
   getExportFileName,
 } from "@/utils/dataGrid";
-import { getIngredientEnumOptions } from "@/utils/enumOptions";
+import {
+  getIngredientEnumOptions,
+  getOrderEnumOptions,
+} from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
@@ -149,8 +161,6 @@ const BREAK_EVEN_TARGET_SUMMARY = [
   "targetRevenue",
   "dailyTargetRevenue",
 ] as const;
-
-const MONEY_FIELDS = ["revenue", "discount", "refunded", "net"] as const;
 
 const INVENTORY_FIELDS = [
   "opening",
@@ -243,6 +253,7 @@ const ReportTable = ({
 
   const apiRef = useGridApiRef();
 
+  const dateFilterOperators = useDateFilterOperators();
   const enumFilterOperators = useEnumFilterOperators();
   const numberFilterOperators = useNumberFilterOperators();
   const stringFilterOperators = useStringFilterOperators();
@@ -257,12 +268,21 @@ const ReportTable = ({
   const tInventory = useTranslations("inventory");
   const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
+  const tOrders = useTranslations("orders");
   const tReports = useTranslations("reports");
 
   const enumOptions = useMemo(
     () => getIngredientEnumOptions(tInventory),
     [tInventory],
   );
+
+  const salesValueOptions = useMemo<
+    Partial<Record<SalesReportGroupBy, ValueOptions[]>>
+  >(() => {
+    const { mode, paymentMethod } = getOrderEnumOptions(tOrder, tOrders);
+
+    return { mode, paymentMethod };
+  }, [tOrder, tOrders]);
 
   const reportUrl = `${getReportPath(organization.slug, tab)}?${getReportQuery(view)}&${toReportGridQuery(
     tab,
@@ -352,19 +372,32 @@ const ReportTable = ({
       }
     };
 
+    const groupType = SALES_GROUP_COLUMN_TYPES[groupBy];
+
     return [
       {
-        field: isItemGroup ? "name" : "key",
-        filterable: groupBy !== "paymentMethod" && groupBy !== "mode",
-        filterOperators: stringFilterOperators,
+        field: getSalesGroupField(groupBy),
+        filterOperators: {
+          date: dateFilterOperators,
+          number: numberFilterOperators,
+          singleSelect: enumFilterOperators,
+          string: stringFilterOperators,
+        }[groupType],
         headerName: tReports(`groupBy.${groupBy}`),
-        type: groupBy === "hour" ? "number" : "string",
-        valueGetter: (_value: unknown, row: SalesReportRow) =>
-          groupBy === "hour"
-            ? Number(row.key)
-            : groupBy === "day"
-              ? row.key
-              : groupLabel(row),
+        type: groupType,
+        valueOptions: salesValueOptions[groupBy],
+        valueGetter: (_value: unknown, row: SalesReportRow) => {
+          switch (groupType) {
+            case "date":
+              return toStoreDate(row.key).toDate();
+            case "number":
+              return Number(row.key);
+            case "singleSelect":
+              return row.key;
+            default:
+              return groupLabel(row);
+          }
+        },
         valueFormatter: (_value, row: SalesReportRow) => groupLabel(row),
       },
       {
@@ -374,14 +407,14 @@ const ReportTable = ({
         type: "number",
       },
       ...(isItemGroup
-        ? (["quantity", "refundedQuantity"] as const).map((field) => ({
+        ? SALES_ITEM_FIELDS.map((field) => ({
             field,
             filterOperators: numberFilterOperators,
             headerName: tReports(`sales.${field}`),
             type: "number" as const,
           }))
         : []),
-      ...MONEY_FIELDS.map((field) => ({
+      ...SALES_MONEY_FIELDS.map((field) => ({
         field,
         filterOperators: numberFilterOperators,
         headerName: tReports(`sales.${field}`),
@@ -391,11 +424,14 @@ const ReportTable = ({
     ];
   }, [
     currency,
+    dateFilterOperators,
+    enumFilterOperators,
     format,
     formatMoney,
     groupBy,
     locale,
     numberFilterOperators,
+    salesValueOptions,
     stringFilterOperators,
     tMenus,
     tOrder,
@@ -730,7 +766,7 @@ const ReportTable = ({
           <Typography variant="body2">
             {tReports("sales.orders")} {format.number(sales.totals.orders)}
           </Typography>
-          {MONEY_FIELDS.map((field) => (
+          {SALES_MONEY_FIELDS.map((field) => (
             <Typography key={field} variant="body2">
               {tReports(`sales.${field}`)}{" "}
               {formatMoney(sales.totals[field], currency)}
