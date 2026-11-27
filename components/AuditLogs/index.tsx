@@ -56,7 +56,11 @@ import type { LocalizedText } from "@/types/locale";
 import type { Organization, OrganizationResponse } from "@/types/organizations";
 
 import { formatLeaveDuration, weekdayDate } from "@/utils/attendance";
-import { getAuditLogHref, getAuditLogsPath } from "@/utils/audit";
+import {
+  ADMIN_SCOPE_AUDIT_RESOURCES,
+  getAuditLogHref,
+  getAuditLogsPath,
+} from "@/utils/audit";
 import { getDataGridSearchParams } from "@/utils/dataGrid";
 import { getAuditLogEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
@@ -474,6 +478,7 @@ interface AuditLogsProps {
   filterOperator?: FilterOperator;
   filterValue?: string;
   ingredient?: Ingredient;
+  joinedOrganizations?: Pick<Organization, "id" | "slug">[];
   loading?: boolean;
   logs?: AuditLogResponse[];
   organization?: Organization;
@@ -494,6 +499,7 @@ const AuditLogs = ({
   filterOperator,
   filterValue,
   ingredient,
+  joinedOrganizations,
   loading = false,
   logs: initialLogs = [],
   organization,
@@ -801,12 +807,22 @@ const AuditLogs = ({
                   row.resourceId,
                   row.ancestorIds ?? [],
                 );
+                const targetOrganization = joinedOrganizations?.find(
+                  ({ id }) => id === row.organizationId,
+                );
+                const canOpenTarget =
+                  !joinedOrganizations ||
+                  !row.organizationId ||
+                  ADMIN_SCOPE_AUDIT_RESOURCES.includes(row.resource) ||
+                  targetOrganization;
 
-                return label && href ? (
+                return label && href && canOpenTarget ? (
                   <MuiLink
                     href={getHref(href, {
                       ...DEFAULT_PAGINATION_QUERY,
-                      organization: searchParams.get("organization"),
+                      organization:
+                        targetOrganization?.slug ??
+                        searchParams.get("organization"),
                     })}
                   >
                     {label}
@@ -926,6 +942,7 @@ const AuditLogs = ({
       getFieldLabel,
       getValueText,
       handleActorIdChange,
+      joinedOrganizations,
       locale,
       organizations,
       resource,
