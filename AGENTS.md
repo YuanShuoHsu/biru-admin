@@ -20,6 +20,8 @@ The pre-commit hook (Husky + lint-staged) runs `pnpm format`, `pnpm lint`, and `
 
 Format with the repo's own Prettier (`pnpm format` or `pnpm exec prettier`) after `pnpm install --frozen-lockfile`, never `npx prettier`: without `node_modules` it downloads whatever Prettier is latest, which can format differently from the pinned one.
 
+Where `fonts.googleapis.com` is unreachable (e.g. a sandbox), `next/font/google` fails the build. Point `NEXT_FONT_GOOGLE_MOCKED_RESPONSES` at a CommonJS file exporting `{ [url]: css }`, one entry per font in `app/[locale]/layout.tsx`: the URL as `node_modules/next/dist/compiled/@next/font/dist/google/get-google-fonts-url.js` builds it (`https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap`, likewise JP, KR and SC), the css one `@font-face` with `font-weight: 100 900` whose `src` is `url(<absolute path to any local .woff2>)`. Only the webpack build reads it (`next build --webpack`); a `Missing mocked response for URL` error names a URL to add.
+
 Branch from `develop` and open every PR against `develop`, which is GitHub's default branch. Never target `master`: a PR merged only into `master` never reaches `develop`, so work branched from `develop` misses it and conflicts when `master` is merged back. Because `develop` is the default branch, `Closes #n` in a PR closes the issue when the PR merges into `develop`; use `Part of #n` for PRs that only finish part of an issue.
 
 ## Architecture
