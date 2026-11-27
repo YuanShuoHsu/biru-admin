@@ -3,65 +3,25 @@ import { cache } from "react";
 import { fetcher } from "./fetcher";
 import { getHref } from "./href";
 
-import { NO_VALUE_FILTER_OPERATORS } from "@/constants/dataGrid";
-
 import type {
   AdminOrderBoardColumn,
   AdminOrderListResponse,
   KitchenOrderResponse,
+  OrderFilterField,
+  OrderSortField,
   PrepTimeResponse,
 } from "@/types/orders";
 
-interface GetAdminOrdersQuery {
-  page?: number;
-  pageSize?: number;
-  filterField?: string;
-  filterOperator?: string;
-  filterValue?: string;
-  quickFilterEnums?: string[];
-  quickFilterValue?: string;
-  sortBy?: string;
-  sortDirection?: "asc" | "desc";
-}
+import { type GridQuery, getGridSearchParams } from "@/utils/dataGrid";
 
 export const getAdminOrders = cache(
   async (
     organizationSlug: string,
-    {
-      page = 1,
-      pageSize = 10,
-      filterField,
-      filterOperator,
-      filterValue,
-      quickFilterEnums,
-      quickFilterValue,
-      sortBy,
-      sortDirection,
-    }: GetAdminOrdersQuery = {},
+    query: GridQuery<OrderFilterField, OrderSortField> = {},
     init?: RequestInit,
   ) => {
-    const offset = (page - 1) * pageSize;
-    const isNoValueOperator =
-      filterOperator && NO_VALUE_FILTER_OPERATORS.includes(filterOperator);
-    const params = new URLSearchParams({
-      limit: String(pageSize),
-      offset: String(offset),
-      ...(sortBy && { sortBy }),
-      ...(sortDirection && { sortDirection }),
-      ...(filterField &&
-        filterOperator &&
-        (filterValue || isNoValueOperator) && {
-          filterField,
-          filterOperator,
-          ...(filterValue && { filterValue }),
-        }),
-      ...(quickFilterValue && { quickFilterValue }),
-    });
-    for (const entry of quickFilterEnums || [])
-      params.append("quickFilterEnums", entry);
-
     const result = await fetcher<AdminOrderListResponse>(
-      `/api/organizations/${organizationSlug}/orders?${params.toString()}`,
+      `/api/organizations/${organizationSlug}/orders?${getGridSearchParams(query).toString()}`,
       init,
     );
 
