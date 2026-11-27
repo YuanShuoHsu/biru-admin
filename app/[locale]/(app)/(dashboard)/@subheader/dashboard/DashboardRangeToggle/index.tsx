@@ -20,7 +20,6 @@ import {
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
   backgroundColor: theme.vars.palette.background.paper,
-  transition: theme.transitions.create("background-color"),
 
   [`& .${toggleButtonGroupClasses.grouped}`]: {
     transition: theme.transitions.create([

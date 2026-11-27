@@ -7,6 +7,8 @@
 // https://mui.com/x/react-data-grid/style/#SxProp.tsx
 // https://mui.com/x/react-date-pickers/quickstart/#typescript
 // https://mui.com/x/react-date-pickers/quickstart/#date-value-types
+// https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:active-view-transition
+// https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/::view-transition-new
 
 import LinkBehavior from "@/components/LinkBehavior";
 
@@ -89,46 +91,10 @@ const theme = createTheme({
     },
   },
   components: {
-    MuiAlert: {
-      styleOverrides: {
-        message: ({ theme }) => ({
-          transition: theme.transitions.create("color"),
-        }),
-      },
-    },
-    MuiAvatar: {
-      styleOverrides: {
-        root: ({ theme }) => ({
-          transition: theme.transitions.create([
-            "background-color",
-            "border-color",
-            "color",
-          ]),
-        }),
-      },
-    },
-    MuiBadge: {
-      styleOverrides: {
-        badge: ({ theme }) => ({
-          transition: theme.transitions.create([
-            "background-color",
-            "border-color",
-          ]),
-        }),
-      },
-    },
     MuiButton: {
       styleOverrides: {
         root: ({ ownerState, theme }) => ({
           textTransform: "none",
-          transition: theme.transitions.create([
-            "background-color",
-            "border-color",
-            "color",
-          ]),
-          "& .MuiSvgIcon-root": {
-            transition: "none",
-          },
           ...(ownerState.variant === "outlined" && {
             backgroundColor: theme.vars.palette.background.paper,
           }),
@@ -138,19 +104,6 @@ const theme = createTheme({
     MuiButtonBase: {
       defaultProps: {
         LinkComponent: LinkBehavior,
-      },
-    },
-    MuiChip: {
-      styleOverrides: {
-        label: ({ theme }) => ({
-          transition: theme.transitions.create("color"),
-        }),
-        root: ({ theme }) => ({
-          transition: theme.transitions.create([
-            "background-color",
-            "border-color",
-          ]),
-        }),
       },
     },
     MuiCssBaseline: {
@@ -169,12 +122,27 @@ const theme = createTheme({
         ".notistack-MuiContent": {
           overflowWrap: "anywhere",
         },
+        ":root:active-view-transition *": {
+          transition: "none !important",
+        },
+        "::view-transition-old(root), ::view-transition-new(root)": {
+          animationDuration: `${theme.transitions.duration.standard}ms`,
+          animationTimingFunction: theme.transitions.easing.easeInOut,
+        },
       }),
     },
     MuiDataGrid: {
       styleOverrides: {
         cell: ({ theme }) => ({
-          transition: theme.transitions.create(["border-color", "color"]),
+          transition: theme.transitions.create("color"),
+
+          ".MuiChip-root": {
+            transition: theme.transitions.create([
+              "background-color",
+              "border-color",
+              "color",
+            ]),
+          },
 
           "&:hover": {
             color: theme.vars.palette.primary.main,
@@ -187,12 +155,6 @@ const theme = createTheme({
           },
         }),
         columnHeader: ({ theme }) => ({
-          transition: theme.transitions.create([
-            "background-color",
-            "border-color",
-            "color",
-          ]),
-
           "& .MuiDataGrid-sortButton": {
             transition: theme.transitions.create("background-color"),
           },
@@ -205,34 +167,11 @@ const theme = createTheme({
             ].join(","),
           },
         }),
-        columnHeaders: ({ theme }) => ({
-          transition: theme.transitions.create("background-color"),
-        }),
         columnsManagement: ({ theme }) => ({
           color: theme.vars.palette.text.primary,
         }),
         columnsManagementFooter: ({ theme }) => ({
           color: theme.vars.palette.text.primary,
-        }),
-        footerContainer: ({ theme }) => ({
-          transition: theme.transitions.create(["border-color"]),
-        }),
-        root: ({ theme }) => ({
-          transition: theme.transitions.create([
-            "background-color",
-            "border-color",
-          ]),
-
-          "& .MuiDataGrid-filler": {
-            transition: theme.transitions.create([
-              "background-color",
-              "border-color",
-            ]),
-
-            "& > div": {
-              transition: theme.transitions.create("border-color"),
-            },
-          },
         }),
         row: ({ theme }) => ({
           transition: theme.transitions.create("background-color"),
@@ -260,19 +199,6 @@ const theme = createTheme({
             },
           },
         }),
-        scrollbarFiller: ({ theme }) => ({
-          transition: theme.transitions.create([
-            "background-color",
-            "border-color",
-          ]),
-        }),
-        toolbar: ({ theme }) => ({
-          transition: theme.transitions.create([
-            "background-color",
-            "border-color",
-            "color",
-          ]),
-        }),
       },
     },
     MuiDateTimePicker: {
@@ -280,137 +206,19 @@ const theme = createTheme({
         ampm: false,
       },
     },
-    MuiDivider: {
-      styleOverrides: {
-        root: ({ theme }) => ({
-          transition: theme.transitions.create("border-color"),
-
-          "&::before, &::after": {
-            transition: theme.transitions.create(["border-color"]),
-          },
-        }),
-        wrapper: ({ theme }) => ({
-          transition: theme.transitions.create("color"),
-        }),
-      },
-    },
     MuiEventCalendar: {
       styleOverrides: {
         agendaView: ({ theme }) => ({
           backgroundColor: theme.vars.palette.background.paper,
-          transition: theme.transitions.create([
-            "background-color",
-            "border-color",
-          ]),
         }),
         dayTimeGridContainer: ({ theme }) => ({
           backgroundColor: theme.vars.palette.background.paper,
-          transition: theme.transitions.create([
-            "background-color",
-            "border-color",
-          ]),
-        }),
-        headerToolbarLabel: ({ theme }) => ({
-          transition: theme.transitions.create("color"),
         }),
         monthView: ({ theme }) => ({
           backgroundColor: theme.vars.palette.background.paper,
-          transition: theme.transitions.create([
-            "background-color",
-            "border-color",
-          ]),
         }),
-        root: ({ theme }) =>
-          Object.fromEntries(
-            (
-              [
-                [
-                  ["background-color", "border-color", "color"],
-                  [
-                    "agendaViewDayNumberCell",
-                    "agendaViewWeekDayNameLabel",
-                    "agendaViewWeekNumberLabel",
-                    "agendaViewYearAndMonthLabel",
-                    "dayGridEventPlaceholder",
-                    "dayGridEventTime",
-                    "dayGridEventTitle",
-                    "dayTimeGridAllDayEventsHeaderCell",
-                    "dayTimeGridHeaderDayName",
-                    "dayTimeGridHeaderDayNumber",
-                    "dayTimeGridTimeAxisText",
-                    "eventItemTime",
-                    "eventItemTitle",
-                    "headerToolbarWeekNumber",
-                    "miniCalendarDayButton",
-                    "miniCalendarMonthLabel",
-                    "miniCalendarWeekdayCell",
-                    "monthViewCellNumber",
-                    "monthViewHeaderCell",
-                    "monthViewWeekHeaderCell",
-                    "monthViewWeekNumberCell",
-                    "timeGridEventPlaceholder",
-                    "timeGridEventTime",
-                  ],
-                ],
-                [
-                  ["background-color", "border-color"],
-                  [
-                    "agendaViewDayHeaderCell",
-                    "agendaViewRow",
-                    "dayGridEvent",
-                    "dayTimeGridAllDayEventsCell",
-                    "dayTimeGridAllDayEventsGrid",
-                    "dayTimeGridColumn",
-                    "dayTimeGridCurrentTimeIndicator",
-                    "dayTimeGridCurrentTimeIndicatorCircle",
-                    "dayTimeGridHeader",
-                    "dayTimeGridScrollablePlaceholder",
-                    "dayTimeGridTimeAxisCell::after",
-                    "eventColorIndicator",
-                    "eventItemCard",
-                    "monthViewCell",
-                    "monthViewCellNumberButton",
-                    "monthViewHeader",
-                    "monthViewRow",
-                    "resourceLegendColor",
-                    "sidePanelDivider",
-                    "timeGridEvent",
-                    "timeGridEvent::before",
-                  ],
-                ],
-              ] as const
-            ).map(([properties, slots]) => [
-              slots.map((slot) => `& .MuiEventCalendar-${slot}`).join(", "),
-              { transition: theme.transitions.create([...properties]) },
-            ]),
-          ),
         sidePanel: ({ theme }) => ({
           backgroundColor: theme.vars.palette.background.paper,
-          transition: theme.transitions.create([
-            "background-color",
-            "border-color",
-          ]),
-        }),
-      },
-    },
-    MuiIconButton: {
-      styleOverrides: {
-        root: ({ theme }) => ({
-          transition: theme.transitions.create([
-            "background-color",
-            "border-color",
-          ]),
-        }),
-      },
-    },
-    MuiInputLabel: {
-      styleOverrides: {
-        root: ({ theme }) => ({
-          transition: theme.transitions.create([
-            "max-width",
-            "color",
-            "transform",
-          ]),
         }),
       },
     },
@@ -418,58 +226,11 @@ const theme = createTheme({
       defaultProps: {
         component: LinkBehavior,
       } as LinkProps,
-      styleOverrides: {
-        root: ({ theme }) => ({
-          transition: theme.transitions.create([
-            "color",
-            "text-decoration-color",
-          ]),
-        }),
-      },
-    },
-    MuiListItem: {
-      styleOverrides: {
-        divider: ({ theme }) => ({
-          transition: theme.transitions.create("border-color"),
-        }),
-      },
-    },
-    MuiListSubheader: {
-      styleOverrides: {
-        root: ({ theme }) => ({
-          transition: theme.transitions.create(["background-color", "color"]),
-        }),
-      },
-    },
-    MuiTab: {
-      styleOverrides: {
-        root: ({ theme }) => ({
-          transition: theme.transitions.create("color"),
-
-          "& .MuiSvgIcon-root": {
-            transition: "none",
-          },
-        }),
-      },
     },
     MuiTabs: {
       styleOverrides: {
         root: ({ theme }) => ({
           borderBottom: `1px solid ${theme.vars.palette.divider}`,
-          transition: theme.transitions.create("border-color"),
-        }),
-      },
-    },
-    MuiTablePagination: {
-      styleOverrides: {
-        displayedRows: ({ theme }) => ({
-          transition: theme.transitions.create("color"),
-        }),
-        select: ({ theme }) => ({
-          transition: theme.transitions.create("color"),
-        }),
-        selectLabel: ({ theme }) => ({
-          transition: theme.transitions.create("color"),
         }),
       },
     },
@@ -477,24 +238,6 @@ const theme = createTheme({
       styleOverrides: {
         root: ({ theme }) => ({
           backgroundColor: theme.vars.palette.background.paper,
-          transition: theme.transitions.create("background-color"),
-        }),
-        input: ({ theme }) => ({
-          transition: theme.transitions.create("color"),
-        }),
-        notchedOutline: ({ theme }) => ({
-          transition: theme.transitions.create("border-color"),
-        }),
-      },
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: ({ theme }) => ({
-          transition: theme.transitions.create([
-            "background-color",
-            "border-color",
-            "box-shadow",
-          ]),
         }),
       },
     },
@@ -502,46 +245,6 @@ const theme = createTheme({
       styleOverrides: {
         root: ({ theme }) => ({
           backgroundColor: theme.vars.palette.background.paper,
-          transition: theme.transitions.create("background-color"),
-        }),
-      },
-    },
-    MuiSlider: {
-      styleOverrides: {
-        root: ({ theme }) => ({
-          transition: theme.transitions.create("color"),
-        }),
-      },
-    },
-    MuiSvgIcon: {
-      styleOverrides: {
-        root: ({ theme }) => ({
-          transition: theme.transitions.create("color"),
-        }),
-      },
-    },
-    MuiSwitch: {
-      styleOverrides: {
-        switchBase: ({ theme }) => ({
-          transition: theme.transitions.create(["color", "transform"]),
-        }),
-      },
-    },
-    MuiToggleButton: {
-      styleOverrides: {
-        root: ({ theme }) => ({
-          transition: theme.transitions.create([
-            "background-color",
-            "border-color",
-            "color",
-          ]),
-        }),
-      },
-    },
-    MuiTypography: {
-      styleOverrides: {
-        root: ({ theme }) => ({
-          transition: theme.transitions.create("color"),
         }),
       },
     },

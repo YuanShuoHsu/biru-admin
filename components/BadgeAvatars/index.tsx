@@ -9,7 +9,6 @@ const StyledBadge = styled(Badge)<BadgeProps>(({ theme, variant }) => ({
       backgroundColor: theme.vars.palette.secondary.main,
       boxShadow: `0 0 0 2px ${theme.vars.palette.primary.main}`,
       color: theme.vars.palette.secondary.main,
-      transition: theme.transitions.create(["background-color", "box-shadow"]),
 
       "&::after": {
         content: '""',
@@ -50,10 +49,6 @@ const StyledBadge = styled(Badge)<BadgeProps>(({ theme, variant }) => ({
       backgroundColor: theme.vars.palette.secondary.main,
       border: `2px solid ${theme.vars.palette.background.paper}`,
       borderRadius: "50%",
-      transition: theme.transitions.create([
-        "background-color",
-        "border-color",
-      ]),
     },
   }),
 }));

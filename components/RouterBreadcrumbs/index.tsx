@@ -25,18 +25,9 @@ import { type CSSObject, styled, type Theme } from "@mui/material/styles";
 
 import type { NavItem } from "@/types/navItem";
 
-const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
+const StyledBreadcrumbs = styled(Breadcrumbs)({
   flex: 1,
-  transition: "none",
-
-  "& .MuiBreadcrumbs-separator": {
-    transition: theme.transitions.create("color"),
-  },
-
-  "& .MuiSvgIcon-root": {
-    transition: "none",
-  },
-}));
+});
 
 const iconTextStyles = ({ theme }: { theme: Theme }): CSSObject => ({
   display: "flex",

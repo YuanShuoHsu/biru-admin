@@ -53,7 +53,7 @@ const StyledAppBar = styled(AppBar, {
 })<{ trigger: boolean }>(({ theme, trigger }) => ({
   top: trigger ? -APP_BAR_TOOLBAR_HEIGHT : 0,
   backgroundImage: "none",
-  transition: theme.transitions.create(["background-color", "top"]),
+  transition: theme.transitions.create("top"),
 
   [`${theme.breakpoints.up("xs")} and (orientation: landscape)`]: {
     top: trigger ? -APP_BAR_TOOLBAR_HEIGHT_XS_UP_LANDSCAPE : 0,

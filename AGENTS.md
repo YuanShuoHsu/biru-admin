@@ -67,6 +67,8 @@ React Hook Form + Zod schemas (`definitions.ts` files). Form schemas and error h
 
 MUI v9 with a custom theme (`theme.ts`) supporting light/dark via CSS variables (`colorSchemeSelector: "class"`). Tailwind CSS v4 is also available for utilities. MUI DataGrid (`@mui/x-data-grid`) is used for all tabular data with server-side pagination/sorting/filtering.
 
+Light/dark switching: `ThemeSwitcher` crossfades the whole page with `document.startViewTransition` + `flushSync`, `ThemeProvider` keeps `disableTransitionOnChange`, and `theme.ts` turns CSS transitions off while a view transition runs. Don't add `color` / `background-color` / `border-color` / `fill` / `box-shadow` transitions for the theme switch; transitions are only for interaction states (hover, open, expanded, selected). React's `<ViewTransition>` doesn't replace this: it cancels the root crossfade, so the body and portalled Dialogs, Menus and Drawers would switch instantly. If Next.js `viewTransition` or React `<ViewTransition>` is adopted for navigation, move the theme crossfade under React, since two view transitions abort each other.
+
 ### 3D Models
 
 Equipment models for the store layout 3D page are built in Blender: `blender/<label>.blend`, exported to `public/models/<label>.glb` and added to `MODELS` in `app/[locale]/(app)/(dashboard)/store-layout/Realistic/ItemBody.tsx`.

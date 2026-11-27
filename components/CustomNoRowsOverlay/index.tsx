@@ -17,9 +17,6 @@ const StyledOverlay = styled("div")(({ theme }) => ({
 }));
 
 const StyledSvg = styled("svg")(({ theme }) => ({
-  "& .primary, & .secondary": {
-    transition: theme.transitions.create("fill"),
-  },
   "& .primary": {
     fill: theme.vars.palette.action.disabled,
   },
