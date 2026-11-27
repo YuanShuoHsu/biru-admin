@@ -67,8 +67,11 @@ jobs:
           repository: YuanShuoHsu/biru-api
           ref: develop
           path: biru-api
+      - id: package-manager
+        run: echo "pnpm=$(jq -r '.packageManager | sub("^pnpm@"; "")' package.json)" >> "$GITHUB_OUTPUT"
       - uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2
         with:
+          version: ${{ steps.package-manager.outputs.pnpm }}
           runtime: node@24
           working-directory: admin
           cache: true
