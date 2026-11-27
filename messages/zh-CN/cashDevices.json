@@ -10,7 +10,7 @@
       "title": "新增机台"
     },
     "delete": {
-      "confirm": "确定要删除 <bold>{name}</bold> 吗？此操作无法撤销。",
+      "confirm": "确定要删除 <bold>{name}</bold> 吗？30 天内可在「最近删除」还原。",
       "success": "已删除机台",
       "title": "删除机台"
     },

@@ -7,7 +7,7 @@
           "label": "食材の一括削除をキャンセル"
         },
         "submit": {
-          "confirm": "以下の <bold>{count} 件の食材</bold>を削除しますか？",
+          "confirm": "以下の <bold>{count} 件の食材</bold>を削除しますか？30 日以内であれば「最近削除した項目」から復元できます。",
           "label": "選択した食材を削除（{count}）",
           "success": "食材 {count} 件を削除しました"
         },
@@ -18,7 +18,7 @@
         "title": "食材を追加"
       },
       "deleteIngredient": {
-        "confirm": "<bold>{name}</bold> を削除しますか？この操作は取り消せません。",
+        "confirm": "<bold>{name}</bold> を削除しますか？30 日以内であれば「最近削除した項目」から復元できます。",
         "success": "食材 {name} を削除しました",
         "title": "食材を削除"
       },
@@ -163,7 +163,7 @@
         "title": "レシピを追加"
       },
       "deleteRecipe": {
-        "confirm": "<bold>{name}</bold> を削除しますか？この操作は取り消せません。",
+        "confirm": "<bold>{name}</bold> を削除しますか？30 日以内であれば「最近削除した項目」から復元できます。",
         "success": "レシピを削除しました",
         "title": "レシピを削除"
       },
@@ -197,7 +197,7 @@
             "label": "材料の一括削除をキャンセル"
           },
           "submit": {
-            "confirm": "以下の <bold>{count} 件の材料</bold>を削除しますか？",
+            "confirm": "以下の <bold>{count} 件の材料</bold>を削除しますか？30 日以内であれば「最近削除した項目」から復元できます。",
             "label": "選択した材料を削除（{count}）",
             "success": "材料 {count} 件を削除しました"
           },
@@ -208,7 +208,7 @@
           "title": "材料を追加"
         },
         "deleteRecipeIngredient": {
-          "confirm": "<bold>{name}</bold> を削除しますか？この操作は取り消せません。",
+          "confirm": "<bold>{name}</bold> を削除しますか？30 日以内であれば「最近削除した項目」から復元できます。",
           "success": "材料を削除しました",
           "title": "材料を削除"
         },
@@ -278,7 +278,7 @@
           "label": "仕入先の一括削除をキャンセル"
         },
         "submit": {
-          "confirm": "以下の <bold>{count} 件の仕入先</bold>を削除しますか？",
+          "confirm": "以下の <bold>{count} 件の仕入先</bold>を削除しますか？30 日以内であれば「最近削除した項目」から復元できます。",
           "label": "選択した仕入先を削除（{count}）",
           "success": "仕入先 {count} 件を削除しました"
         },
@@ -289,7 +289,7 @@
         "title": "仕入先を追加"
       },
       "deleteSupplier": {
-        "confirm": "<bold>{name}</bold> を削除しますか？この操作は取り消せません。",
+        "confirm": "<bold>{name}</bold> を削除しますか？30 日以内であれば「最近削除した項目」から復元できます。",
         "success": "仕入先を削除しました",
         "title": "仕入先を削除"
       },

@@ -5,7 +5,7 @@
         "label": "Cancel Batch Delete Store Photos"
       },
       "submit": {
-        "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# store photo} other {# store photos}}</bold>?",
+        "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# store photo} other {# store photos}}</bold>? You can restore them from Recently deleted within 30 days.",
         "label": "Delete Selected Store Photos ({count})",
         "success": "Deleted {count, plural, one {# store photo} other {# store photos}}"
       },
@@ -16,7 +16,7 @@
       "title": "Create store photo"
     },
     "deleteStorePhoto": {
-      "confirm": "Are you sure you want to delete this <bold>store photo</bold>? This action cannot be undone.",
+      "confirm": "Are you sure you want to delete this <bold>store photo</bold>? You can restore it from Recently deleted within 30 days.",
       "success": "Store photo deleted",
       "title": "Delete store photo"
     },

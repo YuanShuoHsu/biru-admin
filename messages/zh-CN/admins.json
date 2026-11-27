@@ -27,7 +27,7 @@
         "label": "取消批量删除用户"
       },
       "submit": {
-        "confirm": "确定要删除以下 <bold>{count} 位用户</bold>吗？",
+        "confirm": "确定要删除以下 <bold>{count} 位用户</bold>吗？30 天内可在「最近删除」还原。",
         "label": "删除所选用户（{count}）",
         "success": "已删除 {count} 位用户"
       },
@@ -60,7 +60,7 @@
     },
     "label": "操作",
     "removeUser": {
-      "confirm": "确定要删除 <bold>{email}</bold> 吗？此操作无法撤销。",
+      "confirm": "确定要删除 <bold>{email}</bold> 吗？30 天内可在「最近删除」还原。",
       "success": "已删除用户 {email}",
       "title": "删除用户"
     },

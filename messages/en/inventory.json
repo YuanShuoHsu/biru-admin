@@ -7,7 +7,7 @@
           "label": "Cancel Batch Delete Ingredients"
         },
         "submit": {
-          "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# ingredient} other {# ingredients}}</bold>?",
+          "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# ingredient} other {# ingredients}}</bold>? You can restore them from Recently deleted within 30 days.",
           "label": "Delete Selected Ingredients ({count})",
           "success": "Deleted {count, plural, one {# ingredient} other {# ingredients}}"
         },
@@ -18,7 +18,7 @@
         "title": "Create ingredient"
       },
       "deleteIngredient": {
-        "confirm": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone.",
+        "confirm": "Are you sure you want to delete <bold>{name}</bold>? You can restore it from Recently deleted within 30 days.",
         "success": "Ingredient {name} deleted",
         "title": "Delete ingredient"
       },
@@ -163,7 +163,7 @@
         "title": "Add recipe"
       },
       "deleteRecipe": {
-        "confirm": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone.",
+        "confirm": "Are you sure you want to delete <bold>{name}</bold>? You can restore it from Recently deleted within 30 days.",
         "success": "Recipe deleted",
         "title": "Delete recipe"
       },
@@ -197,7 +197,7 @@
             "label": "Cancel Batch Delete Recipe Ingredients"
           },
           "submit": {
-            "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# recipe ingredient} other {# recipe ingredients}}</bold>?",
+            "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# recipe ingredient} other {# recipe ingredients}}</bold>? You can restore them from Recently deleted within 30 days.",
             "label": "Delete Selected Recipe Ingredients ({count})",
             "success": "Deleted {count, plural, one {# recipe ingredient} other {# recipe ingredients}}"
           },
@@ -208,7 +208,7 @@
           "title": "Create recipe ingredient"
         },
         "deleteRecipeIngredient": {
-          "confirm": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone.",
+          "confirm": "Are you sure you want to delete <bold>{name}</bold>? You can restore it from Recently deleted within 30 days.",
           "success": "Recipe ingredient deleted",
           "title": "Delete recipe ingredient"
         },
@@ -278,7 +278,7 @@
           "label": "Cancel Batch Delete Suppliers"
         },
         "submit": {
-          "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# supplier} other {# suppliers}}</bold>?",
+          "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# supplier} other {# suppliers}}</bold>? You can restore them from Recently deleted within 30 days.",
           "label": "Delete Selected Suppliers ({count})",
           "success": "Deleted {count, plural, one {# supplier} other {# suppliers}}"
         },
@@ -289,7 +289,7 @@
         "title": "Create supplier"
       },
       "deleteSupplier": {
-        "confirm": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone.",
+        "confirm": "Are you sure you want to delete <bold>{name}</bold>? You can restore it from Recently deleted within 30 days.",
         "success": "Supplier deleted",
         "title": "Delete supplier"
       },

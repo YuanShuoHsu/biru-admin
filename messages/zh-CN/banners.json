@@ -5,7 +5,7 @@
         "label": "取消批量删除轮播图"
       },
       "submit": {
-        "confirm": "确定要删除以下 <bold>{count} 张轮播图</bold>吗？",
+        "confirm": "确定要删除以下 <bold>{count} 张轮播图</bold>吗？30 天内可在「最近删除」还原。",
         "label": "删除所选轮播图（{count}）",
         "success": "已删除 {count} 张轮播图"
       },
@@ -16,7 +16,7 @@
       "title": "新增轮播图"
     },
     "deleteBanner": {
-      "confirm": "确定要删除这张<bold>轮播图</bold>吗？此操作无法撤销。",
+      "confirm": "确定要删除这张<bold>轮播图</bold>吗？30 天内可在「最近删除」还原。",
       "success": "已删除轮播图",
       "title": "删除轮播图"
     },

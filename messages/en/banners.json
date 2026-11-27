@@ -5,7 +5,7 @@
         "label": "Cancel Batch Delete Banners"
       },
       "submit": {
-        "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# banner} other {# banners}}</bold>?",
+        "confirm": "Are you sure you want to delete the following <bold>{count, plural, one {# banner} other {# banners}}</bold>? You can restore them from Recently deleted within 30 days.",
         "label": "Delete Selected Banners ({count})",
         "success": "Deleted {count, plural, one {# banner} other {# banners}}"
       },
@@ -16,7 +16,7 @@
       "title": "Create banner"
     },
     "deleteBanner": {
-      "confirm": "Are you sure you want to delete this <bold>banner</bold>? This action cannot be undone.",
+      "confirm": "Are you sure you want to delete this <bold>banner</bold>? You can restore it from Recently deleted within 30 days.",
       "success": "Banner deleted",
       "title": "Delete banner"
     },

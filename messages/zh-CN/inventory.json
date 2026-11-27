@@ -7,7 +7,7 @@
           "label": "取消批量删除食材"
         },
         "submit": {
-          "confirm": "确定要删除以下 <bold>{count} 条食材</bold>吗？",
+          "confirm": "确定要删除以下 <bold>{count} 条食材</bold>吗？30 天内可在「最近删除」还原。",
           "label": "删除所选食材（{count}）",
           "success": "已删除 {count} 条食材"
         },
@@ -18,7 +18,7 @@
         "title": "新增食材"
       },
       "deleteIngredient": {
-        "confirm": "确定要删除 <bold>{name}</bold> 吗？此操作无法复原。",
+        "confirm": "确定要删除 <bold>{name}</bold> 吗？30 天内可在「最近删除」还原。",
         "success": "已删除食材 {name}",
         "title": "删除食材"
       },
@@ -163,7 +163,7 @@
         "title": "新增食谱"
       },
       "deleteRecipe": {
-        "confirm": "确定要删除 <bold>{name}</bold> 吗？此操作无法复原。",
+        "confirm": "确定要删除 <bold>{name}</bold> 吗？30 天内可在「最近删除」还原。",
         "success": "已删除食谱",
         "title": "删除食谱"
       },
@@ -197,7 +197,7 @@
             "label": "取消批量删除材料"
           },
           "submit": {
-            "confirm": "确定要删除以下 <bold>{count} 条材料</bold>吗？",
+            "confirm": "确定要删除以下 <bold>{count} 条材料</bold>吗？30 天内可在「最近删除」还原。",
             "label": "删除所选材料（{count}）",
             "success": "已删除 {count} 条材料"
           },
@@ -208,7 +208,7 @@
           "title": "新增材料"
         },
         "deleteRecipeIngredient": {
-          "confirm": "确定要删除 <bold>{name}</bold> 吗？此操作无法复原。",
+          "confirm": "确定要删除 <bold>{name}</bold> 吗？30 天内可在「最近删除」还原。",
           "success": "已删除材料",
           "title": "删除材料"
         },
@@ -278,7 +278,7 @@
           "label": "取消批量删除供应商"
         },
         "submit": {
-          "confirm": "确定要删除以下 <bold>{count} 家供应商</bold>吗？",
+          "confirm": "确定要删除以下 <bold>{count} 家供应商</bold>吗？30 天内可在「最近删除」还原。",
           "label": "删除所选供应商（{count}）",
           "success": "已删除 {count} 家供应商"
         },
@@ -289,7 +289,7 @@
         "title": "新增供应商"
       },
       "deleteSupplier": {
-        "confirm": "确定要删除 <bold>{name}</bold> 吗？此操作无法复原。",
+        "confirm": "确定要删除 <bold>{name}</bold> 吗？30 天内可在「最近删除」还原。",
         "success": "已删除供应商",
         "title": "删除供应商"
       },

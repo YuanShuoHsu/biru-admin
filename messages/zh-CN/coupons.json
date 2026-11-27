@@ -5,7 +5,7 @@
         "label": "取消批量删除优惠券"
       },
       "submit": {
-        "confirm": "确定要删除以下 <bold>{count} 张优惠券</bold>吗？",
+        "confirm": "确定要删除以下 <bold>{count} 张优惠券</bold>吗？30 天内可在「最近删除」还原。",
         "label": "删除所选优惠券（{count}）",
         "success": "已删除 {count} 张优惠券"
       },
@@ -16,7 +16,7 @@
       "title": "新增优惠券"
     },
     "deleteCoupon": {
-      "confirm": "确定要删除优惠券 <bold>{code}</bold> 吗？此操作无法撤销。",
+      "confirm": "确定要删除优惠券 <bold>{code}</bold> 吗？30 天内可在「最近删除」还原。",
       "success": "已删除优惠券 {code}",
       "title": "删除优惠券"
     },
