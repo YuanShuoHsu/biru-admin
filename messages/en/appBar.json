@@ -1,6 +1,12 @@
 {
   "cart": "Cart",
   "darkMode": "Dark mode",
+  "navGroup": {
+    "management": "Management",
+    "more": "More",
+    "platform": "Platform",
+    "store": "Store"
+  },
   "languageSwitcher": "Change Language",
   "lightMode": "Light mode",
   "switchMode": "Switch mode",

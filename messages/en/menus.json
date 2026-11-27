@@ -504,8 +504,7 @@
     "name": {
       "label": "Section name",
       "placeholder": "Please enter your section name"
-    },
-    "unassigned": "Unassigned"
+    }
   },
   "settings": {
     "actions": {

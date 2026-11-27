@@ -1462,6 +1462,114 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/catalog/sections": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得所有目錄分類 */
+    get: operations["AdminCatalogController_findAllSections"];
+    put?: never;
+    /** 建立品牌目錄分類 */
+    post: operations["AdminCatalogController_createSection"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/catalog/sections/reorder": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 重新排序目錄分類 */
+    patch: operations["AdminCatalogController_reorderSections"];
+    trace?: never;
+  };
+  "/api/catalog/sections/{catalogSectionId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得目錄分類詳情 */
+    get: operations["AdminCatalogController_findSection"];
+    put?: never;
+    post?: never;
+    /** 刪除目錄分類 */
+    delete: operations["AdminCatalogController_deleteSection"];
+    options?: never;
+    head?: never;
+    /** 更新目錄分類 */
+    patch: operations["AdminCatalogController_updateSection"];
+    trace?: never;
+  };
+  "/api/catalog/sections/{catalogSectionId}/items": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得目錄分類的所有品項 */
+    get: operations["AdminCatalogController_findAllItems"];
+    put?: never;
+    /** 在品牌目錄分類建立品項 */
+    post: operations["AdminCatalogController_createItem"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/catalog/sections/{catalogSectionId}/items/reorder": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 重新排序目錄分類內的品項 */
+    patch: operations["AdminCatalogController_reorderItems"];
+    trace?: never;
+  };
+  "/api/catalog/items/{catalogItemId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 取得目錄品項詳情 */
+    get: operations["AdminCatalogController_findItem"];
+    put?: never;
+    post?: never;
+    /** 刪除目錄品項 */
+    delete: operations["AdminCatalogController_deleteItem"];
+    options?: never;
+    head?: never;
+    /** 更新目錄品項 */
+    patch: operations["AdminCatalogController_updateItem"];
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/checklists/templates": {
     parameters: {
       query?: never;
@@ -2845,6 +2953,24 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/orders/{orderId}/review": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢訂單回饋與店家回覆 */
+    get: operations["OrderReviewsController_findOne"];
+    /** 填寫或修改訂單回饋（限下單者，訂單完成後；首次送出 7 天內可改） */
+    put: operations["OrderReviewsController_upsert"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/order-stats": {
     parameters: {
       query?: never;
@@ -3154,6 +3280,23 @@ export interface paths {
     patch: operations["OrdersController_setItemPrepared"];
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/orders/{orderId}/items/{orderItemId}/cup-received": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 收到客人的自備杯，把這杯排進工作單（訂單製作中才可） */
+    post: operations["OrdersController_receiveItemCup"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/orders/transitions/{toStatus}": {
     parameters: {
       query?: never;
@@ -3368,6 +3511,23 @@ export interface paths {
     };
     /** 取得組織所有菜單 */
     get: operations["MenusController_findAllMenus"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationId}/order-menu/pdf": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 下載 A4 點餐菜單 PDF */
+    get: operations["MenusController_orderMenuPdf"];
     put?: never;
     post?: never;
     delete?: never;
@@ -4536,6 +4696,24 @@ export interface paths {
     put?: never;
     /** 把以平台管理員身分加入的成員轉為真正店主；限真正店主或平台管理員 */
     post: operations["OrganizationPlatformAdminController_confirmOwner"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/organizations/{organizationSlug}/wifi": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 門市 Wi-Fi 名稱與密碼（印在內用桌卡上） */
+    get: operations["OrganizationWifiController_get"];
+    /** 設定門市 Wi-Fi 名稱與密碼，留空則桌卡不印 */
+    put: operations["OrganizationWifiController_update"];
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -8442,6 +8620,255 @@ export interface components {
       /** @description 實際存入的金額 */
       depositedAmount: number;
     };
+    CreateCatalogSectionDto: {
+      /** @description 上層分類；品牌分類的上層只能是品牌分類，獨家分類的上層只能是品牌分類或同門市的獨家分類 */
+      parentCatalogSectionId?: string | null;
+      /**
+       * @example {
+       *       "zh-TW": "主餐",
+       *       "en": "Main Course"
+       *     }
+       */
+      name: components["schemas"]["LocalizedTextDto"];
+      description?: components["schemas"]["LocalizedTextDto"] | null;
+      image?: string | null;
+    };
+    CatalogSectionResponseDto: {
+      id: string;
+      /** @description null 為品牌分類，有值為該門市的獨家分類 */
+      ownerOrganizationId: string | null;
+      parentCatalogSectionId: string | null;
+      name: components["schemas"]["LocalizedTextDto"];
+      description: components["schemas"]["LocalizedTextDto"] | null;
+      imageUrl: string | null;
+      sortOrder: number;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    CatalogSectionListResponseDto: {
+      data: components["schemas"]["CatalogSectionResponseDto"][];
+      total: number;
+    };
+    ReorderDto: {
+      ids: string[];
+    };
+    UpdateCatalogSectionDto: {
+      /** @description 上層分類；品牌分類的上層只能是品牌分類，獨家分類的上層只能是品牌分類或同門市的獨家分類 */
+      parentCatalogSectionId?: string | null;
+      /**
+       * @example {
+       *       "zh-TW": "主餐",
+       *       "en": "Main Course"
+       *     }
+       */
+      name?: components["schemas"]["LocalizedTextDto"];
+      description?: components["schemas"]["LocalizedTextDto"] | null;
+      image?: string | null;
+    };
+    /**
+     * @description 可供應的飲品溫度；省略代表不適用
+     * @enum {string}
+     */
+    ServingTemperature: "Iced" | "Hot";
+    /**
+     * @description 甜度：不適用、固定、可調；省略代表不適用
+     * @enum {string}
+     */
+    Sweetness: "NotApplicable" | "Fixed" | "Adjustable";
+    NutritionInformationDto: {
+      /** @example 180 calories */
+      calories?: string;
+      /** @example 20 g */
+      carbohydrateContent?: string;
+      /** @example 15 mg */
+      cholesterolContent?: string;
+      /** @example 7 g */
+      fatContent?: string;
+      /** @example 0 g */
+      fiberContent?: string;
+      /** @example 9 g */
+      proteinContent?: string;
+      /** @example 4.5 g */
+      saturatedFatContent?: string;
+      /** @example 360 ml */
+      servingSize?: string;
+      /** @example 120 mg */
+      sodiumContent?: string;
+      /** @example 17 g */
+      sugarContent?: string;
+      /** @example 0 g */
+      transFatContent?: string;
+      /** @example 2 g */
+      unsaturatedFatContent?: string;
+    };
+    PriceSpecificationDto: {
+      /** @example 150.00 */
+      price: string;
+      /**
+       * @description 促銷開始日（平台時區，含當天）
+       * @example 2025-06-01
+       */
+      validFrom?: string;
+      /**
+       * @description 促銷結束日（平台時區，含當天）
+       * @example 2025-06-30
+       */
+      validThrough?: string;
+    };
+    CreateCatalogItemDto: {
+      /**
+       * @example {
+       *       "zh-TW": "拿鐵",
+       *       "en": "Latte"
+       *     }
+       */
+      name: components["schemas"]["LocalizedTextDto"];
+      description?: components["schemas"]["LocalizedTextDto"] | null;
+      image?: string | null;
+      suitableForDiet?: (
+        | "DiabeticDiet"
+        | "GlutenFreeDiet"
+        | "HalalDiet"
+        | "HinduDiet"
+        | "KosherDiet"
+        | "LowCalorieDiet"
+        | "LowFatDiet"
+        | "LowLactoseDiet"
+        | "LowSaltDiet"
+        | "VeganDiet"
+        | "VegetarianDiet"
+      )[];
+      /** @description 可供應的飲品溫度；省略代表不適用 */
+      servingTemperatures?: components["schemas"]["ServingTemperature"][];
+      /** @description 推薦的溫度細項；須屬於可供應的冷熱，否則存 null */
+      recommendedServingTemperatureLevel?:
+        | components["schemas"]["ServingTemperatureLevel"]
+        | null;
+      /** @description 甜度：不適用、固定、可調；省略代表不適用 */
+      sweetness?: components["schemas"]["Sweetness"];
+      /** @description 甜度固定時的等級；sweetness 為 Fixed 時必填，其他情況一律存 null */
+      fixedSweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
+      /** @description 推薦的甜度；僅 sweetness 為 Adjustable 時可設，其他情況一律存 null */
+      recommendedSweetnessLevel?:
+        | components["schemas"]["SweetnessLevel"]
+        | null;
+      nutrition?: components["schemas"]["NutritionInformationDto"];
+      /**
+       * @description 建議售價；門市沒有自訂售價時使用
+       * @example 150.00
+       */
+      suggestedPrice?: string | null;
+      /** @description 品牌促銷價；只套用在跟隨品牌售價的門市 */
+      priceSpecification?:
+        | components["schemas"]["PriceSpecificationDto"]
+        | null;
+      /** @description 停止供應，所有門市一起下架 */
+      discontinued?: boolean;
+    };
+    CatalogItemResponseDto: {
+      id: string;
+      name: components["schemas"]["LocalizedTextDto"];
+      description?: components["schemas"]["LocalizedTextDto"] | null;
+      imageUrl: string | null;
+      suitableForDiet?:
+        | (
+            | "DiabeticDiet"
+            | "GlutenFreeDiet"
+            | "HalalDiet"
+            | "HinduDiet"
+            | "KosherDiet"
+            | "LowCalorieDiet"
+            | "LowFatDiet"
+            | "LowLactoseDiet"
+            | "LowSaltDiet"
+            | "VeganDiet"
+            | "VegetarianDiet"
+          )[]
+        | null;
+      /** @description 可供應的飲品溫度；空陣列代表不適用 */
+      servingTemperatures: components["schemas"]["ServingTemperature"][];
+      /** @description 推薦的溫度細項；未設定為 null */
+      recommendedServingTemperatureLevel?:
+        | components["schemas"]["ServingTemperatureLevel"]
+        | null;
+      /** @description 甜度：不適用、固定、可調 */
+      sweetness: components["schemas"]["Sweetness"];
+      /** @description 甜度固定時的等級；其他情況為 null */
+      fixedSweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
+      /** @description 推薦的甜度；僅甜度可調時可能有值 */
+      recommendedSweetnessLevel?:
+        | components["schemas"]["SweetnessLevel"]
+        | null;
+      nutrition?: components["schemas"]["NutritionInformationDto"] | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      /** @description null 為品牌品項，有值為該門市的獨家品項 */
+      ownerOrganizationId: string | null;
+      catalogSectionId: string | null;
+      /** @example 150.00 */
+      suggestedPrice: string | null;
+      priceSpecification: components["schemas"]["PriceSpecificationDto"] | null;
+      discontinued: boolean;
+      sortOrder: number;
+    };
+    CatalogItemListResponseDto: {
+      data: components["schemas"]["CatalogItemResponseDto"][];
+      total: number;
+    };
+    UpdateCatalogItemDto: {
+      /**
+       * @example {
+       *       "zh-TW": "拿鐵",
+       *       "en": "Latte"
+       *     }
+       */
+      name?: components["schemas"]["LocalizedTextDto"];
+      description?: components["schemas"]["LocalizedTextDto"] | null;
+      image?: string | null;
+      suitableForDiet?: (
+        | "DiabeticDiet"
+        | "GlutenFreeDiet"
+        | "HalalDiet"
+        | "HinduDiet"
+        | "KosherDiet"
+        | "LowCalorieDiet"
+        | "LowFatDiet"
+        | "LowLactoseDiet"
+        | "LowSaltDiet"
+        | "VeganDiet"
+        | "VegetarianDiet"
+      )[];
+      /** @description 可供應的飲品溫度；省略代表不適用 */
+      servingTemperatures?: components["schemas"]["ServingTemperature"][];
+      /** @description 推薦的溫度細項；須屬於可供應的冷熱，否則存 null */
+      recommendedServingTemperatureLevel?:
+        | components["schemas"]["ServingTemperatureLevel"]
+        | null;
+      /** @description 甜度：不適用、固定、可調；省略代表不適用 */
+      sweetness?: components["schemas"]["Sweetness"];
+      /** @description 甜度固定時的等級；sweetness 為 Fixed 時必填，其他情況一律存 null */
+      fixedSweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
+      /** @description 推薦的甜度；僅 sweetness 為 Adjustable 時可設，其他情況一律存 null */
+      recommendedSweetnessLevel?:
+        | components["schemas"]["SweetnessLevel"]
+        | null;
+      nutrition?: components["schemas"]["NutritionInformationDto"];
+      /**
+       * @description 建議售價；門市沒有自訂售價時使用
+       * @example 150.00
+       */
+      suggestedPrice?: string | null;
+      /** @description 品牌促銷價；只套用在跟隨品牌售價的門市 */
+      priceSpecification?:
+        | components["schemas"]["PriceSpecificationDto"]
+        | null;
+      /** @description 停止供應，所有門市一起下架 */
+      discontinued?: boolean;
+    };
     /** @enum {string} */
     ChecklistTiming: "opening" | "closing" | "anytime";
     /** @enum {string} */
@@ -8498,9 +8925,6 @@ export interface components {
       items: components["schemas"]["ChecklistTemplateItemInputDto"][];
       name: string;
       enabled?: boolean;
-    };
-    ReorderDto: {
-      ids: string[];
     };
     UpdateChecklistTemplateDto: {
       timing?: components["schemas"]["ChecklistTiming"];
@@ -10252,6 +10676,7 @@ export interface components {
       | "telephone"
       | "url"
       | "note"
+      | "uniformInvoice"
       | "createdAt"
       | "updatedAt";
     /** @enum {string} */
@@ -10260,6 +10685,7 @@ export interface components {
       | "telephone"
       | "url"
       | "note"
+      | "uniformInvoice"
       | "createdAt"
       | "updatedAt";
     SupplierIngredientResponseDto: {
@@ -10598,6 +11024,35 @@ export interface components {
       /** @description 能否換回上一把，讓更換前印出的 QR code 恢復有效 */
       restorable: boolean;
     };
+    OrderReviewItemDto: {
+      /** @description true 讚，false 倒讚 */
+      liked: boolean;
+      orderItemId: string;
+    };
+    OrderReviewResponseDto: {
+      comment: string | null;
+      /** @description 店家回覆 */
+      reply: string | null;
+      /** Format: date-time */
+      repliedAt: string | null;
+      /**
+       * Format: date-time
+       * @description 首次送出後 7 天，之後不能再修改
+       */
+      editableUntil: string;
+      rating: number;
+      items: components["schemas"]["OrderReviewItemDto"][];
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    UpsertOrderReviewDto: {
+      comment?: string | null;
+      /** @description 沒列到的品項不評價；每次送出整份取代 */
+      items?: components["schemas"]["OrderReviewItemDto"][];
+      rating: number;
+    };
     OrderStatsBucketDto: {
       orders: number;
       /** @description 淨營收：銷售減去該區間內確認的退款（退款依退款日歸期）；需 revenue:read */
@@ -10789,12 +11244,28 @@ export interface components {
       pickupTime?: string;
       tableNumber?: number;
     };
+    /**
+     * @description 下單時決定的封口；內用、自備杯或不分冷熱時為 null
+     * @enum {string}
+     */
+    CupSeal: "lid" | "film";
+    /**
+     * @description 這個選項指定的杯型
+     * @enum {string}
+     */
+    CupSize: "12oz" | "16oz";
     OrderItemModifierSnapshotDto: {
       modifierGroupId: string;
       modifierGroupName: string;
       modifierId: string;
       modifierName: string;
       priceAdjustment?: string | null;
+      /** @description 客人自備杯；收杯前這杯不排工作單 */
+      customerProvidedCup?: boolean;
+      /** @description 這個選項指定的杯型 */
+      cupSize?: components["schemas"]["CupSize"];
+      /** @description 這個選項指定的封口 */
+      cupSeal?: components["schemas"]["CupSeal"];
     };
     OrderItemAddOnSnapshotDto: {
       menuItemId: string;
@@ -10807,6 +11278,8 @@ export interface components {
         | null;
       /** @description 甜度；可調為客人所選、固定為品項設定，不適用時為 null */
       sweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
+      /** @description 下單時決定的封口；內用、自備杯或不分冷熱時不帶 */
+      cupSeal?: components["schemas"]["CupSeal"];
     };
     /**
      * @description 從共享點餐單送單時，點這個品項的參與者送單當下顯示的頭像
@@ -10836,6 +11309,8 @@ export interface components {
         | null;
       /** @description 甜度；可調為客人所選、固定為品項設定，不適用時為 null */
       sweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
+      /** @description 下單時決定的封口；內用、自備杯或不分冷熱時為 null */
+      cupSeal?: components["schemas"]["CupSeal"] | null;
       modifiers?:
         | components["schemas"]["OrderItemModifierSnapshotDto"][]
         | null;
@@ -10849,6 +11324,11 @@ export interface components {
        * @description 廚房標記這個品項做好的時間；未完成為 null
        */
       preparedAt?: string | null;
+      /**
+       * Format: date-time
+       * @description 店員收到這杯自備杯的時間；未收或不是自備杯為 null
+       */
+      cupReceivedAt?: string | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -11077,6 +11557,8 @@ export interface components {
         | null;
       /** @description 甜度；可調為客人所選、固定為品項設定，不適用時為 null */
       sweetnessLevel?: components["schemas"]["SweetnessLevel"] | null;
+      /** @description 下單時決定的封口；內用、自備杯或不分冷熱時為 null */
+      cupSeal?: components["schemas"]["CupSeal"] | null;
       modifiers?:
         | components["schemas"]["OrderItemModifierSnapshotDto"][]
         | null;
@@ -11090,6 +11572,11 @@ export interface components {
        * @description 廚房標記這個品項做好的時間；未完成為 null
        */
       preparedAt?: string | null;
+      /**
+       * Format: date-time
+       * @description 店員收到這杯自備杯的時間；未收或不是自備杯為 null
+       */
+      cupReceivedAt?: string | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -11655,65 +12142,15 @@ export interface components {
       orderTicketPrinterId?: string | null;
     };
     /**
-     * @description 可供應的飲品溫度；省略代表不適用
-     * @enum {string}
-     */
-    ServingTemperature: "Iced" | "Hot";
-    /**
-     * @description 甜度：不適用、固定、可調；省略代表不適用
-     * @enum {string}
-     */
-    Sweetness: "NotApplicable" | "Fixed" | "Adjustable";
-    /**
      * @description 可販售的點餐模式；省略代表四種全開
      * @enum {string}
      */
     OrderMode: "counter" | "dineIn" | "driveThru" | "pickup";
-    NutritionInformationDto: {
-      /** @example 180 calories */
-      calories?: string;
-      /** @example 20 g */
-      carbohydrateContent?: string;
-      /** @example 15 mg */
-      cholesterolContent?: string;
-      /** @example 7 g */
-      fatContent?: string;
-      /** @example 0 g */
-      fiberContent?: string;
-      /** @example 9 g */
-      proteinContent?: string;
-      /** @example 4.5 g */
-      saturatedFatContent?: string;
-      /** @example 360 ml */
-      servingSize?: string;
-      /** @example 120 mg */
-      sodiumContent?: string;
-      /** @example 17 g */
-      sugarContent?: string;
-      /** @example 0 g */
-      transFatContent?: string;
-      /** @example 2 g */
-      unsaturatedFatContent?: string;
-    };
     /** @enum {string} */
     ItemAvailability: "InStock" | "SoldOut" | "Discontinued";
     QuantitativeValueDto: {
       unitText?: string;
       value?: number;
-    };
-    PriceSpecificationDto: {
-      /** @example 150.00 */
-      price: string;
-      /**
-       * @description 促銷開始日（平台時區，含當天）
-       * @example 2025-06-01
-       */
-      validFrom?: string;
-      /**
-       * @description 促銷結束日（平台時區，含當天）
-       * @example 2025-06-30
-       */
-      validThrough?: string;
     };
     CreateOfferDto: {
       /** @example 150.00 */
@@ -12949,6 +13386,14 @@ export interface components {
       /** @description 是否顯示在官網「關於我們」的團隊介紹 */
       showcase: boolean;
       userId: string;
+    };
+    OrganizationWifiResponseDto: {
+      ssid: string;
+      password: string;
+    };
+    UpdateOrganizationWifiDto: {
+      ssid: string;
+      password: string;
     };
     OrganizationDetailResponseDto: {
       id: string;
@@ -14572,7 +15017,7 @@ export interface components {
       net: number;
       /** @description day：店家時區日期 YYYY-MM-DD；hour：店家時區小時 0–23；paymentMethod／mode：該列舉值；menuItem：品項 id；category：品項目前所屬菜單分類 id，品項已刪除或未分類為 uncategorized */
       key: string;
-      /** @description 僅 menuItem／category：目前的品項或分類名稱；品項已刪除時為最近一次訂單快照的名稱（以預設語系為 key 存放，快照當時未必是該語系的文字），未分類為 null */
+      /** @description 僅 menuItem／category：目前的品項或分類名稱；品項已刪除時為最近一次訂單快照的名稱（以預設語系為 key 存放，快照當時未必是該語系的文字），未分類為各語系的「未分類」 */
       name?: components["schemas"]["LocalizedTextDto"] | null;
       /** @description 僅 menuItem／category：售出份數，含被加購的次數 */
       quantity?: number;
@@ -18768,6 +19213,356 @@ export interface operations {
       };
     };
   };
+  AdminCatalogController_findAllSections: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CatalogSectionListResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminCatalogController_createSection: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateCatalogSectionDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CatalogSectionResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminCatalogController_reorderSections: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReorderDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminCatalogController_findSection: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        catalogSectionId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CatalogSectionResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminCatalogController_deleteSection: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        catalogSectionId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CatalogSectionResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminCatalogController_updateSection: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        catalogSectionId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateCatalogSectionDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CatalogSectionResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminCatalogController_findAllItems: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        catalogSectionId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CatalogItemListResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminCatalogController_createItem: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        catalogSectionId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateCatalogItemDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CatalogItemResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminCatalogController_reorderItems: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        catalogSectionId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReorderDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminCatalogController_findItem: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        catalogItemId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CatalogItemResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminCatalogController_deleteItem: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        catalogItemId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CatalogItemResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminCatalogController_updateItem: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        catalogItemId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateCatalogItemDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CatalogItemResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   ChecklistTemplatesController_findAll: {
     parameters: {
       query?: never;
@@ -22056,6 +22851,73 @@ export interface operations {
       };
     };
   };
+  OrderReviewsController_findOne: {
+    parameters: {
+      query?: {
+        accessToken?: string;
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+        orderId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 尚未填寫時為 null */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderReviewResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrderReviewsController_upsert: {
+    parameters: {
+      query?: {
+        accessToken?: string;
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+        orderId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpsertOrderReviewDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderReviewResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   OrderStatsController_findOne: {
     parameters: {
       query: {
@@ -22715,6 +23577,36 @@ export interface operations {
       };
     };
   };
+  OrdersController_receiveItemCup: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+        orderId: string;
+        orderItemId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderItemResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   OrdersController_applyTransitions: {
     parameters: {
       query?: never;
@@ -23131,6 +24023,37 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["MenuResponseDto"][];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  MenusController_orderMenuPdf: {
+    parameters: {
+      query?: {
+        /** @description 未帶或不支援時依 x-lang、Accept-Language */
+        lang?: "en" | "ja" | "ko" | "zh-CN" | "zh-TW";
+      };
+      header?: never;
+      path: {
+        organizationId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/pdf": string;
         };
       };
       /** @description Internal server error */
@@ -26244,6 +27167,66 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["MemberResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrganizationWifiController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrganizationWifiResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrganizationWifiController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateOrganizationWifiDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrganizationWifiResponseDto"];
         };
       };
       /** @description Internal server error */
@@ -29763,6 +30746,9 @@ export const pathsApiOrganizationsOrganizationSlugOrdersTransitionsToStatusPatch
 export const pathsApiUsersMeFrequentItemsGetParametersQueryModeValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/users/me/frequent-items"]["get"]["parameters"]["query"]["mode"]
 > = ["counter", "dineIn", "driveThru", "pickup"];
+export const pathsApiOrganizationsOrganizationIdOrderMenuPdfGetParametersQueryLangValues: ReadonlyArray<
+  FlattenedDeepRequired<paths>["/api/organizations/{organizationId}/order-menu/pdf"]["get"]["parameters"]["query"]["lang"]
+> = ["en", "ja", "ko", "zh-CN", "zh-TW"];
 export const pathsApiMenusMenuIdMenuSectionsGetParametersQuerySearchFieldValues: ReadonlyArray<
   FlattenedDeepRequired<paths>["/api/menus/{menuId}/menu-sections"]["get"]["parameters"]["query"]["searchField"]
 > = ["name", "description"];
@@ -30557,6 +31543,57 @@ export const cashDeviceEventTypeValues: ReadonlyArray<
   "inventorySnapshot",
   "error",
 ];
+export const servingTemperatureValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["ServingTemperature"]
+> = ["Iced", "Hot"];
+export const sweetnessValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["Sweetness"]
+> = ["NotApplicable", "Fixed", "Adjustable"];
+export const createCatalogItemDtoSuitableForDietValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CreateCatalogItemDto"]["suitableForDiet"]
+> = [
+  "DiabeticDiet",
+  "GlutenFreeDiet",
+  "HalalDiet",
+  "HinduDiet",
+  "KosherDiet",
+  "LowCalorieDiet",
+  "LowFatDiet",
+  "LowLactoseDiet",
+  "LowSaltDiet",
+  "VeganDiet",
+  "VegetarianDiet",
+];
+export const catalogItemResponseDtoSuitableForDietValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CatalogItemResponseDto"]["suitableForDiet"]
+> = [
+  "DiabeticDiet",
+  "GlutenFreeDiet",
+  "HalalDiet",
+  "HinduDiet",
+  "KosherDiet",
+  "LowCalorieDiet",
+  "LowFatDiet",
+  "LowLactoseDiet",
+  "LowSaltDiet",
+  "VeganDiet",
+  "VegetarianDiet",
+];
+export const updateCatalogItemDtoSuitableForDietValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["UpdateCatalogItemDto"]["suitableForDiet"]
+> = [
+  "DiabeticDiet",
+  "GlutenFreeDiet",
+  "HalalDiet",
+  "HinduDiet",
+  "KosherDiet",
+  "LowCalorieDiet",
+  "LowFatDiet",
+  "LowLactoseDiet",
+  "LowSaltDiet",
+  "VeganDiet",
+  "VegetarianDiet",
+];
 export const checklistTimingValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["ChecklistTiming"]
 > = ["opening", "closing", "anytime"];
@@ -31157,10 +32194,26 @@ export const wasteReasonValues: ReadonlyArray<
 > = ["expired", "spilled", "madeWrong", "damaged", "other"];
 export const supplierFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["SupplierFilterField"]
-> = ["name", "telephone", "url", "note", "createdAt", "updatedAt"];
+> = [
+  "name",
+  "telephone",
+  "url",
+  "note",
+  "uniformInvoice",
+  "createdAt",
+  "updatedAt",
+];
 export const supplierSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["SupplierSortField"]
-> = ["name", "telephone", "url", "note", "createdAt", "updatedAt"];
+> = [
+  "name",
+  "telephone",
+  "url",
+  "note",
+  "uniformInvoice",
+  "createdAt",
+  "updatedAt",
+];
 export const recipeFilterFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["RecipeFilterField"]
 > = ["name", "recipeYield", "createdAt", "updatedAt"];
@@ -31210,6 +32263,12 @@ export const createOrderDtoModeValues: ReadonlyArray<
 export const createOrderDtoPaymentValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CreateOrderDto"]["payment"]
 > = ["ApplePay", "Cash", "Credit", "iPASS", "Jkopay", "TWQR", "WeiXin"];
+export const cupSealValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CupSeal"]
+> = ["lid", "film"];
+export const cupSizeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CupSize"]
+> = ["12oz", "16oz"];
 export const sharedCartAvatarValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["SharedCartAvatar"]
 > = [
@@ -31432,12 +32491,6 @@ export const menuSectionFilterFieldValues: ReadonlyArray<
 export const menuSectionSortFieldValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["MenuSectionSortField"]
 > = ["name", "description", "createdAt", "updatedAt"];
-export const servingTemperatureValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["ServingTemperature"]
-> = ["Iced", "Hot"];
-export const sweetnessValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["Sweetness"]
-> = ["NotApplicable", "Fixed", "Adjustable"];
 export const orderModeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["OrderMode"]
 > = ["counter", "dineIn", "driveThru", "pickup"];

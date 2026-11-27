@@ -504,8 +504,7 @@
     "name": {
       "label": "セクション名",
       "placeholder": "セクション名を入力してください"
-    },
-    "unassigned": "未分類"
+    }
   },
   "settings": {
     "actions": {

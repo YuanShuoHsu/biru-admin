@@ -1,6 +1,7 @@
 // https://mui.com/material-ui/react-app-bar/#MenuAppBar.tsx
 // https://mui.com/material-ui/react-app-bar/#ResponsiveAppBar.tsx
 // https://mui.com/material-ui/react-menu/#AccountMenu.tsx
+// https://mui.com/material-ui/react-menu/#grouped-menu
 // https://mui.com/material-ui/react-tooltip/#DisabledTooltips.tsx
 
 "use client";
@@ -90,6 +91,10 @@ const StyledListSubheader = styled(ListSubheader)(({ theme }) => ({
     minWidth: theme.spacing(4.5),
   },
 }));
+
+const StyledGroupLabel = styled(ListSubheader)({
+  backgroundImage: "var(--Paper-overlay)",
+});
 
 const StyledListAvatar = styled(StyledAvatar)(({ theme }) => ({
   border: `1px solid ${theme.vars.palette.primary.main}`,
@@ -257,15 +262,34 @@ const AccountMenu = () => {
           </StyledListSubheader>
         )}
         {session && <Divider />}
+        {session && (
+          <StyledGroupLabel>
+            {tAuth("accountMenu.group.member")}
+          </StyledGroupLabel>
+        )}
         {session &&
           renderMenuItems(pathname, [
             storefrontNavItem("/auth/orders"),
             storefrontNavItem("/auth/coupons"),
             storefrontNavItem("/auth/points"),
+          ])}
+        {session && <Divider />}
+        {session && (
+          <StyledGroupLabel>
+            {tAuth("accountMenu.group.account")}
+          </StyledGroupLabel>
+        )}
+        {session &&
+          renderMenuItems(pathname, [
             storefrontNavItem("/auth/settings"),
             logoutItem,
           ])}
         {session && <Divider />}
+        {session && (
+          <StyledGroupLabel>
+            {tAuth("accountMenu.group.otherAccounts")}
+          </StyledGroupLabel>
+        )}
         {session &&
           otherSessions.map(({ session: { token }, user }) => {
             const name = getDisplayName(user);
@@ -292,7 +316,6 @@ const AccountMenu = () => {
               </MenuItem>
             );
           })}
-        {session && otherSessions.length > 0 && <Divider />}
         {session && renderMenuItems(pathname, [addAccountItem])}
         {!session && renderMenuItems(pathname, authNavItems)}
       </StyledMenu>

@@ -26,6 +26,7 @@ import type {
 } from "@/types/checklists";
 
 import { getErrorMessage } from "@/utils/errors";
+import type { FetchError } from "@/utils/fetcher";
 
 export const CHECKLIST_ITEM_FORM_ID = "checklist-item-form";
 
@@ -51,6 +52,7 @@ const ChecklistItemDialog = ({
     formState: { errors, isSubmitted },
     handleSubmit,
     register,
+    setError,
     setValue,
   } = useForm<ChecklistItemForm>({
     defaultValues: {
@@ -70,7 +72,9 @@ const ChecklistItemDialog = ({
 
       closeDialog();
     } catch (error) {
-      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+      if ((error as FetchError).info?.code === "checklistActionNoteRequired")
+        setError("actionNote", { message: getErrorMessage(error) });
+      else enqueueSnackbar(getErrorMessage(error), { variant: "error" });
 
       setDialog({ confirmLoading: false });
     }
@@ -97,8 +101,11 @@ const ChecklistItemDialog = ({
         value={value ? Number(value) : null}
       />
       <TextField
+        error={!!errors.actionNote}
         fullWidth
-        helperText={tChecklists("runs.actionNoteHint")}
+        helperText={
+          errors.actionNote?.message ?? tChecklists("runs.actionNoteHint")
+        }
         label={tChecklists("runs.actionNote")}
         multiline
         slotProps={{ htmlInput: { maxLength: 200 } }}
