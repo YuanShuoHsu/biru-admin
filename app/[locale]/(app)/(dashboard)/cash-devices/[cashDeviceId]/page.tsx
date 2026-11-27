@@ -13,10 +13,18 @@ import ErrorAlert from "@/components/ErrorAlert";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
+import {
+  cashDeviceEventFilterFieldValues,
+  cashDeviceEventSortFieldValues,
+  filterOperatorValues,
+} from "@/types/api";
 import type {
   CashDevice,
+  CashDeviceEventFilterField,
   CashDeviceEventListResponse,
+  CashDeviceEventSortField,
 } from "@/types/cashDevices";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 
 import { getGridSearchParams, resolveGridSearchParams } from "@/utils/dataGrid";
@@ -32,9 +40,14 @@ import { getMemberRole, getResolvedAdminOrganization } from "@/utils/session";
 interface CashDeviceEventsPageProps {
   params: Promise<{ cashDeviceId: string; locale: Locale }>;
   searchParams: Promise<{
+    filterField?: string;
+    filterOperator?: string;
+    filterValue?: string;
     organization?: string;
     page?: string;
     pageSize?: string;
+    sortBy?: string;
+    sortDirection?: string;
   }>;
 }
 
@@ -55,9 +68,14 @@ interface CashDeviceEventsContentProps {
   canRefill: boolean;
   cashDevice: CashDevice;
   events: Promise<FetchResult<CashDeviceEventListResponse>>;
+  filterField?: CashDeviceEventFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
   organization: Organization;
   page: number;
   pageSize: number;
+  sortBy?: CashDeviceEventSortField;
+  sortDirection?: SortDirection;
 }
 
 const CashDeviceEventsContent = async ({
@@ -93,11 +111,20 @@ const CashDeviceEventsPage = async ({
   );
   if (!organization) notFound();
 
-  const { page, pageSize, redirectParams } = resolveGridSearchParams({
+  const {
+    filterField,
+    filterOperator,
+    filterValue,
+    page,
+    pageSize,
+    redirectParams,
+    sortBy,
+    sortDirection,
+  } = resolveGridSearchParams({
     searchParams: rawSearchParams,
-    sortFields: [],
-    filterFields: [],
-    filterOperators: [],
+    sortFields: cashDeviceEventSortFieldValues,
+    filterFields: cashDeviceEventFilterFieldValues,
+    filterOperators: filterOperatorValues,
     organizationSlug: organization.slug,
   });
 
@@ -121,7 +148,15 @@ const CashDeviceEventsPage = async ({
 
   const events = settle(
     fetcher<CashDeviceEventListResponse>(
-      `${devicePath}/events?${getGridSearchParams({ page, pageSize }).toString()}`,
+      `${devicePath}/events?${getGridSearchParams({
+        page,
+        pageSize,
+        filterField,
+        filterOperator,
+        filterValue,
+        sortBy,
+        sortDirection,
+      }).toString()}`,
       fetchOptions,
     ),
   );
@@ -135,9 +170,14 @@ const CashDeviceEventsPage = async ({
         canRefill={hasRolePermission(memberRole, { cashDevice: ["refill"] })}
         cashDevice={cashDevice}
         events={events}
+        filterField={filterField}
+        filterOperator={filterOperator}
+        filterValue={filterValue}
         organization={organization}
         page={page}
         pageSize={pageSize}
+        sortBy={sortBy}
+        sortDirection={sortDirection}
       />
     </Suspense>
   );

@@ -8555,6 +8555,10 @@ export interface components {
       status?: components["schemas"]["CashDeviceStatus"];
     };
     /** @enum {string} */
+    CashDeviceEventFilterField: "type" | "occurredAt";
+    /** @enum {string} */
+    CashDeviceEventSortField: "type" | "occurredAt";
+    /** @enum {string} */
     CashDeviceEventType:
       | "payment"
       | "change"
@@ -19125,8 +19129,13 @@ export interface operations {
   CashDevicesController_findEvents: {
     parameters: {
       query?: {
+        filterOperator?: components["schemas"]["FilterOperator"];
+        sortDirection?: components["schemas"]["SortDirection"];
         limit?: number;
         offset?: number;
+        filterValue?: string;
+        filterField?: components["schemas"]["CashDeviceEventFilterField"];
+        sortBy?: components["schemas"]["CashDeviceEventSortField"];
       };
       header?: never;
       path: {
@@ -31539,6 +31548,12 @@ export const cashDeviceSortFieldValues: ReadonlyArray<
 export const cashDeviceStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CashDeviceStatus"]
 > = ["active", "inactive"];
+export const cashDeviceEventFilterFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CashDeviceEventFilterField"]
+> = ["type", "occurredAt"];
+export const cashDeviceEventSortFieldValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["CashDeviceEventSortField"]
+> = ["type", "occurredAt"];
 export const cashDeviceEventTypeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CashDeviceEventType"]
 > = [

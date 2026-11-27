@@ -14,6 +14,10 @@ import { autosizeOptions, DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import { useDataGridQueryState } from "@/hooks/useDataGridQueryState";
+import {
+  useDateFilterOperators,
+  useEnumFilterOperators,
+} from "@/hooks/useFilterOperators";
 import { useFormatMoney } from "@/hooks/useFormatMoney";
 
 import { AddCard, Savings } from "@mui/icons-material";
@@ -28,11 +32,15 @@ import type {
   CashDenominations,
   CashDevice,
   CashDeviceEvent,
+  CashDeviceEventFilterField,
   CashDeviceEventListResponse,
+  CashDeviceEventSortField,
 } from "@/types/cashDevices";
+import type { FilterOperator, SortDirection } from "@/types/dataGrid";
 import type { Organization } from "@/types/organizations";
 
 import { getDataGridSearchParams } from "@/utils/dataGrid";
+import { getCashDeviceEventEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 
 const ToolbarStack = styled(Stack)(({ theme }) => ({
@@ -45,31 +53,58 @@ interface CashDeviceEventsProps {
   canCollect?: boolean;
   canRefill?: boolean;
   cashDevice?: CashDevice;
+  filterField?: CashDeviceEventFilterField;
+  filterOperator?: FilterOperator;
+  filterValue?: string;
   loading?: boolean;
   organization?: Organization;
   page?: number;
   pageSize?: number;
   rowCount?: number;
   rows?: CashDeviceEvent[];
+  sortBy?: CashDeviceEventSortField;
+  sortDirection?: SortDirection;
 }
 
 const CashDeviceEvents = ({
   canCollect = false,
   canRefill = false,
   cashDevice,
+  filterField,
+  filterOperator,
+  filterValue,
   loading = false,
   organization,
   page = 1,
   pageSize = DEFAULT_PAGE_SIZE,
   rowCount: initialRowCount = 0,
   rows: initialRows = [],
+  sortBy,
+  sortDirection,
 }: CashDeviceEventsProps) => {
   const organizationSlug = organization?.slug ?? "";
   const currency = organization?.currency ?? "";
   const cashDeviceId = cashDevice?.id ?? "";
 
-  const { handlePaginationModelChange, paginationModel } =
-    useDataGridQueryState({ page, pageSize });
+  const {
+    filterModel,
+    handleFilterModelChange,
+    handlePaginationModelChange,
+    handleSortModelChange,
+    paginationModel,
+    sortModel,
+  } = useDataGridQueryState({
+    filterField,
+    filterOperator,
+    filterValue,
+    page,
+    pageSize,
+    sortBy,
+    sortDirection,
+  });
+
+  const dateFilterOperators = useDateFilterOperators();
+  const enumFilterOperators = useEnumFilterOperators();
 
   const { setDialog } = useDialogStore((state) => state);
 
@@ -82,6 +117,11 @@ const CashDeviceEvents = ({
   const tCashDevices = useTranslations("cashDevices");
   const tCommon = useTranslations("common");
 
+  const enumOptions = useMemo(
+    () => getCashDeviceEventEnumOptions(tCashDevices),
+    [tCashDevices],
+  );
+
   const {
     data: { data: rows, total: rowCount } = {
       data: initialRows,
@@ -91,7 +131,7 @@ const CashDeviceEvents = ({
     mutate,
   } = useSWR(
     !loading &&
-      `/api/organizations/${organizationSlug}/cash-devices/${cashDeviceId}/events?${getDataGridSearchParams(paginationModel, { items: [] }, [])}`,
+      `/api/organizations/${organizationSlug}/cash-devices/${cashDeviceId}/events?${getDataGridSearchParams(paginationModel, filterModel, sortModel)}`,
     (url: string) => fetcher<CashDeviceEventListResponse>(url),
     {
       fallbackData: { data: initialRows, total: initialRowCount },
@@ -157,33 +197,41 @@ const CashDeviceEvents = ({
     return [
       {
         field: "type",
+        filterOperators: enumFilterOperators,
         headerName: tCashDevices("events.type.label"),
-        valueFormatter: (value: CashDeviceEvent["type"]) =>
-          tCashDevices(`events.type.${value}`),
+        type: "singleSelect",
+        valueOptions: enumOptions.type,
       },
       {
         field: "amount",
+        filterable: false,
         headerName: tCashDevices("events.amount"),
         renderCell: renderEmptyableCell,
+        sortable: false,
         type: "number",
         valueFormatter: formatAmount,
       },
       {
         field: "reportedAmount",
+        filterable: false,
         headerName: tCashDevices("events.reportedAmount"),
         renderCell: renderEmptyableCell,
+        sortable: false,
         type: "number",
         valueFormatter: formatAmount,
       },
       {
         field: "depositedAmount",
+        filterable: false,
         headerName: tCashDevices("events.depositedAmount"),
         renderCell: renderEmptyableCell,
+        sortable: false,
         type: "number",
         valueFormatter: formatAmount,
       },
       {
         field: "difference",
+        filterable: false,
         headerName: tCashDevices("events.difference"),
         renderCell: ({
           row: { difference },
@@ -200,12 +248,15 @@ const CashDeviceEvents = ({
               variant="outlined"
             />
           ),
+        sortable: false,
         type: "number",
       },
       {
         field: "denominations",
+        filterable: false,
         headerName: tCashDevices("events.denominations"),
         renderCell: renderEmptyableCell,
+        sortable: false,
         valueGetter: (value: CashDenominations) =>
           Object.entries(value)
             .filter(([, count]) => count)
@@ -217,18 +268,30 @@ const CashDeviceEvents = ({
       },
       {
         field: "note",
+        filterable: false,
         headerName: tCashDevices("events.note"),
         maxWidth: 320,
         renderCell: renderEmptyableCell,
+        sortable: false,
       },
       {
         field: "occurredAt",
+        filterOperators: dateFilterOperators,
         headerName: tCashDevices("events.occurredAt"),
         valueFormatter: (value: string) =>
           format.dateTime(new Date(value), "short"),
       },
     ];
-  }, [currency, format, formatMoney, tCashDevices, tCommon]);
+  }, [
+    currency,
+    dateFilterOperators,
+    enumFilterOperators,
+    enumOptions,
+    format,
+    formatMoney,
+    tCashDevices,
+    tCommon,
+  ]);
 
   return (
     <>
@@ -277,15 +340,19 @@ const CashDeviceEvents = ({
         {...DATA_GRID_PROPS}
         apiRef={apiRef}
         columns={columns}
-        disableColumnFilter
-        disableColumnSorting
+        filterMode="server"
+        filterModel={filterModel}
         loading={loading || isValidating}
+        onFilterModelChange={handleFilterModelChange}
         onPaginationModelChange={handlePaginationModelChange}
+        onSortModelChange={handleSortModelChange}
         pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
         paginationMode="server"
         paginationModel={paginationModel}
         rowCount={rowCount}
         rows={rows}
+        sortingMode="server"
+        sortModel={sortModel}
         slotProps={{
           ...DATA_GRID_PROPS.slotProps,
           toolbar: {
