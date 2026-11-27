@@ -573,6 +573,14 @@ const Coupons = ({
           ) : null,
       },
       {
+        field: "discountType",
+        filterOperators: enumFilterOperators,
+        headerName: tCoupons("discountType.label"),
+        sortable: false,
+        type: "singleSelect",
+        valueOptions: enumOptions.discountType,
+      },
+      {
         field: "discountValue",
         filterOperators: numberFilterOperators,
         headerName: tCoupons("discount"),
@@ -601,12 +609,16 @@ const Coupons = ({
         field: "usedCount",
         filterOperators: numberFilterOperators,
         headerName: tCoupons("usage"),
-        valueGetter: (_value: unknown, { totalLimit, usedCount }: Coupon) =>
-          `${format.number(usedCount)} / ${
-            totalLimit == null
-              ? tCoupons("unlimited")
-              : format.number(totalLimit)
-          }`,
+        valueFormatter: (value: number) => format.number(value),
+      },
+      {
+        field: "totalLimit",
+        filterOperators: numberFilterOperators,
+        headerName: `${tCoupons("totalLimit.label")} ${tCommon("optional")}`,
+        valueGetter: (_value: unknown, { totalLimit }: Coupon) =>
+          totalLimit == null
+            ? tCoupons("unlimited")
+            : format.number(totalLimit),
       },
       {
         field: "perUserLimit",
@@ -628,15 +640,18 @@ const Coupons = ({
       {
         field: "validFrom",
         filterOperators: dateFilterOperators,
-        headerName: `${tCoupons("validity")} ${tCommon("optional")}`,
-        valueGetter: (_value: unknown, { validFrom, validThrough }: Coupon) =>
-          validFrom || validThrough
-            ? [
-                validFrom ? format.dateTime(new Date(validFrom), "short") : "",
-                validThrough
-                  ? format.dateTime(new Date(validThrough), "short")
-                  : "",
-              ].join(" ~ ")
+        headerName: `${tCoupons("validFrom.label")} ${tCommon("optional")}`,
+        renderCell: renderEmptyableCell,
+        valueFormatter: (value: string | null) =>
+          value ? format.dateTime(new Date(value), "short") : "",
+      },
+      {
+        field: "validThrough",
+        filterOperators: dateFilterOperators,
+        headerName: `${tCoupons("validUntil.label")} ${tCommon("optional")}`,
+        valueFormatter: (value: string | null) =>
+          value
+            ? format.dateTime(new Date(value), "short")
             : tCoupons("unlimited"),
       },
       {

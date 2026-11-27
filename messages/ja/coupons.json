@@ -161,6 +161,5 @@
   },
   "validUntil": {
     "label": "終了日時"
-  },
-  "validity": "有効期間"
+  }
 }

@@ -16,6 +16,7 @@ import {
   auditResourceValues,
   baseUnitCodeValues,
   cashDeviceStatusValues,
+  couponDiscountTypeValues,
   couponIssueTriggerValues,
   couponScopeValues,
   deletedRecordTableValues,
@@ -121,6 +122,10 @@ export const getCouponEnumOptions = (
       value: organization.id,
     })),
   ],
+  discountType: couponDiscountTypeValues.map((value) => ({
+    label: tCoupons(`discountType.${value}`),
+    value,
+  })),
   distribution: [
     { label: tCoupons("isPublic.label"), value: "isPublic" },
     { label: tCoupons("isClaimable.label"), value: "isClaimable" },
