@@ -4,8 +4,13 @@ import { useTranslations } from "next-intl";
 
 import { ErrorOutlined } from "@mui/icons-material";
 import { Badge } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import type { NavBadge } from "@/types/navItem";
+
+const StyledBadge = styled(Badge)({
+  isolation: "isolate",
+});
 
 interface NavItemBadgeProps {
   badge?: NavBadge;
@@ -16,7 +21,7 @@ const NavItemBadge = ({ badge, children }: NavItemBadgeProps) => {
   const tCommon = useTranslations("common");
 
   return (
-    <Badge
+    <StyledBadge
       badgeContent={
         badge === "error" ? (
           <ErrorOutlined
@@ -30,7 +35,7 @@ const NavItemBadge = ({ badge, children }: NavItemBadgeProps) => {
       color="error"
     >
       {children}
-    </Badge>
+    </StyledBadge>
   );
 };
 
