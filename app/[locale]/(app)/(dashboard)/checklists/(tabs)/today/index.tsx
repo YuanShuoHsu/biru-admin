@@ -34,6 +34,8 @@ import type {
 import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
+const REFRESH_INTERVAL_MS = 60_000;
+
 interface ChecklistTodayProps {
   closed: boolean;
   organizationSlug: string;
@@ -63,7 +65,7 @@ const ChecklistToday = ({
   const { data: runs, mutate } = useSWR(
     todayUrl,
     (url: string) => fetcher<ChecklistRun[]>(url),
-    { fallbackData: initialRuns },
+    { fallbackData: initialRuns, refreshInterval: REFRESH_INTERVAL_MS },
   );
 
   const fill = async (
