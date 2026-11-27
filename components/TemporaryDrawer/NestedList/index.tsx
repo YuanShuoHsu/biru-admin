@@ -1,5 +1,5 @@
 // https://mui.com/material-ui/react-list/#NestedList.tsx
-// https://mui.com/material-ui/react-list/#sticky-subheader
+// https://mui.com/material-ui/react-list/#PinnedSubheaderList.tsx
 // https://mui.com/material-ui/react-breadcrumbs/#RouterBreadcrumbs.tsx
 
 "use client";
@@ -21,15 +21,10 @@ import { useRoutes } from "@/hooks/useRoutes";
 import { useSession } from "@/hooks/useSession";
 
 import { List, ListSubheader, Toolbar } from "@mui/material";
-import { styled } from "@mui/material/styles";
 
 import type { NavGroup } from "@/types/navItem";
 
 import { hasRolePermission } from "@/utils/organizations";
-
-const StyledGroupLabel = styled(ListSubheader)({
-  backgroundImage: "var(--Paper-overlay)",
-});
 
 const useNavGroups = (): NavGroup[] => {
   const session = useSession();
@@ -141,7 +136,7 @@ const NestedList = () => {
     <List
       aria-labelledby="nested-list-subheader"
       subheader={
-        <ListSubheader component="div" id="nested-list-subheader">
+        <ListSubheader component="div" disableSticky id="nested-list-subheader">
           <Toolbar />
         </ListSubheader>
       }
@@ -149,10 +144,14 @@ const NestedList = () => {
       {navGroups.map(({ items, label }, groupIndex) => (
         <Fragment key={label || items[0]?.path || groupIndex}>
           {groupIndex > 0 && <DividerSlot level={0} />}
-          {label && <StyledGroupLabel disableSticky>{label}</StyledGroupLabel>}
-          {items.map((item, index) => (
-            <SelectedListItem item={item} key={item.path || index} />
-          ))}
+          <li>
+            <List disablePadding>
+              {label && <ListSubheader color="primary">{label}</ListSubheader>}
+              {items.map((item, index) => (
+                <SelectedListItem item={item} key={item.path || index} />
+              ))}
+            </List>
+          </li>
         </Fragment>
       ))}
     </List>
