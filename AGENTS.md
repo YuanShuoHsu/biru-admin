@@ -28,7 +28,7 @@ pnpm test:e2e     # Playwright 端對端測試（見下方）
 
 `pnpm test:e2e` 會對 :3002 上的本 app 跑 `e2e/`（由 Playwright 的 `webServer` 啟動：本機用 `pnpm dev`，已在執行就沿用；CI 上在 `pnpm build` 後用 `pnpm start`），搭配一個在 :3001 的 biru-api，其資料庫由它的 `scripts/migrate-fresh-db.ts` 建立、`scripts/seed-e2e.ts` 填入資料（biru-api AGENTS.md「Database Schema」）：用你自己的空資料庫，絕不用共用的那個。把同一組 `E2E_{PLATFORM_ADMIN,OWNER,ADMIN,MEMBER,CUSTOMER}_{EMAIL,PASSWORD}` export 給 seed 與 Playwright；`setup` project 會讓每個門市角色各登入一次，並把 session 存到 `playwright/.auth/`。biru-api 執行時要設 `NEXT_ADMIN_URL=http://localhost:3002`，不設 `NODE_ENV=production`（否則它的 cookie 會設到 `.birucoffee.com`），也不設 `TRUSTED_PROXIES`／`CLIENT_IP_HEADER`（所有測試共用一個 client IP，每分鐘 100 次的限制會把整輪測試卡住）。`.github/workflows/e2e.yml` 在每個 PR 上用 PostgreSQL service 與 biru-api 的 `develop` 做完上述所有步驟。
 
-開 PR 前依序跑 `pnpm install --frozen-lockfile`、`pnpm format`、`pnpm lint`、`npx tsc --noEmit`、`pnpm build`。`tsc` 前先 `rm -rf .next/types .next/dev` 再 `npx next typegen`：別的分支或 dev server 留下的過期型別會讓 `tsc` 誤報。
+開 PR 前依序跑 `pnpm install --frozen-lockfile`、`pnpm format`、`pnpm lint`、`npx tsc --noEmit`、`pnpm build`。`tsc` 前先 `rm -rf .next/types .next/dev` 再 `npx next typegen`：別的分支或 dev server 留下的過期型別會讓 `tsc` 誤報。`pnpm format` 會格式化整個 repo，develop 上格式不符的檔案也會被改到：commit 前用 `git status` 確認，PR 範圍以外的檔案用 `git checkout -- <檔案>` 還原。
 
 pre-commit hook（Husky + lint-staged）會對 staged 的檔案跑 `pnpm format`、`pnpm lint` 與 `prettier --write`。不要用 `--no-verify` 跳過。
 
@@ -90,7 +90,7 @@ MUI v9 搭配自訂主題（`theme.ts`），透過 CSS 變數支援淺色／深�
 - 只建機器本身與隨機附帶的配件，不建周邊的杯子、食物或道具。
 - 以官方產品圖為準：在瀏覽器開 `docs/equipment.md` 連結的產品頁，照片缺漏或不清楚時，到原廠官網找同型號的頁面；看遍所有角度的照片，必要時加上實拍照，讓可見零件、按鈕、印刷文字與透明部件都對得上。參考圖不要 commit：repo 是公開的，照片屬於原廠。看不到任何照片時，向開發者要照片，不要憑記憶補細節。
 - 材質用 Principled BSDF；透明部件用 Alpha Blend。
-- 開 PR 前先渲染預覽圖給開發者確認。新品項的擺放位置透過 biru-api 的 migration 寫進 `store_layout`。
+- 開 PR 前先渲染預覽圖，存成 `blender/previews/<label>.png` 放進 PR，給開發者確認。新品項的擺放位置透過 biru-api 的 migration 寫進 `store_layout`。
 
 ### 身分驗證（Auth）
 
@@ -131,7 +131,7 @@ MUI v9 搭配自訂主題（`theme.ts`），透過 CSS 變數支援淺色／深�
 
 ## 程式碼註解（Code Comments）
 
-**預設：不寫註解。** 只有在少了它會導致改錯時才寫，內容是程式碼本身表達不出來的後果或前提：
+**預設：不寫註解。** 不為了解釋而加註解；新程式碼除非被要求，否則零註解。只有在少了它會導致改錯時才寫，內容是程式碼本身表達不出來的後果或前提：
 
 - `// 店家角色尚未選到店家時不打 API，否則會落到平台管理員專用端點`（會 403）
 - `// palette 色位名不能含小寫 "mode"，否則 MUI 產不出 CSS 變數`（框架陷阱）
