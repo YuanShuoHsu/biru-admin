@@ -1,0 +1,104 @@
+# https://playwright.dev/docs/ci-intro
+# https://docs.github.com/en/actions/use-cases-and-examples/using-containerized-services/creating-postgresql-service-containers
+name: E2E
+
+on:
+  pull_request:
+    branches: [develop, master]
+  push:
+    branches: [develop]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  e2e:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: biru_e2e
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/biru_e2e
+      BETTER_AUTH_SECRET: e2e-secret-e2e-secret-e2e-secret
+      BETTER_AUTH_URL: http://localhost:3001
+      NEXT_URL: http://localhost:3000
+      NEXT_ADMIN_URL: http://localhost:3002
+      FALLBACK_LANGUAGE: zh-TW
+      GOOGLE_CLIENT_ID: e2e
+      GOOGLE_CLIENT_SECRET: e2e
+      ECPAY_OPERATION_MODE: Test
+      ECPAY_BASE_MERCHANT_ID: e2e
+      ECPAY_BASE_HASH_KEY: e2e
+      ECPAY_BASE_HASH_IV: e2e
+      ECPAY_BASE_RETURN_URL: http://localhost:3001
+      ECPAY_INVOICE_MERCHANT_ID: e2e
+      ECPAY_INVOICE_HASH_KEY: e2e
+      ECPAY_INVOICE_HASH_IV: e2e
+      MAIL_PREVIEW: "true"
+      PORT: "3001"
+      NEXT_PUBLIC_NEST_URL: http://localhost:3001
+      NEXT_PUBLIC_NEXT_URL: http://localhost:3000
+      NEXT_PUBLIC_ADMIN_URL: http://localhost:3002
+      NEXT_PUBLIC_MAINTENANCE: "false"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: YuanShuoHsu/biru-api
+          ref: develop
+          path: biru-api
+      - uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2
+        with:
+          runtime: node@24
+          cache: true
+          install: false
+      - name: Generate test accounts
+        run: |
+          for role in PLATFORM_ADMIN OWNER ADMIN MEMBER CUSTOMER; do
+            password=$(openssl rand -hex 24)
+            echo "::add-mask::$password"
+            echo "E2E_${role}_EMAIL=$(echo "$role" | tr 'A-Z_' 'a-z-')@e2e.test" >> "$GITHUB_ENV"
+            echo "E2E_${role}_PASSWORD=$password" >> "$GITHUB_ENV"
+          done
+      - name: Start biru-api
+        working-directory: biru-api
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm tsx scripts/migrate-fresh-db.ts
+          pnpm tsx scripts/seed-e2e.ts
+          pnpm run build
+          nohup node dist/main > api.log 2>&1 &
+          for _ in $(seq 60); do
+            curl -sf http://localhost:3001/api/health && exit 0
+            sleep 2
+          done
+          cat api.log
+          exit 1
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+            biru-api/api.log
+          retention-days: 7

@@ -10,6 +10,7 @@
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "prepare": "husky",
+    "test:e2e": "playwright test",
     "codegen": "openapi-typescript http://localhost:3001/api-json --enum-values -o types/api.ts"
   },
   "dependencies": {
@@ -60,6 +61,7 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@playwright/test": "1.63.0",
     "@tailwindcss/turbopack": "^4.3.3",
     "@types/autosuggest-highlight": "^3.2.3",
     "@types/js-cookie": "^3.0.6",

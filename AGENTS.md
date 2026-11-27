@@ -12,9 +12,10 @@ pnpm lint         # Run ESLint
 pnpm format       # Auto-format with Prettier
 pnpm format:check # Check formatting without writing
 pnpm codegen      # Regenerate types/api.ts from NestJS OpenAPI spec (requires biru-api running on :3001)
+pnpm test:e2e     # Playwright end-to-end tests (see below)
 ```
 
-No test framework is configured in this project.
+`pnpm test:e2e` runs `e2e/` against this app on :3002 (started by Playwright's `webServer`: `pnpm dev` locally, reused if already running; `pnpm start` after `pnpm build` on CI) and a biru-api on :3001 whose database was built by its `scripts/migrate-fresh-db.ts` and seeded by its `scripts/seed-e2e.ts` (biru-api AGENTS.md, Database Schema): an empty database of your own, never the shared one. Export the same `E2E_{PLATFORM_ADMIN,OWNER,ADMIN,MEMBER,CUSTOMER}_{EMAIL,PASSWORD}` to the seed and to Playwright; the `setup` project signs each store role in once and saves its session to `playwright/.auth/`. Run biru-api with `NEXT_ADMIN_URL=http://localhost:3002`, without `NODE_ENV=production` (its cookies would go to `.birucoffee.com`) and without `TRUSTED_PROXIES` / `CLIENT_IP_HEADER` (every test shares one client IP, so its 100 requests a minute would throttle the run). `.github/workflows/e2e.yml` does all of this on every PR with a PostgreSQL service and biru-api's `develop`.
 
 The pre-commit hook (Husky + lint-staged) runs `pnpm format`, `pnpm lint`, and `prettier --write` on staged files. Do not bypass with `--no-verify`.
 
