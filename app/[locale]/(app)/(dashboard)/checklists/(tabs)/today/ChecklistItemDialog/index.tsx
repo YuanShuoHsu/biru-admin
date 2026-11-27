@@ -72,12 +72,13 @@ const ChecklistItemDialog = ({
 
       closeDialog();
     } catch (error) {
-      if ((error as FetchError).info?.code === "checklistActionNoteRequired")
+      const code = (error as FetchError).info?.code;
+
+      if (code === "checklistActionNoteRequired")
         setError("actionNote", { message: getErrorMessage(error) });
       else enqueueSnackbar(getErrorMessage(error), { variant: "error" });
 
-      if ((error as FetchError).info?.code === "checklistBusinessDateChanged")
-        closeDialog();
+      if (code === "checklistBusinessDateChanged") closeDialog();
       else setDialog({ confirmLoading: false });
     }
   };
