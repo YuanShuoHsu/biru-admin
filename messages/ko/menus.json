@@ -504,8 +504,7 @@
     "name": {
       "label": "섹션 이름",
       "placeholder": "섹션 이름을 입력해 주세요"
-    },
-    "unassigned": "미분류"
+    }
   },
   "settings": {
     "actions": {

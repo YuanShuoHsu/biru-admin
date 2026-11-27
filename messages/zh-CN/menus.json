@@ -504,8 +504,7 @@
     "name": {
       "label": "分类名称",
       "placeholder": "请输入您的分类名称"
-    },
-    "unassigned": "未分类"
+    }
   },
   "settings": {
     "actions": {
