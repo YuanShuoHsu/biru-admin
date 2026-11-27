@@ -16,7 +16,7 @@ import { useRowSelection } from "@/hooks/useRowSelection";
 
 import { authClient } from "@/lib/auth-client";
 
-import { Cancel, Delete } from "@mui/icons-material";
+import { Cancel, Delete, ForwardToInbox } from "@mui/icons-material";
 import {
   Button,
   Chip,
@@ -60,11 +60,13 @@ const ROLE_COLOR_MAP: Record<string, "error" | "warning" | "default"> = {
 interface OrganizationsSlugInvitationsProps {
   activeOrganization: ActiveOrganization;
   canCancelInvitation: boolean;
+  canCreateInvitation: boolean;
 }
 
 const OrganizationsSlugInvitations = ({
   activeOrganization,
   canCancelInvitation,
+  canCreateInvitation,
 }: OrganizationsSlugInvitationsProps) => {
   const organizationId = activeOrganization.id;
   const initialInvitations = activeOrganization.invitations;
@@ -176,6 +178,50 @@ const OrganizationsSlugInvitations = ({
     [mutate, setDialog, tInvitations],
   );
 
+  const handleReinvite = useCallback(
+    ({ email, id: invitationId, role, teamId }: Invitation) => {
+      setDialog({
+        content: (
+          <DialogContentText>
+            {tInvitations.rich("actions.reinvite.confirm", {
+              bold: (chunks) => <strong>{chunks}</strong>,
+              email,
+            })}
+          </DialogContentText>
+        ),
+        onConfirm: async () => {
+          const { error: inviteError } =
+            await authClient.organization.inviteMember({
+              email,
+              organizationId,
+              role,
+              teamId: teamId || undefined,
+            });
+
+          if (inviteError) {
+            enqueueSnackbar(inviteError.message, { variant: "error" });
+
+            return;
+          }
+
+          const { error: cancelError } =
+            await authClient.organization.cancelInvitation({ invitationId });
+
+          enqueueSnackbar(
+            cancelError?.message ??
+              tInvitations("actions.reinvite.success", { email }),
+            { variant: cancelError ? "error" : "success" },
+          );
+
+          mutate();
+        },
+        open: true,
+        title: tInvitations("actions.reinvite.title"),
+      });
+    },
+    [mutate, organizationId, setDialog, tInvitations],
+  );
+
   const handleEnterInvitationBatchCancelMode = useCallback(() => {
     setIsSelectMode(true);
     setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
@@ -255,18 +301,36 @@ const OrganizationsSlugInvitations = ({
               filterable: false,
               headerName: tInvitations("actions.label"),
               renderCell: ({ row }: GridRenderCellParams<Invitation>) => (
-                <Tooltip title={tInvitations("actions.cancelInvitation.title")}>
-                  <IconButton
-                    color="error"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      handleCancelInvitation(row);
-                    }}
-                    size="small"
+                <>
+                  {canCreateInvitation && !isActiveSession(row) && (
+                    <Tooltip title={tInvitations("actions.reinvite.title")}>
+                      <IconButton
+                        color="primary"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleReinvite(row);
+                        }}
+                        size="small"
+                      >
+                        <ForwardToInbox fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  <Tooltip
+                    title={tInvitations("actions.cancelInvitation.title")}
                   >
-                    <Delete fontSize="small" />
-                  </IconButton>
-                </Tooltip>
+                    <IconButton
+                      color="error"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleCancelInvitation(row);
+                      }}
+                      size="small"
+                    >
+                      <Delete fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </>
               ),
               resizable: false,
               sortable: false,
@@ -333,8 +397,10 @@ const OrganizationsSlugInvitations = ({
     ],
     [
       canCancelInvitation,
+      canCreateInvitation,
       format,
       handleCancelInvitation,
+      handleReinvite,
       isSelectMode,
       tCommon,
       teams,

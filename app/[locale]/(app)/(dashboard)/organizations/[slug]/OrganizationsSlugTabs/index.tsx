@@ -1,6 +1,5 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { Suspense, use } from "react";
 
@@ -10,7 +9,7 @@ import { countKeys } from "@/constants/organizations";
 
 import { usePathname } from "@/i18n/navigation";
 
-import { Chip, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { useCountStore } from "@/providers/count-store-provider";
@@ -19,24 +18,6 @@ const ContentStack = styled(Stack)(({ theme }) => ({
   flex: 1,
   gap: theme.spacing(2),
 }));
-
-const TabLabelStack = styled(Stack)(({ theme }) => ({
-  alignItems: "center",
-  gap: theme.spacing(1),
-}));
-
-const PendingInvitationChip = ({
-  initialCount,
-}: {
-  initialCount: Promise<number>;
-}) => {
-  const loadedCount = use(initialCount);
-
-  const { getCount } = useCountStore((state) => state);
-  const count = getCount(countKeys.pendingInvitations) ?? loadedCount;
-
-  return count > 0 && <Chip color="secondary" label={count} size="small" />;
-};
 
 interface TabAccess {
   canReadWaitlistSetting: boolean;
@@ -51,55 +32,26 @@ type OrganizationTab = React.ComponentProps<
 
 // https://nextjs.org/docs/app/getting-started/fetching-data#streaming-data-with-the-use-api
 const PermittedRouteTabs = ({
+  pendingInvitationCount,
   tabAccess,
-  tabs,
 }: {
+  pendingInvitationCount?: Promise<number>;
   tabAccess?: Promise<TabAccess>;
-  tabs: OrganizationTab[];
 }) => {
+  const { slug } = useParams<{ slug: string }>();
   const pathname = usePathname();
 
   const access = tabAccess && use(tabAccess);
+  const loadedInvitationCount =
+    pendingInvitationCount && use(pendingInvitationCount);
 
-  return (
-    <RouteTabs
-      ariaLabel="organization tabs"
-      tabs={tabs.filter(
-        ({ path, permission }) =>
-          !permission ||
-          (access ? access[permission] : pathname.startsWith(path)),
-      )}
-    />
-  );
-};
-
-interface OrganizationsSlugTabsProps {
-  children: React.ReactNode;
-  pendingInvitationCount: Promise<number>;
-  tabAccess: Promise<TabAccess>;
-}
-
-const OrganizationsSlugTabs = ({
-  children,
-  pendingInvitationCount,
-  tabAccess,
-}: OrganizationsSlugTabsProps) => {
-  const { slug } = useParams<{ slug: string }>();
-
-  const tInvitations = useTranslations("organizations.invitations");
+  const { getCount } = useCountStore((state) => state);
 
   const tabs: OrganizationTab[] = [
     { path: `/organizations/${slug}/members` },
     { path: `/organizations/${slug}/teams` },
     {
-      label: (
-        <TabLabelStack direction="row">
-          {tInvitations("label")}
-          <Suspense>
-            <PendingInvitationChip initialCount={pendingInvitationCount} />
-          </Suspense>
-        </TabLabelStack>
-      ),
+      badge: getCount(countKeys.pendingInvitations) ?? loadedInvitationCount,
       path: `/organizations/${slug}/invitations`,
     },
     { path: `/organizations/${slug}/location` },
@@ -123,13 +75,37 @@ const OrganizationsSlugTabs = ({
   ];
 
   return (
-    <ContentStack>
-      <Suspense fallback={<PermittedRouteTabs tabs={tabs} />}>
-        <PermittedRouteTabs tabAccess={tabAccess} tabs={tabs} />
-      </Suspense>
-      {children}
-    </ContentStack>
+    <RouteTabs
+      ariaLabel="organization tabs"
+      tabs={tabs.filter(
+        ({ path, permission }) =>
+          !permission ||
+          (access ? access[permission] : pathname.startsWith(path)),
+      )}
+    />
   );
 };
+
+interface OrganizationsSlugTabsProps {
+  children: React.ReactNode;
+  pendingInvitationCount: Promise<number>;
+  tabAccess: Promise<TabAccess>;
+}
+
+const OrganizationsSlugTabs = ({
+  children,
+  pendingInvitationCount,
+  tabAccess,
+}: OrganizationsSlugTabsProps) => (
+  <ContentStack>
+    <Suspense fallback={<PermittedRouteTabs />}>
+      <PermittedRouteTabs
+        pendingInvitationCount={pendingInvitationCount}
+        tabAccess={tabAccess}
+      />
+    </Suspense>
+    {children}
+  </ContentStack>
+);
 
 export default OrganizationsSlugTabs;

@@ -201,7 +201,12 @@
         "success": "Invitation to {email} canceled successfully",
         "title": "Cancel invitation"
       },
-      "label": "Actions"
+      "label": "Actions",
+      "reinvite": {
+        "confirm": "Re-invite <bold>{email}</bold>? A new invitation email will be sent and this expired invitation will be canceled.",
+        "success": "Re-invited {email}",
+        "title": "Re-invite"
+      }
     },
     "email": "Email",
     "expired": "Expired",

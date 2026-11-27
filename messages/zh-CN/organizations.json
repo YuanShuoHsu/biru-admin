@@ -201,7 +201,12 @@
         "success": "成功取消对 {email} 的邀请",
         "title": "取消邀请"
       },
-      "label": "操作"
+      "label": "操作",
+      "reinvite": {
+        "confirm": "确定要重新邀请 <bold>{email}</bold> 吗？系统会发送新的邀请邮件，并取消这条过期的邀请。",
+        "success": "已重新邀请 {email}",
+        "title": "重新邀请"
+      }
     },
     "email": "电子邮件",
     "expired": "已过期",

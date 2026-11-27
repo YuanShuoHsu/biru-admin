@@ -201,7 +201,12 @@
         "success": "{email} 초대가 성공적으로 취소되었습니다",
         "title": "초대 취소"
       },
-      "label": "작업"
+      "label": "작업",
+      "reinvite": {
+        "confirm": "<bold>{email}</bold>님을 다시 초대하시겠습니까? 새 초대 이메일이 발송되고 만료된 이 초대는 취소됩니다.",
+        "success": "{email}님을 다시 초대했습니다",
+        "title": "다시 초대"
+      }
     },
     "email": "이메일",
     "expired": "만료됨",

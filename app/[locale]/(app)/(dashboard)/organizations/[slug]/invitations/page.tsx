@@ -52,6 +52,10 @@ const OrganizationsSlugInvitationsPage = async ({
     invitation: ["cancel"],
   });
 
+  const canCreateInvitation = hasRolePermission(currentUserRole, {
+    invitation: ["create"],
+  });
+
   return (
     <OrganizationsSlugInvitations
       activeOrganization={{
@@ -61,6 +65,7 @@ const OrganizationsSlugInvitationsPage = async ({
         ),
       }}
       canCancelInvitation={canCancelInvitation}
+      canCreateInvitation={canCreateInvitation}
     />
   );
 };

@@ -1,13 +1,12 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import NavItemChip from "@/components/NavItemChip";
 
 import { useRoutes } from "@/hooks/useRoutes";
 
 import { usePathname } from "@/i18n/navigation";
 
-import { ErrorOutlined } from "@mui/icons-material";
-import { Chip, Stack, Tab, Tabs } from "@mui/material";
+import { Stack, Tab, Tabs } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import type { NavBadge } from "@/types/navItem";
@@ -32,8 +31,6 @@ const RouteTabs = ({ ariaLabel, tabs }: RouteTabsProps) => {
   const pathname = usePathname();
 
   const navItem = useRoutes();
-
-  const tCommon = useTranslations("common");
 
   const value =
     tabs.find(({ path }) => pathname.startsWith(path))?.path ||
@@ -60,20 +57,7 @@ const RouteTabs = ({ ariaLabel, tabs }: RouteTabsProps) => {
               badge ? (
                 <TabLabelStack direction="row">
                   {label || routeLabel}
-                  <Chip
-                    color={badge === "error" ? "error" : "secondary"}
-                    label={
-                      badge === "error" ? (
-                        <ErrorOutlined
-                          fontSize="inherit"
-                          titleAccess={tCommon("error.title")}
-                        />
-                      ) : (
-                        badge
-                      )
-                    }
-                    size="small"
-                  />
+                  <NavItemChip badge={badge} />
                 </TabLabelStack>
               ) : (
                 label || routeLabel
