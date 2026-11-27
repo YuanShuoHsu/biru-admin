@@ -141,7 +141,6 @@ const FloorControls = styled(Stack)(({ theme }) => ({
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
   backgroundColor: theme.vars.palette.background.paper,
-  transition: theme.transitions.create("background-color"),
 }));
 
 const DisplaySwitches = styled(Stack)(({ theme }) => ({
@@ -200,7 +199,6 @@ const Summary = styled(Box)(({ theme }) => ({
   backdropFilter: "blur(24px)",
   border: `1px solid ${theme.vars.palette.divider}`,
   borderRadius: theme.shape.borderRadius,
-  transition: theme.transitions.create(["background-color", "border-color"]),
 }));
 
 const StatusLegend = styled(Stack)(({ theme }) => ({
@@ -242,12 +240,7 @@ const GridLegend = styled(Stack, {
   borderRadius: theme.shape.borderRadius,
   opacity: shown ? 1 : 0,
   visibility: shown ? "visible" : "hidden",
-  transition: theme.transitions.create([
-    "background-color",
-    "border-color",
-    "opacity",
-    "visibility",
-  ]),
+  transition: theme.transitions.create(["opacity", "visibility"]),
 }));
 
 const LegendStack = styled(Stack)(({ theme }) => ({

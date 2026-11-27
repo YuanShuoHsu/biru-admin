@@ -3,11 +3,13 @@
 // https://mui.com/material-ui/customization/css-theme-variables/configuration/
 // https://mui.com/material-ui/customization/dark-mode/#ToggleColorMode.tsx
 // https://mui.com/material-ui/react-tooltip/#DisabledTooltips.tsx
+// https://developer.mozilla.org/en-US/docs/Web/API/Document/startViewTransition
 
 // https://github.com/mui/toolpad/blob/master/packages/toolpad-core/src/DashboardLayout/ThemeSwitcher.tsx
 
 import { useTranslations } from "next-intl";
 import { useCallback } from "react";
+import { flushSync } from "react-dom";
 
 import { DarkMode, LightMode } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
@@ -49,10 +51,19 @@ const ThemeSwitcher = () => {
       ? tAppBar("switchToLightMode")
       : tAppBar("switchToDarkMode");
 
-  const toggleMode = useCallback(
-    () => setMode(mode === "dark" ? "light" : "dark"),
-    [mode, setMode],
-  );
+  const toggleMode = useCallback(() => {
+    const nextMode = mode === "dark" ? "light" : "dark";
+
+    if (
+      !document.startViewTransition ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      setMode(nextMode);
+      return;
+    }
+
+    document.startViewTransition(() => flushSync(() => setMode(nextMode)));
+  }, [mode, setMode]);
 
   return (
     <Tooltip title={tooltipTitle} enterDelay={1000}>
