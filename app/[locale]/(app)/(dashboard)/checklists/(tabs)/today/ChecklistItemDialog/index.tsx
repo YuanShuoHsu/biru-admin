@@ -26,6 +26,7 @@ import type {
 } from "@/types/checklists";
 
 import { getErrorMessage } from "@/utils/errors";
+import type { FetchError } from "@/utils/fetcher";
 
 export const CHECKLIST_ITEM_FORM_ID = "checklist-item-form";
 
@@ -72,7 +73,9 @@ const ChecklistItemDialog = ({
     } catch (error) {
       enqueueSnackbar(getErrorMessage(error), { variant: "error" });
 
-      setDialog({ confirmLoading: false });
+      if ((error as FetchError).info?.code === "checklistBusinessDateChanged")
+        closeDialog();
+      else setDialog({ confirmLoading: false });
     }
   };
 
