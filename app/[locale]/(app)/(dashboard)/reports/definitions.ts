@@ -2,6 +2,12 @@ import dayjs from "dayjs";
 import timezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 
+import {
+  DATE_FILTER_OPERATORS,
+  ENUM_FILTER_OPERATORS,
+  NUMBER_FILTER_OPERATORS,
+  STRING_FILTER_OPERATORS,
+} from "@/constants/dataGrid";
 import { STORE_TIMEZONE } from "@/constants/timezone";
 
 import {
@@ -15,6 +21,7 @@ import {
   salesReportGroupByValues,
   salesReportSortFieldValues,
 } from "@/types/api";
+import type { FilterOperator } from "@/types/dataGrid";
 import type { SalesReportGroupBy } from "@/types/reports";
 
 dayjs.extend(utc);
@@ -102,6 +109,49 @@ const isTargetProfit = (value: string | undefined): value is string =>
 
 export const isItemGroupBy = (groupBy: SalesReportGroupBy) =>
   groupBy === "menuItem" || groupBy === "category";
+
+export const SALES_ITEM_FIELDS = ["quantity", "refundedQuantity"] as const;
+
+const SALES_GROUP_FILTER_TYPES = {
+  category: "string",
+  day: "date",
+  hour: "number",
+  menuItem: "string",
+  mode: "enum",
+  paymentMethod: "enum",
+} as const satisfies Record<SalesReportGroupBy, string>;
+
+export type SalesGroupFilterType =
+  (typeof SALES_GROUP_FILTER_TYPES)[SalesReportGroupBy];
+
+export const getSalesGroupFilterType = (groupBy: SalesReportGroupBy) =>
+  SALES_GROUP_FILTER_TYPES[groupBy];
+
+const FILTER_OPERATORS: Record<
+  SalesGroupFilterType,
+  readonly FilterOperator[]
+> = {
+  date: DATE_FILTER_OPERATORS,
+  enum: ENUM_FILTER_OPERATORS,
+  number: NUMBER_FILTER_OPERATORS,
+  string: STRING_FILTER_OPERATORS,
+};
+
+export const getSalesGroupField = (groupBy: SalesReportGroupBy) =>
+  isItemGroupBy(groupBy) ? "name" : "key";
+
+export const getSalesFilterOperators = (
+  groupBy: SalesReportGroupBy,
+  filterField: string | undefined,
+): readonly FilterOperator[] =>
+  filterField === getSalesGroupField(groupBy)
+    ? FILTER_OPERATORS[getSalesGroupFilterType(groupBy)]
+    : filterField === "key" ||
+        filterField === "name" ||
+        (!isItemGroupBy(groupBy) &&
+          SALES_ITEM_FIELDS.some((field) => field === filterField))
+      ? []
+      : NUMBER_FILTER_OPERATORS;
 
 export const isValidRange = (since: string, until: string) => {
   const start = toStoreDate(since);
