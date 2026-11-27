@@ -147,9 +147,9 @@ const BotDetail = ({ botId, children }: BotDetailProps) => {
     null,
   );
 
+  if (isMissingResource(error))
+    return <Alert severity="error">{getErrorMessage(error)}</Alert>;
   if (!bot) {
-    if (isMissingResource(error))
-      return <Alert severity="error">{getErrorMessage(error)}</Alert>;
     if (error) return <ErrorAlert onRetry={() => mutateBot()} />;
 
     return <Skeleton height={480} variant="rounded" />;

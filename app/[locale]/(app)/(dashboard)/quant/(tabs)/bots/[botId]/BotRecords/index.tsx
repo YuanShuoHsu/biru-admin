@@ -7,14 +7,14 @@ import { QUANT_BOTS_URL, useBotLabels } from "../../useQuantBots";
 import { useBotMarket } from "../useBotMarket";
 
 import DataGrid from "@/components/DataGrid";
-import DataGridErrorOverlay from "@/components/DataGridErrorOverlay";
+import ErrorAlert from "@/components/ErrorAlert";
 
 import { DATA_GRID_PROPS } from "@/constants/dataGrid";
 import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
 import { useDataGridQueryState } from "@/hooks/useDataGridQueryState";
 
-import { Box } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
 import type { SortDirection } from "@/types/dataGrid";
@@ -250,32 +250,27 @@ const BotRecords = ({
   };
 
   return (
-    <Box sx={{ height: GRID_HEIGHT }}>
-      <DataGrid
-        {...DATA_GRID_PROPS}
-        columns={columns[tab]}
-        disableColumnFilter
-        loading={loading || isLoading}
-        onPaginationModelChange={handlePaginationModelChange}
-        onSortModelChange={handleSortModelChange}
-        pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
-        paginationMode="server"
-        paginationModel={paginationModel}
-        rowCount={rowCount}
-        rows={error ? [] : rows}
-        showToolbar={false}
-        slots={{
-          ...DATA_GRID_PROPS.slots,
-          noRowsOverlay: DataGridErrorOverlay,
-        }}
-        slotProps={{
-          ...DATA_GRID_PROPS.slotProps,
-          noRowsOverlay: { error, onRetry: () => mutate() },
-        }}
-        sortingMode="server"
-        sortModel={sortModel}
-      />
-    </Box>
+    <Stack sx={{ gap: 2 }}>
+      {error && <ErrorAlert onRetry={() => mutate()} />}
+      <Box sx={{ height: GRID_HEIGHT }}>
+        <DataGrid
+          {...DATA_GRID_PROPS}
+          columns={columns[tab]}
+          disableColumnFilter
+          loading={loading || isLoading}
+          onPaginationModelChange={handlePaginationModelChange}
+          onSortModelChange={handleSortModelChange}
+          pageSizeOptions={getPageSizeOptions(paginationModel.pageSize)}
+          paginationMode="server"
+          paginationModel={paginationModel}
+          rowCount={rowCount}
+          rows={error ? [] : rows}
+          showToolbar={false}
+          sortingMode="server"
+          sortModel={sortModel}
+        />
+      </Box>
+    </Stack>
   );
 };
 
