@@ -43,6 +43,7 @@ import { operatingCostCategoryValues } from "@/types/api";
 import type { OperatingCost } from "@/types/reports";
 
 import { getErrorMessage } from "@/utils/errors";
+import type { FetchError } from "@/utils/fetcher";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -73,6 +74,7 @@ const OperatingCostDialog = ({
     formState: { errors, isSubmitted },
     handleSubmit,
     register,
+    setError,
     setValue,
   } = useForm<OperatingCostForm>({
     defaultValues: {
@@ -139,7 +141,9 @@ const OperatingCostDialog = ({
 
       mutate();
     } catch (error) {
-      enqueueSnackbar(getErrorMessage(error), { variant: "error" });
+      if ((error as FetchError).info?.code === "operatingCostExists")
+        setError("effectiveFrom", { message: getErrorMessage(error) });
+      else enqueueSnackbar(getErrorMessage(error), { variant: "error" });
 
       setDialog({ confirmLoading: false });
     }
