@@ -15,6 +15,7 @@ import {
   auditActionValues,
   auditResourceValues,
   baseUnitCodeValues,
+  cashDeviceEventTypeValues,
   cashDeviceStatusValues,
   couponDiscountTypeValues,
   couponIssueTriggerValues,
@@ -382,6 +383,15 @@ export const getCashDeviceEnumOptions = (
 ) => ({
   status: cashDeviceStatusValues.map((value) => ({
     label: tCashDevices(`status.${value}`),
+    value,
+  })),
+});
+
+export const getCashDeviceEventEnumOptions = (
+  tCashDevices: ReturnType<typeof useTranslations<"cashDevices">>,
+) => ({
+  type: cashDeviceEventTypeValues.map((value) => ({
+    label: tCashDevices(`events.type.${value}`),
     value,
   })),
 });

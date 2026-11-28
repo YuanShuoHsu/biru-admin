@@ -1,4 +1,6 @@
 import {
+  cashDeviceEventFilterFieldValues,
+  cashDeviceEventSortFieldValues,
   cashDeviceFilterFieldValues,
   cashDeviceSortFieldValues,
   type components,
@@ -22,3 +24,7 @@ export type CreateCashDeviceCollectionDto =
 export type CashDeviceFilterField =
   (typeof cashDeviceFilterFieldValues)[number];
 export type CashDeviceSortField = (typeof cashDeviceSortFieldValues)[number];
+export type CashDeviceEventFilterField =
+  (typeof cashDeviceEventFilterFieldValues)[number];
+export type CashDeviceEventSortField =
+  (typeof cashDeviceEventSortFieldValues)[number];
