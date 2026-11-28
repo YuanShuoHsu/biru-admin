@@ -108,6 +108,10 @@
   "eligibleQuantity": {
     "required": "包裝容量為必填。"
   },
+  "eligibleQuantityMaxValue": {
+    "dailyLimitRequired": "設定限購前請先設定每日限量。",
+    "exceedsDailyLimit": "限購不能大於每日限量。"
+  },
   "email": {
     "invalid": "電子郵件無效。",
     "required": "電子郵件為必填。"

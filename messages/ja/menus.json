@@ -234,10 +234,22 @@
       "availableHours": {
         "label": "提供時間帯"
       },
+      "dailyLimit": {
+        "helperText": "毎日 04:00 に本日の残りをこの数量に戻します。1日の限定数を変更して保存すると、本日の残りは本日の販売数から再計算されます",
+        "label": "1日の限定数",
+        "placeholder": "1日の限定数を入力してください"
+      },
       "deliveryLeadTimeMinutes": {
         "label": "準備時間",
         "placeholder": "準備時間を入力してください",
         "unit": "分"
+      },
+      "eligibleQuantity": {
+        "maxValue": {
+          "helperText": "ログイン会員は当日の累計、未ログインのお客様は注文ごとに数えます",
+          "label": "購入制限",
+          "placeholder": "購入制限数を入力してください"
+        }
       },
       "inventoryLevel": {
         "maxValue": {
@@ -253,6 +265,7 @@
           "placeholder": "在庫単位を入力してください"
         },
         "value": {
+          "dailyLimitLabel": "本日の残り",
           "label": "在庫数",
           "placeholder": "在庫数を入力してください"
         }

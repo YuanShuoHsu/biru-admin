@@ -234,10 +234,22 @@
       "availableHours": {
         "label": "可供应时段"
       },
+      "dailyLimit": {
+        "helperText": "每天 04:00 把今日剩余恢复为此数量；保存时若每日限量有变动，今日剩余会按今日已售份数重新计算",
+        "label": "每日限量",
+        "placeholder": "请输入您的每日限量"
+      },
       "deliveryLeadTimeMinutes": {
         "label": "备餐时间",
         "placeholder": "请输入您的备餐时间",
         "unit": "分钟"
+      },
+      "eligibleQuantity": {
+        "maxValue": {
+          "helperText": "登录会员按当日累计计算，未登录的客人按每笔订单计算",
+          "label": "限购",
+          "placeholder": "请输入您的限购份数"
+        }
       },
       "inventoryLevel": {
         "maxValue": {
@@ -253,6 +265,7 @@
           "placeholder": "请输入您的库存单位"
         },
         "value": {
+          "dailyLimitLabel": "今日剩余",
           "label": "库存数量",
           "placeholder": "请输入您的库存数量"
         }

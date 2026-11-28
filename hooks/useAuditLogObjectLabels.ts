@@ -58,6 +58,9 @@ export const useAuditLogObjectLabels = () => {
           tOrder(`checkout.customer.${key}.label`),
         ]),
       ),
+      eligibleQuantity: {
+        maxValue: tMenus("items.offers.eligibleQuantity.maxValue.label"),
+      },
       groups: Object.fromEntries(
         WAITLIST_GROUP_KEYS.map((key) => [
           key,

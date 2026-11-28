@@ -12163,6 +12163,13 @@ export interface components {
       unitText?: string;
       value?: number;
     };
+    EligibleQuantityDto: {
+      /**
+       * @description 最多可買份數
+       * @example 2
+       */
+      maxValue: number;
+    };
     CreateOfferDto: {
       /** @example 150.00 */
       price: string;
@@ -12176,6 +12183,10 @@ export interface components {
       deliveryLeadTimeMinutes?: number | null;
       /** @description 當日剩餘庫存數量 */
       inventoryLevel?: components["schemas"]["QuantitativeValueDto"] | null;
+      /** @description 每日限量；每天 04:00（台灣時間）把剩餘數量恢復為此數。null 代表非每日限量 */
+      dailyLimit?: number | null;
+      /** @description 限購；登入會員以同門市同營業日累計，未登入以每筆訂單計。只有設了每日限量才可設，且不得大於每日限量。null 代表不限購 */
+      eligibleQuantity?: components["schemas"]["EligibleQuantityDto"] | null;
       priceSpecification?:
         | components["schemas"]["PriceSpecificationDto"]
         | null;
@@ -12239,6 +12250,10 @@ export interface components {
       /** @description 預計準備時間（分鐘） */
       deliveryLeadTimeMinutes?: number | null;
       inventoryLevel?: components["schemas"]["QuantitativeValueDto"] | null;
+      /** @description 每日限量；null 代表非每日限量 */
+      dailyLimit?: number | null;
+      /** @description 限購；null 代表不限購 */
+      eligibleQuantity?: components["schemas"]["EligibleQuantityDto"] | null;
       priceSpecification?:
         | components["schemas"]["PriceSpecificationDto"]
         | null;
@@ -12396,6 +12411,10 @@ export interface components {
       deliveryLeadTimeMinutes?: number | null;
       /** @description 當日剩餘庫存數量 */
       inventoryLevel?: components["schemas"]["QuantitativeValueDto"] | null;
+      /** @description 每日限量；每天 04:00（台灣時間）把剩餘數量恢復為此數。null 代表非每日限量 */
+      dailyLimit?: number | null;
+      /** @description 限購；登入會員以同門市同營業日累計，未登入以每筆訂單計。只有設了每日限量才可設，且不得大於每日限量。null 代表不限購 */
+      eligibleQuantity?: components["schemas"]["EligibleQuantityDto"] | null;
       priceSpecification?:
         | components["schemas"]["PriceSpecificationDto"]
         | null;
@@ -12408,6 +12427,10 @@ export interface components {
       availability: components["schemas"]["ItemAvailability"];
       /** @description 僅含數量；單位 unitText 屬菜單定義，需 menu:update 才能改 */
       inventoryLevel?: components["schemas"]["OfferInventoryLevelValueDto"];
+      /** @description 每日限量；每天 04:00（台灣時間）把剩餘數量恢復為此數。null 代表非每日限量；需 menu:update 才能改 */
+      dailyLimit?: number | null;
+      /** @description 限購；只有設了每日限量才可設，且不得大於每日限量。null 代表不限購；需 menu:update 才能改 */
+      eligibleQuantity?: components["schemas"]["EligibleQuantityDto"] | null;
     };
     CreateMenuItemAddOnDto: {
       /** @description Add-on menu item ID */
@@ -12619,6 +12642,10 @@ export interface components {
       /** @description 預計準備時間（分鐘） */
       deliveryLeadTimeMinutes?: number | null;
       inventoryLevel?: components["schemas"]["QuantitativeValueDto"] | null;
+      /** @description 每日限量；null 代表非每日限量 */
+      dailyLimit?: number | null;
+      /** @description 限購；null 代表不限購 */
+      eligibleQuantity?: components["schemas"]["EligibleQuantityDto"] | null;
       priceSpecification?:
         | components["schemas"]["PriceSpecificationDto"]
         | null;

@@ -790,11 +790,24 @@ const MenusMenuIdSectionId = ({
           [
             offer?.inventoryLevel?.value == null
               ? ""
-              : format.number(offer.inventoryLevel.value),
+              : offer.dailyLimit == null
+                ? format.number(offer.inventoryLevel.value)
+                : `${format.number(offer.inventoryLevel.value)} / ${format.number(offer.dailyLimit)}`,
             offer?.inventoryLevel?.unitText,
           ]
             .join(" ")
             .trim(),
+      },
+      {
+        field: "eligibleQuantity",
+        filterable: false,
+        headerName: `${tMenus("items.offers.eligibleQuantity.maxValue.label")} ${tCommon("optional")}`,
+        renderCell: renderEmptyableCell,
+        sortable: false,
+        valueGetter: (_value: unknown, { offer }: MenuItem) =>
+          offer?.eligibleQuantity == null
+            ? ""
+            : format.number(offer.eligibleQuantity.maxValue),
       },
       {
         field: "deliveryLeadTimeMinutes",

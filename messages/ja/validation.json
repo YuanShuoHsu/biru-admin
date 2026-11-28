@@ -108,6 +108,10 @@
   "eligibleQuantity": {
     "required": "内容量は必須です。"
   },
+  "eligibleQuantityMaxValue": {
+    "dailyLimitRequired": "購入制限を設定する前に1日の限定数を設定してください。",
+    "exceedsDailyLimit": "購入制限は1日の限定数を超えられません。"
+  },
   "email": {
     "invalid": "メールアドレスが無効です。",
     "required": "メールアドレスは必須です。"

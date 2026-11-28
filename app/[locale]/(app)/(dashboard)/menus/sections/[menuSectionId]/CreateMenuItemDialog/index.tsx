@@ -105,6 +105,8 @@ const CreateMenuItemDialog = ({
         availability: "InStock",
         availableHours: "",
         inventoryLevel: { value: "", unitText: "" },
+        dailyLimit: "",
+        eligibleQuantity: { maxValue: "" },
         deliveryLeadTimeMinutes: "",
         priceSpecification: { price: "", validFrom: "", validThrough: "" },
       },
@@ -150,6 +152,11 @@ const CreateMenuItemDialog = ({
   const inventoryLevelValue = useWatch({
     control,
     name: "offer.inventoryLevel.value",
+  });
+  const dailyLimit = useWatch({ control, name: "offer.dailyLimit" });
+  const eligibleQuantityMaxValue = useWatch({
+    control,
+    name: "offer.eligibleQuantity.maxValue",
   });
   const priceSpecificationValidFrom = useWatch({
     control,
@@ -208,6 +215,10 @@ const CreateMenuItemDialog = ({
                     }),
                   }
                 : null,
+            dailyLimit: offer?.dailyLimit ? Number(offer.dailyLimit) : null,
+            eligibleQuantity: offer?.eligibleQuantity?.maxValue
+              ? { maxValue: Number(offer.eligibleQuantity.maxValue) }
+              : null,
             priceSpecification: offer?.priceSpecification?.price
               ? {
                   price: offer.priceSpecification.price,
@@ -632,7 +643,7 @@ const CreateMenuItemDialog = ({
             error={!!errors.offer?.inventoryLevel?.value}
             fullWidth
             helperText={errors.offer?.inventoryLevel?.value?.message}
-            label={`${tMenus("items.offers.inventoryLevel.value.label")} ${tCommon("optional")}`}
+            label={`${tMenus(dailyLimit ? "items.offers.inventoryLevel.value.dailyLimitLabel" : "items.offers.inventoryLevel.value.label")} ${tCommon("optional")}`}
             min={0}
             placeholder={tMenus(
               "items.offers.inventoryLevel.value.placeholder",
@@ -658,6 +669,55 @@ const CreateMenuItemDialog = ({
               "items.offers.inventoryLevel.unitText.placeholder",
             )}
             {...register("offer.inventoryLevel.unitText")}
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <NumberSpinner
+            clearable
+            error={!!errors.offer?.dailyLimit}
+            format={{ maximumFractionDigits: 0 }}
+            fullWidth
+            helperText={
+              errors.offer?.dailyLimit?.message ||
+              tMenus("items.offers.dailyLimit.helperText")
+            }
+            label={`${tMenus("items.offers.dailyLimit.label")} ${tCommon("optional")}`}
+            max={9999}
+            min={1}
+            placeholder={tMenus("items.offers.dailyLimit.placeholder")}
+            smallStep={1}
+            value={dailyLimit ? Number(dailyLimit) : null}
+            onValueChange={(value) =>
+              setValue("offer.dailyLimit", value != null ? String(value) : "")
+            }
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <NumberSpinner
+            clearable
+            error={!!errors.offer?.eligibleQuantity?.maxValue}
+            format={{ maximumFractionDigits: 0 }}
+            fullWidth
+            helperText={
+              errors.offer?.eligibleQuantity?.maxValue?.message ||
+              tMenus("items.offers.eligibleQuantity.maxValue.helperText")
+            }
+            label={`${tMenus("items.offers.eligibleQuantity.maxValue.label")} ${tCommon("optional")}`}
+            max={9999}
+            min={1}
+            placeholder={tMenus(
+              "items.offers.eligibleQuantity.maxValue.placeholder",
+            )}
+            smallStep={1}
+            value={
+              eligibleQuantityMaxValue ? Number(eligibleQuantityMaxValue) : null
+            }
+            onValueChange={(value) =>
+              setValue(
+                "offer.eligibleQuantity.maxValue",
+                value != null ? String(value) : "",
+              )
+            }
           />
         </Grid>
         <Grid size={{ xs: 12 }}>

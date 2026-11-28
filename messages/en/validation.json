@@ -108,6 +108,10 @@
   "eligibleQuantity": {
     "required": "Package size is required."
   },
+  "eligibleQuantityMaxValue": {
+    "dailyLimitRequired": "Set a daily limit before setting a purchase limit.",
+    "exceedsDailyLimit": "The purchase limit cannot exceed the daily limit."
+  },
   "email": {
     "invalid": "Email is not valid.",
     "required": "Email is required."
