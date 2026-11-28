@@ -17,6 +17,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useFormatMoney } from "@/hooks/useFormatMoney";
 
+import { useRouter } from "@/i18n/navigation";
+
 import { TextField, Typography } from "@mui/material";
 
 import { useDialogStore } from "@/providers/dialog-store-provider";
@@ -27,7 +29,7 @@ import type {
 } from "@/types/cashDevices";
 
 import { getErrorMessage } from "@/utils/errors";
-import { fetcher } from "@/utils/fetcher";
+import { type FetchError, fetcher } from "@/utils/fetcher";
 
 interface CashDeviceCollectionDialogProps {
   cashDeviceId: string;
@@ -43,6 +45,8 @@ const CashDeviceCollectionDialog = ({
   organizationSlug,
 }: CashDeviceCollectionDialogProps) => {
   const { closeDialog, setDialog } = useDialogStore((state) => state);
+
+  const router = useRouter();
 
   const [idempotencyKey] = useState(() => crypto.randomUUID());
 
@@ -109,7 +113,11 @@ const CashDeviceCollectionDialog = ({
     } catch (error) {
       enqueueSnackbar(getErrorMessage(error), { variant: "error" });
 
-      setDialog({ confirmLoading: false });
+      if ((error as FetchError).info?.code === "cashDeviceInactive") {
+        closeDialog();
+
+        router.refresh();
+      } else setDialog({ confirmLoading: false });
     }
   };
 
