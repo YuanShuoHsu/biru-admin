@@ -5,12 +5,11 @@ import { useTranslations } from "next-intl";
 import { useLogoutNavItem, useStorefrontNavItem } from "@/hooks/useAuth";
 import { useRoutes } from "@/hooks/useRoutes";
 
+import DividerSlot from "@/components/TemporaryDrawer/NestedList/DividerSlot";
+
 import { PersonAdd } from "@mui/icons-material";
-import { Divider } from "@mui/material";
 
-import type { NavItem, Slot } from "@/types/navItem";
-
-const DividerSlot: Slot = () => <Divider flexItem />;
+import type { NavItem } from "@/types/navItem";
 
 export const useAccountNavItems = (): NavItem[] => {
   const storefrontNavItem = useStorefrontNavItem();
@@ -22,6 +21,7 @@ export const useAccountNavItems = (): NavItem[] => {
     storefrontNavItem("/auth/orders"),
     storefrontNavItem("/auth/coupons"),
     storefrontNavItem("/auth/points"),
+    { slot: DividerSlot },
     storefrontNavItem("/auth/settings"),
     logoutItem,
     { slot: DividerSlot },
