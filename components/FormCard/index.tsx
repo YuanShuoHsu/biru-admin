@@ -9,7 +9,7 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { styled, type Theme } from "@mui/material/styles";
 
 export const StyledCardHeader = styled(CardHeader)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -27,7 +27,7 @@ export const StyledCardContent = styled(CardContent)(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-export const StyledListItem = styled(ListItem)(({ theme }) => ({
+const listItemStyles = (theme: Theme) => ({
   gap: theme.spacing(1),
 
   "& .MuiListItemSecondaryAction-root": {
@@ -37,6 +37,17 @@ export const StyledListItem = styled(ListItem)(({ theme }) => ({
     transform: "none",
     flexShrink: 0,
   },
+});
+
+export const StyledListItem = styled(ListItem)(({ theme }) =>
+  listItemStyles(theme),
+);
+
+export const StyledOutlinedListItem = styled(ListItem)(({ theme }) => ({
+  ...listItemStyles(theme),
+  padding: theme.spacing(1.5),
+  border: `1px solid ${theme.vars.palette.divider}`,
+  borderRadius: theme.shape.borderRadius,
 }));
 
 export const StyledListItemText = styled(ListItemText)({

@@ -1018,7 +1018,6 @@ const routes: Route[] = [
         icon: Settings,
         label: "auth.settings.label",
         segment: "settings",
-        to: "/auth/settings/account",
       },
       {
         icon: Login,
