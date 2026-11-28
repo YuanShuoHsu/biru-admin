@@ -203,6 +203,9 @@ const ModifierGroups = ({
   );
 
   const rows = draftRows ?? fetchedRows;
+  const hasReorderChanges = rows.some(
+    ({ id }, index) => id !== fetchedRows[index]?.id,
+  );
 
   const {
     clearRowSelection,
@@ -215,23 +218,10 @@ const ModifierGroups = ({
     rowCount < 2 || isValidating || isFilteredOrSorted(filterModel, sortModel);
 
   const handleEnterModifierGroupReorderMode = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tMenus.rich("modifierGroups.actions.reorderGroup.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setDraftRows(rows);
-        setToolbarMode("reorder");
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tMenus("modifierGroups.actions.reorderGroup.title"),
-    });
-  }, [apiRef, rows, setDialog, tMenus]);
+    setDraftRows(rows);
+    setToolbarMode("reorder");
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef, rows]);
 
   const handleSaveModifierGroupReorder = useCallback(() => {
     setDialog({
@@ -275,22 +265,9 @@ const ModifierGroups = ({
   }, [apiRef, menuId, mutate, rowCount, rows, setDialog, tMenus]);
 
   const handleCancelModifierGroupReorder = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tMenus.rich("modifierGroups.actions.reorderGroup.cancel.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setDraftRows(null);
-        setToolbarMode(null);
-      },
-      open: true,
-      title: tMenus("modifierGroups.actions.reorderGroup.cancel.label"),
-    });
-  }, [setDialog, tMenus]);
+    setDraftRows(null);
+    setToolbarMode(null);
+  }, []);
 
   const handleModifierGroupDragEnd = ({ operation }: DragEndEvent) => {
     if (!isSortableOperation(operation)) return;
@@ -647,6 +624,7 @@ const ModifierGroups = ({
               {tMenus("modifierGroups.actions.reorderGroup.cancel.label")}
             </Button>
             <Button
+              disabled={!hasReorderChanges}
               onClick={handleSaveModifierGroupReorder}
               size="small"
               startIcon={<Save />}

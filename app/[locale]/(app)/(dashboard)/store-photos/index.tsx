@@ -191,6 +191,9 @@ const StorePhotos = ({
   );
 
   const rows = draftRows ?? fetchedRows;
+  const hasReorderChanges = rows.some(
+    ({ id }, index) => id !== fetchedRows[index]?.id,
+  );
 
   const {
     clearRowSelection,
@@ -203,23 +206,10 @@ const StorePhotos = ({
     rowCount < 2 || isValidating || isFilteredOrSorted(filterModel, sortModel);
 
   const handleEnterReorderMode = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tStorePhotos.rich("actions.reorderStorePhoto.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setDraftRows(rows);
-        setToolbarMode("reorder");
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tStorePhotos("actions.reorderStorePhoto.title"),
-    });
-  }, [apiRef, rows, setDialog, tStorePhotos]);
+    setDraftRows(rows);
+    setToolbarMode("reorder");
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef, rows]);
 
   const handleSaveReorder = useCallback(() => {
     setDialog({
@@ -262,22 +252,9 @@ const StorePhotos = ({
   }, [apiRef, mutate, rowCount, rows, setDialog, tStorePhotos]);
 
   const handleCancelReorder = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tStorePhotos.rich("actions.reorderStorePhoto.cancel.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setDraftRows(null);
-        setToolbarMode(null);
-      },
-      open: true,
-      title: tStorePhotos("actions.reorderStorePhoto.cancel.label"),
-    });
-  }, [setDialog, tStorePhotos]);
+    setDraftRows(null);
+    setToolbarMode(null);
+  }, []);
 
   const handleDragEnd = ({ operation }: DragEndEvent) => {
     if (!isSortableOperation(operation)) return;
@@ -601,6 +578,7 @@ const StorePhotos = ({
               {tStorePhotos("actions.reorderStorePhoto.cancel.label")}
             </Button>
             <Button
+              disabled={!hasReorderChanges}
               onClick={handleSaveReorder}
               size="small"
               startIcon={<Save />}

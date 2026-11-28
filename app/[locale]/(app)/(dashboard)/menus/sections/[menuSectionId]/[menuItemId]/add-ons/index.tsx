@@ -181,6 +181,9 @@ const MenuItemAddOns = ({
   );
 
   const rows = draftRows ?? fetchedRows;
+  const hasReorderChanges = rows.some(
+    ({ id }, index) => id !== fetchedRows[index]?.id,
+  );
 
   const {
     clearRowSelection,
@@ -365,23 +368,10 @@ const MenuItemAddOns = ({
   }, [apiRef, clearRowSelection]);
 
   const handleEnterReorderMode = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tMenus.rich("items.addOns.actions.reorderAddOn.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setDraftRows(rows);
-        setToolbarMode("reorder");
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tMenus("items.addOns.actions.reorderAddOn.title"),
-    });
-  }, [apiRef, rows, setDialog, tMenus]);
+    setDraftRows(rows);
+    setToolbarMode("reorder");
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef, rows]);
 
   const handleSaveReorder = useCallback(() => {
     setDialog({
@@ -428,22 +418,9 @@ const MenuItemAddOns = ({
   }, [apiRef, menuItemId, mutate, rowCount, rows, setDialog, tMenus]);
 
   const handleCancelReorder = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tMenus.rich("items.addOns.actions.reorderAddOn.cancel.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setDraftRows(null);
-        setToolbarMode(null);
-      },
-      open: true,
-      title: tMenus("items.addOns.actions.reorderAddOn.cancel.label"),
-    });
-  }, [setDialog, tMenus]);
+    setDraftRows(null);
+    setToolbarMode(null);
+  }, []);
 
   const handleDragEnd = ({ operation }: DragEndEvent) => {
     if (!isSortableOperation(operation)) return;
@@ -621,6 +598,7 @@ const MenuItemAddOns = ({
               {tMenus("items.addOns.actions.reorderAddOn.cancel.label")}
             </Button>
             <Button
+              disabled={!hasReorderChanges}
               onClick={handleSaveReorder}
               size="small"
               startIcon={<Save />}

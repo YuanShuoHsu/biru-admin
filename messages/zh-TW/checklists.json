@@ -32,10 +32,8 @@
       },
       "reorder": {
         "cancel": {
-          "confirm": "確定要取消<bold>檢查表</bold>排序嗎？未儲存的變更將會遺失。",
           "label": "取消檢查表排序"
         },
-        "confirm": "確定要進行<bold>檢查表</bold>排序嗎？",
         "save": {
           "confirm": "確定要儲存<bold>檢查表</bold>排序嗎？",
           "label": "儲存檢查表排序",

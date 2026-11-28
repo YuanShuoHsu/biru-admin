@@ -32,10 +32,8 @@
       },
       "reorder": {
         "cancel": {
-          "confirm": "Are you sure you want to cancel <bold>checklists</bold> reorder? Unsaved changes will be lost.",
           "label": "Cancel checklists reorder"
         },
-        "confirm": "Are you sure you want to reorder <bold>checklists</bold>?",
         "save": {
           "confirm": "Are you sure you want to save <bold>checklists</bold> reorder?",
           "label": "Save checklists reorder",

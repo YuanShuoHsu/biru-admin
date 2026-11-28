@@ -99,6 +99,9 @@ const ChecklistTemplates = ({
   });
 
   const rows = draftRows ?? fetchedRows;
+  const hasReorderChanges = rows.some(
+    ({ id }, index) => id !== fetchedRows[index]?.id,
+  );
 
   const isReorderDisabled =
     closed ||
@@ -107,23 +110,10 @@ const ChecklistTemplates = ({
     isFilteredOrSorted(filterModel, sortModel);
 
   const handleEnterReorderMode = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tChecklists.rich("actions.reorder.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setDraftRows(rows);
-        setToolbarMode("reorder");
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tChecklists("actions.reorder.title"),
-    });
-  }, [apiRef, rows, setDialog, tChecklists]);
+    setDraftRows(rows);
+    setToolbarMode("reorder");
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef, rows]);
 
   const handleSaveReorder = useCallback(() => {
     setDialog({
@@ -161,22 +151,9 @@ const ChecklistTemplates = ({
   }, [apiRef, mutate, rows, setDialog, tChecklists, templatesUrl]);
 
   const handleCancelReorder = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tChecklists.rich("actions.reorder.cancel.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setDraftRows(null);
-        setToolbarMode(null);
-      },
-      open: true,
-      title: tChecklists("actions.reorder.cancel.label"),
-    });
-  }, [setDialog, tChecklists]);
+    setDraftRows(null);
+    setToolbarMode(null);
+  }, []);
 
   const handleDragEnd = ({ operation }: DragEndEvent) => {
     if (!isSortableOperation(operation)) return;
@@ -327,6 +304,7 @@ const ChecklistTemplates = ({
               {tChecklists("actions.reorder.cancel.label")}
             </Button>
             <Button
+              disabled={!hasReorderChanges}
               onClick={handleSaveReorder}
               size="small"
               startIcon={<Save />}

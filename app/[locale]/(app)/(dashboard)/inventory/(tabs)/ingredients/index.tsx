@@ -297,6 +297,9 @@ const Ingredients = ({
   );
 
   const rows = draftRows ?? fetchedRows;
+  const hasReorderChanges = rows.some(
+    ({ id }, index) => id !== fetchedRows[index]?.id,
+  );
 
   const {
     clearRowSelection,
@@ -321,24 +324,11 @@ const Ingredients = ({
     isFilteredOrSorted(filterModel, sortModel);
 
   const handleEnterReorderMode = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tInventory.rich("ingredients.actions.reorderIngredient.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setDraftRows(rows);
-        setToolbarMode("reorder");
+    setDraftRows(rows);
+    setToolbarMode("reorder");
 
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tInventory("ingredients.actions.reorderIngredient.title"),
-    });
-  }, [apiRef, rows, setDialog, tInventory]);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef, rows]);
 
   const handleSaveReorder = useCallback(() => {
     setDialog({
@@ -383,23 +373,9 @@ const Ingredients = ({
   }, [apiRef, mutate, organizationSlug, rowCount, rows, setDialog, tInventory]);
 
   const handleCancelReorder = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tInventory.rich(
-            "ingredients.actions.reorderIngredient.cancel.confirm",
-            { bold: (chunks) => <strong>{chunks}</strong> },
-          )}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setDraftRows(null);
-        setToolbarMode(null);
-      },
-      open: true,
-      title: tInventory("ingredients.actions.reorderIngredient.cancel.label"),
-    });
-  }, [setDialog, tInventory]);
+    setDraftRows(null);
+    setToolbarMode(null);
+  }, []);
 
   const handleDragEnd = ({ operation }: DragEndEvent) => {
     if (!isSortableOperation(operation)) return;
@@ -1048,6 +1024,7 @@ const Ingredients = ({
               {tInventory("ingredients.actions.reorderIngredient.cancel.label")}
             </Button>
             <Button
+              disabled={!hasReorderChanges}
               onClick={handleSaveReorder}
               size="small"
               startIcon={<Save />}

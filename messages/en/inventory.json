@@ -60,10 +60,8 @@
       },
       "reorderIngredient": {
         "cancel": {
-          "confirm": "Are you sure you want to cancel <bold>ingredients</bold> reorder? Unsaved changes will be lost.",
           "label": "Cancel Ingredients Reorder"
         },
-        "confirm": "Are you sure you want to reorder <bold>ingredients</bold>?",
         "save": {
           "confirm": "Are you sure you want to save <bold>ingredients</bold> reorder?",
           "label": "Save Ingredients Reorder",
@@ -215,10 +213,8 @@
         "label": "Actions",
         "reorderRecipeIngredient": {
           "cancel": {
-            "confirm": "Are you sure you want to cancel <bold>recipe ingredients</bold> reorder? Unsaved changes will be lost.",
             "label": "Cancel recipe ingredients reorder"
           },
-          "confirm": "Are you sure you want to reorder <bold>recipe ingredients</bold>?",
           "save": {
             "confirm": "Are you sure you want to save <bold>recipe ingredients</bold> reorder?",
             "label": "Save recipe ingredients reorder",

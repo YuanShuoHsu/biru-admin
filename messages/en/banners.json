@@ -23,10 +23,8 @@
     "label": "Actions",
     "reorderBanner": {
       "cancel": {
-        "confirm": "Are you sure you want to cancel <bold>banners</bold> reorder? Unsaved changes will be lost.",
         "label": "Cancel Banners Reorder"
       },
-      "confirm": "Are you sure you want to reorder <bold>banners</bold>?",
       "save": {
         "confirm": "Are you sure you want to save <bold>banners</bold> reorder?",
         "label": "Save Banners Reorder",

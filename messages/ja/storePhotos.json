@@ -23,10 +23,8 @@
     "label": "操作",
     "reorderStorePhoto": {
       "cancel": {
-        "confirm": "<bold>店舗写真</bold>の並び替えをキャンセルしますか？保存されていない変更は失われます。",
         "label": "店舗写真の並び替えをキャンセル"
       },
-      "confirm": "<bold>店舗写真</bold>を並び替えますか？",
       "save": {
         "confirm": "<bold>店舗写真</bold>の並び順を保存しますか？",
         "label": "店舗写真の並び順を保存",

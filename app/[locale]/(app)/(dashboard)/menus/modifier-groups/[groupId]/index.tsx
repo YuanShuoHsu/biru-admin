@@ -224,6 +224,9 @@ const Modifiers = ({
   );
 
   const rows = draftRows ?? fetchedRows;
+  const hasReorderChanges = rows.some(
+    ({ id }, index) => id !== fetchedRows[index]?.id,
+  );
 
   const {
     clearRowSelection,
@@ -236,23 +239,10 @@ const Modifiers = ({
     rowCount < 2 || isValidating || isFilteredOrSorted(filterModel, sortModel);
 
   const handleEnterReorderMode = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tMenus.rich("modifiers.actions.reorderModifier.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setDraftRows(rows);
-        setToolbarMode("reorder");
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tMenus("modifiers.actions.reorderModifier.title"),
-    });
-  }, [apiRef, rows, setDialog, tMenus]);
+    setDraftRows(rows);
+    setToolbarMode("reorder");
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef, rows]);
 
   const handleSaveReorder = useCallback(() => {
     setDialog({
@@ -296,22 +286,9 @@ const Modifiers = ({
   }, [apiRef, groupId, mutate, rowCount, rows, setDialog, tMenus]);
 
   const handleCancelReorder = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tMenus.rich("modifiers.actions.reorderModifier.cancel.confirm", {
-            bold: (chunks) => <strong>{chunks}</strong>,
-          })}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setDraftRows(null);
-        setToolbarMode(null);
-      },
-      open: true,
-      title: tMenus("modifiers.actions.reorderModifier.cancel.label"),
-    });
-  }, [setDialog, tMenus]);
+    setDraftRows(null);
+    setToolbarMode(null);
+  }, []);
 
   const handleDragEnd = ({ operation }: DragEndEvent) => {
     if (!isSortableOperation(operation)) return;
@@ -717,6 +694,7 @@ const Modifiers = ({
               {tMenus("modifiers.actions.reorderModifier.cancel.label")}
             </Button>
             <Button
+              disabled={!hasReorderChanges}
               onClick={handleSaveReorder}
               size="small"
               startIcon={<Save />}

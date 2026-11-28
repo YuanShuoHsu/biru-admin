@@ -60,10 +60,8 @@
       },
       "reorderIngredient": {
         "cancel": {
-          "confirm": "確定要取消<bold>食材</bold>排序嗎？未儲存的變更將會遺失。",
           "label": "取消食材排序"
         },
-        "confirm": "確定要進行<bold>食材</bold>排序嗎？",
         "save": {
           "confirm": "確定要儲存<bold>食材</bold>排序嗎？",
           "label": "儲存食材排序",
@@ -215,10 +213,8 @@
         "label": "操作",
         "reorderRecipeIngredient": {
           "cancel": {
-            "confirm": "確定要取消<bold>材料</bold>排序嗎？未儲存的變更將會遺失。",
             "label": "取消材料排序"
           },
-          "confirm": "確定要進行<bold>材料</bold>排序嗎？",
           "save": {
             "confirm": "確定要儲存<bold>材料</bold>排序嗎？",
             "label": "儲存材料排序",

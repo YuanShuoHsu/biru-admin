@@ -23,10 +23,8 @@
     "label": "操作",
     "reorderStorePhoto": {
       "cancel": {
-        "confirm": "确定要取消<bold>门店照片</bold>排序吗？未保存的更改将会丢失。",
         "label": "取消门店照片排序"
       },
-      "confirm": "确定要进行<bold>门店照片</bold>排序吗？",
       "save": {
         "confirm": "确定要保存<bold>门店照片</bold>排序吗？",
         "label": "保存门店照片排序",

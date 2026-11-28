@@ -23,10 +23,8 @@
     "label": "Actions",
     "reorderStorePhoto": {
       "cancel": {
-        "confirm": "Are you sure you want to cancel <bold>store photos</bold> reorder? Unsaved changes will be lost.",
         "label": "Cancel Store Photos Reorder"
       },
-      "confirm": "Are you sure you want to reorder <bold>store photos</bold>?",
       "save": {
         "confirm": "Are you sure you want to save <bold>store photos</bold> reorder?",
         "label": "Save Store Photos Reorder",

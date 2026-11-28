@@ -32,10 +32,8 @@
       },
       "reorder": {
         "cancel": {
-          "confirm": "<bold>점검표</bold> 정렬을 취소하시겠습니까? 저장되지 않은 변경 사항은 사라집니다.",
           "label": "점검표 정렬 취소"
         },
-        "confirm": "<bold>점검표</bold>를 정렬하시겠습니까?",
         "save": {
           "confirm": "<bold>점검표</bold> 정렬을 저장하시겠습니까?",
           "label": "점검표 정렬 저장",

@@ -84,10 +84,8 @@
       },
       "reorderItem": {
         "cancel": {
-          "confirm": "<bold>品目</bold>の並び替えをキャンセルしますか？保存されていない変更は失われます。",
           "label": "品目の並び替えをキャンセル"
         },
-        "confirm": "<bold>品目</bold>を並び替えますか？",
         "save": {
           "confirm": "<bold>品目</bold>の並び順を保存しますか？",
           "error": "並び替えの保存に失敗しました",
@@ -130,10 +128,8 @@
         "label": "操作",
         "reorderAddOn": {
           "cancel": {
-            "confirm": "<bold>アドオン</bold>の並び替えをキャンセルしますか？保存されていない変更は失われます。",
             "label": "アドオンの並び替えをキャンセル"
           },
-          "confirm": "<bold>アドオン</bold>を並び替えますか？",
           "save": {
             "confirm": "<bold>アドオン</bold>の並び順を保存しますか？",
             "error": "並び替えの保存に失敗しました",
@@ -203,10 +199,8 @@
         "label": "操作",
         "reorder": {
           "cancel": {
-            "confirm": "<bold>オプショングループ</bold>の並び替えをキャンセルしますか？保存していない変更は失われます。",
             "label": "オプショングループの並び替えをキャンセル"
           },
-          "confirm": "<bold>オプショングループ</bold>を並び替えますか？",
           "save": {
             "confirm": "<bold>オプショングループ</bold>の並び順を保存しますか？",
             "error": "並び順の保存に失敗しました",
@@ -352,10 +346,8 @@
       "label": "操作",
       "reorderGroup": {
         "cancel": {
-          "confirm": "<bold>オプショングループ</bold>の並び替えをキャンセルしますか？保存していない変更は失われます。",
           "label": "オプショングループの並び替えをキャンセル"
         },
-        "confirm": "<bold>オプショングループ</bold>を並び替えますか？",
         "save": {
           "confirm": "<bold>オプショングループ</bold>の並び順を保存しますか？",
           "error": "並び順の保存に失敗しました",
@@ -416,10 +408,8 @@
       "label": "操作",
       "reorderModifier": {
         "cancel": {
-          "confirm": "<bold>オプション</bold>の並び替えをキャンセルしますか？保存していない変更は失われます。",
           "label": "オプションの並び替えをキャンセル"
         },
-        "confirm": "<bold>オプション</bold>を並び替えますか？",
         "save": {
           "confirm": "<bold>オプション</bold>の並び順を保存しますか？",
           "error": "並び順の保存に失敗しました",
@@ -488,10 +478,8 @@
       "label": "操作",
       "reorderSection": {
         "cancel": {
-          "confirm": "<bold>グループ</bold>の並び替えをキャンセルしますか？保存されていない変更は失われます。",
           "label": "グループの並び替えをキャンセル"
         },
-        "confirm": "<bold>グループ</bold>を並び替えますか？",
         "save": {
           "confirm": "<bold>グループ</bold>の並び順を保存しますか？",
           "error": "並び替えの保存に失敗しました",

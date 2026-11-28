@@ -200,6 +200,9 @@ const RecipeIngredients = ({
   );
 
   const rows = draftRows ?? fetchedRows;
+  const hasReorderChanges = rows.some(
+    ({ id }, index) => id !== fetchedRows[index]?.id,
+  );
 
   const {
     clearRowSelection,
@@ -217,27 +220,11 @@ const RecipeIngredients = ({
     rowCount < 2 || isValidating || isFilteredOrSorted(filterModel, sortModel);
 
   const handleEnterReorderMode = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tInventory.rich(
-            "recipes.ingredients.actions.reorderRecipeIngredient.confirm",
-            { bold: (chunks) => <strong>{chunks}</strong> },
-          )}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setDraftRows(rows);
-        setToolbarMode("reorder");
+    setDraftRows(rows);
+    setToolbarMode("reorder");
 
-        setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
-      },
-      open: true,
-      title: tInventory(
-        "recipes.ingredients.actions.reorderRecipeIngredient.title",
-      ),
-    });
-  }, [apiRef, rows, setDialog, tInventory]);
+    setTimeout(() => apiRef.current?.autosizeColumns(autosizeOptions), 0);
+  }, [apiRef, rows]);
 
   const handleSaveReorder = useCallback(() => {
     setDialog({
@@ -283,25 +270,9 @@ const RecipeIngredients = ({
   }, [apiRef, mutate, recipeId, rowCount, rows, setDialog, tInventory]);
 
   const handleCancelReorder = useCallback(() => {
-    setDialog({
-      content: (
-        <DialogContentText>
-          {tInventory.rich(
-            "recipes.ingredients.actions.reorderRecipeIngredient.cancel.confirm",
-            { bold: (chunks) => <strong>{chunks}</strong> },
-          )}
-        </DialogContentText>
-      ),
-      onConfirm: async () => {
-        setDraftRows(null);
-        setToolbarMode(null);
-      },
-      open: true,
-      title: tInventory(
-        "recipes.ingredients.actions.reorderRecipeIngredient.cancel.label",
-      ),
-    });
-  }, [setDialog, tInventory]);
+    setDraftRows(null);
+    setToolbarMode(null);
+  }, []);
 
   const handleDragEnd = ({ operation }: DragEndEvent) => {
     if (!isSortableOperation(operation)) return;
@@ -685,6 +656,7 @@ const RecipeIngredients = ({
                 )}
               </Button>
               <Button
+                disabled={!hasReorderChanges}
                 onClick={handleSaveReorder}
                 size="small"
                 startIcon={<Save />}

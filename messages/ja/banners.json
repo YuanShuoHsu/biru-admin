@@ -23,10 +23,8 @@
     "label": "操作",
     "reorderBanner": {
       "cancel": {
-        "confirm": "<bold>バナー</bold>の並び替えをキャンセルしますか？保存されていない変更は失われます。",
         "label": "バナーの並び替えをキャンセル"
       },
-      "confirm": "<bold>バナー</bold>を並び替えますか？",
       "save": {
         "confirm": "<bold>バナー</bold>の並び順を保存しますか？",
         "label": "バナーの並び順を保存",

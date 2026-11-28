@@ -60,10 +60,8 @@
       },
       "reorderIngredient": {
         "cancel": {
-          "confirm": "<bold>食材</bold>の並び替えをキャンセルしますか？保存していない変更は失われます。",
           "label": "食材の並び替えをキャンセル"
         },
-        "confirm": "<bold>食材</bold>を並び替えますか？",
         "save": {
           "confirm": "<bold>食材</bold>の並び順を保存しますか？",
           "label": "食材の並び順を保存",
@@ -215,10 +213,8 @@
         "label": "操作",
         "reorderRecipeIngredient": {
           "cancel": {
-            "confirm": "<bold>材料</bold>の並び替えをキャンセルしますか？保存していない変更は失われます。",
             "label": "材料の並び替えをキャンセル"
           },
-          "confirm": "<bold>材料</bold>を並び替えますか？",
           "save": {
             "confirm": "<bold>材料</bold>の並び順を保存しますか？",
             "label": "材料の並び順を保存",
