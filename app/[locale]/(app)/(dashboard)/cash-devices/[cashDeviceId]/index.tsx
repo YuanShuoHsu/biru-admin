@@ -240,7 +240,7 @@ const CashDeviceEvents = ({
             <EmptyCell />
           ) : (
             <Chip
-              color={Number(difference) === 0 ? "success" : "error"}
+              color={Number(difference) === 0 ? "success" : "warning"}
               label={formatMoney(Number(difference), currency, {
                 signDisplay: "exceptZero",
               })}
