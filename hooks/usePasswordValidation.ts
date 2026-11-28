@@ -20,11 +20,6 @@ export const usePasswordValidation = (
       label: tValidation("password.minLength"),
     },
     {
-      key: "maxLength",
-      passed: password.length <= PASSWORD_MAX_LENGTH,
-      label: tValidation("password.maxLength"),
-    },
-    {
       key: "letter",
       passed: /[a-zA-Z]/.test(password),
       label: tValidation("password.letter"),
@@ -34,6 +29,15 @@ export const usePasswordValidation = (
       passed: /\d/.test(password),
       label: tValidation("password.number"),
     },
+    ...(password.length > PASSWORD_MAX_LENGTH
+      ? [
+          {
+            key: "maxLength",
+            passed: false,
+            label: tValidation("password.maxLength"),
+          },
+        ]
+      : []),
     ...(currentPassword !== undefined
       ? [
           {
