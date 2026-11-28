@@ -4,6 +4,7 @@
     "consume": "扣除",
     "create": "建立",
     "delete": "刪除",
+    "export": "匯出",
     "label": "操作",
     "publish": "發布",
     "refund": "退回",
@@ -71,6 +72,14 @@
     "endTime": "結束時間",
     "endedAt": "結束時間",
     "expiresAt": "到期時間",
+    "exportFilterField": "篩選欄位",
+    "exportFilterOperator": "篩選條件",
+    "exportFilterValue": "篩選值",
+    "exportQuickFilterEnums": "快速搜尋符合的選項",
+    "exportQuickFilterValue": "快速搜尋",
+    "exportRowCount": "匯出筆數",
+    "exportSortBy": "排序欄位",
+    "exportSortDirection": "排序方向",
     "extendedAddress": "地址補充",
     "fixedSweetnessLevel": "固定甜度",
     "graceMinutes": "逾時寬限（分鐘）",
@@ -274,6 +283,10 @@
     "waitlistTicket": "候位號碼牌",
     "withholdingCertificate": "扣繳憑單",
     "withholdingUnit": "扣繳單位"
+  },
+  "sortDirection": {
+    "asc": "升序",
+    "desc": "降序"
   },
   "target": "對象",
   "title": "異動紀錄",

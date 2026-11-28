@@ -4,6 +4,7 @@
     "consume": "Deducted",
     "create": "Created",
     "delete": "Deleted",
+    "export": "Exported",
     "label": "Action",
     "publish": "Published",
     "refund": "Returned",
@@ -71,6 +72,14 @@
     "endTime": "End time",
     "endedAt": "Ended at",
     "expiresAt": "Expires at",
+    "exportFilterField": "Filter column",
+    "exportFilterOperator": "Filter operator",
+    "exportFilterValue": "Filter value",
+    "exportQuickFilterEnums": "Quick search matched options",
+    "exportQuickFilterValue": "Quick search",
+    "exportRowCount": "Exported rows",
+    "exportSortBy": "Sort column",
+    "exportSortDirection": "Sort direction",
     "extendedAddress": "Extended address",
     "fixedSweetnessLevel": "Fixed sweetness",
     "graceMinutes": "Grace period (minutes)",
@@ -274,6 +283,10 @@
     "waitlistTicket": "Waitlist ticket",
     "withholdingCertificate": "Withholding certificate",
     "withholdingUnit": "Withholding unit"
+  },
+  "sortDirection": {
+    "asc": "Ascending",
+    "desc": "Descending"
   },
   "target": "Target",
   "title": "Change history",

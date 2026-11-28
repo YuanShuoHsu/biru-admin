@@ -64,6 +64,7 @@ export const generateMetadata = async ({
 
 interface OrdersContentProps {
   canCreateRefund: boolean;
+  canExportOrders: boolean;
   canViewAuditLog: boolean;
   canVoidInvoices: boolean;
   filterField?: OrderFilterField;
@@ -154,6 +155,8 @@ const OrdersPage = async ({ params, searchParams }: OrdersPageProps) => {
   });
   const canCreateRefund =
     isAdmin || hasRolePermission(memberRole, { refund: ["create"] });
+  const canExportOrders =
+    isAdmin || hasRolePermission(memberRole, { order: ["export"] });
   const canVoidInvoices =
     isAdmin || hasRolePermission(memberRole, { invoice: ["void"] });
 
@@ -179,6 +182,7 @@ const OrdersPage = async ({ params, searchParams }: OrdersPageProps) => {
     <Suspense fallback={<Orders loading />}>
       <OrdersContent
         canCreateRefund={canCreateRefund}
+        canExportOrders={canExportOrders}
         canViewAuditLog={canViewAuditLog}
         canVoidInvoices={canVoidInvoices}
         filterField={filterField}

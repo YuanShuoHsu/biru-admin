@@ -4,6 +4,7 @@
     "consume": "扣除",
     "create": "创建",
     "delete": "删除",
+    "export": "导出",
     "label": "操作",
     "publish": "发布",
     "refund": "退回",
@@ -71,6 +72,14 @@
     "endTime": "结束时间",
     "endedAt": "结束时间",
     "expiresAt": "到期时间",
+    "exportFilterField": "筛选字段",
+    "exportFilterOperator": "筛选条件",
+    "exportFilterValue": "筛选值",
+    "exportQuickFilterEnums": "快速搜索匹配的选项",
+    "exportQuickFilterValue": "快速搜索",
+    "exportRowCount": "导出笔数",
+    "exportSortBy": "排序字段",
+    "exportSortDirection": "排序方向",
     "extendedAddress": "地址补充",
     "fixedSweetnessLevel": "固定甜度",
     "graceMinutes": "逾时宽限（分钟）",
@@ -274,6 +283,10 @@
     "waitlistTicket": "排队号码牌",
     "withholdingCertificate": "扣缴凭单",
     "withholdingUnit": "扣缴单位"
+  },
+  "sortDirection": {
+    "asc": "升序",
+    "desc": "降序"
   },
   "target": "对象",
   "title": "变更记录",

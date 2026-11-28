@@ -3,6 +3,7 @@ import { cache } from "react";
 import { fetcher } from "./fetcher";
 
 import type {
+  AuditAction,
   AuditLogFilterField,
   AuditLogListResponse,
   AuditLogSortField,
@@ -31,6 +32,7 @@ export const getAuditLogHref = (
   resource: AuditResource,
   resourceId: string,
   ancestorIds: string[] = [],
+  action?: AuditAction,
 ): string | null => {
   const [rootId, parentId] = ancestorIds;
 
@@ -58,7 +60,9 @@ export const getAuditLogHref = (
         ? `/menus/modifier-groups/${rootId}/${resourceId}/audit-logs`
         : null;
     case "order":
-      return `/orders/list/${resourceId}/audit-logs`;
+      return action === "export"
+        ? "/orders/list"
+        : `/orders/list/${resourceId}/audit-logs`;
     case "invoice":
       return rootId ? `/orders/list/${rootId}/audit-logs` : null;
     case "supplier":

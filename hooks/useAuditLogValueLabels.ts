@@ -15,9 +15,11 @@ import {
   invoiceTypeValues,
   itemAvailabilityValues,
   operatingCostCategoryValues,
+  orderFilterFieldValues,
   orderModeValues,
   orderRefundDtoScopeValues,
   orderResponseDtoPaymentMethodValues,
+  orderSortFieldValues,
   orderStatusValues,
   organizationOperatingTypeValues,
   organizationTeamMemberResponseDtoRoleValues,
@@ -31,6 +33,7 @@ import {
   refundStatusValues,
   servingTemperatureLevelValues,
   servingTemperatureValues,
+  sortDirectionValues,
   sweetnessLevelValues,
   statutoryLeaveKindValues,
   sweetnessValues,
@@ -40,6 +43,11 @@ import {
   waitlistTicketStatusValues,
 } from "@/types/api";
 
+import {
+  DATE_FILTER_OPERATORS,
+  ENUM_FILTER_OPERATORS,
+  STRING_FILTER_OPERATORS,
+} from "@/constants/dataGrid";
 import { routing } from "@/i18n/routing";
 
 const INVITATION_STATUSES = [
@@ -49,12 +57,21 @@ const INVITATION_STATUSES = [
   "canceled",
 ] as const;
 
+const DATA_GRID_FILTER_OPERATORS = [
+  ...new Set([
+    ...STRING_FILTER_OPERATORS,
+    ...DATE_FILTER_OPERATORS,
+    ...ENUM_FILTER_OPERATORS,
+  ]),
+];
+
 export const useAuditLogValueLabels = () => {
   const tAdmins = useTranslations("admins");
   const tAttendance = useTranslations("attendance");
   const tAudit = useTranslations("audit");
   const tCommon = useTranslations("common");
   const tCoupons = useTranslations("coupons");
+  const tDataGrid = useTranslations("dataGrid");
   const tInventory = useTranslations("inventory");
   const tMenus = useTranslations("menus");
   const tOrder = useTranslations("order");
@@ -194,6 +211,24 @@ export const useAuditLogValueLabels = () => {
           tReports(`operatingCosts.category.options.${value}`),
         ]),
       ),
+      "order.filterField": Object.fromEntries(
+        orderFilterFieldValues.map((value) => [value, tOrders(value)]),
+      ),
+      "order.filterOperator": Object.fromEntries(
+        DATA_GRID_FILTER_OPERATORS.map((value) => [
+          value,
+          tDataGrid(`toolbar.filter.operator.${value}`),
+        ]),
+      ),
+      "order.sortBy": Object.fromEntries(
+        orderSortFieldValues.map((value) => [value, tOrders(value)]),
+      ),
+      "order.sortDirection": Object.fromEntries(
+        sortDirectionValues.map((value) => [
+          value,
+          tAudit(`sortDirection.${value}`),
+        ]),
+      ),
       "organization.operatingType": Object.fromEntries(
         organizationOperatingTypeValues.map((value) => [
           value,
@@ -295,6 +330,7 @@ export const useAuditLogValueLabels = () => {
       tAudit,
       tCommon,
       tCoupons,
+      tDataGrid,
       tInventory,
       tMenus,
       tOrder,

@@ -3144,6 +3144,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/organizations/{organizationSlug}/orders/export.csv": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 匯出訂單列表 CSV */
+    get: operations["OrdersController_exportOrders"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/organizations/{organizationSlug}/orders/board": {
     parameters: {
       query?: never;
@@ -7814,6 +7831,7 @@ export interface components {
       | "create"
       | "update"
       | "delete"
+      | "export"
       | "restore"
       | "consume"
       | "refund"
@@ -23397,6 +23415,43 @@ export interface operations {
       };
     };
   };
+  OrdersController_exportOrders: {
+    parameters: {
+      query?: {
+        filterField?: components["schemas"]["OrderFilterField"];
+        filterOperator?: components["schemas"]["FilterOperator"];
+        /** @description 快速搜尋命中的列舉條件,格式為 field:value1,value2 */
+        quickFilterEnums?: string[];
+        sortBy?: components["schemas"]["OrderSortField"];
+        sortDirection?: components["schemas"]["SortDirection"];
+        filterValue?: string;
+        quickFilterValue?: string;
+      };
+      header?: never;
+      path: {
+        organizationSlug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "text/csv": string;
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   OrdersController_findBoard: {
     parameters: {
       query?: never;
@@ -31450,6 +31505,7 @@ export const auditActionValues: ReadonlyArray<
   "create",
   "update",
   "delete",
+  "export",
   "restore",
   "consume",
   "refund",
