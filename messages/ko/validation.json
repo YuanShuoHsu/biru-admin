@@ -108,6 +108,10 @@
   "eligibleQuantity": {
     "required": "포장 용량은 필수입니다."
   },
+  "eligibleQuantityMaxValue": {
+    "dailyLimitRequired": "구매 제한을 설정하기 전에 일일 한정 수량을 설정해 주세요.",
+    "exceedsDailyLimit": "구매 제한은 일일 한정 수량보다 클 수 없습니다."
+  },
   "email": {
     "invalid": "이메일이 유효하지 않습니다.",
     "required": "이메일은 필수입니다."

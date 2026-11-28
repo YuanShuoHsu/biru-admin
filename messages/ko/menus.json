@@ -234,10 +234,22 @@
       "availableHours": {
         "label": "제공 시간대"
       },
+      "dailyLimit": {
+        "helperText": "매일 04:00에 오늘 남은 수량을 이 수량으로 되돌립니다",
+        "label": "일일 한정 수량",
+        "placeholder": "일일 한정 수량을 입력해 주세요"
+      },
       "deliveryLeadTimeMinutes": {
         "label": "준비 시간",
         "placeholder": "준비 시간을 입력해 주세요",
         "unit": "분"
+      },
+      "eligibleQuantity": {
+        "maxValue": {
+          "helperText": "로그인한 회원은 당일 누적, 비로그인 고객은 주문별로 계산합니다",
+          "label": "구매 제한",
+          "placeholder": "구매 제한 수량을 입력해 주세요"
+        }
       },
       "inventoryLevel": {
         "maxValue": {
@@ -253,6 +265,7 @@
           "placeholder": "재고 단위를 입력해 주세요"
         },
         "value": {
+          "dailyLimitLabel": "오늘 남은 수량",
           "label": "재고 수량",
           "placeholder": "재고 수량을 입력해 주세요"
         }

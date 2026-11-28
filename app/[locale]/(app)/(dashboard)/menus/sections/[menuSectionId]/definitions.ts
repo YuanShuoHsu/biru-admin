@@ -85,6 +85,22 @@ export const useMenuItemFormSchema = () => {
               .optional(),
           })
           .optional(),
+        dailyLimit: z
+          .string()
+          .refine((value) => !value || Number.isInteger(Number(value)), {
+            error: tValidation("number.integer"),
+          })
+          .optional(),
+        eligibleQuantity: z
+          .object({
+            maxValue: z
+              .string()
+              .refine((value) => !value || Number.isInteger(Number(value)), {
+                error: tValidation("number.integer"),
+              })
+              .optional(),
+          })
+          .optional(),
         deliveryLeadTimeMinutes: z
           .string()
           .refine((value) => !value || Number.isInteger(Number(value)), {
@@ -126,6 +142,24 @@ export const useMenuItemFormSchema = () => {
       {
         message: tValidation("fixedSweetnessLevel.notSelected"),
         path: ["fixedSweetnessLevel"],
+      },
+    )
+    .refine(
+      ({ offer: { dailyLimit, eligibleQuantity } }) =>
+        !eligibleQuantity?.maxValue || !!dailyLimit,
+      {
+        message: tValidation("eligibleQuantityMaxValue.dailyLimitRequired"),
+        path: ["offer", "eligibleQuantity", "maxValue"],
+      },
+    )
+    .refine(
+      ({ offer: { dailyLimit, eligibleQuantity } }) =>
+        !eligibleQuantity?.maxValue ||
+        !dailyLimit ||
+        Number(eligibleQuantity.maxValue) <= Number(dailyLimit),
+      {
+        message: tValidation("eligibleQuantityMaxValue.exceedsDailyLimit"),
+        path: ["offer", "eligibleQuantity", "maxValue"],
       },
     );
 };

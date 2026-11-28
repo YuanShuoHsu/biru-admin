@@ -797,6 +797,26 @@ const MenusMenuIdSectionId = ({
             .trim(),
       },
       {
+        field: "dailyLimit",
+        filterable: false,
+        headerName: `${tMenus("items.offers.dailyLimit.label")} ${tCommon("optional")}`,
+        renderCell: renderEmptyableCell,
+        sortable: false,
+        valueGetter: (_value: unknown, { offer }: MenuItem) =>
+          offer?.dailyLimit == null ? "" : format.number(offer.dailyLimit),
+      },
+      {
+        field: "eligibleQuantity",
+        filterable: false,
+        headerName: `${tMenus("items.offers.eligibleQuantity.maxValue.label")} ${tCommon("optional")}`,
+        renderCell: renderEmptyableCell,
+        sortable: false,
+        valueGetter: (_value: unknown, { offer }: MenuItem) =>
+          offer?.eligibleQuantity == null
+            ? ""
+            : format.number(offer.eligibleQuantity.maxValue),
+      },
+      {
         field: "deliveryLeadTimeMinutes",
         filterOperators: numberFilterOperators,
         headerName: `${tMenus("items.offers.deliveryLeadTimeMinutes.label")} ${tCommon("optional")}`,

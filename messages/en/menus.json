@@ -234,10 +234,22 @@
       "availableHours": {
         "label": "Available hours"
       },
+      "dailyLimit": {
+        "helperText": "Remaining today resets to this quantity at 04:00 every day",
+        "label": "Daily limit",
+        "placeholder": "Please enter your daily limit"
+      },
       "deliveryLeadTimeMinutes": {
         "label": "Preparation time",
         "placeholder": "Please enter your preparation time",
         "unit": "min"
+      },
+      "eligibleQuantity": {
+        "maxValue": {
+          "helperText": "Signed-in members are counted per day; guests are counted per order",
+          "label": "Purchase limit",
+          "placeholder": "Please enter your purchase limit"
+        }
       },
       "inventoryLevel": {
         "maxValue": {
@@ -253,6 +265,7 @@
           "placeholder": "Please enter your inventory unit"
         },
         "value": {
+          "dailyLimitLabel": "Remaining today",
           "label": "Inventory quantity",
           "placeholder": "Please enter your inventory quantity"
         }
