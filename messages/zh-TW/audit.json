@@ -285,8 +285,8 @@
     "withholdingUnit": "扣繳單位"
   },
   "sortDirection": {
-    "asc": "遞增",
-    "desc": "遞減"
+    "asc": "升序",
+    "desc": "降序"
   },
   "target": "對象",
   "title": "異動紀錄",

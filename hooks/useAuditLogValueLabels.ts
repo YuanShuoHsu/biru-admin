@@ -43,6 +43,11 @@ import {
   waitlistTicketStatusValues,
 } from "@/types/api";
 
+import {
+  DATE_FILTER_OPERATORS,
+  ENUM_FILTER_OPERATORS,
+  STRING_FILTER_OPERATORS,
+} from "@/constants/dataGrid";
 import { routing } from "@/i18n/routing";
 
 const INVITATION_STATUSES = [
@@ -53,22 +58,12 @@ const INVITATION_STATUSES = [
 ] as const;
 
 const DATA_GRID_FILTER_OPERATORS = [
-  "contains",
-  "doesNotContain",
-  "equals",
-  "doesNotEqual",
-  "startsWith",
-  "endsWith",
-  "isEmpty",
-  "isNotEmpty",
-  "isAnyOf",
-  "is",
-  "not",
-  "after",
-  "onOrAfter",
-  "before",
-  "onOrBefore",
-] as const;
+  ...new Set([
+    ...STRING_FILTER_OPERATORS,
+    ...DATE_FILTER_OPERATORS,
+    ...ENUM_FILTER_OPERATORS,
+  ]),
+];
 
 export const useAuditLogValueLabels = () => {
   const tAdmins = useTranslations("admins");
