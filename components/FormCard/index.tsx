@@ -80,7 +80,7 @@ export const StyledCardActions = styled(CardActions)(({ theme }) => ({
 
 // https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fs-novalidate
 const FormCard = ({ ref, ...props }: CardProps<"form">) => (
-  <Card ref={ref} component="form" noValidate {...props} />
+  <Card ref={ref} component="form" noValidate variant="outlined" {...props} />
 );
 
 FormCard.displayName = "FormCard";
