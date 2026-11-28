@@ -318,10 +318,7 @@ const Ingredients = ({
   }, [lowStock, setPaginationModel, updateQuery]);
 
   const isReorderDisabled =
-    rowCount < 2 ||
-    lowStock ||
-    isValidating ||
-    isFilteredOrSorted(filterModel, sortModel);
+    rowCount < 2 || lowStock || isFilteredOrSorted(filterModel, sortModel);
 
   const handleEnterReorderMode = useCallback(() => {
     setDraftRows(rows);

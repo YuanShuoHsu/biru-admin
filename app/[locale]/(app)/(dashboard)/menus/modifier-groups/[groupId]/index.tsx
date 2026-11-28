@@ -236,7 +236,7 @@ const Modifiers = ({
   } = useRowSelection({ enabled: isSelectMode, rows });
 
   const isReorderDisabled =
-    rowCount < 2 || isValidating || isFilteredOrSorted(filterModel, sortModel);
+    rowCount < 2 || isFilteredOrSorted(filterModel, sortModel);
 
   const handleEnterReorderMode = useCallback(() => {
     setDraftRows(rows);

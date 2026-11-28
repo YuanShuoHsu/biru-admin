@@ -104,10 +104,7 @@ const ChecklistTemplates = ({
   );
 
   const isReorderDisabled =
-    closed ||
-    rows.length < 2 ||
-    isValidating ||
-    isFilteredOrSorted(filterModel, sortModel);
+    closed || rows.length < 2 || isFilteredOrSorted(filterModel, sortModel);
 
   const handleEnterReorderMode = useCallback(() => {
     setDraftRows(rows);
