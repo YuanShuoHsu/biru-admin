@@ -69,6 +69,7 @@ const CashDeviceCollectionDialog = ({
     name: ["depositedAmount", "reportedAmount"],
   });
 
+  const hasBothAmounts = depositedAmount !== "" && reportedAmount !== "";
   const difference = Number(depositedAmount) - Number(reportedAmount);
 
   const onSubmitHandler = async ({
@@ -155,13 +156,15 @@ const CashDeviceCollectionDialog = ({
         value={depositedAmount}
         valueIsNumericString
       />
-      <Typography color={difference === 0 ? undefined : "warning"}>
-        {tCashDevices("actions.collection.difference", {
-          difference: formatMoney(difference, currency, {
-            signDisplay: "exceptZero",
-          }),
-        })}
-      </Typography>
+      {hasBothAmounts && (
+        <Typography color={difference === 0 ? undefined : "warning"}>
+          {tCashDevices("actions.collection.difference", {
+            difference: formatMoney(difference, currency, {
+              signDisplay: "exceptZero",
+            }),
+          })}
+        </Typography>
+      )}
       <TextField
         error={!!errors.note}
         fullWidth
