@@ -235,7 +235,7 @@
         "label": "Available hours"
       },
       "dailyLimit": {
-        "helperText": "Remaining today resets to this quantity at 04:00 every day",
+        "helperText": "Remaining today resets to this quantity at 04:00 every day; changing the daily limit recalculates remaining today from today's sales when saved",
         "label": "Daily limit",
         "placeholder": "Please enter your daily limit"
       },

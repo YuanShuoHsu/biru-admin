@@ -790,20 +790,13 @@ const MenusMenuIdSectionId = ({
           [
             offer?.inventoryLevel?.value == null
               ? ""
-              : format.number(offer.inventoryLevel.value),
+              : offer.dailyLimit == null
+                ? format.number(offer.inventoryLevel.value)
+                : `${format.number(offer.inventoryLevel.value)} / ${format.number(offer.dailyLimit)}`,
             offer?.inventoryLevel?.unitText,
           ]
             .join(" ")
             .trim(),
-      },
-      {
-        field: "dailyLimit",
-        filterable: false,
-        headerName: `${tMenus("items.offers.dailyLimit.label")} ${tCommon("optional")}`,
-        renderCell: renderEmptyableCell,
-        sortable: false,
-        valueGetter: (_value: unknown, { offer }: MenuItem) =>
-          offer?.dailyLimit == null ? "" : format.number(offer.dailyLimit),
       },
       {
         field: "eligibleQuantity",

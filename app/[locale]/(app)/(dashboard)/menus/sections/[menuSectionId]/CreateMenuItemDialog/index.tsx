@@ -51,8 +51,6 @@ import type {
 } from "@/types/menus";
 import type { ApiOrderMode } from "@/types/orderMode";
 
-import { getErrorMessage } from "@/utils/errors";
-import type { FetchError } from "@/utils/fetcher";
 import { localize } from "@/utils/locale";
 
 const StyledGrid = styled(Grid)({
@@ -90,7 +88,6 @@ const CreateMenuItemDialog = ({
     formState: { errors },
     handleSubmit,
     register,
-    setError,
     setValue,
   } = useForm<MenuItemForm>({
     defaultValues: {
@@ -248,17 +245,10 @@ const CreateMenuItemDialog = ({
 
       closeDialog();
       mutate();
-    } catch (error) {
-      if (
-        (error as FetchError).info?.code === "eligibleQuantityExceedsDailyLimit"
-      )
-        setError("offer.eligibleQuantity.maxValue", {
-          message: getErrorMessage(error),
-        });
-      else
-        enqueueSnackbar(tMenus("items.actions.createItem.error"), {
-          variant: "error",
-        });
+    } catch {
+      enqueueSnackbar(tMenus("items.actions.createItem.error"), {
+        variant: "error",
+      });
 
       setDialog({ confirmLoading: false });
     }
