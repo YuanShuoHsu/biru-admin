@@ -15,6 +15,7 @@ import { MODE_COLORS } from "@/constants/orderMode";
 import { INVOICE_STATUS_COLORS, STATUS_COLORS } from "@/constants/orders";
 import { DEFAULT_PAGE_SIZE, getPageSizeOptions } from "@/constants/pagination";
 
+import { useCsvDownload } from "@/hooks/useCsvDownload";
 import { useDataGridQueryState } from "@/hooks/useDataGridQueryState";
 import {
   useDateFilterOperators,
@@ -69,7 +70,10 @@ import type {
 } from "@/types/orders";
 import type { Organization } from "@/types/organizations";
 
-import { getDataGridSearchParams } from "@/utils/dataGrid";
+import {
+  getDataGridFilterSortParams,
+  getDataGridSearchParams,
+} from "@/utils/dataGrid";
 import { getOrderEnumOptions } from "@/utils/enumOptions";
 import { fetcher } from "@/utils/fetcher";
 
@@ -99,6 +103,7 @@ const TRANSITION_SLOTS: OrderTransition["direction"][][] = [
 
 interface OrdersProps {
   canCreateRefund?: boolean;
+  canExportOrders?: boolean;
   canViewAuditLog?: boolean;
   canVoidInvoices?: boolean;
   filterField?: OrderFilterField;
@@ -117,6 +122,7 @@ interface OrdersProps {
 
 const Orders = ({
   canCreateRefund = false,
+  canExportOrders = false,
   canViewAuditLog = false,
   canVoidInvoices = false,
   filterField,
@@ -165,6 +171,8 @@ const Orders = ({
     () => getOrderEnumOptions(tOrder, tOrders),
     [tOrder, tOrders],
   );
+
+  const { download, downloading } = useCsvDownload();
 
   const {
     data: { data: rows, total: rowCount } = {
@@ -717,6 +725,15 @@ const Orders = ({
         ...DATA_GRID_PROPS.slotProps,
         toolbar: {
           exportDateField: "createdAt",
+          exportingCsv: downloading,
+          onExportCsv:
+            canExportOrders && organization
+              ? (fileName) =>
+                  download(
+                    `/api/organizations/${organization.slug}/orders/export.csv?${getDataGridFilterSortParams(filterModel, sortModel, enumOptions)}`,
+                    fileName,
+                  )
+              : undefined,
         },
       }}
     />
