@@ -43,6 +43,19 @@ export const StyledListItem = styled(ListItem)(({ theme }) =>
   listItemStyles(theme),
 );
 
+export const StyledStackedListItem = styled(ListItem)(({ theme }) => ({
+  ...listItemStyles(theme),
+
+  [theme.breakpoints.down("sm")]: {
+    flexDirection: "column",
+    alignItems: "stretch",
+
+    "& .MuiListItemSecondaryAction-root .MuiButton-root": {
+      width: "100%",
+    },
+  },
+}));
+
 export const StyledOutlinedListItem = styled(ListItem)(({ theme }) => ({
   ...listItemStyles(theme),
   padding: theme.spacing(1.5),
