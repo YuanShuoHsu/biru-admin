@@ -3348,6 +3348,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/users/me/purchased-today": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 查詢我今天在此門市已買的限購品項份數（同營業日，不含取消、付款失敗與全額退款；沒買過的品項不列出） */
+    get: operations["UserPurchasedTodayController_findAll"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/point-reports": {
     parameters: {
       query?: never;
@@ -11860,6 +11877,10 @@ export interface components {
     UserOrderListResponseDto: {
       data: components["schemas"]["UserOrderResponseDto"][];
       total: number;
+    };
+    PurchasedTodayDto: {
+      menuItemId: string;
+      quantity: number;
     };
     PointReportAmountsDto: {
       earnedAmount: number;
@@ -23711,6 +23732,34 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["UserOrderListResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  UserPurchasedTodayController_findAll: {
+    parameters: {
+      query: {
+        organizationSlug: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PurchasedTodayDto"][];
         };
       };
       /** @description Internal server error */
