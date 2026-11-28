@@ -24,12 +24,14 @@ import { getErrorMessage } from "@/utils/errors";
 import { fetcher } from "@/utils/fetcher";
 
 interface AdjustPointsDialogProps {
+  defaultEmail?: string;
   mutate: () => void;
   organizationSlug: string;
   ownerOnlyAbovePoints: number | null;
 }
 
 const AdjustPointsDialog = ({
+  defaultEmail = "",
   mutate,
   organizationSlug,
   ownerOnlyAbovePoints,
@@ -47,7 +49,7 @@ const AdjustPointsDialog = ({
     register,
     setValue,
   } = useForm<AdjustPointsForm>({
-    defaultValues: { email: "", points: "", note: "" },
+    defaultValues: { email: defaultEmail, points: "", note: "" },
     resolver: zodResolver(adjustPointsFormSchema),
   });
 

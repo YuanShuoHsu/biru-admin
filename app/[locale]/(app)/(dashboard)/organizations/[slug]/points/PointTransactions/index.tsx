@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import useSWR from "swr";
 
 import AdjustPointsDialog from "../AdjustPointsDialog";
@@ -20,8 +20,15 @@ import {
   useStringFilterOperators,
 } from "@/hooks/useFilterOperators";
 
-import { Add } from "@mui/icons-material";
-import { Button, Chip, Stack, Typography } from "@mui/material";
+import { Add, Exposure } from "@mui/icons-material";
+import {
+  Button,
+  Chip,
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useGridApiRef } from "@mui/x-data-grid";
@@ -147,23 +154,53 @@ const PointTransactions = ({
     },
   );
 
-  const handleAdjustPoints = () => {
-    setDialog({
-      content: (
-        <AdjustPointsDialog
-          mutate={mutate}
-          organizationSlug={organizationSlug}
-          ownerOnlyAbovePoints={ownerOnlyAbovePoints}
-        />
-      ),
-      formId: "adjust-points-form",
-      open: true,
-      title: tOrganizations("points.adjust.title"),
-    });
-  };
+  const handleAdjustPoints = useCallback(
+    (defaultEmail?: string) => {
+      setDialog({
+        content: (
+          <AdjustPointsDialog
+            defaultEmail={defaultEmail}
+            mutate={mutate}
+            organizationSlug={organizationSlug}
+            ownerOnlyAbovePoints={ownerOnlyAbovePoints}
+          />
+        ),
+        formId: "adjust-points-form",
+        open: true,
+        title: tOrganizations("points.adjust.title"),
+      });
+    },
+    [mutate, organizationSlug, ownerOnlyAbovePoints, setDialog, tOrganizations],
+  );
 
   const columns = useMemo<GridColDef[]>(
     () => [
+      ...(adjustmentEnabled
+        ? [
+            {
+              disableColumnMenu: true,
+              disableExport: true,
+              field: "actions",
+              filterable: false,
+              headerName: tOrganizations("actions.label"),
+              renderCell: ({
+                row: { userEmail },
+              }: GridRenderCellParams<OrganizationPointTransaction>) =>
+                userEmail && (
+                  <Tooltip title={tOrganizations("points.adjust.title")}>
+                    <IconButton
+                      onClick={() => handleAdjustPoints(userEmail)}
+                      size="small"
+                    >
+                      <Exposure fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                ),
+              resizable: false,
+              sortable: false,
+            },
+          ]
+        : []),
       {
         field: "createdAt",
         filterOperators: dateFilterOperators,
@@ -236,10 +273,12 @@ const PointTransactions = ({
       },
     ],
     [
+      adjustmentEnabled,
       dateFilterOperators,
       enumFilterOperators,
       enumOptions,
       format,
+      handleAdjustPoints,
       numberFilterOperators,
       stringFilterOperators,
       tAuth,
@@ -252,7 +291,7 @@ const PointTransactions = ({
       <ToolbarStack direction="row">
         <Button
           disabled={!adjustmentEnabled}
-          onClick={handleAdjustPoints}
+          onClick={() => handleAdjustPoints()}
           size="small"
           startIcon={<Add />}
           variant="contained"
