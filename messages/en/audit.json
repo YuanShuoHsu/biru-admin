@@ -284,6 +284,10 @@
     "withholdingCertificate": "Withholding certificate",
     "withholdingUnit": "Withholding unit"
   },
+  "sortDirection": {
+    "asc": "Ascending",
+    "desc": "Descending"
+  },
   "target": "Target",
   "title": "Change history",
   "value": {

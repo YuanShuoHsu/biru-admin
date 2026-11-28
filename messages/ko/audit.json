@@ -284,6 +284,10 @@
     "withholdingCertificate": "원천징수영수증",
     "withholdingUnit": "원천징수 의무자"
   },
+  "sortDirection": {
+    "asc": "오름차순",
+    "desc": "내림차순"
+  },
   "target": "대상",
   "title": "변경 이력",
   "value": {

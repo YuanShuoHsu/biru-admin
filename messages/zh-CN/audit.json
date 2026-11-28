@@ -284,6 +284,10 @@
     "withholdingCertificate": "扣缴凭单",
     "withholdingUnit": "扣缴单位"
   },
+  "sortDirection": {
+    "asc": "升序",
+    "desc": "降序"
+  },
   "target": "对象",
   "title": "变更记录",
   "value": {

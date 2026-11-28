@@ -72,13 +72,13 @@
     "endTime": "終了時刻",
     "endedAt": "終了日時",
     "expiresAt": "有効期限",
-    "exportFilterField": "絞り込み項目",
-    "exportFilterOperator": "絞り込み条件",
-    "exportFilterValue": "絞り込み値",
+    "exportFilterField": "フィルター列",
+    "exportFilterOperator": "フィルター条件",
+    "exportFilterValue": "フィルター値",
     "exportQuickFilterEnums": "クイック検索に一致した選択肢",
     "exportQuickFilterValue": "クイック検索",
     "exportRowCount": "エクスポート件数",
-    "exportSortBy": "並べ替え項目",
+    "exportSortBy": "並べ替え列",
     "exportSortDirection": "並べ替え順",
     "extendedAddress": "住所補足",
     "fixedSweetnessLevel": "固定の甘さ",
@@ -283,6 +283,10 @@
     "waitlistTicket": "順番待ち番号札",
     "withholdingCertificate": "源泉徴収票",
     "withholdingUnit": "源泉徴収義務者"
+  },
+  "sortDirection": {
+    "asc": "昇順",
+    "desc": "降順"
   },
   "target": "対象",
   "title": "変更履歴",

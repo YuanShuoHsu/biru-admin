@@ -284,6 +284,10 @@
     "withholdingCertificate": "扣繳憑單",
     "withholdingUnit": "扣繳單位"
   },
+  "sortDirection": {
+    "asc": "遞增",
+    "desc": "遞減"
+  },
   "target": "對象",
   "title": "異動紀錄",
   "value": {
